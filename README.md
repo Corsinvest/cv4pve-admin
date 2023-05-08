@@ -41,6 +41,12 @@ This software is part of a suite of tools called cv4pve-tools. If you want comme
 
 For installation or other question see documentation.
 
+# BETA RELEASE
+
+This is a beta release. They shouldn't be big problems. I look forward to any improvement requests.
+
+Thank you
+
 ### Documentation
 
 [Documentation](./src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/index.html)
