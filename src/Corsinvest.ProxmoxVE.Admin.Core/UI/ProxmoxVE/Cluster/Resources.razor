@@ -1,0 +1,81 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster
+
+@inherits AHComponentBase
+
+<AHDataGrid T="ClusterResource"
+            Permissions="Permissions"
+            DataGridManager="DataGridManagerInt"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            ShowColumnOptions="false"
+            ChildRowContent="@ChildRowContent"
+            MultiSelection="@Multiselect"
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="ClusterResource" DataGridManager="DataGridManagerInt">
+            <ToolBarContentBefore>
+                @if (ToolBarContentBefore != null)
+                {
+                    @ToolBarContentBefore
+                }
+            </ToolBarContentBefore>
+
+            <ToolBarContentAfter>
+                @if (ToolBarContentAfter != null)
+                {
+                    @ToolBarContentAfter
+                }
+            </ToolBarContentAfter>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+
+    <Columns>
+        @if (ChildRowContent != null)
+        {
+            <HierarchyColumn T="ClusterResource" />
+        }
+
+        @if (Multiselect)
+        {
+            <SelectColumn T="ClusterResource" ShowInFooter="false" />
+        }
+
+        @foreach (var item in PropertiesName)
+        {
+            @if (item == nameof(ClusterResource.Status))
+            {
+                <TemplateColumn T="ClusterResource" Sortable="false">
+                    <CellTemplate>
+                        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.IconStatusResource Status="@context.Item.Status"
+                                                                                        Type="@context.Item.Type"
+                                                                                        Locked="@context.Item.IsLocked" />
+                    </CellTemplate>
+                </TemplateColumn>
+            }
+            else
+            {
+                <DynamicComponent Type="@GetDynamicType(item)" Parameters="GetDynamicParameters(item)" />
+            }
+        }
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent Icon="@NoRecordsContentIcon" />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="ClusterResource" />
+    </PagerContent>
+</AHDataGrid>

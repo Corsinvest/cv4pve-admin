@@ -1,0 +1,34 @@
+[[chapter_module_cluster_usage]]
+= Cluster Usage
+
+== Need
+
+Have a glance at the cluster occupation status for VM/CT and vice versa.
+
+== Configuration
+
+Show all storages configured in cluster
+
+[.thumb]
+image:screenshot/modules/cluster-usage/configurations.png[]
+
+== By Storage
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-storage.png[]
+
+== By VM/CT
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-vm.png[]
+
+=== Costs
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-costs1.png[]
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-costs2.png[]
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-costs3.png[]

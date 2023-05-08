@@ -1,0 +1,27 @@
+[[chapter_module_disks_status]]
+= Disk Status
+
+== Need
+
+Locate a disk in array controller and blink led.
+
+Requirement on every nodes **ledmon**.
+```sh
+apt-get install ledmon
+```
+
+=== Nodes
+
+[.thumb]
+image:screenshot/modules/disks-status/nodes.png[]
+
+=== Disks Information
+
+[.thumb]
+image:screenshot/modules/disks-status/disks.png[]
+
+
+=== S.M.A.R.T. tools information
+
+[.thumb]
+image:screenshot/modules/disks-status/disks.png[]

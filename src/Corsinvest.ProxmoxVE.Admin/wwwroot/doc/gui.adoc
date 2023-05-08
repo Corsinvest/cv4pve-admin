@@ -1,0 +1,102 @@
+[[chapter_gui]]
+= Graphical User Interface
+
+{app-name} is simple. There is no need to install a separate management
+tool, and everything can be done through your web browser (Latest
+Firefox or Google Chrome is preferred).
+
+You can use the web-based administration interface with any modern
+browser.
+
+The web interface can be reached via https://youripaddress:5001
+(default login is: *admin@local*, and the password is *Password123!*).
+
+== Login
+
+[.thumb]
+image:screenshot/login.png[]
+
+When you connect to the {app-name}, you will first see the login window.
+
+== GUI Overview
+
+[.thumb]
+image:screenshot/summary.png[]
+
+The {app-name} user interface consists of three regions.
+
+[horizontal]
+
+Header:: On top. Shows status information and contains buttons for
+most important actions.
+
+Modules tree:: At the left side. A navigation tree where you can select
+specific module.
+
+Content Panel:: Center region. Selected module display content.
+
+NOTE: You can reduce and expand the size of the tree. This can be useful when you work on small screens and want more space to view other content.
+
+=== Header
+
+At the top left, the button to expand and reduce the tree or view modules if listed. Next to the module name.
+
+The rightmost part of the header contains four buttons:
+
+[horizontal]
+
+Cluster Selector::  Cluster selector.
+[.thumb]
+image:screenshot/cluster-selector.png[]
+
+Notify::  Notify service activity.
+
+Help:: Opens a new browser window showing the reference documentation.
+
+User menu:: actions for user.
+
+=== Modules tree
+
+This is the main navigation tree. It is divided into contexts and contains all the available modules.
+
+=== Content Panels
+
+When you select a module in the tree, the corresponding
+shows status information in the content. Refer to the individual chapters of the modules within the reference documentation for more detailed information.
+
+== Global options
+
+[.thumb]
+image:screenshot/modules/settings/global-settings.png[]
+
+The settings are divided by functions.
+
+== Notification
+
+For notification email or other type, is posable to configure it in section **NOTIFICATION**
+
+== Proxmox VE Cluster options
+
+{app-name} supports multiple clusters configurations. For identify cluster is possible add a description.
+
+=== Api Login or Api Token
+
+[.thumb]
+image:screenshot/modules/settings/cluster-settings1.png[]
+
+=== SSH Login
+
+[.thumb]
+image:screenshot/modules/settings/cluster-settings2.png[]
+
+=== Ip and port Nodes
+
+[.thumb]
+image:screenshot/modules/settings/cluster-settings3.png[]
+
+== Module options
+
+[.thumb]
+image:screenshot/modules/settings/module-settings.png[]
+
+The module may have settings. If present, there is a dedicated section.

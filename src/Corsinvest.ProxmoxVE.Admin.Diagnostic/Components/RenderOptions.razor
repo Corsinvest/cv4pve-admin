@@ -1,0 +1,152 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Admin.Core.UI.Options
+@using Corsinvest.ProxmoxVE.Api.Shared.Utils
+@using OptionsTimeSeriesType = Corsinvest.ProxmoxVE.Diagnostic.Api.SettingsTimeSeriesType
+@using OptionsThresholdDouble = Corsinvest.ProxmoxVE.Diagnostic.Api.SettingsThreshold<double>
+
+@inherits AHModuleOptionsBase<Options>
+
+<PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
+    <Row>
+        <MudTabs Elevation="1" ApplyEffectsToContainer Border>
+            <MudTabPanel Text="@L["Scheduling"]" Icon="@Icons.Material.Outlined.Schedule">
+                <MudGrid Class="pa-4">
+                    <MudItem xs="6" md="2">
+                        <MudSwitch T="bool" @bind-Checked="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
+                                   For="@(() => context.Enabled)" Color="Color.Primary" />
+                    </MudItem>
+
+                    <MudItem xs="6" md="4">
+                        <MudNumericField T="int" @bind-Value="@context.Keep" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Keep)]"
+                                         For="@(() => context.Keep)" />
+                    </MudItem>
+
+                    <MudItem xs="6" md="6">
+                        <NotificationChannelsOptionsSelector Options="@context" T="ModuleClusterOptions" />
+                    </MudItem>
+
+                    <MudItem xs="12" md="12">
+                        <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
+                        </MudItem>
+                        </MudGrid>
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="@L["Threshold"]" Icon="@Icons.Material.Outlined.DataThresholding">
+                        <MudExpansionPanels MultiExpansion>
+                    @foreach (var (hostType, hostTypeIdx) in new[] { context.Node, context.Qemu, context.Lxc }.Select((a, idx) => (a, idx)))
+                    {
+                        <MudExpansionPanel>
+                            <TitleContent>
+                                <div class="d-flex gap-4">
+                                    <MudIcon Icon="@(GetIconType(hostTypeIdx))" />
+                                    <MudText>
+                                        @L[new[] { "Node" , "Qemu" , "Lxc" }[hostTypeIdx]]
+                                    </MudText>
+                                </div>
+                            </TitleContent>
+
+                            <ChildContent>
+                                <MudGrid>
+                                    <MudItem xs="12" md="12">
+                                        @RenderOptionsTimeSeries(hostType.TimeSeries)
+                                    </MudItem>
+
+                                    @foreach (var (item, idx) in new[] { hostType.Cpu, hostType.Memory, hostType.Network }.Select((item, idx) => (item, idx)))
+                                    {
+                                        <MudItem xs="12" md="4">
+                                            @RenderOptionsThreshold(L[ThresholdTexts[idx]], ThresholdIcons[idx], item)
+                                        </MudItem>
+                                    }
+                                </MudGrid>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <div class="d-flex gap-4">
+                                <MudIcon Icon="@Icons.Material.Outlined.Storage" />
+                                <MudText>@L["Storage"]</MudText>
+                            </div>
+                        </TitleContent>
+
+                        <ChildContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="12">
+                                    @RenderOptionsTimeSeries(context.Storage.TimeSeries)
+                                </MudItem>
+
+                                <MudItem xs="12" md="4">
+                                    @RenderOptionsThreshold("Usage", Icons.Material.Outlined.DataThresholding, context.Storage.Threshold)
+                                </MudItem>
+                            </MudGrid>
+                        </ChildContent>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <div class="d-flex gap-4">
+                                <MudIcon Icon="fa-solid fa-hard-drive" />
+                                <MudText>@L["SSD"]</MudText>
+                            </div>
+                        </TitleContent>
+
+                        <ChildContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="4">
+                                    @RenderOptionsThreshold("Wearout", Icons.Material.Outlined.DataThresholding, context.SsdWearoutThreshold)
+                                </MudItem>
+                            </MudGrid>
+                        </ChildContent>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudTabPanel>
+        </MudTabs>
+    </Row>
+</PveOptionsModuleRender>
+
+@code
+{
+    private RenderFragment RenderOptionsTimeSeries(OptionsTimeSeriesType timeSeriesType) => __builder =>
+    {
+        <MudSelect @bind-Value="@timeSeriesType" Label="@L["TimeSeries"]">
+            @foreach (var item in Enum.GetValues<OptionsTimeSeriesType>())
+            {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+            }
+        </MudSelect>
+    };
+
+    private RenderFragment RenderOptionsThreshold(string title, string icon, OptionsThresholdDouble threshold) => __builder =>
+    {
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex gap-2">
+                        <MudIcon Icon="@icon" />
+                        <MudText>@L[title]</MudText>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudNumericField T="double" @bind-Value="@threshold.Warning"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Warning" AdornmentColor="Color.Warning"
+                                 Label="@L["Warning %"]" For="@(() => threshold.Warning)" />
+                    </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudNumericField T="double" @bind-Value="@threshold.Critical"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Error" AdornmentColor="Color.Error"
+                                 Label="@L["Critical %"]" For="@(() => threshold.Critical)" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    };
+}

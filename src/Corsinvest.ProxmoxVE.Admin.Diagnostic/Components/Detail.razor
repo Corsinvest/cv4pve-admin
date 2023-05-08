@@ -1,0 +1,57 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Diagnostic.Api
+
+@inherits AHComponentBase
+
+<AHDataGrid T="Data"
+            Permissions="Module.Permissions.Result.Data"
+            DataGridManager="DataGridManager"
+            Groupable
+            Filterable
+            ShowFilterIcons="false"
+            RowsPerPage="9999"
+            GroupClassFunc="GroupClassFunc">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="Data" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="Data" ShowInFooter="false" />
+
+        <AHPropertyColumn T="Data" TProperty="DiagnosticResultGravity" Property="a=> a.Gravity" Grouping>
+            <GroupTemplate>
+                @L["Gravity:"] @context.Grouping.Key (@context.Grouping.Count())
+            </GroupTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.Id" />
+        <AHPropertyColumn T="Data" TProperty="DiagnosticResultContext" Property="a => a.Context" />
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.SubContext" />
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.Description" />
+
+        <TemplateColumn T="Data" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <MudIconButton Icon="@Icons.Material.Outlined.VisibilityOff" OnClick="@(() => IgnoreIssue(context.Item))"
+                                   Size="Size.Small" Title="@L["Ignore Issue"]" />
+
+                    @if (!string.IsNullOrEmpty(context.Item.Url))
+                    {
+                        <MudIconButton Icon="@Icons.Material.Outlined.Info" OnClick="@(() => ShowInfo(context.Item))"
+                                   Size="Size.Small" Title="@L["Info"]" />
+                    }
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    @*  <LoadingContent>
+    <AHLoadingContent />
+    </LoadingContent>*@
+</AHDataGrid>

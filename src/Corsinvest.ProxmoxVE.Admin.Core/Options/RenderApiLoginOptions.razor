@@ -1,0 +1,27 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudGrid>
+    <MudItem md="6">
+        <MudTextField @bind-Value="@ClusterOptions.ApiCredential.Username"
+                      Label="@L[MudBlazorHelper.GetDescriptionProperty < ClusterOptions>(a => a.ApiCredential.Username)]"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" />
+    </MudItem>
+    <MudItem md="6">
+        <MudPasswordField @bind-Value="@ClusterOptions.ApiCredential.Password" PasswordMode
+                          Label="@L[MudBlazorHelper.GetDescriptionProperty < ClusterOptions>(a => a.ApiCredential.Password)]" />
+        </MudItem>
+        <MudItem xs="12">
+        <MudTextField @bind-Value="@ClusterOptions.ApiToken"
+                      Label="@L[MudBlazorHelper.GetDescriptionProperty < ClusterOptions>(a => a.ApiToken)]"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Api" />
+        </MudItem>
+        </MudGrid>
+
+        @code
+        {
+    [EditorRequired][Parameter] public ClusterOptions ClusterOptions { get; set; } = default!;
+}

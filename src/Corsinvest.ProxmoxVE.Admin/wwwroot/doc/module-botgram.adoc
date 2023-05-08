@@ -1,0 +1,14 @@
+[[chapter_module_botgram]]
+= Botgram
+
+== Need
+Ability to manage your cluster from a Telegram chat.
+
+== Implementation
+
+We started in 2016 with command line development https://github.com/Corsinvest/cv4pve-botgram[Github] and then implemented the web portal.
+
+=== Activity
+
+[.thumb]
+image:screenshot/modules/botgram/activity.png[]

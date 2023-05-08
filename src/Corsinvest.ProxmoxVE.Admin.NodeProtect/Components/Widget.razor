@@ -1,0 +1,12 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudText><strong>@L["Saved:"]</strong> @Count</MudText>
+<div class="d-flex gap-2">
+    <MudText><strong>@L["Last:"]</strong> @Last</MudText>
+    <MudText><strong>@L["Scheduled:"]</strong></MudText>
+    <AHBoolIcon IconType="AHBoolIconType.Thumb" ColorTrue="Color.Success" ColorFalse="Color.Error" Value="Enabled" />
+</div>

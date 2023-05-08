@@ -1,0 +1,67 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="StorageOptions"
+            FixedHeader
+            FixedFooter
+            Elevation="0"
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="StorageOptions" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+    <Columns>
+        <AHPropertyColumn T="StorageOptions" TProperty="string" Property="a => a.Storage" />
+        <AHPropertyColumn T="StorageOptions" TProperty="double" Property="a => a.CostDayGbRunning" />
+        <AHPropertyColumn T="StorageOptions" TProperty="double" Property="a => a.CostDayGbStopped" />
+
+        <TemplateColumn T="StorageOptions" CellClass="justify-end" Context="Context">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <MudIconButton Icon="@MudBlazorHelper.ToMBIcon(UIIcon.Edit.GetName())"
+                                   OnClick="@(() => DataGridManager.EditAsync(Context.Item,false))"
+                                   Color="@Color.Default"
+                                   Size="Size.Small" Title="@L["Edit"]"
+                                   Disabled="@DataGridManager.ToDataGridManager().DataGrid!.Loading" />
+                </MudButtonGroup>-
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <EditTemplate>
+        <MudGrid>
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.Storage" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Storage)])"
+                              For="@(() => context.Storage)" ReadOnly />
+            </MudItem>
+
+            <MudItem md="3">
+                <MudNumericField @bind-Value="@context.CostDayGbRunning" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.CostDayGbRunning)])"
+                                 For="@(() => context.CostDayGbRunning)" />
+            </MudItem>
+
+            <MudItem md="3">
+                <MudNumericField @bind-Value="@context.CostDayGbStopped" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.CostDayGbStopped)])"
+                                 For="@(() => context.CostDayGbStopped)" />
+            </MudItem>
+        </MudGrid>
+    </EditTemplate>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="StorageOptions" />
+    </PagerContent>
+</AHDataGrid>

@@ -1,0 +1,59 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="Execution"
+            Permissions="Module.Permissions.Result.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            MultiSelection
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarCrud T="Execution" DataGridManager="DataGridManager">
+            <ToolBarContentAfter>
+                <AHPermissionButtonIcon Permission="Module.Permissions.Result.Run" OnClick="@Run" />
+                <AHPermissionButtonIcon Permission="Module.Permissions.Result.Delete"
+                                        OnClick="@(async () => await DataGridManager.DeleteSelectedItemsAsync(true))"
+                                    Disabled="@(!DataGridManager.ExistsSelection)"/>
+            </ToolBarContentAfter>
+        </AHDataGridToolBarCrud>
+    </ToolBarContent>
+
+    <Columns>
+        <SelectColumn T="Execution" ShowInFooter="false" />
+        <HierarchyColumn T="Execution" />
+
+        <AHPropertyColumn T="Execution" TProperty="int" Property="a => a.Info" />
+        <AHPropertyColumn T="Execution" TProperty="int" Property="a => a.Warning" />
+        <AHPropertyColumn T="Execution" TProperty="int" Property="a => a.Critical" />
+        <AHPropertyColumn T="Execution" TProperty="DateTime" Property="a => a.Date" />
+
+        <TemplateColumn T="Execution" CellClass="justify-end">
+            <CellTemplate>
+                <AHPermissionButtonIcon Permission="Module.Permissions.Result.DownloadPdf" OnClick="@(() => DownloadPdf(context.Item))" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <ChildRowContent>
+        <Detail Id="context.Item.Id" />
+    </ChildRowContent>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="Execution" />
+    </PagerContent>
+</AHDataGrid>

@@ -1,0 +1,21 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<WidgetInfoBase Description="@Description" GetStatus="GetStatus" />
+
+@code
+{
+    private string Description { get; set; } = default!;
+
+    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    {
+        var nodes = await client.Nodes.Get();
+        var onLine = nodes.Where(a => a.IsOnline).Count();
+        Description = L["{0} of {1} Nodes online", onLine, nodes.Count()];
+        StateHasChanged();
+        return onLine == nodes.Count();
+    }
+}

@@ -1,0 +1,67 @@
+[[chapter_module_autosnap]]
+= Autosnap
+
+== Need
+Take a snapshot of a VM/CT at a fixed interval with a retention.
+
+== Implementation
+
+We started in 2016 with command line development https://github.com/Corsinvest/cv4pve-autosnap[Github] and then implemented the web portal.
+
+== Note
+WARNING: Do not schedule less than 15 minutes, there may be performance problems.
+
+WARNING: If you include memory, the space and time will increase considerably. Test it before deploying to production environment.
+
+NOTE: Pay attention to the timeout time.
+
+NOTE: The location of the autosnap storage space is the same where the VM disk is located. This reduces the total storage capacity.
+
+=== Tasks
+
+Grid with tasks configured.
+
+[.thumb]
+image:screenshot/modules/autosnap/tasks.png[]
+
+=== New and edit Task
+
+[.thumb]
+image:screenshot/modules/autosnap/task-new-edit.png[]
+
+link:#chapter_other_cron[Cron format]
+
+=== Status
+
+Show status of job autosnap
+
+[.thumb]
+image:screenshot/modules/autosnap/job-status.png[]
+
+=== History
+
+Show history of job autosnap
+
+[.thumb]
+image:screenshot/modules/autosnap/job-history.png[]
+
+=== Timeline
+
+Show Timeline scheduling autosnap
+
+[.thumb]
+image:screenshot/modules/autosnap/time-line.png[]
+
+=== Status
+
+Show status scheduling autosnap
+
+[.thumb]
+image:screenshot/modules/autosnap/tasks-status.png[]
+
+=== In Error
+
+Grid with snapshots with error.
+
+[.thumb]
+image:screenshot/modules/autosnap/in-errors.png[]

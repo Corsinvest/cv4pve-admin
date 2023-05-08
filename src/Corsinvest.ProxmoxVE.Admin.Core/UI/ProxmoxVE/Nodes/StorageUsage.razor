@@ -1,0 +1,60 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using ApexCharts
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
+
+@inherits AHComponentBase
+
+@if (Infos == null || Contents == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <MudGrid>
+        <MudItem sm="12" md="12">
+            @foreach (var item in Contents.GroupBy(a => a.Storage))
+            {
+                var info = Infos.FirstOrDefault(a => a.Storage == item.Key);
+                @if (info != null)
+                {
+                    <MudText Typo="Typo.subtitle1" Align="MudBlazor.Align.Center">
+                        <b>@item.Key</b> -
+                        @L["Used"] @FormatHelper.FromBytes(info.DiskUsage) of @FormatHelper.FromBytes(info.DiskSize) @Math.Round(100.0 / info.DiskSize * info.DiskUsage,1)% -
+                        @L["Free"] @FormatHelper.FromBytes(info.DiskSize - info.DiskUsage) - @Math.Round(100.0 / info.DiskSize * (info.DiskSize - info.DiskUsage),1)%
+                    </MudText>
+                }
+            }
+        </MudItem>
+
+        <MudItem sm="12" md="3">
+            <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L["Content"]">
+                <ApexPointSeries TItem="NodeStorageContent"
+                             Items="Contents"
+                             Name="All"
+                             SeriesType="SeriesType.Donut"
+                                      ShowDataLabels
+                             XValue="@(a => a.Content)"
+                             YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
+                             OrderByDescending="a => a.Y" />
+                </ApexChart>
+
+                <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L[(IsGroupByStorage ? "Storage" : "Vm")]">
+                <ApexPointSeries TItem="NodeStorageContent"
+                             Items="Contents"
+                             Name="All"
+                             SeriesType="SeriesType.Donut"
+                                      ShowDataLabels
+                             XValue="@(a => IsGroupByStorage ? a.Storage : a.VmId)"
+                             YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
+                             OrderByDescending="a => a.Y" />
+                </ApexChart>
+                </MudItem>
+
+                <MudItem sm="12" md="9">
+                <StorageContents GetItems="GetContents" PropertiesName="@PropertiesName" GroupBy="@GroupBy" />
+                </MudItem>
+                </MudGrid>
+}

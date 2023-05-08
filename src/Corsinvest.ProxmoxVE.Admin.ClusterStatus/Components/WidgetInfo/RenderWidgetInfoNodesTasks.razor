@@ -1,0 +1,26 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<WidgetInfoBase Description="@L["Tasks Nodes"]" GetStatus="GetStatus" />
+
+@code
+{
+    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    {
+        var dateCheck = new DateTimeOffset(DateTime.Now.Date.AddDays(-100)).ToUnixTimeSeconds();
+        var ret = true;
+        foreach (var node in (await client.Nodes.Get()).Where(a => a.IsOnline))
+        {
+            if ((await client.Nodes[node.Node].Tasks.Get(errors: true, limit: 1))
+                            .Count(a => a.StartTime >= dateCheck) > 0)
+            {
+                ret = false;
+                break;
+            }
+        }
+        return ret;
+    }
+}

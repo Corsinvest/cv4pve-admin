@@ -1,0 +1,65 @@
+CV4PVE-ADMIN {app-version} Guide
+=================================
+Powered by Corsinvest Srl
+:favicon: ./images/favicon.ico
+:doctype: book
+:title: CV4PVE-ADMIN {app-version} Guide
+:toc2:
+:numbered:
+:imagesdir: ./images
+:scriptsdir: ./js
+:icons: font
+:pve-name: Proxmox VE
+:app-name: cv4pve-admin
+:app-version: v1.0.0-beta
+:app-url-site: https://www.corisnvest.it/cv4pve-admin
+:company-url: https://www.corisnvest.it
+:company-name: Corsinvest Srl
+
+:leveloffset: 1
+
+include::intro.adoc[]
+include::installation.adoc[]
+include::gui.adoc[]
+
+:leveloffset: 0
+
+Modules
+-------
+
+:leveloffset: 2
+
+include::module-home.adoc[]
+include::module-autosnap.adoc[]
+include::module-botgram.adoc[]
+include::module-cluster-status.adoc[]
+include::module-cluster-usage.adoc[]
+include::module-diagnostic.adoc[]
+include::module-disks-status.adoc[]
+include::module-metrics-exporter.adoc[]
+include::module-node-free-memory.adoc[]
+include::module-node-protect.adoc[]
+include::module-qemu-monitor.adoc[]
+include::module-vm-unlock.adoc[]
+include::module-vzdump-trend.adoc[]
+
+:leveloffset: 0
+
+Other
+-----
+
+:leveloffset: 2
+
+include::cron.adoc[]
+include::faq.adoc[]
+
+:leveloffset: 0
+
+Support
+-------
+
+:leveloffset: 2
+
+include::subscription.adoc[]
+
+:leveloffset: 0

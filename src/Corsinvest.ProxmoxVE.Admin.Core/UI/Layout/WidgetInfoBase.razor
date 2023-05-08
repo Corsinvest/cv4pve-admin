@@ -1,0 +1,18 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (Status == null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <MudAlert Style="height:100%" Class="pt-5 pb-5 align-center"
+          Severity="@(Status.Value ? Severity.Success : Severity.Error)"
+          Icon="@(Status.Value ? Icons.Material.Outlined.ThumbUp : Icons.Material.Outlined.ThumbDown)">
+        @Description
+    </MudAlert>
+}

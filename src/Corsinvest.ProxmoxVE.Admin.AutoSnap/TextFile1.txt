@@ -1,0 +1,1 @@
+﻿dotnet ef migrations Add Initial --startup-project ..\Corsinvest.ProxmoxVE.Admin -c AutoSnapDbContext -v

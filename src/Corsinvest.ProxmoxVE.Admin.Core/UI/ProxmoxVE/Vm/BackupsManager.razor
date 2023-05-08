@@ -1,0 +1,99 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<style>
+    .selected {
+        background-color: var(--mud-palette-primary) !important;
+    }
+
+        .selected > td {
+            color: white !important;
+        }
+
+            .selected > td .mud-input {
+                color: white !important;
+            }
+</style>
+
+<AHDataGrid T="NodeStorageContent"
+            Permissions="Permissions"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable="false"
+            ShowFilterIcons="false"
+            ShowColumnOptions="false"
+            Height="@Height"
+            RowClassFunc="@RowClassFunc"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="NodeStorageContent" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                @if (CanRestoreFile)
+                {
+                    <MudIconButton Icon="@Icons.Material.Outlined.Download" Title="@L["Restore file"]" OnClick="@(() => DialogVisible = true)"
+                               Disabled="@(BackupIsRestorable())" />
+                }
+            </ToolBarContentBefore>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+    <Columns>
+
+        @if (ShowDetailProxmoxVE)
+        {
+            <AHPropertyColumn T="NodeStorageContent" TProperty="string" Property="a => a.Storage" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+            <AHPropertyColumn T="NodeStorageContent" TProperty="string" Property="a => a.FileName" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+            <AHPropertyColumn T="NodeStorageContent" TProperty="long" Property="a => a.Creation" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+        }
+
+        <AHPropertyColumn T="NodeStorageContent" TProperty="string" Property="a => a.Format" Sortable="false" />
+
+        @if (ShowDetailProxmoxVE)
+        {
+            <AHPropertyColumn T="NodeStorageContent" TProperty="bool" Property="a => a.Encrypted" Sortable="false" />
+            <AHPropertyColumn T="NodeStorageContent" TProperty="bool" Property="a => a.Verified" Sortable="false" />
+        }
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="NodeStorageContent" />
+    </PagerContent>
+</AHDataGrid>
+
+<MudDialog IsVisible="@DialogVisible"
+           Style="width:80%;"
+           Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <div class="d-flex gap-4">
+            <MudIcon Icon="@Icons.Material.Outlined.TaskAlt" />
+            <MudText>
+                @L["Show content backup:"] @DataGridManager.SelectedItem.FileName
+            </MudText>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; height: 500px; overflow-y: scroll">
+            <BackupFileRestore GetItems="@GetItemsBackups" SelectedFileChanged="SelectedFileChanged" />
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" OnClick="@(() => DialogVisible = false)">@L["Close"]</MudButton>
+
+        <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit"
+                   Disabled="NodeBackupFileToRestore ==null" StartIcon="@Icons.Material.Outlined.Download"
+                   OnClick="DownloadFileRestore" Color="Color.Primary">@L["Download"]</MudButton>
+    </DialogActions>
+</MudDialog>

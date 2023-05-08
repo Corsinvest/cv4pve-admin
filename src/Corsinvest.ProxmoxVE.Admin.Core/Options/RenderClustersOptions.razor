@@ -1,0 +1,78 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="ClusterOptions"
+            Elevation="0"
+            Permissions="Module.Permissions.Clusters.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            MultiSelection
+            Filterable
+            Groupable
+            ShowFilterIcons="false">
+    <ToolBarContent>
+        <AHDataGridToolBarCrud T="ClusterOptions" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <SelectColumn T="ClusterOptions" ShowInFooter="false" />
+
+        <AHPropertyColumn T="ClusterOptions" TProperty="string" Property="a => a.Name" />
+        <AHPropertyColumn T="ClusterOptions" TProperty="string" Property="a => a.Description" />
+
+        <TemplateColumn T="ClusterOptions" Title="Nodes">
+            <CellTemplate>
+                @context.Item.Nodes.Count
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn T="ClusterOptions" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <AHDataGridColumnEdit T="ClusterOptions" DataGridManager="DataGridManager" Context="context" />
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <EditTemplate>
+        <MudGrid>
+            <MudItem md="12">
+                <MudTextField @bind-Value="@context.Description"
+                              Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description)])" For="@(() => context.Description)" />
+            </MudItem>
+
+            <MudItem md="12">
+                <MudTabs Elevation="1" ApplyEffectsToContainer Border Class="mt-8" PanelClass="pa-6">
+                    <MudTabPanel Text="@L["Credential Web API"]" Icon="@Icons.Material.Outlined.Key">
+                        <RenderApiLoginOptions ClusterOptions="@context" />
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="@L["Credential ssh"]" Icon="@Icons.Material.Outlined.Key">
+                        <RenderSshLoginOptions ClusterOptions="@context" />
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="@L["Nodes"]" Icon="@PveBlazorHelper.Icons.Node">
+                        <RenderNodesOptions ClusterOptions="@context" />
+                    </MudTabPanel>
+                </MudTabs>
+                </MudItem>
+                </MudGrid>
+            </EditTemplate>
+
+            <NoRecordsContent>
+                <AHNoRecordsContent />
+            </NoRecordsContent>
+
+            <LoadingContent>
+                <AHLoadingContent />
+            </LoadingContent>
+
+            <PagerContent>
+                <MudDataGridPager T="ClusterOptions" />
+            </PagerContent>
+            </AHDataGrid>

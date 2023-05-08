@@ -1,0 +1,16 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHModuleOptionsBase<AdminOptions>
+
+<MudTabs Elevation="1" ApplyEffectsToContainer Border Class="mt-8" PanelClass="pa-6">
+    <MudTabPanel Text="@L["Proxmox VE"]" Icon="@PveAdminHelper.SvgIconPveLogoBlack">
+        <RenderClustersOptions Options="Options" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Contact"]" Icon="@Icons.Material.Outlined.Contacts">
+        <RenderContactOptions AdminOptions="Options" />
+    </MudTabPanel>
+</MudTabs>
+

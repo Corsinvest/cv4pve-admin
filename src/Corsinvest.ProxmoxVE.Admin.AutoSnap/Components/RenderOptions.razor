@@ -1,0 +1,78 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHModuleOptionsBase<Options>
+
+<PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
+    <Row>
+        <MudGrid>
+            <MudItem md="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <div class="d-flex gap-4">
+                                <MudIcon Icon="@Icons.Material.Outlined.Folder" />
+                                <MudText>@L["General"]</MudText>
+                            </div>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="6" md="4">
+                                <AHEnumSelect TEnum="SearchMode" @bind-Value="@context.SearchMode"
+                                              Label="@L[GetDescriptionProperty(a => a.Clusters[0].SearchMode)]" />
+                            </MudItem>
+
+                            <MudItem xs="6" md="4">
+                                <MudTextField T="string" @bind-Value="@context.TimestampFormat"
+                                              Label="@L[GetDescriptionProperty(a => a.Clusters[0].TimestampFormat)]" />
+                            </MudItem>
+
+                            <MudItem xs="6" md="4">
+                                <MudNumericField T="int" @bind-Value="@context.KeepHistory"
+                                                 Label="@L[GetDescriptionProperty(a => a.Clusters[0].KeepHistory)]"
+                                                 Variant="Variant.Text" Min="0" Max="99" />
+                            </MudItem>
+
+                            <MudItem xs="6" md="4">
+                                <MudNumericField T="int" @bind-Value="@context.MaxPercentageStorage"
+                                                 Label="@L[GetDescriptionProperty(a => a.Clusters[0].MaxPercentageStorage)]" />
+                            </MudItem>
+
+                            <MudItem xs="6" md="8">
+                                <MudSwitch @bind-Checked="@context.OnRemoveJobRemoveSnapshots"
+                                           Label="@L[GetDescriptionProperty(a => a.Clusters[0].OnRemoveJobRemoveSnapshots)]" Color="Color.Primary" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem md="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <div class="d-flex gap-4">
+                                <MudIcon Icon="@Icons.Material.Outlined.Send" />
+                                <MudText>@L["Notification"]</MudText>
+                            </div>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="6" md="6">
+                                <AHEnumSelect TEnum="Notify" @bind-Value="@context.Notify"
+                                              Label="@L[GetDescriptionProperty(a => a.Clusters[0].Notify)]" />
+                            </MudItem>
+
+                            <MudItem xs="6" md="6">
+                                <NotificationChannelsOptionsSelector Options="@context" T="ModuleClusterOptions" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </Row>
+</PveOptionsModuleRender>

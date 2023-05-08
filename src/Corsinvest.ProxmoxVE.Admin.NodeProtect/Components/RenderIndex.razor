@@ -1,0 +1,92 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="NodeProtectJobHistory"
+            Permissions="Module.Permissions.DataGrid.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            MultiSelection
+            Filterable
+            RowsPerPage="999"             
+            Groupable
+            ShowFilterIcons="false"
+            Height="calc(100vh - 315px)">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="NodeProtectJobHistory" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.Execute" OnClick="@Protect" />
+                <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.Delete"
+                                        OnClick="@(async () => await DataGridManager.DeleteSelectedItemsAsync(true))"
+                                        Disabled="@(!DataGridManager.ExistsSelection)" />
+            </ToolBarContentBefore>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+
+    <Columns>
+        <SelectColumn T="NodeProtectJobHistory" ShowInFooter="false" />
+
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="string" Property="a => a.JobId" Grouping>
+            <GroupTemplate>
+                <span style="font-weight:bold">
+                    @L["JobId"]: @context.Grouping.Key (@context.Grouping.Count()) @FormatHelper.FromBytes(context.Grouping.Sum(a => a.Size))
+                    <AHBoolIcon IconType="AHBoolIconType.Thumb" Value="@context.Grouping.All(a=> a.Status)" ColorTrue="Color.Success" ColorFalse="Color.Error" />
+                </span>
+            </GroupTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="string" Property="a => a.IpAddress" />
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="DateTime" Property="a => a.Start" />
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="string" Property="a => a.SizeText" />
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="string" Property="a => a.Duration" />
+
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="bool" Property="a => a.Status">
+            <CellTemplate>
+                <AHBoolIcon IconType="AHBoolIconType.Thumb" Value="@context.Item.Status" ColorTrue="Color.Success" ColorFalse="Color.Error" />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <TemplateColumn T="NodeProtectJobHistory" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.Upload" OnClick="@(() => Upload(context.Item))" Loading="@LoadingUpload" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.Download" OnClick="@(() => Download(context.Item))" Loading="@LoadingDownload" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.ShowLog" OnClick="@(() => ShowLog(context.Item))" />
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+        <PagerContent>
+    <MudDataGridPager T="NodeProtectJobHistory" />
+    </PagerContent>
+</AHDataGrid>
+
+<MudDialog IsVisible="@ShowDialog"
+           Style="width:80%;"
+           Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <div class="d-flex gap-2">
+            <MudIcon Icon="@Icons.Material.Outlined.Description" />
+            <MudText>@L["Log detail"]</MudText>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <MudTextField T="string" Lines="20" Text="@DialogContent" ReadOnly />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" OnClick="@(() => ShowDialog = false)" Color="Color.Primary">@L["Close"]</MudButton>
+    </DialogActions>
+</MudDialog>

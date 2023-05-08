@@ -1,0 +1,141 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin", "src\Corsinvest.ProxmoxVE.Admin\Corsinvest.ProxmoxVE.Admin.csproj", "{ECEB75C9-11BE-4EFF-B07B-254F0BCE1B42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B81E7A2B-6A9F-42CE-BC5A-EF2BC272E0F6}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitignore = .gitignore
+		3rd-party-licenses.md = 3rd-party-licenses.md
+		Build.ps1 = Build.ps1
+		src\common.props = src\common.props
+		docker-build.ps1 = docker-build.ps1
+		docker-test.ps1 = docker-test.ps1
+		docker-test1.ps1 = docker-test1.ps1
+		Dockerfile = Dockerfile
+		icon.png = icon.png
+		LICENSE = LICENSE
+		README.md = README.md
+		Todo.md = Todo.md
+		_Dockerfile = _Dockerfile
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.Core", "src\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj", "{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{915A59DC-2A15-470A-9201-D1B9608C2778}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{0B343883-B4F8-4F9B-AE54-E042E3566078}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.AutoSnap", "src\Corsinvest.ProxmoxVE.Admin.AutoSnap\Corsinvest.ProxmoxVE.Admin.AutoSnap.csproj", "{10898F33-C88C-4277-8588-80850F9EFEF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.QemuMonitor", "src\Corsinvest.ProxmoxVE.Admin.QemuMonitor\Corsinvest.ProxmoxVE.Admin.QemuMonitor.csproj", "{75F1FF93-09BD-4A89-946D-00F524A5DA08}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.Diagnostic", "src\Corsinvest.ProxmoxVE.Admin.Diagnostic\Corsinvest.ProxmoxVE.Admin.Diagnostic.csproj", "{2C80C9A4-9E98-4509-BBEE-50ED478BC726}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.MetricsExporter", "src\Corsinvest.ProxmoxVE.Admin.MetricsExporter\Corsinvest.ProxmoxVE.Admin.MetricsExporter.csproj", "{03760617-0BDE-447E-A7C3-60A1D7C9E4FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.Botgram", "src\Corsinvest.ProxmoxVE.Admin.Botgram\Corsinvest.ProxmoxVE.Admin.Botgram.csproj", "{5629DB10-C837-4ED7-9F1B-66CAFD977E1B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.VzDumpTrend", "src\Corsinvest.ProxmoxVE.Admin.VzDumpTrend\Corsinvest.ProxmoxVE.Admin.VzDumpTrend.csproj", "{495CF1FF-9378-49D4-BFA9-AA29C5E0366F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.ClusterUsage", "src\Corsinvest.ProxmoxVE.Admin.ClusterUsage\Corsinvest.ProxmoxVE.Admin.ClusterUsage.csproj", "{F2F7677C-9387-4F1A-BD22-0F9070EB9E5D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.NodeProtect", "src\Corsinvest.ProxmoxVE.Admin.NodeProtect\Corsinvest.ProxmoxVE.Admin.NodeProtect.csproj", "{4052A5CC-594C-4082-B464-A6D9333280DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.VmUnlock", "src\Corsinvest.ProxmoxVE.Admin.VmUnlock\Corsinvest.ProxmoxVE.Admin.VmUnlock.csproj", "{523A34AD-45B8-42B3-BF32-8475BBED33C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.NodeFreeMemory", "src\Corsinvest.ProxmoxVE.Admin.NodeFreeMemory\Corsinvest.ProxmoxVE.Admin.NodeFreeMemory.csproj", "{1FED7DE4-B66C-4505-A805-E4956A60F734}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.ClusterStatus", "src\Corsinvest.ProxmoxVE.Admin.ClusterStatus\Corsinvest.ProxmoxVE.Admin.ClusterStatus.csproj", "{1BF67691-4559-4BC6-B242-59E0E95F9951}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.DisksStatus", "src\Corsinvest.ProxmoxVE.Admin.DisksStatus\Corsinvest.ProxmoxVE.Admin.DisksStatus.csproj", "{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECEB75C9-11BE-4EFF-B07B-254F0BCE1B42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECEB75C9-11BE-4EFF-B07B-254F0BCE1B42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECEB75C9-11BE-4EFF-B07B-254F0BCE1B42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECEB75C9-11BE-4EFF-B07B-254F0BCE1B42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10898F33-C88C-4277-8588-80850F9EFEF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10898F33-C88C-4277-8588-80850F9EFEF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10898F33-C88C-4277-8588-80850F9EFEF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10898F33-C88C-4277-8588-80850F9EFEF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75F1FF93-09BD-4A89-946D-00F524A5DA08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F1FF93-09BD-4A89-946D-00F524A5DA08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F1FF93-09BD-4A89-946D-00F524A5DA08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F1FF93-09BD-4A89-946D-00F524A5DA08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C80C9A4-9E98-4509-BBEE-50ED478BC726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C80C9A4-9E98-4509-BBEE-50ED478BC726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C80C9A4-9E98-4509-BBEE-50ED478BC726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C80C9A4-9E98-4509-BBEE-50ED478BC726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03760617-0BDE-447E-A7C3-60A1D7C9E4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03760617-0BDE-447E-A7C3-60A1D7C9E4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03760617-0BDE-447E-A7C3-60A1D7C9E4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03760617-0BDE-447E-A7C3-60A1D7C9E4FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5629DB10-C837-4ED7-9F1B-66CAFD977E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5629DB10-C837-4ED7-9F1B-66CAFD977E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5629DB10-C837-4ED7-9F1B-66CAFD977E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5629DB10-C837-4ED7-9F1B-66CAFD977E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{495CF1FF-9378-49D4-BFA9-AA29C5E0366F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495CF1FF-9378-49D4-BFA9-AA29C5E0366F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495CF1FF-9378-49D4-BFA9-AA29C5E0366F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495CF1FF-9378-49D4-BFA9-AA29C5E0366F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2F7677C-9387-4F1A-BD22-0F9070EB9E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2F7677C-9387-4F1A-BD22-0F9070EB9E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2F7677C-9387-4F1A-BD22-0F9070EB9E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2F7677C-9387-4F1A-BD22-0F9070EB9E5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4052A5CC-594C-4082-B464-A6D9333280DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4052A5CC-594C-4082-B464-A6D9333280DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4052A5CC-594C-4082-B464-A6D9333280DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4052A5CC-594C-4082-B464-A6D9333280DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{523A34AD-45B8-42B3-BF32-8475BBED33C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523A34AD-45B8-42B3-BF32-8475BBED33C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523A34AD-45B8-42B3-BF32-8475BBED33C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523A34AD-45B8-42B3-BF32-8475BBED33C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FED7DE4-B66C-4505-A805-E4956A60F734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FED7DE4-B66C-4505-A805-E4956A60F734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FED7DE4-B66C-4505-A805-E4956A60F734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FED7DE4-B66C-4505-A805-E4956A60F734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF67691-4559-4BC6-B242-59E0E95F9951}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF67691-4559-4BC6-B242-59E0E95F9951}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF67691-4559-4BC6-B242-59E0E95F9951}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF67691-4559-4BC6-B242-59E0E95F9951}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ECEB75C9-11BE-4EFF-B07B-254F0BCE1B42} = {915A59DC-2A15-470A-9201-D1B9608C2778}
+		{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B} = {915A59DC-2A15-470A-9201-D1B9608C2778}
+		{10898F33-C88C-4277-8588-80850F9EFEF4} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{75F1FF93-09BD-4A89-946D-00F524A5DA08} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{2C80C9A4-9E98-4509-BBEE-50ED478BC726} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{03760617-0BDE-447E-A7C3-60A1D7C9E4FF} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{5629DB10-C837-4ED7-9F1B-66CAFD977E1B} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{495CF1FF-9378-49D4-BFA9-AA29C5E0366F} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{F2F7677C-9387-4F1A-BD22-0F9070EB9E5D} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{4052A5CC-594C-4082-B464-A6D9333280DE} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{523A34AD-45B8-42B3-BF32-8475BBED33C7} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{1FED7DE4-B66C-4505-A805-E4956A60F734} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{1BF67691-4559-4BC6-B242-59E0E95F9951} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+		{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9} = {0B343883-B4F8-4F9B-AE54-E042E3566078}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15E0FF4A-BABC-4E56-BF9C-228811A8E243}
+	EndGlobalSection
+EndGlobal

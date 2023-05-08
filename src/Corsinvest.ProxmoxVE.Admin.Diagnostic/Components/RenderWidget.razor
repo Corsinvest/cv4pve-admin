@@ -1,0 +1,31 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<div class="d-flex gap-2">
+    <div class="d-flex gap-2">
+        <MudText Color="Color.Warning"><strong>@L["Warning:"]</strong></MudText>
+        <MudText>@Last?.Warning</MudText>
+    </div>
+
+    <div class="d-flex gap-2">
+        <MudText Color="Color.Error"><strong>@L["Critical:"]</strong></MudText>
+        <MudText>@Last?.Critical</MudText>
+    </div>
+
+    <div class="d-flex gap-2">
+        <MudText Color="Color.Info"><strong>@L["Info:"]</strong></MudText>
+        <MudText>@Last?.Info</MudText>
+    </div>
+
+    <MudText><strong>@L["Exec.:"]</strong> @Count</MudText>
+</div>
+
+<div class="d-flex gap-2">
+    <MudText><strong>@L["Last:"]</strong> @Last?.Date</MudText>
+
+    <MudText><strong>@L["Scheduled:"]</strong></MudText>
+    <AHBoolIcon IconType="AHBoolIconType.Thumb" ColorTrue="Color.Success" ColorFalse="Color.Error" Value="ModuleClusterOptions.Enabled" />
+</div>

@@ -1,0 +1,103 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+
+@inherits AHComponentBase
+
+<AHDataGrid T="VmSnapshot"
+            Permissions="Permissions"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable="false"
+            ShowFilterIcons="false"
+            Height="@Height"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+            MultiSelection>
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="VmSnapshot" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                @if (CanCreate)
+                {
+                    <MudIconButton Icon="@PveBlazorHelper.Icons.Snapshot" Title="@L["Snapshot"]" OnClick="DataGridManager.NewAsync" />
+                }
+
+                @if (CanDelete)
+                {
+                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever" Color="Color.Error" Title="@L["Delete"]"
+                               OnClick="@(async () => await DataGridManager.DeleteSelectedItemsAsync(true))"
+                               Disabled="@(!DataGridManager.ExistsSelection)" />
+                }
+            </ToolBarContentBefore>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+    <Columns>
+        <HierarchyColumn T="VmSnapshot" />
+        <SelectColumn T="VmSnapshot" ShowInFooter="false" />
+
+        <AHPropertyColumn T="VmSnapshot" TProperty="string" Property="a => a.Name" />
+        <AHPropertyColumn T="VmSnapshot" TProperty="string" Property="a => a.Parent" />
+        <AHPropertyColumn T="VmSnapshot" TProperty="string" Property="a => a.Description" />
+        <AHPropertyColumn T="VmSnapshot" TProperty="DateTime" Property="a => a.Date" />
+
+        <AHPropertyColumn T="VmSnapshot" TProperty="bool" Property="a => a.VmStatus">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.VmStatus" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        @*
+        TODO
+        <AHDataGridColumn T="VmSnapshot" Field="@item" ShowColumnOptions="false" Sortable="false" />
+        *@
+
+        <TemplateColumn T="VmSnapshot" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    @if (CanRollback)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Outlined.History" Title="@L["Rollback"]" OnClick="RollbackAsync" />
+                    }
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <EditTemplate>
+        <MudGrid>
+            <MudItem md="6">
+                <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmStatus)])"
+                           For="@(() => context.VmStatus)" Color="Color.Primary" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.Name" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Name)])"
+                              For="@(() => context.Name)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.Description" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description)])"
+                              For="@(() => context.Description)" />
+            </MudItem>
+        </MudGrid>
+    </EditTemplate>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="VmSnapshot" />
+    </PagerContent>
+</AHDataGrid>

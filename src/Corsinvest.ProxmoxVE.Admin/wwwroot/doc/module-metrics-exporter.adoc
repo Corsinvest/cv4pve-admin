@@ -1,0 +1,11 @@
+[[chapter_module_metrics_exporter]]
+= Metrics Exporter
+
+== Need
+
+Export metrics in https://prometheus.io/[Prometheus] format
+
+=== Data
+
+[.thumb]
+image:screenshot/modules/metrics-exporter/data.png[]

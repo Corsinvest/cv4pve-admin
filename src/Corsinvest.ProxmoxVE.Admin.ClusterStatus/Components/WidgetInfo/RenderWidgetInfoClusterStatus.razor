@@ -1,0 +1,7 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<WidgetInfoBase Description="@L["Cluster Status"]" GetStatus="@(async (c,n) => (await PveAdminHelper.GetClusterStatus(c)).Quorate == 1)" />

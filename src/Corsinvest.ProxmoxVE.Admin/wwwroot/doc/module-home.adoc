@@ -1,0 +1,7 @@
+[[chapter_module_home]]
+= Home
+
+Show widget modules.
+
+[.thumb]
+image:screenshot/modules/home/home.png[]

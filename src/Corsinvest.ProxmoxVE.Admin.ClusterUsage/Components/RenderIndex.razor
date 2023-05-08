@@ -1,0 +1,15 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudTabs Elevation="1" ApplyEffectsToContainer Border>
+    <MudTabPanel Text="@L["Storage"]" Icon="@Icons.Material.Outlined.Storage">
+        <Storages />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Costs"]" Icon="@Icons.Material.Outlined.Money">
+        <Costs /> @*Height="calc(100vh - 310px)" *@
+    </MudTabPanel>
+</MudTabs>

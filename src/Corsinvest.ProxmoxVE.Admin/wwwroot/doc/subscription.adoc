@@ -1,0 +1,7 @@
+= Subscription
+
+== Commercial Support
+
+{company-url}[{company-name}] offers enterprise support available as {app-url-site}[Subscription Service Plans].
+All users with a subscription get access to the {app-name} Customer Portal.
+The customer portal provides help and support with guaranteed response times from the {app-name} developers.

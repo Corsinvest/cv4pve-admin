@@ -1,0 +1,15 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudTabs Elevation="1" ApplyEffectsToContainer Border>
+    <MudTabPanel Text="@L["Results"]" Icon="@Icons.Material.Outlined.Task">
+        <Results Height="calc(100vh - 365px)" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Ignored Issues"]" Icon="@Icons.Material.Outlined.List">
+        <Issues Height="calc(100vh - 365px)" />
+    </MudTabPanel>
+</MudTabs>

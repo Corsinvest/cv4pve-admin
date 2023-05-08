@@ -1,0 +1,152 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="AutoSnapJob"
+            Permissions="Module.Permissions.Job.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+            ShowColumnOptions="false"
+            MultiSelection>
+    <ToolBarContent>
+        <AHDataGridToolBarCrud T="AutoSnapJob" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+    <Columns>
+        <HierarchyColumn T="AutoSnapJob" />
+        <SelectColumn T="AutoSnapJob" ShowInFooter="false" />
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="int" Property="a => a.Id" Sortable="false" />
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="bool" Property="a => a.Enabled" Sortable="false">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.Enabled" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="string" Property="a => a.VmIds" Sortable="false" />
+        <AHPropertyColumn T="AutoSnapJob" TProperty="string" Property="a => a.Label" Sortable="false" />
+        <AHPropertyColumn T="AutoSnapJob" TProperty="string" Property="a => a.Description" Sortable="false" />
+        <AHPropertyColumn T="AutoSnapJob" TProperty="int" Property="a => a.Keep" Sortable="false" />
+        <AHPropertyColumn T="AutoSnapJob" TProperty="bool" Property="a => a.VmStatus" Sortable="false">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.VmStatus" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="bool" Property="a => a.OnlyRuns" Sortable="false">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.OnlyRuns" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="long" Property="a => a.TimeoutSnapshot" Sortable="false" />
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="string" Property="a => a.CronExpressionDescriptor" Sortable="false" />
+
+        <AHPropertyColumn T="AutoSnapJob" TProperty="DateTimeOffset?" Property="a => a.LastRunTime" Sortable="false" />
+        <AHPropertyColumn T="AutoSnapJob" TProperty="DateTimeOffset?" Property="a => a.NextRunTime" Sortable="false" />
+
+        <TemplateColumn T="AutoSnapJob" CellClass="justify-end" Sortable="false">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <AHDataGridColumnEdit T="AutoSnapJob" DataGridManager="DataGridManager" Context="@context" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Snap" OnClick="@(() => Snap(context.Item))" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Clean" OnClick="@(() => Clean(context.Item))" />
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <EditTemplate>
+        <MudGrid>
+            <MudItem md="6">
+                <MudTextField Value="@context.Id" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Id)])"
+                              For="@(() => context.Id)" ReadOnly />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudSwitch @bind-Checked="@context.Enabled" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Enabled)])"
+                           For="@(() => context.Enabled)" Color="Color.Primary" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.Label" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Label)])"
+                              For="@(() => context.Label)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudNumericField @bind-Value="@context.Keep" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Keep)])"
+                                 For="@(() => context.Keep)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.Description" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description)])"
+                              For="@(() => context.Description)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmStatus)])"
+                           For="@(() => context.VmStatus)" Color="Color.Primary" />
+            </MudItem>
+
+            <MudItem md="6">
+                <AHChipInput T="string" SearchFunc="@SearchFuncVmIds" DisplayValueFunc="@((e) => e)"
+                             SelectedItems="@VmIdsList" MaxItems="500" ValueChanged="@(() => context.VmIds = VmIdsList.JoinAsString(","))"
+                             Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmIds)])" />
+            </MudItem>
+
+            @*
+            <MudItem md="6">
+            <MudSelectExtended T="string" MultiSelection ChipCloseable ChipVariant="@Variant.Filled"
+            ValuePresenter="@ValuePresenter.Chip" AnchorOrigin="Origin.BottomCenter"
+            Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmIds)])"
+            SelectedValues="@VmIds2" SearchBox SearchBoxAutoFocus SearchBoxClearable
+            ValueChanged="@((a) => context.VmIds = VmIds2.JoinAsString(","))"  />
+            </MudItem>
+            *@
+            <MudItem md="6">
+                <MudSwitch @bind-Checked="@context.OnlyRuns" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.OnlyRuns)])"
+                           For="@(() => context.OnlyRuns)" Color="Color.Primary" />
+            </MudItem>
+
+            <MudItem md="12">
+                <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
+                </MudItem>
+                </MudGrid>
+            </EditTemplate>
+
+    <ChildRowContent>
+        <MudTabs Elevation="1" ApplyEffectsToContainer Border>
+            <MudTabPanel Text="@L["Hooks"]" Icon="@Icons.Material.Outlined.Api">
+            </MudTabPanel>
+
+            <MudTabPanel Text="@L["Histories"]" Icon="@Icons.Material.Outlined.History">
+                <Histories JobId="@context.Item.Id" />
+            </MudTabPanel>
+
+            <MudTabPanel Text="@L["Status"]" Icon="@Icons.Material.Outlined.List">
+                <Status VmIdsOrNames="@context.Item.VmIds" />
+            </MudTabPanel>
+        </MudTabs>
+    </ChildRowContent>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="AutoSnapJob" />
+    </PagerContent>
+</AHDataGrid>

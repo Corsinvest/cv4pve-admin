@@ -1,0 +1,99 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Utils
+
+@inherits AHModuleOptionsBase<Options>
+
+<PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
+    <Row>
+        <MudTabs Elevation="1" ApplyEffectsToContainer Border>
+            <MudTabPanel Text="@L["Scheduling"]" Icon="@Icons.Material.Outlined.Schedule">
+                <MudGrid Class="pa-4">
+                    <MudItem xs="6" md="3">
+                        <MudSwitch T="bool" @bind-Checked="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
+                                   For="@(() => context.Enabled)" Color="Color.Primary" />
+                    </MudItem>
+
+                    <MudItem xs="6" md="9">
+                        <MudNumericField T="int" @bind-Value="@context.Keep" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Keep)]"
+                                         For="@(() => context.Keep)" />
+                    </MudItem>
+
+                    <MudItem xs="12" md="12">
+                        <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
+                        </MudItem>
+                        </MudGrid>
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="@L["Cost"]" Icon="@Icons.Material.Outlined.DataThresholding">
+                        <MudGrid Class="pa-4">
+                        <MudItem md="6">
+                        <MudCard>
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <div class="d-flex gap-2">
+                                        <MudIcon Icon="@PveBlazorHelper.Icons.Cpu" />
+                                        <MudText>@L["CPU"]</MudText>
+                                    </div>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem md="6">
+                                        <MudNumericField @bind-Value="@context.CostDayCpuRunning" Label="@L["Running"]" />
+                                    </MudItem>
+                                    <MudItem md="6">
+                                        <MudNumericField @bind-Value="@context.CostDayCpuStopped" Label="@L["Stopped"]" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+                        </MudItem>
+
+                        <MudItem md="6">
+                        <MudCard>
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <div class="d-flex gap-2">
+                                        <MudIcon Icon="@PveBlazorHelper.Icons.Memory" />
+                                        <MudText>@L["Memory"]</MudText>
+                                    </div>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem md="6">
+                                        <MudNumericField @bind-Value="@context.CostDayMemoryGbRunning" Label="@L["Running"]" />
+                                    </MudItem>
+                                    <MudItem md="6">
+                                        <MudNumericField @bind-Value="@context.CostDayMemoryGbStopped" Label="@L["Stopped"]" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+                        </MudItem>
+
+                        <MudItem md="12">
+                        <MudCard>
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <div class="d-flex gap-2">
+                                        <MudIcon Icon="@PveBlazorHelper.Icons.Storage" />
+                                        <MudText>@L["Storages"]</MudText>
+                                    </div>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <RenderSettingClusterStorage ModuleClusterOptions="context" />
+                            </MudCardContent>
+                        </MudCard>
+                        </MudItem>
+                        </MudGrid>
+                        </MudTabPanel>
+                        </MudTabs>
+
+                    </Row>
+                    </PveOptionsModuleRender>
+

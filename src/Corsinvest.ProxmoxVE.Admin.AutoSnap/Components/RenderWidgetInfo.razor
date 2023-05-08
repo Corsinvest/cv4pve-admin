@@ -1,0 +1,45 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Extension;
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<WidgetInfoBase Description="@Description" GetStatus="GetStatus" />
+
+@code
+{
+    [Inject] private IServiceScopeFactory ScopeFactory { get; set; } = default!;
+
+    private string Description { get; set; } = default!;
+
+    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    {
+        var ret = true;
+        Description = "AutoSnap";
+
+        var info = await Helper.Info(ScopeFactory, clusterName);
+        if (info.Scheduled == 0)
+        {
+            Description = L["AutoSnap not scheduled!"];
+            ret = false;
+        }
+        else if (info.InError > 0)
+        {
+            Description = L["AutoSnap in error!"];
+            ret = false;
+        }
+        else if (info.SnapCount == 0)
+        {
+            Description = L["AutoSnap not found!"];
+            ret = false;
+        }
+
+        StateHasChanged();
+        return ret;
+    }
+}

@@ -1,0 +1,73 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (PveClient == null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    @if (Vm.IsUnknown)
+    {
+        <MudAlert Severity="Severity.Warning">@L["Status unknown!"]</MudAlert>
+    }
+    else
+    {
+        <MudTabs Elevation="1" ApplyEffectsToContainer Border @bind-ActivePanelIndex="ActivePanelIndex">
+            <Header>
+
+                <ToolBarStatus Size="Size.Small"
+                       CanNoVnc="CanNoVnc"
+                       CanChangeStatus="CanChangeStatus"
+                       Vm="@Vm"
+                       Style="height: auto;"
+                       OnShowConsole="@ShowConsoleAsync"
+                       OnStatusChanged="@ChangeStatusAsync">
+                    <ToolBarContent>
+                        <MudIconButton Title="@L["Refresh"]" Icon="@Icons.Material.Outlined.Refresh" OnClick="Refresh" />
+                    </ToolBarContent>
+                </ToolBarStatus>
+            </Header>
+
+            <ChildContent>
+                <MudTabPanel Text="@L["Summary"]" Icon="@Icons.Material.Outlined.Info">
+                    <MudPaper Class="pa-2">
+                        <Detail @ref="RefDetail" GetStatus="@GetStatusAsync" GetVmQemuAgentGetFsInfo="@GetQemuAgentGetFsInfoAsync" />
+
+                    </MudPaper>
+                </MudTabPanel>
+
+                <MudTabPanel Text="@L["Charts"]" Icon="@Icons.Material.Outlined.MultilineChart">
+                    <MudPaper Class="pa-2">
+                        <Charts @ref="RefCharts" GetItems="@GetRrdDataAsync" />
+                    </MudPaper>
+                </MudTabPanel>
+
+                <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Outlined.TaskAlt">
+                    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks GetItems="GetTasks" PveClient="PveClient" PropertiesName="PropertiesNameTasks" />
+                </MudTabPanel>
+
+                <MudTabPanel Text="@L["Snapshots"]" Icon="@PveBlazorHelper.Icons.Snapshot">
+                    <SnapshotManager PveClient="PveClient"
+                             Vm="Vm"
+                             CanDelete="CanDeleteSnapshot"
+                             CanRollback="CanRollbackSnapshot"
+                             CanCreate="CanCreateSnapshot"
+                             ShowDetailProxmoxVE="@ShowDetailProxmoxVE" />
+                </MudTabPanel>
+
+                <MudTabPanel Text="@L["Backups"]" Icon="@PveBlazorHelper.Icons.Backup">
+                    <BackupsManager PveClient="PveClient"
+                            Vm="Vm"
+                            GetUrlRestoreFile="@GetUrlRestoreFile"
+                            CanRestoreFile="CanRestoreFileBackup"
+                            ShowDetailProxmoxVE="@ShowDetailProxmoxVE" />
+                </MudTabPanel>
+            </ChildContent>
+        </MudTabs>
+    }
+}
+

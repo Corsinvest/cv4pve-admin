@@ -1,0 +1,45 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster
+
+@inherits AHComponentBase
+
+<AHDataGrid T="Data"
+            Permissions="Permissions"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="Data" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.Type" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.Node" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.Description" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="double" Property="a => a.DiskUsagePercentage" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="double" Property="a => a.MemoryUsagePercentage" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="double" Property="a => a.CpuUsagePercentage" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="long" Property="a => a.Uptime" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="Data" TProperty="string" Property="a => a.Disks" FormatProvider="typeof(PveFormatProvider)" />
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent Icon="@Icons.Material.Outlined.SentimentSatisfiedAlt" />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="Data" />
+    </PagerContent>
+</AHDataGrid>

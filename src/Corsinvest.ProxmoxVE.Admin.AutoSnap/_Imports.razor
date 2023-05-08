@@ -1,0 +1,26 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Localization
+@using Corsinvest.AppHero.Core.BaseUI.Shared.Components;
+@using Corsinvest.AppHero.Core.MudBlazorUI.Shared.Options
+@using Corsinvest.AppHero.Core.MudBlazorUI.Shared.Notification
+@using Corsinvest.AppHero.Core.MudBlazorUI.Shared.Components
+@using Corsinvest.AppHero.Core.MudBlazorUI.Shared.Components.DataGrid
+@using Corsinvest.AppHero.Core.MudBlazorUI.Extensions;
+@using Corsinvest.AppHero.Core.Extensions;
+@using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
+@using Corsinvest.AppHero.Core.Domain.Repository;
+@using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+@using MudExtensions
+@using MudExtensions.Enums
+@using Corsinvest.ProxmoxVE.Admin.Core.UI.Options
+@using Corsinvest.ProxmoxVE.Admin.Core.UI.Layout
+@using Corsinvest.ProxmoxVE.Api;
+
+@inject IUINotifier UINotifier
+@inject IUIMessageBox UIMessageBox

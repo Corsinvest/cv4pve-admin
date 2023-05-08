@@ -1,0 +1,20 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (ClusterOptions != null)
+{
+    <MudText>@L["Prometeus Exporter"]</MudText>
+    <MudLink Href="@($"{Module.GetUrl(ClusterOptions.Name)}")" Target="_blank">@ClusterOptions.FullName</MudLink>
+}
+
+@code
+{
+    [Inject] private IPveClientService PveClientService { get; set; } = default!;
+
+    private ClusterOptions ClusterOptions { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync() => ClusterOptions = (await PveClientService.GetCurrentClusterOptions())!;
+}

@@ -1,0 +1,15 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits MudComponentBase
+
+@*<MudBadge Icon="@GetIconStatus()" Color="@GetColorStatus()" Origin="Origin.CenterRight" Overlap>
+    <MudIcon Icon="@GetIconType()" Style="@GetStyleTypeStatus()"  Size="Size.Medium" />
+</MudBadge>*@
+
+<div style="display:flex;">
+    <MudIcon Icon="@(GetIconType())" Size="Size.Medium" Style="@(GetStyleTypeStatus())" />
+    <MudIcon Icon="@(GetIconStatus())" Size="Size.Small" Color="@(GetColorStatus())"
+             Style="position: relative;left: -15px; top: 5px;" />
+</div>

@@ -1,0 +1,23 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudTabs Elevation="1" ApplyEffectsToContainer Border>
+    <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Outlined.Task">
+        <Jobs /> @*Height="calc(100vh - 295px)"*@
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Timeline"]" Icon="@Icons.Material.Outlined.Timeline">
+        <Timeline />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Errors"]" Icon="@Icons.Material.Outlined.Error">
+        <Histories ShowOnlyError Height="calc(100vh - 365px)" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Status"]" Icon="@Icons.Material.Outlined.List">
+        <Status VmIdsOrNames="" Height="calc(100vh - 315px)" />
+    </MudTabPanel>
+</MudTabs>

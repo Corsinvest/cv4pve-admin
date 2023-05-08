@@ -1,0 +1,29 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudPaper Elevation="1">
+    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources @ref="RefResources"
+                                                                    Permissions="Module.Permissions.DataGrid.Data"
+                                                                    Height="calc(100vh - 320px)"
+                                                                    GetItems="GetItems"
+                                                                    Multiselect
+                                                                    PropertiesName="new[]
+                                                                    {
+                                                                        nameof(ClusterResource.Status),
+                                                                        nameof(ClusterResource.Type),
+                                                                        nameof(ClusterResource.Description),
+                                                                        nameof(ClusterResource.DiskUsagePercentage),
+                                                                        nameof(ClusterResource.MemoryUsagePercentage),
+                                                                        nameof(ClusterResource.CpuUsagePercentage),
+                                                                        nameof(ClusterResource.Uptime)
+                                                                    }"
+                                                                    NoRecordsContentIcon="@Icons.Material.Outlined.SentimentSatisfied">
+        <ToolBarContentBefore>
+            <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.FreeMemory" OnClick="@FreeMemory" Loading="LoadingFreeMemory"
+                                    Disabled="!RefResources!.DataGridManager.ExistsSelection" />
+        </ToolBarContentBefore>
+    </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
+    </MudPaper>

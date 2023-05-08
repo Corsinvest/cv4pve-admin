@@ -1,0 +1,68 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="ClusterNodeOptions"
+            Permissions="Module.Permissions.Nodes.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            MultiSelection
+            Filterable
+            Groupable
+            ShowFilterIcons="false">
+    <ToolBarContent>
+        <AHDataGridToolBarCrud T="ClusterNodeOptions" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                <AHPermissionButton Permission="Module.Permissions.Nodes.FindNewNodes" Loading="LoadingFindNewNodes" OnClick="@FindNewNodes" />
+            </ToolBarContentBefore>
+        </AHDataGridToolBarCrud>
+    </ToolBarContent>
+
+    <Columns>
+        <SelectColumn T="ClusterNodeOptions" ShowInFooter="false" />
+
+        <AHPropertyColumn T="ClusterNodeOptions" TProperty="string" Property="a => a.IpAddress" />
+        <AHPropertyColumn T="ClusterNodeOptions" TProperty="int" Property="a => a.ApiPort" />
+        <AHPropertyColumn T="ClusterNodeOptions" TProperty="int" Property="a => a.SshPort" />
+
+        <TemplateColumn T="ClusterNodeOptions" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <AHDataGridColumnEdit T="ClusterNodeOptions" DataGridManager="DataGridManager" Context="context" />
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <EditTemplate>
+        <MudGrid>
+            <MudItem md="4">
+                <MudTextField @bind-Value="@context.IpAddress" Mask="@RegexMask.IPv4()"
+                              Label="@(L[DataGridManager.GetDescriptionProperty(a => a.IpAddress)])" For="@(() => context.IpAddress)" />
+            </MudItem>
+            <MudItem md="4">
+                <MudNumericField @bind-Value="@context.ApiPort" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.ApiPort)])" Min="1"
+                                 For="@(() => context.ApiPort)" />
+            </MudItem>
+            <MudItem md="4">
+                <MudNumericField @bind-Value="@context.SshPort" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.SshPort)])" Min="1"
+                                 For="@(() => context.SshPort)" />
+            </MudItem>
+        </MudGrid>
+    </EditTemplate>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="ClusterNodeOptions" />
+    </PagerContent>
+</AHDataGrid>

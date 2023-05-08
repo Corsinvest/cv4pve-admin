@@ -1,0 +1,64 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (PveClient == null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Summary @ref="RefSummary"
+                                                              Permissions="Module.Permissions.DataGrid.Data"
+                                                              GetResources="GetResources"
+                                                              GetStatus="GetStatus"
+                                                              GetCephStatus="GetCephStatus" />
+    <br />
+
+    <MudCard Elevation="2">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@L["Objects"]</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources @ref="RefResources"
+                                                                        Permissions="Module.Permissions.DataGrid.Data"
+                                                                        GetItems="GetResources"
+                                                                        PropertiesName="new[]
+                                                                        {
+                                                                            nameof(ClusterResource.Status),
+                                                                            nameof(ClusterResource.Type),
+                                                                            nameof(ClusterResource.Description),
+                                                                            nameof(ClusterResource.DiskUsagePercentage),
+                                                                            nameof(ClusterResource.MemoryUsagePercentage),
+                                                                            nameof(ClusterResource.CpuUsagePercentage),
+                                                                            nameof(ClusterResource.HostCpuUsage),
+                                                                            nameof(ClusterResource.HostMemoryUsage),
+                                                                            nameof(ClusterResource.Tags),
+                                                                            nameof(ClusterResource.Uptime)
+                                                                        }" />
+        </MudCardContent>
+    </MudCard>
+
+    <br />
+
+    <MudTabs Elevation="2" ApplyEffectsToContainer Border>
+    <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Outlined.Task">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks @ref="RefTasks"
+                                                                   Permissions="Module.Permissions.DataGrid.Data"
+                                                                   GetItems="GetTasks"
+                                                                   PveClient="PveClient" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Cluster Log"]" Icon="@Icons.Material.Outlined.Error">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Logs @ref="RefLogs"
+                                                                   Permissions="Module.Permissions.DataGrid.Data"
+                                                                   PveClient="PveClient" />
+    </MudTabPanel>
+</MudTabs>
+
+    <br />
+}

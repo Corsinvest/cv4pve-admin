@@ -1,0 +1,75 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="AutoSnapJobHistory"
+            Permissions="Module.Permissions.History.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable
+            GroupExpanded="false"
+            ShowFilterIcons="false"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+            Height="@Height"
+            MultiSelection>
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="AutoSnapJobHistory" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+    <Columns>
+        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="int" Property="a => a.JobIdTmp" />
+        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="DateTime" Property="a => a.Start" />
+        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="DateTime" Property="a => a.End"  />
+        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="string" Property="a => a.Duration" />
+
+        <TemplateColumn T="AutoSnapJobHistory">
+            <CellTemplate>
+                <AHBoolIcon IconType="AHBoolIconType.Thumb" Value="@context.Item.Status" ColorTrue="Color.Success" ColorFalse="Color.Error" />
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn T="AutoSnapJobHistory" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <AHPermissionButtonIcon Permission="Module.Permissions.History.ShowLog" OnClick="@(() => ShowLog(context.Item))" />
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent Icon="@Icons.Material.Outlined.SentimentSatisfied" />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="AutoSnapJobHistory" />
+    </PagerContent>
+</AHDataGrid>
+
+<MudDialog IsVisible="@ShowDialog"
+           Style="width:80%;"
+           Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <div class="d-flex gap-2">
+            <MudIcon Icon="@Icons.Material.Outlined.Description" />
+            <MudText>@L["Job Log"]</MudText>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <MudTextField style="font-family: Courier New; font-size: inherit;"
+                            ReadOnly T="string" Variant="Variant.Text" Text="@DialogContent" Lines="20" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" OnClick="@(() => ShowDialog = false)" Color="Color.Primary">
+            @L["Close"]
+        </MudButton>
+    </DialogActions>
+    </MudDialog>

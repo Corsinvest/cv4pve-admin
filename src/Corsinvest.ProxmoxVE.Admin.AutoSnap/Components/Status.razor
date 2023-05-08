@@ -1,0 +1,64 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="AutoSnapInfo"
+            Permissions="Module.Permissions.Status.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable
+            GroupExpanded="false"
+            ShowFilterIcons="false"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+            Height="@Height"
+            RowsPerPage="9999"
+            MultiSelection>
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="AutoSnapInfo" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                <AHPermissionButtonIcon Permission="Module.Permissions.Status.Delete" OnClick="@Delete" Disabled="@(!DataGridManager.ExistsSelection)" />
+            </ToolBarContentBefore>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="AutoSnapInfo" ShowInFooter="false" />
+
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.Label" Grouping>
+            <GroupTemplate>
+                <span style="font-weight:bold">
+                    @L["Label"]: @context.Grouping.Key (@context.Grouping.Count())
+                </span>
+            </GroupTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.Node" />
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="long" Property="a => a.VmId" />
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.VmName" />
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="DateTime" Property="a => a.Date" />
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.Parent" />
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.Name" />
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.Description" />
+
+        <AHPropertyColumn T="AutoSnapInfo" TProperty="bool" Property="a => a.VmStatus">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.VmStatus" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    @* <PagerContent>
+    <MudDataGridPager T="AutoSnapInfo" />
+    </PagerContent>*@
+</AHDataGrid>

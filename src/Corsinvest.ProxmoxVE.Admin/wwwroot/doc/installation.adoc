@@ -1,0 +1,66 @@
+[[chapter_installation]]
+= Installing {app-name}
+:title: Installation
+
+{app-name} is an application developed in .Net.
+
+== Permission
+
+For connection to a cluster is require credential **Web Api** or **Token Api**. This require permission for execution. In this moment **all permission** is required.
+
+== Install
+
+Download last release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in the directory where you want it to run.
+Start application:
+
+* Windows .\Corsinvest.ProxmoxVE.Admin.exe
+* Linux/MaxOsX ./Corsinvest.ProxmoxVE.Admin
+
+Linux Configure Service
+
+Create a service file for our .Net application
+
+"sudo nano /etc/systemd/system/{app-name}.service"
+
+Copy the following configuration in that file and  it will run our application,
+
+[source,bash,subs="normal"]
+----
+[Unit]
+Description={app-name} Web Application
+[Service]
+WorkingDirectory=/var/{app-name}
+ExecStart=/var/{app-name}/Corsinvest.ProxmoxVE.Admin
+Restart=always
+RestartSec=10
+SyslogIdentifier={app-name}
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+[Install]
+WantedBy=multi-user.target
+----
+
+Now start the service. Instead of the service name in the below commands use the name of the file made above,
+
+[source,bash,subs="normal"]
+----
+sudo systemctl enable {app-name}
+sudo systemctl start {app-name}
+----
+
+Now your proxy server and kestrel server is running and you can access your application through any ip with port 5001.
+
+To redeploy the code your need to replace the dll and stop and start your service again through the following commands
+
+[source,bash,subs="normal"]
+----
+sudo systemctl stop {app-name}
+sudo systemctl start {app-name}
+----
+
+[[chapter_installation_update]]
+== Update
+
+Stop application
+Save the storage directory.
+Download last release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in previous directory installation.

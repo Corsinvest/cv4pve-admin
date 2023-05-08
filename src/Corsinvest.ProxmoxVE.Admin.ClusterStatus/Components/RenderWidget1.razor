@@ -1,0 +1,86 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (DataUsages == null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <MudText>
+        <div class="d-flex gap-2">
+            <strong>@L["Tasks"]:</strong>
+            <AHBoolIcon IconType="AHBoolIconType.Thumb" Value="Count == 0" ColorTrue="Color.Success" ColorFalse="Color.Error" />
+        </div>
+    </MudText>
+
+    <div class="d-flex gap-2">
+        @foreach (var item in DataUsages)
+        {
+            <div class="d-flex gap-2">
+                <MudText Style="@($"color: {item.Color};")"><strong>@L[item.Name]:</strong></MudText>
+                <MudText>@item.Usage %</MudText>
+            </div>
+        }
+    </div>
+}
+
+@*@if (GeneralInfo.Any())
+{
+    <MudExpansionPanels MultiExpansion DisableBorders Elevation="0" Dense>
+        <MudExpansionPanel Dense>
+            <TitleContent>
+                <div class="d-flex gap-2">
+                    <AHBoolIcon IconType="BoolIconType.Thumb" Value
+                             ColorTrue="Color.Success" ColorFalse="Color.Error" Class="mr-3" />
+                    @GeneralInfo.Count(a=> a.Valid)
+
+                    <AHBoolIcon IconType="BoolIconType.Thumb" Value="false"
+                             ColorTrue="Color.Success" ColorFalse="Color.Error" Class="mr-3" />
+                    @GeneralInfo.Count(a=> !a.Valid)
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudExpansionPanels MultiExpansion DisableBorders Elevation="0" Dense>
+                    @foreach (var item in GeneralInfo.OrderBy(a => a.Valid))
+                    {
+                        <MudExpansionPanel Dense HideIcon="item.Valid" IsExpandedChanged="@(async (e) => await ExpandedChanged(e,item))">
+                            <TitleContent>
+                                <div class="d-flex gap-2">
+                                    <AHBoolIcon IconType="BoolIconType.Thumb" Value="item.Valid"
+                                         ColorTrue="Color.Success" ColorFalse="Color.Error" Class="mr-3" />
+                                    <MudText>@item.Text</MudText>
+                                </div>
+                            </TitleContent>
+
+                            <ChildContent>
+                                @if (!item.Valid)
+                                {
+                                    @if (item.Errors.Any())
+                                    {
+                                        @foreach (var error in item.Errors)
+                                        {
+                                            <MudText Typo="Typo.body1">@error</MudText>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+                                    }
+                                }
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            </ChildContent>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+else
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}
+*@

@@ -1,0 +1,33 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (DataUsage == null)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <div class="pa-4">
+        <div class="d-flex gap-2 pb-8">
+            <MudIcon Icon="@Image" Size="Size.Large" Color="Color.Primary" />
+            <MudText Typo="Typo.h5">@L[$"{DataUsage.Name} Usage"]</MudText>
+            <MudText Typo="Typo.h5" Class="ml-auto">@DataUsage.Usage %</MudText>
+        </div>
+
+        @if (DataUsage.Usage >= Threshold.Critical)
+        {
+            <MudAlert Severity="Severity.Error" Icon="@Icons.Material.Outlined.ThumbDown">@L["Critical: the usage is too high!"]</MudAlert>
+        }
+        else if (DataUsage.Usage >= Threshold.Warning)
+        {
+            <MudAlert Severity="Severity.Warning" Icon="@Icons.Material.Outlined.ThumbsUpDown">@L["Warning: the usage is high!"]</MudAlert>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Success" Icon="@Icons.Material.Outlined.ThumbUp">@L["The usage is normal!"]</MudAlert>
+        }
+    </div>
+}

@@ -1,0 +1,26 @@
+[[chapter_module_cluster_status]]
+= Cluster Status
+
+This module show status of cluster {pve-name} and any objects.
+
+== Summary
+
+Status of cluster {pve-name}.
+
+[.thumb]
+image:screenshot/modules/status/summary.png[]
+
+== Objects
+
+Grid with status objects {pve-name} and resources usage.
+
+[.thumb]
+image:screenshot/modules/status/objects.png[]
+
+== Logs and Task
+
+Grid with logs and task of cluster.
+
+[.thumb]
+image:screenshot/modules/status/tasks_logs.png[]
+

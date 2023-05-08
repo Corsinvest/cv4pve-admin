@@ -1,0 +1,17 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+<MudTreeView T="NodeBackupFile" ServerData="LoadServerData"
+             Items="TreeItems" SelectedValueChanged="@SelectedFileChanged">
+    <ItemTemplate>
+        <MudTreeViewItem Value="@context"
+                         Icon="@GetIcon(context)"
+                         LoadingIconColor="Color.Info"
+                         Text="@context.Text"
+                         ExpandedIcon="@(context.Type == "f" ? "" : Icons.Material.Outlined.KeyboardArrowRight)"
+                         EndText="@GetEndText(context)"
+                         EndTextTypo="@Typo.caption">
+        </MudTreeViewItem>
+    </ItemTemplate>
+</MudTreeView>

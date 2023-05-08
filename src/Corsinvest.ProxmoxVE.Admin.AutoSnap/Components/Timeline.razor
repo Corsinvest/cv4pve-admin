@@ -1,0 +1,59 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (Data != null)
+{
+    <MudTimeline Class="@Class" Style="@Style">
+        @foreach (var tasks in Data)
+        {
+            <MudTimelineItem Color="@(tasks.Any(a => !a.Status) ? Color.Warning : Color.Success)" Size="Size.Medium" Elevation="5">
+                <ItemDot>
+                    @tasks.Count()
+                </ItemDot>
+
+                <ItemContent>
+                    <MudExpansionPanels Dense>
+                    <MudExpansionPanel Text="@tasks.Key.ToShortDateString()">
+                        <ChildContent>
+                            @foreach (var labels in tasks.GroupBy(a => a.Job))
+                                {
+                                    <MudExpansionPanels DisableBorders Elevation="0">
+                                    <MudExpansionPanel Dense>
+                                        <TitleContent>
+                                            <div class="d-flex">
+                                                <MudText Class="mt-1">
+                                                    @labels.Key.Label - @labels.Key.CronExpressionDescriptor
+                                                </MudText>
+                                                <MudBadge Content="@labels.Count()" Color="@(tasks.Any(a => !a.Status) ? Color.Warning : Color.Success)"
+                                                                            Overlap Class="d-flex ml-auto">
+                                                    <MudIcon Icon="@PveBlazorHelper.Icons.Snapshot" Color="Color.Default" />
+                                                    </MudBadge>
+                                                </div>
+                                            </TitleContent>
+
+                                            <ChildContent>
+                                                <div style="overflow-y: scroll; max-height: 200px;">
+                                                    @foreach (var item in labels.OrderByDescending(a => a.Start))
+                                                    {
+                                                        <MudText Typo="Typo.body1" GutterBottom>
+                                                        <AHBoolIcon Value="item.Status" ColorTrue="Color.Success" ColorFalse="Color.Error"
+                                                        IconType="AHBoolIconType.Thumb" />
+                                                        @item.Start.ToLongTimeString() - @item.Duration
+                                                    </MudText>
+                                                    }
+                                                </div>
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    </MudExpansionPanels>
+                                }
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                </ItemContent>
+            </MudTimelineItem>
+        }
+    </MudTimeline>
+}

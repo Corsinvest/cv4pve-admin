@@ -1,0 +1,51 @@
+= Introduction
+
+{app-name} is a platform to boost your {pve-name} infrastructure.
+
+One of the main design goals was to make use as simple as possible. You can use {app-name} for a single node or cluster of many nodes. All management tasks can be performed using web-based management interface and even a novice user can set up and install {app-name} in minutes.
+
+== Why?
+
+The reasons that led us to develop {app-name} for {pve-name} are:
+
+* the lack of functionality we need
+* the needs of the IT Manager for a simplified and total management of the infrastructure
+
+Examples to better understand:
+
+How do we know in a Backup Task which ones have been successful or not, the occupation execution times or other?::
+  Everything is clearly written in the log if there are more than 5 backups it becomes very difficult to have this information
+
+But the backups in my Task overlap with others and how is the load of the nodes?::
+  The log contains the dates and durations and on which host it is running
+
+How can I see occupancy of a VM at the storage level?::
+  I go to the VM I check the storage, I check its backups
+
+Would I like to take snapshots every 15 minutes?::
+  it is not possible
+
+We have implemented simple solutions to get information immediately and in a simple way.
+
+== Web-based Management Interface
+
+{app-name} è semplice da usare. Le attività di gestione possono essere eseguite tramite l'interfaccia di gestione basata sul Web inclusa: non è necessario installare uno strumento di gestione separato. Lo strumento ti consente di gestire l'intero cluster. La gestione centralizzata basata sul web consente di controllare tutte le funzionalità dalla GUI.
+
+== Your benefits with {app-name}
+
+* Fast installation and easy-to-use
+* Web-based management interface
+* Low administration costs and simple deployment
+* Manage multiple clusters in a single installation
+
+== Project History
+
+The project started in 2016, with command line cv4pve-tools. The tools are Open Source on the site https://github.com/Corsinvest?q=cv4pve[GitHub] and are still maintained today. Initially we used shell commands inside {pve-name}. We immediately understood the fragility of the system.
+
+We have developed the https://github.com/Corsinvest?q=cv4pve-api-[API] for various languages (C#, Java, Php, JavaScript, Power Shell and more) and then we have re-implemented all the tools. This gave us the ability to be independent from the internal modifications of {pve-name}, and made it possible to run outside of {pve-name}.
+
+The GUI version started 2019. {app-url-site}
+
+== Company
+
+{company-url}[{company-name}] ❤️ Open Source, believes in Open Source and in the community. All this brings an immense added value.

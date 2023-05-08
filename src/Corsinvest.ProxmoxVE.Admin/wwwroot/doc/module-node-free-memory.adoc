@@ -1,0 +1,14 @@
+[[chapter_module_node_free_memory]]
+= Node Free Memory
+
+== Need
+
+Free the memory of the nodes to start a VM without using a shell.
+
+The message that is displayed
+
+WARNING: _"kvm: failed to initialize KVM: Cannot allocate memory"_
+
+== General
+[.thumb]
+image:screenshot/modules/node-free-memory/nodes.png[]

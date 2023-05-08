@@ -1,0 +1,235 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<div class="d-flex gap-4 flex-column">
+    <div class="d-flex gap-4">
+        <MudCard Style="width:50%;" Elevation="2">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Health"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <div class="d-flex">
+                    <table style="width:@(CephInstalled ? 33 : 50)%;">
+                        <thead>
+                            <tr>
+                                <th><MudText Typo="Typo.subtitle2">@L["Status"]</MudText></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <MudIcon Icon="@StatusInfo.Icon" Color="@StatusInfo.Color" Size="Size.Large" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <MudText Typo="Typo.body2">@StatusInfo.Status</MudText>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table style="width:@(CephInstalled ? 33 : 50)%;">
+                        <thead>
+                            <tr>
+                                <th colspan="2"><MudText Typo="Typo.subtitle2">@L["Nodes"]</MudText></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in NodeHealts)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <MudIcon Icon="@item.Icon" Color="item.Color" />
+                                            <MudText Typo="Typo.body2">@item.Status</MudText>
+                                        </div>
+                                    </td>
+                                    <td style="width:10%">
+                                        <MudText Typo="Typo.body2">@item.Count</MudText>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @if (CephInstalled)
+                    {
+                        <table style="width:33%;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2"><MudText Typo="Typo.subtitle2">@L["Ceph"]</MudText></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <MudIcon Icon="@CephStatus.Icon" Color="@CephStatus.Color" Size="Size.Large" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <MudText Typo="Typo.body2">@CephStatus.Status</MudText>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </MudCardContent>
+        </MudCard>
+
+        <MudCard Style="width:50%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Guest"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <div class="d-flex">
+                    @foreach (var type in Enum.GetValues<VmType>())
+                    {
+                        <table style="width:50%;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        @if (type == VmType.Qemu)
+                                        {
+                                            <div class="d-flex gap-2 justify-center">
+                                                <MudIcon Icon="@PveBlazorHelper.Icons.GetVmType(type)" />
+                                                <MudText Typo="Typo.subtitle2">@L["Virtual Machines"]</MudText>
+                                            </div>
+                                        }
+                                        else if (type == VmType.Lxc)
+                                        {
+                                            <div class="d-flex gap-2 justify-center">
+                                                <MudIcon Icon="@PveBlazorHelper.Icons.GetVmType(type)" />
+                                                <MudText Typo="Typo.subtitle2">@L["LXC Container"]</MudText>
+                                            </div>
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in VmsStatus.Where(a => a.Type == type).OrderBy(a => a.Status))
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <MudIcon Icon="@item.Icon" Color="item.Color" />
+                                                <MudText Typo="Typo.body2">@item.Status</MudText>
+                                            </div>
+                                        </td>
+                                        <td style="width:10%">
+                                            <MudText Typo="Typo.body2">@item.Count</MudText>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </div>
+
+    <div class="d-flex gap-4">
+        <MudCard Style="width:50%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Resources"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    @foreach (var item in DataUsages)
+                    {
+                        <MudItem Class="align-content-center" md="4">
+                            <ApexCharts.ApexGauge Percentage="@Convert.ToDecimal(item.Usage)" Label="@item.Name"
+                                              Options="@GetOptions(item)" />
+                            <MudText Class="" Typo="Typo.body2" Style="text-align: center;">@item.Info</MudText>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+
+        <MudCard Style="width:50%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Nodes"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <AHDataGrid T="ClusterStatusEx"
+                            Permissions="@Permissions"
+                            Elevation="0"
+                            DataGridManager="@DataGridManager"
+                                    FixedHeader
+                                    FixedFooter
+                            Filterable="false"
+                            ShowColumnOptions="false"
+                                    Groupable>
+                    <ToolBarContent>
+                        <AHDataGridToolBarRead T="ClusterStatusEx" DataGridManager="DataGridManager" />
+                    </ToolBarContent>
+
+                    <Columns>
+                        <AHPropertyColumn T="ClusterStatusEx" TProperty="string" Property="a => a.Name" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+                        <AHPropertyColumn T="ClusterStatusEx" TProperty="int?" Property="a => a.Id" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+                        <AHPropertyColumn T="ClusterStatusEx" TProperty="string" Property="a => a.Support" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+                        <AHPropertyColumn T="ClusterStatusEx" TProperty="bool" Property="a => a.IsOnline" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+                        <AHPropertyColumn T="ClusterStatusEx" TProperty="string" Property="a => a.IpAddress" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+
+                        <TemplateColumn T="ClusterStatusEx" Sortable="false" Title="@L[DataGridManager.GetDescriptionProperty(a => a.CpuUsagePercentage)]">
+                            @*TProperty="double" Property="a => a.CpuUsagePercentage" *@
+                            <CellTemplate>
+                                <MudProgressLinear Color="@PveBlazorHelper.GetColorRange(context.Item.CpuUsagePercentage)"
+                                                   Style="height:20px"
+                                                   Value="context.Item.CpuUsagePercentage * 100" Size="Size.Large">
+
+                                    <MudText Typo="Typo.body2">
+                                        @Math.Round(context.Item.CpuUsagePercentage * 100,0)%
+                                    </MudText>
+                                </MudProgressLinear>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn T="ClusterStatusEx" Sortable="false" Title="@L[DataGridManager.GetDescriptionProperty(a => a.MemoryUsagePercentage)]">
+                            @*TProperty="double" Property="a => a.MemoryUsagePercentage" *@
+                            <CellTemplate>
+                                <MudProgressLinear Color="@PveBlazorHelper.GetColorRange(context.Item.MemoryUsagePercentage)"
+                                                   Style="height:20px"
+                                                   Value="context.Item.MemoryUsagePercentage * 100" Size="Size.Large">
+                                    <MudText Typo="Typo.body2">
+                                        @Math.Round(context.Item.MemoryUsagePercentage * 100,0)%
+                                    </MudText>
+                                </MudProgressLinear>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <AHPropertyColumn T="ClusterStatusEx" TProperty="long" Property="a => a.Uptime" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
+                    </Columns>
+
+                    <NoRecordsContent>
+                        <AHNoRecordsContent />
+                    </NoRecordsContent>
+
+                    <LoadingContent>
+                        <AHLoadingContent />
+                    </LoadingContent>
+
+                    <PagerContent>
+                        <MudDataGridPager T="ClusterStatusEx" />
+                    </PagerContent>
+                </AHDataGrid>
+            </MudCardContent>
+        </MudCard>
+    </div>
+</div>

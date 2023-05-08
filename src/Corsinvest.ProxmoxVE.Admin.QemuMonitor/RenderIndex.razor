@@ -1,0 +1,53 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="BlockStats"
+            Permissions="Module.Permissions.DataGrid.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="calc(100vh - 320px)">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="BlockStats" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+    <Columns>
+        <TemplateColumn T="BlockStats" Sortable="false">
+            <CellTemplate>
+                <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.IconStatusResource Status="@context.Item.Status"
+                                                                                        Type="@context.Item.Type"
+                                                                                        Locked="@context.Item.IsLocked" />
+            </CellTemplate>
+        </TemplateColumn>
+
+        <AHPropertyColumn T="BlockStats" TProperty="string" Property="a => a.Node" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.VmId" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="string" Property="a => a.Name" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="string" Property="a => a.Device" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.ReadBytes" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.ReadBytesSec" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.ReadIops" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.ReadIopsSec" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.WriteBytes" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.WriteBytesSec" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.WriteIops" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="BlockStats" TProperty="long" Property="a => a.WriteIopsSec" FormatProvider="typeof(PveFormatProvider)" />
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="BlockStats" />
+    </PagerContent>
+</AHDataGrid>

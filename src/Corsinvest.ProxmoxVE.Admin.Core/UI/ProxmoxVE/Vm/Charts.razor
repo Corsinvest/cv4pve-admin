@@ -1,0 +1,41 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+<MudGrid>
+    <MudItem xs="12" sm="6" md="6">
+        <MudSelect T="RrdDataTimeFrame"
+                   SelectedValuesChanged="@(async (e) => await Refresh())"
+                   @bind-Value="RrdDataTimeFrame"
+                   Label="Time frame">
+            @foreach (var item in Enum.GetValues<RrdDataTimeFrame>())
+            {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="6">
+        <MudSelect T="RrdDataConsolidation"
+                   SelectedValuesChanged="@(async (e) => await Refresh())"
+                   @bind-Value="RrdDataConsolidation"
+                   Label="Consolidation data">
+            @foreach (var item in Enum.GetValues<RrdDataConsolidation>())
+            {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    @if (Items != null)
+    {
+        @foreach (var item in new[] { VmChart.Cpu, VmChart.Memory, VmChart.DiskIO, /*VmChart.DiskUsage,*/ VmChart.Network })
+        {
+            <MudItem xs="12" sm="6" md="6">
+                <Chart RrdData="@Items" VmChart="@item" />
+            </MudItem>
+        }
+    }
+</MudGrid>

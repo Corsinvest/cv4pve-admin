@@ -1,0 +1,135 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@using ApexCharts
+@using Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm;
+
+@if (PveClient == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <AHDataGrid T="DataVmEx"
+            Permissions="Module.Permissions.Costs.Data"
+                FixedHeader
+                FixedFooter
+            DataGridManager="DataGridManager"
+                Filterable
+                Groupable
+            ShowFilterIcons="false"
+            Height="@Height"
+            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+            ShowColumnOptions="false"
+                MultiSelection>
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="DataVmEx" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                <MudDateRangePicker @ref="RefPicker" ShowWeekNumbers @bind-DateRange="DateRange">
+                        <PickerActions>
+                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => RefPicker!.Clear())">@L["Clear"]</MudButton>
+
+                            <MudButton OnClick="@(() => RefPicker!.Close(false))">@L["Cancel"]</MudButton>
+
+                            <MudButton Color="MudBlazor.Color.Primary" OnClick="Ok">@L["OK"]</MudButton>
+                        </PickerActions>
+                    </MudDateRangePicker>
+
+                    <AHPermissionButtonIcon Permission="Module.Permissions.Costs.Scan" OnClick="@Scan" />
+                </ToolBarContentBefore>
+            </AHDataGridToolBarRead>
+        </ToolBarContent>
+        <Columns>
+            <HierarchyColumn T="DataVmEx" />
+            <SelectColumn T="DataVmEx" ShowInFooter="false" />
+
+            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.VmId" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="string" Property="a => a.VmName" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="string" Property="a => a.Node" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="int" Property="a => a.CpuSize" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.CpuUsagePercentage" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.MemorySize" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.MemoryUsage" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.StorageMax" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.CpuCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.MemoryCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.StorageCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.TotalCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+        </Columns>
+
+        <ChildRowContent>
+            <MudGrid Class="pa-4">
+                <MudItem md="6">
+                    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Chart VmChart="VmChart.Cpu" RrdData="@context.Item.RrdData" />
+                </MudItem>
+
+                <MudItem md="6">
+                    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Chart VmChart="VmChart.Memory" RrdData="@context.Item.RrdData" />
+                </MudItem>
+
+                <MudItem md="12">
+                    <div class="d-flex gap-2">
+                        <MudIcon Icon="@Icons.Material.Outlined.Storage" />
+                        <MudText>
+                            <strong>@L["Storages"]</strong>
+                        </MudText>
+                    </div>
+
+                    <br />
+
+                    @{
+                        var series = context.Item.Storages.GroupBy(a => a.Storage);
+                    }
+
+                    @if (series.Any())
+                    {
+                        <ApexChart TItem="DataVmStorage"
+                           XAxisType="XAxisType.Datetime"
+                           Options="ChartOptionsStorages"
+                           Height="@("300px")">
+
+                            @foreach (var item in series)
+                            {
+                                <ApexPointSeries TItem="DataVmStorage"
+                                     Items="@item.ToList()"
+                                     Name="@($"{item.Key} (GB)")"
+                                     SeriesType="SeriesType.Area"
+                                     XValue="e => e.DataVm.Date"
+                                     YValue="a => Convert.ToDecimal(a.Size / 1024.0 / 1024 / 1024)"
+                                     OrderBy="a => a.X" />
+                            }
+                        </ApexChart>
+                    }
+                </MudItem>
+
+                <MudItem md="12">
+                    <div class="d-flex gap-2">
+                        <MudIcon Icon="@Icons.Material.Outlined.AreaChart" />
+                        <MudText>
+                            <strong>@L["RRD Data"]</strong>
+                        </MudText>
+                    </div>
+
+                    <br />
+
+                    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Charts GetItems="@(async (a,b) => await GetVmRrdData(context.Item,a,b))" />
+                </MudItem>
+            </MudGrid>
+        </ChildRowContent>
+
+        <NoRecordsContent>
+            <AHNoRecordsContent />
+        </NoRecordsContent>
+
+        <LoadingContent>
+            <AHLoadingContent />
+        </LoadingContent>
+
+        <PagerContent>
+            <MudDataGridPager T="DataVmEx" />
+        </PagerContent>
+    </AHDataGrid>
+}

@@ -1,0 +1,53 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudCard>
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Color="Color.Primary">
+                <MudIcon Icon="@Icons.Material.Outlined.TextSnippet" />
+            </MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Logs</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Href="https://web.telegram.org" Target="_blank" Icon="@Icons.Custom.Brands.Telegram" />
+            <MudIconButton Href="https://github.com/Corsinvest/cv4pve-botgram" Target="_blank" Icon="@Icons.Custom.Brands.GitHub" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <div style="height: calc(100vh - 415px); overflow-y: scroll;">
+            <MudText Typo="Typo.body2">
+                @((MarkupString)Log.Replace(Environment.NewLine, "<br/>"))
+            </MudText>
+        </div>
+
+        <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+
+        <div class="d-flex gap-4">
+            <div class="flex-none">
+                <MudSelect T="long" Label="@L["Users"]" @bind-Value="ChatId" Required>
+                    @foreach (var item in Chats)
+                    {
+                        <MudSelectItem T="long" Value="@item.Key">
+                            <div class="d-flex gap-4">
+                                <MudIcon Icon="@Icons.Material.Outlined.AccountCircle" />
+                                @item.Value
+                            </div>
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+
+            <MudTextField @bind-Value="@Message" OnKeyUp="KeyUpAsync" Label="@L["Enter your message..."]" Clearable Immediate />
+            <MudButton OnClick="SendMaessageAsync" StartIcon="@Icons.Material.Outlined.Send" Color="Color.Primary"
+                       Variant="Variant.Filled" Disabled="string.IsNullOrWhiteSpace(Message)" Size="Size.Small">
+                @L["Send"]
+            </MudButton>
+        </div>
+    </MudCardContent>
+</MudCard>

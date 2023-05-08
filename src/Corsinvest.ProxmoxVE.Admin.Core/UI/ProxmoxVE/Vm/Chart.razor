@@ -1,0 +1,37 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using ApexCharts
+
+@inherits AHComponentBase
+
+<div class="d-flex gap-2">
+    <MudIcon Icon="@Icon" />
+    <MudText>
+        <strong>@Title</strong>
+    </MudText>
+</div>
+
+<br />
+
+<ApexChart TItem="Data"
+           XAxisType="XAxisType.Datetime"
+           Options="ChartOptions"
+           Height="@("300px")">
+    <ApexPointSeries TItem="Data"
+                     Items="@Items"
+                     Name="@Name1"
+                     SeriesType="@SeriesType"
+                     XValue="e => e.Date"
+                     YValue="a => a.Value1"
+                     OrderBy="a => a.X" />
+
+    <ApexPointSeries TItem="Data"
+                     Items="@Items"
+                     Name="@Name2"
+                     SeriesType="@SeriesType"
+                     XValue="a => a.Date"
+                     YValue="a => a.Value2"
+                     OrderBy="a => a.X" />
+</ApexChart>

@@ -1,0 +1,46 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudTabs Elevation="1" ApplyEffectsToContainer Border PanelClass="pa-3">
+    <MudTabPanel Text="@L["Jobs"]" Icon="@Icons.Material.Outlined.Task">
+        <Jobs />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Scheduled"]" Icon="@Icons.Material.Outlined.Alarm">
+        <ClusterBackups PveClient="PveClient" Height="calc(100vh - 390px)" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Not scheduled"]" Icon="@Icons.Material.Outlined.AlarmOff">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Height="calc(100vh - 390px)"
+                                                                        GetItems="GetNotScheduled"
+                                                                        PropertiesName="new[]
+                                                                        {
+                                                                             nameof(IClusterResourceVm.Status),
+                                                                             nameof(IClusterResourceVm.Type),
+                                                                             nameof(IClusterResourceVm.Node),
+                                                                             nameof(IClusterResourceVm.Description),
+                                                                             nameof(IClusterResourceVm.DiskUsagePercentage),
+                                                                             nameof(IClusterResourceVm.MemoryUsagePercentage),
+                                                                             nameof(IClusterResourceVm.CpuUsagePercentage),
+                                                                             nameof(IClusterResourceVm.Uptime),
+                                                                        }" ,
+                                                                        NoRecordsContentIcon="@Icons.Material.Outlined.SentimentSatisfied" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Disks Not Backed Up"]" Icon="@Icons.Material.Outlined.Storage">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.DisksNotBackedUp PveClient="PveClient" Height="calc(100vh - 390px)" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Data Analysis"]" Icon="@Icons.Material.Outlined.Analytics">
+        <DataAnalysis />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Backup in line"]" Icon="@Icons.Material.Outlined.History">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Nodes.StorageContents GetItems="GetBackupsInline" Height="calc(100vh - 315px)" />
+    </MudTabPanel>
+</MudTabs>
+
+<br />

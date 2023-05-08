@@ -1,0 +1,19 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (Count >= 0)
+{
+    <MudText>&nbsp;</MudText>
+    <div class="d-flex gap-2">
+        <MudText><strong>@L["VM/CT:"]</strong> @Count @Locks</MudText>
+        <AHBoolIcon IconType="AHBoolIconType.Thumb" Value="Count == 0"
+                ColorTrue="Color.Success" ColorFalse="Color.Error" Class="mr-3" />
+    </div>
+}
+else
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate Class="my-7" />
+}

@@ -1,0 +1,91 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Diagnostic.Api
+
+@inherits AHComponentBase
+
+<AHDataGrid T="IgnoredIssue"
+            Permissions="Module.Permissions.Issue.Data"
+            FixedHeader
+            FixedFooter
+            DataGridManager="DataGridManager"
+            MultiSelection
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarCrud T="IgnoredIssue" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <SelectColumn T="IgnoredIssue" ShowInFooter="false" />
+
+        <AHPropertyColumn T="IgnoredIssue" TProperty="string" Property="a => a.Description" />
+        <AHPropertyColumn T="IgnoredIssue" TProperty="DiagnosticResultContext" Property="a => a.Context" />
+        <AHPropertyColumn T="IgnoredIssue" TProperty="string" Property="a => a.SubContext" />
+        <AHPropertyColumn T="IgnoredIssue" TProperty="DiagnosticResultGravity" Property="a => a.Gravity" />
+        <AHPropertyColumn T="IgnoredIssue" TProperty="string" Property="a => a.IdResource" />
+
+        <TemplateColumn T="IgnoredIssue" CellClass="justify-end">
+            <CellTemplate>
+                <MudButtonGroup Variant="Variant.Text">
+                    <AHDataGridColumnEdit T="IgnoredIssue" DataGridManager="DataGridManager" Context="context" />
+                </MudButtonGroup>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <EditTemplate>
+        <MudGrid>
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.Description" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description!)])"
+                              For="@(() => context.Description)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.IdResource" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.IdResource!)])"
+                              For="@(() => context.IdResource)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudTextField @bind-Value="@context.SubContext" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.SubContext!)])"
+                              For="@(() => context.SubContext)" />
+            </MudItem>
+
+            <MudItem md="6">
+                <MudSelect @bind-Value="@context.Gravity" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Gravity)])" Required
+                           For="@(() => context.Gravity)">
+                    @foreach (var item in Enum.GetValues<DiagnosticResultGravity>())
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+            <MudItem md="6">
+                <MudSelect @bind-Value="@context.Context" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Context)])" Required
+                           For="@(() => context.Context)">
+                    @foreach (var item in Enum.GetValues<DiagnosticResultContext>())
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+    </EditTemplate>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent Icon="@Icons.Material.Outlined.SentimentNeutral" />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="IgnoredIssue" />
+    </PagerContent>
+</AHDataGrid>

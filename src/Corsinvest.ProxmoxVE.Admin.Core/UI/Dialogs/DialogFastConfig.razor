@@ -1,0 +1,59 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using MudBlazor.Services;
+@using MudExtensions.Enums;
+
+@inherits AHComponentBase
+
+<MudDialog Style="width:80%;">
+    <DialogContent>
+        <MudStepper HeaderTextView="HeaderTextView.All" MobileView="false" @ref="@RefStepper" PreventStepChangeAsync="PreventStepChangeAsync"
+                    Color="@Color.Primary">
+            <ChildContent>
+                <MudStep Title="@L["Proxmox VE Web Api Login"]" Icon="@Icons.Material.Filled.Approval">
+                    <MudAlert Severity="Severity.Info">
+                        @L["Insert your Proxmox VE cluster credentials username and password. (API Token is optional)"]
+                    </MudAlert>
+
+                    <Corsinvest.ProxmoxVE.Admin.Core.Options.RenderApiLoginOptions ClusterOptions="ClusterOptions" />
+                </MudStep>
+
+                <MudStep Title="@L["Proxmox VE SSH Login"]" Icon="@Icons.Material.Filled.Approval">
+                    <MudAlert Severity="Severity.Info">
+                        @L["Insert your Proxmox VE SSH credentials username and password. By default they are the same as for Web Api Login."]
+                    </MudAlert>
+
+                    <Corsinvest.ProxmoxVE.Admin.Core.Options.RenderSshLoginOptions ClusterOptions="ClusterOptions" />
+                </MudStep>
+
+                <MudStep Title="@L["Proxmox VE Nodes"]" Icon="@Icons.Material.Filled.Approval">
+                    <MudAlert Severity="Severity.Info">
+                        @L["Insert your Proxmox VE cluster IP Address. Once you enter an IP you can automatically find the others by clicking \"NODES FINDER\""]
+                    </MudAlert>
+
+                    <Corsinvest.ProxmoxVE.Admin.Core.Options.RenderNodesOptions ClusterOptions="ClusterOptions" />
+                </MudStep>
+
+                <MudStep Title="@L["Contact"]" Icon="@Icons.Material.Filled.Approval">
+                    <MudForm @ref="RefForm">
+                        <Corsinvest.ProxmoxVE.Admin.Core.Options.RenderContactOptions AdminOptions="AdminOptions.Value" />
+                    </MudForm>
+                </MudStep>
+
+                <MudStep Title="Result Step" IsResultStep>
+                    <div class="d-flex flex-column align-center justify-center" style="height: 200px">
+                        <MudButton StartIcon="@Icons.Material.Filled.DoneAll" Size="Size.Large" Variant="Variant.Filled"
+                                   Color="Color.Success" OnClick="@ResultStepClick">
+                            @L["Done"]
+                        </MudButton>
+                        <MudText>
+                            @L["Congratulations, your environment has been set up!"]
+                        </MudText>
+                    </div>
+                </MudStep>
+            </ChildContent>
+        </MudStepper>
+    </DialogContent>
+</MudDialog>

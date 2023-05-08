@@ -1,0 +1,16 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@typeparam T
+
+<MudExpansionPanels>
+    @foreach (var item in PveClientService.GetClustersNames())
+    {
+        <MudExpansionPanel Text="@($"{item.Key} - {item.Value}")">
+            @Row(Options.Get(item.Key))
+        </MudExpansionPanel>
+    }
+</MudExpansionPanels>

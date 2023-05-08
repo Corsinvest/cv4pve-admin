@@ -1,0 +1,52 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Node
+
+@inherits AHComponentBase
+
+<AHDataGrid T="NodeStorageContent"
+            Permissions="Permissions"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            RowsPerPage="9999"
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="NodeStorageContent" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        @foreach (var item in PropertiesName)
+        {
+            <DynamicComponent Type="@GetDynamicType(item)" Parameters="GetDynamicParameters(item)" />
+        }
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    @*  <PagerContent>
+    <MudDataGridPager T="NodeStorageContent" />
+    </PagerContent>*@
+</AHDataGrid>
+
+@code
+{
+    private RenderFragment<GroupDefinition<NodeStorageContent>> GroupTemplateRender(string propertyName) => groupDefinition => __builder =>
+    {
+        <span style="font-weight:bold">
+            @L[propertyName]: @groupDefinition.Grouping.Key (@groupDefinition.Grouping.Count()) @FormatHelper.FromBytes(groupDefinition.Grouping.Sum(a => a.Size))
+        </span>
+    };
+}

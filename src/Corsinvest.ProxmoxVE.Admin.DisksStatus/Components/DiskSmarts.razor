@@ -1,0 +1,50 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Node
+
+@inherits AHComponentBase
+
+<MudText Typo="Typo.subtitle1" Align="Align.Center"><b>@L["S.M.A.R.T. values"]</b></MudText>
+
+<AHDataGrid T="NodeDiskSmart.NodeDiskSmartAttribute"
+            Permissions="Module.Permissions.DataGrid.Data"
+            DataGridManager="DataGridManager"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable            
+            ShowFilterIcons="false">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="NodeDiskSmart.NodeDiskSmartAttribute" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Id" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Name" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Value" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Threshold" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Worst" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Flags" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Fail" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Raw" FormatProvider="typeof(PveFormatProvider)" />
+
+        @*
+        TODO
+        <AHDataGridColumn T="NodeDiskList" Field="@item"  ShowColumnOptions="false" Sortable="false" />
+        *@
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="NodeDiskSmart.NodeDiskSmartAttribute" />
+    </PagerContent>
+</AHDataGrid>

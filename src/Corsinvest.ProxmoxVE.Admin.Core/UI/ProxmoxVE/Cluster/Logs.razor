@@ -1,0 +1,43 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster
+
+@inherits AHComponentBase
+
+<AHDataGrid T="ClusterLog"
+            Permissions="Permissions"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            ShowFilterIcons="false">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="ClusterLog" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="ClusterLog" TProperty="int" Property="a => a.Time" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterLog" TProperty="string" Property="a => a.Node" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterLog" TProperty="string" Property="a => a.Service" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterLog" TProperty="int" Property="a => a.Pid" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterLog" TProperty="string" Property="a => a.User" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterLog" TProperty="ClusterLogSeverity" Property="a => a.SeverityEnum" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterLog" TProperty="string" Property="a => a.Message" FormatProvider="typeof(PveFormatProvider)" />
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="ClusterLog" />
+    </PagerContent>
+</AHDataGrid>

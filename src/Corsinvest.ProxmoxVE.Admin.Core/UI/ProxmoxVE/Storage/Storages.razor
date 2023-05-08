@@ -1,0 +1,55 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Storage;
+
+@inherits AHComponentBase
+
+<AHDataGrid T="StorageItem"
+            Permissions="Permissions"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="StorageItem" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Storage" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Type" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Content" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="StorageItem" TProperty="bool" Property="a => a.Shared">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.Shared" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="StorageItem" TProperty="bool" Property="a => a.Disable">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.Disable" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Nodes" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Path" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Pool" FormatProvider="typeof(PveFormatProvider)" />
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="StorageItem" />
+    </PagerContent>
+</AHDataGrid>

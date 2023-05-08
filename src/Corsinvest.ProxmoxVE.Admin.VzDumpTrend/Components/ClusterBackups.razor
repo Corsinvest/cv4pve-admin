@@ -1,0 +1,54 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="ClusterBackup"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="ClusterBackup" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="ClusterBackup" TProperty="bool" Property="a => a.Enabled" FormatProvider="typeof(PveFormatProvider)">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.Enabled" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.Mode" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.DayOfWeek" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.StartTime" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.Storage" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.VmId" FormatProvider="typeof(PveFormatProvider)" />
+
+        <AHPropertyColumn T="ClusterBackup" TProperty="bool" Property="a => a.All" FormatProvider="typeof(PveFormatProvider)">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.All" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.Mailto" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="ClusterBackup" TProperty="string" Property="a => a.MailNotification" FormatProvider="typeof(PveFormatProvider)" />
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="ClusterBackup" />
+    </PagerContent>
+</AHDataGrid>

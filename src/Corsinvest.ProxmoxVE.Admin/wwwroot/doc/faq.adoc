@@ -1,0 +1,9 @@
+[[chapter_other_faq]]
+= Frequently Asked Questions
+:title: FAQ
+
+NOTE: New FAQs are appended to the bottom of this section.
+
+* Roadmap
+
+* Release notes

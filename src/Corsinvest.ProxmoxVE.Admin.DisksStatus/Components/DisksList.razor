@@ -1,0 +1,85 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<style>
+    .blink {
+        background-color: var(--mud-palette-warning) !important;
+    }
+</style>
+
+<MudText Typo="Typo.subtitle1" Align="Align.Center"><b>@L["Disks"]</b></MudText>
+
+<AHDataGrid T="NodeDiskList"
+            Permissions="Module.Permissions.DataGrid.Data"
+            DataGridManager="DataGridManager"
+            FixedHeader
+            FixedFooter
+            RowClassFunc="RowClassFunc"
+            MultiSelection
+            ShowColumnOptions="false"
+            ShowFilterIcons="false">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="NodeDiskList" DataGridManager="DataGridManager" >
+            <ToolBarContentBefore>
+                <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.BlinkLed" OnClick="@(() => BlinkLed(Node))"
+                                        Disabled="!DataGridManager.ExistsSelection" Loading="BlinkLedLoading" />
+            </ToolBarContentBefore>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+
+    <Columns>
+        <SelectColumn T="NodeDiskList" ShowInFooter="false" />
+        <HierarchyColumn T="NodeDiskList" />
+
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.DevPath" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Type" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="long" Property="a => a.Size" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Used" FormatProvider="typeof(PveFormatProvider)" />
+
+        <AHPropertyColumn T="NodeDiskList" TProperty="int" Property="a => a.Gpt" FormatProvider="typeof(PveFormatProvider)"
+                          ShowColumnOptions="false" Sortable="false">
+            <CellTemplate>
+                <MudCheckBox Checked="context.Item.Gpt == 1" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Vendor" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Model" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Serial" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Health" FormatProvider="typeof(PveFormatProvider)" />
+
+        <AHPropertyColumn T="NodeDiskList" TProperty="string" Property="a => a.Wearout" FormatProvider="typeof(PveFormatProvider)"
+                          ShowColumnOptions="false" Sortable="false">
+            <CellTemplate>
+                @(context.Item.IsSsd && context.Item.Wearout != "N/A" ? $"{100.0 - Convert.ToDouble(context.Item.Wearout)}%" : context.Item.Wearout)
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeDiskList" TProperty="int" Property="a => a.OsdId" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeDiskList" TProperty="object" Property="a => a.Rpm" FormatProvider="typeof(PveFormatProvider)" />
+
+        @*
+        TODO
+        <AHDataGridColumn T="NodeDiskList" Field="@item"  ShowColumnOptions="false" Sortable="false" />
+        *@
+    </Columns>
+
+    <ChildRowContent>
+        <DiskSmarts PveClient="PveClient" Node="@Node" Disk="@context.Item.DevPath" />
+    </ChildRowContent>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="NodeDiskList" />
+    </PagerContent>
+</AHDataGrid>

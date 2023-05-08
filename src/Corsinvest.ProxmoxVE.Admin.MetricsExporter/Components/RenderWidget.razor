@@ -1,0 +1,23 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudText><strong>@L["Request:"]</strong> @Info?.CountRequest</MudText>
+<MudText><strong>@L["Last:"]</strong> @Info?.LastRequest</MudText>
+
+@code
+{
+    [Inject] private IPveClientService PveClientService { get; set; } = default!;
+
+    private Info Info { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Module.Infos.TryGetValue(await PveClientService.GetCurrentClusterName(), out var info))
+        {
+            Info = info;
+        }
+    }
+}

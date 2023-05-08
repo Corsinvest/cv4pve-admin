@@ -1,0 +1,94 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (VmStatus == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate Class="my-7" />
+}
+else
+{
+    <MudGrid>
+        <MudItem md="6">
+            @RenderITV(Icons.Material.Outlined.Schedule,"Uptime",FormatHelper.UptimeInfo(VmStatus.Uptime))
+        </MudItem>
+
+        <MudItem md="6">
+            <div class="d-flex gap-2">
+                <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.IconStatusResource Status="@VmStatus.Status" Type="@(VmType.ToString().ToLower())" />
+                <MudText><strong>@L["Status"]</strong></MudText>
+                <MudText>@VmStatus.Status</MudText>
+            </div>
+        </MudItem>
+
+        <MudItem md="6">
+            @RenderITV(PveBlazorHelper.Icons.Cpu,"CPU",VmStatus.CpuInfo)
+            @RenderProgress(VmStatus.CpuUsagePercentage * 100)
+        </MudItem>
+
+        <MudItem md="6">
+            @RenderITV(PveBlazorHelper.Icons.Memory,"Memory Usage",VmStatus.MemoryInfo)
+            @RenderProgress(VmStatus.MemoryUsagePercentage *100)
+        </MudItem>
+
+        @if (VmType == VmType.Lxc)
+        {
+            @if (VmStatus != null)
+            {
+                <MudItem md="6">
+                    @RenderITV(PveBlazorHelper.Icons.Storage,"SWAP",FormatHelper.UsageInfo(((VmLxcStatusCurrent)VmStatus).SwapUsage, ((VmLxcStatusCurrent)VmStatus).SwapSize))
+                    @RenderProgress(((VmLxcStatusCurrent)VmStatus).SwapUsagePercentage * 100)
+                </MudItem>
+
+                @RenderBootdisk()
+            }
+        }
+        else if (VmType == VmType.Qemu)
+        {
+            @RenderBootdisk()
+            <MudItem md="6"></MudItem>
+
+            @if (FsInfo != null)
+            {
+                @foreach (var item in FsInfo.Result)
+                {
+                    <MudItem md="6">
+                        @RenderITV(PveBlazorHelper.Icons.Storage,$"{item.Type} {item.MountPoint}",FormatHelper.UsageInfo(item.UsedBytes,item.TotalBytes))
+                        @RenderProgress(FormatHelper.CalculatePercentage(item.UsedBytes, item.TotalBytes) * 100)
+                    </MudItem>
+                    <MudItem md="6"></MudItem>
+                }
+            }
+        }
+    </MudGrid>
+}
+
+@code
+{
+    private RenderFragment RenderITV(string icon, string title, string value) => __builder =>
+    {
+        <div class="d-flex gap-2">
+            <MudIcon Icon="@icon" />
+            <MudText><strong>@L[title]</strong></MudText>
+            <MudText> - @value</MudText>
+        </div>
+    };
+
+    private RenderFragment RenderBootdisk() => __builder =>
+    {
+        @if (VmStatus != null)
+        {
+            <MudItem md="6">
+                @RenderITV(PveBlazorHelper.Icons.Storage,"Bootdisk",FormatHelper.UsageInfo(VmStatus.DiskUsage, VmStatus.DiskSize))
+                @RenderProgress(VmStatus.DiskUsagePercentage * 100)
+            </MudItem>
+        }
+    };
+
+    private RenderFragment RenderProgress(double value) => __builder =>
+    {
+        <MudProgressLinear Color="@ValueToColor(value)" Size="Size.Large" Value="@value" />
+    };
+}
