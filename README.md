@@ -49,7 +49,7 @@ Thank you
 
 ### Documentation
 
-[Documentation](./src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/index.html)
+[Documentation](https://htmlpreview.github.io/?https://github.com/Corsinvest/cv4pve-admin/blob/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/index.html)
 
 ### Login
 
