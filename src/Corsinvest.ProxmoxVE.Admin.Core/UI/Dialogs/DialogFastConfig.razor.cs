@@ -38,13 +38,13 @@ public partial class DialogFastConfig
                             && (string.IsNullOrEmpty(ClusterOptions.ApiCredential.Username)
                                 || string.IsNullOrEmpty(ClusterOptions.ApiCredential.Username));
 
-                    if (ret) { UINotifier.Show("ApiToken or credential is required!", UINotifierSeverity.Error); }
+                    if (ret) { UINotifier.Show(L["ApiToken or credential is required!"], UINotifierSeverity.Error); }
                     break;
 
                 case 1:
                     ret = string.IsNullOrEmpty(ClusterOptions.SshCredential.Username)
                             || string.IsNullOrEmpty(ClusterOptions.SshCredential.Username);
-                    if (ret) { UINotifier.Show("Credential is required!", UINotifierSeverity.Error); }
+                    if (ret) { UINotifier.Show(L["Credential is required!"], UINotifierSeverity.Error); }
                     break;
 
                 case 2:
@@ -53,15 +53,25 @@ public partial class DialogFastConfig
                         //check pve login
                         var client = await PveAdminHelper.GetPveClient(ClusterOptions, Logger);
                         ret = client == null;
+                        if (!ret && !await PveAdminHelper.CheckIsValidVersion(client!))
+                        {
+                            UINotifier.Show(L["Proxmoxm VE version nont valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
+                        }
+                        else
+                        {
+                            //get cluster name
+                            if (client != null)
+                            {
+                                var info = await client.GetClusterInfo();
+                                ClusterOptions.Name = info.Name;
+                                ClusterOptions.Type = info.Type;
+                            }
 
-                        //get cluster name
-                        if (client != null) { ClusterOptions.Name = await client.GetClusterName(); }
-
-                        UINotifier.Show(!ret,
-                                        "Successful connection!",
-                                        "Problem connection!",
-                                        "Test connection  Proxmox VE cluster!");
-
+                            UINotifier.Show(!ret,
+                                            L["Successful connection!"],
+                                            L["Problem connection!"],
+                                            L["Test connection Proxmox VE cluster!"]);
+                        }
                     }
                     catch (Exception ex)
                     {

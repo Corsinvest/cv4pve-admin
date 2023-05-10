@@ -14,8 +14,7 @@ public interface IPveClientService : IScopedDependency
     Task<PveClient> GetClientCurrentCluster();
     ClusterOptions? GetClusterOptions(string clusterName);
     Task<ClusterOptions?> GetCurrentClusterOptions();
-    IDictionary<string, string> GetClustersNames();
-    Task<IEnumerable<string>> GetClustersNames(bool onlyFirst);
+    IEnumerable<ClusterOptions> GetClusters();
     Task SetCurrentClusterName(string clusterName);
     Task<string> GetCurrentClusterName();
     Task<bool> IsValidCurrentClusterName();

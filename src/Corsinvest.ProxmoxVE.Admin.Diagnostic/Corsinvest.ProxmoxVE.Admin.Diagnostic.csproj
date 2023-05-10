@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.5.8" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.5.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
 			<PrivateAssets>all</PrivateAssets>

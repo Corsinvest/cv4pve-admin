@@ -12,8 +12,19 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
 public static class PveAdminExtensions
 {
-    public static async Task<string> GetClusterName(this PveClient client)
-        => (await client.Cluster.Status.Get()).FirstOrDefault(a => a.Type == PveConstants.KeyApiCluster)!.Name;
+    public static async Task<(string Type, string Name)> GetClusterInfo(this PveClient client)
+    {
+        var status = await client.Cluster.Status.Get();
+        var clusterName = status.FirstOrDefault(a => a.Type == PveConstants.KeyApiCluster)?.Name;
+        var type = string.IsNullOrEmpty(clusterName)
+                        ? "NODE"
+                        : "CLUSTER";
+
+        var name = string.IsNullOrEmpty(clusterName)
+                        ? status.FirstOrDefault()!.Name
+                        : clusterName;
+        return (type, name);
+    }
 
     public static async Task<IEnumerable<VmRrdData>> GetVmRrdData(this PveClient pveClient,
                                                                   IClusterResourceVm vm,

@@ -133,22 +133,31 @@ public partial class Summary : IRefreshable
         }).ToList();
 
         var status = (await GetStatus()).ToArray();
-        var cluster = status.First(a => a.Type == PveConstants.KeyApiCluster);
-
-        StatusInfo.Status = L["Cluster: {0}, Quorate: {1}",
-                              cluster.Name,
-                              cluster.Quorate == 1 ? L["Yes"] : L["No"]];
-
-        if (status.Count(a => a.Type != PveConstants.KeyApiCluster) == cluster.Nodes)
+        var cluster = status.FirstOrDefault(a => a.Type == PveConstants.KeyApiCluster);
+        if (cluster == null)
         {
+            StatusInfo.Status = L["Standalone node - no cluster defined"];
             StatusInfo.Icon = Icons.Material.Outlined.CheckCircle;
             StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOnline);
         }
         else
         {
-            StatusInfo.Icon = Icons.Material.Outlined.Warning;
-            StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOffline);
-        }
+            StatusInfo.Status = L["Cluster: {0}, Quorate: {1}",
+                                  cluster.Name,
+                                  cluster.Quorate == 1 ? L["Yes"] : L["No"]];
+
+
+            if (status.Count(a => a.Type != PveConstants.KeyApiCluster) == cluster.Nodes)
+            {
+                StatusInfo.Icon = Icons.Material.Outlined.CheckCircle;
+                StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOnline);
+            }
+            else
+            {
+                StatusInfo.Icon = Icons.Material.Outlined.Warning;
+                StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOffline);
+            }
+        }        
 
         StateHasChanged();
 

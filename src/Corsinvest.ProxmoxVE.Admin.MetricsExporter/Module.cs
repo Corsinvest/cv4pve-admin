@@ -66,9 +66,8 @@ public class Module : PveAdminModuleBase, IForceLoadModule
                                             ILogger<Module> logger,
                                             IPveClientService pveClientService) =>
         {
-            var clustersNames = pveClientService.GetClustersNames();
-
-            if (clustersNames.ContainsKey(clusterName))
+            var clusters = pveClientService.GetClusters();
+            if (clusters.Any(a => a.Name == clusterName))
             {
                 if (!Infos.TryGetValue(clusterName, out var info))
                 {
@@ -108,7 +107,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             }
             else
             {
-                return clustersNames.Select(a => $"url {Url}/{a.Key} for {a.Key} - {a.Value}").JoinAsString(Environment.NewLine);
+                return clusters.Select(a => $"url {Url}/{a.Name} for {a.FullName}").JoinAsString(Environment.NewLine);
             }
         });
     }

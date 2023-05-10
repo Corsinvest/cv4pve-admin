@@ -7,10 +7,10 @@
 @typeparam T
 
 <MudExpansionPanels>
-    @foreach (var item in PveClientService.GetClustersNames())
+    @foreach (var item in PveClientService.GetClusters())
     {
-        <MudExpansionPanel Text="@($"{item.Key} - {item.Value}")">
-            @Row(Options.Get(item.Key))
+        <MudExpansionPanel Text="@item.FullName">
+            @Row(Options.Get(item.Name))
         </MudExpansionPanel>
     }
 </MudExpansionPanels>

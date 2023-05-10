@@ -11,6 +11,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Configurations;
 public class ClusterOptions
 {
     public string Name { get; set; } = default!;
+    public string Type { get; set; } = default!;
     public string Description { get; set; } = default!;
     public string ApiToken { get; set; } = default!;
     public Credential ApiCredential { get; } = new();
@@ -18,7 +19,7 @@ public class ClusterOptions
     public List<ClusterNodeOptions> Nodes { get; set; } = new();
 
     [JsonIgnore]
-    public string FullName => $"{Name} - {Description}";
+    public string FullName => $"{Type}: {Name} - {Description}";
 
     public ClusterNodeOptions? GetNodeOptions(string ipAddress, string host)
         => Nodes.FirstOrDefault(a => a.IpAddress == ipAddress || a.IpAddress.ToLower() == host.ToLower());

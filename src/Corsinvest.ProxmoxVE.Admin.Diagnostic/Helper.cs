@@ -38,7 +38,6 @@ internal class Helper
                         .Select(a => a.ToDiagnosticResult())
                         .ToList();
 
-
     public static async Task Rescan(IServiceScope scope, string clusterName)
     {
         var loggerFactory = scope.GetLoggerFactory();

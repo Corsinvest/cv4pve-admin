@@ -13,7 +13,16 @@ public partial class RenderAdminOptions
         foreach (var item in Options.Clusters)
         {
             var client = await PveClientService.GetClient(item);
-            if (client != null) { item.Name = await client.GetClusterName(); }
+            if (client != null)
+            {
+                //if (!await PveAdminHelper.CheckIsValidVersion(client))
+                //{
+                //    UINotifier.Show(L["{0} - Proxmoxm VE version nont valid! Required {1}", item.FullName, PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
+                //}
+                var info = await client.GetClusterInfo();
+                item.Name = info.Name;
+                item.Type = info.Type;
+            }
         }
 
         await base.SaveAsync();

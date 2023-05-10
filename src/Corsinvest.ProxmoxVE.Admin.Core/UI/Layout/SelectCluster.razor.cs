@@ -21,12 +21,12 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
     {
         if (firstRender)
         {
-            if (PveClientService.GetClustersNames().Any())
+            if (PveClientService.GetClusters().Any())
             {
                 var clusterName = await PveClientService.GetCurrentClusterName();
                 if (string.IsNullOrEmpty(clusterName))
                 {
-                    clusterName = PveClientService.GetClustersNames().ToArray()[0].Key;
+                    clusterName = PveClientService.GetClusters().ToArray()[0].Name;
                     await PveClientService.SetCurrentClusterName(clusterName);
                 }
 
@@ -56,7 +56,7 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
         else
         {
             await PveClientService.SetCurrentClusterName(string.Empty);
-            if (PveClientService.GetClustersNames().Count == 1)
+            if (PveClientService.GetClusters().Count() == 1)
             {
                 ShowDialogFastConfig();
             }
@@ -72,8 +72,14 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
     {
         try
         {
-            return !string.IsNullOrEmpty(clusterName)
-                    && await PveClientService.GetClient(clusterName) != null;
+            var ret = false;
+            if (!string.IsNullOrEmpty(clusterName))
+            {
+                var client = await PveClientService.GetClient(clusterName);
+                ret = client != null && await PveAdminHelper.CheckIsValidVersion(client);
+            }
+
+            return ret;
         }
         catch // (Exception ex)
         {

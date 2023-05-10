@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Blazored.LocalStorage;
+using ClosedXML.Excel;
 using Corsinvest.ProxmoxVE.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
@@ -45,33 +46,11 @@ public class PveClientService : IPveClientService
     public ClusterOptions? GetClusterOptions(string clusterName) => _clustersOptions.Value.Clusters.FirstOrDefault(a => a.Name == clusterName);
     public async Task<ClusterOptions?> GetCurrentClusterOptions() => GetClusterOptions(await GetCurrentClusterName());
 
-    public IDictionary<string, string> GetClustersNames()
+    public IEnumerable<ClusterOptions> GetClusters()
         => _clustersOptions.Value.Clusters
-                                  .Where(a => !string.IsNullOrEmpty(a.Name))
-                                  .OrderBy(a => a.Description)
-                                  .ToDictionary(a => a.Name, a => a.Description);
-
-    public async Task<IEnumerable<string>> GetClustersNames(bool onlyFirst)
-    {
-        var ret = new List<string>();
-
-        var clusters = _clustersOptions.Value.Clusters;
-        if (onlyFirst) { clusters = clusters.Take(1).ToList(); }
-
-        foreach (var item in clusters)
-        {
-            var client = await GetClient(item);
-            if (client != null)
-            {
-                var name = await client.GetClusterName();
-                if (!string.IsNullOrEmpty(name))
-                {
-                    ret.Add(name);
-                }
-            }
-        }
-        return ret;
-    }
+                                 .Where(a => !string.IsNullOrEmpty(a.Name))
+                                 .OrderBy(a => a.FullName)
+                                 .ToList();
 
     public async Task SetCurrentClusterName(string clusterName) => await _localStorageService.SetItemAsStringAsync("CurrentClusterName", clusterName);
     public async Task<string> GetCurrentClusterName() => await _localStorageService.GetItemAsStringAsync("CurrentClusterName");

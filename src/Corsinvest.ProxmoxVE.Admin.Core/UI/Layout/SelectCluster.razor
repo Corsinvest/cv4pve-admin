@@ -4,16 +4,14 @@
 *@
 @inherits AHComponentBase
 
-@*Style="@("background-color: var(--mud-palette-" + (UIOptions.Value.Theme.DarkMode ? "dark" : "white")+ ")")"*@
-
 <MudSelect T="string" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter"
            Value="@CurrentClusterName" ValueChanged="ValueChanged"
-           Style="background-color: var(--mud-palette-background)"           
-           Variant="Variant.Outlined" Label="Cluster">
-    @foreach (var item in PveClientService.GetClustersNames())
+           Style="background-color: var(--mud-palette-background)"
+           Variant="Variant.Outlined">
+    @foreach (var item in PveClientService.GetClusters())
     {
-        <MudSelectItem Value="@item.Key">
-            @item.Key - @item.Value
+        <MudSelectItem Value="@item.Name">
+            @item.FullName
         </MudSelectItem>
     }
 </MudSelect>
