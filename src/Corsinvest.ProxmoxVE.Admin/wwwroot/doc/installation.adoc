@@ -68,5 +68,6 @@ sudo systemctl start {app-name}
 == Update
 
 Stop application
-Save the data directory.
-Download last release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in previous directory installation.
+Save the **data** directory and **appsettings.json**.
+Download latest release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in previous directory installation.
+Restore **data** directory and **appsettings.json**.
