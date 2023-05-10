@@ -4,6 +4,10 @@
 *@
 @inherits AHComponentBase
 
+<MudAlert Severity="Severity.Error">@L["The minimal version for Proxmoxm VE {0}",PveAdminHelper.MinimalVersion]</MudAlert>
+
+<br />
+
 <AHDataGrid T="ClusterOptions"
             Elevation="0"
             Permissions="Module.Permissions.Clusters.Data"

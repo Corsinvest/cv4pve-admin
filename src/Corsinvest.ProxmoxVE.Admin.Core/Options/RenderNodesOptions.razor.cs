@@ -57,7 +57,10 @@ public partial class RenderNodesOptions
 
                 await DataGridManager.Refresh();
 
-                UINotifier.Show(added, L["New nodes added! Please save."], L["No nodes found!"]);
+                UINotifier.Show(added
+                                ? L["New nodes added! Please save."]
+                                : L["All nodes have been inserted!"],
+                                UINotifierSeverity.Info);
             }
             else
             {
