@@ -36,8 +36,10 @@ This software is part of a suite of tools called cv4pve-tools. If you want comme
 * Independent os (Windows, Linux, Macosx)
 * Installation rapid, unzip file extract
 * Not require installation in Proxmox VE
+* Use Credential or Api Token to connect Cluster/Node
 * Execute out side Proxmox VE
-* Multiple Clusters Management
+* Multiple Cluster/Node Management
+* Minimum version of Proxmox VE 6.4
 
 For installation or other question see documentation.
 
