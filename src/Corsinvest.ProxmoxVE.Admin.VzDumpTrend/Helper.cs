@@ -200,11 +200,14 @@ internal class Helper
         }
 
         //remove old logs       
-        var maxDate = (await dumpTaskRepo.ListAsync(new VzDumpTaskSpec(clusterName)))
-                            .Max(a => a.Start)
-                            .AddDays(-moduleClusterOptions.MaxDaysLogs);
-        var tasks = await dumpTaskRepo.ListAsync(new VzDumpTaskSpec(clusterName).Over(maxDate));
-        await dumpTaskRepo.DeleteRangeAsync(tasks);
+        if (await dumpTaskRepo.CountAsync(new VzDumpTaskSpec(clusterName)) > 0)
+        {
+            var maxDate = (await dumpTaskRepo.ListAsync(new VzDumpTaskSpec(clusterName)))
+                                .Max(a => a.Start)
+                                .AddDays(-moduleClusterOptions.MaxDaysLogs);
+            var tasks = await dumpTaskRepo.ListAsync(new VzDumpTaskSpec(clusterName).Over(maxDate));
+            await dumpTaskRepo.DeleteRangeAsync(tasks);
+        }
     }
 
     public static async Task Scan(IServiceScope scope, string clusterName)
