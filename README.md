@@ -23,7 +23,7 @@ Proxmox VE Administration cluster
 ## Copyright and License
 
 Copyright: Corsinvest Srl
-For licensing details please visit [LICENSE.md](LICENSE.md)
+For licensing details please visit [LICENSE](LICENSE)
 
 ## Commercial Support
 
