@@ -4,11 +4,17 @@
 
 {app-name} is an application developed in .Net.
 
+== Minimal version
+
+The minimal version required was 6.4.
+
 == Permission
 
 For connection to a cluster is require credential **Web Api** or **Token Api**. This require permission for execution. In this moment **all permission** is required.
 
 == Install
+
+=== From binary repository
 
 Download last release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in the directory where you want it to run.
 Start application:
@@ -16,7 +22,7 @@ Start application:
 * Windows .\Corsinvest.ProxmoxVE.Admin.exe
 * Linux/MaxOsX ./Corsinvest.ProxmoxVE.Admin
 
-Linux Configure Service
+==== Linux Configure Service
 
 Create a service file for our .Net application
 
@@ -62,5 +68,5 @@ sudo systemctl start {app-name}
 == Update
 
 Stop application
-Save the storage directory.
+Save the data directory.
 Download last release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in previous directory installation.
