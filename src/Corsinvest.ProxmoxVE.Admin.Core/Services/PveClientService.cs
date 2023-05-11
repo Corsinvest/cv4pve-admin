@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Blazored.LocalStorage;
-using ClosedXML.Excel;
 using Corsinvest.ProxmoxVE.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
