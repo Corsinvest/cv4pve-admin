@@ -24,9 +24,16 @@ Start application:
 
 ==== Linux Configure Service
 
-Create a service file for our .Net application
+[source,bash,subs="normal"]
+----
+apt update && apt install unzip wget
+cd /temp
+wget https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip
+unzip /temp/cv4pve-admin-linux-x64.zip -d /var/cv4pve-admin
+chmod 777 /var/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
+----
 
-"sudo nano /etc/systemd/system/{app-name}.service"
+Create a service file /etc/systemd/system/{app-name}.service
 
 Copy the following configuration in that file and  it will run our application,
 
@@ -50,8 +57,8 @@ Now start the service. Instead of the service name in the below commands use the
 
 [source,bash,subs="normal"]
 ----
-sudo systemctl enable {app-name}
-sudo systemctl start {app-name}
+systemctl enable {app-name}
+systemctl start {app-name}
 ----
 
 Now your proxy server and kestrel server is running and you can access your application through any ip with port 5001.
@@ -64,8 +71,14 @@ sudo systemctl stop {app-name}
 sudo systemctl start {app-name}
 ----
 
+Now I expect the {app-name} is running and you can access your application through any ip with port 5000.
+The web interface can be reached via https://youripaddress:5000
+(default login is: *admin@local*, and the password is *Password123!*).
+
 [[chapter_installation_update]]
 == Update
+
+=== From binary repository
 
 Stop application
 Save the **data** directory and **appsettings.json**.
