@@ -460,9 +460,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#chapter_installation">2. Installing cv4pve-admin</a>
 <ul class="sectlevel2">
-<li><a href="#_permission">2.1. Permission</a></li>
-<li><a href="#_install">2.2. Install</a></li>
-<li><a href="#chapter_installation_update">2.3. Update</a></li>
+<li><a href="#_minimal_version">2.1. Minimal version</a></li>
+<li><a href="#_permission">2.2. Permission</a></li>
+<li><a href="#_install">2.3. Install</a></li>
+<li><a href="#chapter_installation_update">2.4. Update</a></li>
 </ul>
 </li>
 <li><a href="#chapter_gui">3. Graphical User Interface</a>
@@ -561,7 +562,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2 data-line-30">
 <h3 id="_web_based_management_interface">1.2. Web-based Management Interface</h3>
 <div class="paragraph data-line-32">
-<p>cv4pve-admin è semplice da usare. Le attività di gestione possono essere eseguite tramite l&#8217;interfaccia di gestione basata sul Web inclusa: non è necessario installare uno strumento di gestione separato. Lo strumento ti consente di gestire l&#8217;intero cluster. La gestione centralizzata basata sul web consente di controllare tutte le funzionalità dalla GUI.</p>
+<p>cv4pve-admin is simple to use. Management tasks can be performed through the included web-based management interface – there is no need to install a separate management tool.</p>
 </div>
 </div>
 <div class="sect2 data-line-34">
@@ -610,40 +611,53 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>cv4pve-admin is an application developed in .Net.</p>
 </div>
 <div class="sect2 data-line-7">
-<h3 id="_permission">2.1. Permission</h3>
+<h3 id="_minimal_version">2.1. Minimal version</h3>
 <div class="paragraph data-line-9">
-<p>For connection to a cluster is require credential <strong>Web Api</strong> or <strong>Token Api</strong>. This require permission for execution. In this moment <strong>all permission</strong> is required.</p>
+<p>The minimal version required was 6.4.</p>
 </div>
 </div>
 <div class="sect2 data-line-11">
-<h3 id="_install">2.2. Install</h3>
+<h3 id="_permission">2.2. Permission</h3>
 <div class="paragraph data-line-13">
+<p>For connection to a cluster is require credential <strong>Web Api</strong> or <strong>Token Api</strong>. This require permission for execution. In this moment <strong>all permission</strong> is required.</p>
+</div>
+</div>
+<div class="sect2 data-line-15">
+<h3 id="_install">2.3. Install</h3>
+<div class="sect3 data-line-17">
+<h4 id="_from_binary_repository">2.3.1. From binary repository</h4>
+<div class="paragraph data-line-19">
 <p>Download last release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases" data-href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in the directory where you want it to run.
 Start application:</p>
 </div>
-<div class="ulist data-line-16">
+<div class="ulist data-line-22">
 <ul>
-<li class="data-line-16">
+<li class="data-line-22">
 <p>Windows .\Corsinvest.ProxmoxVE.Admin.exe</p>
 </li>
-<li class="data-line-17">
+<li class="data-line-23">
 <p>Linux/MaxOsX ./Corsinvest.ProxmoxVE.Admin</p>
 </li>
 </ul>
 </div>
-<div class="paragraph data-line-19">
-<p>Linux Configure Service</p>
+<div class="sect4 data-line-25">
+<h5 id="_linux_configure_service">Linux Configure Service</h5>
+<div class="listingblock data-line-28">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">apt update &amp;&amp; apt install unzip wget
+cd /temp
+wget <a href="https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip" class="undefined" data-href="https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip">https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip</a>
+unzip /temp/cv4pve-admin-linux-x64.zip -d /var/cv4pve-admin
+chmod 777 /var/cv4pve-admin/Corsinvest.ProxmoxVE.Admin</code></pre>
 </div>
-<div class="paragraph data-line-21">
-<p>Create a service file for our .Net application</p>
 </div>
-<div class="paragraph data-line-23">
-<p>"sudo nano /etc/systemd/system/cv4pve-admin.service"</p>
+<div class="paragraph data-line-36">
+<p>Create a service file /etc/systemd/system/cv4pve-admin.service</p>
 </div>
-<div class="paragraph data-line-25">
+<div class="paragraph data-line-38">
 <p>Copy the following configuration in that file and  it will run our application,</p>
 </div>
-<div class="listingblock data-line-28">
+<div class="listingblock data-line-41">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">[Unit]
 Description=cv4pve-admin Web Application
@@ -659,34 +673,45 @@ Environment=ASPNETCORE_ENVIRONMENT=Production
 WantedBy=multi-user.target</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-43">
+<div class="paragraph data-line-56">
 <p>Now start the service. Instead of the service name in the below commands use the name of the file made above,</p>
 </div>
-<div class="listingblock data-line-46">
+<div class="listingblock data-line-59">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">sudo systemctl enable cv4pve-admin
-sudo systemctl start cv4pve-admin</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">systemctl enable cv4pve-admin
+systemctl start cv4pve-admin</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-51">
+<div class="paragraph data-line-64">
 <p>Now your proxy server and kestrel server is running and you can access your application through any ip with port 5001.</p>
 </div>
-<div class="paragraph data-line-53">
+<div class="paragraph data-line-66">
 <p>To redeploy the code your need to replace the dll and stop and start your service again through the following commands</p>
 </div>
-<div class="listingblock data-line-56">
+<div class="listingblock data-line-69">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">sudo systemctl stop cv4pve-admin
 sudo systemctl start cv4pve-admin</code></pre>
 </div>
 </div>
+<div class="paragraph data-line-74">
+<p>Now I expect the cv4pve-admin is running and you can access your application through any ip with port 5000.
+The web interface can be reached via <a href="https://youripaddress:5000" class="undefined" data-href="https://youripaddress:5000">https://youripaddress:5000</a>
+(default login is: <strong>admin@local</strong>, and the password is <strong>Password123!</strong>).</p>
 </div>
-<div class="sect2 data-line-62">
-<h3 id="chapter_installation_update">2.3. Update</h3>
-<div class="paragraph data-line-64">
+</div>
+</div>
+</div>
+<div class="sect2 data-line-79">
+<h3 id="chapter_installation_update">2.4. Update</h3>
+<div class="sect3 data-line-81">
+<h4 id="_from_binary_repository_2">2.4.1. From binary repository</h4>
+<div class="paragraph data-line-83">
 <p>Stop application
-Save the storage directory.
-Download last release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases" data-href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in previous directory installation.</p>
+Save the <strong>data</strong> directory and <strong>appsettings.json</strong>.
+Download latest release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases" data-href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in previous directory installation.
+Restore <strong>data</strong> directory and <strong>appsettings.json</strong>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -704,7 +729,7 @@ Firefox or Google Chrome is preferred).</p>
 browser.</p>
 </div>
 <div class="paragraph data-line-11">
-<p>The web interface can be reached via <a href="https://youripaddress:5001" class="undefined" data-href="https://youripaddress:5001">https://youripaddress:5001</a>
+<p>The web interface can be reached via <a href="https://youripaddress:5000" class="undefined" data-href="https://youripaddress:5000">https://youripaddress:5000</a>
 (default login is: <strong>admin@local</strong>, and the password is <strong>Password123!</strong>).</p>
 </div>
 <div class="sect2 data-line-14">
@@ -1723,7 +1748,7 @@ The customer portal provides help and support with guaranteed response times fro
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-05 10:07:58 +0200
+Last updated 2023-05-11 18:20:30 +0200
 </div>
 </div>
 </body>

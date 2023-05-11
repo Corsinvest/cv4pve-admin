@@ -29,7 +29,7 @@ We have implemented simple solutions to get information immediately and in a sim
 
 == Web-based Management Interface
 
-{app-name} è semplice da usare. Le attività di gestione possono essere eseguite tramite l'interfaccia di gestione basata sul Web inclusa: non è necessario installare uno strumento di gestione separato. Lo strumento ti consente di gestire l'intero cluster. La gestione centralizzata basata sul web consente di controllare tutte le funzionalità dalla GUI.
+{app-name} is simple to use. Management tasks can be performed through the included web-based management interface – there is no need to install a separate management tool.
 
 == Your benefits with {app-name}
 

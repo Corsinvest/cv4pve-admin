@@ -8,7 +8,7 @@ Firefox or Google Chrome is preferred).
 You can use the web-based administration interface with any modern
 browser.
 
-The web interface can be reached via https://youripaddress:5001
+The web interface can be reached via https://youripaddress:5000
 (default login is: *admin@local*, and the password is *Password123!*).
 
 == Login
