@@ -22,12 +22,13 @@
 
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 
-
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -44,5 +45,9 @@
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Botgram\Corsinvest.ProxmoxVE.Admin.Botgram.csproj" />
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.VzDumpTrend\Corsinvest.ProxmoxVE.Admin.VzDumpTrend.csproj" />
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.ClusterUsage\Corsinvest.ProxmoxVE.Admin.ClusterUsage.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\lib\" />
 	</ItemGroup>
 </Project>
