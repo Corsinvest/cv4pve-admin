@@ -14,8 +14,6 @@ Write-Output "
  == Build System
  ========================================================="
 
-
-
 $pathBasePrj = ".\src\Corsinvest.ProxmoxVE.Admin"
 $pathBinRelase = "$pathBasePrj\Bin\Release\net7.0"
 
@@ -24,14 +22,12 @@ Remove-Item -Path ".\$pathBinRelase"  -Recurse -Force
 $fileName = "cv4pve-admin"
 $rids = @("linux-x64", "linux-arm", "linux-arm64", "osx-x64", "win-x86", "win-x64", "win-arm", "win-arm64")
 foreach ($rid in $rids) {
-    #dotnet publish -r $rid -c Release --self-contained
     dotnet publish "$pathBasePrj\Corsinvest.ProxmoxVE.Admin.csproj" -r $rid -c Release --self-contained -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
 
     $path = "$pathBinRelase\$rid\publish"
 
     #fix appsettings.json
     Remove-Item "$path\appsettings.json"
-    Rename-Item "$path\appsettings.Default.json" "appsettings.json"
     Remove-Item "$path\appsettings.Development.json"
 
     Remove-Item "$path\*.pdb"

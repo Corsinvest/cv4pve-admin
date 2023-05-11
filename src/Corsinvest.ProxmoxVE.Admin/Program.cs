@@ -9,6 +9,15 @@ using Corsinvest.ProxmoxVE.Admin;
 using Corsinvest.ProxmoxVE.Admin.Persistence;
 using Serilog;
 
+//appsetting default
+var appSetting = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+if (!File.Exists(appSetting) || new FileInfo(appSetting).Length == 0)
+{
+    File.WriteAllText(appSetting, File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Default.json")));
+}
+
+var inDocker = Environment.GetEnvironmentVariable("INDOCKER") == "1";
+
 var builder = WebApplication.CreateBuilder(args);
 
 //configure serilog
@@ -82,7 +91,10 @@ else
     #endregion
 }
 
-app.UseHttpsRedirection();
+if (!inDocker)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 

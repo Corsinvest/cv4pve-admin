@@ -35,6 +35,7 @@ This software is part of a suite of tools called cv4pve-tools. If you want comme
 * Use native Api REST Proxmox VE (library C#)
 * Independent os (Windows, Linux, Macosx)
 * Installation rapid, unzip file extract
+* Docker version [DockerHub](https://htmlpreview.github.io/?https://github.com/Corsinvest/cv4pve-admin/blob/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/index.html)
 * Not require installation in Proxmox VE
 * Use Credential or Api Token to connect Cluster/Node
 * Execute out side Proxmox VE

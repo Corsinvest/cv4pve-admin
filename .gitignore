@@ -359,13 +359,7 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-/_Dockerfile
 /Todo.md
-/Dockerfile
-/docker-test1.ps1
-/docker-test.ps1
-/docker-build.ps1
-/.dockerignore
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/lib
 /src/Corsinvest.ProxmoxVE.Admin/appsettings.json
 /src/Corsinvest.ProxmoxVE.Admin/data

@@ -75,6 +75,12 @@ Now I expect the {app-name} is running and you can access your application throu
 The web interface can be reached via https://youripaddress:5000
 (default login is: *admin@local*, and the password is *Password123!*).
 
+=== Docker
+
+{app-name} is an application developed in .Net. For deploy is used
+https://hub.docker.com/r/corsinvest/{app-name}[Docker image].
+
+
 [[chapter_installation_update]]
 == Update
 
@@ -84,3 +90,6 @@ Stop application
 Save the **data** directory and **appsettings.json**.
 Download latest release from https://github.com/Corsinvest/cv4pve-admin/releases[Project Repository] and unzip in previous directory installation.
 Restore **data** directory and **appsettings.json**.
+
+=== Docker
+See https://hub.docker.com/r/corsinvest/{app-name}[Docker image]
