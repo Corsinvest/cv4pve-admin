@@ -1,6 +1,10 @@
 # cv4pve-admin
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-admin.svg)](LICENSE.md) [![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-admin.svg)](https://github.com/Corsinvest/cv4pve-admin/releases/latest) ![GitHub All Releases](https://img.shields.io/github/downloads/Corsinvest/cv4pve-admin/total.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin) [![.NET C#](https://img.shields.io/badge/.NET-C%23-blue)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-admin.svg)](LICENSE)
+[![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-admin.svg)](https://github.com/Corsinvest/cv4pve-admin/releases/latest) 
+[![GitHub All Releases](https://img.shields.io/github/downloads/Corsinvest/cv4pve-admin/total.svg)](https://github.com/Corsinvest/cv4pve-admin/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
+[![.NET C#](https://img.shields.io/badge/.NET-C%23-blue)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 
 Proxmox VE Administration cluster
 
