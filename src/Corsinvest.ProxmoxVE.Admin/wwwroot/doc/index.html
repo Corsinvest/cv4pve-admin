@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left data-line-1">
 <div id="header">
-<h1>CV4PVE-ADMIN v1.0.0-beta Guide</h1>
+<h1>CV4PVE-ADMIN v3.0.0-beta Guide</h1>
 <div class="details">
 <span id="author" class="author">Powered by Corsinvest Srl</span><br>
 </div>
@@ -461,7 +461,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#chapter_installation">2. Installing cv4pve-admin</a>
 <ul class="sectlevel2">
 <li><a href="#_minimal_version">2.1. Minimal version</a></li>
-<li><a href="#_permission">2.2. Permission</a></li>
+<li><a href="#_proxmox_ve_permission">2.2. Proxmox VE Permission</a></li>
 <li><a href="#_install">2.3. Install</a></li>
 <li><a href="#chapter_installation_update">2.4. Update</a></li>
 </ul>
@@ -617,7 +617,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2 data-line-11">
-<h3 id="_permission">2.2. Permission</h3>
+<h3 id="_proxmox_ve_permission">2.2. Proxmox VE Permission</h3>
 <div class="paragraph data-line-13">
 <p>For connection to a cluster is require credential <strong>Web Api</strong> or <strong>Token Api</strong>. This require permission for execution. In this moment <strong>all permission</strong> is required.</p>
 </div>
@@ -640,24 +640,43 @@ Start application:</p>
 </li>
 </ul>
 </div>
-<div class="sect4 data-line-25">
-<h5 id="_linux_configure_service">Linux Configure Service</h5>
+<div class="admonitionblock important data-line-25">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+For Linux/MaxOsX change permission
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock data-line-28">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">chmod 777 /home/frank/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
+chmod -R 0755 /home/frank/cv4pve-admin/wwwroot</code></pre>
+</div>
+</div>
+<div class="sect4 data-line-33">
+<h5 id="_linux_configure_service">Linux Configure Service</h5>
+<div class="listingblock data-line-36">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">apt update &amp;&amp; apt install unzip wget
 cd /temp
-wget <a href="https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip" class="undefined" data-href="https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip">https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip</a>
+wget <a href="https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip" class="undefined" data-href="https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip">https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip</a>
 unzip /temp/cv4pve-admin-linux-x64.zip -d /var/cv4pve-admin
-chmod 777 /var/cv4pve-admin/Corsinvest.ProxmoxVE.Admin</code></pre>
+chmod 777 /var/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
+chmod -R 0755 /var/cv4pve-admin/wwwroot</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-36">
+<div class="paragraph data-line-45">
 <p>Create a service file /etc/systemd/system/cv4pve-admin.service</p>
 </div>
-<div class="paragraph data-line-38">
+<div class="paragraph data-line-47">
 <p>Copy the following configuration in that file and  it will run our application,</p>
 </div>
-<div class="listingblock data-line-41">
+<div class="listingblock data-line-50">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">[Unit]
 Description=cv4pve-admin Web Application
@@ -673,54 +692,54 @@ Environment=ASPNETCORE_ENVIRONMENT=Production
 WantedBy=multi-user.target</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-56">
+<div class="paragraph data-line-65">
 <p>Now start the service. Instead of the service name in the below commands use the name of the file made above,</p>
 </div>
-<div class="listingblock data-line-59">
+<div class="listingblock data-line-68">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">systemctl enable cv4pve-admin
 systemctl start cv4pve-admin</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-64">
+<div class="paragraph data-line-73">
 <p>Now your proxy server and kestrel server is running and you can access your application through any ip with port 5001.</p>
 </div>
-<div class="paragraph data-line-66">
+<div class="paragraph data-line-75">
 <p>To redeploy the code your need to replace the dll and stop and start your service again through the following commands</p>
 </div>
-<div class="listingblock data-line-69">
+<div class="listingblock data-line-78">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">sudo systemctl stop cv4pve-admin
 sudo systemctl start cv4pve-admin</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-74">
+<div class="paragraph data-line-83">
 <p>Now I expect the cv4pve-admin is running and you can access your application through any ip with port 5000.
 The web interface can be reached via <a href="https://youripaddress:5000" class="undefined" data-href="https://youripaddress:5000">https://youripaddress:5000</a>
 (default login is: <strong>admin@local</strong>, and the password is <strong>Password123!</strong>).</p>
 </div>
 </div>
 </div>
-<div class="sect3 data-line-78">
+<div class="sect3 data-line-87">
 <h4 id="_docker">2.3.2. Docker</h4>
-<div class="paragraph data-line-80">
+<div class="paragraph data-line-89">
 <p>cv4pve-admin is an application developed in .Net. For deploy is used
 <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" data-href="https://hub.docker.com/r/corsinvest/cv4pve-admin">Docker image</a>.</p>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-85">
+<div class="sect2 data-line-94">
 <h3 id="chapter_installation_update">2.4. Update</h3>
-<div class="sect3 data-line-87">
+<div class="sect3 data-line-96">
 <h4 id="_from_binary_repository_2">2.4.1. From binary repository</h4>
-<div class="paragraph data-line-89">
+<div class="paragraph data-line-98">
 <p>Stop application
 Save the <strong>data</strong> directory and <strong>appsettings.json</strong>.
 Download latest release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases" data-href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in previous directory installation.
 Restore <strong>data</strong> directory and <strong>appsettings.json</strong>.</p>
 </div>
 </div>
-<div class="sect3 data-line-94">
+<div class="sect3 data-line-103">
 <h4 id="_docker_2">2.4.2. Docker</h4>
 <div class="paragraph data-line-0">
 <p>See <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" data-href="https://hub.docker.com/r/corsinvest/cv4pve-admin">Docker image</a></p>
@@ -1761,7 +1780,7 @@ The customer portal provides help and support with guaranteed response times fro
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-11 21:44:26 +0200
+Last updated 2023-05-12 09:57:59 +0200
 </div>
 </div>
 </body>

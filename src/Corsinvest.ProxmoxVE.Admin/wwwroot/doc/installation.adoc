@@ -8,7 +8,7 @@
 
 The minimal version required was 6.4.
 
-== Permission
+== Proxmox VE Permission
 
 For connection to a cluster is require credential **Web Api** or **Token Api**. This require permission for execution. In this moment **all permission** is required.
 
@@ -22,15 +22,24 @@ Start application:
 * Windows .\Corsinvest.ProxmoxVE.Admin.exe
 * Linux/MaxOsX ./Corsinvest.ProxmoxVE.Admin
 
+IMPORTANT: For Linux/MaxOsX change permission
+
+[source,bash,subs="normal"]
+----
+chmod 777 /home/frank/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
+chmod -R 0755 /home/frank/cv4pve-admin/wwwroot
+----
+
 ==== Linux Configure Service
 
 [source,bash,subs="normal"]
 ----
 apt update && apt install unzip wget
 cd /temp
-wget https://github.com/Corsinvest/cv4pve-admin/releases/download/v0.0.2-beta/cv4pve-admin-linux-x64.zip
+wget https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip
 unzip /temp/cv4pve-admin-linux-x64.zip -d /var/cv4pve-admin
 chmod 777 /var/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
+chmod -R 0755 /var/cv4pve-admin/wwwroot
 ----
 
 Create a service file /etc/systemd/system/{app-name}.service
