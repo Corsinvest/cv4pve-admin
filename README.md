@@ -59,6 +59,7 @@ Thank you
 
 ### Login
 
+http://ipaddress:5000
 default user: admin@local  password: Password123!
 
 ![0](/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/login.png)
