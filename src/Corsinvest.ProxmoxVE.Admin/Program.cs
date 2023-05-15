@@ -4,9 +4,11 @@
  */
 using Corsinvest.AppHero.Core;
 using Corsinvest.AppHero.Core.Extensions;
+using Corsinvest.AppHero.Core.Helpers;
 using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.ProxmoxVE.Admin;
 using Corsinvest.ProxmoxVE.Admin.Persistence;
+using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 
 //appsetting default
@@ -15,8 +17,6 @@ if (!File.Exists(appSetting) || new FileInfo(appSetting).Length == 0)
 {
     File.WriteAllText(appSetting, File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Default.json")));
 }
-
-var inDocker = Environment.GetEnvironmentVariable("INDOCKER") == "1";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,24 +28,26 @@ var logger = builder.Services.GetRequiredService<ILoggerFactory>().CreateLogger(
 logger.LogInformation("Start cv4pve-admin....");
 
 // Add services to the container.
+builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(ApplicationHelper.PathData, "data-protection-keys")));
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor(options =>
                 {
                     options.DetailedErrors = true;
-                    options.DisconnectedCircuitMaxRetained = 100;
-                    options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
-                    options.JSInteropDefaultCallTimeout = TimeSpan.FromMinutes(1);
-                    options.MaxBufferedUnacknowledgedRenderBatches = 10;
+                    //options.DisconnectedCircuitMaxRetained = 100;
+                    //options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
+                    //options.JSInteropDefaultCallTimeout = TimeSpan.FromMinutes(1);
+                    //options.MaxBufferedUnacknowledgedRenderBatches = 10;
                 })
                 .AddHubOptions(options =>
                 {
-                    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+                    //options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
                     options.EnableDetailedErrors = false;
-                    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
-                    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-                    options.MaximumParallelInvocationsPerClient = 100;
-                    options.MaximumReceiveMessageSize = 64 * 1024;
-                    options.StreamBufferCapacity = 10;
+                    //options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+                    //options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+                    //options.MaximumParallelInvocationsPerClient = 100;
+                    //options.MaximumReceiveMessageSize = 64 * 1024;
+                    //options.StreamBufferCapacity = 10;
                 })
                 .AddCircuitOptions(option => { option.DetailedErrors = true; });
 
@@ -91,10 +93,7 @@ else
     #endregion
 }
 
-if (!inDocker)
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 app.UseRouting();
 
