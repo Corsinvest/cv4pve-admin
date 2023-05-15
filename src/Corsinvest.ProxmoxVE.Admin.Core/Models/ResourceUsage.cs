@@ -19,10 +19,12 @@ public class ResourceUsage
     {
         var nodes = data.Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline);
 
-        var storages = data.Where(a => a.ResourceType == ClusterResourceType.Storage
-                                        //&& !a.Shared
-                                        && (a.Content.Contains("images") || a.Content.Contains("rootdir"))
-                                        && a.IsAvailable);
+
+        //all storage not shaed
+        var allStorage = data.Where(a => a.ResourceType == ClusterResourceType.Storage && a.IsAvailable);
+
+        var storages = allStorage.Where(a=> !a.Shared).ToList();
+        storages.AddRange(allStorage.Where(a => a.Shared).DistinctBy(a => a.Storage));
 
         return new List<ResourceUsage>
         {
