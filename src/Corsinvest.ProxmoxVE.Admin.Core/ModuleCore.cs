@@ -9,6 +9,7 @@ using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuestPDF.Infrastructure;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core;
 
@@ -26,10 +27,10 @@ public class ModuleCore : ModuleBase, IForceLoadModule
 
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         services.AddBlazoredSessionStorage();
         services.AddBlazoredLocalStorage();
     }
-
 
     public override async Task OnPreApplicationInitializationAsync(IHost host)
     {
