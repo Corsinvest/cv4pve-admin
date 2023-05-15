@@ -12,6 +12,14 @@ The minimal version required was 6.4.
 
 For connection to a cluster is require credential **Web Api** or **Token Api**. This require permission for execution. In this moment **all permission** is required.
 
+== Configuration
+
+The configurations are saved in appsettings.json.
+
+Most important options are:
+
+- **urls** set the ip address and port to espose the web application '0.0.0.0' for all (default http://0.0.0.0:5000)
+
 == Install
 
 === From binary repository
