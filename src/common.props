@@ -6,7 +6,7 @@
 		<PublishTrimmed>false</PublishTrimmed>
 
 		<LangVersion>latest</LangVersion>
-		<Version>0.0.3-beta</Version>
+		<Version>0.0.4-beta</Version>
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<!--<NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>-->
 

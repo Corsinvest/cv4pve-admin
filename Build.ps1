@@ -22,7 +22,12 @@ Remove-Item -Path ".\$pathBinRelase"  -Recurse -Force
 $fileName = "cv4pve-admin"
 $rids = @("linux-x64", "linux-arm", "linux-arm64", "osx-x64", "win-x86", "win-x64", "win-arm", "win-arm64")
 foreach ($rid in $rids) {
-    dotnet publish "$pathBasePrj\Corsinvest.ProxmoxVE.Admin.csproj" -r $rid -c Release --self-contained -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
+    dotnet publish "$pathBasePrj\Corsinvest.ProxmoxVE.Admin.csproj" `
+            -r $rid `
+            -c Release `
+            --self-contained `
+            -p:PublishSingleFile=true `
+            -p:IncludeAllContentForSelfExtract=true
 
     $path = "$pathBinRelase\$rid\publish"
 

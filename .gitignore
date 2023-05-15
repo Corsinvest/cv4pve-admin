@@ -363,3 +363,4 @@ MigrationBackup/
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/lib
 /src/Corsinvest.ProxmoxVE.Admin/appsettings.json
 /src/Corsinvest.ProxmoxVE.Admin/data
+setKey.ps1

@@ -6,11 +6,14 @@ $xml = [xml](Get-Content .\src\common.props)
 $version = $xml.Project.PropertyGroup.Version
 Write-Host "Project version: $version"
 
-New-Item -Path "d:\DockerData\cv4pve-admin\data" -ItemType "directory" 
+#docker data
+$dockerDataBase = "d:\DockerData\cv4pve-admin"
 
-if (!(Test-Path "d:\DockerData\cv4pve-admin\appsettings.json"))
+New-Item -Path "$dockerDataBase\data" -ItemType "directory" 
+
+if (!(Test-Path "$dockerDataBase\appsettings.json"))
 {
-	Copy-Item "src\Corsinvest.ProxmoxVE.Admin\appsettings.json" -Destination "d:\DockerData\cv4pve-admin\appsettings.json"
+	Copy-Item "src\Corsinvest.ProxmoxVE.Admin\appsettings.json" -Destination "$dockerDataBase\appsettings.json"
 }
 
 docker run --rm -it `
