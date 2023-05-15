@@ -100,7 +100,7 @@ body:
       description: Are you interested in implementing a fix via a Pull Request? That would be the fastest way to resolve your issue. We appreciate every contribution!
       options:
         - label: I would like to do a Pull Request
- - type: checkboxes
+  - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
