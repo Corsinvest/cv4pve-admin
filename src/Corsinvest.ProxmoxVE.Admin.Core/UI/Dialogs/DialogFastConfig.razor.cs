@@ -34,16 +34,18 @@ public partial class DialogFastConfig
             switch (RefStepper!.GetActiveIndex())
             {
                 case 0:
-                    ret = string.IsNullOrEmpty(ClusterOptions.ApiToken)
-                            && (string.IsNullOrEmpty(ClusterOptions.ApiCredential.Username)
-                                || string.IsNullOrEmpty(ClusterOptions.ApiCredential.Username));
+                    ret = ClusterOptions.UseApiToken
+                            ? string.IsNullOrEmpty(ClusterOptions.ApiToken)
+                                || string.IsNullOrWhiteSpace(ClusterOptions.ApiToken)
+                            : string.IsNullOrEmpty(ClusterOptions.ApiCredential.Username)
+                                || string.IsNullOrWhiteSpace(ClusterOptions.ApiCredential.Username);
 
-                    if (ret) { UINotifier.Show(L["ApiToken or credential is required!"], UINotifierSeverity.Error); }
+                    if (ret) { UINotifier.Show(L[(ClusterOptions.UseApiToken ? "Api Token" : "Credential") + " is required!"], UINotifierSeverity.Error); }
                     break;
 
                 case 1:
                     ret = string.IsNullOrEmpty(ClusterOptions.SshCredential.Username)
-                            || string.IsNullOrEmpty(ClusterOptions.SshCredential.Username);
+                            || string.IsNullOrWhiteSpace(ClusterOptions.SshCredential.Username);
                     if (ret) { UINotifier.Show(L["Credential is required!"], UINotifierSeverity.Error); }
                     break;
 

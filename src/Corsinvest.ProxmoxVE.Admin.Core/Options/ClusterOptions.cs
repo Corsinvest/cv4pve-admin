@@ -13,7 +13,11 @@ public class ClusterOptions
     public string Name { get; set; } = default!;
     public string Type { get; set; } = default!;
     public string Description { get; set; } = default!;
-    public string ApiToken { get; set; } = default!;
+
+    [Display(Name= "API Token")]
+    public string ApiToken { get; set; } = default!;   
+
+    public bool UseApiToken { get; set; } 
     public Credential ApiCredential { get; } = new();
     public Credential SshCredential { get; } = new();
     public List<ClusterNodeOptions> Nodes { get; set; } = new();

@@ -34,14 +34,14 @@ public static class PveAdminHelper
             if (client != null)
             {
                 bool login;
-                if (string.IsNullOrWhiteSpace(clusterOptions.ApiToken))
+                if (clusterOptions.UseApiToken)
                 {
-                    login = await client.Login(clusterOptions.ApiCredential.Username, clusterOptions.ApiCredential.Password);
+                    client.ApiToken = clusterOptions.ApiToken;
+                    login = (await client.Version.Version()).IsSuccessStatusCode;
                 }
                 else
                 {
-                    client.ApiToken = clusterOptions.ApiToken;
-                    login = true;
+                    login = await client.Login(clusterOptions.ApiCredential.Username, clusterOptions.ApiCredential.Password);
                 }
 
                 if (!login) { logger.LogError("GetPveClient error! {error}", client.LastResult.ReasonPhrase); }

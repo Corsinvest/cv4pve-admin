@@ -4,24 +4,36 @@
 *@
 @inherits AHComponentBase
 
+<div class="d-flex gap-4 align-center">
+    <MudText>@L["Modal"]</MudText>
+    <MudSwitch @bind-Checked="@ClusterOptions.UseApiToken" Label="@L[ClusterOptions.UseApiToken ? "API Token": "Credential"]" Color="Color.Primary" />
+</div>
+
 <MudGrid>
-    <MudItem md="6">
-        <MudTextField @bind-Value="@ClusterOptions.ApiCredential.Username"
-                      Label="@L[MudBlazorHelper.GetDescriptionProperty < ClusterOptions>(a => a.ApiCredential.Username)]"
-                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" />
-    </MudItem>
-    <MudItem md="6">
-        <MudPasswordField @bind-Value="@ClusterOptions.ApiCredential.Password" PasswordMode
-                          Label="@L[MudBlazorHelper.GetDescriptionProperty < ClusterOptions>(a => a.ApiCredential.Password)]" />
-        </MudItem>
+    @if (ClusterOptions.UseApiToken)
+    {
         <MudItem xs="12">
-        <MudTextField @bind-Value="@ClusterOptions.ApiToken"
-                      Label="@L[MudBlazorHelper.GetDescriptionProperty < ClusterOptions>(a => a.ApiToken)]"
+            <MudTextField @bind-Value="@ClusterOptions.ApiToken"
+                      Label="@L[MudBlazorHelper.GetDescriptionProperty<ClusterOptions>(a => a.ApiToken)]"
+                      Placeholder="USER@REALM!TOKENID=UUID"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Api" />
         </MudItem>
-        </MudGrid>
+    }
+    else
+    {
+        <MudItem md="6">
+            <MudTextField @bind-Value="@ClusterOptions.ApiCredential.Username"
+                      Label="@L[MudBlazorHelper.GetDescriptionProperty<ClusterOptions>(a => a.ApiCredential.Username)]"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" />
+        </MudItem>
+        <MudItem md="6">
+            <MudPasswordField @bind-Value="@ClusterOptions.ApiCredential.Password"
+                          Label="@L[MudBlazorHelper.GetDescriptionProperty<ClusterOptions>(a => a.ApiCredential.Password)]" />
+        </MudItem>
+    }
+</MudGrid>
 
-        @code
-        {
+@code
+{
     [EditorRequired][Parameter] public ClusterOptions ClusterOptions { get; set; } = default!;
 }
