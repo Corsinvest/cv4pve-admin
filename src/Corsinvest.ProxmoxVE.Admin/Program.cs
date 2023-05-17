@@ -6,6 +6,7 @@ using Corsinvest.AppHero.Core;
 using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.AppHero.Core.Helpers;
 using Corsinvest.AppHero.Core.MudBlazorUI.Style;
+using Corsinvest.AppHero.Core.SoftwareRelease;
 using Corsinvest.ProxmoxVE.Admin;
 using Corsinvest.ProxmoxVE.Admin.Persistence;
 using Microsoft.AspNetCore.DataProtection;
@@ -61,8 +62,9 @@ builder.Services.ConfigureApp();
 builder.Services.AddMvc();
 builder.Services.AddControllers();
 
-builder.Services.AddAppHero(builder.Configuration);
-builder.Services.Customize();
+builder.Services.AddAppHero(builder.Configuration)
+                .Customize()
+                .AddReleaseGitHub();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

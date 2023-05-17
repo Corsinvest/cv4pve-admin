@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.96" />
+		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.97" />
 
 		<PackageReference Include="Blazor-ApexCharts" Version="0.9.19-beta" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
@@ -15,7 +15,7 @@
 		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Extension" Version="7.4.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
 		<PackageReference Include="QuestPDF" Version="2023.5.0" />
-		<PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.21.1" />
+		<PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.22.0" />
 		<PackageReference Include="SSH.NET" Version="2020.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
 	</ItemGroup>
