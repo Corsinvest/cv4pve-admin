@@ -23,7 +23,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Outlined.Storage,
+            Icon = Icons.Material.Filled.Storage,
             Render = typeof(RenderIndex)
         };
 
@@ -47,7 +47,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(DataGrid)}.{nameof(Data)}");
             public static Permission BlinkLed { get; } = new($"{Data.Prefix}.{nameof(BlinkLed)}", "Blink led",
-                                                            Icons.Material.Outlined.Bolt, UIColor.Default);
+                                                            Icons.Material.Filled.Bolt, UIColor.Default);
         }
     }
 }

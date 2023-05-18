@@ -34,7 +34,7 @@
     <ToolBarContent>
         <AHDataGridToolBarRead T="NodeTask" DataGridManager="DataGridManager">
             <ToolBarContentBefore>
-                <MudIconButton Icon="@Icons.Material.Outlined.Info" Title="@L["Info"]" OnClick="TaskShowDetailLogAsync"
+                <MudIconButton Icon="@Icons.Material.Filled.Info" Title="@L["Info"]" OnClick="TaskShowDetailLogAsync"
                                Disabled="@(!DataGridManager.ExistsSelection)" />
 
                 @if (OnlyErrors.HasDelegate)
@@ -70,7 +70,7 @@
            Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
     <TitleContent>
         <div class="d-flex gap-4">
-            <MudIcon Icon="@Icons.Material.Outlined.TaskAlt" />
+            <MudIcon Icon="@Icons.Material.Filled.TaskAlt" />
             <MudText>
                 @L["Task Viewer:"] @DataGridManager.SelectedItem.DescriptionFull
             </MudText>

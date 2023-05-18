@@ -34,12 +34,12 @@
         <TemplateColumn T="Data" CellClass="justify-end">
             <CellTemplate>
                 <MudButtonGroup Variant="Variant.Text">
-                    <MudIconButton Icon="@Icons.Material.Outlined.VisibilityOff" OnClick="@(() => IgnoreIssue(context.Item))"
+                    <MudIconButton Icon="@Icons.Material.Filled.VisibilityOff" OnClick="@(() => IgnoreIssue(context.Item))"
                                    Size="Size.Small" Title="@L["Ignore Issue"]" />
 
                     @if (!string.IsNullOrEmpty(context.Item.Url))
                     {
-                        <MudIconButton Icon="@Icons.Material.Outlined.Info" OnClick="@(() => ShowInfo(context.Item))"
+                        <MudIconButton Icon="@Icons.Material.Filled.Info" OnClick="@(() => ShowInfo(context.Item))"
                                    Size="Size.Small" Title="@L["Info"]" />
                     }
                 </MudButtonGroup>

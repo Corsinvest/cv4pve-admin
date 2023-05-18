@@ -35,7 +35,7 @@
             <ToolBarContentBefore>
                 @if (CanRestoreFile)
                 {
-                    <MudIconButton Icon="@Icons.Material.Outlined.Download" Title="@L["Restore file"]" OnClick="@(() => DialogVisible = true)"
+                    <MudIconButton Icon="@Icons.Material.Filled.Download" Title="@L["Restore file"]" OnClick="@(() => DialogVisible = true)"
                                Disabled="@(BackupIsRestorable())" />
                 }
             </ToolBarContentBefore>
@@ -77,7 +77,7 @@
            Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
     <TitleContent>
         <div class="d-flex gap-4">
-            <MudIcon Icon="@Icons.Material.Outlined.TaskAlt" />
+            <MudIcon Icon="@Icons.Material.Filled.TaskAlt" />
             <MudText>
                 @L["Show content backup:"] @DataGridManager.SelectedItem.FileName
             </MudText>
@@ -93,7 +93,7 @@
         <MudButton Variant="Variant.Filled" OnClick="@(() => DialogVisible = false)">@L["Close"]</MudButton>
 
         <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit"
-                   Disabled="NodeBackupFileToRestore ==null" StartIcon="@Icons.Material.Outlined.Download"
+                   Disabled="NodeBackupFileToRestore ==null" StartIcon="@Icons.Material.Filled.Download"
                    OnClick="DownloadFileRestore" Color="Color.Primary">@L["Download"]</MudButton>
     </DialogActions>
 </MudDialog>

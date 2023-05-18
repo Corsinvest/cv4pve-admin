@@ -8,7 +8,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Diagnostic.Repository;
 
 internal class ExecutionSpec : ClusterByNameSpec<Execution>
 {
-    public ExecutionSpec(string clusterName) : base(clusterName) { }
+    public ExecutionSpec(string clusterName) : base(clusterName)
+    {
+        //Query.OrderByDescending(a => a.Date);
+    }
 
     public ExecutionSpec(string clusterName, int keep) : this(clusterName)
         => Query.OrderByDescending(a => a.Date)

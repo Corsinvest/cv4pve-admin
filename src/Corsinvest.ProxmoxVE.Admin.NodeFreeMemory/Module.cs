@@ -22,7 +22,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Outlined.Memory,
+            Icon = Icons.Material.Filled.Memory,
             Render = typeof(RenderIndex)
         };
 
@@ -47,7 +47,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(DataGrid)}.{nameof(Data)}");
             public static Permission FreeMemory { get; } = new($"{Data.Prefix}.{nameof(FreeMemory)}",
                                                                "Free Memory",
-                                                               Icons.Material.Outlined.CleaningServices,
+                                                               Icons.Material.Filled.CleaningServices,
                                                                UIColor.Error);
         }
     }

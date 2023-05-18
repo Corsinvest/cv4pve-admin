@@ -46,14 +46,14 @@ else
     <br />
 
     <MudTabs Elevation="2" ApplyEffectsToContainer Border>
-    <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Outlined.Task">
+    <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Filled.Task">
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks @ref="RefTasks"
                                                                    Permissions="Module.Permissions.DataGrid.Data"
                                                                    GetItems="GetTasks"
                                                                    PveClient="PveClient" />
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Cluster Log"]" Icon="@Icons.Material.Outlined.Error">
+    <MudTabPanel Text="@L["Cluster Log"]" Icon="@Icons.Material.Filled.Error">
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Logs @ref="RefLogs"
                                                                    Permissions="Module.Permissions.DataGrid.Data"
                                                                    PveClient="PveClient" />

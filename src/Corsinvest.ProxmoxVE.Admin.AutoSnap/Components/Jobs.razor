@@ -125,14 +125,14 @@
 
     <ChildRowContent>
         <MudTabs Elevation="1" ApplyEffectsToContainer Border>
-            <MudTabPanel Text="@L["Hooks"]" Icon="@Icons.Material.Outlined.Api">
+            <MudTabPanel Text="@L["Hooks"]" Icon="@Icons.Material.Filled.Api">
             </MudTabPanel>
 
-            <MudTabPanel Text="@L["Histories"]" Icon="@Icons.Material.Outlined.History">
+            <MudTabPanel Text="@L["Histories"]" Icon="@Icons.Material.Filled.History">
                 <Histories JobId="@context.Item.Id" />
             </MudTabPanel>
 
-            <MudTabPanel Text="@L["Status"]" Icon="@Icons.Material.Outlined.List">
+            <MudTabPanel Text="@L["Status"]" Icon="@Icons.Material.Filled.List">
                 <Status VmIdsOrNames="@context.Item.VmIds" />
             </MudTabPanel>
         </MudTabs>

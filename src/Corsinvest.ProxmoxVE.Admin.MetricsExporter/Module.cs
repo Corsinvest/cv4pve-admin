@@ -32,7 +32,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Outlined.MultilineChart,
+            Icon = Icons.Material.Filled.MultilineChart,
             Render = typeof(RenderIndex)
         };
 

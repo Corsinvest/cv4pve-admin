@@ -27,26 +27,26 @@ else
                        OnShowConsole="@ShowConsoleAsync"
                        OnStatusChanged="@ChangeStatusAsync">
                     <ToolBarContent>
-                        <MudIconButton Title="@L["Refresh"]" Icon="@Icons.Material.Outlined.Refresh" OnClick="Refresh" />
+                        <MudIconButton Title="@L["Refresh"]" Icon="@Icons.Material.Filled.Refresh" OnClick="Refresh" />
                     </ToolBarContent>
                 </ToolBarStatus>
             </Header>
 
             <ChildContent>
-                <MudTabPanel Text="@L["Summary"]" Icon="@Icons.Material.Outlined.Info">
+                <MudTabPanel Text="@L["Summary"]" Icon="@Icons.Material.Filled.Info">
                     <MudPaper Class="pa-2">
                         <Detail @ref="RefDetail" GetStatus="@GetStatusAsync" GetVmQemuAgentGetFsInfo="@GetQemuAgentGetFsInfoAsync" />
 
                     </MudPaper>
                 </MudTabPanel>
 
-                <MudTabPanel Text="@L["Charts"]" Icon="@Icons.Material.Outlined.MultilineChart">
+                <MudTabPanel Text="@L["Charts"]" Icon="@Icons.Material.Filled.MultilineChart">
                     <MudPaper Class="pa-2">
                         <Charts @ref="RefCharts" GetItems="@GetRrdDataAsync" />
                     </MudPaper>
                 </MudTabPanel>
 
-                <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Outlined.TaskAlt">
+                <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Filled.TaskAlt">
                     <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks GetItems="GetTasks" PveClient="PveClient" PropertiesName="PropertiesNameTasks" />
                 </MudTabPanel>
 

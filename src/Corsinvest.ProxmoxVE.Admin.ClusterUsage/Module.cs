@@ -27,7 +27,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Outlined.DataUsage,
+            Icon = Icons.Material.Filled.DataUsage,
             Render = typeof(RenderIndex)
         };
 
@@ -62,10 +62,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class Costs
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(Costs)}.{nameof(Data)}");
-            public static Permission Scan { get; } = new($"{Data.Prefix}.{nameof(Scan)}",
-                                                         "Scan",
-                                                         Icons.Material.Outlined.DirectionsRun,
-                                                         UIColor.Success);
+            public static Permission Scan { get; } = new($"{Data.Prefix}.{nameof(Scan)}", "Scan", Icons.Material.Filled.PlayArrow, UIColor.Success);
         }
 
         public class Storages

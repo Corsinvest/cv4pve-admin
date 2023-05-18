@@ -18,21 +18,25 @@ public partial class RenderIndex
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
     [Inject] private IServiceScopeFactory ScopeFactory { get; set; } = default!;
     [Inject] private IJobService JobService { get; set; } = default!;
+    [Inject] private IOptionsSnapshot<Options> Options { get; set; } = default!;
 
     private bool ShowDialog { get; set; }
     private bool LoadingDownload { get; set; }
     private bool LoadingUpload { get; set; }
     private string DialogContent { get; set; } = default!;
+    private string ClusterName { get; set; } = default!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            ClusterName = await PveClientService.GetCurrentClusterName();
+        }
+        catch { }
+
         DataGridManager.Title = L["Node protected"];
         DataGridManager.DefaultSort = new() { [nameof(NodeProtectJobHistory.JobId)] = true };
-        DataGridManager.QueryAsync = async () =>
-        {
-            var clusterName = await PveClientService.GetCurrentClusterName();
-            return await DataGridManager.Repository.ListAsync(new ClusterByNameSpec<NodeProtectJobHistory>(clusterName));
-        };
+        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ClusterByNameSpec<NodeProtectJobHistory>(ClusterName));
 
         DataGridManager.DeleteAfterAsync = async (items) =>
         {
@@ -56,8 +60,7 @@ public partial class RenderIndex
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Protect"], L["Execute Protect?"]))
         {
-            var clusterName = await PveClientService.GetCurrentClusterName();
-            JobService.Schedule<Job>(a => a.Protect(clusterName), TimeSpan.FromSeconds(10));
+            JobService.Schedule<Job>(a => a.Protect(ClusterName), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Protect started!"], UINotifierSeverity.Info);
         }
     }

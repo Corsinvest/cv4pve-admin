@@ -12,13 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B81E7A
 		3rd-party-licenses.md = 3rd-party-licenses.md
 		Build.ps1 = Build.ps1
 		src\common.props = src\common.props
-		Dockerfile = Dockerfile
 		docker-utils.ps1 = docker-utils.ps1
+		Dockerfile = Dockerfile
 		icon.png = icon.png
 		LICENSE = LICENSE
 		README.md = README.md
-		Todo.md = Todo.md
 		setKey.ps1 = setKey.ps1
+		Todo.md = Todo.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.Core", "src\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj", "{0CCF88EF-939D-41A8-AB0E-A4D0AE52F12B}"

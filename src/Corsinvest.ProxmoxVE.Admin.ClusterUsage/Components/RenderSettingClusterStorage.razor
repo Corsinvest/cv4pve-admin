@@ -27,7 +27,7 @@
                     <MudIconButton Icon="@MudBlazorHelper.ToMBIcon(UIIcon.Edit.GetName())"
                                    OnClick="@(() => DataGridManager.EditAsync(Context.Item,false))"
                                    Color="@Color.Default"
-                                   Size="Size.Small" Title="@L["Edit"]"
+                                   Size="Size.Medium" Title="@L["Edit"]"
                                    Disabled="@DataGridManager.ToDataGridManager().DataGrid!.Loading" />
                 </MudButtonGroup>-
             </CellTemplate>

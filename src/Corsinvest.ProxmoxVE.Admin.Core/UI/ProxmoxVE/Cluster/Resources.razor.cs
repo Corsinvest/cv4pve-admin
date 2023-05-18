@@ -29,7 +29,7 @@ public partial class Resources : IRefreshable
         };
 
     [EditorRequired][Parameter] public Func<Task<IEnumerable<ClusterResource>>> GetItems { get; set; } = default!;
-    [Parameter] public string NoRecordsContentIcon { get; set; } = Icons.Material.Outlined.SentimentDissatisfied;
+    [Parameter] public string NoRecordsContentIcon { get; set; } = Icons.Material.Filled.SentimentDissatisfied;
 
     [Inject] private IDataGridManager<ClusterResource> DataGridManagerInt { get; set; } = default!;
 
