@@ -4,6 +4,9 @@
 *@
 @inherits AHComponentBase
 
+<Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoScheduler Enabled="@Options.Value.Get(ClusterName).Enabled"
+    CronExpression="@Options.Value.Get(ClusterName).CronExpression"/>
+
 <AHDataGrid T="Execution"
             Permissions="Module.Permissions.Result.Data"
             FixedHeader

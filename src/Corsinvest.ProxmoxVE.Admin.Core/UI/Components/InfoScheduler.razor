@@ -1,0 +1,37 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Cronos
+@inherits AHComponentBase
+
+@if (Enabled)
+{
+    @if (CronHelper.IsValid(CronExpression))
+    {
+        <MudAlert Severity="Severity.Info" NoIcon >
+            <div class="d-flex gap-4">
+                <div class="d-flex gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Alarm"/>
+                    <MudText><b>@L["Frequency"]</b>: @CronHelper.GetDescription(CronExpression)</MudText>
+                </div>
+                <div class="d-flex gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.DirectionsRun" />
+                    <MudText><b>@L["Next Occurrence"]</b>: @CronHelper.NextOccurrence(CronExpression).Value.ToString("G")</MudText>
+                </div>
+            </div>
+        </MudAlert>
+    }
+}
+else
+{
+    <MudAlert Severity="Severity.Warning" Icon="@Icons.Material.Filled.Alarm">
+        @L["Schedulation not active!"]
+    </MudAlert>
+}
+
+@code
+{
+    [Parameter] public bool Enabled { get; set; }
+    [Parameter] public string CronExpression { get; set; } = default!;
+}

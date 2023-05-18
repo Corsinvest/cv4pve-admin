@@ -20,17 +20,19 @@ public partial class Results
     [Inject] private IJobService JobService { get; set; } = default!;
     [Inject] private IOptionsSnapshot<Options> Options { get; set; } = default!;
     [Inject] private IOptionsSnapshot<AppOptions> AppOptions { get; set; } = default!;
+    private string ClusterName { get; set; } = default!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            ClusterName = await PveClientService.GetCurrentClusterName();
+        }
+        catch { }
+
         DataGridManager.Title = L["Results"];
         DataGridManager.DefaultSort = new() { [nameof(Execution.Date)] = true };
-
-        DataGridManager.QueryAsync = async () =>
-        {
-            var clusterName = await PveClientService.GetCurrentClusterName();
-            return await DataGridManager.Repository.ListAsync(new ExecutionSpec(clusterName));
-        };
+        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ExecutionSpec(ClusterName));
     }
 
     private async Task Run()
@@ -42,10 +44,9 @@ public partial class Results
 
     private async Task DownloadPdf(Execution item)
     {
-        var clusterName = await PveClientService.GetCurrentClusterName();
-        var ignoreIssues = await Helper.GetIgnoredIssue(IgnoredIssuesRepo, clusterName);
+        var ignoreIssues = await Helper.GetIgnoredIssue(IgnoredIssuesRepo, ClusterName);
         var data = (await ExecutionsRepo.FirstOrDefaultAsync(new ExecutionSpec(string.Empty).ByKey(item.Id).Include()))!.Data;
-        using var ms = Helper.GeneratePdf(L, AppOptions.Value, item, Helper.Analyze(data, Options.Value.Get(clusterName), ignoreIssues))!;
+        using var ms = Helper.GeneratePdf(L, AppOptions.Value, item, Helper.Analyze(data, Options.Value.Get(ClusterName), ignoreIssues))!;
         await BlazorDownloadFileService.DownloadFile("Diagnostic.pdf", ms, System.Net.Mime.MediaTypeNames.Application.Pdf);
     }
 }

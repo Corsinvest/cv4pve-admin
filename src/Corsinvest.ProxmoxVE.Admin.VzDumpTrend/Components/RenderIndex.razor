@@ -4,17 +4,17 @@
 *@
 @inherits AHComponentBase
 
-<MudTabs Elevation="1" ApplyEffectsToContainer Border PanelClass="pa-3">
-    <MudTabPanel Text="@L["Jobs"]" Icon="@Icons.Material.Outlined.Task">
+<MudTabs Elevation="1" ApplyEffectsToContainer Border>
+    <MudTabPanel Text="@L["Jobs"]" Icon="@Icons.Material.Filled.Task">
         <Jobs />
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Scheduled"]" Icon="@Icons.Material.Outlined.Alarm">
-        <ClusterBackups PveClient="PveClient" Height="calc(100vh - 390px)" />
+    <MudTabPanel Text="@L["Scheduled"]" Icon="@Icons.Material.Filled.Alarm">
+        <ClusterBackups PveClient="PveClient" Height="calc(100vh - 370px)" />
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Not scheduled"]" Icon="@Icons.Material.Outlined.AlarmOff">
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Height="calc(100vh - 390px)"
+    <MudTabPanel Text="@L["Not scheduled"]" Icon="@Icons.Material.Filled.AlarmOff">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Height="calc(100vh - 370px)"
                                                                         GetItems="GetNotScheduled"
                                                                         PropertiesName="new[]
                                                                         {
@@ -27,18 +27,20 @@
                                                                              nameof(IClusterResourceVm.CpuUsagePercentage),
                                                                              nameof(IClusterResourceVm.Uptime),
                                                                         }" ,
-                                                                        NoRecordsContentIcon="@Icons.Material.Outlined.SentimentSatisfied" />
+                                                                        NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied" />
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Disks Not Backed Up"]" Icon="@Icons.Material.Outlined.Storage">
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.DisksNotBackedUp PveClient="PveClient" Height="calc(100vh - 390px)" />
+    <MudTabPanel Text="@L["Disks Not Backed Up"]" Icon="@Icons.Material.Filled.Storage">
+        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.DisksNotBackedUp PveClient="PveClient" Height="calc(100vh - 370px)" />
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Data Analysis"]" Icon="@Icons.Material.Outlined.Analytics">
-        <DataAnalysis />
+    <MudTabPanel Text="@L["Data Analysis"]" Icon="@Icons.Material.Filled.Analytics">
+        <div class="pa-3">
+            <DataAnalysis />
+        </div>
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Backup in line"]" Icon="@Icons.Material.Outlined.History">
+    <MudTabPanel Text="@L["Backup in line"]" Icon="@Icons.Material.Filled.History">
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Nodes.StorageContents GetItems="GetBackupsInline" Height="calc(100vh - 315px)" />
     </MudTabPanel>
 </MudTabs>

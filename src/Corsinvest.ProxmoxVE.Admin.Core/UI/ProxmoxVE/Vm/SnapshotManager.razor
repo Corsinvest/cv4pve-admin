@@ -31,7 +31,7 @@
 
                 @if (CanDelete)
                 {
-                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever" Color="Color.Error" Title="@L["Delete"]"
+                    <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" Title="@L["Delete"]"
                                OnClick="@(async () => await DataGridManager.DeleteSelectedItemsAsync(true))"
                                Disabled="@(!DataGridManager.ExistsSelection)" />
                 }
@@ -63,7 +63,7 @@
                 <MudButtonGroup Variant="Variant.Text">
                     @if (CanRollback)
                     {
-                        <MudIconButton Icon="@Icons.Material.Outlined.History" Title="@L["Rollback"]" OnClick="RollbackAsync" />
+                        <MudIconButton Icon="@Icons.Material.Filled.History" Title="@L["Rollback"]" OnClick="RollbackAsync" />
                     }
                 </MudButtonGroup>
             </CellTemplate>

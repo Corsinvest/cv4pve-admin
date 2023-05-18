@@ -91,20 +91,20 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class Job
         {
             public static PermissionsCrud Data { get; } = new($"{typeof(Module).FullName}.{nameof(Job)}.{nameof(Data)}");
-            public static Permission Snap { get; } = new($"{Data.Prefix}.{nameof(Snap)}", "Snap", Icons.Material.Outlined.DirectionsRun, UIColor.Success);
-            public static Permission Clean { get; } = new($"{Data.Prefix}.{nameof(Clean)}", "Clean", Icons.Material.Outlined.CleaningServices, UIColor.Warning);
+            public static Permission Snap { get; } = new($"{Data.Prefix}.{nameof(Snap)}", "Snap", Icons.Material.Filled.PlayArrow, UIColor.Success);
+            public static Permission Clean { get; } = new($"{Data.Prefix}.{nameof(Clean)}", "Clean", Icons.Material.Filled.CleaningServices, UIColor.Warning);
         }
 
         public class Status
         {
             public static PermissionsRead Data { get; } = new($"{nameof(AutoSnap)}.{nameof(Status)}.{nameof(Data)}");
-            public static Permission Delete { get; } = new($"{Data.Prefix}.{nameof(Delete)}", "Delete", Icons.Material.Outlined.DeleteForever, UIColor.Error);
+            public static Permission Delete { get; } = new($"{Data.Prefix}.{nameof(Delete)}", "Delete", Icons.Material.Filled.DeleteForever, UIColor.Error);
         }
 
         public class History
         {
             public static PermissionsRead Data { get; } = new($"{nameof(AutoSnap)}.{nameof(History)}.{nameof(Data)}");
-            public static Permission ShowLog { get; } = new($"{Data.Prefix}.{nameof(ShowLog)}", "Show log", Icons.Material.Outlined.Description, UIColor.Primary);
+            public static Permission ShowLog { get; } = new($"{Data.Prefix}.{nameof(ShowLog)}", "Show log", Icons.Material.Filled.Description, UIColor.Primary);
         }
     }
 }

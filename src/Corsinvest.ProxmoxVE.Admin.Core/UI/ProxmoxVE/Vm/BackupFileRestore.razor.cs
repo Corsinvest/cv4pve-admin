@@ -23,8 +23,8 @@ public partial class BackupFileRestore
     private static string GetIcon(NodeBackupFile item)
         => item.Type switch
         {
-            "v" => Icons.Material.Outlined.Folder,
-            "d" => Icons.Material.Outlined.Folder,
+            "v" => Icons.Material.Filled.Folder,
+            "d" => Icons.Material.Filled.Folder,
             "f" => GetIconFile(item.Text),
             _ => null!,
         };
@@ -55,7 +55,7 @@ public partial class BackupFileRestore
             ".3gp" or ".3g2" or ".mxf" or ".roq" or ".nsv" or ".flv" or ".f4v" or ".f4p" or ".f4a" or
             ".f4b" => Icons.Custom.FileFormats.FileVideo,
 
-            _ => Icons.Material.Outlined.Description,
+            _ => Icons.Material.Filled.Description,
         };
 
     HashSet<NodeBackupFile> TreeItems { get; set; } = new HashSet<NodeBackupFile>();

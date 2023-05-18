@@ -73,9 +73,9 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public static class Job
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(Job)}.{nameof(Data)}");
-            public static Permission Scan { get; } = new($"{Data.Prefix}.{nameof(Scan)}", "Scan backups Proxmox VE", Icons.Material.Outlined.DirectionsRun, UIColor.Success);
-            public static Permission ShowLogVm { get; } = new($"{Data.Prefix}.{nameof(ShowLogVm)}", "Show log VM/CT", Icons.Material.Outlined.ListAlt, UIColor.Primary);
-            public static Permission ShowLogFull { get; } = new($"{Data.Prefix}.{nameof(ShowLogFull)}", "Show full log", Icons.Material.Outlined.ListAlt, UIColor.Tertiary);
+            public static Permission Scan { get; } = new($"{Data.Prefix}.{nameof(Scan)}", "Scan backups Proxmox VE", Icons.Material.Filled.PlayArrow, UIColor.Success);
+            public static Permission ShowLogVm { get; } = new($"{Data.Prefix}.{nameof(ShowLogVm)}", "Show log VM/CT", Icons.Material.Filled.ListAlt, UIColor.Primary);
+            public static Permission ShowLogFull { get; } = new($"{Data.Prefix}.{nameof(ShowLogFull)}", "Show full log", Icons.Material.Filled.ListAlt, UIColor.Tertiary);
         }
     }
 }

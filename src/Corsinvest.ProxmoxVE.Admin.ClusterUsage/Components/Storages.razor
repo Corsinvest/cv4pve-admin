@@ -12,11 +12,11 @@
 else
 {
     <MudTabs Elevation="1" ApplyEffectsToContainer Border>
-    <MudTabPanel Text="@L["Configuration"]" Icon="@Icons.Material.Outlined.Description">
+    <MudTabPanel Text="@L["Configuration"]" Icon="@Icons.Material.Filled.Description">
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Storage.Storages Height="calc(100vh - 415px)" GetItems="GetConfigStorages" />
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["By Storage"]" Icon="@Icons.Material.Outlined.Storage">
+    <MudTabPanel Text="@L["By Storage"]" Icon="@Icons.Material.Filled.Storage">
         <MudAlert Severity="Severity.Warning">
             @L["ATTENTION! THE CALCULATION OF STORAGE OCCUPATION DEPENDS ON THE COMPRESSION / DEDUPLICATION FEATURES"]
         </MudAlert>
@@ -41,7 +41,7 @@ else
                                                                             nameof(ClusterResource.Content),
                                                                             nameof(ClusterResource.Pool),
                                                                         }" ,
-                                                                        NoRecordsContentIcon="@Icons.Material.Outlined.SentimentSatisfied">
+                                                                        NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
 
             <ChildRowContent>
                 <MudText Typo="Typo.h5" Align="Align.Center">
@@ -67,7 +67,7 @@ else
 
     </MudTabPanel>
 
-    <MudTabPanel Text="@L["By VM/CT"]" Icon="@Icons.Material.Outlined.Computer">
+    <MudTabPanel Text="@L["By VM/CT"]" Icon="@Icons.Material.Filled.Computer">
         <MudAlert Severity="Severity.Warning">
             @L["ATTENTION! THE CALCULATION OF STORAGE OCCUPATION DEPENDS ON THE COMPRESSION / DEDUPLICATION FEATURES"]
         </MudAlert>
@@ -95,7 +95,7 @@ else
                                                                             nameof(IClusterResourceVm.HostCpuUsage),
                                                                             nameof(IClusterResourceVm.HostMemoryUsage),
                                                                         }" ,
-                                                                        NoRecordsContentIcon="@Icons.Material.Outlined.SentimentSatisfied">
+                                                                        NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
 
             <ChildRowContent>
                 <MudText Typo="Typo.h5" Align="Align.Center">

@@ -8,7 +8,7 @@ public static class JobHelper
 {
     public static string GetJobId<T>(string clusterName, params object?[] args)
         => $"{typeof(T).FullName}-{clusterName}" +
-                args == null
-                 ? ""
-                 : "-" + args.JoinAsString("-");
+                (args != null && args.Length > 0
+                 ? "-" + args.JoinAsString("-")
+                 : "");
 }

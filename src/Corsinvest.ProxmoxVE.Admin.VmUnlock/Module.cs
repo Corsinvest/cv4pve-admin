@@ -22,7 +22,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Outlined.Lock,
+            Icon = Icons.Material.Filled.Lock,
             Render = typeof(RenderIndex)
         };
 
@@ -55,7 +55,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class DataGrid
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(DataGrid)}.{nameof(Data)}");
-            public static Permission Unlock { get; } = new($"{Data.Prefix}.{nameof(Unlock)}", "Unlock", Icons.Material.Outlined.LockOpen, UIColor.Error);
+            public static Permission Unlock { get; } = new($"{Data.Prefix}.{nameof(Unlock)}", "Unlock", Icons.Material.Filled.LockOpen, UIColor.Error);
         }
     }
 }

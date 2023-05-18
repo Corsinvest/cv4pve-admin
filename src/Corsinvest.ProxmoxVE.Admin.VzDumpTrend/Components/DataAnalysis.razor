@@ -144,13 +144,13 @@
                 <div class="d-flex gap-2">
                     @if (item.CountOk > 0)
                     {
-                        <MudIcon Icon="@Icons.Material.Outlined.Check" Color="@MudBlazor.Color.Success" />
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="@MudBlazor.Color.Success" />
                         <MudText>@item.CountOk</MudText>
                     }
 
                     @if (item.CountKo > 0)
                     {
-                        <MudIcon Icon="@Icons.Material.Outlined.Close" Color="@MudBlazor.Color.Error" />
+                        <MudIcon Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" />
                         <MudText>@item.CountKo</MudText>
                     }
 

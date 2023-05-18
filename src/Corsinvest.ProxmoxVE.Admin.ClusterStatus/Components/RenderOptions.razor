@@ -40,13 +40,13 @@
                 <MudGrid>
                     <MudItem xs="12" md="6">
                         <MudNumericField T="double" @bind-Value="@threshold.Warning"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Warning" AdornmentColor="Color.Warning"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warning" AdornmentColor="Color.Warning"
                                  Label="@L["Warning %"]" For="@(() => threshold.Warning)" />
                     </MudItem>
 
                     <MudItem xs="12" md="6">
                         <MudNumericField T="double" @bind-Value="@threshold.Critical"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Error" AdornmentColor="Color.Error"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Error" AdornmentColor="Color.Error"
                                  Label="@L["Critical %"]" For="@(() => threshold.Critical)" />
                     </MudItem>
                 </MudGrid>

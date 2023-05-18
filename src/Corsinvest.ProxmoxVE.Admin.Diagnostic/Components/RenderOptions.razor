@@ -12,7 +12,7 @@
 <PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
     <Row>
         <MudTabs Elevation="1" ApplyEffectsToContainer Border>
-            <MudTabPanel Text="@L["Scheduling"]" Icon="@Icons.Material.Outlined.Schedule">
+            <MudTabPanel Text="@L["Scheduling"]" Icon="@Icons.Material.Filled.Schedule">
                 <MudGrid Class="pa-4">
                     <MudItem xs="6" md="2">
                         <MudSwitch T="bool" @bind-Checked="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
@@ -34,7 +34,7 @@
                         </MudGrid>
                         </MudTabPanel>
 
-                        <MudTabPanel Text="@L["Threshold"]" Icon="@Icons.Material.Outlined.DataThresholding">
+                        <MudTabPanel Text="@L["Threshold"]" Icon="@Icons.Material.Filled.DataThresholding">
                         <MudExpansionPanels MultiExpansion>
                     @foreach (var (hostType, hostTypeIdx) in new[] { context.Node, context.Qemu, context.Lxc }.Select((a, idx) => (a, idx)))
                     {
@@ -68,7 +68,7 @@
                     <MudExpansionPanel>
                         <TitleContent>
                             <div class="d-flex gap-4">
-                                <MudIcon Icon="@Icons.Material.Outlined.Storage" />
+                                <MudIcon Icon="@Icons.Material.Filled.Storage" />
                                 <MudText>@L["Storage"]</MudText>
                             </div>
                         </TitleContent>
@@ -80,7 +80,7 @@
                                 </MudItem>
 
                                 <MudItem xs="12" md="4">
-                                    @RenderOptionsThreshold("Usage", Icons.Material.Outlined.DataThresholding, context.Storage.Threshold)
+                                    @RenderOptionsThreshold("Usage", Icons.Material.Filled.DataThresholding, context.Storage.Threshold)
                                 </MudItem>
                             </MudGrid>
                         </ChildContent>
@@ -97,7 +97,7 @@
                         <ChildContent>
                             <MudGrid>
                                 <MudItem xs="12" md="4">
-                                    @RenderOptionsThreshold("Wearout", Icons.Material.Outlined.DataThresholding, context.SsdWearoutThreshold)
+                                    @RenderOptionsThreshold("Wearout", Icons.Material.Filled.DataThresholding, context.SsdWearoutThreshold)
                                 </MudItem>
                             </MudGrid>
                         </ChildContent>
@@ -136,13 +136,13 @@
                 <MudGrid>
                     <MudItem xs="12" md="6">
                         <MudNumericField T="double" @bind-Value="@threshold.Warning"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Warning" AdornmentColor="Color.Warning"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warning" AdornmentColor="Color.Warning"
                                  Label="@L["Warning %"]" For="@(() => threshold.Warning)" />
                     </MudItem>
 
                     <MudItem xs="12" md="6">
                         <MudNumericField T="double" @bind-Value="@threshold.Critical"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Error" AdornmentColor="Color.Error"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Error" AdornmentColor="Color.Error"
                                  Label="@L["Critical %"]" For="@(() => threshold.Critical)" />
                     </MudItem>
                 </MudGrid>

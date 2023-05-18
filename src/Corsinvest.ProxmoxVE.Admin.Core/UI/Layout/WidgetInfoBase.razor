@@ -12,7 +12,7 @@ else
 {
     <MudAlert Style="height:100%" Class="pt-5 pb-5 align-center"
           Severity="@(Status.Value ? Severity.Success : Severity.Error)"
-          Icon="@(Status.Value ? Icons.Material.Outlined.ThumbUp : Icons.Material.Outlined.ThumbDown)">
+          Icon="@(Status.Value ? Icons.Material.Filled.ThumbUp : Icons.Material.Filled.ThumbDown)">
         @Description
     </MudAlert>
 }

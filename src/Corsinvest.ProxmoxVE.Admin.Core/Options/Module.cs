@@ -49,7 +49,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class Nodes
         {
             public static PermissionsCrud Data { get; } = new($"{typeof(Module).FullName}.{nameof(Nodes)}.{nameof(Data)}");
-            public static Permission FindNewNodes { get; } = new($"{Data.Prefix}.{nameof(FindNewNodes)}", "Nodes finder", Icons.Material.Outlined.TravelExplore, UIColor.Info);
+            public static Permission FindNewNodes { get; } = new($"{Data.Prefix}.{nameof(FindNewNodes)}", "Nodes finder", Icons.Material.Filled.TravelExplore, UIColor.Info);
         }
     }
 }

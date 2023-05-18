@@ -4,6 +4,9 @@
 *@
 @inherits AHComponentBase
 
+<Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoScheduler Enabled="@Options.Value.Get(ClusterName).Enabled"
+                                                             CronExpression="@Options.Value.Get(ClusterName).CronExpression" />
+
 <AHDataGrid T="NodeProtectJobHistory"
             Permissions="Module.Permissions.DataGrid.Data"
             FixedHeader
@@ -14,7 +17,7 @@
             RowsPerPage="999"             
             Groupable
             ShowFilterIcons="false"
-            Height="calc(100vh - 315px)">
+            Height="calc(100vh - 335px)">
     <ToolBarContent>
         <AHDataGridToolBarRead T="NodeProtectJobHistory" DataGridManager="DataGridManager">
             <ToolBarContentBefore>
@@ -78,7 +81,7 @@
            Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
     <TitleContent>
         <div class="d-flex gap-2">
-            <MudIcon Icon="@Icons.Material.Outlined.Description" />
+            <MudIcon Icon="@Icons.Material.Filled.Description" />
             <MudText>@L["Log detail"]</MudText>
         </div>
     </TitleContent>

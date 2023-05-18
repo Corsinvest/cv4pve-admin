@@ -137,7 +137,7 @@ public partial class Summary : IRefreshable
         if (cluster == null)
         {
             StatusInfo.Status = L["Standalone node - no cluster defined"];
-            StatusInfo.Icon = Icons.Material.Outlined.CheckCircle;
+            StatusInfo.Icon = Icons.Material.Filled.CheckCircle;
             StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOnline);
         }
         else
@@ -149,12 +149,12 @@ public partial class Summary : IRefreshable
 
             if (status.Count(a => a.Type != PveConstants.KeyApiCluster) == cluster.Nodes)
             {
-                StatusInfo.Icon = Icons.Material.Outlined.CheckCircle;
+                StatusInfo.Icon = Icons.Material.Filled.CheckCircle;
                 StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOnline);
             }
             else
             {
-                StatusInfo.Icon = Icons.Material.Outlined.Warning;
+                StatusInfo.Icon = Icons.Material.Filled.Warning;
                 StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOffline);
             }
         }        

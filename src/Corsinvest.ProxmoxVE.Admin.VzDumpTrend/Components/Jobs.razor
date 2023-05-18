@@ -4,6 +4,9 @@
 *@
 @inherits AHComponentBase
 
+<Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoScheduler Enabled="@Options.Value.Get(ClusterName).Enabled"
+                                                             CronExpression="@Options.Value.Get(ClusterName).CronExpression" />
+
 <AHDataGrid T="VzDumpDetail"
             Permissions="Module.Permissions.Job.Data"
             DataGridManager="DataGridManager"
@@ -13,7 +16,7 @@
             Filterable
             Groupable
             ShowFilterIcons="false"
-            Height="calc(100vh - 390px)">
+            Height="calc(100vh - 420px)">
     <ToolBarContent>
         <AHDataGridToolBarRead T="VzDumpDetail" DataGridManager="DataGridManager">
             <ToolBarContentBefore>
@@ -68,7 +71,7 @@
            Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
     <TitleContent>
         <div class="d-flex gap-4">
-            <MudIcon Icon="@Icons.Material.Outlined.Description" />
+            <MudIcon Icon="@Icons.Material.Filled.Description" />
             <MudText>@L[DialogTitle]</MudText>
         </div>
     </TitleContent>

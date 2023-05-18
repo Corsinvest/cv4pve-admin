@@ -76,8 +76,8 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class Result
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(Result)}.{nameof(Data)}");
-            public static Permission Run { get; } = new($"{Data.Prefix}.{nameof(Run)}", "Run", Icons.Material.Outlined.DirectionsRun, UIColor.Success);
-            public static Permission Delete { get; } = new($"{Data.Prefix}.{nameof(Delete)}", "Delete", Icons.Material.Outlined.DeleteForever, UIColor.Error);
+            public static Permission Run { get; } = new($"{Data.Prefix}.{nameof(Run)}", "Run", Icons.Material.Filled.PlayArrow, UIColor.Success);
+            public static Permission Delete { get; } = new($"{Data.Prefix}.{nameof(Delete)}", "Delete", Icons.Material.Filled.DeleteForever, UIColor.Error);
             public static Permission DownloadPdf { get; } = new($"{Data.Prefix}.{nameof(DownloadPdf)}", "Download PDF", Icons.Custom.FileFormats.FilePdf, UIColor.Error);
         }
     }

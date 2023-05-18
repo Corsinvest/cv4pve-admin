@@ -24,7 +24,7 @@
 
         @if (CanNoVnc)
         {
-            <MudIconButton Title="@L["Console"]" Icon="@Icons.Material.Outlined.DesktopWindows" Size="@Size"
+            <MudIconButton Title="@L["Console"]" Icon="@Icons.Material.Filled.DesktopWindows" Size="@Size"
                        Color="Color.Primary" OnClick="@OnShowConsole" />
         }
 
@@ -37,7 +37,7 @@
                 </div>
             </MudButton>
 
-            <MudMenu Icon="@Icons.Material.Outlined.ArrowDropDown" Size="@Size" Color="Color.Error">
+            <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Size="@Size" Color="Color.Error">
                 <MudMenuItem OnClick="@(() => ChageStatus(VmStatus.Reboot))">
                     <div class="d-flex gap-2">
                         <MudIcon Icon="@Icons.Material.Filled.Refresh" />

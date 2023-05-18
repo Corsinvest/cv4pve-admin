@@ -75,14 +75,14 @@ public static class PveAdminHelper
     public static string GetCategoryIcon(ModuleCategory category)
         => category switch
         {
-            ModuleCategory.Control => Icons.Material.Outlined.Gamepad,
-            ModuleCategory.Health => Icons.Material.Outlined.MonitorHeart,
-            ModuleCategory.Management => Icons.Material.Outlined.ManageAccounts,
-            ModuleCategory.Safe => Icons.Material.Outlined.AccountBalanceWallet,
-            ModuleCategory.System => Icons.Material.Outlined.SettingsApplications,
-            ModuleCategory.Utilities => Icons.Material.Outlined.Handyman,
-            ModuleCategory.Develop => Icons.Material.Outlined.Code,
-            ModuleCategory.General => Icons.Material.Outlined.Folder,
+            ModuleCategory.Control => Icons.Material.Filled.Gamepad,
+            ModuleCategory.Health => Icons.Material.Filled.MonitorHeart,
+            ModuleCategory.Management => Icons.Material.Filled.ManageAccounts,
+            ModuleCategory.Safe => Icons.Material.Filled.AccountBalanceWallet,
+            ModuleCategory.System => Icons.Material.Filled.SettingsApplications,
+            ModuleCategory.Utilities => Icons.Material.Filled.Handyman,
+            ModuleCategory.Develop => Icons.Material.Filled.Code,
+            ModuleCategory.General => Icons.Material.Filled.Folder,
             _ => "",
         };
 

@@ -9,7 +9,7 @@
 <PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
     <Row>
         <MudTabs Elevation="1" ApplyEffectsToContainer Border>
-            <MudTabPanel Text="@L["Scheduling"]" Icon="@Icons.Material.Outlined.Schedule">
+            <MudTabPanel Text="@L["Scheduling"]" Icon="@Icons.Material.Filled.Schedule">
                 <MudGrid Class="pa-4">
                     <MudItem xs="6" md="3">
                         <MudSwitch T="bool" @bind-Checked="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
@@ -27,7 +27,7 @@
                         </MudGrid>
                         </MudTabPanel>
 
-                        <MudTabPanel Text="@L["Cost"]" Icon="@Icons.Material.Outlined.DataThresholding">
+                        <MudTabPanel Text="@L["Cost"]" Icon="@Icons.Material.Filled.DataThresholding">
                         <MudGrid Class="pa-4">
                         <MudItem md="6">
                         <MudCard>

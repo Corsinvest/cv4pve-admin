@@ -19,15 +19,15 @@ else
 
         @if (DataUsage.Usage >= Threshold.Critical)
         {
-            <MudAlert Severity="Severity.Error" Icon="@Icons.Material.Outlined.ThumbDown">@L["Critical: the usage is too high!"]</MudAlert>
+            <MudAlert Severity="Severity.Error" Icon="@Icons.Material.Filled.ThumbDown">@L["Critical: the usage is too high!"]</MudAlert>
         }
         else if (DataUsage.Usage >= Threshold.Warning)
         {
-            <MudAlert Severity="Severity.Warning" Icon="@Icons.Material.Outlined.ThumbsUpDown">@L["Warning: the usage is high!"]</MudAlert>
+            <MudAlert Severity="Severity.Warning" Icon="@Icons.Material.Filled.ThumbsUpDown">@L["Warning: the usage is high!"]</MudAlert>
         }
         else
         {
-            <MudAlert Severity="Severity.Success" Icon="@Icons.Material.Outlined.ThumbUp">@L["The usage is normal!"]</MudAlert>
+            <MudAlert Severity="Severity.Success" Icon="@Icons.Material.Filled.ThumbUp">@L["The usage is normal!"]</MudAlert>
         }
     </div>
 }

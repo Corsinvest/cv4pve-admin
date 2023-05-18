@@ -29,7 +29,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Outlined.SafetyCheck,
+            Icon = Icons.Material.Filled.SafetyCheck,
             Render = typeof(RenderIndex)
         };
 
@@ -78,11 +78,11 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(DataGrid)}.{nameof(Data)}");
 
-            public static Permission Execute { get; } = new($"{Data.Prefix}.{nameof(Execute)}", "Execute", Icons.Material.Outlined.DirectionsRun, UIColor.Success);
-            public static Permission Delete { get; } = new($"{Data.Prefix}.{nameof(Delete)}", "Delete", Icons.Material.Outlined.DeleteForever, UIColor.Error);
-            public static Permission Download { get; } = new($"{Data.Prefix}.{nameof(Download)}", "Download", Icons.Material.Outlined.Download);
-            public static Permission Upload { get; } = new($"{Data.Prefix}.{nameof(Upload)}", "Upload", Icons.Material.Outlined.Upload);
-            public static Permission ShowLog { get; } = new($"{Data.Prefix}.{nameof(ShowLog)}", "Log", Icons.Material.Outlined.Description);
+            public static Permission Execute { get; } = new($"{Data.Prefix}.{nameof(Execute)}", "Execute", Icons.Material.Filled.PlayArrow, UIColor.Success);
+            public static Permission Delete { get; } = new($"{Data.Prefix}.{nameof(Delete)}", "Delete", Icons.Material.Filled.DeleteForever, UIColor.Error);
+            public static Permission Download { get; } = new($"{Data.Prefix}.{nameof(Download)}", "Download", Icons.Material.Filled.Download);
+            public static Permission Upload { get; } = new($"{Data.Prefix}.{nameof(Upload)}", "Upload", Icons.Material.Filled.Upload);
+            public static Permission ShowLog { get; } = new($"{Data.Prefix}.{nameof(ShowLog)}", "Log", Icons.Material.Filled.Description);
         }
     }
 }

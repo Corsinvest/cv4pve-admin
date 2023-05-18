@@ -8,7 +8,7 @@
     <MudCardHeader>
         <CardHeaderAvatar>
             <MudAvatar Color="Color.Primary">
-                <MudIcon Icon="@Icons.Material.Outlined.TextSnippet" />
+                <MudIcon Icon="@Icons.Material.Filled.TextSnippet" />
             </MudAvatar>
         </CardHeaderAvatar>
         <CardHeaderContent>
@@ -35,7 +35,7 @@
                     {
                         <MudSelectItem T="long" Value="@item.Key">
                             <div class="d-flex gap-4">
-                                <MudIcon Icon="@Icons.Material.Outlined.AccountCircle" />
+                                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" />
                                 @item.Value
                             </div>
                         </MudSelectItem>
@@ -44,7 +44,7 @@
             </div>
 
             <MudTextField @bind-Value="@Message" OnKeyUp="KeyUpAsync" Label="@L["Enter your message..."]" Clearable Immediate />
-            <MudButton OnClick="SendMaessageAsync" StartIcon="@Icons.Material.Outlined.Send" Color="Color.Primary"
+            <MudButton OnClick="SendMaessageAsync" StartIcon="@Icons.Material.Filled.Send" Color="Color.Primary"
                        Variant="Variant.Filled" Disabled="string.IsNullOrWhiteSpace(Message)" Size="Size.Small">
                 @L["Send"]
             </MudButton>
