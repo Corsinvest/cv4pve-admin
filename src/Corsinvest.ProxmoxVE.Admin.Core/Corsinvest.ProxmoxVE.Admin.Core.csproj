@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.97" />
+		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.98" />
 
 		<PackageReference Include="Blazor-ApexCharts" Version="0.9.19-beta" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />

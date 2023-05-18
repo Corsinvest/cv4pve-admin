@@ -19,7 +19,7 @@ public static class JobExtension
         var jobId = JobHelper.GetJobId<T>(clusterName, args);
         if (enabled)
         {
-            JobService.Schedule<T>(jobId, methodCall, cronExpression);
+            JobService.Schedule<T>(jobId, methodCall, cronExpression,TimeZoneInfo.Local);
         }
         else
         {
