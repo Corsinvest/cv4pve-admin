@@ -11,7 +11,10 @@
     @foreach (var item in PveClientService.GetClusters())
     {
         <MudSelectItem Value="@item.Name">
-            @item.FullName
+            <div class="d-flex gap-2 align-center">
+                <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick="@(async () => await OpenUrl(item))" />
+                <MudText>@item.FullName</MudText>
+            </div>
         </MudSelectItem>
     }
 </MudSelect>

@@ -4,6 +4,8 @@
  */
 using Corsinvest.AppHero.Core.UI;
 using Corsinvest.ProxmoxVE.Admin.Core.UI.Dialogs;
+using Corsinvest.ProxmoxVE.Api.Shared.Utils;
+using Microsoft.JSInterop;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.Layout;
 
@@ -12,6 +14,7 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
     public Type Render { get; } = typeof(SelectCluster);
     private string CurrentClusterName { get; set; } = default!;
@@ -86,6 +89,8 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
             return false;
         }
     }
+
+    public async Task OpenUrl(ClusterOptions item) => await JSRuntime.InvokeVoidAsync("open", PveAdminHelper.GetPveUrl(item), "_blank");
 
     private void ShowDialogFastConfig()
         => DialogService.Show<DialogFastConfig>(L["Fast Configuration"],
