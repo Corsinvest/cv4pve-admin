@@ -86,7 +86,7 @@ internal class Helper
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Execution Snap from Job {id}", id))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Execution Autosnap from Job {id}", id))
         {
             var jobRepo = scope.GetRepository<AutoSnapJob>();
             var job = await GetAutoSnapJob(jobRepo, id, logger);
@@ -117,7 +117,7 @@ internal class Helper
             var jobHistoryRepo = scope.GetRepository<AutoSnapJobHistory>();
             await jobHistoryRepo.AddAsync(history);
 
-            logger.LogInformation("Execute AutoSnap Job: {Id}", id);
+            logger.LogInformation("Execution AutoSnap Job: {Id}", id);
 
             var client = await scope.GetPveClient(job.ClusterName);
             var app = GetApp(client, loggerFactory, log);
@@ -185,7 +185,11 @@ internal class Helper
 
                 await scope.GetNotificationService().SendAsync(moduleClusterOptions.NotificationChannels, new()
                 {
-                    Subject = L["{appName} - AutoSnap [{Status}]", scope.GetAppOptions().Name, history.Status ? L["OK"] : L["KO"]],
+                    Subject = L["{0} - AutoSnap Id {1} [{2}] of cluster {3}",
+                                scope.GetAppOptions().Name,
+                                id,
+                                history.Status ? L["OK"] : L["KO"],
+                                job.ClusterName],
                     Body = history.Log.ReplaceLineEndings("<br>")
                 });
             }

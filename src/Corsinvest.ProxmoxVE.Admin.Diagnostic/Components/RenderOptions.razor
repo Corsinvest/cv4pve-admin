@@ -29,13 +29,13 @@
                     </MudItem>
 
                     <MudItem xs="12" md="12">
-                        <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
-                        </MudItem>
-                        </MudGrid>
-                        </MudTabPanel>
+                        <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor="true" Orientation="Orientation.Landscape" />
+                    </MudItem>
+                </MudGrid>
+            </MudTabPanel>
 
-                        <MudTabPanel Text="@L["Threshold"]" Icon="@Icons.Material.Filled.DataThresholding">
-                        <MudExpansionPanels MultiExpansion>
+            <MudTabPanel Text="@L["Threshold"]" Icon="@Icons.Material.Filled.DataThresholding">
+                <MudExpansionPanels MultiExpansion>
                     @foreach (var (hostType, hostTypeIdx) in new[] { context.Node, context.Qemu, context.Lxc }.Select((a, idx) => (a, idx)))
                     {
                         <MudExpansionPanel>

@@ -35,18 +35,21 @@ public partial class Results
         DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ExecutionSpec(ClusterName));
     }
 
-    private async Task Run()
+    private void Run()
     {
-        var clusterName = await PveClientService.GetCurrentClusterName();
-        JobService.Schedule<Job>(a => a.Create(clusterName), TimeSpan.FromSeconds(10));
+        JobService.Schedule<Job>(a => a.Create(ClusterName), TimeSpan.FromSeconds(10));
         UINotifier.Show(L["Diagnostic jobs started!"], UINotifierSeverity.Info);
     }
 
     private async Task DownloadPdf(Execution item)
     {
         var ignoreIssues = await Helper.GetIgnoredIssue(IgnoredIssuesRepo, ClusterName);
-        var data = (await ExecutionsRepo.FirstOrDefaultAsync(new ExecutionSpec(string.Empty).ByKey(item.Id).Include()))!.Data;
-        using var ms = Helper.GeneratePdf(L, AppOptions.Value, item, Helper.Analyze(data, Options.Value.Get(ClusterName), ignoreIssues))!;
+        var data = (await ExecutionsRepo.FirstOrDefaultAsync(new ExecutionSpec(ClusterName).ByKey(item.Id).Include()))!.Data;
+        using var ms = Helper.GeneratePdf(L,
+                                          AppOptions.Value,
+                                          item,
+                                          Helper.Analyze(data, Options.Value.Get(ClusterName), ignoreIssues),
+                                          ClusterName)!;
         await BlazorDownloadFileService.DownloadFile("Diagnostic.pdf", ms, System.Net.Mime.MediaTypeNames.Application.Pdf);
     }
 }

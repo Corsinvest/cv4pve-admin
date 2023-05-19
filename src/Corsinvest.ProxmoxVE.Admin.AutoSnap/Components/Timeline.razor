@@ -15,36 +15,50 @@
                 </ItemDot>
 
                 <ItemContent>
-                    <MudExpansionPanels Dense>
-                    <MudExpansionPanel Text="@tasks.Key.ToShortDateString()">
-                        <ChildContent>
-                            @foreach (var labels in tasks.GroupBy(a => a.Job))
+                    <MudExpansionPanels Dense="true">
+                        <MudExpansionPanel Text="@tasks.Key.ToShortDateString()">
+                            <ChildContent>
+                                @foreach (var labels in tasks.GroupBy(a => a.Job))
                                 {
-                                    <MudExpansionPanels DisableBorders Elevation="0">
-                                    <MudExpansionPanel Dense>
-                                        <TitleContent>
-                                            <div class="d-flex">
-                                                <MudText Class="mt-1">
-                                                    @labels.Key.Label - @labels.Key.CronExpressionDescriptor
-                                                </MudText>
-                                                <MudBadge Content="@labels.Count()" Color="@(tasks.Any(a => !a.Status) ? Color.Warning : Color.Success)"
-                                                                            Overlap Class="d-flex ml-auto">
-                                                    <MudIcon Icon="@PveBlazorHelper.Icons.Snapshot" Color="Color.Default" />
+                                    <MudExpansionPanels DisableBorders="true" Elevation="0">
+                                        <MudExpansionPanel Dense="true">
+                                            <TitleContent>
+                                                <div class="d-flex">
+                                                    <MudText Class="mt-1">
+                                                        @labels.Key.Label - @labels.Key.CronExpressionDescriptor
+                                                    </MudText>
+                                                    <MudBadge Content="@labels.Count()" Color="@(tasks.Any(a => !a.Status) ? Color.Warning : Color.Success)"
+                                                  Overlap="true" Class="d-flex ml-auto">
+                                                        <MudIcon Icon="@PveBlazorHelper.Icons.Snapshot" Color="Color.Default" />
                                                     </MudBadge>
                                                 </div>
                                             </TitleContent>
 
                                             <ChildContent>
-                                                <div style="overflow-y: scroll; max-height: 200px;">
-                                                    @foreach (var item in labels.OrderByDescending(a => a.Start))
-                                                    {
-                                                        <MudText Typo="Typo.body1" GutterBottom>
-                                                        <AHBoolIcon Value="item.Status" ColorTrue="Color.Success" ColorFalse="Color.Error"
-                                                        IconType="AHBoolIconType.Thumb" />
-                                                        @item.Start.ToLongTimeString() - @item.Duration
-                                                    </MudText>
-                                                    }
-                                                </div>
+                                                <MudSimpleTable Dense="true" Hover="true" FixedHeader="true" Style="height: 200px;" Elevation="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>@L["Status"]</th>
+                                                            <th>@L["Start"]</th>
+                                                            <th>@L["Duration"]</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in labels.OrderByDescending(a => a.Start))
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <AHBoolIcon Value="item.Status" ColorTrue="Color.Success" ColorFalse="Color.Error"
+                                                                IconType="AHBoolIconType.Thumb" />
+                                                                </td>
+
+                                                                <td>@item.Start.ToString("HH:mm:ss")</td>
+                                                                <td>@item.Duration</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </MudSimpleTable>
+                                                <br />
                                             </ChildContent>
                                         </MudExpansionPanel>
                                     </MudExpansionPanels>

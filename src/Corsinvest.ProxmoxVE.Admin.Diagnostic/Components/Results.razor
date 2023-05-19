@@ -5,7 +5,7 @@
 @inherits AHComponentBase
 
 <Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoScheduler Enabled="@Options.Value.Get(ClusterName).Enabled"
-    CronExpression="@Options.Value.Get(ClusterName).CronExpression"/>
+                                                             CronExpression="@Options.Value.Get(ClusterName).CronExpression" />
 
 <AHDataGrid T="Execution"
             Permissions="Module.Permissions.Result.Data"
@@ -23,7 +23,7 @@
                 <AHPermissionButtonIcon Permission="Module.Permissions.Result.Run" OnClick="@Run" />
                 <AHPermissionButtonIcon Permission="Module.Permissions.Result.Delete"
                                         OnClick="@(async () => await DataGridManager.DeleteSelectedItemsAsync(true))"
-                                    Disabled="@(!DataGridManager.ExistsSelection)"/>
+                                        Disabled="@(!DataGridManager.ExistsSelection)" />
             </ToolBarContentAfter>
         </AHDataGridToolBarCrud>
     </ToolBarContent>
@@ -39,7 +39,7 @@
 
         <TemplateColumn T="Execution" CellClass="justify-end">
             <CellTemplate>
-                <AHPermissionButtonIcon Permission="Module.Permissions.Result.DownloadPdf" OnClick="@(() => DownloadPdf(context.Item))" />
+                <AHPermissionButtonIcon Permission="Module.Permissions.Result.DownloadPdf" OnClick="@(() => DownloadPdf(context.Item))" Size="Size.Small" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>

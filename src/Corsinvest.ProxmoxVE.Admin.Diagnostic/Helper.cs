@@ -115,19 +115,23 @@ internal class Helper
                 var appOptions = scope.GetAppOptions();
 
                 var L = scope.ServiceProvider.GetRequiredService<IStringLocalizer<Helper>>();
-                using var ms = GeneratePdf(L, appOptions, execution, results);
+                using var ms = GeneratePdf(L, appOptions, execution, results, clusterName);
 
                 await scope.GetNotificationService().SendAsync(moduleClusterOptions.NotificationChannels, new()
                 {
-                    Subject = L["{appName} - Diagnostic result", appOptions.Name],
-                    Body = L["Diagnostic result of {date}", info.Date],
+                    Subject = L["{0} - Diagnostic result of cluster '{1}'", appOptions.Name, clusterName],
+                    Body = L["Diagnostic result of {0}", info.Date],
                     Attachments = new[] { new Attachment(ms, "Diagnostic.pdf", System.Net.Mime.MediaTypeNames.Application.Pdf) }
                 });
             }
         }
     }
 
-    public static MemoryStream GeneratePdf(IStringLocalizer L, AppOptions appOptions, Execution execution, ICollection<DiagnosticResult> results)
+    public static MemoryStream GeneratePdf(IStringLocalizer L,
+                                           AppOptions appOptions,
+                                           Execution execution,
+                                           ICollection<DiagnosticResult> results,
+                                           string clusterName)
     {
         var ms = new MemoryStream();
         Document.Create(container =>
@@ -141,8 +145,8 @@ internal class Helper
                 {
                     column.Spacing(5);
 
-                    column.Item().Text(string.Format(L["Diagnostic result from {0} Date {1}"], appOptions.Name, execution.Date))
-                                 .FontSize(16)
+                    column.Item().Text(string.Format(L["Diagnostic result of cluster '{0}' Date {1}"], clusterName, execution.Date))
+                                 .FontSize(14)
                                  .Bold();
 
                     column.Item().Table(table => ContentTable(L, table, results.Where(a => !a.IsIgnoredIssue).ToList()));
