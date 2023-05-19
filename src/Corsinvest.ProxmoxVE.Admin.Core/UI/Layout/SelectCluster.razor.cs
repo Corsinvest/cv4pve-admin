@@ -90,14 +90,6 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
         }
     }
 
-    public string GetIcon(ClusterOptions item)
-        => item.Type switch
-        {
-            "NODE" => PveBlazorHelper.Icons.GetResourceType(PveConstants.KeyApiNode),
-            "CLUSTER" => PveBlazorHelper.Icons.GetResourceType(PveConstants.KeyApiCluster),
-            _ => PveBlazorHelper.Icons.GetResourceType(PveConstants.KeyApiNode),
-        };
-
     public async Task OpenUrl(ClusterOptions item) => await JSRuntime.InvokeVoidAsync("open", PveAdminHelper.GetPveUrl(item), "_blank");
 
     private void ShowDialogFastConfig()
