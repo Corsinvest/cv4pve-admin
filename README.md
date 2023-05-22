@@ -41,17 +41,19 @@ This software is part of a suite of tools called cv4pve-tools. If you want comme
 * Docker version [DockerHub](https://hub.docker.com/r/corsinvest/cv4pve-admin)
 * Not require installation in Proxmox VE
 * Use Credential or Api Token to connect Cluster/Node
-* Execute out side Proxmox VE
+* Execute outside Proxmox VE
 * Multiple Cluster/Node Management
 * Minimum version of Proxmox VE 6.4
 
-For installation or other question see documentation.
+# HOW TO INSTALL
+
+Binary: https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-binary/
+Docker: https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-docker/
+
 
 # BETA RELEASE
 
-This is a beta release. They shouldn't be big problems. I look forward to any improvement requests.
-
-Thank you
+This is a beta release, you shouldn't have any particular problems.
 
 ### Documentation
 
