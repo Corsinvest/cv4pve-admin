@@ -44,14 +44,15 @@ This software is part of a suite of tools called cv4pve-tools. If you want comme
 * Execute outside Proxmox VE
 * Multiple Cluster/Node Management
 * Minimum version of Proxmox VE 6.4
+Find out all the features: [here](https://corsinvest.it/cv4pve-admin-beta-download-features/)
 
-### HOW TO INSTALL
+### How to install
 
-Binary: https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-binary/
-Docker: https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-docker/
+[Binary Mode](https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-binary/)
+[Docker Mode](: https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-docker/)
 
 
-### BETA RELEASE
+### Beta Release
 
 This is a beta release, you shouldn't have any particular problems.
 
