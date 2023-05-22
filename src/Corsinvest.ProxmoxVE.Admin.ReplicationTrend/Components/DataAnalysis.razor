@@ -1,0 +1,120 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+
+@using ApexCharts
+
+@inherits AHComponentBase
+
+<MudText>
+    <strong>@L["Range:"]</strong> @DateSelectedTitle
+</MudText>
+
+<br />
+
+<div class="d-flex flex-wrap gap-4">
+    @foreach (var item in Dates)
+    {
+        <MudButton Variant="Variant.Filled" OnClick="@(() => OnClickDate(item))">
+            @RenderItem(item)
+        </MudButton>
+    }
+</div>
+
+<br />
+
+@if (DataChart.Any())
+{
+    <MudText>
+        <strong>@L["VM / CT:"]</strong> @VmIdSelected
+    </MudText>
+
+    <br />
+
+    <div class="d-flex flex-wrap gap-4">
+        @foreach (var item in Vms)
+        {
+            <MudButton Variant="Variant.Filled" OnClick="@(() => OnClickVm(item))">
+                @RenderItem(item)
+            </MudButton>
+        }
+    </div>
+
+    <br />
+    <MudText>
+        <strong>@L["Size (GB)"]</strong>
+    </MudText>
+
+    <br />
+
+    <ApexChart TItem="ReplicationResult"
+           XAxisType="XAxisType.Datetime"
+           Height="@("500px")"
+           Options="Options1"
+           @ref="RefChart1">
+
+        @foreach (var item in DataChart)
+        {
+            <ApexPointSeries TItem="ReplicationResult"
+                     Items="@item"
+                     Name="@item.Key"
+                     SeriesType="SeriesType.Line"
+                     XValue="e => e.Start"
+                     YValue="a => Convert.ToDecimal(a.Size) / 1024 / 1024 / 1024"
+                     OrderBy="a => a.X" />
+        }
+    </ApexChart>
+
+    <br />
+
+    <MudText>
+        <strong>@L["Duration (Min)"]</strong>
+    </MudText>
+
+    <br />
+
+    <ApexChart TItem="ReplicationResult"
+           XAxisType="XAxisType.Datetime"
+           Height="@("500px")"
+           Options="Options2"
+           @ref="RefChart2">
+
+        @foreach (var item in DataChart)
+        {
+            <ApexPointSeries TItem="ReplicationResult"
+                     Items="@item"
+                     Name="@item.Key"
+                     SeriesType="SeriesType.Line"
+                     XValue="e => e.Start"
+                     YValue="a => Convert.ToDecimal(a.Duration / 60)"
+                     OrderBy="a => a.X" />
+        }
+    </ApexChart>
+}
+
+@code {
+    private RenderFragment RenderItem<T>(Data<T> item) => __builder =>
+    {
+        <div>
+            <MudText>@item.Title</MudText>
+
+            <div class="d-flex gap-2">
+                @if (item.CountOk > 0)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Color="@MudBlazor.Color.Success" />
+                    <MudText>@item.CountOk</MudText>
+                }
+
+                @if (item.CountKo > 0)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" />
+                    <MudText>@item.CountKo</MudText>
+                }
+
+            </div>
+
+            <MudText Typo="Typo.caption">@item.Size</MudText>
+        </div>
+    };
+}

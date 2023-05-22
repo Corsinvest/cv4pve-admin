@@ -1,0 +1,98 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<AHDataGrid T="NodeReplication"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader
+            FixedFooter
+            Filterable
+            Groupable
+            ShowFilterIcons="false"
+            Height="@Height">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="NodeReplication" DataGridManager="DataGridManager" />
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="NodeReplication" TProperty="bool" Property="a => a.Disable" FormatProvider="typeof(PveFormatProvider)">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.Disable" ReadOnly />
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeReplication" TProperty="string" Property="a => a.Guest" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeReplication" TProperty="string" Property="a => a.JobNum" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeReplication" TProperty="string" Property="a => a.Target" FormatProvider="typeof(PveFormatProvider)" />
+
+        <TemplateColumn T="NodeReplication" Title="Status">
+            <CellTemplate>
+                @*
+                if (e.pid) { return '<i class="fas fa-spinner"></i>'; }
+
+                var icons = [];
+                var states = [];
+
+                if (e.remove_job) {
+                icons.push('<i class="fas fa-ban warning" title="Removal Scheduled"></i>');
+                states.push('Removal Scheduled');
+                }
+                *@
+                @if (!string.IsNullOrEmpty(context.Item.Error))
+                {
+                    <div class="d-flex">
+                        <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                        @context.Item.Error
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex">
+                        <div class="d-flex">
+                            <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                            <MudText>Ok</MudText>
+                        </div>
+                    </div>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
+        <AHPropertyColumn T="NodeReplication" TProperty="int" Property="a => a.LastSync" FormatProvider="typeof(PveFormatProvider)">
+            <CellTemplate>
+                @DateTimeOffset.FromUnixTimeSeconds(context.Item.LastSync).DateTime
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeReplication" TProperty="double" Property="a => a.Duration" FormatProvider="typeof(PveFormatProvider)">
+            <CellTemplate>
+                @DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(context.Item.Duration)).TimeOfDay
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeReplication" TProperty="int" Property="a => a.NextSync" FormatProvider="typeof(PveFormatProvider)">
+            <CellTemplate>
+                @DateTimeOffset.FromUnixTimeSeconds(context.Item.LastSync).DateTime
+            </CellTemplate>
+        </AHPropertyColumn>
+
+        <AHPropertyColumn T="NodeReplication" TProperty="string" Property="a => a.Schedule" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeReplication" TProperty="string" Property="a => a.Comment" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeReplication" TProperty="int" Property="a => a.FailCount" FormatProvider="typeof(PveFormatProvider)" />
+        <AHPropertyColumn T="NodeReplication" TProperty="string" Property="a => a.Type" FormatProvider="typeof(PveFormatProvider)" />
+    </Columns>
+
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
+
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
+
+    <PagerContent>
+        <MudDataGridPager T="NodeReplication" />
+    </PagerContent>
+</AHDataGrid>

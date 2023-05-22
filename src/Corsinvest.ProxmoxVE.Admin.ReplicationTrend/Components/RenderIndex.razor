@@ -1,0 +1,23 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudTabs Elevation="1" ApplyEffectsToContainer Border>
+    <MudTabPanel Text="@L["Jobs"]" Icon="@Icons.Material.Filled.Task">
+        <Jobs />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Scheduled"]" Icon="@Icons.Material.Filled.Alarm">
+        <ClusterReplications PveClient="PveClient" Height="calc(100vh - 370px)" />
+    </MudTabPanel>
+
+    <MudTabPanel Text="@L["Data Analysis"]" Icon="@Icons.Material.Filled.Analytics">
+        <div class="pa-3">
+            <DataAnalysis />
+        </div>
+    </MudTabPanel>
+</MudTabs>
+
+<br />

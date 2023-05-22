@@ -12,7 +12,7 @@
 		<PackageReference Include="Blazor-ApexCharts" Version="0.9.19-beta" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Extension" Version="7.4.3" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Extension" Version="7.4.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
 		<PackageReference Include="QuestPDF" Version="2023.5.0" />
 		<PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.22.0" />

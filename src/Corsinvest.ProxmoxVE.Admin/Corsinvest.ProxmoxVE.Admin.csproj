@@ -34,6 +34,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.ClusterStatus\Corsinvest.ProxmoxVE.Admin.ClusterStatus.csproj" />
+		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.ReplicationTrend\Corsinvest.ProxmoxVE.Admin.ReplicationTrend.csproj" />
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.VmUnlock\Corsinvest.ProxmoxVE.Admin.VmUnlock.csproj" />
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.DisksStatus\Corsinvest.ProxmoxVE.Admin.DisksStatus.csproj" />
 		<ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.NodeFreeMemory\Corsinvest.ProxmoxVE.Admin.NodeFreeMemory.csproj" />
