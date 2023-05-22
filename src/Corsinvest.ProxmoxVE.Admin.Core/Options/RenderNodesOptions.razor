@@ -41,14 +41,14 @@
         <MudGrid>
             <MudItem md="4">
                 <MudTextField @bind-Value="@context.IpAddress" Mask="@RegexMask.IPv4()"
-                              Label="@(L[DataGridManager.GetDescriptionProperty(a => a.IpAddress)])" For="@(() => context.IpAddress)" />
+                              Label="@(L[GetDescriptionProperty<ClusterNodeOptions>(a => a.IpAddress)])" For="@(() => context.IpAddress)" />
             </MudItem>
             <MudItem md="4">
-                <MudNumericField @bind-Value="@context.ApiPort" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.ApiPort)])" Min="1"
+                <MudNumericField @bind-Value="@context.ApiPort" Label="@(L[GetDescriptionProperty<ClusterNodeOptions>(a => a.ApiPort)])" Min="1"
                                  For="@(() => context.ApiPort)" />
             </MudItem>
             <MudItem md="4">
-                <MudNumericField @bind-Value="@context.SshPort" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.SshPort)])" Min="1"
+                <MudNumericField @bind-Value="@context.SshPort" Label="@(L[GetDescriptionProperty<ClusterNodeOptions>(a => a.SshPort)])" Min="1"
                                  For="@(() => context.SshPort)" />
             </MudItem>
         </MudGrid>
