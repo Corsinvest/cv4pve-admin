@@ -171,11 +171,11 @@
                             Permissions="@Permissions"
                             Elevation="0"
                             DataGridManager="@DataGridManager"
-                                    FixedHeader
-                                    FixedFooter
+                            FixedHeader="true"
+                            FixedFooter="true"
                             Filterable="false"
                             ShowColumnOptions="false"
-                                    Groupable>
+                            Groupable="true">
                     <ToolBarContent>
                         <AHDataGridToolBarRead T="ClusterStatusEx" DataGridManager="DataGridManager" />
                     </ToolBarContent>
@@ -187,8 +187,7 @@
                         <AHPropertyColumn T="ClusterStatusEx" TProperty="bool" Property="a => a.IsOnline" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
                         <AHPropertyColumn T="ClusterStatusEx" TProperty="string" Property="a => a.IpAddress" FormatProvider="typeof(PveFormatProvider)" Sortable="false" />
 
-                        <TemplateColumn T="ClusterStatusEx" Sortable="false" Title="@L[DataGridManager.GetDescriptionProperty(a => a.CpuUsagePercentage)]">
-                            @*TProperty="double" Property="a => a.CpuUsagePercentage" *@
+                        <TemplateColumn T="ClusterStatusEx" Sortable="false" Title="@L[GetDescriptionProperty<ClusterStatusEx>(a => a.CpuUsagePercentage)]">
                             <CellTemplate>
                                 <MudProgressLinear Color="@PveBlazorHelper.GetColorRange(context.Item.CpuUsagePercentage)"
                                                    Style="height:20px"
@@ -201,8 +200,7 @@
                             </CellTemplate>
                         </TemplateColumn>
 
-                        <TemplateColumn T="ClusterStatusEx" Sortable="false" Title="@L[DataGridManager.GetDescriptionProperty(a => a.MemoryUsagePercentage)]">
-                            @*TProperty="double" Property="a => a.MemoryUsagePercentage" *@
+                        <TemplateColumn T="ClusterStatusEx" Sortable="false" Title="@L[GetDescriptionProperty<ClusterStatusEx>(a => a.MemoryUsagePercentage)]">
                             <CellTemplate>
                                 <MudProgressLinear Color="@PveBlazorHelper.GetColorRange(context.Item.MemoryUsagePercentage)"
                                                    Style="height:20px"

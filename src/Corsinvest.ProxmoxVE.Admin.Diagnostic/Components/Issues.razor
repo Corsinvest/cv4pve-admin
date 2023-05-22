@@ -41,22 +41,22 @@
     <EditTemplate>
         <MudGrid>
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.Description" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description!)])"
+                <MudTextField @bind-Value="@context.Description" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Description!)])"
                               For="@(() => context.Description)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.IdResource" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.IdResource!)])"
+                <MudTextField @bind-Value="@context.IdResource" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.IdResource!)])"
                               For="@(() => context.IdResource)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.SubContext" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.SubContext!)])"
+                <MudTextField @bind-Value="@context.SubContext" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.SubContext!)])"
                               For="@(() => context.SubContext)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudSelect @bind-Value="@context.Gravity" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Gravity)])" Required
+                <MudSelect @bind-Value="@context.Gravity" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Gravity)])" Required
                            For="@(() => context.Gravity)">
                     @foreach (var item in Enum.GetValues<DiagnosticResultGravity>())
                     {
@@ -66,7 +66,7 @@
             </MudItem>
 
             <MudItem md="6">
-                <MudSelect @bind-Value="@context.Context" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Context)])" Required
+                <MudSelect @bind-Value="@context.Context" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Context)])" Required
                            For="@(() => context.Context)">
                     @foreach (var item in Enum.GetValues<DiagnosticResultContext>())
                     {

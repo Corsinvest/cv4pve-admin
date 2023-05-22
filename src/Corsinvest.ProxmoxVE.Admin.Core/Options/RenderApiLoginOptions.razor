@@ -14,7 +14,7 @@
     {
         <MudItem xs="12">
             <MudTextField @bind-Value="@ClusterOptions.ApiToken"
-                      Label="@L[MudBlazorHelper.GetDescriptionProperty<ClusterOptions>(a => a.ApiToken)]"
+                      Label="@L[GetDescriptionProperty<ClusterOptions>(a => a.ApiToken)]"
                       Placeholder="USER@REALM!TOKENID=UUID"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" />
         </MudItem>
@@ -23,12 +23,12 @@
     {
         <MudItem md="6">
             <MudTextField @bind-Value="@ClusterOptions.ApiCredential.Username"
-                      Label="@L[MudBlazorHelper.GetDescriptionProperty<ClusterOptions>(a => a.ApiCredential.Username)]"
+                      Label="@L[GetDescriptionProperty<ClusterOptions>(a => a.ApiCredential.Username)]"
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Person" />
         </MudItem>
         <MudItem md="6">
             <MudPasswordField @bind-Value="@ClusterOptions.ApiCredential.Password"
-                          Label="@L[MudBlazorHelper.GetDescriptionProperty<ClusterOptions>(a => a.ApiCredential.Password)]" />
+                          Label="@L[GetDescriptionProperty<ClusterOptions>(a => a.ApiCredential.Password)]" />
         </MudItem>
     }
 </MudGrid>
