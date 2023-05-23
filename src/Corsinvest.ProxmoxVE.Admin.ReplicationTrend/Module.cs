@@ -28,7 +28,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Filled.Sync,
+            Icon = Icons.Material.Filled.Repeat,
             Render = typeof(RenderIndex)
         };
 
