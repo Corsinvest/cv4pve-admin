@@ -4,17 +4,4 @@
 *@
 @inherits AHComponentBase
 
-<MudSelect T="string" Margin="Margin.Dense" Dense AnchorOrigin="Origin.BottomCenter"
-           Value="@CurrentClusterName" ValueChanged="ValueChanged"
-           Style="background-color: var(--mud-palette-background)"
-           Variant="Variant.Outlined">
-    @foreach (var item in PveClientService.GetClusters())
-    {
-        <MudSelectItem Value="@item.Name">
-            <div class="d-flex gap-2 align-center">
-                <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick="@(async () => await OpenUrl(item))" />
-                <MudText>@item.FullName</MudText>
-            </div>
-        </MudSelectItem>
-    }
-</MudSelect>
+<Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.ClusterSelector ClusterNameChanged="ValueChanged" ClusterName="@CurrentClusterName" OpenPve="true" />

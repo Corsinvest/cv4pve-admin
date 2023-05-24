@@ -17,5 +17,6 @@ public interface IPveClientService : IScopedDependency
     IEnumerable<ClusterOptions> GetClusters();
     Task SetCurrentClusterName(string clusterName);
     Task<string> GetCurrentClusterName();
-    Task<bool> IsValidCurrentClusterName();
+    Task<bool> ExistsCurrentClusterName();
+    Task<bool> ClusterIsValid(string clusterName);
 }
