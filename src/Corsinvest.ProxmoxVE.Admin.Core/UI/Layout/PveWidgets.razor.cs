@@ -13,7 +13,7 @@ public partial class PveWidgets
     {
         try
         {
-            Valid = await PveClientService.IsValidCurrentClusterName();
+            Valid = await PveClientService.ExistsCurrentClusterName();
         }
         catch { }
     }
