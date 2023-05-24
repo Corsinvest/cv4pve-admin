@@ -19,6 +19,7 @@ public partial class Resources : IRefreshable
     [Parameter] public RenderFragment ToolBarContentAfter { get; set; } = default!;
     [Parameter] public RenderFragment<CellContext<ClusterResource>> ChildRowContent { get; set; } = default!;
     [Parameter] public IEnumerable<string> PropertiesName { get; set; } = default!;
+    [Parameter] public EventCallback<HashSet<ClusterResource>> SelectedItemsChanged { get; set; } = default!;
 
     [Parameter]
     public Dictionary<string, bool> DefaultSort { get; set; } =
