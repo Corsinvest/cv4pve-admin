@@ -68,52 +68,43 @@
     <EditTemplate>
         <MudGrid>
             <MudItem md="6">
-                <MudTextField Value="@context.Id" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Id)])"
+                <MudTextField Value="@context.Id" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Id)])"
                               For="@(() => context.Id)" ReadOnly />
             </MudItem>
 
             <MudItem md="6">
-                <MudSwitch @bind-Checked="@context.Enabled" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Enabled)])"
+                <MudSwitch @bind-Checked="@context.Enabled" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Enabled)])"
                            For="@(() => context.Enabled)" Color="Color.Primary" />
             </MudItem>
 
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.Label" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Label)])"
+                <MudTextField @bind-Value="@context.Label" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Label)])"
                               For="@(() => context.Label)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudNumericField @bind-Value="@context.Keep" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Keep)])"
+                <MudNumericField @bind-Value="@context.Keep" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Keep)])"
                                  For="@(() => context.Keep)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.Description" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description)])"
+                <MudTextField @bind-Value="@context.Description" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Description)])"
                               For="@(() => context.Description)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmStatus)])"
+                <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.VmStatus)])"
                            For="@(() => context.VmStatus)" Color="Color.Primary" />
             </MudItem>
 
             <MudItem md="6">
                 <AHChipInput T="string" SearchFunc="@SearchFuncVmIds" DisplayValueFunc="@((e) => e)"
                              SelectedItems="@VmIdsList" MaxItems="500" ValueChanged="@(() => context.VmIds = VmIdsList.JoinAsString(","))"
-                             Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmIds)])" />
+                             Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.VmIds)])" />
             </MudItem>
 
-            @*
             <MudItem md="6">
-            <MudSelectExtended T="string" MultiSelection ChipCloseable ChipVariant="@Variant.Filled"
-            ValuePresenter="@ValuePresenter.Chip" AnchorOrigin="Origin.BottomCenter"
-            Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmIds)])"
-            SelectedValues="@VmIds2" SearchBox SearchBoxAutoFocus SearchBoxClearable
-            ValueChanged="@((a) => context.VmIds = VmIds2.JoinAsString(","))"  />
-            </MudItem>
-            *@
-            <MudItem md="6">
-                <MudSwitch @bind-Checked="@context.OnlyRuns" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.OnlyRuns)])"
+                <MudSwitch @bind-Checked="@context.OnlyRuns" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.OnlyRuns)])"
                            For="@(() => context.OnlyRuns)" Color="Color.Primary" />
             </MudItem>
 
