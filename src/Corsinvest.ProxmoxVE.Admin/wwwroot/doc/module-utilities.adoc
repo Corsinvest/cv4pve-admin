@@ -1,0 +1,67 @@
+[[chapter_module_utilities]]
+
+// ################################################ CAPITOLO 4 ################################################
+// ################################################ MODULI ################################################
+
+// ################################################ UTILITIES ################################################
+
+= Utilities
+
+//  Disk Status
+
+== Disk Status
+
+Monitor all the disks in your cluster in one screen. Keep track of performance.
+
+Requirement on every nodes **ledmon**.
+```sh
+apt-get install ledmon
+```
+
+**Nodes** 
+
+[.thumb]
+image:screenshot/modules/disks-status/nodes.png[]
+
+**Disks Information**
+
+[.thumb]
+image:screenshot/modules/disks-status/disks.png[]
+
+
+**S.M.A.R.T. tools information**
+
+[.thumb]
+image:screenshot/modules/disks-status/disks.png[]
+
+
+//  NODE FREE MEMORY
+
+== Node Free Memory
+
+Free up the node's memory space in case of error: "out of memory" or "kvm: failed to initialize KVM: Cannot allocate memory"
+
+**Description**
+Free the memory of the nodes to start a VM without using a shell.
+
+The message that is displayed
+
+WARNING: _"kvm: failed to initialize KVM: Cannot allocate memory"_
+
+**General**
+[.thumb]
+image:screenshot/modules/node-free-memory/nodes.png[]
+
+
+//  VM UNLOCK
+
+== VM UNLOCK
+
+Unlock VM/CT that have remained in the "locked" status
+
+**Description**
+Unlock VM/CT that are in a locked state without using the shell
+
+**General**
+[.thumb]
+image:screenshot/modules/vm-unlock/vms.png[]

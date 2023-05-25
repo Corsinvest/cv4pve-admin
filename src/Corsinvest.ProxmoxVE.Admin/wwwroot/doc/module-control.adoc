@@ -1,0 +1,18 @@
+[[chapter_module_control]]
+// ################################################ CAPITOLO 4 ################################################
+// ################################################ MODULI ################################################
+
+// ################################################ CONTROL ################################################
+
+= Control
+
+//  TELEGRAM BOT
+
+== Telegram Bot
+
+Full Control of your cluster directly by Telegram. Visit image:social/github-24.png[] https://github.com/Corsinvest/cv4pve-admin[GitHub] to see how to set up your bot.
+
+[width="100%"]
+|=======
+| image:screenshot/modules/botgram/modules-control-telegrambot-ok.png[] | image:screenshot/modules/botgram/modules-control-telegrambot-mobile-ok.png[]
+|=======
