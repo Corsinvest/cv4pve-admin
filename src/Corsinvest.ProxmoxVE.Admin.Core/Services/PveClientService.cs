@@ -54,7 +54,25 @@ public class PveClientService : IPveClientService
     public async Task SetCurrentClusterName(string clusterName) => await _localStorageService.SetItemAsStringAsync("CurrentClusterName", clusterName);
     public async Task<string> GetCurrentClusterName() => await _localStorageService.GetItemAsStringAsync("CurrentClusterName");
 
-    public async Task<bool> IsValidCurrentClusterName()
+    public async Task<bool> ClusterIsValid(string clusterName)
+    {
+        try
+        {
+            var ret = false;
+            if (!string.IsNullOrEmpty(clusterName))
+            {
+                var client = await GetClient(clusterName);
+                ret = client != null && await PveAdminHelper.CheckIsValidVersion(client);
+            }
+            return ret;
+        }
+        catch // (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> ExistsCurrentClusterName()
     {
         var currentClusterName = await GetCurrentClusterName();
         return _clustersOptions.Value.Clusters.Any(a => a.Name == currentClusterName);

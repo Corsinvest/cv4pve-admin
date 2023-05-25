@@ -47,7 +47,7 @@
         <MudGrid>
             <MudItem md="12">
                 <MudTextField @bind-Value="@context.Description"
-                              Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description)])" For="@(() => context.Description)" />
+                              Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Description)])" For="@(() => context.Description)" />
             </MudItem>
 
             <MudItem md="12">

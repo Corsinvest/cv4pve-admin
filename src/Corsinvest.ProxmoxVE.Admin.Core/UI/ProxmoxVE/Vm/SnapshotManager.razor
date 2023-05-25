@@ -2,11 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-@using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
-@*
- * SPDX-FileCopyrightText: Copyright Corsinvest Srl
- * SPDX-License-Identifier: AGPL-3.0-only
-*@
 
 @inherits AHComponentBase
 
@@ -73,17 +68,17 @@
     <EditTemplate>
         <MudGrid>
             <MudItem md="6">
-                <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.VmStatus)])"
+                <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[GetDescriptionProperty<VmSnapshot>(a => a.VmStatus)])"
                            For="@(() => context.VmStatus)" Color="Color.Primary" />
             </MudItem>
 
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.Name" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Name)])"
+                <MudTextField @bind-Value="@context.Name" Label="@(L[GetDescriptionProperty<VmSnapshot>(a => a.Name)])"
                               For="@(() => context.Name)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.Description" Label="@(L[DataGridManager.GetDescriptionProperty(a => a.Description)])"
+                <MudTextField @bind-Value="@context.Description" Label="@(L[GetDescriptionProperty<VmSnapshot>(a => a.Description)])"
                               For="@(() => context.Description)" />
             </MudItem>
         </MudGrid>
