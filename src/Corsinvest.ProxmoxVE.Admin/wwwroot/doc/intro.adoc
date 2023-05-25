@@ -1,9 +1,6 @@
 = Introduction
  
 Find us on: 
-<a href="https://github.com/Corsinvest/cv4pve-admin" target="_blank">
-<img src="./social/github-24.png"/> Github
-</a>
 image:social/github-24.png[] https://github.com/Corsinvest/cv4pve-admin[GitHub]
 image:social/docker-24.png[] https://hub.docker.com/r/corsinvest/cv4pve-admin[DockerHub]
 image:social/domain-24.png[] https://corsinvest.it/cv4pve-admin[WebSite] 
