@@ -1,18 +1,18 @@
 [[chapter_installation]]
-= Installing {app-name}
+= How to install
 :title: Installation
 
 {app-name} is an application developed in .Net.
 
-== Minimal version
+== PVE Requirements
 
-The minimal version required was 6.4.
+The minimal version of Proxmox VE is 6.4.
 
-== Proxmox VE Permission
+== PVE Permission
 
 For connection to a cluster is require credential **Web Api** or **Token Api**. This require permission for execution. In this moment **all permission** is required.
 
-== Configuration
+== AppSettings.json
 
 The configurations are saved in appsettings.json.
 
@@ -20,7 +20,7 @@ Most important options are:
 
 - **urls** set the ip address and port to espose the web application '0.0.0.0' for all (default http://0.0.0.0:5000)
 
-== Install
+== Binary/Docker Install
 
 === From binary repository
 
@@ -99,7 +99,7 @@ https://hub.docker.com/r/corsinvest/{app-name}[Docker image].
 
 
 [[chapter_installation_update]]
-== Update
+== How to Update
 
 === From binary repository
 
