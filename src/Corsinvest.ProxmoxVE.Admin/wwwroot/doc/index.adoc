@@ -12,8 +12,8 @@ Powered by Corsinvest Srl
 :pve-name: Proxmox VE
 :app-name: cv4pve-admin
 :app-version: v6.0.0-beta
-:app-url-site: https://www.corisnvest.it/cv4pve-admin
-:company-url: https://www.corisnvest.it
+:app-url-site: https://www.corsinvest.it/cv4pve-admin
+:company-url: https://www.corsinvest.it
 :company-name: Corsinvest Srl
 
 :leveloffset: 1
