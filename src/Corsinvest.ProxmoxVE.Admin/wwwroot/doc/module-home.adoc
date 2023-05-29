@@ -1,7 +1,13 @@
 [[chapter_module_home]]
-= Home
+// ################################################ CAPITOLO 4 ################################################
 
-Show widget modules.
+// ################################################ MODULI ################################################2
+
+// ################################################ HOME ################################################
+
+=  Home
+
+Summarize the situation of your cluster in a few boxes. Each section is clickable.
 
 [.thumb]
-image:screenshot/modules/home/home.png[]
+image:screenshot/modules/home/homepage.png[]

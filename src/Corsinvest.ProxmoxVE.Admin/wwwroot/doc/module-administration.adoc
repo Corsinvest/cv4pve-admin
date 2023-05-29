@@ -1,0 +1,11 @@
+[[chapter_module_administration]]
+// ################################################ CAPITOLO 4 ################################################
+// ################################################ MODULI ################################################
+// ################################################ ADMINISTRATION ################################################
+
+= Administration
+
+Monitor jobs in the background with HangFire. Enable/Disable modules and keep track of sessions.
+
+[.thumb]
+image:screenshot/modules/administration/modules-administration.png[]

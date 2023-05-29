@@ -1,44 +1,54 @@
 = Introduction
+ 
+Find us on: 
+image:social/github-24.png[] https://github.com/Corsinvest/cv4pve-admin[GitHub]
+image:social/docker-24.png[] https://hub.docker.com/r/corsinvest/cv4pve-admin[DockerHub]
+image:social/domain-24.png[] https://corsinvest.it/cv4pve-admin[WebSite] 
+image:social/youtube-play-24.png[] https://www.youtube.com/channel/UCq0PeNQCfu4IOttZoiyNZLA[YouTube]
 
-{app-name} is a platform to boost your {pve-name} infrastructure.
+image::screenshot/modules/home/home-computerscreen.png[Home,500,200]
 
-One of the main design goals was to make use as simple as possible. You can use {app-name} for a single node or cluster of many nodes. All management tasks can be performed using web-based management interface and even a novice user can set up and install {app-name} in minutes.
+The easiest and most effective solution to monitor your multiple Proxmox VE cluster in a single web portal.
 
-== Why?
+{app-name} boost your Proxmox VE infrastructure.
 
-The reasons that led us to develop {app-name} for {pve-name} are:
+One of the main design goals was to make use as simple as possible. You can use cv4pve-admin for a single node or cluster of many nodes. All management tasks can be performed using web-based management interface and even a novice user can set up and install {app-name} in minutes.
 
-* the lack of functionality we need
-* the needs of the IT Manager for a simplified and total management of the infrastructure
+== Why
 
-Examples to better understand:
+The reason that led us to develop cv4pve-admin for Proxmox VE is:
 
-How do we know in a Backup Task which ones have been successful or not, the occupation execution times or other?::
-  Everything is clearly written in the log if there are more than 5 backups it becomes very difficult to have this information
+* The lack of functionality we need
+* The desire to facilitate the management of infrastructures to the IT Manager
 
-But the backups in my Task overlap with others and how is the load of the nodes?::
-  The log contains the dates and durations and on which host it is running
+Example:
+
+How do we know if backups have been successful? And their execution times? How much do they occupy?::
+  Everything is clearly written in the log.
+
+How do I know if jobs come overlap? How much is the load?::
+  The log contains the dates and durations and on which host it is running.
 
 How can I see occupancy of a VM at the storage level?::
-  I go to the VM I check the storage, I check its backups
+  Go to VM - Check storage - Check backups
 
 Would I like to take snapshots every 15 minutes?::
   it is not possible
 
 We have implemented simple solutions to get information immediately and in a simple way.
 
-== Web-based Management Interface
+== Web-Based
 
 {app-name} is simple to use. Management tasks can be performed through the included web-based management interface – there is no need to install a separate management tool.
 
-== Your benefits with {app-name}
+== Benefits
 
 * Fast installation and easy-to-use
 * Web-based management interface
 * Low administration costs and simple deployment
 * Manage multiple clusters in a single installation
 
-== Project History
+== Project
 
 The project started in 2016, with command line cv4pve-tools. The tools are Open Source on the site https://github.com/Corsinvest?q=cv4pve[GitHub] and are still maintained today. Initially we used shell commands inside {pve-name}. We immediately understood the fragility of the system.
 
@@ -46,6 +56,6 @@ We have developed the https://github.com/Corsinvest?q=cv4pve-api-[API] for vario
 
 The GUI version started 2019. {app-url-site}
 
-== Company
+== Corsinvest
 
 {company-url}[{company-name}] ❤️ Open Source, believes in Open Source and in the community. All this brings an immense added value.
