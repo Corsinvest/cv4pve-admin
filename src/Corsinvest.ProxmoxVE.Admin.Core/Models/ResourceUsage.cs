@@ -23,7 +23,7 @@ public class ResourceUsage
         //all storage not shaed
         var allStorage = data.Where(a => a.ResourceType == ClusterResourceType.Storage && a.IsAvailable);
 
-        var storages = allStorage.Where(a=> !a.Shared).ToList();
+        var storages = allStorage.Where(a => !a.Shared).ToList();
         storages.AddRange(allStorage.Where(a => a.Shared).DistinctBy(a => a.Storage));
 
         return new List<ResourceUsage>
