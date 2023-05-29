@@ -98,5 +98,5 @@ public partial class DialogFastConfig
         return ret;
     }
 
-    private async Task ResultStepClick() => await JSRuntime.InvokeVoidAsync("open", NavigationManager.Uri.ToString());
+    private async Task ResultStepClick() => await JSRuntime.InvokeVoidAsync("open", NavigationManager.Uri.ToString(), "_self");
 }
