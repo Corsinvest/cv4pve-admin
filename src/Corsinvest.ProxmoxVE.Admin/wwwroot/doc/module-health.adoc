@@ -1,0 +1,117 @@
+[[chapter_module_health]]
+// ################################################ CAPITOLO 4 ################################################
+// ################################################ MODULI ################################################
+
+// ################################################ HEALTH ################################################
+
+
+= Health
+
+//  CLUSTER STATUS
+
+== Cluster Status
+
+365° Real time status of your Proxmox VE Cluster.
+
+[.thumb]
+image:screenshot/modules/status/modules-health-clusterusage.png[]
+
+[.thumb]
+image:screenshot/modules/status/modules-health-clusterusage-object.png[]
+
+[.thumb]
+image:screenshot/modules/status/modules-health-clusterusage-tasks.png[]
+
+//  CLUSTER USAGE
+
+== Cluster Usage
+
+Show all the storages configured in cluster.
+
+[.thumb]
+image:screenshot/modules/cluster-usage/configurations.png[]
+
+**By Storage**
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-storage.png[]
+
+**By VM/CT**
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-vm.png[]
+
+**By Costs**
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-costs1.png[]
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-costs2.png[]
+
+[.thumb]
+image:screenshot/modules/cluster-usage/by-costs3.png[]
+
+//  DIAGNOSTIC
+
+== Diagnostic
+
+Take, schedule and manage automatic diagnostic for your Proxmox VE cluster, it helps to find out some hidden problems.
+
+[.thumb]
+image:screenshot/modules/diagnostic/modules-health-diag.png[]
+
+//  METRICS EXPORTER
+
+== Metrics Exporter
+
+Export metrics in https://prometheus.io/[Prometheus] format
+
+[.thumb]
+image:screenshot/modules/metrics-exporter/data.png[]
+
+//  QEME MONITOR
+
+== Qemu Monitor
+
+Proxmox VE does not allow the operating system to view IOPS for VM. With this it is easy to identify the virtual machines and solve the problem
+
+[.thumb]
+image:screenshot/modules/qemu-monitor/grid.png[]
+
+//  VZDUMP TREND
+
+== VZDump Trend
+
+Check the progress of the vzdump backup set by Proxmox VE and check status, show more info
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/job.png[]
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/vm-ct.png[]
+
+**List of scheduled jobs**
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/scheduled.png[]
+
+**Speed Trend**
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/speed.png[]
+
+**List of not scheduled jobs**
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/not-scheduled.png[]
+
+**List of disks don't backed up**
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/disks_not_backupped.png[]
+
+**Check storage backups occupation**
+
+[.thumb]
+image:screenshot/modules/vzdump-trend/backups-inline.png[]
