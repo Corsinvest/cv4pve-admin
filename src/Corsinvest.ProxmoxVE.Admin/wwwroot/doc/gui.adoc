@@ -1,5 +1,5 @@
 [[chapter_gui]]
-= Graphical User Interface
+= GUI
 
 {app-name} is simple. There is no need to install a separate management
 tool, and everything can be done through your web browser (Latest
@@ -14,14 +14,14 @@ The web interface can be reached via https://youripaddress:5000
 == Login
 
 [.thumb]
-image:screenshot/login.png[]
+image:screenshot/login/loginadm.png[]
 
 When you connect to the {app-name}, you will first see the login window.
 
-== GUI Overview
+== Overview
 
 [.thumb]
-image:screenshot/summary.png[]
+image:screenshot/modules/home/homepage.png[]
 
 The {app-name} user interface consists of three regions.
 
@@ -46,8 +46,9 @@ The rightmost part of the header contains four buttons:
 [horizontal]
 
 Cluster Selector::  Cluster selector.
+
 [.thumb]
-image:screenshot/cluster-selector.png[]
+image:screenshot/multicluster/multicluster-management.png[]
 
 Notify::  Notify service activity.
 
@@ -61,42 +62,77 @@ This is the main navigation tree. It is divided into contexts and contains all t
 
 === Content Panels
 
-When you select a module in the tree, the corresponding
-shows status information in the content. Refer to the individual chapters of the modules within the reference documentation for more detailed information.
+When you select a module in the tree, the corresponding shows status information in the content. Refer to the individual chapters of the modules within the reference documentation for more detailed information.
 
-== Global options
+== Settings/Options
+
+When you select a module in the tree, the corresponding shows status information in the content. Refer to the individual chapters of the modules within the reference documentation for more detailed information.
 
 [.thumb]
-image:screenshot/modules/settings/global-settings.png[]
+image:screenshot/modules/settings/options.png[]
 
-The settings are divided by functions.
+=== cv4pve-admin
 
-== Notification
+Manage your cluster: insert Description, IP and Credentials.
+
+[width="100%"]
+|=======
+| image:screenshot/modules/settings/service-general-cv4pve-admin.png[] | image:screenshot/modules/settings/service-general-cv4pve-admin-add-cluster1.png[]
+|=======
+
+[width="100%"]
+|=======
+| image:screenshot/modules/settings/service-general-cv4pve-admin-add-cluster2.png[]
+|=======
+
+=== Localization
+
+Manage app language
+
+[.thumb]
+image:screenshot/modules/settings/service-general-localization.png[]
+
+=== Mailing SMTP
+
+Mailing SMTP
+
+[.thumb]
+image:screenshot/modules/settings/service-general-smtp.png[]
+
+[.thumb]
+image:screenshot/modules/settings/service-general-smtp-config.png[]
+
+=== MudBlazor UI
+
+Change the default app theme color and switch to dark mode
+
+=== Security
+
+Manage all the security app settings
+
+=== Notification
 
 For notification email or other type, is posable to configure it in section **NOTIFICATION**
 
-== Proxmox VE Cluster options
+=== Apps
 
-{app-name} supports multiple clusters configurations. For identify cluster is possible add a description.
+Configure all application settings in the app: cron, alert limits, notification channels, and retention
 
-=== Api Login or Api Token
+== How to Setup a cluster
+
+cv4pve-admin supports multiple clusters configurations. For identify cluster is possible add a description.
+
+===  Api Login or Api Token
 
 [.thumb]
 image:screenshot/modules/settings/cluster-settings1.png[]
 
-=== SSH Login
+===  SSH Login
 
 [.thumb]
 image:screenshot/modules/settings/cluster-settings2.png[]
 
-=== Ip and port Nodes
+===  IP and Port
 
 [.thumb]
 image:screenshot/modules/settings/cluster-settings3.png[]
-
-== Module options
-
-[.thumb]
-image:screenshot/modules/settings/module-settings.png[]
-
-The module may have settings. If present, there is a dedicated section.

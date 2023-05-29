@@ -64,7 +64,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddAppHero(builder.Configuration)
                 .Customize()
-                .AddReleaseGitHub();
+                .AddReleaseGitHub()
+                .AddReleaseDockerHub();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
