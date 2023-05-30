@@ -4,6 +4,7 @@
  */
 using Corsinvest.AppHero.Core.Options;
 using Corsinvest.AppHero.Core.UI;
+using Microsoft.JSInterop;
 using MudExtensions;
 using MudExtensions.Enums;
 
@@ -14,6 +15,7 @@ public partial class DialogFastConfig
     [Inject] private IWritableOptionsService<AdminOptions> WritableOptionsService { get; set; } = default!;
     [Inject] private IOptionsSnapshot<AdminOptions> AdminOptions { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
     private MudStepper? RefStepper { get; set; } = default!;
     private MudForm? RefForm { get; set; } = default!;
@@ -85,7 +87,6 @@ public partial class DialogFastConfig
                 case 3:
                     await RefForm!.Validate();
                     ret = !RefForm.IsValid;
-
                     break;
 
                 default: break;
@@ -97,5 +98,5 @@ public partial class DialogFastConfig
         return ret;
     }
 
-    private void ResultStepClick() => NavigationManager.NavigateTo(NavigationManager.Uri, true);
+    private async Task ResultStepClick() => await JSRuntime.InvokeVoidAsync("open", NavigationManager.Uri.ToString(), "_self");
 }

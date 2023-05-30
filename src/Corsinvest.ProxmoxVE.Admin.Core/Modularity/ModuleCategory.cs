@@ -14,4 +14,5 @@ public enum ModuleCategory
     Management,
     Develop,
     System,
+    Info,
 }

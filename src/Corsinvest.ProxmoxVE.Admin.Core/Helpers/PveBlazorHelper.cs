@@ -13,8 +13,8 @@ public static class PveBlazorHelper
 {
     public static string GetColorRangeToString(double value)
     {
-        if (value > .9) { return "var(--mud-palette-error)"; }
-        else if (value > .8) { return "var(--mud-palette-warning)"; }
+        if (value > 90) { return "var(--mud-palette-error)"; }
+        else if (value > 80) { return "var(--mud-palette-warning)"; }
         else { return "var(--mud-palette-success)"; }
     }
 
