@@ -157,7 +157,7 @@ public partial class Summary : IRefreshable
                 StatusInfo.Icon = Icons.Material.Filled.Warning;
                 StatusInfo.Color = PveBlazorHelper.GetColorStatus(PveConstants.StatusOffline);
             }
-        }        
+        }
 
         StateHasChanged();
 
