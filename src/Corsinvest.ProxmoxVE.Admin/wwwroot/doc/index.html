@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left data-line-1">
 <div id="header">
-<h1>CV4PVE-ADMIN v6.0.0-beta Guide</h1>
+<h1>CV4PVE-ADMIN v.0.0.7-beta Guide</h1>
 <div class="details">
 <span id="author" class="author">Powered by Corsinvest Srl</span><br>
 </div>
@@ -488,7 +488,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_other">5. Other</a>
 <ul class="sectlevel2">
 <li><a href="#chapter_other_cron">5.1. Cron</a></li>
-<li><a href="#chapter_other_faq">5.2. Frequently Asked Questions</a></li>
+<li><a href="#chapter_other_cmd">5.2. Commands</a></li>
+<li><a href="#chapter_other_faq">5.3. Frequently Asked Questions</a></li>
 </ul>
 </li>
 <li><a href="#_support">6. Support</a>
@@ -1722,7 +1723,56 @@ Mar 15, 02:30 +04:00 – run</code></pre>
 </div>
 </div>
 <div class="sect2 data-line-2">
-<h3 id="chapter_other_faq">5.2. Frequently Asked Questions</h3>
+<h3 id="chapter_other_cmd">5.2. Commands</h3>
+<div class="paragraph data-line-4">
+<p>When you have to specify what VM/CT insert inside a job you have these methods:</p>
+</div>
+<div class="ulist data-line-6">
+<ul>
+<li class="data-line-6">
+<p>comma separated (<em>100,101,102,TestDebian,VMName</em>)</p>
+</li>
+<li class="data-line-7">
+<p>range (<em>100:107</em>)</p>
+</li>
+<li class="data-line-8">
+<p>poolname (<em>@pool-test</em>)</p>
+</li>
+<li class="data-line-9">
+<p>tagname (<em>@tag-test</em>)</p>
+</li>
+<li class="data-line-10">
+<p>nodename (<em>@node-nodename</em>)</p>
+</li>
+<li class="data-line-11">
+<p>every object of your host (<em>@all-nodename</em>)</p>
+</li>
+<li class="data-line-12">
+<p>every object of your cluster (<em>@all</em>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph data-line-14">
+<p>If you have to exclude some VMs or Containers just put the "-" sign in front of the ID/Name:</p>
+</div>
+<div class="ulist data-line-16">
+<ul>
+<li class="data-line-16">
+<p>-vmid or -name (<em>-200,-TestUbuntu</em>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph data-line-18">
+<p>Mixed example:</p>
+</div>
+<div class="listingblock data-line-19">
+<div class="content">
+<pre>100,101,102,-103,104,vmtest,-containertest</pre>
+</div>
+</div>
+</div>
+<div class="sect2 data-line-2">
+<h3 id="chapter_other_faq">5.3. Frequently Asked Questions</h3>
 <div class="admonitionblock note data-line-5">
 <table>
 <tr>
@@ -1748,7 +1798,7 @@ New FAQs are appended to the bottom of this section.
 </div>
 </div>
 </div>
-<div class="sect1 data-line-51">
+<div class="sect1 data-line-52">
 <h2 id="_support">6. Support</h2>
 <div class="sectionbody">
 <div class="sect2 data-line-1">
@@ -1767,7 +1817,7 @@ The customer portal provides help and support with guaranteed response times fro
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-26 15:44:38 +0200
+Last updated 2023-05-30 16:34:39 +0200
 </div>
 </div>
 </body>
