@@ -18,18 +18,18 @@ Requirement on every nodes **ledmon**.
 apt-get install ledmon
 ```
 
-**Nodes** 
+=== Nodes === 
 
 [.thumb]
 image:screenshot/modules/disks-status/nodes.png[]
 
-**Disks Information**
+=== Disks Information ===
 
 [.thumb]
 image:screenshot/modules/disks-status/disks.png[]
 
 
-**S.M.A.R.T. tools information**
+=== S.M.A.R.T. tools information ===
 
 [.thumb]
 image:screenshot/modules/disks-status/disks.png[]
@@ -41,27 +41,33 @@ image:screenshot/modules/disks-status/disks.png[]
 
 Free up the node's memory space in case of error: "out of memory" or "kvm: failed to initialize KVM: Cannot allocate memory"
 
-**Description**
+=== Description ===
+----
 Free the memory of the nodes to start a VM without using a shell.
 
 The message that is displayed
+----
 
 WARNING: _"kvm: failed to initialize KVM: Cannot allocate memory"_
 
-**General**
+=== General ===
+
 [.thumb]
 image:screenshot/modules/node-free-memory/nodes.png[]
 
 
 //  VM UNLOCK
 
-== VM UNLOCK
+== VM UNLOCK ==
 
 Unlock VM/CT that have remained in the "locked" status
 
-**Description**
+=== Description ===
+----
 Unlock VM/CT that are in a locked state without using the shell
+----
 
-**General**
+=== General ===
+
 [.thumb]
 image:screenshot/modules/vm-unlock/vms.png[]

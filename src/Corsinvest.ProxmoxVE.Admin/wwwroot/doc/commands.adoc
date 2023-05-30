@@ -1,0 +1,21 @@
+[[chapter_other_cmd]]
+= Commands
+
+When you have to specify what VM/CT insert inside a job you have these methods:
+
+* comma separated (__100,101,102,TestDebian,VMName__)
+* range (__100:107__)
+* poolname (__@pool-test__)
+* tagname (__@tag-test__)
+* nodename (__@node-nodename__)
+* every object of your host (__@all-nodename__)
+* every object of your cluster (__@all__)
+
+If you have to exclude some VMs or Containers just put the "-" sign in front of the ID/Name:
+
+* -vmid or -name (__-200,-TestUbuntu__)
+
+Mixed example:
+----
+100,101,102,-103,104,vmtest,-containertest
+----
