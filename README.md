@@ -127,7 +127,7 @@ If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pv
 ## 🦺 Screenshots
 
 #### _home page_
-![image](src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\images\screenshot\modules\home\homepage.png)
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
 #### _snapshots_
 ![image](src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\images\screenshot\modules\autosnap\modules-safe-autosnap.png)
 #### _cluster usage_
