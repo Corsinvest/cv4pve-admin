@@ -6,7 +6,7 @@
 
 # **CV4PVE-ADMIN**
 
-![image](src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\images\screenshot\modules\home\home-computerscreen.png)
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
 
 
 
@@ -127,10 +127,10 @@ If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pv
 ## 🦺 Screenshots
 
 #### _home page_
-![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/homepage.png)
 #### _snapshots_
-![image](src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\images\screenshot\modules\autosnap\modules-safe-autosnap.png)
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/autosnap/modules-safe-autosnap.png)
 #### _cluster usage_
-![image](src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\images\screenshot\modules\cluster-usage\by-costs1.png)
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/cluster-usage/by-costs3.png)
 #### _multicluster_
-![image](src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\images\screenshot\multicluster\multicluster-management.png)
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/multicluster/multicluster-management.png)
