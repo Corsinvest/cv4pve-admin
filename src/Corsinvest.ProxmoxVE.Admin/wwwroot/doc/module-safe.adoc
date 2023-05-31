@@ -36,9 +36,6 @@ Grid with tasks configured.
 image:screenshot/modules/autosnap/modules-safe-autosnap.png[]
 
 === New and edit Task ===
-----
-link:#chapter_other_cron[Cron format]
-----
 
 [.thumb]
 image:screenshot/modules/autosnap/modules-safe-autosnap-conf.png[]
