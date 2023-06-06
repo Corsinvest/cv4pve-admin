@@ -25,6 +25,6 @@ public class AutoSnapJobHook : EntityBase<int>, IAggregateRoot<int>
     public string Url { get; set; } = default!;
 
     public AutoSnapJobHookHttpMethod HttpMethod { get; set; } = default!;
-    public string Data { get; set; } = default!;
+    public string Data { get; set; } = string.Empty;
     public bool DataIsKeyValue { get; set; }
 }

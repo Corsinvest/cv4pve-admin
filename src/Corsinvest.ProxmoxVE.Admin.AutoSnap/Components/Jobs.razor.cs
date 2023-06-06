@@ -6,7 +6,7 @@ using Corsinvest.AppHero.Core.BaseUI.DataManager;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Repository;
-using Corsinvest.ProxmoxVE.Api;
+using MudExtensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Components;
 
@@ -18,10 +18,10 @@ public partial class Jobs
     [Inject] private IJobService JobService { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
 
-    private PveClient _pveClient = default!;
-    private List<string> VmIdsList { get; set; } = default!;
-
-    protected async Task<PveClient> GetPveClient() => _pveClient ??= await PveClientService.GetClientCurrentCluster();
+    private IEnumerable<string> VmIdsList { get; set; } = default!;
+    private List<string> VmIds { get; set; } = default!;
+    private string? AddedValue { get; set; }
+    private MudComboBox<string>? RefMudComboBox { get; set; }
 
     protected override void OnInitialized()
     {
@@ -50,46 +50,22 @@ public partial class Jobs
 
         DataGridManager.BeforeEditAsync = async (item, isNew) =>
         {
+            VmIds = (await (await PveClientService.GetClientCurrentCluster())
+                         .GetVmsJollyKeys(true, true, true, true, true, true))
+                    .ToList();
+
             item.ClusterName = await PveClientService.GetCurrentClusterName();
-            VmIdsList = (item.VmIds + "").Split(",").ToList();
+            VmIdsList = (item.VmIds + "").Split(",").AsEnumerable();
             return item;
         };
     }
 
-    //private IEnumerable<string> VmIds2 { get; set; } = new HashSet<string>();
-
-    //private async Task<IEnumerable<string>> SearchFuncVmIds2(string search)
-    //{
-    //    var ret = (await PveAdminHelper.GetVmsJollyKeys(_pveClient, true, true, true, true, true))
-    //                .Where(a => !VmIdsList.Contains(a))
-    //                .ToList();
-
-    //    if (!string.IsNullOrWhiteSpace(search))
-    //    {
-    //        ret = ret.Where(a => a.Contains(search, StringComparison.InvariantCultureIgnoreCase))
-    //                 .ToList();
-
-    //        if (!ret.Contains(search)) { ret.Add(search); }
-    //    }
-
-    //    return ret;
-    //}
-
-    private async Task<IEnumerable<string>> SearchFuncVmIds(string search)
+    private async Task AddItem()
     {
-        var ret = (await (await GetPveClient()).GetVmsJollyKeys(true, true, true, true, true, true))
-                    .Where(a => !VmIdsList.Contains(a))
-                    .ToList();
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            ret = ret.Where(a => a.Contains(search, StringComparison.InvariantCultureIgnoreCase))
-                     .ToList();
-
-            if (!ret.Contains(search)) { ret.Add(search); }
-        }
-
-        return ret;
+        if (string.IsNullOrEmpty(AddedValue)) { return; }
+        VmIds.Add(AddedValue);
+        AddedValue = null;
+        await RefMudComboBox!.ForceRender(true);
     }
 
     private async Task Snap(AutoSnapJob item)

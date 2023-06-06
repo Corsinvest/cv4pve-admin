@@ -257,14 +257,14 @@ internal class Helper
         using var client = new HttpClient(handler);
 
         var dataStr = hook.Data;
-        var dataDic = new Dictionary<string, string>();
+        var dic = new Dictionary<string, string>();
 
         if (hook.DataIsKeyValue)
         {
             foreach (var row in hook.Data.SplitNewLine())
             {
                 var item = row.Split('§');
-                dataDic.Add(item[0], item[1]);
+                dic.Add(item[0], item[1]);
             }
         }
 
@@ -279,9 +279,9 @@ internal class Helper
 
             if (hook.DataIsKeyValue)
             {
-                foreach (var key in dataDic.Keys)
+                foreach (var key in dic.Keys)
                 {
-                    dataDic[key] = dataDic[key].Replace(keyReplace, valueReplace);
+                    dic[key] = dic[key].Replace(keyReplace, valueReplace);
                 }
             }
             else
@@ -291,7 +291,7 @@ internal class Helper
         }
 
         var content = hook.DataIsKeyValue ?
-                        (ByteArrayContent)new FormUrlEncodedContent(dataDic) :
+                        (ByteArrayContent)new FormUrlEncodedContent(dic) :
                         new StringContent(dataStr);
 
         return hook.HttpMethod switch
