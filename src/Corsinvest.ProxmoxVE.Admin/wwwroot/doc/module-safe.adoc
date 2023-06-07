@@ -40,6 +40,20 @@ image:screenshot/modules/autosnap/modules-safe-autosnap-conf.png[]
 
 link:#chapter_other_cron[Cron format]
 
+**Edit Hook**
+[.thumb]
+image:screenshot/modules/autosnap/modules-safe-autosnap-hook-conf.png[]
+
+The environments are replace with values.
+
+Example for InfluxDb for cv4pve-autosnap
+
+[horizontal]
+
+Url:: http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME
+
+Data:: cv4pve-autosnap,vmid=%CV4PVE_AUTOSNAP_VMID%,type=%CV4PVE_AUTOSNAP_VMTYPE%,label=%CV4PVE_AUTOSNAP_LABEL%,vmname=%CV4PVE_AUTOSNAP_VMNAME%,success=%CV4PVE_AUTOSNAP_STATE% success=%CV4PVE_AUTOSNAP_STATE%,duration=%CV4PVE_AUTOSNAP_DURATION%
+
 **Status**
 
 Show status of job autosnap
