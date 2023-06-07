@@ -6,14 +6,17 @@
 
 # CV4PVE-ADMIN
 
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
 
 ## 💻 What is it?
+
 > It is currently in beta stage but you shouldn't have any particular problems.
 
 The easiest and most effective solution to monitor your multiple Proxmox VE cluster in a single web portal.
 
 
 ## 🚀 Main features
+
 > Discover all the features on the official website: [here](https://corsinvest.it/cv4pve-admin-beta-download-features/)
 
 * Completely written in C#
@@ -26,7 +29,6 @@ The easiest and most effective solution to monitor your multiple Proxmox VE clus
 * Execute outside Proxmox VE
 * Multiple Cluster/Node Management
 * Minimum version of Proxmox VE 6.4
-
 
 ## ⬇️ How to install
 
@@ -51,10 +53,11 @@ username: **admin@local**  password: **Password123!**
 
 
 ## 🌟 We grow together
+
 We really appreciate the stars, they help us grow. Thank you!
 
-
 ## 📰 Copyright 
+
 For licensing details please visit [LICENSE](LICENSE)
 
 ```text
@@ -70,8 +73,20 @@ For licensing details please visit [LICENSE](LICENSE)
   For more information visit https://www.corsinvest.it/cv4pve-admin
 ```
 
-
 ## 🦺 Commercial Support
+
 This open source software is part of an open source suite tools called cv4pve-tools.
 
 If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pve-admin)
+
+
+## Screenshots
+
+#### _home page_
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/homepage.png)
+#### _snapshots_
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/autosnap/modules-safe-autosnap.png)
+#### _cluster usage_
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/cluster-usage/by-costs3.png)
+#### _multicluster_
+![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/multicluster/multicluster-management.png)

@@ -8,16 +8,17 @@
 = Safe
 
 //  SNAP
-
 == Automatic Snapshots
 
 Take a snapshot of a VM/CT at a fixed interval with a retention.
 
-**Implementation**
-
+=== Implementation ===
+----
 We started in 2016 with command line development https://github.com/Corsinvest/cv4pve-autosnap[Github] and then implemented the web portal.
+----
 
-**Note**
+=== Note ===
+
 WARNING: Do not schedule less than 15 minutes, there may be performance problems.
 
 WARNING: If you include memory, the space and time will increase considerably. Test it before deploying to production environment.
@@ -26,21 +27,20 @@ NOTE: Pay attention to the timeout time.
 
 NOTE: The location of the autosnap storage space is the same where the VM disk is located. This reduces the total storage capacity.
 
-**Tasks**
-
+=== Tasks ===
+----
 Grid with tasks configured.
+----
 
 [.thumb]
 image:screenshot/modules/autosnap/modules-safe-autosnap.png[]
 
-**New and edit Task**
+=== New and edit Task ===
 
 [.thumb]
 image:screenshot/modules/autosnap/modules-safe-autosnap-conf.png[]
 
-link:#chapter_other_cron[Cron format]
-
-**Edit Hook**
+=== Edit Hook ===
 [.thumb]
 image:screenshot/modules/autosnap/modules-safe-autosnap-hook-conf.png[]
 
@@ -54,38 +54,43 @@ Url:: http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME
 
 Data:: cv4pve-autosnap,vmid=%CV4PVE_AUTOSNAP_VMID%,type=%CV4PVE_AUTOSNAP_VMTYPE%,label=%CV4PVE_AUTOSNAP_LABEL%,vmname=%CV4PVE_AUTOSNAP_VMNAME%,success=%CV4PVE_AUTOSNAP_STATE% success=%CV4PVE_AUTOSNAP_STATE%,duration=%CV4PVE_AUTOSNAP_DURATION%
 
-**Status**
-
-Show status of job autosnap
+=== Status ===
+----
+Show status
+----
 
 [.thumb]
 image:screenshot/modules/autosnap/job-status.png[]
 
 
-**History**
-
-Show history of job autosnap
+=== History ===
+----
+Show History
+----
 
 [.thumb]
 image:screenshot/modules/autosnap/job-history.png[]
 
-**Timeline**
-
-Show Timeline scheduling autosnap
+=== Timeline ===
+----
+Show Scheduling Timeline
+----
 
 [.thumb]
 image:screenshot/modules/autosnap/time-line.png[]
 
-**Status**
-
-Show status scheduling autosnap
+=== Status ===
+----
+Show Scheduling status
+----
 
 [.thumb]
 image:screenshot/modules/autosnap/tasks-status.png[]
 
-**In Error**
-
-Grid with snapshots with error.
+=== In Error ===
+----
+Show Errors
+----
 
 [.thumb]
 image:screenshot/modules/autosnap/in-errors.png[]
@@ -94,16 +99,21 @@ image:screenshot/modules/autosnap/in-errors.png[]
 //  Node Protect
 
 == Node Protect
-
+----
 Save your configurations in case of disaster recovery.
+----
 
-**Description**
+=== Description ===
+----
 Proxmox VE perfectly performs VM/CT backups. The rest of the system configurations are not saved. E.G. /etc/pve or information cluster
+----
 
-**Implementation**
+=== Implementation ===
+----
 We started in 2019 with command line development https://github.com/Corsinvest/cv4pve-node-protect[Github] and then implemented the web portal.
+----
 
-**General**
+=== General ===
 
 [.thumb]
 image:screenshot/modules/node-protect/grid.png[]

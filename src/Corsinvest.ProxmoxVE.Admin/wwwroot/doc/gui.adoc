@@ -8,20 +8,15 @@ Firefox or Google Chrome is preferred).
 You can use the web-based administration interface with any modern
 browser.
 
-The web interface can be reached via https://youripaddress:5000
-(default login is: *admin@local*, and the password is *Password123!*).
-
 == Login
+
+The web interface can be reached via https://youripaddress:5000
+(default login is: *admin@local*, and the password is *Password123!*)
 
 [.thumb]
 image:screenshot/login/loginadm.png[]
 
-When you connect to the {app-name}, you will first see the login window.
-
 == Overview
-
-[.thumb]
-image:screenshot/modules/home/homepage.png[]
 
 The {app-name} user interface consists of three regions.
 
@@ -34,6 +29,9 @@ Modules tree:: At the left side. A navigation tree where you can select
 specific module.
 
 Content Panel:: Center region. Selected module display content.
+
+[.thumb]
+image:screenshot/modules/home/homepage.png[]
 
 NOTE: You can reduce and expand the size of the tree. This can be useful when you work on small screens and want more space to view other content.
 
