@@ -1250,85 +1250,117 @@ The location of the autosnap storage space is the same where the VM disk is loca
 </div>
 </div>
 <div class="sect4 data-line-43">
+<h5 id="_edit_hook">Edit Hook</h5>
+<div class="paragraph thumb data-line-45">
+<p><span class="image"><img src="./images/screenshot/modules/autosnap/modules-safe-autosnap-hook-conf.png" alt="modules safe autosnap hook conf"></span></p>
+</div>
+<div class="paragraph data-line-47">
+<p>The environments are replace with values.</p>
+</div>
+<div class="paragraph data-line-49">
+<p>Example for InfluxDb for cv4pve-autosnap</p>
+</div>
+<div class="hdlist data-line-53">
+<table>
+<tr>
+<td class="hdlist1">
+Url
+</td>
+<td class="hdlist2">
+<p><a href="http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME" class="undefined" data-href="http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME">http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Data
+</td>
+<td class="hdlist2">
+<p>cv4pve-autosnap,vmid=%CV4PVE_AUTOSNAP_VMID%,type=%CV4PVE_AUTOSNAP_VMTYPE%,label=%CV4PVE_AUTOSNAP_LABEL%,vmname=%CV4PVE_AUTOSNAP_VMNAME%,success=%CV4PVE_AUTOSNAP_STATE% success=%CV4PVE_AUTOSNAP_STATE%,duration=%CV4PVE_AUTOSNAP_DURATION%</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4 data-line-57">
 <h5 id="_status">Status</h5>
-<div class="listingblock data-line-44">
+<div class="listingblock data-line-58">
 <div class="content">
 <pre>Show status</pre>
 </div>
 </div>
-<div class="paragraph thumb data-line-49">
+<div class="paragraph thumb data-line-63">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/job-status.png" alt="job status"></span></p>
 </div>
 </div>
-<div class="sect4 data-line-52">
+<div class="sect4 data-line-66">
 <h5 id="_history">History</h5>
-<div class="listingblock data-line-53">
+<div class="listingblock data-line-67">
 <div class="content">
 <pre>Show History</pre>
 </div>
 </div>
-<div class="paragraph thumb data-line-58">
+<div class="paragraph thumb data-line-72">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/job-history.png" alt="job history"></span></p>
 </div>
 </div>
-<div class="sect4 data-line-60">
+<div class="sect4 data-line-74">
 <h5 id="_timeline">Timeline</h5>
-<div class="listingblock data-line-61">
+<div class="listingblock data-line-75">
 <div class="content">
 <pre>Show Scheduling Timeline</pre>
 </div>
 </div>
-<div class="paragraph thumb data-line-66">
+<div class="paragraph thumb data-line-80">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/time-line.png" alt="time line"></span></p>
 </div>
 </div>
-<div class="sect4 data-line-68">
+<div class="sect4 data-line-82">
 <h5 id="_status_2">Status</h5>
-<div class="listingblock data-line-69">
+<div class="listingblock data-line-83">
 <div class="content">
 <pre>Show Scheduling status</pre>
 </div>
 </div>
-<div class="paragraph thumb data-line-74">
+<div class="paragraph thumb data-line-88">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/tasks-status.png" alt="tasks status"></span></p>
 </div>
 </div>
-<div class="sect4 data-line-76">
+<div class="sect4 data-line-90">
 <h5 id="_in_error">In Error</h5>
-<div class="listingblock data-line-77">
+<div class="listingblock data-line-91">
 <div class="content">
 <pre>Show Errors</pre>
 </div>
 </div>
-<div class="paragraph thumb data-line-82">
+<div class="paragraph thumb data-line-96">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/in-errors.png" alt="in errors"></span></p>
 </div>
 </div>
 </div>
-<div class="sect3 data-line-87">
+<div class="sect3 data-line-101">
 <h4 id="_node_protect">4.5.2. Node Protect</h4>
-<div class="listingblock data-line-88">
+<div class="listingblock data-line-102">
 <div class="content">
 <pre>Save your configurations in case of disaster recovery.</pre>
 </div>
 </div>
-<div class="sect4 data-line-92">
+<div class="sect4 data-line-106">
 <h5 id="_description">Description</h5>
-<div class="listingblock data-line-93">
+<div class="listingblock data-line-107">
 <div class="content">
 <pre>Proxmox VE perfectly performs VM/CT backups. The rest of the system configurations are not saved. E.G. /etc/pve or information cluster</pre>
 </div>
 </div>
 </div>
-<div class="sect4 data-line-97">
+<div class="sect4 data-line-111">
 <h5 id="_implementation_2">Implementation</h5>
-<div class="listingblock data-line-98">
+<div class="listingblock data-line-112">
 <div class="content">
 <pre>We started in 2019 with command line development https://github.com/Corsinvest/cv4pve-node-protect[Github] and then implemented the web portal.</pre>
 </div>
 </div>
 </div>
-<div class="sect4 data-line-102">
+<div class="sect4 data-line-116">
 <h5 id="_general">General</h5>
 <div class="paragraph thumb data-line-0">
 <p><span class="image"><img src="./images/screenshot/modules/node-protect/grid.png" alt="grid"></span></p>
@@ -1812,7 +1844,7 @@ The customer portal provides help and support with guaranteed response times fro
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-31 10:54:57 +0200
+Last updated 2023-06-07 15:51:56 +0200
 </div>
 </div>
 </body>

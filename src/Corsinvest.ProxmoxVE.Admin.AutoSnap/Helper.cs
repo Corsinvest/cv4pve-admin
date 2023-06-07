@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Ardalis.Specification;
+using Corsinvest.AppHero.Core.BackgroundJob;
 using Corsinvest.AppHero.Core.Domain.Repository;
 using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
@@ -15,6 +16,7 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap;
@@ -33,7 +35,7 @@ internal class Helper
 
     private static async Task<AutoSnapJob?> GetAutoSnapJob(IReadRepositoryBase<AutoSnapJob> jobRepo, int id, ILogger logger)
     {
-        var job = (await jobRepo.FirstOrDefaultAsync(new AutoSnapJobSpec(id)))!;
+        var job = await jobRepo.FirstOrDefaultAsync(new AutoSnapJobSpec(id));
         if (job == null) { logger.LogWarning("Job Id = {Id} not exists!", id); }
         return job;
     }
@@ -93,8 +95,10 @@ internal class Helper
             if (job == null)
             {
                 logger.LogWarning("Job Id = {Id} not exists!", id);
+
+                //old job not recognized
                 //var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                //jobService.RemoveIfExists(Job.GetJobId(job.ClusterName,id));
+                //jobService.RemoveIfExists<Job>(job.ClusterName, id);
                 return;
             }
 
@@ -122,23 +126,34 @@ internal class Helper
             var client = await scope.GetPveClient(job.ClusterName);
             var app = GetApp(client, loggerFactory, log);
 
+            var statusEventOk = true;
+
             //event
             app.PhaseEvent += (sender, e) =>
             {
                 var hooks = job.Hooks.Where(a => a.Enabled && e.Phase == a.Phase).OrderBy(a => a.Order);
                 if (hooks.Any())
                 {
-                    using (logger.LogTimeOperation(LogLevel.Information, true, "Hook HTTP Command"))
+                    using (logger.LogTimeOperation(LogLevel.Information, true, "Hook HTTP Phase '{Phase}'", e.Phase))
                     {
                         //call hook
                         foreach (var item in hooks)
                         {
-                            using (logger.LogTimeOperation(LogLevel.Debug, true, "Execute HTTP Command '{Description}'", item.Description))
+                            using (logger.LogTimeOperation(LogLevel.Debug, true, "Execute HTTP Phase '{Phase}' Command '{Description}'", item.Phase, item.Description))
                             {
-                                log.WriteLine($"Execute HTTP Command '{item.Description}'");
-                                var ret = ExecuteHook(item, e.Environments).Result;
-                                log.WriteLine($"  Status Code '{ret.StatusCode}'");
-                                log.WriteLine($"  Reason Phrase '{ret.ReasonPhrase}'");
+                                log.WriteLine($"Execute Hook HTTP '{item.Phase}' Command '{item.Description}'");
+                                try
+                                {
+                                    var ret = ExecuteHook(item, e.Environments);
+                                    log.WriteLine($"  Status Code '{ret.StatusCode}'");
+                                    log.WriteLine($"  Reason Phrase '{ret.ReasonPhrase}'");
+                                }
+                                catch (Exception ex)
+                                {
+                                    statusEventOk = false;
+                                    logger.LogError(ex, ex.Message);
+                                    log.WriteLine($"  Error '{ex.Message}'");
+                                }
                             }
                         }
                     }
@@ -159,6 +174,8 @@ internal class Helper
                                              job.OnlyRuns);
                 history.Status = retSnap.Status;
             }
+
+            if (!statusEventOk) { history.Status = false; }
 
             history.End = DateTime.Now;
             history.Log = log.ToString();
@@ -242,7 +259,7 @@ internal class Helper
         return ret.OrderBy(a => a.Label);
     }
 
-    public static async Task<HttpResponseMessage> ExecuteHook(AutoSnapJobHook hook, IReadOnlyDictionary<string, string> environments)
+    public static HttpResponseMessage ExecuteHook(AutoSnapJobHook hook, IReadOnlyDictionary<string, string> environments)
     {
         using var handler = new HttpClientHandler
         {
@@ -257,16 +274,8 @@ internal class Helper
         using var client = new HttpClient(handler);
 
         var dataStr = hook.Data;
-        var dataDic = new Dictionary<string, string>();
-
-        if (hook.DataIsKeyValue)
-        {
-            foreach (var row in hook.Data.SplitNewLine())
-            {
-                var item = row.Split('§');
-                dataDic.Add(item[0], item[1]);
-            }
-        }
+        var dic = new Dictionary<string, string>();
+        if (hook.DataIsKeyValue) { dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(hook.Data)!; }
 
         var url = hook.Url;
 
@@ -279,9 +288,9 @@ internal class Helper
 
             if (hook.DataIsKeyValue)
             {
-                foreach (var key in dataDic.Keys)
+                foreach (var key in dic.Keys)
                 {
-                    dataDic[key] = dataDic[key].Replace(keyReplace, valueReplace);
+                    dic[key] = dic[key].Replace(keyReplace, valueReplace);
                 }
             }
             else
@@ -291,16 +300,16 @@ internal class Helper
         }
 
         var content = hook.DataIsKeyValue ?
-                        (ByteArrayContent)new FormUrlEncodedContent(dataDic) :
+                        (ByteArrayContent)new FormUrlEncodedContent(dic) :
                         new StringContent(dataStr);
 
-        return hook.HttpMethod switch
+        return client.Send(hook.HttpMethod switch
         {
-            AutoSnapJobHookHttpMethod.Get => await client.GetAsync(url),
-            AutoSnapJobHookHttpMethod.Post => await client.PostAsync(url, content),
-            AutoSnapJobHookHttpMethod.Put => await client.PutAsync(url, content),
+            AutoSnapJobHookHttpMethod.Get => new HttpRequestMessage(HttpMethod.Get, url),
+            AutoSnapJobHookHttpMethod.Post => new HttpRequestMessage(HttpMethod.Post, url) { Content = content }, 
+            AutoSnapJobHookHttpMethod.Put => new HttpRequestMessage(HttpMethod.Put, url) { Content = content }, 
             _ => throw new IndexOutOfRangeException(),
-        };
+        });
     }
 
     public static async Task Delete(IServiceScope scope, IEnumerable<AutoSnapInfo> snapshots, string clusterName)
