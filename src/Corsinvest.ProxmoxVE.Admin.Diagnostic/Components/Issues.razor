@@ -56,23 +56,13 @@
             </MudItem>
 
             <MudItem md="6">
-                <MudSelect @bind-Value="@context.Gravity" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Gravity)])" Required
-                           For="@(() => context.Gravity)">
-                    @foreach (var item in Enum.GetValues<DiagnosticResultGravity>())
-                    {
-                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudSelectExtended @bind-Value="@context.Gravity" ItemCollection="@(Enum.GetValues<DiagnosticResultGravity>())"
+                                   Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Gravity)])" Required="true" For="@(() => context.Gravity)" />
             </MudItem>
 
             <MudItem md="6">
-                <MudSelect @bind-Value="@context.Context" Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Context)])" Required
-                           For="@(() => context.Context)">
-                    @foreach (var item in Enum.GetValues<DiagnosticResultContext>())
-                    {
-                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudSelectExtended @bind-Value="@context.Context" ItemCollection="@(Enum.GetValues<DiagnosticResultContext>())"
+                                   Label="@(L[GetDescriptionProperty<IgnoredIssue>(a => a.Context)])" Required="true" For="@(() => context.Context)" />
             </MudItem>
         </MudGrid>
     </EditTemplate>

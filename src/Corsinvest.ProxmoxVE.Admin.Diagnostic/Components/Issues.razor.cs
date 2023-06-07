@@ -27,6 +27,12 @@ public partial class Issues
         DataGridManager.QueryAsync = async ()
             => await DataGridManager.Repository.ListAsync(new IgnoredIssueSpec(await PveClientService.GetCurrentClusterName()));
 
+        DataGridManager.BeforeEditAsync = async (item, isNew) =>
+        {
+            item.ClusterName = await PveClientService.GetCurrentClusterName();
+            return item;
+        };
+
         DataGridManager.DeleteAfterAsync = async (items) => await Rescan();
         DataGridManager.SaveAfterAsync = async (item, isNew) => await Rescan();
     }
