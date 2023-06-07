@@ -26,4 +26,7 @@ public static class JobExtension
             JobService.RemoveIfExists(jobId);
         }
     }
+
+    public static void RemoveIfExists<T>(this IJobService JobService, string clusterName, params object?[] args)
+        => JobService.RemoveIfExists(JobHelper.GetJobId<T>(clusterName, args));
 }

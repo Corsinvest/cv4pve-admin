@@ -34,7 +34,7 @@ public partial class Status
         DataGridManager.QueryAsync = async () =>
         {
             var clusterName = await PveClientService.GetCurrentClusterName();
-            return await Helper.GetInfo((await PveClientService.GetClient(clusterName))!,
+            return await Helper.GetInfo((await PveClientService.GetClientCurrentCluster())!,
                                         Jobs,
                                         clusterName,
                                         Options.Value.Get(clusterName),

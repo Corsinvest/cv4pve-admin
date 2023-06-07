@@ -4,6 +4,7 @@
  */
 using Corsinvest.AppHero.Core.Domain.Entities;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
+using System.ComponentModel;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 
@@ -26,5 +27,7 @@ public class AutoSnapJobHook : EntityBase<int>, IAggregateRoot<int>
 
     public AutoSnapJobHookHttpMethod HttpMethod { get; set; } = default!;
     public string Data { get; set; } = string.Empty;
+
+    [DisplayName("Data Is Key Value (JSON Format)")]
     public bool DataIsKeyValue { get; set; }
 }

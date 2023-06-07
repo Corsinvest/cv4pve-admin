@@ -36,14 +36,10 @@
         <AHPropertyColumn T="AutoSnapJobHook" TProperty="string" Property="a => a.Url" />
         <AHPropertyColumn T="AutoSnapJobHook" TProperty="AutoSnapJobHookHttpMethod" Property="a => a.HttpMethod" />
 
-        <TemplateColumn T="AutoSnapJobHook" CellClass="justify-end">
+        <TemplateColumn T="AutoSnapJobHook" CellClass="justify-end" Sortable="false">
             <CellTemplate>
                 <MudButtonGroup Variant="Variant.Text">
-                    @*
                     <AHDataGridColumnEdit T="AutoSnapJobHook" DataGridManager="DataGridManager" Context="@context" />
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Snap" OnClick="@(() => Snap(context.Item))" />
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Clean" OnClick="@(() => Clean(context.Item))" />
-                    *@
                 </MudButtonGroup>
             </CellTemplate>
         </TemplateColumn>
@@ -91,15 +87,23 @@
                                   For="@(() => context.Password)" />
             </MudItem>
 
-            <MudItem md="12">
-                <MudTextField @bind-Value="@context.Data" Label="@(L[GetDescriptionProperty<AutoSnapJobHook>(a => a.Data)])" 
-                              For="@(() => context.Data)" Lines="5" />
+            <MudItem md="6">
+                <div class="d-flex gap-2 ">
+                    <MudSelectExtended @bind-Value="@HookEnv" ItemCollection="@GetEnvironments()" Label="@L["Hook environment"]" />
+                    <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" OnClick="OnClickHookEnv" />
+                </div>
             </MudItem>
 
             <MudItem md="6">
                 <MudSwitch @bind-Checked="@context.DataIsKeyValue" Label="@(L[GetDescriptionProperty<AutoSnapJobHook>(a => a.DataIsKeyValue)])"
                            For="@(() => context.DataIsKeyValue)" Color="Color.Primary" />
             </MudItem>
+
+            <MudItem md="12">
+                <MudTextField @bind-Value="@context.Data" Label="@(L[GetDescriptionProperty<AutoSnapJobHook>(a => a.Data)])"
+                              For="@(() => context.Data)" Lines="5" />
+            </MudItem>
+
 
             <MudItem md="12">
                 <MudTextField @bind-Value="@context.Url" Label="@(L[GetDescriptionProperty<AutoSnapJobHook>(a => a.Url)])"
