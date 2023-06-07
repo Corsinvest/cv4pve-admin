@@ -2,29 +2,20 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+
+@inherits AHComponentBase
+
 <MudGrid>
     <MudItem xs="12" sm="6" md="6">
-        <MudSelect T="RrdDataTimeFrame"
-                   SelectedValuesChanged="@(async (e) => await Refresh())"
-                   @bind-Value="RrdDataTimeFrame"
-                   Label="Time frame">
-            @foreach (var item in Enum.GetValues<RrdDataTimeFrame>())
-            {
-                <MudSelectItem Value="@item">@item</MudSelectItem>
-            }
-        </MudSelect>
+        <MudSelectExtended @bind-Value="RrdDataTimeFrame" SelectedValuesChanged="@(async (IEnumerable<RrdDataTimeFrame> a) => await Refresh())"
+                           ItemCollection="@(Enum.GetValues<RrdDataTimeFrame>())"
+                           Label="@L["Time frame"]" />
     </MudItem>
 
     <MudItem xs="12" sm="6" md="6">
-        <MudSelect T="RrdDataConsolidation"
-                   SelectedValuesChanged="@(async (e) => await Refresh())"
-                   @bind-Value="RrdDataConsolidation"
-                   Label="Consolidation data">
-            @foreach (var item in Enum.GetValues<RrdDataConsolidation>())
-            {
-                <MudSelectItem Value="@item">@item</MudSelectItem>
-            }
-        </MudSelect>
+        <MudSelectExtended @bind-Value="RrdDataConsolidation" SelectedValuesChanged="@(async (IEnumerable<RrdDataConsolidation> e) => await Refresh())"
+                           ItemCollection="@(Enum.GetValues<RrdDataConsolidation>())"
+                           Label="@L["Consolidation data"]" />
     </MudItem>
 </MudGrid>
 
