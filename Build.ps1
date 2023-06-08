@@ -14,6 +14,10 @@ Write-Output "
  == Build System
  ========================================================="
 
+
+ #build documentation
+.\doc-utils.ps1 build
+
 $pathBasePrj = ".\src\Corsinvest.ProxmoxVE.Admin"
 $pathBinRelase = "$pathBasePrj\Bin\Release\net7.0"
 

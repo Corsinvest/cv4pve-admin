@@ -23,7 +23,9 @@ function Publish-Docker()
 
 function Build-Docker()
 {
-	#admin
+	#build documentation
+	 .\doc-utils.ps1 build
+
 	Write-Host "Build Docker cv4pve-admin"
 	docker rmi corsinvest/cv4pve-admin:$version --force
 	docker build --rm -f "Dockerfile" -t corsinvest/cv4pve-admin:$version "."
