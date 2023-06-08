@@ -16,7 +16,14 @@ public partial class RenderIndex
 
     private PveClient PveClient { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentCluster();
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            PveClient = await PveClientService.GetClientCurrentCluster();
+        }
+        catch { }
+    }
 
     private async Task<IEnumerable<NodeStorageContent>> GetBackupsInline()
     {

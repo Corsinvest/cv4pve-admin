@@ -1,11 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<Import Project="..\common.props" />
 
-	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<OutputType>Library</OutputType>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Corsinvest.ProxmoxVE.NodeProtect.Api" Version="1.5.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />

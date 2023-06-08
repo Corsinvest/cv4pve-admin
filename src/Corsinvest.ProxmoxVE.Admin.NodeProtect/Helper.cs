@@ -37,7 +37,7 @@ internal class Helper
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Node protect backup"))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Node protect backup cluster '{clusterName}'", clusterName))
         {
             var directoryWork = GetDirectoryWork(clusterName);
             Directory.CreateDirectory(directoryWork);
