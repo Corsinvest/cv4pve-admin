@@ -28,12 +28,6 @@ public partial class RenderIndex
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            ClusterName = await PveClientService.GetCurrentClusterName();
-        }
-        catch { }
-
         DataGridManager.Title = L["Node protected"];
         DataGridManager.DefaultSort = new() { [nameof(NodeProtectJobHistory.JobId)] = true };
         DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ClusterByNameSpec<NodeProtectJobHistory>(ClusterName));
@@ -54,6 +48,12 @@ public partial class RenderIndex
 
             await Task.CompletedTask;
         };
+
+        try
+        {
+            ClusterName = await PveClientService.GetCurrentClusterName();
+        }
+        catch { }
     }
 
     private async Task Protect()

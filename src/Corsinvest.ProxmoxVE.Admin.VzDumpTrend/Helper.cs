@@ -149,7 +149,7 @@ internal class Helper
         foreach (var node in (await client.GetNodes()).Where(a => a.IsOnline))
         {
             //list task backup
-            foreach (var taskItem in await client.Nodes[node.Node].Tasks.Get(typefilter: "vzdump", limit: 9999))
+            foreach (var taskItem in await client.Nodes[node.Node].Tasks.Get(typefilter: "vzdump")) //, limit: 9999
             {
                 var task = await dumpTaskRepo.FirstOrDefaultAsync(new VzDumpTaskSpec(clusterName, taskItem.UniqueTaskId));
                 if (task != null)
@@ -221,7 +221,7 @@ internal class Helper
         var dumpTasksRepo = scope.GetRepository<VzDumpTask>();
         var moduleClusterOptions = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<Options>>().Value.Get(clusterName);
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Collect backup data"))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Collect backup data cluster '{clusterName}'", clusterName))
         {
             await PopulateDb(client, moduleClusterOptions, dumpTasksRepo, false, clusterName);
         }

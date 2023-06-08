@@ -76,7 +76,7 @@ internal class Helper
         var logger = loggerFactory.CreateLogger(typeof(Helper));
         var moduleClusterOptions = GetModuleClusterOptions(scope, clusterName);
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Execute diagnostic cluster {clusterName}", clusterName))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Execute diagnostic cluster '{clusterName}'", clusterName))
         {
             var tasksDays = 10;
 

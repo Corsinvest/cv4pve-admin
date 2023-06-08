@@ -14,7 +14,7 @@
             DataGridManager="DataGridManager"
             MultiSelection
             Filterable
-            RowsPerPage="999"             
+            RowsPerPage="999"
             Groupable
             ShowFilterIcons="false"
             Height="calc(100vh - 335px)">
@@ -32,7 +32,7 @@
     <Columns>
         <SelectColumn T="NodeProtectJobHistory" ShowInFooter="false" />
 
-        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="string" Property="a => a.JobId" Grouping>
+        <AHPropertyColumn T="NodeProtectJobHistory" TProperty="string" Property="a => a.JobId" Grouping="true">
             <GroupTemplate>
                 <span style="font-weight:bold">
                     @L["JobId"]: @context.Grouping.Key (@context.Grouping.Count()) @FormatHelper.FromBytes(context.Grouping.Sum(a => a.Size))
@@ -71,9 +71,9 @@
         <AHLoadingContent />
     </LoadingContent>
 
-        <PagerContent>
-    <MudDataGridPager T="NodeProtectJobHistory" />
-    </PagerContent>
+   @* <PagerContent>
+        <MudDataGridPager T="NodeProtectJobHistory" />
+    </PagerContent>*@
 </AHDataGrid>
 
 <MudDialog IsVisible="@ShowDialog"
