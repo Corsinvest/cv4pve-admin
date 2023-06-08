@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Ardalis.Specification;
-using Corsinvest.AppHero.Core.BackgroundJob;
 using Corsinvest.AppHero.Core.Domain.Repository;
 using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
@@ -12,8 +11,6 @@ using Corsinvest.ProxmoxVE.Admin.Core.Repository;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -23,7 +20,7 @@ namespace Corsinvest.ProxmoxVE.Admin.AutoSnap;
 
 internal class Helper
 {
-    private static string AllVms { get; } = "@all";
+    public static string AllVms { get; } = "@all";
 
     public static Application GetApp(PveClient client, ILoggerFactory loggerFactory, TextWriter log)
         => new(client, loggerFactory, log, false);
@@ -213,33 +210,14 @@ internal class Helper
         }
     }
 
-    private static async Task<IReadOnlyDictionary<IClusterResourceVm, IEnumerable<VmSnapshot>>> GetInt(PveClient client,
-                                                                                                       IReadRepository<AutoSnapJob> jobs,
-                                                                                                       ModuleClusterOptions moduleClusterOptions,
-                                                                                                       ILoggerFactory loggerFactory,
-                                                                                                       string vmIdsOrNames,
-                                                                                                       string clusterName)
-    {
-        if (string.IsNullOrWhiteSpace(vmIdsOrNames))
-        {
-            vmIdsOrNames = moduleClusterOptions.SearchMode == SearchMode.Managed
-                                ? await GetVmIdsOrNames(jobs, clusterName)
-                                : AllVms;
-        }
-
-        return await GetApp(client, loggerFactory, null!)
-                        .Status(vmIdsOrNames, null, moduleClusterOptions.TimestampFormat);
-    }
-
     public static async Task<IEnumerable<AutoSnapInfo>> GetInfo(PveClient client,
-                                                                IReadRepository<AutoSnapJob> jobRepo,
-                                                                string clusterName,
                                                                 ModuleClusterOptions moduleClusterOptions,
                                                                 ILoggerFactory loggerFactory,
                                                                 string vmIdsOrNames)
     {
         var ret = new List<AutoSnapInfo>();
-        foreach (var item in await GetInt(client, jobRepo, moduleClusterOptions, loggerFactory, vmIdsOrNames, clusterName))
+        foreach (var item in await GetApp(client, loggerFactory, null!)
+                                        .Status(vmIdsOrNames, null, moduleClusterOptions.TimestampFormat))
         {
             var snaposhots = item.Value.Where(a => !string.IsNullOrWhiteSpace(Application.GetLabelFromName(a.Name, moduleClusterOptions.TimestampFormat)));
             ret.AddRange(snaposhots.Select(a => new AutoSnapInfo()
@@ -306,8 +284,8 @@ internal class Helper
         return client.Send(hook.HttpMethod switch
         {
             AutoSnapJobHookHttpMethod.Get => new HttpRequestMessage(HttpMethod.Get, url),
-            AutoSnapJobHookHttpMethod.Post => new HttpRequestMessage(HttpMethod.Post, url) { Content = content }, 
-            AutoSnapJobHookHttpMethod.Put => new HttpRequestMessage(HttpMethod.Put, url) { Content = content }, 
+            AutoSnapJobHookHttpMethod.Post => new HttpRequestMessage(HttpMethod.Post, url) { Content = content },
+            AutoSnapJobHookHttpMethod.Put => new HttpRequestMessage(HttpMethod.Put, url) { Content = content },
             _ => throw new IndexOutOfRangeException(),
         });
     }
@@ -321,9 +299,10 @@ internal class Helper
         }
     }
 
-    public static async Task<string> GetVmIdsOrNames(IReadRepository<AutoSnapJob> jobRepo, string clusterName)
+    public static async Task<string> GetVmIdsOrNames(IReadRepository<AutoSnapJob> jobRepo, string clusterName, bool enabled)
     {
-        var specJob = new AutoSnapJobSpec(clusterName).Enabled();
+        var specJob = new AutoSnapJobSpec(clusterName);
+        if (enabled) { specJob = specJob.Enabled(); }
         return (await jobRepo.ListAsync(specJob)).Select(a => a.VmIds).JoinAsString(",");
     }
 
@@ -337,7 +316,7 @@ internal class Helper
         var moduleClusterOptions = GetModuleClusterOptions(scope, clusterName);
         var loggerFactory = scope.GetLoggerFactory();
 
-        var vmIdsOrNames = await GetVmIdsOrNames(jobRepo, clusterName);
+        var vmIdsOrNames = await GetVmIdsOrNames(jobRepo, clusterName, true);
         var vmsCount = string.IsNullOrWhiteSpace(vmIdsOrNames) ?
                         0 :
                         (await client.GetVms(vmIdsOrNames)).Where(a => !a.IsUnknown).Count();
