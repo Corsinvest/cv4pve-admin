@@ -27,12 +27,7 @@ public partial class Jobs
     {
         DataGridManager.Title = L["Jobs "];
         DataGridManager.DefaultSort = new() { [nameof(AutoSnapJob.Id)] = false };
-
-        DataGridManager.QueryAsync = async () =>
-        {
-            var clusterName = await PveClientService.GetCurrentClusterName();
-            return await DataGridManager.Repository.ListAsync(new AutoSnapJobSpec(clusterName));
-        };
+        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new AutoSnapJobSpec(await PveClientService.GetCurrentClusterName()));
 
         DataGridManager.SaveAfterAsync = async (item, isNew) =>
         {
