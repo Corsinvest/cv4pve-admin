@@ -28,7 +28,7 @@ function Build-Doc()
 	For ($i=0; $i -le $content.Length; $i++) {
 		 if ($content[$i].StartsWith(":app-version: v"))
 		 { 
-			 $content[$i]=":app-version: v.$version"
+			 $content[$i]=":app-version: v$version"
 			 break
 		 } 
 	}
