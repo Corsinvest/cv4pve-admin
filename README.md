@@ -90,3 +90,5 @@ If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pv
 ![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/cluster-usage/by-costs3.png)
 #### _multicluster_
 ![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/multicluster/multicluster-management.png)
+
+<sub><div align="center"> Proxmox® is a registered trademark of Proxmox Server Solutions GmbH. </div></sub>
