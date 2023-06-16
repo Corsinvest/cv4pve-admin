@@ -4,7 +4,9 @@
  */
 using Corsinvest.AppHero.Core.Domain.Entities;
 using Corsinvest.AppHero.Core.Domain.Models;
+using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Repository;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 
@@ -18,6 +20,16 @@ public class AutoSnapJob : JobSchedule, IAggregateRoot<int>, IClusterName
 
     [Required]
     public string VmIds { get; set; } = default!;
+
+    [NotMapped]
+    public IEnumerable<string> VmIdsList
+    {
+        get => string.IsNullOrEmpty(VmIds)
+                ? Enumerable.Empty<string>()
+                : VmIds.Split(",").AsEnumerable();
+
+        set => VmIds = value.Order().JoinAsString(",");
+    }
 
     [Required]
     [RegularExpression("^[a-zA-Z0-9]+$")]
