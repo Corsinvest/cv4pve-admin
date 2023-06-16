@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <meta name="application-name" content="cv4pve-admin">
 <meta name="author" content="Powered by Corsinvest Srl">
 <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
@@ -87,10 +87,10 @@ code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;
 ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
 ul,ol{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
-ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
-ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
+ul.square{list-style-type:square}
+ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -211,13 +211,10 @@ table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
 .admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6);word-wrap:anywhere}
 .admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
 .exampleblock>.content{border:1px solid #e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;border-radius:4px}
-.exampleblock>.content>:first-child{margin-top:0}
-.exampleblock>.content>:last-child{margin-bottom:0}
 .sidebarblock{border:1px solid #dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;border-radius:4px}
-.sidebarblock>:first-child{margin-top:0}
-.sidebarblock>:last-child{margin-bottom:0}
 .sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
-.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content>:first-child,.sidebarblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child,.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
 .literalblock pre,.listingblock>.content>pre{border-radius:4px;overflow-x:auto;padding:1em;font-size:.8125em}
 @media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
 @media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
@@ -396,7 +393,7 @@ b.conum *{color:inherit!important}
 dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
 h1,h2,p,td.content,span.alt,summary{letter-spacing:-.01em}
 p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
-p,blockquote,dt,td.content,span.alt,summary{font-size:1.0625rem}
+p,blockquote,dt,td.content,td.hdlist1,span.alt,summary{font-size:1.0625rem}
 p{margin-bottom:1.25rem}
 .sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
 .exampleblock>.content{background:#fffef7;border-color:#e0e0dc;box-shadow:0 1px 4px #e0e0dc}
@@ -440,9 +437,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="book toc2 toc-left data-line-1">
+<body class="book toc2 toc-left">
 <div id="header">
-<h1>CV4PVE-ADMIN v6.0.0-beta Guide</h1>
+<h1>CV4PVE-ADMIN v1.0.0-rc.1 Guide</h1>
 <div class="details">
 <span id="author" class="author">Powered by Corsinvest Srl</span><br>
 </div>
@@ -488,7 +485,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_other">5. Other</a>
 <ul class="sectlevel2">
 <li><a href="#chapter_other_cron">5.1. Cron</a></li>
-<li><a href="#chapter_other_faq">5.2. Frequently Asked Questions</a></li>
+<li><a href="#chapter_other_cmd">5.2. Commands</a></li>
+<li><a href="#chapter_other_faq">5.3. Frequently Asked Questions</a></li>
 </ul>
 </li>
 <li><a href="#_support">6. Support</a>
@@ -500,52 +498,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div class="sect1 data-line-1">
+<div class="sect1">
 <h2 id="_introduction">1. Introduction</h2>
 <div class="sectionbody">
-<div class="paragraph data-line-3">
-<p>Find us on:
-&lt;a href="https://github.com/Corsinvest/cv4pve-admin" target="_blank"&gt;
-&lt;img src="./social/github-24.png"/&gt; Github
-&lt;/a&gt;
-<span class="image"><img src="./images/social/github-24.png" alt="github 24"></span> <a href="https://github.com/Corsinvest/cv4pve-admin" data-href="https://github.com/Corsinvest/cv4pve-admin">GitHub</a>
-<span class="image"><img src="./images/social/docker-24.png" alt="docker 24"></span> <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" data-href="https://hub.docker.com/r/corsinvest/cv4pve-admin">DockerHub</a>
-<span class="image"><img src="./images/social/domain-24.png" alt="domain 24"></span> <a href="https://corsinvest.it/cv4pve-admin" data-href="https://corsinvest.it/cv4pve-admin">WebSite</a>
-<span class="image"><img src="./images/social/youtube-play-24.png" alt="youtube play 24"></span> <a href="https://www.youtube.com/channel/UCq0PeNQCfu4IOttZoiyNZLA" data-href="https://www.youtube.com/channel/UCq0PeNQCfu4IOttZoiyNZLA">YouTube</a></p>
+<div class="paragraph">
+<p>Find us on: <span class="image"><img src="./images/social/github-24.png" alt="github 24"></span> <a href="https://github.com/Corsinvest/cv4pve-admin&amp;target=_blank">GitHub</a>
+<span class="image"><img src="./images/social/docker-24.png" alt="docker 24"></span> <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin">DockerHub</a>
+<span class="image"><img src="./images/social/domain-24.png" alt="domain 24"></span> <a href="https://corsinvest.it/cv4pve-admin">WebSite</a>
+<span class="image"><img src="./images/social/youtube-play-24.png" alt="youtube play 24"></span> <a href="https://www.youtube.com/channel/UCq0PeNQCfu4IOttZoiyNZLA">YouTube</a></p>
 </div>
-<div class="imageblock data-line-12">
+<div class="imageblock">
 <div class="content">
 <img src="./images/screenshot/modules/home/home-computerscreen.png" alt="Home" width="500" height="200">
 </div>
 </div>
-<div class="paragraph data-line-14">
+<div class="paragraph">
 <p>The easiest and most effective solution to monitor your multiple Proxmox VE cluster in a single web portal.</p>
 </div>
-<div class="paragraph data-line-16">
+<div class="paragraph">
 <p>cv4pve-admin boost your Proxmox VE infrastructure.</p>
 </div>
-<div class="paragraph data-line-18">
+<div class="paragraph">
 <p>One of the main design goals was to make use as simple as possible. You can use cv4pve-admin for a single node or cluster of many nodes. All management tasks can be performed using web-based management interface and even a novice user can set up and install cv4pve-admin in minutes.</p>
 </div>
-<div class="sect2 data-line-20">
+<div class="sect2">
 <h3 id="_why">1.1. Why</h3>
-<div class="paragraph data-line-22">
+<div class="paragraph">
 <p>The reason that led us to develop cv4pve-admin for Proxmox VE is:</p>
 </div>
-<div class="ulist data-line-24">
+<div class="ulist">
 <ul>
-<li class="data-line-24">
+<li>
 <p>The lack of functionality we need</p>
 </li>
-<li class="data-line-25">
+<li>
 <p>The desire to facilitate the management of infrastructures to the IT Manager</p>
 </li>
 </ul>
 </div>
-<div class="paragraph data-line-27">
+<div class="paragraph">
 <p>Example:</p>
 </div>
-<div class="dlist data-line-29">
+<div class="dlist">
 <dl>
 <dt class="hdlist1">How do we know if backups have been successful? And their execution times? How much do they occupy?</dt>
 <dd>
@@ -565,108 +559,108 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </dd>
 </dl>
 </div>
-<div class="paragraph data-line-41">
+<div class="paragraph">
 <p>We have implemented simple solutions to get information immediately and in a simple way.</p>
 </div>
 </div>
-<div class="sect2 data-line-43">
+<div class="sect2">
 <h3 id="_web_based">1.2. Web-Based</h3>
-<div class="paragraph data-line-45">
+<div class="paragraph">
 <p>cv4pve-admin is simple to use. Management tasks can be performed through the included web-based management interface – there is no need to install a separate management tool.</p>
 </div>
 </div>
-<div class="sect2 data-line-47">
+<div class="sect2">
 <h3 id="_benefits">1.3. Benefits</h3>
-<div class="ulist data-line-49">
+<div class="ulist">
 <ul>
-<li class="data-line-49">
+<li>
 <p>Fast installation and easy-to-use</p>
 </li>
-<li class="data-line-50">
+<li>
 <p>Web-based management interface</p>
 </li>
-<li class="data-line-51">
+<li>
 <p>Low administration costs and simple deployment</p>
 </li>
-<li class="data-line-52">
+<li>
 <p>Manage multiple clusters in a single installation</p>
 </li>
 </ul>
 </div>
 </div>
-<div class="sect2 data-line-54">
+<div class="sect2">
 <h3 id="_project">1.4. Project</h3>
-<div class="paragraph data-line-56">
-<p>The project started in 2016, with command line cv4pve-tools. The tools are Open Source on the site <a href="https://github.com/Corsinvest?q=cv4pve" data-href="https://github.com/Corsinvest?q=cv4pve">GitHub</a> and are still maintained today. Initially we used shell commands inside Proxmox VE. We immediately understood the fragility of the system.</p>
+<div class="paragraph">
+<p>The project started in 2016, with command line cv4pve-tools. The tools are Open Source on the site <a href="https://github.com/Corsinvest?q=cv4pve">GitHub</a> and are still maintained today. Initially we used shell commands inside Proxmox VE. We immediately understood the fragility of the system.</p>
 </div>
-<div class="paragraph data-line-58">
-<p>We have developed the <a href="https://github.com/Corsinvest?q=cv4pve-api-" data-href="https://github.com/Corsinvest?q=cv4pve-api-">API</a> for various languages (C#, Java, Php, JavaScript, Power Shell and more) and then we have re-implemented all the tools. This gave us the ability to be independent from the internal modifications of Proxmox VE, and made it possible to run outside of Proxmox VE.</p>
+<div class="paragraph">
+<p>We have developed the <a href="https://github.com/Corsinvest?q=cv4pve-api-">API</a> for various languages (C#, Java, Php, JavaScript, Power Shell and more) and then we have re-implemented all the tools. This gave us the ability to be independent from the internal modifications of Proxmox VE, and made it possible to run outside of Proxmox VE.</p>
 </div>
-<div class="paragraph data-line-60">
-<p>The GUI version started 2019. <a href="https://www.corisnvest.it/cv4pve-admin" class="undefined" data-href="https://www.corisnvest.it/cv4pve-admin">https://www.corisnvest.it/cv4pve-admin</a></p>
+<div class="paragraph">
+<p>The GUI version started 2019. <a href="https://www.corsinvest.it/cv4pve-admin" class="bare">https://www.corsinvest.it/cv4pve-admin</a></p>
 </div>
 </div>
-<div class="sect2 data-line-62">
+<div class="sect2">
 <h3 id="_corsinvest">1.5. Corsinvest</h3>
-<div class="paragraph data-line-0">
-<p><a href="https://www.corisnvest.it" data-href="https://www.corisnvest.it">Corsinvest Srl</a> ❤️ Open Source, believes in Open Source and in the community. All this brings an immense added value.</p>
+<div class="paragraph">
+<p><a href="https://www.corsinvest.it">Corsinvest Srl</a> ❤️ Open Source, believes in Open Source and in the community. All this brings an immense added value.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="chapter_installation">2. How to install</h2>
 <div class="sectionbody">
-<div class="paragraph data-line-5">
+<div class="paragraph">
 <p>cv4pve-admin is an application developed in .Net.</p>
 </div>
-<div class="sect2 data-line-7">
+<div class="sect2">
 <h3 id="_pve_requirements">2.1. PVE Requirements</h3>
-<div class="paragraph data-line-9">
+<div class="paragraph">
 <p>The minimal version of Proxmox VE is 6.4.</p>
 </div>
 </div>
-<div class="sect2 data-line-11">
+<div class="sect2">
 <h3 id="_pve_permission">2.2. PVE Permission</h3>
-<div class="paragraph data-line-13">
+<div class="paragraph">
 <p>For connection to a cluster is require credential <strong>Web Api</strong> or <strong>Token Api</strong>. This require permission for execution. In this moment <strong>all permission</strong> is required.</p>
 </div>
 </div>
-<div class="sect2 data-line-15">
+<div class="sect2">
 <h3 id="_appsettings_json">2.3. AppSettings.json</h3>
-<div class="paragraph data-line-17">
+<div class="paragraph">
 <p>The configurations are saved in appsettings.json.</p>
 </div>
-<div class="paragraph data-line-19">
+<div class="paragraph">
 <p>Most important options are:</p>
 </div>
-<div class="ulist data-line-21">
+<div class="ulist">
 <ul>
-<li class="data-line-21">
-<p><strong>urls</strong> set the ip address and port to espose the web application <em>0.0.0.0</em> for all (default <a href="http://0.0.0.0:5000" class="undefined" data-href="http://0.0.0.0:5000">http://0.0.0.0:5000</a>)</p>
+<li>
+<p><strong>urls</strong> set the ip address and port to espose the web application <em>0.0.0.0</em> for all (default <a href="http://0.0.0.0:5000" class="bare">http://0.0.0.0:5000</a>)</p>
 </li>
 </ul>
 </div>
 </div>
-<div class="sect2 data-line-23">
+<div class="sect2">
 <h3 id="_binarydocker_install">2.4. Binary/Docker Install</h3>
-<div class="sect3 data-line-25">
+<div class="sect3">
 <h4 id="_from_binary_repository">2.4.1. From binary repository</h4>
-<div class="paragraph data-line-27">
-<p>Download last release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases" data-href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in the directory where you want it to run.
+<div class="paragraph">
+<p>Download last release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in the directory where you want it to run.
 Start application:</p>
 </div>
-<div class="ulist data-line-30">
+<div class="ulist">
 <ul>
-<li class="data-line-30">
+<li>
 <p>Windows .\Corsinvest.ProxmoxVE.Admin.exe</p>
 </li>
-<li class="data-line-31">
+<li>
 <p>Linux/MaxOsX ./Corsinvest.ProxmoxVE.Admin</p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock important data-line-33">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
@@ -678,31 +672,31 @@ For Linux/MaxOsX change permission
 </tr>
 </table>
 </div>
-<div class="listingblock data-line-36">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">chmod 777 /home/frank/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
 chmod -R 0755 /home/frank/cv4pve-admin/wwwroot</code></pre>
 </div>
 </div>
-<div class="sect4 data-line-41">
+<div class="sect4">
 <h5 id="_linux_configure_service">Linux Configure Service</h5>
-<div class="listingblock data-line-44">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">apt update &amp;&amp; apt install unzip wget
 cd /temp
-wget <a href="https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip" class="undefined" data-href="https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip">https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip</a>
+wget <a href="https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip" class="bare">https://github.com/Corsinvest/cv4pve-admin/releases/download/vXX.XX.XX/cv4pve-admin-linux-x64.zip</a>
 unzip /temp/cv4pve-admin-linux-x64.zip -d /var/cv4pve-admin
 chmod 777 /var/cv4pve-admin/Corsinvest.ProxmoxVE.Admin
 chmod -R 0755 /var/cv4pve-admin/wwwroot</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-53">
+<div class="paragraph">
 <p>Create a service file /etc/systemd/system/cv4pve-admin.service</p>
 </div>
-<div class="paragraph data-line-55">
+<div class="paragraph">
 <p>Copy the following configuration in that file and  it will run our application,</p>
 </div>
-<div class="listingblock data-line-58">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">[Unit]
 Description=cv4pve-admin Web Application
@@ -718,96 +712,90 @@ Environment=ASPNETCORE_ENVIRONMENT=Production
 WantedBy=multi-user.target</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-73">
+<div class="paragraph">
 <p>Now start the service. Instead of the service name in the below commands use the name of the file made above,</p>
 </div>
-<div class="listingblock data-line-76">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">systemctl enable cv4pve-admin
 systemctl start cv4pve-admin</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-81">
+<div class="paragraph">
 <p>Now your proxy server and kestrel server is running and you can access your application through any ip with port 5001.</p>
 </div>
-<div class="paragraph data-line-83">
+<div class="paragraph">
 <p>To redeploy the code your need to replace the dll and stop and start your service again through the following commands</p>
 </div>
-<div class="listingblock data-line-86">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">sudo systemctl stop cv4pve-admin
 sudo systemctl start cv4pve-admin</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-91">
+<div class="paragraph">
 <p>Now I expect the cv4pve-admin is running and you can access your application through any ip with port 5000.
-The web interface can be reached via <a href="https://youripaddress:5000" class="undefined" data-href="https://youripaddress:5000">https://youripaddress:5000</a>
+The web interface can be reached via <a href="https://youripaddress:5000" class="bare">https://youripaddress:5000</a>
 (default login is: <strong>admin@local</strong>, and the password is <strong>Password123!</strong>).</p>
 </div>
 </div>
 </div>
-<div class="sect3 data-line-95">
+<div class="sect3">
 <h4 id="_docker">2.4.2. Docker</h4>
-<div class="paragraph data-line-97">
+<div class="paragraph">
 <p>cv4pve-admin is an application developed in .Net. For deploy is used
-<a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" data-href="https://hub.docker.com/r/corsinvest/cv4pve-admin">Docker image</a>.</p>
+<a href="https://hub.docker.com/r/corsinvest/cv4pve-admin">Docker image</a>.</p>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-102">
+<div class="sect2">
 <h3 id="chapter_installation_update">2.5. How to Update</h3>
-<div class="sect3 data-line-104">
+<div class="sect3">
 <h4 id="_from_binary_repository_2">2.5.1. From binary repository</h4>
-<div class="paragraph data-line-106">
+<div class="paragraph">
 <p>Stop application
 Save the <strong>data</strong> directory and <strong>appsettings.json</strong>.
-Download latest release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases" data-href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in previous directory installation.
+Download latest release from <a href="https://github.com/Corsinvest/cv4pve-admin/releases">Project Repository</a> and unzip in previous directory installation.
 Restore <strong>data</strong> directory and <strong>appsettings.json</strong>.</p>
 </div>
 </div>
-<div class="sect3 data-line-111">
+<div class="sect3">
 <h4 id="_docker_2">2.5.2. Docker</h4>
-<div class="paragraph data-line-0">
-<p>See <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" data-href="https://hub.docker.com/r/corsinvest/cv4pve-admin">Docker image</a></p>
+<div class="paragraph">
+<p>See <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin">Docker image</a></p>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="chapter_gui">3. GUI</h2>
 <div class="sectionbody">
-<div class="paragraph data-line-4">
+<div class="paragraph">
 <p>cv4pve-admin is simple. There is no need to install a separate management
 tool, and everything can be done through your web browser (Latest
 Firefox or Google Chrome is preferred).</p>
 </div>
-<div class="paragraph data-line-8">
+<div class="paragraph">
 <p>You can use the web-based administration interface with any modern
 browser.</p>
 </div>
-<div class="paragraph data-line-11">
-<p>The web interface can be reached via <a href="https://youripaddress:5000" class="undefined" data-href="https://youripaddress:5000">https://youripaddress:5000</a>
-(default login is: <strong>admin@local</strong>, and the password is <strong>Password123!</strong>).</p>
-</div>
-<div class="sect2 data-line-14">
+<div class="sect2">
 <h3 id="_login">3.1. Login</h3>
-<div class="paragraph thumb data-line-17">
+<div class="paragraph">
+<p>The web interface can be reached via <a href="https://youripaddress:5000" class="bare">https://youripaddress:5000</a>
+(default login is: <strong>admin@local</strong>, and the password is <strong>Password123!</strong>)</p>
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/login/loginadm.png" alt="loginadm"></span></p>
 </div>
-<div class="paragraph data-line-19">
-<p>When you connect to the cv4pve-admin, you will first see the login window.</p>
 </div>
-</div>
-<div class="sect2 data-line-21">
+<div class="sect2">
 <h3 id="_overview">3.2. Overview</h3>
-<div class="paragraph thumb data-line-24">
-<p><span class="image"><img src="./images/screenshot/modules/home/homepage.png" alt="homepage"></span></p>
-</div>
-<div class="paragraph data-line-26">
+<div class="paragraph">
 <p>The cv4pve-admin user interface consists of three regions.</p>
 </div>
-<div class="hdlist data-line-30">
+<div class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">
@@ -837,7 +825,10 @@ Content Panel
 </tr>
 </table>
 </div>
-<div class="admonitionblock note data-line-38">
+<div class="paragraph thumb thumb">
+<p><span class="image"><img src="./images/screenshot/modules/home/homepage.png" alt="homepage"></span></p>
+</div>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -849,15 +840,15 @@ You can reduce and expand the size of the tree. This can be useful when you work
 </tr>
 </table>
 </div>
-<div class="sect3 data-line-40">
+<div class="sect3">
 <h4 id="_header">3.2.1. Header</h4>
-<div class="paragraph data-line-42">
+<div class="paragraph">
 <p>At the top left, the button to expand and reduce the tree or view modules if listed. Next to the module name.</p>
 </div>
-<div class="paragraph data-line-44">
+<div class="paragraph">
 <p>The rightmost part of the header contains four buttons:</p>
 </div>
-<div class="hdlist data-line-48">
+<div class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">
@@ -869,10 +860,10 @@ Cluster Selector
 </tr>
 </table>
 </div>
-<div class="paragraph thumb data-line-51">
+<div class="paragraph thumb thumb">
 <p><span class="image"><img src="./images/screenshot/multicluster/multicluster-management.png" alt="multicluster management"></span></p>
 </div>
-<div class="dlist data-line-53">
+<div class="dlist">
 <dl>
 <dt class="hdlist1">Notify</dt>
 <dd>
@@ -889,33 +880,33 @@ Cluster Selector
 </dl>
 </div>
 </div>
-<div class="sect3 data-line-59">
+<div class="sect3">
 <h4 id="_modules_tree">3.2.2. Modules tree</h4>
-<div class="paragraph data-line-61">
+<div class="paragraph">
 <p>This is the main navigation tree. It is divided into contexts and contains all the available modules.</p>
 </div>
 </div>
-<div class="sect3 data-line-63">
+<div class="sect3">
 <h4 id="_content_panels">3.2.3. Content Panels</h4>
-<div class="paragraph data-line-65">
+<div class="paragraph">
 <p>When you select a module in the tree, the corresponding shows status information in the content. Refer to the individual chapters of the modules within the reference documentation for more detailed information.</p>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-67">
+<div class="sect2">
 <h3 id="_settingsoptions">3.3. Settings/Options</h3>
-<div class="paragraph data-line-69">
+<div class="paragraph">
 <p>When you select a module in the tree, the corresponding shows status information in the content. Refer to the individual chapters of the modules within the reference documentation for more detailed information.</p>
 </div>
-<div class="paragraph thumb data-line-72">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/options.png" alt="options"></span></p>
 </div>
-<div class="sect3 data-line-74">
+<div class="sect3">
 <h4 id="_cv4pve_admin">3.3.1. cv4pve-admin</h4>
-<div class="paragraph data-line-76">
+<div class="paragraph">
 <p>Manage your cluster: insert Description, IP and Credentials.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch data-line-79">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -927,7 +918,7 @@ Cluster Selector
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all stretch data-line-84">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -938,107 +929,107 @@ Cluster Selector
 </tbody>
 </table>
 </div>
-<div class="sect3 data-line-88">
+<div class="sect3">
 <h4 id="_localization">3.3.2. Localization</h4>
-<div class="paragraph data-line-90">
+<div class="paragraph">
 <p>Manage app language</p>
 </div>
-<div class="paragraph thumb data-line-93">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/service-general-localization.png" alt="service general localization"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-95">
+<div class="sect3">
 <h4 id="_mailing_smtp">3.3.3. Mailing SMTP</h4>
-<div class="paragraph data-line-97">
+<div class="paragraph">
 <p>Mailing SMTP</p>
 </div>
-<div class="paragraph thumb data-line-100">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/service-general-smtp.png" alt="service general smtp"></span></p>
 </div>
-<div class="paragraph thumb data-line-103">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/service-general-smtp-config.png" alt="service general smtp config"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-105">
+<div class="sect3">
 <h4 id="_mudblazor_ui">3.3.4. MudBlazor UI</h4>
-<div class="paragraph data-line-107">
+<div class="paragraph">
 <p>Change the default app theme color and switch to dark mode</p>
 </div>
 </div>
-<div class="sect3 data-line-109">
+<div class="sect3">
 <h4 id="_security">3.3.5. Security</h4>
-<div class="paragraph data-line-111">
+<div class="paragraph">
 <p>Manage all the security app settings</p>
 </div>
 </div>
-<div class="sect3 data-line-113">
+<div class="sect3">
 <h4 id="_notification">3.3.6. Notification</h4>
-<div class="paragraph data-line-115">
+<div class="paragraph">
 <p>For notification email or other type, is posable to configure it in section <strong>NOTIFICATION</strong></p>
 </div>
 </div>
-<div class="sect3 data-line-117">
+<div class="sect3">
 <h4 id="_apps">3.3.7. Apps</h4>
-<div class="paragraph data-line-119">
+<div class="paragraph">
 <p>Configure all application settings in the app: cron, alert limits, notification channels, and retention</p>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-121">
+<div class="sect2">
 <h3 id="_how_to_setup_a_cluster">3.4. How to Setup a cluster</h3>
-<div class="paragraph data-line-123">
+<div class="paragraph">
 <p>cv4pve-admin supports multiple clusters configurations. For identify cluster is possible add a description.</p>
 </div>
-<div class="sect3 data-line-125">
+<div class="sect3">
 <h4 id="_api_login_or_api_token">3.4.1. Api Login or Api Token</h4>
-<div class="paragraph thumb data-line-128">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/cluster-settings1.png" alt="cluster settings1"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-130">
+<div class="sect3">
 <h4 id="_ssh_login">3.4.2. SSH Login</h4>
-<div class="paragraph thumb data-line-133">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/cluster-settings2.png" alt="cluster settings2"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-135">
+<div class="sect3">
 <h4 id="_ip_and_port">3.4.3. IP and Port</h4>
-<div class="paragraph thumb data-line-23">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/settings/cluster-settings3.png" alt="cluster settings3"></span></p>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-27">
+<div class="sect1">
 <h2 id="_modules">4. Modules</h2>
 <div class="sectionbody">
-<div class="sect2 data-line-8">
+<div class="sect2">
 <h3 id="chapter_module_home">4.1. Home</h3>
-<div class="paragraph data-line-10">
+<div class="paragraph">
 <p>Summarize the situation of your cluster in a few boxes. Each section is clickable.</p>
 </div>
-<div class="paragraph thumb data-line-0">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/home/homepage.png" alt="homepage"></span></p>
 </div>
 </div>
-<div class="sect2 data-line-6">
+<div class="sect2">
 <h3 id="chapter_module_administration">4.2. Administration</h3>
-<div class="paragraph data-line-8">
+<div class="paragraph">
 <p>Monitor jobs in the background with HangFire. Enable/Disable modules and keep track of sessions.</p>
 </div>
-<div class="paragraph thumb data-line-0">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/administration/modules-administration.png" alt="modules administration"></span></p>
 </div>
 </div>
-<div class="sect2 data-line-7">
+<div class="sect2">
 <h3 id="chapter_module_control">4.3. Control</h3>
-<div class="sect3 data-line-11">
+<div class="sect3">
 <h4 id="_telegram_bot">4.3.1. Telegram Bot</h4>
-<div class="paragraph data-line-13">
-<p>Full Control of your cluster directly by Telegram. Visit <span class="image"><img src="./images/social/github-24.png" alt="github 24"></span> <a href="https://github.com/Corsinvest/cv4pve-admin" data-href="https://github.com/Corsinvest/cv4pve-admin">GitHub</a> to see how to set up your bot.</p>
+<div class="paragraph">
+<p>Full Control of your cluster directly by Telegram. Visit <span class="image"><img src="./images/social/github-24.png" alt="github 24"></span> <a href="https://github.com/Corsinvest/cv4pve-botgram">Telegram Bot Step By Step</a> to see how to set up your bot.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch data-line-16">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1052,144 +1043,156 @@ Cluster Selector
 </table>
 </div>
 </div>
-<div class="sect2 data-line-8">
+<div class="sect2">
 <h3 id="chapter_module_health">4.4. Health</h3>
-<div class="sect3 data-line-12">
+<div class="sect3">
 <h4 id="_cluster_status">4.4.1. Cluster Status</h4>
-<div class="paragraph data-line-14">
+<div class="paragraph">
 <p>365° Real time status of your Proxmox VE Cluster.</p>
 </div>
-<div class="paragraph thumb data-line-17">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/status/modules-health-clusterusage.png" alt="modules health clusterusage"></span></p>
 </div>
-<div class="paragraph thumb data-line-20">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/status/modules-health-clusterusage-object.png" alt="modules health clusterusage object"></span></p>
 </div>
-<div class="paragraph thumb data-line-23">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/status/modules-health-clusterusage-tasks.png" alt="modules health clusterusage tasks"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-27">
+<div class="sect3">
 <h4 id="_cluster_usage">4.4.2. Cluster Usage</h4>
-<div class="paragraph data-line-29">
+<div class="paragraph">
 <p>Show all the storages configured in cluster.</p>
 </div>
-<div class="paragraph thumb data-line-32">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/cluster-usage/configurations.png" alt="configurations"></span></p>
 </div>
-<div class="paragraph data-line-34">
-<p><strong>By Storage</strong></p>
-</div>
-<div class="paragraph thumb data-line-37">
+<div class="sect4">
+<h5 id="_by_storage">By Storage</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/cluster-usage/by-storage.png" alt="by storage"></span></p>
 </div>
-<div class="paragraph data-line-39">
-<p><strong>By VM/CT</strong></p>
 </div>
-<div class="paragraph thumb data-line-42">
+<div class="sect4">
+<h5 id="_by_vmct">By VM/CT</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/cluster-usage/by-vm.png" alt="by vm"></span></p>
 </div>
-<div class="paragraph data-line-44">
-<p><strong>By Costs</strong></p>
 </div>
-<div class="paragraph thumb data-line-47">
+<div class="sect4">
+<h5 id="_by_costs">By Costs</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/cluster-usage/by-costs1.png" alt="by costs1"></span></p>
 </div>
-<div class="paragraph thumb data-line-50">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/cluster-usage/by-costs2.png" alt="by costs2"></span></p>
 </div>
-<div class="paragraph thumb data-line-53">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/cluster-usage/by-costs3.png" alt="by costs3"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-57">
+</div>
+<div class="sect3">
 <h4 id="_diagnostic">4.4.3. Diagnostic</h4>
-<div class="paragraph data-line-59">
+<div class="paragraph">
 <p>Take, schedule and manage automatic diagnostic for your Proxmox VE cluster, it helps to find out some hidden problems.</p>
 </div>
-<div class="paragraph thumb data-line-62">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/diagnostic/modules-health-diag.png" alt="modules health diag"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-66">
+<div class="sect3">
 <h4 id="_metrics_exporter">4.4.4. Metrics Exporter</h4>
-<div class="paragraph data-line-68">
-<p>Export metrics in <a href="https://prometheus.io/" data-href="https://prometheus.io/">Prometheus</a> format</p>
+<div class="paragraph">
+<p>Export metrics in <a href="https://prometheus.io/">Prometheus</a> format</p>
 </div>
-<div class="paragraph thumb data-line-71">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/metrics-exporter/data.png" alt="data"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-75">
+<div class="sect3">
 <h4 id="_qemu_monitor">4.4.5. Qemu Monitor</h4>
-<div class="paragraph data-line-77">
+<div class="paragraph">
 <p>Proxmox VE does not allow the operating system to view IOPS for VM. With this it is easy to identify the virtual machines and solve the problem</p>
 </div>
-<div class="paragraph thumb data-line-80">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/qemu-monitor/grid.png" alt="grid"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-84">
+<div class="sect3">
 <h4 id="_vzdump_trend">4.4.6. VZDump Trend</h4>
-<div class="paragraph data-line-86">
+<div class="paragraph">
 <p>Check the progress of the vzdump backup set by Proxmox VE and check status, show more info</p>
 </div>
-<div class="paragraph thumb data-line-89">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/job.png" alt="job"></span></p>
 </div>
-<div class="paragraph thumb data-line-92">
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/vm-ct.png" alt="vm ct"></span></p>
 </div>
-<div class="paragraph data-line-94">
-<p><strong>List of scheduled jobs</strong></p>
-</div>
-<div class="paragraph thumb data-line-97">
+<div class="sect4">
+<h5 id="_list_of_scheduled_jobs">List of scheduled jobs</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/scheduled.png" alt="scheduled"></span></p>
 </div>
-<div class="paragraph data-line-99">
-<p><strong>Speed Trend</strong></p>
 </div>
-<div class="paragraph thumb data-line-102">
+<div class="sect4">
+<h5 id="_speed_trend">Speed Trend</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/speed.png" alt="speed"></span></p>
 </div>
-<div class="paragraph data-line-104">
-<p><strong>List of not scheduled jobs</strong></p>
 </div>
-<div class="paragraph thumb data-line-107">
+<div class="sect4">
+<h5 id="_list_of_not_scheduled_jobs">List of not scheduled jobs</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/not-scheduled.png" alt="not scheduled"></span></p>
 </div>
-<div class="paragraph data-line-109">
-<p><strong>List of disks don&#8217;t backed up</strong></p>
 </div>
-<div class="paragraph thumb data-line-112">
+<div class="sect4">
+<h5 id="_list_of_disks_dont_backed_up">List of disks don&#8217;t backed up</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/disks_not_backupped.png" alt="disks not backupped"></span></p>
 </div>
-<div class="paragraph data-line-114">
-<p><strong>Check storage backups occupation</strong></p>
 </div>
-<div class="paragraph thumb data-line-0">
+<div class="sect4">
+<h5 id="_check_the_storage_backups_occupation">Check the storage backups occupation</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vzdump-trend/backups-inline.png" alt="backups inline"></span></p>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-8">
+</div>
+<div class="sect2">
 <h3 id="chapter_module_safe">4.5. Safe</h3>
-<div class="sect3 data-line-12">
+<div class="sect3">
 <h4 id="_automatic_snapshots">4.5.1. Automatic Snapshots</h4>
-<div class="paragraph data-line-14">
+<div class="paragraph">
 <p>Take a snapshot of a VM/CT at a fixed interval with a retention.</p>
 </div>
-<div class="paragraph data-line-16">
-<p><strong>Implementation</strong></p>
+<div class="sect4">
+<h5 id="_implementation">Implementation</h5>
+<div class="listingblock">
+<div class="content">
+<pre>We started in 2016 with command line development https://github.com/Corsinvest/cv4pve-autosnap[Github] and then implemented the web portal.</pre>
 </div>
-<div class="paragraph data-line-18">
-<p>We started in 2016 with command line development <a href="https://github.com/Corsinvest/cv4pve-autosnap" data-href="https://github.com/Corsinvest/cv4pve-autosnap">Github</a> and then implemented the web portal.</p>
 </div>
-<div class="paragraph data-line-20">
-<p><strong>Note</strong>
-WARNING: Do not schedule less than 15 minutes, there may be performance problems.</p>
 </div>
-<div class="admonitionblock warning data-line-23">
+<div class="sect4">
+<h5 id="_note">Note</h5>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Do not schedule less than 15 minutes, there may be performance problems.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
@@ -1201,7 +1204,7 @@ If you include memory, the space and time will increase considerably. Test it be
 </tr>
 </table>
 </div>
-<div class="admonitionblock note data-line-25">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -1213,7 +1216,7 @@ Pay attention to the timeout time.
 </tr>
 </table>
 </div>
-<div class="admonitionblock note data-line-27">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -1225,138 +1228,192 @@ The location of the autosnap storage space is the same where the VM disk is loca
 </tr>
 </table>
 </div>
-<div class="paragraph data-line-29">
-<p><strong>Tasks</strong></p>
 </div>
-<div class="paragraph data-line-31">
-<p>Grid with tasks configured.</p>
+<div class="sect4">
+<h5 id="_tasks">Tasks</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Grid with tasks configured.</pre>
 </div>
-<div class="paragraph thumb data-line-34">
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/modules-safe-autosnap.png" alt="modules safe autosnap"></span></p>
 </div>
-<div class="paragraph data-line-36">
-<p><strong>New and edit Task</strong></p>
 </div>
-<div class="paragraph thumb data-line-39">
+<div class="sect4">
+<h5 id="_new_and_edit_task">New and edit Task</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/modules-safe-autosnap-conf.png" alt="modules safe autosnap conf"></span></p>
 </div>
-<div class="paragraph data-line-41">
-<p><a href="#chapter_other_cron" data-href="#chapter_other_cron">Cron format</a></p>
 </div>
-<div class="paragraph data-line-43">
-<p><strong>Status</strong></p>
+<div class="sect4">
+<h5 id="_edit_hook">Edit Hook</h5>
+<div class="paragraph thumb">
+<p><span class="image"><img src="./images/screenshot/modules/autosnap/modules-safe-autosnap-hook-conf.png" alt="modules safe autosnap hook conf"></span></p>
 </div>
-<div class="paragraph data-line-45">
-<p>Show status of job autosnap</p>
+<div class="paragraph">
+<p>The environments are replace with values.</p>
 </div>
-<div class="paragraph thumb data-line-48">
+<div class="paragraph">
+<p>Example for InfluxDb for cv4pve-autosnap</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Url
+</td>
+<td class="hdlist2">
+<p><a href="http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME" class="bare">http://INFLUXDB_HOST:8086/write?db=INFLUXDB_NAME</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Data
+</td>
+<td class="hdlist2">
+<p>cv4pve-autosnap,vmid=%CV4PVE_AUTOSNAP_VMID%,type=%CV4PVE_AUTOSNAP_VMTYPE%,label=%CV4PVE_AUTOSNAP_LABEL%,vmname=%CV4PVE_AUTOSNAP_VMNAME%,success=%CV4PVE_AUTOSNAP_STATE% success=%CV4PVE_AUTOSNAP_STATE%,duration=%CV4PVE_AUTOSNAP_DURATION%</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_status">Status</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Show status</pre>
+</div>
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/job-status.png" alt="job status"></span></p>
 </div>
-<div class="paragraph data-line-51">
-<p><strong>History</strong></p>
 </div>
-<div class="paragraph data-line-53">
-<p>Show history of job autosnap</p>
+<div class="sect4">
+<h5 id="_history">History</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Show History</pre>
 </div>
-<div class="paragraph thumb data-line-56">
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/job-history.png" alt="job history"></span></p>
 </div>
-<div class="paragraph data-line-58">
-<p><strong>Timeline</strong></p>
 </div>
-<div class="paragraph data-line-60">
-<p>Show Timeline scheduling autosnap</p>
+<div class="sect4">
+<h5 id="_timeline">Timeline</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Show Scheduling Timeline</pre>
 </div>
-<div class="paragraph thumb data-line-63">
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/time-line.png" alt="time line"></span></p>
 </div>
-<div class="paragraph data-line-65">
-<p><strong>Status</strong></p>
 </div>
-<div class="paragraph data-line-67">
-<p>Show status scheduling autosnap</p>
+<div class="sect4">
+<h5 id="_status_2">Status</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Show Scheduling status</pre>
 </div>
-<div class="paragraph thumb data-line-70">
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/tasks-status.png" alt="tasks status"></span></p>
 </div>
-<div class="paragraph data-line-72">
-<p><strong>In Error</strong></p>
 </div>
-<div class="paragraph data-line-74">
-<p>Grid with snapshots with error.</p>
+<div class="sect4">
+<h5 id="_in_error">In Error</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Show Errors</pre>
 </div>
-<div class="paragraph thumb data-line-77">
+</div>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/autosnap/in-errors.png" alt="in errors"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-82">
+</div>
+<div class="sect3">
 <h4 id="_node_protect">4.5.2. Node Protect</h4>
-<div class="paragraph data-line-84">
-<p>Save your configurations in case of disaster recovery.</p>
+<div class="listingblock">
+<div class="content">
+<pre>Save your configurations in case of disaster recovery.</pre>
 </div>
-<div class="paragraph data-line-86">
-<p><strong>Description</strong>
-Proxmox VE perfectly performs VM/CT backups. The rest of the system configurations are not saved. E.G. /etc/pve or information cluster</p>
 </div>
-<div class="paragraph data-line-89">
-<p><strong>Implementation</strong>
-We started in 2019 with command line development <a href="https://github.com/Corsinvest/cv4pve-node-protect" data-href="https://github.com/Corsinvest/cv4pve-node-protect">Github</a> and then implemented the web portal.</p>
+<div class="sect4">
+<h5 id="_description">Description</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Proxmox VE perfectly performs VM/CT backups. The rest of the system configurations are not saved. E.G. /etc/pve or information cluster</pre>
 </div>
-<div class="paragraph data-line-92">
-<p><strong>General</strong></p>
 </div>
-<div class="paragraph thumb data-line-0">
+</div>
+<div class="sect4">
+<h5 id="_implementation_2">Implementation</h5>
+<div class="listingblock">
+<div class="content">
+<pre>We started in 2019 with command line development https://github.com/Corsinvest/cv4pve-node-protect[Github] and then implemented the web portal.</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_general">General</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/node-protect/grid.png" alt="grid"></span></p>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-8">
+</div>
+<div class="sect2">
 <h3 id="chapter_module_utilities">4.6. Utilities</h3>
-<div class="sect3 data-line-12">
+<div class="sect3">
 <h4 id="_disk_status">4.6.1. Disk Status</h4>
-<div class="paragraph data-line-14">
+<div class="paragraph">
 <p>Monitor all the disks in your cluster in one screen. Keep track of performance.</p>
 </div>
-<div class="paragraph data-line-16">
+<div class="paragraph">
 <p>Requirement on every nodes <strong>ledmon</strong>.</p>
 </div>
-<div class="listingblock data-line-17">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-sh" data-lang="sh">apt-get install ledmon</code></pre>
 </div>
 </div>
-<div class="paragraph data-line-21">
-<p><strong>Nodes</strong></p>
-</div>
-<div class="paragraph thumb data-line-24">
+<div class="sect4">
+<h5 id="_nodes">Nodes</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/disks-status/nodes.png" alt="nodes"></span></p>
 </div>
-<div class="paragraph data-line-26">
-<p><strong>Disks Information</strong></p>
 </div>
-<div class="paragraph thumb data-line-29">
-<p><span class="image"><img src="./images/screenshot/modules/disks-status/disks.png" alt="disks"></span></p>
-</div>
-<div class="paragraph data-line-32">
-<p><strong>S.M.A.R.T. tools information</strong></p>
-</div>
-<div class="paragraph thumb data-line-35">
+<div class="sect4">
+<h5 id="_disks_information">Disks Information</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/disks-status/disks.png" alt="disks"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-40">
+<div class="sect4">
+<h5 id="_s_m_a_r_t_tools_information">S.M.A.R.T. tools information</h5>
+<div class="paragraph thumb">
+<p><span class="image"><img src="./images/screenshot/modules/disks-status/disks.png" alt="disks"></span></p>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_node_free_memory">4.6.2. Node Free Memory</h4>
-<div class="paragraph data-line-42">
+<div class="paragraph">
 <p>Free up the node&#8217;s memory space in case of error: "out of memory" or "kvm: failed to initialize KVM: Cannot allocate memory"</p>
 </div>
-<div class="paragraph data-line-44">
-<p><strong>Description</strong>
-Free the memory of the nodes to start a VM without using a shell.</p>
+<div class="sect4">
+<h5 id="_description_2">Description</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Free the memory of the nodes to start a VM without using a shell.
+
+The message that is displayed</pre>
 </div>
-<div class="paragraph data-line-47">
-<p>The message that is displayed</p>
 </div>
-<div class="admonitionblock warning data-line-49">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
@@ -1368,45 +1425,50 @@ Free the memory of the nodes to start a VM without using a shell.</p>
 </tr>
 </table>
 </div>
-<div class="paragraph data-line-51">
-<p><strong>General</strong></p>
 </div>
-<div class="paragraph thumb data-line-53">
+<div class="sect4">
+<h5 id="_general_2">General</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/node-free-memory/nodes.png" alt="nodes"></span></p>
 </div>
 </div>
-<div class="sect3 data-line-58">
+</div>
+<div class="sect3">
 <h4 id="_vm_unlock">4.6.3. VM UNLOCK</h4>
-<div class="paragraph data-line-60">
+<div class="paragraph">
 <p>Unlock VM/CT that have remained in the "locked" status</p>
 </div>
-<div class="paragraph data-line-62">
-<p><strong>Description</strong>
-Unlock VM/CT that are in a locked state without using the shell</p>
+<div class="sect4">
+<h5 id="_description_3">Description</h5>
+<div class="listingblock">
+<div class="content">
+<pre>Unlock VM/CT that are in a locked state without using the shell</pre>
 </div>
-<div class="paragraph data-line-65">
-<p><strong>General</strong></p>
 </div>
-<div class="paragraph thumb data-line-37">
+</div>
+<div class="sect4">
+<h5 id="_general_3">General</h5>
+<div class="paragraph thumb">
 <p><span class="image"><img src="./images/screenshot/modules/vm-unlock/vms.png" alt="vms"></span></p>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-41">
+</div>
+<div class="sect1">
 <h2 id="_other">5. Other</h2>
 <div class="sectionbody">
-<div class="sect2 data-line-2">
+<div class="sect2">
 <h3 id="chapter_other_cron">5.1. Cron</h3>
-<div class="sect3 data-line-4">
+<div class="sect3">
 <h4 id="_cron_format">5.1.1. Cron format</h4>
-<div class="paragraph data-line-6">
+<div class="paragraph">
 <p>Cron expression is a mask to define fixed times, dates and intervals. The mask consists of second (optional), minute, hour, day-of-month, month and day-of-week fields. All of the fields allow you to specify multiple values, and any given date/time will satisfy the specified Cron expression, if all the fields contain a matching value.</p>
 </div>
-<div class="openblock small data-line-9">
+<div class="openblock small">
 <div class="content">
-<div class="literalblock data-line-10">
+<div class="literalblock">
 <div class="content">
 <pre>                                       Allowed values    Allowed special characters   Comment
 ┌───────────── second (optional)       0-59              * , - /
@@ -1421,24 +1483,24 @@ Unlock VM/CT that are in a locked state without using the shell</p>
 </div>
 </div>
 </div>
-<div class="sect4 data-line-21">
+<div class="sect4">
 <h5 id="_base_characters">Base characters</h5>
-<div class="paragraph data-line-23">
+<div class="paragraph">
 <p>In all fields you can use number, <code>*</code> to mark field as <strong>any value</strong>, <code>-</code> to specify ranges of values. Reversed ranges like <code>22-1</code>(equivalent to <code>22,23,0,1,2</code>) are also supported.</p>
 </div>
-<div class="paragraph data-line-25">
+<div class="paragraph">
 <p>It&#8217;s possible to define <strong>step</strong> combining <code>/</code> with <code>*</code>, numbers and ranges. For example, <code>*/5</code> in minute field describes <strong>every 5 minute</strong> and <code>1-15/3</code> in day-of-month field – <strong>every 3 days from the 1st to the 15th</strong>. Pay attention that <code>*/24</code> is just equivalent to <code>0,24,48</code> and <code>*/24</code> in minute field doesn&#8217;t literally mean <strong>every 24 minutes</strong> it means <strong>every 0,24,48 minute</strong>.</p>
 </div>
-<div class="paragraph data-line-27">
+<div class="paragraph">
 <p>Concatenate values and ranges by <code>,</code>. Comma works like <code>OR</code> operator. So <code>3,5-11/3,12</code> is equivalent to <code>3,5,8,11,12</code>.</p>
 </div>
-<div class="paragraph data-line-29">
+<div class="paragraph">
 <p>In month and day-of-week fields, you can use names of months or days of weeks abbreviated to first three letters (<code>Jan-Dec</code> or <code>Mon-Sun</code>) instead of their numeric values. Full names like <code>JANUARY</code> or <code>MONDAY</code> <strong>aren&#8217;t supported</strong>.</p>
 </div>
-<div class="paragraph data-line-31">
+<div class="paragraph">
 <p>For day of week field, both <code>0</code> and <code>7</code> stays for Sunday, 1 for Monday.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch data-line-34">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 75%;">
@@ -1473,24 +1535,24 @@ Unlock VM/CT that are in a locked state without using the shell</p>
 </tbody>
 </table>
 </div>
-<div class="sect4 data-line-44">
+<div class="sect4">
 <h5 id="_special_characters">Special characters</h5>
-<div class="paragraph data-line-46">
+<div class="paragraph">
 <p>Most expressions you can describe using base characters. If you want to deal with more complex cases like <strong>the last day of month</strong> or <strong>the 2nd Saturday</strong> use special characters:</p>
 </div>
-<div class="paragraph data-line-48">
+<div class="paragraph">
 <p><strong><code>L</code></strong> stands for "last". When used in the day-of-week field, it allows you to specify constructs such as <strong>the last Friday</strong> (<code>5L`or `FRIL</code>). In the day-of-month field, it specifies the last day of the month.</p>
 </div>
-<div class="paragraph data-line-50">
+<div class="paragraph">
 <p><strong><code>W</code></strong> in day-of-month field is the nearest weekday. Use <code>W</code>  with single value (not ranges, steps or <code>*</code>) to define <strong>the nearest weekday</strong> to the given day. In this case there are two base rules to determine occurrence: we should shift to <strong>the nearest weekday</strong> and <strong>can&#8217;t shift to different month</strong>. Thus if given day is Saturday we shift to Friday, if it is Sunday we shift to Monday. <strong>But</strong> if given day is <strong>the 1st day of month</strong> (e.g. <code>0 0 1W * *</code>) and it is Saturday we shift to the 3rd Monday, if given day is <strong>last day of month</strong> (<code>0 0 31W 0 0</code>) and it is Sunday we shift to that Friday. Mix <code>L</code> (optionally with offset) and <code>W</code> characters to specify <strong>last weekday of month</strong> <code>LW</code> or more complex like <code>L-5W</code>.</p>
 </div>
-<div class="paragraph data-line-52">
+<div class="paragraph">
 <p><strong><code>#</code></strong> in day-of-week field allows to specify constructs such as <strong>second Saturday</strong> (<code>6#2</code> or <code>SAT#2</code>).</p>
 </div>
-<div class="paragraph data-line-54">
+<div class="paragraph">
 <p><strong><code>?</code></strong> is synonym of <code>*</code>. It&#8217;s supported but not obligatory, so <code>0 0 5 * ?</code> is the same as <code>0 0 5 * *</code>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch data-line-57">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 66.6667%;">
@@ -1533,21 +1595,21 @@ Unlock VM/CT that are in a locked state without using the shell</p>
 </tbody>
 </table>
 </div>
-<div class="sect4 data-line-69">
+<div class="sect4">
 <h5 id="_specify_day_of_month_and_day_of_week">Specify Day of month and Day of week</h5>
-<div class="paragraph data-line-71">
+<div class="paragraph">
 <p>You can set both <strong>day-of-month</strong> and <strong>day-of-week</strong>, it allows you to specify constructs such as <strong>Friday the thirteenth</strong>. Thus <code>0 0 13 * 5</code> means at 00:00, Friday the thirteenth.</p>
 </div>
-<div class="paragraph data-line-73">
+<div class="paragraph">
 <p>It differs from Unix crontab and Quartz cron implementations. Crontab handles it like <code>OR</code> operator: occurrence can happen in given day of month or given day of week. So <code>0 0 13 * 5</code> means <strong>at 00:00 AM, every friday or every the 13th of a month</strong>. Quartz doesn&#8217;t allow specify both day-of-month and day-of-week.</p>
 </div>
 </div>
-<div class="sect4 data-line-75">
+<div class="sect4">
 <h5 id="_macro">Macro</h5>
-<div class="paragraph data-line-77">
+<div class="paragraph">
 <p>A macro is a string starting with <code>@</code> and representing a shortcut for simple cases like <strong>every day</strong> or <strong>every minute</strong>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch data-line-80">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1609,12 +1671,12 @@ Unlock VM/CT that are in a locked state without using the shell</p>
 </tbody>
 </table>
 </div>
-<div class="sect4 data-line-94">
+<div class="sect4">
 <h5 id="_cron_grammar">Cron grammar</h5>
-<div class="paragraph data-line-96">
+<div class="paragraph">
 <p>Cronos parser uses following case-insensitive grammar:</p>
 </div>
-<div class="listingblock data-line-98">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>cron :: expression | macro
 expression :: [second space] minute space hour space day-of-month space month space day-of-week
@@ -1641,20 +1703,20 @@ space :: ' ' | '\t'</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3 data-line-122">
+<div class="sect3">
 <h4 id="_daylight_saving_time">5.1.2. Daylight Saving Time</h4>
-<div class="paragraph data-line-124">
+<div class="paragraph">
 <p>Cronos is the only library to handle daylight saving time transitions in intuitive way with the same behavior as Vixie Cron (utility for *nix systems). During a spring transition, we don&#8217;t skip occurrences scheduled to invalid time during. In an autumn transition we don&#8217;t get duplicate occurrences for daily expressions, and don&#8217;t skip interval expressions when the local time is ambiguous.</p>
 </div>
-<div class="sect4 data-line-126">
+<div class="sect4">
 <h5 id="_transition_to_summer_time_in_spring">Transition to Summer time (in spring)</h5>
-<div class="paragraph data-line-128">
+<div class="paragraph">
 <p>During the transition to Summer time, the clock is moved forward, for example the next minute after <code>01:59 AM</code> is <code>03:00 AM</code>. So any daily Cron expression that should match <code>02:30 AM</code>, points to an invalid time. It doesn&#8217;t exist, and can&#8217;t be mapped to UTC.</p>
 </div>
-<div class="paragraph data-line-130">
+<div class="paragraph">
 <p>Cronos adjusts the next occurrence to the next valid time in these cases. If you use Cron to schedule jobs, you may have shorter or longer intervals between runs when this happen, but you&#8217;ll not lose your jobs:</p>
 </div>
-<div class="listingblock data-line-132">
+<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>"30 02 * * *" (every day at 02:30 AM)
 
@@ -1664,29 +1726,78 @@ Mar 15, 02:30 +04:00 – run</code></pre>
 </div>
 </div>
 </div>
-<div class="sect4 data-line-140">
+<div class="sect4">
 <h5 id="_transition_from_summer_time_in_autumn">Transition from Summer time (in autumn)</h5>
-<div class="paragraph data-line-142">
+<div class="paragraph">
 <p>When Daylight Saving Time ends you set the clocks backward so there is duration which repeats twice. For example, after <code>01:59 AM</code> you get <code>01:00 AM</code> again, so the interval between <code>01:00 AM</code> to <code>02:00 AM</code> (excluding) is ambiguous, and can be mapped to multiple UTC offsets.</p>
 </div>
-<div class="paragraph data-line-144">
+<div class="paragraph">
 <p>We don&#8217;t want to have multiple occurrences of daily expressions during this transition, but at the same time we want to schedule interval expressions as usually, without skipping them. So we have different behavior for different Cron expressions.</p>
 </div>
-<div class="sect5 data-line-146">
+<div class="sect5">
 <h6 id="_interval_expression">Interval expression</h6>
-<div class="paragraph data-line-148">
+<div class="paragraph">
 <p>Cron expression is <strong>interval based</strong> whose second, minute or hour field contains <code>*</code>, ranges or steps, e.g. <code>30 * * * *</code> (hour field), <code>* 1 * * *</code> (minute field), <code>0,5 0/10 1 * * *</code>. In this case there are expectations that occurrences should happen periodically during the day and this rule can&#8217;t be broken by time transitions. Thus for <strong>interval based</strong> expressions occurrences will be before and after clock shifts.</p>
 </div>
-<div class="paragraph data-line-0">
+<div class="paragraph">
 <p>Consider <code>*/30 * * * *</code> interval expression. It should occur every 30 minutes no matter what.</p>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="sect2 data-line-2">
-<h3 id="chapter_other_faq">5.2. Frequently Asked Questions</h3>
-<div class="admonitionblock note data-line-5">
+<div class="sect2">
+<h3 id="chapter_other_cmd">5.2. Commands</h3>
+<div class="paragraph">
+<p>When you have to specify what VM/CT insert inside a job you have these methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>comma separated (<em>100,101,102,TestDebian,VMName</em>)</p>
+</li>
+<li>
+<p>range (<em>100:107</em>)</p>
+</li>
+<li>
+<p>poolname (<em>@pool-test</em>)</p>
+</li>
+<li>
+<p>tagname (<em>@tag-test</em>)</p>
+</li>
+<li>
+<p>nodename (<em>@node-nodename</em>)</p>
+</li>
+<li>
+<p>every object of your host (<em>@all-nodename</em>)</p>
+</li>
+<li>
+<p>every object of your cluster (<em>@all</em>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you have to exclude some VMs or Containers just put the "-" sign in front of the ID/Name:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>-vmid or -name (<em>-200,-TestUbuntu</em>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Mixed example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>100,101,102,-103,104,vmtest,-containertest</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="chapter_other_faq">5.3. Frequently Asked Questions</h3>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -1698,12 +1809,12 @@ New FAQs are appended to the bottom of this section.
 </tr>
 </table>
 </div>
-<div class="ulist data-line-7">
+<div class="ulist">
 <ul>
-<li class="data-line-7">
+<li>
 <p>Roadmap</p>
 </li>
-<li class="data-line-9">
+<li>
 <p>Release notes</p>
 </li>
 </ul>
@@ -1711,15 +1822,15 @@ New FAQs are appended to the bottom of this section.
 </div>
 </div>
 </div>
-<div class="sect1 data-line-51">
+<div class="sect1">
 <h2 id="_support">6. Support</h2>
 <div class="sectionbody">
-<div class="sect2 data-line-1">
+<div class="sect2">
 <h3 id="_subscription">6.1. Subscription</h3>
-<div class="sect3 data-line-3">
+<div class="sect3">
 <h4 id="_commercial_support">6.1.1. Commercial Support</h4>
-<div class="paragraph data-line-5">
-<p><a href="https://www.corisnvest.it" data-href="https://www.corisnvest.it">Corsinvest Srl</a> offers enterprise support available as <a href="https://www.corisnvest.it/cv4pve-admin" data-href="https://www.corisnvest.it/cv4pve-admin">Subscription Service Plans</a>.
+<div class="paragraph">
+<p><a href="https://www.corsinvest.it">Corsinvest Srl</a> offers enterprise support available as <a href="https://www.corsinvest.it/cv4pve-admin">Subscription Service Plans</a>.
 All users with a subscription get access to the cv4pve-admin Customer Portal.
 The customer portal provides help and support with guaranteed response times from the cv4pve-admin developers.</p>
 </div>
@@ -1730,7 +1841,7 @@ The customer portal provides help and support with guaranteed response times fro
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-25 16:36:57 +0200
+Last updated 2023-06-08 18:13:19 UTC
 </div>
 </div>
 </body>

@@ -51,7 +51,8 @@
                             <ChildContent>
                                 <MudGrid>
                                     <MudItem xs="12" md="12">
-                                        @RenderOptionsTimeSeries(hostType.TimeSeries)
+                                        <MudSelectExtended @bind-Value="@hostType.TimeSeries" ItemCollection="@(Enum.GetValues<OptionsTimeSeriesType>())"
+                                                           Label="@L["TimeSeries"]" Required="true" For="@(() => hostType.TimeSeries)" />
                                     </MudItem>
 
                                     @foreach (var (item, idx) in new[] { hostType.Cpu, hostType.Memory, hostType.Network }.Select((item, idx) => (item, idx)))
@@ -76,7 +77,8 @@
                         <ChildContent>
                             <MudGrid>
                                 <MudItem xs="12" md="12">
-                                    @RenderOptionsTimeSeries(context.Storage.TimeSeries)
+                                    <MudSelectExtended @bind-Value="@context.Storage.TimeSeries" ItemCollection="@(Enum.GetValues<OptionsTimeSeriesType>())"
+                                                       Label="@L["TimeSeries"]" Required="true" For="@(() => context.Storage.TimeSeries)" />
                                 </MudItem>
 
                                 <MudItem xs="12" md="4">
@@ -111,16 +113,6 @@
 
 @code
 {
-    private RenderFragment RenderOptionsTimeSeries(OptionsTimeSeriesType timeSeriesType) => __builder =>
-    {
-        <MudSelect @bind-Value="@timeSeriesType" Label="@L["TimeSeries"]">
-            @foreach (var item in Enum.GetValues<OptionsTimeSeriesType>())
-            {
-                <MudSelectItem Value="@item">@item</MudSelectItem>
-            }
-        </MudSelect>
-    };
-
     private RenderFragment RenderOptionsThreshold(string title, string icon, OptionsThresholdDouble threshold) => __builder =>
     {
         <MudCard>
@@ -136,14 +128,14 @@
                 <MudGrid>
                     <MudItem xs="12" md="6">
                         <MudNumericField T="double" @bind-Value="@threshold.Warning"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warning" AdornmentColor="Color.Warning"
-                                 Label="@L["Warning %"]" For="@(() => threshold.Warning)" />
+                                         Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warning" AdornmentColor="Color.Warning"
+                                         Label="@L["Warning %"]" For="@(() => threshold.Warning)" />
                     </MudItem>
 
                     <MudItem xs="12" md="6">
                         <MudNumericField T="double" @bind-Value="@threshold.Critical"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Error" AdornmentColor="Color.Error"
-                                 Label="@L["Critical %"]" For="@(() => threshold.Critical)" />
+                                         Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Error" AdornmentColor="Color.Error"
+                                         Label="@L["Critical %"]" For="@(() => threshold.Critical)" />
                     </MudItem>
                 </MudGrid>
             </MudCardContent>

@@ -83,6 +83,7 @@ public static class PveAdminHelper
             ModuleCategory.Utilities => Icons.Material.Filled.Handyman,
             ModuleCategory.Develop => Icons.Material.Filled.Code,
             ModuleCategory.General => Icons.Material.Filled.Folder,
+            ModuleCategory.Info => Icons.Material.Filled.Info,
             _ => "",
         };
 
@@ -97,6 +98,7 @@ public static class PveAdminHelper
             ModuleCategory.Utilities => "Utilities",
             ModuleCategory.Develop => "Develop",
             ModuleCategory.General => IModularityService.GeneralCategoryName,
+            ModuleCategory.Info => "Info",
             _ => "",
         };
 }

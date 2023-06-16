@@ -34,12 +34,17 @@ public partial class Status
         DataGridManager.QueryAsync = async () =>
         {
             var clusterName = await PveClientService.GetCurrentClusterName();
-            return await Helper.GetInfo((await PveClientService.GetClient(clusterName))!,
-                                        Jobs,
-                                        clusterName,
-                                        Options.Value.Get(clusterName),
-                                        LoggerFactory,
-                                        VmIdsOrNames);
+
+            var options = Options.Value.Get(clusterName);
+            var vmIdsOrNames = VmIdsOrNames;
+            if (string.IsNullOrWhiteSpace(VmIdsOrNames))
+            {
+                vmIdsOrNames = options.SearchMode == SearchMode.Managed
+                                    ? await Helper.GetVmIdsOrNames(Jobs, clusterName, false)
+                                    : Helper.AllVms;
+            }
+
+            return await Helper.GetInfo((await PveClientService.GetClientCurrentCluster())!, options, LoggerFactory, vmIdsOrNames);
         };
     }
 

@@ -26,11 +26,8 @@ public partial class Histories
         DataGridManager.Title = L["Histories"];
         DataGridManager.DefaultSort = new() { [nameof(AutoSnapJobHistory.Start)] = true };
 
-        DataGridManager.QueryAsync = async () =>
-        {
-            var clusterName = await PveClientService.GetCurrentClusterName();
-            return await DataGridManager.Repository.ListAsync(new AutoSnapJobHistorySpec(clusterName, JobId, ShowOnlyError));
-        };
+        DataGridManager.QueryAsync = async ()
+            => await DataGridManager.Repository.ListAsync(new AutoSnapJobHistorySpec(await PveClientService.GetCurrentClusterName(), JobId, ShowOnlyError));
     }
 
     private void ShowLog(AutoSnapJobHistory item)

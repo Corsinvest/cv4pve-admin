@@ -4,8 +4,6 @@
  */
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
@@ -25,25 +23,6 @@ public static class PveAdminExtensions
                         : clusterName;
         return (type, name);
     }
-
-    public static async Task<IEnumerable<VmRrdData>> GetVmRrdData(this PveClient pveClient,
-                                                                  IClusterResourceVm vm,
-                                                                  RrdDataTimeFrame rrdDataTimeFrame,
-                                                                  RrdDataConsolidation rrdDataConsolidation)
-           => vm.VmType switch
-           {
-               VmType.Qemu => await pveClient.Nodes[vm.Node].Qemu[vm.VmId].Rrddata.Get(rrdDataTimeFrame, rrdDataConsolidation),
-               VmType.Lxc => await pveClient.Nodes[vm.Node].Lxc[vm.VmId].Rrddata.Get(rrdDataTimeFrame, rrdDataConsolidation),
-               _ => throw new IndexOutOfRangeException(),
-           };
-
-    public static async Task<VmBaseStatusCurrent> GetVmStatus(this PveClient pveClient, IClusterResourceVm vm)
-        => vm.VmType switch
-        {
-            VmType.Qemu => await pveClient.Nodes[vm.Node].Qemu[vm.VmId].Status.Current.Get(),
-            VmType.Lxc => await pveClient.Nodes[vm.Node].Lxc[vm.VmId].Status.Current.Get(),
-            _ => throw new ArgumentOutOfRangeException(vm.VmType.ToString()),
-        };
 
     public static async Task<IEnumerable<string>> GetVmsJollyKeys(this PveClient client,
                                                                   bool addAll,

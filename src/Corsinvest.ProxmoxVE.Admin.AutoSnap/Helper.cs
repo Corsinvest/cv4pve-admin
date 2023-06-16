@@ -11,17 +11,17 @@ using Corsinvest.ProxmoxVE.Admin.Core.Repository;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.ComponentModel;
 using System.Net;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap;
 
 internal class Helper
 {
-    private static string AllVms { get; } = "@all";
+    public static string AllVms { get; } = "@all";
 
     public static Application GetApp(PveClient client, ILoggerFactory loggerFactory, TextWriter log)
         => new(client, loggerFactory, log, false);
@@ -33,7 +33,7 @@ internal class Helper
 
     private static async Task<AutoSnapJob?> GetAutoSnapJob(IReadRepositoryBase<AutoSnapJob> jobRepo, int id, ILogger logger)
     {
-        var job = (await jobRepo.FirstOrDefaultAsync(new AutoSnapJobSpec(id)))!;
+        var job = await jobRepo.FirstOrDefaultAsync(new AutoSnapJobSpec(id));
         if (job == null) { logger.LogWarning("Job Id = {Id} not exists!", id); }
         return job;
     }
@@ -93,8 +93,10 @@ internal class Helper
             if (job == null)
             {
                 logger.LogWarning("Job Id = {Id} not exists!", id);
+
+                //old job not recognized
                 //var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                //jobService.RemoveIfExists(Job.GetJobId(job.ClusterName,id));
+                //jobService.RemoveIfExists<Job>(job.ClusterName, id);
                 return;
             }
 
@@ -122,23 +124,34 @@ internal class Helper
             var client = await scope.GetPveClient(job.ClusterName);
             var app = GetApp(client, loggerFactory, log);
 
+            var statusEventOk = true;
+
             //event
             app.PhaseEvent += (sender, e) =>
             {
                 var hooks = job.Hooks.Where(a => a.Enabled && e.Phase == a.Phase).OrderBy(a => a.Order);
                 if (hooks.Any())
                 {
-                    using (logger.LogTimeOperation(LogLevel.Information, true, "Hook HTTP Command"))
+                    using (logger.LogTimeOperation(LogLevel.Information, true, "Hook HTTP Phase '{Phase}'", e.Phase))
                     {
                         //call hook
                         foreach (var item in hooks)
                         {
-                            using (logger.LogTimeOperation(LogLevel.Debug, true, "Execute HTTP Command '{Description}'", item.Description))
+                            using (logger.LogTimeOperation(LogLevel.Debug, true, "Execute HTTP Phase '{Phase}' Command '{Description}'", item.Phase, item.Description))
                             {
-                                log.WriteLine($"Execute HTTP Command '{item.Description}'");
-                                var ret = ExecuteHook(item, e.Environments).Result;
-                                log.WriteLine($"  Status Code '{ret.StatusCode}'");
-                                log.WriteLine($"  Reason Phrase '{ret.ReasonPhrase}'");
+                                log.WriteLine($"Execute Hook HTTP '{item.Phase}' Command '{item.Description}'");
+                                try
+                                {
+                                    var ret = ExecuteHook(item, e.Environments);
+                                    log.WriteLine($"  Status Code '{ret.StatusCode}'");
+                                    log.WriteLine($"  Reason Phrase '{ret.ReasonPhrase}'");
+                                }
+                                catch (Exception ex)
+                                {
+                                    statusEventOk = false;
+                                    logger.LogError(ex, ex.Message);
+                                    log.WriteLine($"  Error '{ex.Message}'");
+                                }
                             }
                         }
                     }
@@ -159,6 +172,8 @@ internal class Helper
                                              job.OnlyRuns);
                 history.Status = retSnap.Status;
             }
+
+            if (!statusEventOk) { history.Status = false; }
 
             history.End = DateTime.Now;
             history.Log = log.ToString();
@@ -196,33 +211,14 @@ internal class Helper
         }
     }
 
-    private static async Task<IReadOnlyDictionary<IClusterResourceVm, IEnumerable<VmSnapshot>>> GetInt(PveClient client,
-                                                                                                       IReadRepository<AutoSnapJob> jobs,
-                                                                                                       ModuleClusterOptions moduleClusterOptions,
-                                                                                                       ILoggerFactory loggerFactory,
-                                                                                                       string vmIdsOrNames,
-                                                                                                       string clusterName)
-    {
-        if (string.IsNullOrWhiteSpace(vmIdsOrNames))
-        {
-            vmIdsOrNames = moduleClusterOptions.SearchMode == SearchMode.Managed
-                                ? await GetVmIdsOrNames(jobs, clusterName)
-                                : AllVms;
-        }
-
-        return await GetApp(client, loggerFactory, null!)
-                        .Status(vmIdsOrNames, null, moduleClusterOptions.TimestampFormat);
-    }
-
     public static async Task<IEnumerable<AutoSnapInfo>> GetInfo(PveClient client,
-                                                                IReadRepository<AutoSnapJob> jobRepo,
-                                                                string clusterName,
                                                                 ModuleClusterOptions moduleClusterOptions,
                                                                 ILoggerFactory loggerFactory,
                                                                 string vmIdsOrNames)
     {
         var ret = new List<AutoSnapInfo>();
-        foreach (var item in await GetInt(client, jobRepo, moduleClusterOptions, loggerFactory, vmIdsOrNames, clusterName))
+        foreach (var item in await GetApp(client, loggerFactory, null!)
+                                        .Status(vmIdsOrNames, null, moduleClusterOptions.TimestampFormat))
         {
             var snaposhots = item.Value.Where(a => !string.IsNullOrWhiteSpace(Application.GetLabelFromName(a.Name, moduleClusterOptions.TimestampFormat)));
             ret.AddRange(snaposhots.Select(a => new AutoSnapInfo()
@@ -242,7 +238,7 @@ internal class Helper
         return ret.OrderBy(a => a.Label);
     }
 
-    public static async Task<HttpResponseMessage> ExecuteHook(AutoSnapJobHook hook, IReadOnlyDictionary<string, string> environments)
+    public static HttpResponseMessage ExecuteHook(AutoSnapJobHook hook, IReadOnlyDictionary<string, string> environments)
     {
         using var handler = new HttpClientHandler
         {
@@ -257,16 +253,8 @@ internal class Helper
         using var client = new HttpClient(handler);
 
         var dataStr = hook.Data;
-        var dataDic = new Dictionary<string, string>();
-
-        if (hook.DataIsKeyValue)
-        {
-            foreach (var row in hook.Data.SplitNewLine())
-            {
-                var item = row.Split('§');
-                dataDic.Add(item[0], item[1]);
-            }
-        }
+        var dic = new Dictionary<string, string>();
+        if (hook.DataIsKeyValue) { dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(hook.Data)!; }
 
         var url = hook.Url;
 
@@ -279,9 +267,9 @@ internal class Helper
 
             if (hook.DataIsKeyValue)
             {
-                foreach (var key in dataDic.Keys)
+                foreach (var key in dic.Keys)
                 {
-                    dataDic[key] = dataDic[key].Replace(keyReplace, valueReplace);
+                    dic[key] = dic[key].Replace(keyReplace, valueReplace);
                 }
             }
             else
@@ -291,16 +279,16 @@ internal class Helper
         }
 
         var content = hook.DataIsKeyValue ?
-                        (ByteArrayContent)new FormUrlEncodedContent(dataDic) :
+                        (ByteArrayContent)new FormUrlEncodedContent(dic) :
                         new StringContent(dataStr);
 
-        return hook.HttpMethod switch
+        return client.Send(hook.HttpMethod switch
         {
-            AutoSnapJobHookHttpMethod.Get => await client.GetAsync(url),
-            AutoSnapJobHookHttpMethod.Post => await client.PostAsync(url, content),
-            AutoSnapJobHookHttpMethod.Put => await client.PutAsync(url, content),
-            _ => throw new IndexOutOfRangeException(),
-        };
+            AutoSnapJobHookHttpMethod.Get => new HttpRequestMessage(HttpMethod.Get, url),
+            AutoSnapJobHookHttpMethod.Post => new HttpRequestMessage(HttpMethod.Post, url) { Content = content },
+            AutoSnapJobHookHttpMethod.Put => new HttpRequestMessage(HttpMethod.Put, url) { Content = content },
+            _ => throw new InvalidEnumArgumentException(),
+        });
     }
 
     public static async Task Delete(IServiceScope scope, IEnumerable<AutoSnapInfo> snapshots, string clusterName)
@@ -312,13 +300,14 @@ internal class Helper
         }
     }
 
-    public static async Task<string> GetVmIdsOrNames(IReadRepository<AutoSnapJob> jobRepo, string clusterName)
+    public static async Task<string> GetVmIdsOrNames(IReadRepository<AutoSnapJob> jobRepo, string clusterName, bool enabled)
     {
-        var specJob = new AutoSnapJobSpec(clusterName).Enabled();
+        var specJob = new AutoSnapJobSpec(clusterName);
+        if (enabled) { specJob = specJob.Enabled(); }
         return (await jobRepo.ListAsync(specJob)).Select(a => a.VmIds).JoinAsString(",");
     }
 
-    public static async Task<(int Scheduled, DateTime? Last, int SnapCount, int VmsScheduled, int InError)>
+    public static async Task<(int scheduled, DateTime? last, int snapCount, int vmsScheduled, int inError)>
         Info(IServiceScopeFactory ServiceScopeFactory, string clusterName)
     {
         using var scope = ServiceScopeFactory.CreateScope();
@@ -328,7 +317,7 @@ internal class Helper
         var moduleClusterOptions = GetModuleClusterOptions(scope, clusterName);
         var loggerFactory = scope.GetLoggerFactory();
 
-        var vmIdsOrNames = await GetVmIdsOrNames(jobRepo, clusterName);
+        var vmIdsOrNames = await GetVmIdsOrNames(jobRepo, clusterName, true);
         var vmsCount = string.IsNullOrWhiteSpace(vmIdsOrNames) ?
                         0 :
                         (await client.GetVms(vmIdsOrNames)).Where(a => !a.IsUnknown).Count();

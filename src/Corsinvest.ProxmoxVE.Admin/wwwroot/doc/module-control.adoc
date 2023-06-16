@@ -10,7 +10,7 @@
 
 == Telegram Bot
 
-Full Control of your cluster directly by Telegram. Visit image:social/github-24.png[] https://github.com/Corsinvest/cv4pve-admin[GitHub] to see how to set up your bot.
+Full Control of your cluster directly by Telegram. Visit image:social/github-24.png[] https://github.com/Corsinvest/cv4pve-botgram[Telegram Bot Step By Step] to see how to set up your bot.
 
 [width="100%"]
 |=======

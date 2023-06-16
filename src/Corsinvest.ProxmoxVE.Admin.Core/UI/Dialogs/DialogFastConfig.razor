@@ -10,7 +10,7 @@
 <MudDialog Style="width:80%;">
     <DialogContent>
         <MudStepper HeaderTextView="HeaderTextView.All" MobileView="false" @ref="@RefStepper" PreventStepChangeAsync="PreventStepChangeAsync"
-                    Color="@Color.Primary">
+                    Color="@Color.Primary" Linear="true">
             <ChildContent>
                 <MudStep Title="@L["Proxmox VE Web Api Login"]" Icon="@Icons.Material.Filled.Approval">
                     <MudAlert Severity="Severity.Info">

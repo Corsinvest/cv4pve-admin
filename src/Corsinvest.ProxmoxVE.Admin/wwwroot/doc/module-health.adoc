@@ -31,17 +31,17 @@ Show all the storages configured in cluster.
 [.thumb]
 image:screenshot/modules/cluster-usage/configurations.png[]
 
-**By Storage**
+=== By Storage ===
 
 [.thumb]
 image:screenshot/modules/cluster-usage/by-storage.png[]
 
-**By VM/CT**
+=== By VM/CT ===
 
 [.thumb]
 image:screenshot/modules/cluster-usage/by-vm.png[]
 
-**By Costs**
+=== By Costs ===
 
 [.thumb]
 image:screenshot/modules/cluster-usage/by-costs1.png[]
@@ -91,27 +91,32 @@ image:screenshot/modules/vzdump-trend/job.png[]
 [.thumb]
 image:screenshot/modules/vzdump-trend/vm-ct.png[]
 
-**List of scheduled jobs**
+
+=== List of scheduled jobs ===
 
 [.thumb]
 image:screenshot/modules/vzdump-trend/scheduled.png[]
 
-**Speed Trend**
+
+=== Speed Trend ===
 
 [.thumb]
 image:screenshot/modules/vzdump-trend/speed.png[]
 
-**List of not scheduled jobs**
+
+=== List of not scheduled jobs ===
 
 [.thumb]
 image:screenshot/modules/vzdump-trend/not-scheduled.png[]
 
-**List of disks don't backed up**
+
+=== List of disks don't backed up ===
 
 [.thumb]
 image:screenshot/modules/vzdump-trend/disks_not_backupped.png[]
 
-**Check storage backups occupation**
+
+=== Check the storage backups occupation ===
 
 [.thumb]
 image:screenshot/modules/vzdump-trend/backups-inline.png[]

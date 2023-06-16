@@ -8,6 +8,7 @@ using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 
 namespace Corsinvest.ProxmoxVE.Admin.ClusterUsage;
 
@@ -36,7 +37,7 @@ internal class Helper
                     {
                         VmType.Qemu => await pveNode.Qemu[vm.VmId].Rrddata.Get(RrdDataTimeFrame.Day, RrdDataConsolidation.Average),
                         VmType.Lxc => await pveNode.Lxc[vm.VmId].Rrddata.Get(RrdDataTimeFrame.Day, RrdDataConsolidation.Average),
-                        _ => throw new IndexOutOfRangeException(),
+                        _ => throw new InvalidEnumArgumentException(),
                     })
                     .Where(a => a.TimeDate >= date && a.TimeDate <= end);
 

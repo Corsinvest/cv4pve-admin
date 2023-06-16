@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
 
         var writableUIOptions = services.GetWritableOptions<UIOptions>();
         writableUIOptions.Value.ClassIndexPageComponent = TypeHelper.GetClassAndAssemblyName<PveWidgets>();
-        //writableUISettings.Value.Theme.PrimaryColor = "#594AE2"; // MudBlazor.Colors.Purple.Default;
+        writableUIOptions.Value.Theme.PrimaryColor = "#8c33b5ff";
         writableUIOptions.Update(writableUIOptions.Value);
 
         return services;

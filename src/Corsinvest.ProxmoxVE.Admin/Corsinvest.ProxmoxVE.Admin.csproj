@@ -7,23 +7,23 @@
 	<Import Project="..\common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.AppHero.Auditing.MudBlazorUI" Version="0.0.100" />
-		<PackageReference Include="Corsinvest.AppHero.Notification.Telegram" Version="0.0.100" />
-		<PackageReference Include="Corsinvest.AppHero.HangFire" Version="0.0.100" />
-		<PackageReference Include="Corsinvest.AppHero.Serilog" Version="0.0.100" />
-		<PackageReference Include="Corsinvest.AppHero.Translation" Version="0.0.100" />
-		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.100" />
-		<PackageReference Include="Corsinvest.AppHero.Localization.MudBlazorUI" Version="0.0.100" />
+		<PackageReference Include="Corsinvest.AppHero.Auditing.MudBlazorUI" Version="0.0.102" />
+		<PackageReference Include="Corsinvest.AppHero.Notification.Telegram" Version="0.0.102" />
+		<PackageReference Include="Corsinvest.AppHero.HangFire" Version="0.0.102" />
+		<PackageReference Include="Corsinvest.AppHero.Serilog" Version="0.0.102" />
+		<PackageReference Include="Corsinvest.AppHero.Translation" Version="0.0.102" />
+		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.102" />
+		<PackageReference Include="Corsinvest.AppHero.Localization.MudBlazorUI" Version="0.0.102" />
 		
 		<PackageReference Include="Serilog.Sinks.SQLite" Version="6.0.0" />
-		<PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.2.0" />
+		<PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.3.0" />
 
 		<PackageReference Include="Hangfire.Storage.SQLite" Version="0.3.4" />
 
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

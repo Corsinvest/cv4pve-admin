@@ -1,15 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<Import Project="..\common.props" />
 
-	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<OutputType>Library</OutputType>
-	</PropertyGroup>
-
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.5.9" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+		<PackageReference Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.5.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

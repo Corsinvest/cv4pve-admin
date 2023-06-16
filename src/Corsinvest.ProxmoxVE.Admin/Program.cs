@@ -5,7 +5,6 @@
 using Corsinvest.AppHero.Core;
 using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.AppHero.Core.Helpers;
-using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.AppHero.Core.SoftwareRelease;
 using Corsinvest.ProxmoxVE.Admin;
 using Corsinvest.ProxmoxVE.Admin.Persistence;
@@ -51,9 +50,6 @@ builder.Services.AddServerSideBlazor(options =>
                     //options.StreamBufferCapacity = 10;
                 })
                 .AddCircuitOptions(option => { option.DetailedErrors = true; });
-
-ThemeOptions.DefaultTheme.Palette.Primary = "#8c33b5ff";
-ThemeOptions.DefaultTheme.PaletteDark.Primary = ThemeOptions.DefaultTheme.Palette.Primary;
 
 builder.Services.AddHealthChecks();
 

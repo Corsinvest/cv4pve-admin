@@ -13,8 +13,8 @@ public partial class Charts
 
     private RrdDataTimeFrame RrdDataTimeFrame { get; set; } = RrdDataTimeFrame.Day;
     private RrdDataConsolidation RrdDataConsolidation { get; set; } = RrdDataConsolidation.Average;
-
     private IEnumerable<VmRrdData> Items { get; set; } = default!;
+
     protected override async Task OnInitializedAsync() => await Refresh();
 
     public async Task Refresh()

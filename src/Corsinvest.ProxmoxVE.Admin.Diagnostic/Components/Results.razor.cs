@@ -24,15 +24,15 @@ public partial class Results
 
     protected override async Task OnInitializedAsync()
     {
+        DataGridManager.Title = L["Results"];
+        DataGridManager.DefaultSort = new() { [nameof(Execution.Date)] = true };
+        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ExecutionSpec(ClusterName));
+
         try
         {
             ClusterName = await PveClientService.GetCurrentClusterName();
         }
         catch { }
-
-        DataGridManager.Title = L["Results"];
-        DataGridManager.DefaultSort = new() { [nameof(Execution.Date)] = true };
-        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ExecutionSpec(ClusterName));
     }
 
     private void Run()
