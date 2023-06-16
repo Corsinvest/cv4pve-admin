@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
+using System.ComponentModel;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm;
 
@@ -24,7 +25,7 @@ public partial class Detail
         {
             VmLxcStatusCurrent _ => VmType.Lxc,
             VmQemuStatusCurrent _ => VmType.Qemu,
-            _ => throw new ArgumentOutOfRangeException(),
+            _ => throw new InvalidEnumArgumentException(),
         };
 
         if (VmType == VmType.Qemu) { FsInfo = await GetVmQemuAgentGetFsInfo(); }
