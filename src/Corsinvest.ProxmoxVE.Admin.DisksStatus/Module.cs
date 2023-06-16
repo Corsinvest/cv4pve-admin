@@ -46,8 +46,9 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class DataGrid
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(DataGrid)}.{nameof(Data)}");
-            public static Permission BlinkLed { get; } = new($"{Data.Prefix}.{nameof(BlinkLed)}", "Blink led",
-                                                            Icons.Material.Filled.Bolt, UIColor.Default);
+            public static Permission BlinkLed { get; } = new($"{Data.Prefix}.{nameof(BlinkLed)}", 
+                                                             "Blink led",
+                                                             Icons.Material.Filled.WbTwilight, UIColor.Default);
         }
     }
 }

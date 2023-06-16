@@ -14,6 +14,7 @@ using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.ComponentModel;
 using System.Net;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap;
@@ -286,7 +287,7 @@ internal class Helper
             AutoSnapJobHookHttpMethod.Get => new HttpRequestMessage(HttpMethod.Get, url),
             AutoSnapJobHookHttpMethod.Post => new HttpRequestMessage(HttpMethod.Post, url) { Content = content },
             AutoSnapJobHookHttpMethod.Put => new HttpRequestMessage(HttpMethod.Put, url) { Content = content },
-            _ => throw new IndexOutOfRangeException(),
+            _ => throw new InvalidEnumArgumentException(),
         });
     }
 
@@ -306,7 +307,7 @@ internal class Helper
         return (await jobRepo.ListAsync(specJob)).Select(a => a.VmIds).JoinAsString(",");
     }
 
-    public static async Task<(int Scheduled, DateTime? Last, int SnapCount, int VmsScheduled, int InError)>
+    public static async Task<(int scheduled, DateTime? last, int snapCount, int vmsScheduled, int inError)>
         Info(IServiceScopeFactory ServiceScopeFactory, string clusterName)
     {
         using var scope = ServiceScopeFactory.CreateScope();
