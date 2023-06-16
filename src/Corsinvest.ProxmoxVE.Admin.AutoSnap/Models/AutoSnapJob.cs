@@ -12,6 +12,8 @@ namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 
 public class AutoSnapJob : JobSchedule, IAggregateRoot<int>, IClusterName
 {
+    public AutoSnapJob() => CronExpression = "*/15 * * * *";
+
     [Required]
     public int Id { get; set; }
 
