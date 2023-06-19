@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this feature request for [cv4pve-admin](https://mudblazor.com). Note that this template is only for feature requests. Please use [Github Dicussions](https://github.com/Corsinvest/cv4pve-admin/discussions) for any questions.
+        Thanks for taking the time to fill out this feature request for [cv4pve-admin](https://www.corsinvest.it/cv4pve-admin). Note that this template is only for feature requests. Please use [Github Dicussions](https://github.com/Corsinvest/cv4pve-admin/discussions) for any questions.
   - type: dropdown
     id: enhancement-type
     attributes:
