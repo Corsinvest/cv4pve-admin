@@ -9,9 +9,12 @@
 	<ItemGroup>
 		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.104" />
 
+		<!--<PackageReference Include="SkiaSharp" Version="2.88.3" />-->
+		<!--<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />-->
 		<PackageReference Include="QuestPDF" Version="2023.5.3" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.3" />
+
 
 		<PackageReference Include="Blazor-ApexCharts" Version="0.9.19-beta" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
