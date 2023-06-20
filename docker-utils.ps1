@@ -39,7 +39,7 @@ function Test-Docker()
 	#docker data
 	$dockerDataBase = "d:\DockerData\cv4pve-admin"
 
-	New-Item -Path "$dockerDataBase\data" -ItemType "directory" 
+	New-Item -Path "$dockerDataBase\data" -ItemType "directory" -ErrorAction SilentlyContinue
 
 	if (!(Test-Path "$dockerDataBase\appsettings.json"))
 	{
