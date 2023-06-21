@@ -39,7 +39,8 @@
 
         <TemplateColumn T="Execution" CellClass="justify-end">
             <CellTemplate>
-                <AHPermissionButtonIcon Permission="Module.Permissions.Result.DownloadPdf" OnClick="@(() => DownloadPdf(context.Item))" Size="Size.Small" />
+                <AHPermissionButtonIcon Permission="Module.Permissions.Result.DownloadPdf" OnClick="@(() => DownloadPdf(context.Item))"
+                                        Size="Size.Small" Loading="@InDownloadPdf"/>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

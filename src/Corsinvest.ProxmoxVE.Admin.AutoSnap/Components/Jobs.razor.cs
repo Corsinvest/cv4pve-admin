@@ -71,7 +71,7 @@ public partial class Jobs
         if (await UIMessageBox.ShowQuestionAsync(L["Snap"], L["Execute Snap?"]))
         {
             JobService.Schedule<Job>(a => a.Create(item.Id), TimeSpan.FromSeconds(10));
-            UINotifier.Show(L["Snap started!"], UINotifierSeverity.Info);
+            UINotifier.Show(L["Creating snapshot!"], UINotifierSeverity.Info);
         }
     }
 
@@ -80,7 +80,7 @@ public partial class Jobs
         if (await UIMessageBox.ShowQuestionAsync(L["Clean"], L["Execute Clean?"]))
         {
             JobService.Schedule<Job>(a => a.Clean(item.Id), TimeSpan.FromSeconds(10));
-            UINotifier.Show(L["Clean snapshots started!"], UINotifierSeverity.Info);
+            UINotifier.Show(L["Cleaning snapshots!"], UINotifierSeverity.Info);
         }
     }
 }
