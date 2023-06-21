@@ -34,6 +34,8 @@
             </CellTemplate>
         </TemplateColumn>
 
+        <AHPropertyColumn T="ClusterOptions" TProperty="int" Property="a => a.Timeout" />
+
         <TemplateColumn T="ClusterOptions" CellClass="justify-end">
             <CellTemplate>
                 <MudButtonGroup Variant="Variant.Text">
@@ -45,9 +47,14 @@
 
     <EditTemplate>
         <MudGrid>
-            <MudItem md="12">
-                <MudTextField @bind-Value="@context.Description"
-                              Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Description)])" For="@(() => context.Description)" />
+            <MudItem md="9">
+                <MudTextField @bind-Value="@context.Description" Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Description)])"
+                              For="@(() => context.Description)" />
+            </MudItem>
+
+            <MudItem md="3">
+                <MudNumericField @bind-Value="@context.Timeout" Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Timeout)])"
+                                 For="@(() => context.Timeout)" />
             </MudItem>
 
             <MudItem md="12">
@@ -64,19 +71,19 @@
                         <RenderNodesOptions ClusterOptions="@context" />
                     </MudTabPanel>
                 </MudTabs>
-                </MudItem>
-                </MudGrid>
-            </EditTemplate>
+            </MudItem>
+        </MudGrid>
+    </EditTemplate>
 
-            <NoRecordsContent>
-                <AHNoRecordsContent />
-            </NoRecordsContent>
+    <NoRecordsContent>
+        <AHNoRecordsContent />
+    </NoRecordsContent>
 
-            <LoadingContent>
-                <AHLoadingContent />
-            </LoadingContent>
+    <LoadingContent>
+        <AHLoadingContent />
+    </LoadingContent>
 
-            <PagerContent>
-                <MudDataGridPager T="ClusterOptions" />
-            </PagerContent>
-            </AHDataGrid>
+    <PagerContent>
+        <MudDataGridPager T="ClusterOptions" />
+    </PagerContent>
+</AHDataGrid>
