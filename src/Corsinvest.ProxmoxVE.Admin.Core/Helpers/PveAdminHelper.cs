@@ -30,7 +30,7 @@ public static class PveAdminHelper
     {
         try
         {
-            var client = ClientHelper.GetClientFromHA(clusterOptions.ApiHostsAndPortHA, 1000);
+            var client = ClientHelper.GetClientFromHA(clusterOptions.ApiHostsAndPortHA, clusterOptions.Timeout);
             if (client != null)
             {
                 bool login;

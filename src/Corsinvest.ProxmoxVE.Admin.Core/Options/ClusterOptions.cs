@@ -17,6 +17,9 @@ public class ClusterOptions
     [Display(Name = "API Token")]
     public string ApiToken { get; set; } = default!;
 
+    [Display(Name = "Timeout (millisec)")]
+    public int Timeout { get; set; } = 1000;
+
     public bool UseApiToken { get; set; }
     public Credential ApiCredential { get; } = new();
     public Credential SshCredential { get; } = new();
