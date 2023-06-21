@@ -54,7 +54,7 @@ public partial class Status
         {
             var clusterName = await PveClientService.GetCurrentClusterName();
             JobService.Schedule<Job>(a => a.Delete(DataGridManager.SelectedItems, clusterName), TimeSpan.FromSeconds(10));
-            UINotifier.Show(L["Delete snapshot started!"], UINotifierSeverity.Info);
+            UINotifier.Show(L["Deleting snapshots!"], UINotifierSeverity.Info);
             DataGridManager.SelectedItems.Clear();
         }
     }
