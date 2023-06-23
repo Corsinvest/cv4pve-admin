@@ -5,6 +5,7 @@
 using ApexCharts;
 using Ardalis.Specification;
 using Corsinvest.AppHero.Core.Domain.Repository;
+using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.VzDumpTrend.Repository;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
@@ -16,8 +17,9 @@ public partial class DataAnalysis
 {
     [Inject] private IReadRepository<VzDumpDetail> VzDumpDetails { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
+    [Inject] private LayoutService LayoutService { get; set; } = default!;
 
-    private static ApexChartOptions<VzDumpDetail> Options1 => new()
+    private ApexChartOptions<VzDumpDetail> Options1 => new()
     {
         Markers = new()
         {
@@ -25,10 +27,11 @@ public partial class DataAnalysis
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } }
+        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
-    private static ApexChartOptions<VzDumpDetail> Options2 => new()
+    private ApexChartOptions<VzDumpDetail> Options2 => new()
     {
         Markers = new()
         {
@@ -36,10 +39,11 @@ public partial class DataAnalysis
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } }
+        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
-    private static ApexChartOptions<VzDumpDetail> Options3 => new()
+    private ApexChartOptions<VzDumpDetail> Options3 => new()
     {
         Markers = new()
         {
@@ -47,7 +51,8 @@ public partial class DataAnalysis
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } }
+        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
     class Data<T>
