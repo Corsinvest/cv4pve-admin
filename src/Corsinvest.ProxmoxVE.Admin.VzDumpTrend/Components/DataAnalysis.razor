@@ -64,7 +64,7 @@
 
     <br />
 
-    <ApexChart TItem="VzDumpDetail"
+    <ApexChart TItem="VzDumpDetail" 
            XAxisType="XAxisType.Datetime"
            Height="@("500px")"
            Options="Options1"
@@ -75,7 +75,7 @@
             <ApexPointSeries TItem="VzDumpDetail"
                      Items="@item"
                      Name="@item.Key"
-                     SeriesType="SeriesType.Line"
+                     SeriesType="SeriesType.Line"                      
                      XValue="e => e.Start"
                      YValue="a => Convert.ToDecimal(a.Size) / 1024 / 1024 / 1024"
                      OrderBy="a => a.X" />
