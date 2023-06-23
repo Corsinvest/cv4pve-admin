@@ -5,7 +5,7 @@
 using Corsinvest.AppHero.Core;
 using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.AppHero.Core.Helpers;
-using Corsinvest.AppHero.Core.SoftwareRelease;
+using Corsinvest.AppHero.Core.SoftwareUpdater;
 using Corsinvest.ProxmoxVE.Admin;
 using Corsinvest.ProxmoxVE.Admin.Persistence;
 using Microsoft.AspNetCore.DataProtection;
