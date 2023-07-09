@@ -61,7 +61,7 @@
                                     }
                                 </div>
 
-                                @if (!string.IsNullOrWhiteSpace(Checks[node].Message))
+                                @if (Initialized && !string.IsNullOrWhiteSpace(Checks[node].Message))
                                 {
                                     <MudText Typo="Typo.body1">@Checks[node].Message</MudText>
                                 }
