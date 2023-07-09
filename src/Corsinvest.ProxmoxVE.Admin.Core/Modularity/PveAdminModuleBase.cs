@@ -8,7 +8,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 
 public abstract class PveAdminModuleBase : ModuleBase
 {
-    protected void SetCategory(ModuleCategory category) => Category = PveAdminHelper.GetCategoryName(category);
+    protected void SetCategory(AdminModuleCategory category)
+    {
+        if (PveAdminHelper.ModuleCategories.TryGetValue(category, out var value)) { Category = value.Name; }
+    }
 
     public IEnumerable<string> PvePermissionRequired { get; protected set; } = Enumerable.Empty<string>();
 }

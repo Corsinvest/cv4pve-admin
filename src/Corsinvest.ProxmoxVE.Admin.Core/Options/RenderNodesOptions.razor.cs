@@ -39,38 +39,25 @@ public partial class RenderNodesOptions
 
         try
         {
-            var client = await PveClientService.GetClient(ClusterOptions);
-            if (client != null)
+            switch (await PveClientService.PopulateInfoNodes(ClusterOptions))
             {
-                var added = false;
-                foreach (var (host, ipAddress) in await client.GetHostAndIp())
-                {
-                    if (ClusterOptions.GetNodeOptions(ipAddress, host) == null)
-                    {
-                        ClusterOptions.Nodes.Add(new()
-                        {
-                            IpAddress = ipAddress
-                        });
-                        added = true;
-                    }
-                }
+                case -1:
+                    UINotifier.Show(L["Credential or host not valid!"], UINotifierSeverity.Error);
+                    break;
 
-                await DataGridManager.Refresh();
+                case 0:
+                    UINotifier.Show(L["All nodes have been inserted!"], UINotifierSeverity.Info);
+                    break;
 
-                UINotifier.Show(added
-                                ? L["New nodes added! Please save."]
-                                : L["All nodes have been inserted!"],
-                                UINotifierSeverity.Info);
-            }
-            else
-            {
-                UINotifier.Show(L["Credential or host not valid!"], UINotifierSeverity.Error);
+                case 1:
+                    await DataGridManager.Refresh();
+                    UINotifier.Show(L["New nodes added! Please save."], UINotifierSeverity.Info);
+                    break;
+
+                default: break;
             }
         }
-        catch (Exception ex)
-        {
-            UINotifier.Show(ex.Message, UINotifierSeverity.Error);
-        }
+        catch (Exception ex) { UINotifier.Show(ex.Message, UINotifierSeverity.Error); }
 
         LoadingFindNewNodes = false;
     }

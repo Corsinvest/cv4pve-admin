@@ -20,7 +20,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Diagnostic,Fix,Error";
         Description = "Diagnostic";
         InfoText = "Take, schedule and manage automatic diagnostic for your Proxmox VE cluster, it helps to find out some hidden problems";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {

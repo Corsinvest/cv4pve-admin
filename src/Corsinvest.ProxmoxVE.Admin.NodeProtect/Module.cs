@@ -25,7 +25,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "IpAddress,Protect,Configuration,Options";
         Description = "Node Protect";
         InfoText = "Perform and schedule the saving of important files in case of node fault, for your Proxmox VE cluster";
-        SetCategory(ModuleCategory.Safe);
+        SetCategory(AdminModuleCategory.Safe);
 
         Link = new ModuleLink(this, Description)
         {

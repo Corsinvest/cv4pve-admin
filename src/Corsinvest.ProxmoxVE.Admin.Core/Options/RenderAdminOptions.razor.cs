@@ -16,22 +16,9 @@ public partial class RenderAdminOptions
         {
             try
             {
-                var client = await PveClientService.GetClient(item);
-                if (client != null)
-                {
-                    //if (!await PveAdminHelper.CheckIsValidVersion(client))
-                    //{
-                    //    UINotifier.Show(L["{0} - Proxmoxm VE version nont valid! Required {1}", item.FullName, PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
-                    //}
-                    var info = await client.GetClusterInfo();
-                    item.Name = info.Name;
-                    item.Type = info.Type;
-                }
+                await PveClientService.PopulateInfoNodes(item);
             }
-            catch (Exception ex)
-            {
-                UINotifier.Show(ex.Message, UINotifierSeverity.Error);
-            }
+            catch (Exception ex) { UINotifier.Show(ex.Message, UINotifierSeverity.Error); }
         }
 
         await base.SaveAsync();

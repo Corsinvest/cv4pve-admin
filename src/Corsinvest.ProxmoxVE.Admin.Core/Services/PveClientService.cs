@@ -54,6 +54,51 @@ public class PveClientService : IPveClientService
     public async Task SetCurrentClusterName(string clusterName) => await _localStorageService.SetItemAsStringAsync("CurrentClusterName", clusterName);
     public async Task<string> GetCurrentClusterName() => await _localStorageService.GetItemAsStringAsync("CurrentClusterName");
 
+    public async Task<int> PopulateInfoNodes(ClusterOptions clusterOptions)
+    {
+        var ret = 0;
+        var client = await GetClient(clusterOptions);
+        if (client != null)
+        {
+            var status = await client.Cluster.Status.Get();
+
+            //check new nodes
+            foreach (var item in status)
+            {
+                if (clusterOptions.GetNodeOptions(item.IpAddress, item.Name) == null)
+                {
+                    clusterOptions.Nodes.Add(new()
+                    {
+                        IpAddress = item.IpAddress
+                    });
+                    ret = 1;
+                }
+            }
+
+            //get server id
+            foreach (var node in clusterOptions.Nodes)
+            {
+                var nodeStatus = status.FirstOrDefault(x => x.IpAddress == node.IpAddress);
+                if (nodeStatus != null)
+                {
+                    var serverId = (await client.Nodes[nodeStatus.Name].Subscription.GetEx()).Serverid;
+                    if (node.ServerId != serverId)
+                    {
+                        node.ServerId = serverId;
+                        ret = 1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            ret = -1;
+        }
+
+        return ret;
+    }
+
+
     public async Task<bool> ClusterIsValid(string clusterName)
     {
         try

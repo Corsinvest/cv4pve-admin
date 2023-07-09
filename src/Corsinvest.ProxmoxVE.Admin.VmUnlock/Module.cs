@@ -18,7 +18,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Vm,Unlock";
         Description = "Vm Unlock";
         InfoText = "Unlock VM/CT that have remained in the \"locked\" status";
-        SetCategory(ModuleCategory.Utilities);
+        SetCategory(AdminModuleCategory.Utilities);
 
         Link = new ModuleLink(this, Description)
         {

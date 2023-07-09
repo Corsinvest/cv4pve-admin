@@ -22,7 +22,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Company = "Corsinvest Srl";
         Keywords = "Snapshot,Automatic";
         InfoText = "Take, schedule and manage automatic snapshots for VM/CT in your Proxmox VE cluster";
-        SetCategory(ModuleCategory.Safe);
+        SetCategory(AdminModuleCategory.Safe);
 
         Description = "Auto Snapshot";
 

@@ -20,7 +20,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Customer,Portal";
         Description = "Telegram Bot";
         InfoText = "Configure your Telegram with this bot to manage your Proxmox VE cluster remotely";
-        SetCategory(ModuleCategory.Control);
+        SetCategory(AdminModuleCategory.Control);
 
         Link = new ModuleLink(this, Description)
         {

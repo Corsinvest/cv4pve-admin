@@ -23,7 +23,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Cluster,CPU,Ram,Memory,Storage,Size,Size";
         Description = "Cluster Usage";
         InfoText = "Control how each component of your Proxmox VE cluster occupies resources";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {
