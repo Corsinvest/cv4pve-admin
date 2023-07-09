@@ -1,0 +1,89 @@
+﻿@using MudExtensions.Enums;
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudExpansionPanels MultiExpansion="true">
+    @foreach (var cluster in AdminOptions.Value.Clusters)
+    {
+        <MudExpansionPanel Text="@($"{cluster.Name} - {cluster.Description}")">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <thead>
+                    <tr>
+                        <th>@L["Server Id"]</th>
+                        <th>@L["Ip Address"]</th>
+                        <th>@L["Subscription Id"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Expiration"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var node in cluster.Nodes)
+                    {
+                        <tr>
+                            <td>
+                                @if (string.IsNullOrWhiteSpace(node.ServerId))
+                                {
+                                    <MudAlert Severity="Severity.Warning">Not found!</MudAlert>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.body1">@node.ServerId</MudText>
+                                }
+                            </td>
+
+                            <td>
+                                <MudText Typo="Typo.body1">@node.IpAddress</MudText>
+                            </td>
+
+                            <td>
+                                <div class="d-flex gap-4">
+                                    <MudTextField T="string" @bind-Text="@node.SubscriptionId" Immediate="true"
+                                                  ReadOnly="@string.IsNullOrWhiteSpace(node.ServerId)"
+                                                  For="@(() => node.SubscriptionId)" />
+
+                                    <MudLoadingButton Color="Color.Success" StartIcon="@Icons.Material.Filled.Check"
+                                                      Size="Size.Small" @bind-Loading="InSave" ButtonVariant="ButtonVariant.Fab"
+                                                      OnClick="@(async () => await Save(node))"
+                                                      Disabled="string.IsNullOrWhiteSpace(node.ServerId) || string.IsNullOrWhiteSpace(node.SubscriptionId)" />
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="d-flex gap-4">
+                                    @if (Initialized)
+                                    {
+                                        <AHBoolIcon Value="@(Checks[node].Status == Status.Active)" IconType="AHBoolIconType.Thumb"
+                                                    ColorTrue="Color.Success" ColorFalse="Color.Error" />
+                                        <MudText Typo="Typo.body1">@Checks[node].Status</MudText>
+                                    }
+                                </div>
+
+                                @if (!string.IsNullOrWhiteSpace(Checks[node].Message))
+                            {
+                                <MudText Typo="Typo.body1">@Checks[node].Message</MudText>
+                            }
+                            </td>
+
+                            <td>
+                                <MudText Typo="Typo.body1">
+                                    @if (Initialized)
+                                    {
+                                        @(Checks[node].NextDueDate + "")
+                                    }
+                                </MudText>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+
+            <MudButton Variant="Variant.Filled" OnClick="@(async () => await RetrieveNodeInfo(cluster))"
+                       Color="Color.Primary" StartIcon="@Icons.Material.Filled.Info">
+                @L["Retrieve cluster Info"]
+            </MudButton>
+        </MudExpansionPanel>
+    }
+</MudExpansionPanels>

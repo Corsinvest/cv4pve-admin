@@ -17,7 +17,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "QEMU,Monitor,Info,Performance";
         Description = "Qemu Monitor";
         InfoText = "Proxmox VE does not allow the operating system to view IOPS for VM. With this it is easy to identify the virtual machines and solve the problem";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {

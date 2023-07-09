@@ -4,7 +4,7 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 
-public enum ModuleCategory
+public enum AdminModuleCategory
 {
     General,
     Safe,
@@ -15,4 +15,5 @@ public enum ModuleCategory
     Develop,
     System,
     Info,
+    Support,
 }

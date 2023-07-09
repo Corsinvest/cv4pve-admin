@@ -19,7 +19,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Node,Host,Disk,Blink";
         Description = "Disks Status";
         InfoText = "Check the status of the disks in your Proxmox VE cluster";
-        SetCategory(ModuleCategory.Utilities);
+        SetCategory(AdminModuleCategory.Utilities);
 
         Link = new ModuleLink(this, Description)
         {

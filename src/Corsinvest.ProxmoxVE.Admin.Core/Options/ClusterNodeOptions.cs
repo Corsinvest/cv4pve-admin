@@ -11,4 +11,7 @@ public class ClusterNodeOptions
 
     public int ApiPort { get; set; } = 8006;
     public int SshPort { get; set; } = 22;
+
+    public string ServerId { get; set; } = default!;
+    public string SubscriptionId { get; set; } = default!;
 }

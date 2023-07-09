@@ -24,7 +24,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "VzDump,Backup,Trend";
         Description = "VzDump Trend";
         InfoText = "Check the progress of the vzdump backup set by Proxmox VE and check status, show more info";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {
