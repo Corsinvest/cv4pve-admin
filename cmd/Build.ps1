@@ -18,7 +18,7 @@ Write-Output "
  #build documentation
 .\doc-utils.ps1 build
 
-$pathBasePrj = ".\src\Corsinvest.ProxmoxVE.Admin"
+$pathBasePrj = "..\src\Corsinvest.ProxmoxVE.Admin"
 $pathBinRelase = "$pathBasePrj\Bin\Release\net7.0"
 
 Remove-Item -Path ".\$pathBinRelase"  -Recurse -Force
