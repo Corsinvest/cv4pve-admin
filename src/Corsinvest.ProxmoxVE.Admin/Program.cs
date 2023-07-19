@@ -9,6 +9,7 @@ using Corsinvest.AppHero.Core.SoftwareUpdater;
 using Corsinvest.ProxmoxVE.Admin;
 using Corsinvest.ProxmoxVE.Admin.Persistence;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 
 //appsetting default
@@ -92,14 +93,19 @@ else
     #endregion
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseRouting();
 
 await app.OnApplicationInitializationAsync();
 
 app.MapBlazorHub();
-app.MapFallbackToPage("/_Index");
+app.MapFallbackToPage("/_Host");
 
 await app.OnPostApplicationInitializationAsync();
 

@@ -8,7 +8,7 @@ param(
 )
 
 #Read project version
-$xml = [xml](Get-Content .\src\common.props)
+$xml = [xml](Get-Content ../src/common.props)
 $version = $xml.Project.PropertyGroup.Version
 Write-Host "Project version: $version"
 
@@ -28,7 +28,7 @@ function Build-Docker()
 
 	Write-Host "Build Docker cv4pve-admin"
 	docker rmi corsinvest/cv4pve-admin:$version --force
-	docker build --rm -f "Dockerfile" -t corsinvest/cv4pve-admin:$version "."
+	docker build --rm -f .\..\src\docker\Dockerfile -t corsinvest/cv4pve-admin:$version "..\"
 
 	#remove unused images
 	docker image prune -f
@@ -55,15 +55,15 @@ function Test-Docker()
 		corsinvest/cv4pve-admin:$version
 }
 
-if($operation -eq 'test') 
-{ 
+if($operation -eq 'test')
+{
 	Test-Docker
 }
-elseif($operation -eq 'build') 
-{ 
+elseif($operation -eq 'build')
+{
 	Build-Docker
 }
-elseif($operation -eq 'publish') 
-{ 
+elseif($operation -eq 'publish')
+{
 	Publish-Docker
 }
