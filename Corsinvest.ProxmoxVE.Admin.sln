@@ -46,6 +46,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.DisksStatus", "src\Corsinvest.ProxmoxVE.Admin.DisksStatus\Corsinvest.ProxmoxVE.Admin.DisksStatus.csproj", "{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmd", "cmd", "{974C975A-9A47-43CA-B70D-A58177962996}"
+	ProjectSection(SolutionItems) = preProject
+		cmd\Build.ps1 = cmd\Build.ps1
+		cmd\create-lxc.sh = cmd\create-lxc.sh
+		cmd\doc-utils.ps1 = cmd\doc-utils.ps1
+		cmd\docker-utils.ps1 = cmd\docker-utils.ps1
+		cmd\setKey.ps1 = cmd\setKey.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
