@@ -63,7 +63,7 @@ public class PveClientService : IPveClientService
             var status = await client.Cluster.Status.Get();
 
             //check new nodes
-            foreach (var item in status)
+            foreach (var item in status.Where(a=> !string.IsNullOrWhiteSpace(a.IpAddress)))
             {
                 if (clusterOptions.GetNodeOptions(item.IpAddress, item.Name) == null)
                 {
@@ -79,7 +79,7 @@ public class PveClientService : IPveClientService
             foreach (var node in clusterOptions.Nodes)
             {
                 var nodeStatus = status.FirstOrDefault(x => x.IpAddress == node.IpAddress);
-                if (nodeStatus != null)
+                if (nodeStatus != null && nodeStatus.IsOnline)
                 {
                     var serverId = (await client.Nodes[nodeStatus.Name].Subscription.GetEx()).Serverid;
                     if (node.ServerId != serverId)

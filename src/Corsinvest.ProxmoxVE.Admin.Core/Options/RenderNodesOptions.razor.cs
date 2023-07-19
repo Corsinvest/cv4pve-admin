@@ -46,12 +46,12 @@ public partial class RenderNodesOptions
                     break;
 
                 case 0:
-                    UINotifier.Show(L["All nodes have been inserted!"], UINotifierSeverity.Info);
+                    UINotifier.Show(L["All nodes have been inserted and updated!"], UINotifierSeverity.Info);
                     break;
 
                 case 1:
                     await DataGridManager.Refresh();
-                    UINotifier.Show(L["New nodes added! Please save."], UINotifierSeverity.Info);
+                    UINotifier.Show(L["New nodes added and updated! Please save."], UINotifierSeverity.Info);
                     break;
 
                 default: break;

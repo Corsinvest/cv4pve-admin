@@ -1,5 +1,4 @@
-﻿@using MudExtensions.Enums;
-@*
+﻿@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -80,10 +79,12 @@
                 </tbody>
             </MudSimpleTable>
 
-            <MudButton Variant="Variant.Filled" OnClick="@(async () => await RetrieveNodeInfo(cluster))"
-                       Color="Color.Primary" StartIcon="@Icons.Material.Filled.Info">
+            <MudLoadingButton Variant="Variant.Filled" OnClick="@(async () => await RetrieveNodeInfo(cluster))"
+                              Color="Color.Primary" StartIcon="@Icons.Material.Filled.Info" Loading="@InRetrieveNodeInfo">
                 @L["Retrieve cluster Info"]
-            </MudButton>
+            </MudLoadingButton>
         </MudExpansionPanel>
     }
 </MudExpansionPanels>
+
+<br />

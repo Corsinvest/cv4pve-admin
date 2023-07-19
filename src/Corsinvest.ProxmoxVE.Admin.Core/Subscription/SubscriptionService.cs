@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 using ApexCharts;
 using System.IO;
 using System.Xml.Serialization;
@@ -33,7 +32,7 @@ public class SubscriptionService
             if (response.IsSuccessStatusCode)
             {
                 var xml = await response.Content.ReadAsStringAsync();
-                xml = "<?xml version='1.0' encoding='UTF-8'?><Info>" + xml + "</Info>";
+                xml = "<?xml version='1.0' encoding='UTF-8'?><Info>" + xml.Replace('\n', ' ') + "</Info>";
                 var serializer = new XmlSerializer(typeof(Info));
                 using var reader = new StringReader(xml);
                 info = (Info)serializer.Deserialize(reader)!;
