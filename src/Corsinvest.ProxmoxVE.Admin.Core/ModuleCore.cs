@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using ApexCharts;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Corsinvest.AppHero.Core.Modularity;
