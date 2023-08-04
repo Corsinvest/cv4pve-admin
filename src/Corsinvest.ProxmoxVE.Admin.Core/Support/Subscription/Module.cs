@@ -6,10 +6,8 @@ using Corsinvest.AppHero.Core.Modularity;
 using Corsinvest.AppHero.Core.Security.Auth.Permissions;
 using Corsinvest.AppHero.Core.UI;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Subscription;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Support.Subscription;
 
 public class Module : PveAdminModuleBase, IForceLoadModule
 {
@@ -19,16 +17,16 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Company = "Corsinvest Srl";
         Keywords = "Subscription";
         SetCategory(AdminModuleCategory.Support);
-        Icon = Icons.Material.Filled.Support;
+        Icon = Icons.Material.Filled.Shield;
         Type = ModuleType.Application;
-        Description = "Subscription";
-        Slug = "Subscription";
+        Description = "Subscriptions";
+        Slug = "Subscriptions";
 
         Link = new ModuleLink(this, Description)
         {
-            Icon = Icons.Material.Filled.Support,
+            Icon = Icons.Material.Filled.Verified,
             Render = typeof(RenderIndex),
-            IconColor = UIColor.Primary,
+            Order = 1
         };
 
         Roles = new Role[]
@@ -42,8 +40,6 @@ public class Module : PveAdminModuleBase, IForceLoadModule
                 }))
         };
     }
-
-    public override void ConfigureServices(IServiceCollection services, IConfiguration config) => services.AddScoped<SubscriptionService>();
 
     public class Permissions
     {

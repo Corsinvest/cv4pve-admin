@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Microsoft.JSInterop;
+using Corsinvest.AppHero.Core.Service;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster;
 
@@ -11,9 +11,10 @@ public partial class ClusterSelector
     [Parameter] public EventCallback<string> ClusterNameChanged { get; set; }
     [Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public bool OpenPve { get; set; }
+    [Parameter] public RenderFragment<ClusterOptions> RenderRow { get; set; } = default!;
 
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private IBrowserService BrowserService { get; set; } = default!;
 
     private async Task ValueChanged(string value)
     {
@@ -24,5 +25,5 @@ public partial class ClusterSelector
         StateHasChanged();
     }
 
-    public async Task OpenUrl(ClusterOptions item) => await JSRuntime.InvokeVoidAsync("open", PveAdminHelper.GetPveUrl(item), "_blank");
+    public async Task OpenUrl(ClusterOptions item) => await BrowserService.Open(PveClientService.GetUrl(item), "_blank");
 }

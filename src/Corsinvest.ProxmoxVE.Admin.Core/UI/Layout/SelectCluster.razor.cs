@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.UI;
+using Corsinvest.ProxmoxVE.Admin.Core.Options;
+using Corsinvest.ProxmoxVE.Admin.Core.Support.Subscription;
 using Corsinvest.ProxmoxVE.Admin.Core.UI.Dialogs;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.Layout;
@@ -12,10 +14,12 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private IOptionsSnapshot<AdminOptions> AdminOptions { get; set; } = default!;
 
     public Type Render { get; } = typeof(SelectCluster);
     private string CurrentClusterName { get; set; } = default!;
     private bool _refresh;
+    private Dictionary<ClusterNodeOptions, Info> Checks { get; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -38,6 +42,10 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
             {
                 ShowDialogFastConfig();
             }
+
+            //checks subscriptions
+            Checks.AddRange(await Helper.CheckAsync(AdminOptions.Value));
+            StateHasChanged();
         }
     }
 

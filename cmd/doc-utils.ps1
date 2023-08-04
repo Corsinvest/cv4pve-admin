@@ -10,14 +10,14 @@ param(
 #Read project version
 $xml = [xml](Get-Content ../src/common.props)
 $version = $xml.Project.PropertyGroup.Version
-Write-Host "Project version: $version"
+Write-Output "Project version: $version"
 
-Write-Host "Operation: $operation"
+Write-Output "Operation: $operation"
 
 function Build-Doc() {
-	Write-Host "Build Documenattion"
+	Write-Output "Build Documentation"
 
-	Write-Host "Fix version"
+	Write-Output "Fix version"
 	#replace version
 	$indexDoc = "..\src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\index.adoc"
 	$content = Get-Content  $indexDoc
@@ -30,7 +30,7 @@ function Build-Doc() {
 	Set-Content -Path $indexDoc -Value $content
 
 	#create html
-	Write-Host "Create html"
+	Write-Output "Create html"
 	docker run --rm -it -v .\..\src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\:/documents/ asciidoctor/docker-asciidoctor asciidoctor index.adoc
 	#docker run --rm -it -v .\src\Corsinvest.ProxmoxVE.Admin\wwwroot\doc\:/documents/ asciidoctor/docker-asciidoctor asciidoctor-pdf index.adoc
 }

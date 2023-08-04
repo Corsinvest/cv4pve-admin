@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Options;
+using Corsinvest.AppHero.Core.Service;
 using Corsinvest.AppHero.Core.UI;
-using Microsoft.JSInterop;
 using MudExtensions;
 using MudExtensions.Enums;
 
@@ -12,10 +12,11 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.UI.Dialogs;
 
 public partial class DialogFastConfig
 {
+    [Inject] private IPveClientService PveClientService { get; set; } = default!;
     [Inject] private IWritableOptionsService<AdminOptions> WritableOptionsService { get; set; } = default!;
     [Inject] private IOptionsSnapshot<AdminOptions> AdminOptions { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private IBrowserService BrowserService { get; set; } = default!;
 
     private MudStepper? RefStepper { get; set; } = default!;
     private MudForm? RefForm { get; set; } = default!;
@@ -55,9 +56,9 @@ public partial class DialogFastConfig
                     try
                     {
                         //check pve login
-                        var client = await PveAdminHelper.GetPveClient(ClusterOptions, Logger);
+                        var client = await PveClientService.GetClient(ClusterOptions);
                         ret = client == null;
-                        if (!ret && !await PveAdminHelper.CheckIsValidVersion(client!))
+                        if (!ret && !await PveClientService.CheckIsValidVersion(client!))
                         {
                             UINotifier.Show(L["Proxmoxm VE version nont valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
                         }
@@ -98,5 +99,5 @@ public partial class DialogFastConfig
         return ret;
     }
 
-    private async Task ResultStepClick() => await JSRuntime.InvokeVoidAsync("open", NavigationManager.Uri.ToString(), "_self");
+    private async Task ResultStepClick() => await BrowserService.Open(NavigationManager.Uri.ToString(), "_self");
 }

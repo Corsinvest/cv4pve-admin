@@ -77,7 +77,7 @@ public partial class Summary : IRefreshable
         DataGridManager.QueryAsync = GetStatusInt;
     }
 
-    private ApexCharts.ApexChartOptions<ApexCharts.GaugeValue> GetOptions(DataUsage item)
+    private static ApexCharts.ApexChartOptions<ApexCharts.GaugeValue> GetOptions(DataUsage item)
         => new()
         {
             Colors = item.Colors,

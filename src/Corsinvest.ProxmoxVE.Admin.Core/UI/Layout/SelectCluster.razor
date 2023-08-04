@@ -4,4 +4,20 @@
 *@
 @inherits AHComponentBase
 
-<Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.ClusterSelector ClusterNameChanged="ValueChanged" ClusterName="@CurrentClusterName" OpenPve="true" />
+<Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.ClusterSelector ClusterNameChanged="ValueChanged"
+                                                                      ClusterName="@CurrentClusterName"
+                                                                      OpenPve="true">
+    <RenderRow>
+        <MudText>@context.FullName</MudText>
+        <MudSpacer />
+
+        @if (Helper.IsOkSubscriptions(Checks, context))
+        {
+            <MudLink Color="Color.Success" Href="/Module/Subscription">SUBSCRIPTION OK</MudLink>
+        }
+        else
+        {
+            <MudLink Color="Color.Error" Href="/Module/Subscription">NO SUBSCRIPTION</MudLink>
+        }
+    </RenderRow>
+</Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.ClusterSelector>

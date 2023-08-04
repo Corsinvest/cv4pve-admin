@@ -13,14 +13,28 @@
         <MudSelectItem Value="@item.Name">
             @if (OpenPve)
             {
-                <div class="d-flex gap-2 align-center">
+                <div class="d-flex gap-2">
                     <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick="@(async () => await OpenUrl(item))" />
-                    <MudText>@item.FullName</MudText>
+                    @if (RenderRow != null)
+                    {
+                        @RenderRow(item)
+                    }
+                    else
+                    {
+                        <MudText>@item.FullName</MudText>
+                    }
                 </div>
             }
             else
             {
-                <MudText>@item.FullName</MudText>
+                @if (RenderRow != null)
+                {
+                    @RenderRow(item)
+                }
+                else
+                {
+                    <MudText>@item.FullName</MudText>
+                }
             }
         </MudSelectItem>
     }

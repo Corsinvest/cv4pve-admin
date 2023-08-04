@@ -9,10 +9,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Repository;
 
 internal class AutoSnapJobSpec : ClusterByNameSpec<AutoSnapJob>
 {
-    public AutoSnapJobSpec(string clusterName) : base(clusterName) 
+    public AutoSnapJobSpec(string clusterName) : base(clusterName)
         => Query.Include(a => a.Hooks).AsSplitQuery();
 
-    public AutoSnapJobSpec(int id) : base(string.Empty) 
+    public AutoSnapJobSpec(int id) : base(string.Empty)
         => Query.Where(a => a.Id == id)
                 .Include(a => a.Histories)
                 .Include(a => a.Hooks)

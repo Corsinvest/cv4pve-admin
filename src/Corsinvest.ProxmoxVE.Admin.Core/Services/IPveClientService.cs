@@ -10,6 +10,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 public interface IPveClientService : IScopedDependency
 {
     Task<PveClient?> GetClient(ClusterOptions clusterOptions);
+    Task<PveClient?> GetClient(ClusterOptions clusterOptions, ILogger logger);
     Task<PveClient?> GetClient(string clusterName);
     Task<PveClient> GetClientCurrentCluster();
     ClusterOptions? GetClusterOptions(string clusterName);
@@ -20,5 +21,7 @@ public interface IPveClientService : IScopedDependency
     Task<bool> ExistsCurrentClusterName();
     Task<bool> ClusterIsValid(string clusterName);
     Task<int> PopulateInfoNodes(ClusterOptions clusterOptions);
-
+    Task<bool> CheckIsValidVersion(PveClient client);
+    Task<Api.Shared.Models.Cluster.ClusterStatus?> GetClusterStatus(PveClient client);
+    string GetUrl(ClusterOptions clusterOptions);
 }
