@@ -21,7 +21,7 @@ public partial class Results
     [Inject] private IOptionsSnapshot<Options> Options { get; set; } = default!;
     [Inject] private IOptionsSnapshot<AppOptions> AppOptions { get; set; } = default!;
     private string ClusterName { get; set; } = default!;
-    private bool InDownloadPdf { get; set; } 
+    private bool InDownloadPdf { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

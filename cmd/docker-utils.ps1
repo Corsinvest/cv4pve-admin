@@ -10,9 +10,9 @@ param(
 #Read project version
 $xml = [xml](Get-Content ../src/common.props)
 $version = $xml.Project.PropertyGroup.Version
-Write-Host "Project version: $version"
+Write-Output "Project version: $version"
 
-Write-Host "Operation: $operation"
+Write-Output "Operation: $operation"
 
 function Publish-Docker()
 {
@@ -26,7 +26,7 @@ function Build-Docker()
 	#build documentation
 	 .\doc-utils.ps1 build
 
-	Write-Host "Build Docker cv4pve-admin"
+	Write-Output "Build Docker cv4pve-admin"
 	docker rmi corsinvest/cv4pve-admin:$version --force
 	docker build --rm -f .\..\src\docker\Dockerfile -t corsinvest/cv4pve-admin:$version "..\"
 

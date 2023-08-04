@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.BaseUI.DataManager;
+using Corsinvest.AppHero.Core.Service;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
-using Microsoft.JSInterop;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Components;
 
@@ -16,7 +16,7 @@ public partial class Hooks
     [Parameter] public AutoSnapJob Job { get; set; } = default!;
 
     [Inject] private IDataGridManager<AutoSnapJobHook> DataGridManager { get; set; } = default!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private IBrowserService BrowserService { get; set; } = default!;
 
     private string HookEnv { get; set; } = default!;
 
@@ -45,7 +45,7 @@ public partial class Hooks
         };
     }
 
-    private async Task OnClickHookEnv() => await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", $"%{HookEnv}%");
+    private async Task OnClickHookEnv() => await BrowserService.CopyToClipboard($"%{HookEnv}%");
 
     private static ICollection<string> GetEnvironments()
         => new PhaseEventArgs(HookPhase.SnapJobStart, new ClusterResource(), null, 0, null, false, 0, false)
