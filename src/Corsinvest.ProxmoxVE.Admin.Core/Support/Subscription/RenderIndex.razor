@@ -1,0 +1,102 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<MudExpansionPanels MultiExpansion="true">
+    @foreach (var cluster in AdminOptions.Value.Clusters)
+    {
+        <MudExpansionPanel>
+            <TitleContent>
+                <div class="d-flex gap-4">
+                    <AHBoolIcon ColorFalse="Color.Error" ColorTrue="Color.Success" IconType="AHBoolIconType.Custom"
+                                Value="@Helper.IsOkSubscriptions(Checks, cluster)"
+                                IconTrue="@Icons.Material.Filled.Circle" IconFalse="@Icons.Material.Filled.Circle" />
+                    <MudText>@cluster.FullName</MudText>
+                </div>
+            </TitleContent>
+
+            <ChildContent>
+                <MudSimpleTable Dense="true" Elevation="0">
+                    <thead>
+                        <tr>
+                            <th width="30%">@L["Server Id"]</th>
+                            <th width="15%">@L["Ip Address"]</th>
+                            <th width="30%">@L["Subscription Id"]</th>
+                            <th width="15%">@L["Status"]</th>
+                            <th width="10%">@L["Expiration"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var node in cluster.Nodes)
+                        {
+                            <tr>
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(node.ServerId))
+                                    {
+                                        <MudAlert Severity="Severity.Warning">Not found!</MudAlert>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body1">@node.ServerId</MudText>
+                                    }
+                                </td>
+
+                                <td>
+                                    <MudText Typo="Typo.body1">@node.IpAddress</MudText>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex gap-4">
+                                        <MudTextField T="string" @bind-Text="@node.SubscriptionId" Immediate="true"
+                                                      ReadOnly="@string.IsNullOrWhiteSpace(node.ServerId)"
+                                                      For="@(() => node.SubscriptionId)" />
+
+                                        <MudLoadingButton Color="Color.Success" StartIcon="@Icons.Material.Filled.Check"
+                                                          Style="min-height: 30px !important;height: 30px;width: 30px;align-self: center"
+                                                          Size="Size.Small" @bind-Loading="InSave" ButtonVariant="ButtonVariant.Fab"
+                                                          OnClick="@(async () => await Save(node))"
+                                                          Disabled="string.IsNullOrWhiteSpace(node.ServerId) || string.IsNullOrWhiteSpace(node.SubscriptionId)" />
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex gap-4">
+                                        @if (Initialized)
+                                        {
+                                            <AHBoolIcon Value="@(Checks[node].Status == Status.Active)" IconType="AHBoolIconType.Thumb"
+                                                        ColorTrue="Color.Success" ColorFalse="Color.Error" />
+                                            <MudText Typo="Typo.body1">@Checks[node].Status</MudText>
+                                        }
+                                    </div>
+
+                                    @if (Initialized && !string.IsNullOrWhiteSpace(Checks[node].Message))
+                                    {
+                                        <MudText Typo="Typo.body1">@Checks[node].Message</MudText>
+                                    }
+                                </td>
+
+                                <td>
+                                    <MudText Typo="Typo.body1">
+                                        @if (Initialized)
+                                        {
+                                            @(Checks[node].NextDueDate + "")
+                                        }
+                                    </MudText>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+
+                <MudLoadingButton Variant="Variant.Filled" OnClick="@(async () => await RetrieveNodeInfo(cluster))"
+                                  Color="Color.Primary" StartIcon="@Icons.Material.Filled.Info" Loading="@InRetrieveNodeInfo">
+                    @L["Retrieve cluster Info"]
+                </MudLoadingButton>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+</MudExpansionPanels>
+
+<br />

@@ -4,4 +4,6 @@
 *@
 @inherits AHComponentBase
 
-<WidgetInfoBase Description="@L["Cluster Status"]" GetStatus="@(async (c,n) => (await PveAdminHelper.GetClusterStatus(c))?.Quorate == 1)" />
+@inject IPveClientService PveClientService
+
+<WidgetInfoBase Description="@L["Cluster Status"]" GetStatus="@(async (c,n) => (await PveClientService.GetClusterStatus(c))?.Quorate == 1)" />

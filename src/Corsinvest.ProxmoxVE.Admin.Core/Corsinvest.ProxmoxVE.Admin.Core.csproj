@@ -7,9 +7,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.110" />
+		<PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.0.112" />
 
-		<PackageReference Include="QuestPDF" Version="2023.6.0" />
+		<PackageReference Include="QuestPDF" Version="2023.6.1" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.3" />
 

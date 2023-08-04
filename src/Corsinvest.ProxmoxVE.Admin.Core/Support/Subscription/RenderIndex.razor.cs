@@ -6,16 +6,15 @@ using Corsinvest.AppHero.Core.Options;
 using Corsinvest.AppHero.Core.UI;
 using Corsinvest.ProxmoxVE.Admin.Core.Options;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Subscription;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Support.Subscription;
 
 public partial class RenderIndex
 {
     [Inject] private IOptionsSnapshot<AdminOptions> AdminOptions { get; set; } = default!;
     [Inject] private IWritableOptionsService<AdminOptions> WritableOptionsService { get; set; } = default!;
-    [Inject] private SubscriptionService SubscriptionService { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
 
-    public Dictionary<ClusterNodeOptions, Info> Checks { get; } = new();
+    private Dictionary<ClusterNodeOptions, Info> Checks { get; } = new();
     private bool Initialized { get; set; }
     private bool InSave { get; set; }
     private bool InRetrieveNodeInfo { get; set; }
@@ -23,31 +22,17 @@ public partial class RenderIndex
     protected override async Task OnInitializedAsync()
     {
         Initialized = false;
-
-        foreach (var cluster in AdminOptions.Value.Clusters)
-        {
-            foreach (var node in cluster.Nodes)
-            {
-                Checks.Add(node,
-                           string.IsNullOrWhiteSpace(node.ServerId) || string.IsNullOrWhiteSpace(node.SubscriptionId)
-                                ? new Info() { Status = Status.Invalid }
-                                : await SaveOnline(node));
-            }
-        }
-
+        Checks.AddRange(await Helper.CheckAsync(AdminOptions.Value));
+        StateHasChanged();
         Initialized = true;
     }
 
-    private async Task<Info> SaveOnline(ClusterNodeOptions nodeOptions)
-        => await SubscriptionService.RegisterAsync(nodeOptions.ServerId, nodeOptions.SubscriptionId);
-
     private async Task RetrieveNodeInfo(ClusterOptions clusterOptions)
     {
+        InRetrieveNodeInfo = true;
         try
         {
-            InRetrieveNodeInfo = true;
             var ret = await PveClientService.PopulateInfoNodes(clusterOptions);
-            InRetrieveNodeInfo = false;
 
             switch (ret)
             {
@@ -68,14 +53,16 @@ public partial class RenderIndex
             }
         }
         catch (Exception ex) { UINotifier.Show(ex.Message, UINotifierSeverity.Error); }
+        InRetrieveNodeInfo = false;
     }
 
     private async Task Save(ClusterNodeOptions nodeOptions)
     {
         InSave = true;
         WritableOptionsService.Update(AdminOptions.Value);
-        await SaveOnline(nodeOptions);
+        Checks[nodeOptions] = await Helper.RegisterAsync(nodeOptions.ServerId, nodeOptions.SubscriptionId);
         InSave = false;
+        StateHasChanged();
 
         UINotifier.Show(L["Data of node has been saved!"], UINotifierSeverity.Info);
     }

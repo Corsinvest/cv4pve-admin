@@ -4,7 +4,7 @@
  */
 using System.Xml.Serialization;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Subscription;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Support.Subscription;
 
 public class Info
 {

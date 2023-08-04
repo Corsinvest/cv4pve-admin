@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Security.Auth.Permissions;
+using Corsinvest.AppHero.Core.Service;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
-using Microsoft.JSInterop;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm;
 
@@ -21,7 +21,7 @@ public partial class BackupsManager
     [Parameter] public bool CanRestoreFile { get; set; }
     [Parameter] public bool ShowDetailProxmoxVE { get; set; }
 
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private IBrowserService BrowserService { get; set; } = default!;
     [Inject] private IDataGridManager<NodeStorageContent> DataGridManager { get; set; } = default!;
 
     private bool DialogVisible { get; set; }
@@ -57,7 +57,7 @@ public partial class BackupsManager
                                                          NodeBackupFileToRestore.FilePath)
                     : GetUrlRestoreFile.Invoke(storageContent, NodeBackupFileToRestore);
 
-        await JSRuntime.InvokeVoidAsync("open", url, "_blank");
+        await BrowserService.Open(url, "_blank");
     }
 
     private async Task<HashSet<NodeBackupFile>> GetItemsBackups(NodeBackupFile nodeBackupFile)
