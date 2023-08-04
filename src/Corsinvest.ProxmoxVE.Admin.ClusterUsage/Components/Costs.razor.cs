@@ -5,6 +5,7 @@
 using ApexCharts;
 using Corsinvest.AppHero.Core.BaseUI.DataManager;
 using Corsinvest.AppHero.Core.Domain.Repository;
+using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
@@ -22,12 +23,13 @@ public partial class Costs
     [Inject] private IDataGridManager<DataVmEx> DataGridManager { get; set; } = default!;
     [Inject] private IJobService JobService { get; set; } = default!;
     [Inject] private IOptionsSnapshot<Options> Options { get; set; } = default!;
+    [Inject] private LayoutService LayoutService { get; set; } = default!;
 
     private DateRange DateRange { get; set; } = new(DateTime.Now.AddDays(-7).Date, DateTime.Now.Date);
     private MudDateRangePicker? RefPicker { get; set; } = default!;
     private PveClient PveClient { get; set; } = default!;
 
-    private static ApexChartOptions<DataVmStorage> ChartOptionsStorages => new()
+    private ApexChartOptions<DataVmStorage> ChartOptionsStorages => new()
     {
         Chart = new()
         {
@@ -45,7 +47,8 @@ public partial class Costs
                 Title = new AxisTitle { Text = "Usage (GB)" },
                 DecimalsInFloat = 0,
             }
-        }
+        },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
     private class DataVmEx : DataVm

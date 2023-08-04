@@ -151,8 +151,7 @@
                     @foreach (var item in DataUsages)
                     {
                         <MudItem Class="align-content-center" md="4">
-                            <ApexCharts.ApexGauge Percentage="@Convert.ToDecimal(item.Usage)" Label="@item.Name"
-                                              Options="@GetOptions(item)" />
+                            <ApexCharts.ApexGauge Percentage="@Convert.ToDecimal(item.Usage)" Label="@item.Name" Options="@GetOptions(item)" />
                             <MudText Class="" Typo="Typo.body2" Style="text-align: center;">@item.Info</MudText>
                         </MudItem>
                     }

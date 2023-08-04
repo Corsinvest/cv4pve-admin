@@ -64,21 +64,21 @@
 
     <br />
 
-    <ApexChart TItem="VzDumpDetail" 
-           XAxisType="XAxisType.Datetime"
-           Height="@("500px")"
-           Options="Options1"
-           @ref="RefChart1">
+    <ApexChart @ref="RefChart1"
+               TItem="VzDumpDetail"
+               XAxisType="XAxisType.Datetime"
+               Height="@("500px")"
+               Options="Options1">
 
         @foreach (var item in DataChart)
         {
             <ApexPointSeries TItem="VzDumpDetail"
-                     Items="@item"
-                     Name="@item.Key"
-                     SeriesType="SeriesType.Line"                      
-                     XValue="e => e.Start"
-                     YValue="a => Convert.ToDecimal(a.Size) / 1024 / 1024 / 1024"
-                     OrderBy="a => a.X" />
+                             Items="@item"
+                             Name="@item.Key"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => e.Start"
+                             YValue="a => Convert.ToDecimal(a.Size) / 1024 / 1024 / 1024"
+                             OrderBy="a => a.X" />
         }
     </ApexChart>
 
@@ -90,21 +90,21 @@
 
     <br />
 
-    <ApexChart TItem="VzDumpDetail"
-           XAxisType="XAxisType.Datetime"
-           Height="@("500px")"
-           Options="Options2"
-           @ref="RefChart2">
+    <ApexChart @ref="RefChart2"
+               TItem="VzDumpDetail"
+               XAxisType="XAxisType.Datetime"
+               Height="@("500px")"
+               Options="Options2">
 
         @foreach (var item in DataChart)
         {
             <ApexPointSeries TItem="VzDumpDetail"
-                     Items="@item"
-                     Name="@item.Key"
-                     SeriesType="SeriesType.Line"
-                     XValue="e => e.Start"
-                     YValue="a => Convert.ToDecimal(a.TransferSpeed) / 1024 / 1024"
-                     OrderBy="a => a.X" />
+                             Items="@item"
+                             Name="@item.Key"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => e.Start"
+                             YValue="a => Convert.ToDecimal(a.TransferSpeed) / 1024 / 1024"
+                             OrderBy="a => a.X" />
         }
     </ApexChart>
 
@@ -115,21 +115,21 @@
 
     <br />
 
-    <ApexChart TItem="VzDumpDetail"
-           XAxisType="XAxisType.Datetime"
-           Height="@("500px")"
-           Options="Options3"
-           @ref="RefChart3">
+    <ApexChart @ref="RefChart3"
+               TItem="VzDumpDetail"
+               XAxisType="XAxisType.Datetime"
+               Height="@("500px")"
+               Options="Options3">
 
         @foreach (var item in DataChart)
         {
             <ApexPointSeries TItem="VzDumpDetail"
-                     Items="@item"
-                     Name="@item.Key"
-                     SeriesType="SeriesType.Line"
-                     XValue="e => e.Start"
-                     YValue="a => Convert.ToDecimal(a.Duration / 60)"
-                     OrderBy="a => a.X" />
+                             Items="@item"
+                             Name="@item.Key"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => e.Start"
+                             YValue="a => Convert.ToDecimal(a.Duration / 60)"
+                             OrderBy="a => a.X" />
         }
     </ApexChart>
 }
