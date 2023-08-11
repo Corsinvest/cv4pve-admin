@@ -6,6 +6,9 @@
 
 # CV4PVE-ADMIN
 
+> [!IMPORTANT]
+> Use discount code "GET30" to receive a 30% discount on Support Plans! [Buy Support](https://shop.corsinvest.it/index.php?rp=/store/cv4pve-admin-pve&_ga=2.131740107.535323851.1691763082-1056458690.1691563847)
+
 ![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
 
 ## 💻 What is it?
@@ -77,8 +80,9 @@ For licensing details please visit [LICENSE](LICENSE)
 
 This open source software is part of an open source suite tools called cv4pve-tools.
 
-If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pve-admin)
+If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pve-admin-proxmox)
 
+⚠️ Technical support is considered valid only if each node of the cluster is covered by the cv4pve-admin license.
 
 ## Screenshots
 
