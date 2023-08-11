@@ -98,6 +98,10 @@ public class PveClientService : IPveClientService
         var client = await GetClient(clusterOptions);
         if (client != null)
         {
+            var info = await client.GetClusterInfo();
+            clusterOptions.Name = info.Name;
+            clusterOptions.Type = info.Type;
+
             var status = await client.Cluster.Status.Get();
 
             //check new nodes
