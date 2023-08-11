@@ -3,7 +3,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.6.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
