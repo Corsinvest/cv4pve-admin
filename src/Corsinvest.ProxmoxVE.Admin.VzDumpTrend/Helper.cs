@@ -41,12 +41,6 @@ internal class Helper
         for (int i = 0; i < rows.Length; i++)
         {
             var row = rows[i];
-
-            if (row == "INFO: Starting Backup of VM 105 (qemu)")
-            {
-                var aa = 1;
-            }
-
             if (row.StartsWith(KEY_STARTING_ERROR))
             {
                 var vmId = row[KEY_STARTING_ERROR.Length..].Split(' ')[0];
