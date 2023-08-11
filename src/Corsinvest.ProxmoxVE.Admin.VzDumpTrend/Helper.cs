@@ -41,16 +41,26 @@ internal class Helper
         for (int i = 0; i < rows.Length; i++)
         {
             var row = rows[i];
+
+            if (row == "INFO: Starting Backup of VM 105 (qemu)")
+            {
+                var aa = 1;
+            }
+
             if (row.StartsWith(KEY_STARTING_ERROR))
             {
-                backup = new VzDumpDetail
+                var vmId = row[KEY_STARTING_ERROR.Length..].Split(' ')[0];
+                if (backup != null && backup.VmId != vmId)
                 {
-                    Task = task,
-                    VmId = row[KEY_STARTING_ERROR.Length..].Split(' ')[0],
-                    Logs = new List<string>(),
-                    Error = row
-                };
-                backups.Add(backup);
+                    backup = new VzDumpDetail
+                    {
+                        Task = task,
+                        VmId = vmId,
+                        Logs = new List<string>(),
+                        Error = row
+                    };
+                    backups.Add(backup);
+                }
             }
             else if (row.StartsWith(KEY_STARTING))
             {
