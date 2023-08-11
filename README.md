@@ -9,11 +9,12 @@
 > [!IMPORTANT]
 > Use discount code "GET30" to receive a 30% discount on Support Plans! [Buy Support](https://shop.corsinvest.it/index.php?rp=/store/cv4pve-admin-pve&_ga=2.131740107.535323851.1691763082-1056458690.1691563847)
 
+> [!WARNING]
+> Technical support is considered valid only if each node of the cluster is covered by the cv4pve-admin license.
+
 ![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
 
 ## 💻 What is it?
-
-> It is currently in beta stage but you shouldn't have any particular problems.
 
 The easiest and most effective solution to monitor your multiple Proxmox VE cluster in a single web portal.
 
@@ -82,7 +83,9 @@ This open source software is part of an open source suite tools called cv4pve-to
 
 If you need commercial support, visit the [site](https://www.corsinvest.it/cv4pve-admin-proxmox)
 
-⚠️ Technical support is considered valid only if each node of the cluster is covered by the cv4pve-admin license.
+> [!WARNING]
+> Technical support is considered valid only if each node of the cluster is covered by the cv4pve-admin license.
+
 
 ## Screenshots
 
