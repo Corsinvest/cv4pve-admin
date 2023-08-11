@@ -17,7 +17,7 @@ The easiest and most effective solution to monitor your multiple Proxmox VE clus
 
 ## 🚀 Main features
 
-> Discover all the features on the official website: [here](https://corsinvest.it/cv4pve-admin-beta-download-features/)
+> Discover all the features on the official website: [here](https://corsinvest.it/cv4pve-admin-proxmox)
 
 * Completely written in C#
 * Use native Api REST Proxmox VE (library C#)
@@ -36,8 +36,8 @@ Immerse yourself in the world of comfort, follow these steps to download and ins
 
 You can download cv4pve-admin in two ways: _**binary**_ (via github) and _**docker**_ (via dockerhub)
 
-* [Binary Mode Steps](https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-binary/)
-* [Docker Mode Steps](https://corsinvest.it/cv4pve-admin-beta-download-how-to-install-docker/)
+* [Binary Mode Steps](https://corsinvest.it/cv4pve-admin-download-how-to-install-binary/)
+* [Docker Mode Steps](https://corsinvest.it/cv4pve-admin-download-how-to-install-docker/)
 
 
 ## 📙 Documentation
