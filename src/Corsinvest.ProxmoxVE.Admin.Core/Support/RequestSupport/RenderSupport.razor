@@ -5,6 +5,33 @@
 @inherits AHComponentBase
 
 <MudGrid>
+    <MudItem md="6">
+        <MudText Typo="Typo.h4">@L["Community Support"]</MudText>
+        <MudText Typo="Typo.body1">
+            @L["Everybody is welcome to visit the"]
+            <MudLink Href="https://github.com/Corsinvest/cv4pve-admin" Target="_blank">cv4pve-admin Community</MudLink>.
+            @L["Join the growing community and participate in the discussions!"]
+
+            @L["Corsinvest team monitors but does not guarantee a response to every question. For guaranteed responses you may consider the"]
+            <MudLink Href="https://shop.corsinvest.it/index.php?rp=/store/cv4pve-admin-pve" Target="_blank">Dedicated support</MudLink>.
+            @L["option."]
+        </MudText>
+    </MudItem>
+
+    <MudItem md="6">
+        <MudText Typo="Typo.h4">@L["Dedicated Support"]</MudText>
+        <MudText Typo="Typo.body1">
+            @L["Corsinvest offers dedicated support with the subscriptions."]
+
+            <br />
+            <MudButton Href="https://github.com/Corsinvest/cv4pve-admin" Target="_blank" StartIcon="@Icons.Material.Filled.Support" Color="Color.Info" Variant="Variant.Filled">
+                @L["See price"]
+            </MudButton>
+        </MudText>
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
     <MudItem md="4">
         <MudText>@L["Cluster"]</MudText>
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.ClusterSelector ClusterNameChanged="ClusterNameChanged" />
@@ -40,7 +67,7 @@
         {
             <MudButton Href="https://shop.corsinvest.it" Target="_blank" Variant="Variant.Filled"
                        StartIcon="@Icons.Material.Filled.Support" Color="Color.Info">
-                @L["Support with subscription"]
+                @L["Support from Corsinvest with subscription"]
             </MudButton>
         }
     </MudItem>
