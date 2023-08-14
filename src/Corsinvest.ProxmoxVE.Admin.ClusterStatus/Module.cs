@@ -22,7 +22,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "System";
         Description = "Cluster Status";
         InfoText = "Monitor the current status of your Proxmox VE cluster";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {

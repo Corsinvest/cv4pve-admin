@@ -1,7 +1,8 @@
 ﻿@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
-*@
+ *@
+
 @inherits AHComponentBase
 
 <MudToolBar Style="@Style" Class="@Class">
@@ -13,19 +14,19 @@
             @if (Vm.IsPaused)
             {
                 <MudIconButton Title="@L["Resume"]" Icon="@Icons.Material.Filled.PlayArrow" Size="@Size" Color="Color.Success"
-                       OnClick="@(() => ChageStatus(VmStatus.Resume))" />
+                               OnClick="@(() => ChageStatus(VmStatus.Resume))" />
             }
             else if (!Vm.IsRunning)
             {
                 <MudIconButton Title="@L["Play"]" Icon="@Icons.Material.Filled.PlayArrow" Size="@Size" Color="Color.Success"
-                       OnClick="@(() => ChageStatus(VmStatus.Start))" />
+                               OnClick="@(() => ChageStatus(VmStatus.Start))" />
             }
         }
 
         @if (CanNoVnc)
         {
             <MudIconButton Title="@L["Console"]" Icon="@Icons.Material.Filled.DesktopWindows" Size="@Size"
-                       Color="Color.Primary" OnClick="@OnShowConsole" />
+                           Color="Color.Primary" OnClick="@OnShowConsole" />
         }
 
         @if (CanChangeStatus && Vm.IsRunning)

@@ -2,11 +2,11 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.AppHero.Core.Service;
 using Corsinvest.ProxmoxVE.Admin.Diagnostic.Repository;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.Diagnostic.Api;
 using Mapster;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 
 namespace Corsinvest.ProxmoxVE.Admin.Diagnostic.Components;
@@ -20,7 +20,7 @@ public partial class Detail
     [Inject] private IOptionsSnapshot<Options> Options { get; set; } = default!;
     [Inject] private IDataGridManager<Data> DataGridManager { get; set; } = default!;
     [Inject] private IJobService JobService { get; set; } = default!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private IBrowserService BrowserService { get; set; } = default!;
 
     private class Data : DiagnosticResult
     {
@@ -112,7 +112,7 @@ public partial class Detail
         return result;
     }
 
-    private async Task ShowInfo(Data item) => await JSRuntime.InvokeVoidAsync("open", item.Url, "_blank");
+    private async Task ShowInfo(Data item) => await BrowserService.Open(item.Url!, "_blank");
 
     private static string GroupClassFunc(GroupDefinition<Data> group)
         => (DiagnosticResultGravity)group.Grouping.Key switch

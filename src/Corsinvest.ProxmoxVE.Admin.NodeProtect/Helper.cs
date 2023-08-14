@@ -4,7 +4,7 @@
  */
 using Corsinvest.AppHero.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
-using Corsinvest.ProxmoxVE.Admin.NodeProtect.Persistence;
+using Corsinvest.ProxmoxVE.Admin.NodeProtect.Repository;
 using Corsinvest.ProxmoxVE.NodeProtect.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.NodeProtect;
@@ -48,12 +48,12 @@ internal class Helper
 
             var status = false;
             var start = DateTime.Now;
+            var moduleClusterOptions = scope.GetModuleClusterOptions<Options, ModuleClusterOptions>(clusterName);
 
             try
             {
                 var pveClientService = scope.GetPveClientService();
                 var clusterOptions = pveClientService.GetClusterOptions(clusterName)!;
-                var moduleClusterOptions = scope.GetModuleClusterOptions<Options, ModuleClusterOptions>(clusterName);
 
                 Application.Backup(clusterOptions.SshHostsAndPortHA,
                                    clusterOptions.SshCredential.Username,
@@ -76,11 +76,11 @@ internal class Helper
 
             var jobId = path.Split(Path.DirectorySeparatorChar)[^1];
 
-            var db = scope.ServiceProvider.GetRequiredService<NodeProtectDbContext>();
+            var jobHistoryRepo = scope.GetRepository<NodeProtectJobHistory>();
             foreach (var item in Directory.GetFiles(path))
             {
                 var fileName = Path.GetFileName(item);
-                db.JobHistories.Add(new()
+                var history = new NodeProtectJobHistory()
                 {
                     JobId = jobId,
                     ClusterName = clusterName,
@@ -93,9 +93,21 @@ internal class Helper
                     Size = File.Exists(item)
                             ? new FileInfo(item).Length
                             : 0
-                });
+                };
+                await jobHistoryRepo.AddAsync(history);
+                await jobHistoryRepo.SaveChangesAsync();
+
+                //keep history
+                var histories = await jobHistoryRepo.ListAsync(new NodeProtectJobHistorySpec(clusterName,
+                                                                                                         history.Start,
+                                                                                                         moduleClusterOptions.Keep));
+
+                if (histories.Any())
+                {
+                    await jobHistoryRepo.DeleteRangeAsync(histories);
+                    await jobHistoryRepo.SaveChangesAsync();
+                }
             }
-            await db.SaveChangesAsync();
         }
     }
 }

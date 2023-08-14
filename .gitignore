@@ -363,5 +363,5 @@ MigrationBackup/
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/lib
 /src/Corsinvest.ProxmoxVE.Admin/appsettings.json
 /src/Corsinvest.ProxmoxVE.Admin/data
-setKey.ps1
-create-lxc.sh
+/cmd/setKey.ps1
+/cmd/create-lxc.sh

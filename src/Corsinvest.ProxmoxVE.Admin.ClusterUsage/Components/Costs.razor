@@ -14,16 +14,16 @@
 else
 {
     <AHDataGrid T="DataVmEx"
-            Permissions="Module.Permissions.Costs.Data"
+                Permissions="Module.Permissions.Costs.Data"
                 FixedHeader
                 FixedFooter
-            DataGridManager="DataGridManager"
+                DataGridManager="DataGridManager"
                 Filterable
                 Groupable
-            ShowFilterIcons="false"
-            Height="@Height"
-            FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
-            ShowColumnOptions="false"
+                ShowFilterIcons="false"
+                Height="@Height"
+                FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+                ShowColumnOptions="false"
                 MultiSelection>
     <ToolBarContent>
         <AHDataGridToolBarRead T="DataVmEx" DataGridManager="DataGridManager">
@@ -87,19 +87,19 @@ else
                     @if (series.Any())
                     {
                         <ApexChart TItem="DataVmStorage"
-                           XAxisType="XAxisType.Datetime"
-                           Options="ChartOptionsStorages"
-                           Height="@("300px")">
+                                   XAxisType="XAxisType.Datetime"
+                                   Options="ChartOptionsStorages"
+                                   Height="@("300px")">
 
                             @foreach (var item in series)
                             {
                                 <ApexPointSeries TItem="DataVmStorage"
-                                     Items="@item.ToList()"
-                                     Name="@($"{item.Key} (GB)")"
-                                     SeriesType="SeriesType.Area"
-                                     XValue="e => e.DataVm.Date"
-                                     YValue="a => Convert.ToDecimal(a.Size / 1024.0 / 1024 / 1024)"
-                                     OrderBy="a => a.X" />
+                                                 Items="@item.ToList()"
+                                                 Name="@($"{item.Key} (GB)")"
+                                                 SeriesType="SeriesType.Area"
+                                                 XValue="e => e.DataVm.Date"
+                                                 YValue="a => Convert.ToDecimal(a.Size / 1024.0 / 1024 / 1024)"
+                                                 OrderBy="a => a.X" />
                             }
                         </ApexChart>
                     }

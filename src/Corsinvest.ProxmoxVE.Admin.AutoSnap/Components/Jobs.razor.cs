@@ -18,7 +18,6 @@ public partial class Jobs
     [Inject] private IJobService JobService { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
 
-    private IEnumerable<string> VmIdsList { get; set; } = default!;
     private List<string> VmIds { get; set; } = default!;
     private string? AddedValue { get; set; }
     private MudComboBox<string>? RefMudComboBox { get; set; }
@@ -49,8 +48,12 @@ public partial class Jobs
                          .GetVmsJollyKeys(true, true, true, true, true, true))
                     .ToList();
 
+            //add customs
+            VmIds.AddRange(item.VmIdsList);
+            VmIds = VmIds.Distinct().Order().ToList();
+
             item.ClusterName = await PveClientService.GetCurrentClusterName();
-            VmIdsList = (item.VmIds + "").Split(",").AsEnumerable();
+
             return item;
         };
     }
@@ -68,7 +71,7 @@ public partial class Jobs
         if (await UIMessageBox.ShowQuestionAsync(L["Snap"], L["Execute Snap?"]))
         {
             JobService.Schedule<Job>(a => a.Create(item.Id), TimeSpan.FromSeconds(10));
-            UINotifier.Show(L["Snap started!"], UINotifierSeverity.Info);
+            UINotifier.Show(L["Creating snapshot!"], UINotifierSeverity.Info);
         }
     }
 
@@ -77,7 +80,7 @@ public partial class Jobs
         if (await UIMessageBox.ShowQuestionAsync(L["Clean"], L["Execute Clean?"]))
         {
             JobService.Schedule<Job>(a => a.Clean(item.Id), TimeSpan.FromSeconds(10));
-            UINotifier.Show(L["Clean snapshots started!"], UINotifierSeverity.Info);
+            UINotifier.Show(L["Cleaning snapshots!"], UINotifierSeverity.Info);
         }
     }
 }

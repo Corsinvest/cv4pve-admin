@@ -7,19 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B81E7A2B-6A9F-42CE-BC5A-EF2BC272E0F6}"
 	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		3rd-party-licenses.md = 3rd-party-licenses.md
-		Build.ps1 = Build.ps1
 		src\common.props = src\common.props
-		doc-utils.ps1 = doc-utils.ps1
-		create-lxc.sh = create-lxc.sh
-		docker-utils.ps1 = docker-utils.ps1
-		Dockerfile = Dockerfile
 		icon.png = icon.png
 		LICENSE = LICENSE
 		README.md = README.md
-		setKey.ps1 = setKey.ps1
 		Todo.md = Todo.md
 	EndProjectSection
 EndProject
@@ -52,6 +45,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.ClusterStatus", "src\Corsinvest.ProxmoxVE.Admin.ClusterStatus\Corsinvest.ProxmoxVE.Admin.ClusterStatus.csproj", "{1BF67691-4559-4BC6-B242-59E0E95F9951}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.DisksStatus", "src\Corsinvest.ProxmoxVE.Admin.DisksStatus\Corsinvest.ProxmoxVE.Admin.DisksStatus.csproj", "{2483A053-BC0A-4D7D-9F1E-88A876F1B3C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmd", "cmd", "{974C975A-9A47-43CA-B70D-A58177962996}"
+	ProjectSection(SolutionItems) = preProject
+		cmd\Build.ps1 = cmd\Build.ps1
+		cmd\create-lxc.sh = cmd\create-lxc.sh
+		cmd\doc-utils.ps1 = cmd\doc-utils.ps1
+		cmd\docker-utils.ps1 = cmd\docker-utils.ps1
+		cmd\setKey.ps1 = cmd\setKey.ps1
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsinvest.ProxmoxVE.Admin.ReplicationTrend", "src\Corsinvest.ProxmoxVE.Admin.ReplicationTrend\Corsinvest.ProxmoxVE.Admin.ReplicationTrend.csproj", "{24D3D8B6-5268-4890-815A-27C29C7D72D0}"
 EndProject

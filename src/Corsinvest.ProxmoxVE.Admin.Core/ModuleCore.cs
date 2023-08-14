@@ -2,10 +2,10 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using ApexCharts;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Corsinvest.AppHero.Core.Modularity;
-using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,9 +38,17 @@ public class ModuleCore : ModuleBase, IForceLoadModule
         var modularityService = host.Services.GetRequiredService<IModularityService>();
 
         //add icon 
-        foreach (var item in Enum.GetValues<ModuleCategory>())
+        foreach (var (_, category) in PveAdminHelper.ModuleCategories)
         {
-            modularityService.SetCategoryIcon(PveAdminHelper.GetCategoryName(item), PveAdminHelper.GetCategoryIcon(item));
+            var cat = modularityService.Categories.FirstOrDefault(a => a.Name == category.Name);
+            if (cat == null)
+            {
+                modularityService.Categories.Add(category);
+            }
+            else
+            {
+                cat.Icon = category.Icon;
+            }
         }
     }
 }

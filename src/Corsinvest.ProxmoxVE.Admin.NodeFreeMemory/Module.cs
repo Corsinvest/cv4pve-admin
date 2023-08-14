@@ -17,7 +17,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Company = "Corsinvest Srl";
         Keywords = "Node,Host,Free,Memory";
         Description = "Free Memory Node";
-        SetCategory(ModuleCategory.Utilities);
+        SetCategory(AdminModuleCategory.Utilities);
         InfoText = "Free up the node's memory space in case of error: \"out of memory\" or \"kvm: failed to initialize KVM: Cannot allocate memory\"";
 
         Link = new ModuleLink(this, Description)

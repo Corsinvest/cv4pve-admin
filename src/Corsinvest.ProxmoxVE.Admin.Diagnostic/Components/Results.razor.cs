@@ -21,6 +21,7 @@ public partial class Results
     [Inject] private IOptionsSnapshot<Options> Options { get; set; } = default!;
     [Inject] private IOptionsSnapshot<AppOptions> AppOptions { get; set; } = default!;
     private string ClusterName { get; set; } = default!;
+    private bool InDownloadPdf { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,6 +44,8 @@ public partial class Results
 
     private async Task DownloadPdf(Execution item)
     {
+        InDownloadPdf = true;
+
         var ignoreIssues = await Helper.GetIgnoredIssue(IgnoredIssuesRepo, ClusterName);
         var data = (await ExecutionsRepo.FirstOrDefaultAsync(new ExecutionSpec(ClusterName).ByKey(item.Id).Include()))!.Data;
         using var ms = Helper.GeneratePdf(L,
@@ -50,6 +53,9 @@ public partial class Results
                                           item,
                                           Helper.Analyze(data, Options.Value.Get(ClusterName), ignoreIssues),
                                           ClusterName)!;
+
         await BlazorDownloadFileService.DownloadFile("Diagnostic.pdf", ms, System.Net.Mime.MediaTypeNames.Application.Pdf);
+
+        InDownloadPdf = false;
     }
 }

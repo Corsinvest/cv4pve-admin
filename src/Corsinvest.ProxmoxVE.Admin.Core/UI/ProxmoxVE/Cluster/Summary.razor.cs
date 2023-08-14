@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Domain.Contracts;
+using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.AppHero.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
@@ -20,6 +21,7 @@ public partial class Summary : IRefreshable
     [EditorRequired][Parameter] public Func<Task<IEnumerable<ClusterResource>>> GetResources { get; set; } = default!;
     [EditorRequired][Parameter] public Func<Task<string?>> GetCephStatus { get; set; } = default!;
 
+    [Inject] private LayoutService LayoutService { get; set; } = default!;
     [Inject] private IDataGridManager<ClusterStatusEx> DataGridManager { get; set; } = default!;
 
     private ItemStatus CephStatus { get; set; } = default!;
@@ -81,10 +83,8 @@ public partial class Summary : IRefreshable
         => new()
         {
             Colors = item.Colors,
-            Chart = new()
-            {
-                ForeColor = "var(--mud-palette-text-primary)"
-            },
+            Chart = new() { Background = "trasparent" },
+            Theme = new() { Mode = LayoutService.IsDarkMode ? ApexCharts.Mode.Dark : ApexCharts.Mode.Light }
         };
 
     private async Task<IEnumerable<ClusterStatusEx>> GetStatusInt()

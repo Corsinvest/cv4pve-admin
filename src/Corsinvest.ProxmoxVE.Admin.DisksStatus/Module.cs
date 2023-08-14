@@ -19,7 +19,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Node,Host,Disk,Blink";
         Description = "Disks Status";
         InfoText = "Check the status of the disks in your Proxmox VE cluster";
-        SetCategory(ModuleCategory.Utilities);
+        SetCategory(AdminModuleCategory.Utilities);
 
         Link = new ModuleLink(this, Description)
         {
@@ -46,7 +46,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         public class DataGrid
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(DataGrid)}.{nameof(Data)}");
-            public static Permission BlinkLed { get; } = new($"{Data.Prefix}.{nameof(BlinkLed)}", 
+            public static Permission BlinkLed { get; } = new($"{Data.Prefix}.{nameof(BlinkLed)}",
                                                              "Blink led",
                                                              Icons.Material.Filled.WbTwilight, UIColor.Default);
         }

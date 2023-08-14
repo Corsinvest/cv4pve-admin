@@ -18,8 +18,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Authors = "Corsinvest Srl";
         Company = "Corsinvest Srl";
         Keywords = "Options,Proxmox VE,Pve";
-        SetCategory(ModuleCategory.System);
-        //Category = "Cluster";
+        SetCategory(AdminModuleCategory.System);
         Icon = PveAdminHelper.SvgIconApp;
         Type = ModuleType.Service;
         Description = "cv4pve-Admin";

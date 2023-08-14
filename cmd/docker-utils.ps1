@@ -8,11 +8,11 @@ param(
 )
 
 #Read project version
-$xml = [xml](Get-Content .\src\common.props)
+$xml = [xml](Get-Content ../src/common.props)
 $version = $xml.Project.PropertyGroup.Version
-Write-Host "Project version: $version"
+Write-Output "Project version: $version"
 
-Write-Host "Operation: $operation"
+Write-Output "Operation: $operation"
 
 function Publish-Docker()
 {
@@ -26,9 +26,9 @@ function Build-Docker()
 	#build documentation
 	 .\doc-utils.ps1 build
 
-	Write-Host "Build Docker cv4pve-admin"
+	Write-Output "Build Docker cv4pve-admin"
 	docker rmi corsinvest/cv4pve-admin:$version --force
-	docker build --rm -f "Dockerfile" -t corsinvest/cv4pve-admin:$version "."
+	docker build --rm -f .\..\src\docker\Dockerfile -t corsinvest/cv4pve-admin:$version "..\"
 
 	#remove unused images
 	docker image prune -f
@@ -39,7 +39,7 @@ function Test-Docker()
 	#docker data
 	$dockerDataBase = "d:\DockerData\cv4pve-admin"
 
-	New-Item -Path "$dockerDataBase\data" -ItemType "directory" 
+	New-Item -Path "$dockerDataBase\data" -ItemType "directory" -ErrorAction SilentlyContinue
 
 	if (!(Test-Path "$dockerDataBase\appsettings.json"))
 	{
@@ -55,15 +55,15 @@ function Test-Docker()
 		corsinvest/cv4pve-admin:$version
 }
 
-if($operation -eq 'test') 
-{ 
+if($operation -eq 'test')
+{
 	Test-Docker
 }
-elseif($operation -eq 'build') 
-{ 
+elseif($operation -eq 'build')
+{
 	Build-Docker
 }
-elseif($operation -eq 'publish') 
-{ 
+elseif($operation -eq 'publish')
+{
 	Publish-Docker
 }

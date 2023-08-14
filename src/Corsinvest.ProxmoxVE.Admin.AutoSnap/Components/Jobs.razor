@@ -101,11 +101,11 @@
                     </MudItem>
 
                     <MudItem md="6">
-                        <MudComboBox @ref="RefMudComboBox" @bind-SelectedValues="@VmIdsList"
+                        <MudComboBox @ref="RefMudComboBox" @bind-SelectedValues="@context.VmIdsList"
                                      InputPresenter="ValuePresenter.Chip" ChipCloseable="true" ChipVariant="Variant.Filled"
                                      Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.VmIds)])"
                                      MultiSelection="true" Editable="true" ShowCheckbox="true" Bordered="true" Dense="Dense.Standard"
-                                     Color="Color.Primary" Clearable="true">
+                                     Color="Color.Primary" Clearable="true" For="@(() => context.VmIds)">
                             <ChildContent>
                                 @foreach (var item in VmIds)
                                 {

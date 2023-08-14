@@ -30,31 +30,33 @@ else
         </MudItem>
 
         <MudItem sm="12" md="3">
-            <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L["Content"]">
+            <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L["Content"]"
+                       Options="@ChartOption">
                 <ApexPointSeries TItem="NodeStorageContent"
-                             Items="Contents"
-                             Name="All"
-                             SeriesType="SeriesType.Donut"
-                                      ShowDataLabels
-                             XValue="@(a => a.Content)"
-                             YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
-                             OrderByDescending="a => a.Y" />
-                </ApexChart>
+                                 Items="Contents"
+                                 Name="All"
+                                 SeriesType="SeriesType.Donut"
+                                 ShowDataLabels="true"
+                                 XValue="@(a => a.Content)"
+                                 YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
+                                 OrderByDescending="a => a.Y" />
+            </ApexChart>
 
-                <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L[(IsGroupByStorage ? "Storage" : "Vm")]">
+            <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L[(IsGroupByStorage ? "Storage" : "Vm")]"
+                       Options="@ChartOption">
                 <ApexPointSeries TItem="NodeStorageContent"
-                             Items="Contents"
-                             Name="All"
-                             SeriesType="SeriesType.Donut"
-                                      ShowDataLabels
-                             XValue="@(a => IsGroupByStorage ? a.Storage : a.VmId)"
-                             YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
-                             OrderByDescending="a => a.Y" />
-                </ApexChart>
-                </MudItem>
+                                 Items="Contents"
+                                 Name="All"
+                                 SeriesType="SeriesType.Donut"
+                                 ShowDataLabels="true"
+                                 XValue="@(a => IsGroupByStorage ? a.Storage : a.VmId)"
+                                 YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
+                                 OrderByDescending="a => a.Y" />
+            </ApexChart>
+        </MudItem>
 
-                <MudItem sm="12" md="9">
-                <StorageContents GetItems="GetContents" PropertiesName="@PropertiesName" GroupBy="@GroupBy" />
-                </MudItem>
-                </MudGrid>
+        <MudItem sm="12" md="9">
+            <StorageContents GetItems="GetContents" PropertiesName="@PropertiesName" GroupBy="@GroupBy" />
+        </MudItem>
+    </MudGrid>
 }

@@ -28,7 +28,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Keywords = "Metric,Exporter,Prometheus";
         Description = "Metrics Exporter";
         InfoText = "Prometeus exporter metrics for your Proxmox VE cluster";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {
