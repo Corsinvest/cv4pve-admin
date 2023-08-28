@@ -11,10 +11,10 @@
 else
 {
     <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Summary @ref="RefSummary"
-                                                              Permissions="Module.Permissions.DataGrid.Data"
-                                                              GetResources="GetResources"
-                                                              GetStatus="GetStatus"
-                                                              GetCephStatus="GetCephStatus" />
+                                                                  Permissions="Module.Permissions.DataGrid.Data"
+                                                                  GetResources="GetResources"
+                                                                  GetStatus="GetStatus"
+                                                                  GetCephStatus="GetCephStatus" />
     <br />
 
     <MudCard Elevation="2">
@@ -25,40 +25,40 @@ else
         </MudCardHeader>
         <MudCardContent>
             <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources @ref="RefResources"
-                                                                        Permissions="Module.Permissions.DataGrid.Data"
-                                                                        GetItems="GetResources"
-                                                                        PropertiesName="new[]
-                                                                        {
-                                                                            nameof(ClusterResource.Status),
-                                                                            nameof(ClusterResource.Type),
-                                                                            nameof(ClusterResource.Description),
-                                                                            nameof(ClusterResource.DiskUsagePercentage),
-                                                                            nameof(ClusterResource.MemoryUsagePercentage),
-                                                                            nameof(ClusterResource.CpuUsagePercentage),
-                                                                            nameof(ClusterResource.HostCpuUsage),
-                                                                            nameof(ClusterResource.HostMemoryUsage),
-                                                                            nameof(ClusterResource.Tags),
-                                                                            nameof(ClusterResource.Uptime)
-                                                                        }" />
+                                                                            Permissions="Module.Permissions.DataGrid.Data"
+                                                                            GetItems="GetResources"
+                                                                            PropertiesName="new[]
+                                                                            {
+                                                                                nameof(ClusterResource.Status),
+                                                                                nameof(ClusterResource.Type),
+                                                                                nameof(ClusterResource.Description),
+                                                                                nameof(ClusterResource.DiskUsagePercentage),
+                                                                                nameof(ClusterResource.MemoryUsagePercentage),
+                                                                                nameof(ClusterResource.CpuUsagePercentage),
+                                                                                nameof(ClusterResource.HostCpuUsage),
+                                                                                nameof(ClusterResource.HostMemoryUsage),
+                                                                                nameof(ClusterResource.Tags),
+                                                                                nameof(ClusterResource.Uptime)
+                                                                            }" />
         </MudCardContent>
     </MudCard>
 
     <br />
 
     <MudTabs Elevation="2" ApplyEffectsToContainer Border>
-    <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Filled.Task">
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks @ref="RefTasks"
-                                                                   Permissions="Module.Permissions.DataGrid.Data"
-                                                                   GetItems="GetTasks"
-                                                                   PveClient="PveClient" />
-    </MudTabPanel>
+     <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Filled.Task">
+         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks @ref="RefTasks"
+                                                                    Permissions="Module.Permissions.DataGrid.Data"
+                                                                    GetItems="GetTasks"
+                                                                    PveClient="PveClient" />
+     </MudTabPanel>
 
-    <MudTabPanel Text="@L["Cluster Log"]" Icon="@Icons.Material.Filled.Error">
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Logs @ref="RefLogs"
-                                                                   Permissions="Module.Permissions.DataGrid.Data"
-                                                                   PveClient="PveClient" />
-    </MudTabPanel>
-</MudTabs>
+     <MudTabPanel Text="@L["Cluster Log"]" Icon="@Icons.Material.Filled.Error">
+         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Logs @ref="RefLogs"
+                                                                    Permissions="Module.Permissions.DataGrid.Data"
+                                                                    PveClient="PveClient" />
+     </MudTabPanel>
+ </MudTabs>
 
     <br />
 }

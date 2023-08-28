@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using ApexCharts;
+using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm;
@@ -11,6 +12,8 @@ partial class Chart
 {
     [Parameter] public IEnumerable<VmRrdData> RrdData { get; set; } = default!;
     [Parameter] public VmChart VmChart { get; set; } = default!;
+
+    [Inject] private LayoutService LayoutService { get; set; } = default!;
 
     private string Name1 { get; set; } = default!;
     private string Name2 { get; set; } = default!;
@@ -24,7 +27,8 @@ partial class Chart
     {
         Chart = new()
         {
-            Group = "RrdSync"
+            Group = "VmChart",
+            Background = "trasparent"
         },
         Markers = new()
         {
@@ -45,14 +49,16 @@ partial class Chart
                 DecimalsInFloat = 1,
                 Opposite = true
             }
-        }
+        },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
     private ApexChartOptions<Data> ChartOptionsSize => new()
     {
         Chart = new()
         {
-            Group = "RrdSync"
+            Group = "VmChart",
+            Background = "trasparent"
         },
         Markers = new()
         {
@@ -67,14 +73,16 @@ partial class Chart
                 Title = new AxisTitle { Text = L["Usage (GB)"] },
                 DecimalsInFloat = 1,
             }
-        }
+        },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
     private ApexChartOptions<Data> ChartOptionsKb => new()
     {
         Chart = new()
         {
-            Group = "RrdSync"
+            Group = "VmChart",
+            Background = "trasparent"
         },
         Markers = new()
         {
@@ -89,7 +97,8 @@ partial class Chart
                 Title = new AxisTitle { Text = L["Usage (Kb)"] },
                 DecimalsInFloat = 1,
             }
-        }
+        },
+        Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
     private class Data

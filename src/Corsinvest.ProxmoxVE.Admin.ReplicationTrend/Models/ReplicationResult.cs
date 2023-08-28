@@ -20,7 +20,7 @@ public class ReplicationResult : EntityBase<int>, IClusterName
 
     [Display(Name = "Duration")]
     public string DurationText
-        => End.HasValue 
+        => End.HasValue
             ? (End - Start).Value.ToString("hh':'mm':'ss")
             : "00:00:00";
 

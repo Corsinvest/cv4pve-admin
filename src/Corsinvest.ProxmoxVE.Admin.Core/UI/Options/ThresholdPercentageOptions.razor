@@ -1,0 +1,38 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+[<MudCard>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <div class="d-flex gap-2">
+                <MudIcon Icon="@Icon" />
+                <MudText>@L[Title]</MudText>
+            </div>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudNumericField T="double" @bind-Value="@Threshold.Warning"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warning" AdornmentColor="Color.Warning"
+                                 Label="@L["Warning %"]" For="@(() => Threshold.Warning)" />
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudNumericField T="double" @bind-Value="@Threshold.Critical"
+                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Error" AdornmentColor="Color.Error"
+                                 Label="@L["Critical %"]" For="@(() => Threshold.Critical)" />
+            </MudItem>
+        </MudGrid>
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    [Parameter] public string Title { get; set; } = default!;
+    [Parameter] public string Icon { get; set; } = default!;
+    [Parameter] public ThresholdPercentual Threshold { get; set; } = default!;
+}

@@ -13,7 +13,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster;
 public partial class Resources : IRefreshable
 {
     [Parameter] public string Height { get; set; } = default!;
-    [Parameter] public bool Multiselect { get; set; }
+    [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public PermissionsRead Permissions { get; set; } = default!;
     [Parameter] public RenderFragment ToolBarContentBefore { get; set; } = default!;
     [Parameter] public RenderFragment ToolBarContentAfter { get; set; } = default!;

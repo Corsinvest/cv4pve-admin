@@ -2,13 +2,16 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-
 @using ApexCharts
 
 @inherits AHComponentBase
 
 <MudText>
-    <strong>@L["Range:"]</strong> @DateSelectedTitle
+    <strong>@L["Range:"]</strong>
+    <MudDateRangePicker DateRange="DateRange"
+                        DateRangeChanged="DateRangeChanged"
+                        Required="true"
+                        ShowWeekNumbers="true" />
 </MudText>
 
 <br />
@@ -18,6 +21,13 @@
     {
         <MudButton Variant="Variant.Filled" OnClick="@(() => OnClickDate(item))">
             @RenderItem(item)
+        </MudButton>
+    }
+
+    @if (DateSelected != null && !Dates.Any(a => a.DateRange == DateSelected.DateRange))
+    {
+        <MudButton Variant="Variant.Filled" OnClick="@(() => OnClickDate(DateSelected))">
+            @RenderItem(DateSelected)
         </MudButton>
     }
 </div>
@@ -43,58 +53,58 @@
 
     <br />
     <MudText>
-        <strong>@L["Size (GB)"]</strong>
+        <strong>@L["Size (MB)"]</strong>
     </MudText>
 
     <br />
 
     <ApexChart TItem="ReplicationResult"
-           XAxisType="XAxisType.Datetime"
-           Height="@("500px")"
-           Options="Options1"
-           @ref="RefChart1">
+               XAxisType="XAxisType.Datetime"
+               Height="@("500px")"
+               Options="Options1"
+    @ref="RefChart1">
 
         @foreach (var item in DataChart)
         {
             <ApexPointSeries TItem="ReplicationResult"
-                     Items="@item"
-                     Name="@item.Key"
-                     SeriesType="SeriesType.Line"
-                     XValue="e => e.Start"
-                     YValue="a => Convert.ToDecimal(a.Size) / 1024 / 1024 / 1024"
-                     OrderBy="a => a.X" />
+                             Items="@item"
+                             Name="@item.Key"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => e.Start"
+                             YValue="a => Convert.ToDecimal(a.Size) / 1024 / 1024"
+                             OrderBy="a => a.X" />
         }
     </ApexChart>
 
     <br />
 
     <MudText>
-        <strong>@L["Duration (Min)"]</strong>
+        <strong>@L["Duration (Sec)"]</strong>
     </MudText>
 
     <br />
 
     <ApexChart TItem="ReplicationResult"
-           XAxisType="XAxisType.Datetime"
-           Height="@("500px")"
-           Options="Options2"
-           @ref="RefChart2">
+               XAxisType="XAxisType.Datetime"
+               Height="@("500px")"
+               Options="Options2"
+    @ref="RefChart2">
 
         @foreach (var item in DataChart)
         {
             <ApexPointSeries TItem="ReplicationResult"
-                     Items="@item"
-                     Name="@item.Key"
-                     SeriesType="SeriesType.Line"
-                     XValue="e => e.Start"
-                     YValue="a => Convert.ToDecimal(a.Duration / 60)"
-                     OrderBy="a => a.X" />
+                             Items="@item"
+                             Name="@item.Key"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => e.Start"
+                             YValue="a => Convert.ToDecimal(a.Duration)"
+                             OrderBy="a => a.X" />
         }
     </ApexChart>
 }
 
 @code {
-    private RenderFragment RenderItem<T>(Data<T> item) => __builder =>
+    private RenderFragment RenderItem(Data item) => __builder =>
     {
         <div>
             <MudText>@item.Title</MudText>

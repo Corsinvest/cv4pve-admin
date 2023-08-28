@@ -60,7 +60,7 @@ public partial class DialogFastConfig
                         ret = client == null;
                         if (!ret && !await PveClientService.CheckIsValidVersion(client!))
                         {
-                            UINotifier.Show(L["Proxmoxm VE version nont valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
+                            UINotifier.Show(L["Proxmox VE version not valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
                         }
                         else
                         {

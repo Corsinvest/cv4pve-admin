@@ -86,7 +86,7 @@ internal class Helper
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Execution Autosnap from Job {id}", id))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Execution AutoSnap from Job {id}", id))
         {
             var jobRepo = scope.GetRepository<AutoSnapJob>();
             var job = await GetAutoSnapJob(jobRepo, id, logger);

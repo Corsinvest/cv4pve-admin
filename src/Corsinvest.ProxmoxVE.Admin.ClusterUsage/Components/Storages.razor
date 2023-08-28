@@ -12,25 +12,25 @@
 else
 {
     <MudTabs Elevation="1" ApplyEffectsToContainer Border>
-    <MudTabPanel Text="@L["Configuration"]" Icon="@Icons.Material.Filled.Description">
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Storage.Storages Height="calc(100vh - 415px)" GetItems="GetConfigStorages" />
-    </MudTabPanel>
+     <MudTabPanel Text="@L["Configuration"]" Icon="@Icons.Material.Filled.Description">
+         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Storage.Storages Height="calc(100vh - 415px)" GetItems="GetConfigStorages" />
+     </MudTabPanel>
 
-    <MudTabPanel Text="@L["By Storage"]" Icon="@Icons.Material.Filled.Storage">
-        <MudAlert Severity="Severity.Warning">
-            @L["ATTENTION! THE CALCULATION OF STORAGE OCCUPATION DEPENDS ON THE COMPRESSION / DEDUPLICATION FEATURES"]
-        </MudAlert>
+     <MudTabPanel Text="@L["By Storage"]" Icon="@Icons.Material.Filled.Storage">
+         <MudAlert Severity="Severity.Warning">
+             @L["ATTENTION! THE CALCULATION OF STORAGE OCCUPATION DEPENDS ON THE COMPRESSION / DEDUPLICATION FEATURES"]
+         </MudAlert>
 
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Height="calc(100vh - 470px)"
-                                                                        Permissions="Module.Permissions.Storages.Data"
-                                                                        GetItems="GetStorages"
-                                                                        DefaultSort="new()
-                                                                        {
+         @*Height="calc(100vh - 470px)"        *@
+         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Permissions="Module.Permissions.Storages.Data"
+                                                                         GetItems="GetStorages"
+                                                                         DefaultSort="new()
+                                                                         {
                                                                             [nameof(ClusterResource.Storage)] = false,
                                                                             [nameof(ClusterResource.Node)] = false,
-                                                                        }"
-                                                                        PropertiesName="new[]
-                                                                        {
+                                                                         }"
+                                                                         PropertiesName="new[]
+                                                                         {
                                                                             nameof(ClusterResource.Status),
                                                                             nameof(ClusterResource.Node),
                                                                             nameof(ClusterResource.Storage),
@@ -40,19 +40,19 @@ else
                                                                             nameof(ClusterResource.Shared),
                                                                             nameof(ClusterResource.Content),
                                                                             nameof(ClusterResource.Pool),
-                                                                        }" ,
-                                                                        NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
+                                                                         }" ,
+                                                                         NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
 
-            <ChildRowContent>
-                <MudText Typo="Typo.h5" Align="Align.Center">
-                    <b>@L["Storage:"]</b> @context.Item.Storage <b>@L["Node:"]</b> @context.Item.Node
-                </MudText>
+             <ChildRowContent>
+                 <MudText Typo="Typo.h5" Align="Align.Center">
+                     <b>@L["Storage:"]</b> @context.Item.Storage <b>@L["Node:"]</b> @context.Item.Node
+                 </MudText>
 
-                <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Nodes.StorageUsage GetContents="@(() => GetContents(context.Item))"
-                                                                                 GetStorages="GetStorages"
-                                                                                 GroupBy="@nameof(NodeStorageContent.VmId)"
-                                                                                 PropertiesName="new[]
-                                                                                 {
+                 <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Nodes.StorageUsage GetContents="@(() => GetContents(context.Item))"
+                                                                                  GetStorages="GetStorages"
+                                                                                  GroupBy="@nameof(NodeStorageContent.VmId)"
+                                                                                  PropertiesName="new[]
+                                                                                  {
                                                                                     nameof(NodeStorageContent.VmId),
                                                                                     nameof(NodeStorageContent.FileName),
                                                                                     nameof(NodeStorageContent.Size),
@@ -61,27 +61,27 @@ else
                                                                                     nameof(NodeStorageContent.Content),
                                                                                     nameof(NodeStorageContent.Verified),
                                                                                     nameof(NodeStorageContent.Encrypted),
-                                                                                 }" />
-            </ChildRowContent>
-        </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
+                                                                                  }" />
+             </ChildRowContent>
+         </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
 
-    </MudTabPanel>
+     </MudTabPanel>
 
-    <MudTabPanel Text="@L["By VM/CT"]" Icon="@Icons.Material.Filled.Computer">
-        <MudAlert Severity="Severity.Warning">
-            @L["ATTENTION! THE CALCULATION OF STORAGE OCCUPATION DEPENDS ON THE COMPRESSION / DEDUPLICATION FEATURES"]
-        </MudAlert>
+     <MudTabPanel Text="@L["By VM/CT"]" Icon="@Icons.Material.Filled.Computer">
+         <MudAlert Severity="Severity.Warning">
+             @L["ATTENTION! THE CALCULATION OF STORAGE OCCUPATION DEPENDS ON THE COMPRESSION / DEDUPLICATION FEATURES"]
+         </MudAlert>
 
-        <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Permissions="Module.Permissions.Storages.Data"
-                                                                        Height="calc(100vh - 470px)"
-                                                                        GetItems="GetVms"
-                                                                        DefaultSort="new()
-                                                                        {
+         @*Height="calc(100vh - 470px)"*@
+         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Permissions="Module.Permissions.Storages.Data"
+                                                                         GetItems="GetVms"
+                                                                         DefaultSort="new()
+                                                                         {
                                                                             [nameof(ClusterResource.Description)] = false,
                                                                             [nameof(ClusterResource.Node)] = false,
-                                                                        }"
-                                                                        PropertiesName="new[]
-                                                                        {
+                                                                         }"
+                                                                         PropertiesName="new[]
+                                                                         {
                                                                             nameof(IClusterResourceVm.Status),
                                                                             nameof(IClusterResourceVm.Type),
                                                                             nameof(IClusterResourceVm.Node),
@@ -94,18 +94,17 @@ else
                                                                             nameof(IClusterResourceVm.Uptime),
                                                                             nameof(IClusterResourceVm.HostCpuUsage),
                                                                             nameof(IClusterResourceVm.HostMemoryUsage),
-                                                                        }" ,
-                                                                        NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
+                                                                         }" ,
+                                                                         NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
+             <ChildRowContent>
+                 <MudText Typo="Typo.h5" Align="Align.Center">
+                     @L["Total occupation on cluster"]
+                 </MudText>
 
-            <ChildRowContent>
-                <MudText Typo="Typo.h5" Align="Align.Center">
-                    @L["Total occupation on cluster"]
-                </MudText>
-
-                <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Nodes.StorageUsage GetContents="@(() => GetContents(context.Item))"
-                                                                                 GetStorages="GetStorages" />
-            </ChildRowContent>
-        </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
-    </MudTabPanel>
-</MudTabs>
+                 <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Nodes.StorageUsage GetContents="@(() => GetContents(context.Item))"
+                                                                                  GetStorages="GetStorages" />
+             </ChildRowContent>
+         </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
+     </MudTabPanel>
+ </MudTabs>
 }

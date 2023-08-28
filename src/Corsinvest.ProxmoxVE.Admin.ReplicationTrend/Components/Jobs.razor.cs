@@ -22,15 +22,15 @@ public partial class Jobs
 
     protected override async Task OnInitializedAsync()
     {
+        DataGridManager.Title = L["Jobs"];
+        DataGridManager.DefaultSort = new() { [nameof(ReplicationResult.Start)] = true };
+        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ReplicationResultSpec(ClusterName));
+
         try
         {
             ClusterName = await PveClientService.GetCurrentClusterName();
         }
         catch { }
-
-        DataGridManager.Title = L["Jobs"];
-        DataGridManager.DefaultSort = new() { [nameof(ReplicationResult.Start)] = false };
-        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new ReplicationResultSpec(ClusterName));
     }
 
     private async Task Scan()

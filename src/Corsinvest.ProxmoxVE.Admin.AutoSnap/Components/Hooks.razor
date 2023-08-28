@@ -6,16 +6,16 @@
 
 <AHDataGrid T="AutoSnapJobHook"
             Permissions="Module.Permissions.Job.Data"
-            FixedHeader
-            FixedFooter
+            FixedHeader="true"
+            FixedFooter="true"
             DataGridManager="DataGridManager"
-            Filterable
-            Groupable
+            Filterable="true"
+            Groupable="true"
             ShowFilterIcons="false"
             Height="@Height"
             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
             ShowColumnOptions="false"
-            MultiSelection>
+            MultiSelection="true">
     <ToolBarContent>
         <AHDataGridToolBarCrud T="AutoSnapJobHook" DataGridManager="DataGridManager" />
     </ToolBarContent>

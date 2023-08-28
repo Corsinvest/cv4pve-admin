@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.AppHero.Core.Domain.Repository;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.ReplicationTrend.Repository;
 using Corsinvest.ProxmoxVE.Api;
@@ -27,7 +26,7 @@ internal class Helper
         var replicationResultRepo = scope.GetRepository<ReplicationResult>();
         var moduleClusterOptions = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<Options>>().Value.Get(clusterName);
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Collect replcation data"))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Collect replication data"))
         {
             await PopulateDb(client, moduleClusterOptions, replicationResultRepo, clusterName);
         }
@@ -83,7 +82,7 @@ internal class Helper
 
         await replicationResultRepo.AddRangeAsync(list);
 
-        //remove old logs       
+        //remove old logs
         if (await replicationResultRepo.CountAsync(new ReplicationResultSpec(clusterName)) > 0)
         {
             var maxDate = (await replicationResultRepo.ListAsync(new ReplicationResultSpec(clusterName)))

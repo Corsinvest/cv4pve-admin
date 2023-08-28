@@ -55,7 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmd", "cmd", "{974C975A-9A4
 		cmd\setKey.ps1 = cmd\setKey.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsinvest.ProxmoxVE.Admin.ReplicationTrend", "src\Corsinvest.ProxmoxVE.Admin.ReplicationTrend\Corsinvest.ProxmoxVE.Admin.ReplicationTrend.csproj", "{24D3D8B6-5268-4890-815A-27C29C7D72D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Admin.ReplicationTrend", "src\Corsinvest.ProxmoxVE.Admin.ReplicationTrend\Corsinvest.ProxmoxVE.Admin.ReplicationTrend.csproj", "{24D3D8B6-5268-4890-815A-27C29C7D72D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

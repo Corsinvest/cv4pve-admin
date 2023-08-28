@@ -8,7 +8,6 @@ using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
-using Microsoft.Extensions.Localization;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
@@ -69,7 +68,7 @@ Only post your data/question here, please don't comment or ask questions.
 
         var status = await client.Cluster.Status.Get();
 
-        foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)))
+        foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)).OrderBy(a => a.Name))
         {
             var node = clusterOptions.GetNodeOptions(item.IpAddress, item.Name);
 

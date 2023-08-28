@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.AppHero.Core.Domain.Repository;
 using Corsinvest.AppHero.Core.Modularity;
 using Corsinvest.AppHero.Core.Security.Auth.Permissions;
 using Corsinvest.AppHero.Core.UI;
@@ -21,10 +20,10 @@ public class Module : PveAdminModuleBase, IForceLoadModule
     {
         Authors = "Corsinvest Srl";
         Company = "Corsinvest Srl";
-        Keywords = "VzDump,Backup,Trend";
+        Keywords = "Replication,Sync,Trend";
         Description = "Replication Trend";
         InfoText = "Check the progress of the replication set by Proxmox VE and check status, show more info";
-        SetCategory(ModuleCategory.Health);
+        SetCategory(AdminModuleCategory.Health);
 
         Link = new ModuleLink(this, Description)
         {

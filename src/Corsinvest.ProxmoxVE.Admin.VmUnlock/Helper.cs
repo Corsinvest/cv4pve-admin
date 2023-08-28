@@ -28,7 +28,7 @@ internal static class Helper
     {
         //check prev version
         //var count = 0;
-        //foreach (var nodeItem in client.GetNodes().Where(a => a.IsOnline))
+        //foreach (var nodeItem in client.GetNodes().Where(a => a.IsOnLine))
         //{
         //    var node = client.Nodes[nodeItem.Node];
 

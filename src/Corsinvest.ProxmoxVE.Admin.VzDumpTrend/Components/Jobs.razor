@@ -11,10 +11,10 @@
             Permissions="Module.Permissions.Job.Data"
             DataGridManager="DataGridManager"
             Elevation="0"
-            FixedHeader
-            FixedFooter
-            Filterable
-            Groupable
+            FixedHeader="true"
+            FixedFooter="true"
+            Filterable="true"
+            Groupable="true"
             ShowFilterIcons="false"
             Height="calc(100vh - 420px)">
     <ToolBarContent>
@@ -36,51 +36,51 @@
         <AHPropertyColumn T="VzDumpDetail" TProperty="bool" Property="a => a.Status" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc">
             <CellTemplate>
                 <MudCheckBox Checked="@context.Item.Status" ReadOnly />
-            </CellTemplate>
-        </AHPropertyColumn>
+             </CellTemplate>
+         </AHPropertyColumn>
 
-        <AHPropertyColumn T="VzDumpDetail" TProperty="string" Property="a => a.Node" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
-        <AHPropertyColumn T="VzDumpDetail" TProperty="string" Property="a => a.Storage" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
-        <AHPropertyColumn T="VzDumpDetail" TProperty="string" Property="a => a.Error" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+         <AHPropertyColumn T="VzDumpDetail" TProperty="string" Property="a => a.Node" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+         <AHPropertyColumn T="VzDumpDetail" TProperty="string" Property="a => a.Storage" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+         <AHPropertyColumn T="VzDumpDetail" TProperty="string" Property="a => a.Error" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
 
-        <TemplateColumn T="VzDumpDetail" CellClass="justify-end">
-            <CellTemplate>
-                <MudButtonGroup Variant="Variant.Text">
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.ShowLogVm" OnClick="@(() => ShowLog(context.Item, true))" />
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.ShowLogFull" OnClick="@(() => ShowLog(context.Item, false))" />
-                </MudButtonGroup>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
+         <TemplateColumn T="VzDumpDetail" CellClass="justify-end" Sortable="false" Filterable="false" Groupable="false" ShowColumnOptions="false">
+             <CellTemplate>
+                 <MudButtonGroup Variant="Variant.Text">
+                     <AHPermissionButtonIcon Permission="Module.Permissions.Job.ShowLogVm" OnClick="@(() => ShowLog(context.Item, true))" />
+                     <AHPermissionButtonIcon Permission="Module.Permissions.Job.ShowLogFull" OnClick="@(() => ShowLog(context.Item, false))" />
+                 </MudButtonGroup>
+             </CellTemplate>
+         </TemplateColumn>
+     </Columns>
 
-    <NoRecordsContent>
-        <AHNoRecordsContent />
-    </NoRecordsContent>
+     <NoRecordsContent>
+         <AHNoRecordsContent />
+     </NoRecordsContent>
 
-    <LoadingContent>
-        <AHLoadingContent />
-    </LoadingContent>
+     <LoadingContent>
+         <AHLoadingContent />
+     </LoadingContent>
 
-    <PagerContent>
-        <MudDataGridPager T="VzDumpDetail" />
-    </PagerContent>
-</AHDataGrid>
+     <PagerContent>
+         <MudDataGridPager T="VzDumpDetail" />
+     </PagerContent>
+ </AHDataGrid>
 
-<MudDialog IsVisible="@ShowDialog"
-           Style="width:80%;"
-           Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
-    <TitleContent>
-        <div class="d-flex gap-4">
-            <MudIcon Icon="@Icons.Material.Filled.Description" />
-            <MudText>@L[DialogTitle]</MudText>
-        </div>
-    </TitleContent>
+ <MudDialog IsVisible="@ShowDialog"
+            Style="width:80%;"
+            Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
+     <TitleContent>
+         <div class="d-flex gap-4">
+             <MudIcon Icon="@Icons.Material.Filled.Description" />
+             <MudText>@L[DialogTitle]</MudText>
+         </div>
+     </TitleContent>
 
-    <DialogContent>
-        <MudTextField T="string" Lines="20" Text="@DialogContent" ReadOnly Style="margin-top: 0px;" />
-    </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled"
-                   OnClick="@(() => ShowDialog = false)" Color="Color.Primary">@L["Close"]</MudButton>
-    </DialogActions>
-    </MudDialog>
+     <DialogContent>
+         <MudTextField T="string" Lines="20" Text="@DialogContent" ReadOnly Style="margin-top: 0px;" />
+     </DialogContent>
+     <DialogActions>
+         <MudButton Variant="Variant.Filled"
+                    OnClick="@(() => ShowDialog = false)" Color="Color.Primary">@L["Close"]</MudButton>
+     </DialogActions>
+ </MudDialog>

@@ -20,7 +20,7 @@ public partial class RenderAdminOptions
             }
             catch (Exception ex) { UINotifier.Show(ex.Message, UINotifierSeverity.Error); }
         }
-        StateHasChanged();  
+        StateHasChanged();
 
         await base.SaveAsync();
     }

@@ -1,0 +1,45 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
+@inherits AHComponentBase
+
+@if (PveClient == null)
+{
+    <MudProgressCircular Color="Color.Info" Indeterminate Size="Size.Small" />
+}
+else
+{
+    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources @ref="@RefResources"
+                                                                    Permissions="Module.Permissions.Vms.Data"
+                                                                    GetItems="GetVms"
+                                                                    DefaultSort="new()
+                                                                    {
+                                                                        [nameof(ClusterResource.VmId)] = false,
+                                                                        [nameof(ClusterResource.Node)] = false,
+                                                                    }"
+                                                                    PropertiesName="new[]
+                                                                    {
+                                                                        nameof(ClusterResource.Status),
+                                                                        nameof(ClusterResource.Type),
+                                                                        nameof(ClusterResource.Description),
+                                                                        nameof(ClusterResource.DiskUsagePercentage),
+                                                                        nameof(ClusterResource.MemoryUsagePercentage),
+                                                                        nameof(ClusterResource.CpuUsagePercentage),
+                                                                        nameof(ClusterResource.HostCpuUsage),
+                                                                        nameof(ClusterResource.HostMemoryUsage),
+                                                                        nameof(ClusterResource.Node),
+                                                                        nameof(ClusterResource.Pool),
+                                                                        nameof(ClusterResource.Tags),
+                                                                        nameof(ClusterResource.Uptime)
+                                                                    }">
+        <ToolBarContentBefore>
+            <MudSwitch T="bool" Label="Only run" Color="Color.Primary" Checked="@OnlyRun" CheckedChanged="OnlyRunChanged" />
+        </ToolBarContentBefore>
+
+        <ChildRowContent>
+            <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Charts GetItems="@(async (a,b) => await GetVmRrdData(context.Item.VmId, a,b))" />
+        </ChildRowContent>
+    </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
+}

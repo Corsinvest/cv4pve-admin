@@ -18,7 +18,7 @@ public class ModuleClusterOptions : IClusterName
     [Required]
     [Display(Name = "Cron Schedule")]
     [CronExpressionValidator]
-    public string CronExpression { get; set; } = "*/5 * * * *";                                                  
+    public string CronExpression { get; set; } = "*/5 * * * *";
 
     [Display(Name = "Max days logs")]
     public int MaxDaysLogs { get; set; } = 30;
