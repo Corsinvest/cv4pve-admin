@@ -6,8 +6,6 @@
 
 # CV4PVE-ADMIN
 
-> [!IMPORTANT]
-> Use discount code "GET30" to receive a 30% discount on Support Plans available only until September 11st! [Buy Support](https://shop.corsinvest.it/index.php?rp=/store/cv4pve-admin-pve&_ga=2.131740107.535323851.1691763082-1056458690.1691563847)
 
 > [!WARNING]
 > Technical support is considered valid only if each node of the cluster is covered by the cv4pve-admin license.
