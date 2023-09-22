@@ -19,7 +19,7 @@ public partial class RenderWidget1
 
     protected override async Task OnInitializedAsync()
     {
-        var pveClient = await PveClientService.GetClientCurrentCluster();
+        var pveClient = await PveClientService.GetClientCurrentClusterAsync();
         var resources = (await pveClient.GetResources(ClusterResourceType.All))
                             .CalculateHostUsage();
         DataUsages = ResourceUsage.GetUsages(resources, L);
@@ -40,7 +40,7 @@ public partial class RenderWidget1
     //    Backups,
     //    StoragesUsage,
     //    VmsReplications,
-    //    Online,
+    //    OnLine,
     //    NodesEndOfLine
     //}
 
@@ -103,7 +103,7 @@ public partial class RenderWidget1
     //                    break;
 
     //                case TypeData.Online:
-    //                    if (!node.IsOnline) { info.Errors.Add(node.Node); }
+    //                    if (!node.IsOnLine) { info.Errors.Add(node.Node); }
     //                    break;
 
     //                case TypeData.NodesEndOfLine:
@@ -134,7 +134,7 @@ public partial class RenderWidget1
 
     //    foreach (var node in await _pveClient.GetNodes())
     //    {
-    //        if (!node.IsOnline)
+    //        if (!node.IsOnLine)
     //        {
     //            online = false;
     //            continue;

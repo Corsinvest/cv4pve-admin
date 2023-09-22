@@ -25,11 +25,11 @@ public partial class Issues
         };
 
         DataGridManager.QueryAsync = async ()
-            => await DataGridManager.Repository.ListAsync(new IgnoredIssueSpec(await PveClientService.GetCurrentClusterName()));
+            => await DataGridManager.Repository.ListAsync(new IgnoredIssueSpec(await PveClientService.GetCurrentClusterNameAsync()));
 
         DataGridManager.BeforeEditAsync = async (item, isNew) =>
         {
-            item.ClusterName = await PveClientService.GetCurrentClusterName();
+            item.ClusterName = await PveClientService.GetCurrentClusterNameAsync();
             return item;
         };
 
@@ -39,7 +39,7 @@ public partial class Issues
 
     private async Task Rescan()
     {
-        Job.ScheduleRescan(JobService, await PveClientService.GetCurrentClusterName());
+        Job.ScheduleRescan(JobService, await PveClientService.GetCurrentClusterNameAsync());
         UINotifier.Show(L["Rescan jobs started!"], UINotifierSeverity.Info);
     }
 }

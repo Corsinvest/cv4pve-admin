@@ -9,19 +9,19 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
 public interface IPveClientService : IScopedDependency
 {
-    Task<PveClient?> GetClient(ClusterOptions clusterOptions);
-    Task<PveClient?> GetClient(ClusterOptions clusterOptions, ILogger logger);
-    Task<PveClient?> GetClient(string clusterName);
-    Task<PveClient> GetClientCurrentCluster();
+    Task<PveClient?> GetClientAsync(ClusterOptions clusterOptions);
+    Task<PveClient?> GetClientAsync(ClusterOptions clusterOptions, ILogger logger);
+    Task<PveClient?> GetClientAsync(string clusterName);
+    Task<PveClient> GetClientCurrentClusterAsync();
     ClusterOptions? GetClusterOptions(string clusterName);
-    Task<ClusterOptions?> GetCurrentClusterOptions();
+    Task<ClusterOptions?> GetCurrentClusterOptionsAsync();
     IEnumerable<ClusterOptions> GetClusters();
-    Task SetCurrentClusterName(string clusterName);
-    Task<string> GetCurrentClusterName();
-    Task<bool> ExistsCurrentClusterName();
-    Task<bool> ClusterIsValid(string clusterName);
-    Task<int> PopulateInfoNodes(ClusterOptions clusterOptions);
-    Task<bool> CheckIsValidVersion(PveClient client);
-    Task<Api.Shared.Models.Cluster.ClusterStatus?> GetClusterStatus(PveClient client);
+    Task SetCurrentClusterNameAsync(string clusterName);
+    Task<string> GetCurrentClusterNameAsync();
+    Task<bool> ExistsCurrentClusterNameAsync();
+    Task<bool> ClusterIsValidAsync(string clusterName);
+    Task<int> PopulateInfoNodesAsync(ClusterOptions clusterOptions);
+    Task<bool> CheckIsValidVersionAsync(PveClient client);
+    Task<Api.Shared.Models.Cluster.ClusterStatus?> GetClusterStatusAsync(PveClient client);
     string GetUrl(ClusterOptions clusterOptions);
 }

@@ -56,11 +56,11 @@ public partial class DialogFastConfig
                     try
                     {
                         //check pve login
-                        var client = await PveClientService.GetClient(ClusterOptions);
+                        var client = await PveClientService.GetClientAsync(ClusterOptions);
                         ret = client == null;
-                        if (!ret && !await PveClientService.CheckIsValidVersion(client!))
+                        if (!ret && !await PveClientService.CheckIsValidVersionAsync(client!))
                         {
-                            UINotifier.Show(L["Proxmoxm VE version nont valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
+                            UINotifier.Show(L["Proxmox VE version not valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
                         }
                         else
                         {

@@ -34,7 +34,7 @@ public partial class RenderIndex : IRefreshable
 
     protected override async Task OnInitializedAsync()
     {
-        try { PveClient = await PveClientService.GetClientCurrentCluster(); }
+        try { PveClient = await PveClientService.GetClientCurrentClusterAsync(); }
         catch { }
     }
 

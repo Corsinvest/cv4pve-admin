@@ -8,7 +8,7 @@ using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
-using Microsoft.Extensions.Localization;
+using QuestPDF.Drawing;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
@@ -59,27 +59,53 @@ Memory: {FormatHelper.FromBytes(nodes.Sum(a => a.MemorySize))}
 Storage: {FormatHelper.FromBytes(storages.Sum(a => a.DiskSize))}
 VM/CT Number: {qemu}/{lxc}
 Company: {adminOptions.Company}
-Only post your data/question here, please don't comment or ask questions.
 ";
     }
 
-    public static async Task<string> GeClusterInfo(PveClient client, Configurations.ClusterOptions clusterOptions)
+    public static async Task<string> GetClusterInfo(PveClient client, Configurations.ClusterOptions clusterOptions)
     {
         var rows = new List<IEnumerable<string>>();
 
         var status = await client.Cluster.Status.Get();
 
-        foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)))
+        foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)).OrderBy(a => a.Name))
         {
-            var node = clusterOptions.GetNodeOptions(item.IpAddress, item.Name);
+            var nodeOptions = clusterOptions.GetNodeOptions(item.IpAddress, item.Name);
 
             var version = item.IsOnline
                             ? (await client.Nodes[item.Name].Version.Get())?.Version
                             : "";
 
-            rows.Add(new string[] { node?.ServerId, version, item.Name, item.IpAddress, node?.SubscriptionId });
+            rows.Add(new string[]
+            {
+                nodeOptions?.ServerId,
+                version,
+                item.Name,
+                item.IpAddress,
+                nodeOptions?.SubscriptionId
+            });
         }
 
         return TableGenerator.ToText(new[] { "Server Id", "PVE Version", "Name", "IpAddress", "Subscription Id" }, rows);
+    }
+
+    public static async Task<string> GetSupportInfo(PveClient client)
+    {
+        var rows = new List<string>();
+        foreach (var item in await client.Nodes.Get())
+        {
+            var subscription = await client.Nodes[item.Node].Subscription.GetEx();
+
+            var level = string.Empty;
+            if (!string.IsNullOrEmpty(subscription.Key))
+            {
+                var data = subscription.Key.Split("-");
+                level = NodeHelper.DecodeLevelSupport(data[0][^1]+"").ToString();
+            }            
+
+            rows.Add($"{item.Node}: {subscription.Serverid} {level}");
+        }
+
+        return rows.JoinAsString(Environment.NewLine);
     }
 }

@@ -13,74 +13,75 @@
 }
 else
 {
+    <Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoScheduler Enabled="@Options.Value.Get(ClusterName).Enabled"
+                                                                 CronExpression="@Options.Value.Get(ClusterName).CronExpression" />
+
     <AHDataGrid T="DataVmEx"
                 Permissions="Module.Permissions.Costs.Data"
-                FixedHeader
-                FixedFooter
+                FixedHeader="true"
+                FixedFooter="true"
                 DataGridManager="DataGridManager"
-                Filterable
-                Groupable
+                Filterable="true"
+                Groupable="true"
                 ShowFilterIcons="false"
                 Height="@Height"
                 FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
                 ShowColumnOptions="false"
-                MultiSelection>
-    <ToolBarContent>
-        <AHDataGridToolBarRead T="DataVmEx" DataGridManager="DataGridManager">
-            <ToolBarContentBefore>
-                <MudDateRangePicker @ref="RefPicker" ShowWeekNumbers @bind-DateRange="DateRange">
-                        <PickerActions>
-                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => RefPicker!.Clear())">@L["Clear"]</MudButton>
+                MultiSelection="true">
+        <ToolBarContent>
+            <AHDataGridToolBarRead T="DataVmEx" DataGridManager="DataGridManager">
+                <ToolBarContentBefore>
+                    <MudDateRangePicker @ref="RefPicker" ShowWeekNumbers @bind-DateRange="DateRange">
+                         <PickerActions>
+                             <MudButton Class="mr-auto align-self-start" OnClick="@(() => RefPicker!.Clear())">@L["Clear"]</MudButton>
+                             <MudButton OnClick="@(() => RefPicker!.Close(false))">@L["Cancel"]</MudButton>
+                             <MudButton Color="MudBlazor.Color.Primary" OnClick="Ok">@L["OK"]</MudButton>
+                         </PickerActions>
+                     </MudDateRangePicker>
 
-                            <MudButton OnClick="@(() => RefPicker!.Close(false))">@L["Cancel"]</MudButton>
+                     <AHPermissionButtonIcon Permission="Module.Permissions.Costs.Scan" OnClick="@Scan" />
+                 </ToolBarContentBefore>
+             </AHDataGridToolBarRead>
+         </ToolBarContent>
+         <Columns>
+             <HierarchyColumn T="DataVmEx" />
+             <SelectColumn T="DataVmEx" ShowInFooter="false" />
 
-                            <MudButton Color="MudBlazor.Color.Primary" OnClick="Ok">@L["OK"]</MudButton>
-                        </PickerActions>
-                    </MudDateRangePicker>
+             <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.VmId" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="string" Property="a => a.VmName" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="string" Property="a => a.Node" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="int" Property="a => a.CpuSize" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.CpuUsagePercentage" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.MemorySize" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.MemoryUsage" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.StorageMax" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.CpuCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.MemoryCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.StorageCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+             <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.TotalCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
+         </Columns>
 
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Costs.Scan" OnClick="@Scan" />
-                </ToolBarContentBefore>
-            </AHDataGridToolBarRead>
-        </ToolBarContent>
-        <Columns>
-            <HierarchyColumn T="DataVmEx" />
-            <SelectColumn T="DataVmEx" ShowInFooter="false" />
+         <ChildRowContent>
+             <MudGrid Class="pa-4">
+                 <MudItem md="6">
+                     <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Chart VmChart="VmChart.Cpu" RrdData="@context.Item.RrdData" />
+                 </MudItem>
 
-            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.VmId" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="string" Property="a => a.VmName" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="string" Property="a => a.Node" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="int" Property="a => a.CpuSize" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.CpuUsagePercentage" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.MemorySize" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.MemoryUsage" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="long" Property="a => a.StorageMax" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.CpuCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.MemoryCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.StorageCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-            <AHPropertyColumn T="DataVmEx" TProperty="double" Property="a => a.TotalCost" Sortable="true" FormatProvider="typeof(PveFormatProvider)" />
-        </Columns>
+                 <MudItem md="6">
+                     <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Chart VmChart="VmChart.Memory" RrdData="@context.Item.RrdData" />
+                 </MudItem>
 
-        <ChildRowContent>
-            <MudGrid Class="pa-4">
-                <MudItem md="6">
-                    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Chart VmChart="VmChart.Cpu" RrdData="@context.Item.RrdData" />
-                </MudItem>
+                 <MudItem md="12">
+                     <div class="d-flex gap-2">
+                         <MudIcon Icon="@Icons.Material.Filled.Storage" />
+                         <MudText>
+                             <strong>@L["Storages"]</strong>
+                         </MudText>
+                     </div>
 
-                <MudItem md="6">
-                    <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Chart VmChart="VmChart.Memory" RrdData="@context.Item.RrdData" />
-                </MudItem>
+                     <br />
 
-                <MudItem md="12">
-                    <div class="d-flex gap-2">
-                        <MudIcon Icon="@Icons.Material.Filled.Storage" />
-                        <MudText>
-                            <strong>@L["Storages"]</strong>
-                        </MudText>
-                    </div>
-
-                    <br />
-
-                    @{
+                     @{
                         var series = context.Item.Storages.GroupBy(a => a.Storage);
                     }
 

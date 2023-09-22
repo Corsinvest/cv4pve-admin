@@ -33,7 +33,7 @@ public partial class Status
 
         DataGridManager.QueryAsync = async () =>
         {
-            var clusterName = await PveClientService.GetCurrentClusterName();
+            var clusterName = await PveClientService.GetCurrentClusterNameAsync();
 
             var options = Options.Value.Get(clusterName);
             var vmIdsOrNames = VmIdsOrNames;
@@ -44,7 +44,7 @@ public partial class Status
                                     : Helper.AllVms;
             }
 
-            return await Helper.GetInfo((await PveClientService.GetClientCurrentCluster())!, options, LoggerFactory, vmIdsOrNames);
+            return await Helper.GetInfo((await PveClientService.GetClientCurrentClusterAsync())!, options, LoggerFactory, vmIdsOrNames);
         };
     }
 
@@ -52,7 +52,7 @@ public partial class Status
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Delete AutoSnap?"], "Delete AutoSnap"))
         {
-            var clusterName = await PveClientService.GetCurrentClusterName();
+            var clusterName = await PveClientService.GetCurrentClusterNameAsync();
             JobService.Schedule<Job>(a => a.Delete(DataGridManager.SelectedItems, clusterName), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Deleting snapshots!"], UINotifierSeverity.Info);
             DataGridManager.SelectedItems.Clear();

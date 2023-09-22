@@ -39,7 +39,7 @@ public partial class RenderNodesOptions
 
         try
         {
-            switch (await PveClientService.PopulateInfoNodes(ClusterOptions))
+            switch (await PveClientService.PopulateInfoNodesAsync(ClusterOptions))
             {
                 case -1:
                     UINotifier.Show(L["Credential or host not valid!"], UINotifierSeverity.Error);

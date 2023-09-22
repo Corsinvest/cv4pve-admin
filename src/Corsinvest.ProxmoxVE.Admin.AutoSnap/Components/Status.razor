@@ -6,17 +6,17 @@
 
 <AHDataGrid T="AutoSnapInfo"
             Permissions="Module.Permissions.Status.Data"
-            FixedHeader
-            FixedFooter
+            FixedHeader="true"
+            FixedFooter="true"
             DataGridManager="DataGridManager"
-            Filterable
-            Groupable
+            Filterable="true"
+            Groupable="true"
             GroupExpanded="false"
             ShowFilterIcons="false"
             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
             Height="@Height"
             RowsPerPage="9999"
-            MultiSelection>
+            MultiSelection="true">
     <ToolBarContent>
         <AHDataGridToolBarRead T="AutoSnapInfo" DataGridManager="DataGridManager">
             <ToolBarContentBefore>
@@ -46,19 +46,19 @@
         <AHPropertyColumn T="AutoSnapInfo" TProperty="bool" Property="a => a.VmStatus">
             <CellTemplate>
                 <MudCheckBox Checked="@context.Item.VmStatus" ReadOnly />
-            </CellTemplate>
-        </AHPropertyColumn>
-    </Columns>
+             </CellTemplate>
+         </AHPropertyColumn>
+     </Columns>
 
-    <NoRecordsContent>
-        <AHNoRecordsContent />
-    </NoRecordsContent>
+     <NoRecordsContent>
+         <AHNoRecordsContent />
+     </NoRecordsContent>
 
-    <LoadingContent>
-        <AHLoadingContent />
-    </LoadingContent>
+     <LoadingContent>
+         <AHLoadingContent />
+     </LoadingContent>
 
-    @* <PagerContent>
+     @* <PagerContent>
     <MudDataGridPager T="AutoSnapInfo" />
     </PagerContent>*@
-</AHDataGrid>
+ </AHDataGrid>

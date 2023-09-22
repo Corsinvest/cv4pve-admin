@@ -27,11 +27,11 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
         {
             if (PveClientService.GetClusters().Any())
             {
-                var clusterName = await PveClientService.GetCurrentClusterName();
+                var clusterName = await PveClientService.GetCurrentClusterNameAsync();
                 if (string.IsNullOrEmpty(clusterName))
                 {
                     clusterName = PveClientService.GetClusters().ToArray()[0].Name;
-                    await PveClientService.SetCurrentClusterName(clusterName);
+                    await PveClientService.SetCurrentClusterNameAsync(clusterName);
                 }
 
                 _refresh = false;
@@ -51,15 +51,15 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
 
     private async Task ValueChanged(string value)
     {
-        if (await PveClientService.ClusterIsValid(value))
+        if (await PveClientService.ClusterIsValidAsync(value))
         {
-            await PveClientService.SetCurrentClusterName(value);
+            await PveClientService.SetCurrentClusterNameAsync(value);
             CurrentClusterName = value;
             if (_refresh) { NavigationManager.NavigateTo(NavigationManager.Uri, true); }
         }
         else
         {
-            await PveClientService.SetCurrentClusterName(string.Empty);
+            await PveClientService.SetCurrentClusterNameAsync(string.Empty);
             if (PveClientService.GetClusters().Count() == 1) { ShowDialogFastConfig(); }
         }
         StateHasChanged();

@@ -91,12 +91,12 @@ public partial class VmManager
     private async Task ShowConsoleAsync()
     {
         var url = GetUrlShowConsole == null
-                    ? PveHelper.GetNoVncConsoleUrl(PveClient.Host,
-                                                   PveClient.Port,
-                                                   PveHelper.GetNoVncConsoleType(Vm.VmType),
-                                                   Vm.Node,
-                                                   Vm.VmId,
-                                                   Vm.Name)
+                    ? NoVncHelper.GetConsoleUrl(PveClient.Host,
+                                                PveClient.Port,
+                                                NoVncHelper.GetConsoleType(Vm.VmType),
+                                                Vm.Node,
+                                                Vm.VmId,
+                                                Vm.Name)
                     : GetUrlShowConsole.Invoke();
 
         await BrowserService.Open(url, "_blank");

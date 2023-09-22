@@ -28,6 +28,7 @@ public partial class Costs
     private DateRange DateRange { get; set; } = new(DateTime.Now.AddDays(-7).Date, DateTime.Now.Date);
     private MudDateRangePicker? RefPicker { get; set; } = default!;
     private PveClient PveClient { get; set; } = default!;
+    private string ClusterName { get; set; } = default!;
 
     private ApexChartOptions<DataVmStorage> ChartOptionsStorages => new()
     {
@@ -72,14 +73,14 @@ public partial class Costs
 
     protected override async Task OnInitializedAsync()
     {
-        PveClient = await PveClientService.GetClientCurrentCluster();
+        PveClient = await PveClientService.GetClientCurrentClusterAsync();
 
         DataGridManager.Title = L["Costs"];
         DataGridManager.DefaultSort = new() { [nameof(DataVmEx.VmId)] = false };
 
         DataGridManager.QueryAsync = async () =>
         {
-            var moduleClusterOptions = Options.Value.Get(await PveClientService.GetCurrentClusterName());
+            var moduleClusterOptions = Options.Value.Get(ClusterName);
 
             StorageOptions GetData(string storage) => moduleClusterOptions.Storages.First(b => b.Storage == storage);
 
@@ -131,6 +132,12 @@ public partial class Costs
 
             return data;
         };
+
+        try
+        {
+            ClusterName = await PveClientService.GetCurrentClusterNameAsync();
+        }
+        catch { }
     }
 
     private async Task<IEnumerable<VmRrdData>> GetVmRrdData(DataVmEx item, RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
@@ -142,10 +149,9 @@ public partial class Costs
         await DataGridManager.Refresh();
     }
 
-    private async Task Scan()
+    private void Scan()
     {
-        var clusterName = await PveClientService.GetCurrentClusterName();
-        JobService.Schedule<Job>(a => a.Scan(clusterName), TimeSpan.FromSeconds(10));
+        JobService.Schedule<Job>(a => a.Scan(ClusterName), TimeSpan.FromSeconds(10));
         UINotifier.Show(L["Scan jobs started!"], UINotifierSeverity.Info);
     }
 }

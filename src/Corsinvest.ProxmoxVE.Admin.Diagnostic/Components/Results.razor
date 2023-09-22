@@ -9,12 +9,12 @@
 
 <AHDataGrid T="Execution"
             Permissions="Module.Permissions.Result.Data"
-            FixedHeader
-            FixedFooter
+            FixedHeader="true"
+            FixedFooter="true"
             DataGridManager="DataGridManager"
-            MultiSelection
-            Filterable
-            Groupable
+            MultiSelection="true"
+            Filterable="true"
+            Groupable="true"
             ShowFilterIcons="false"
             Height="@Height">
     <ToolBarContent>
@@ -40,7 +40,7 @@
         <TemplateColumn T="Execution" CellClass="justify-end">
             <CellTemplate>
                 <AHPermissionButtonIcon Permission="Module.Permissions.Result.DownloadPdf" OnClick="@(() => DownloadPdf(context.Item))"
-                                        Size="Size.Small" Loading="@InDownloadPdf"/>
+                                        Size="Size.Small" Loading="@InDownloadPdf" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>

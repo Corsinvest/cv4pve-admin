@@ -56,7 +56,7 @@ public partial class Summary : IRefreshable
     {
         public string Name { get; set; } = default!;
         public int? Id { get; set; }
-        public bool IsOnline { get; set; }
+        public bool IsOnLine { get; set; }
         public string IpAddress { get; set; } = default!;
         public string Support { get; set; } = default!;
 
@@ -167,8 +167,8 @@ public partial class Summary : IRefreshable
                      {
                          Name = a.Status.Name,
                          Id = a.Status.NodeId,
-                         IsOnline = a.Status.IsOnline,
-                         Support = PveHelper.DecodeLevelSupport(a.Status.Level).ToString(),
+                         IsOnLine = a.Status.IsOnline,
+                         Support = NodeHelper.DecodeLevelSupport(a.Status.Level).ToString(),
                          IpAddress = a.Status.IpAddress,
                          CpuUsagePercentage = a.Node.CpuUsagePercentage,
                          MemoryUsagePercentage = a.Node.MemoryUsagePercentage,

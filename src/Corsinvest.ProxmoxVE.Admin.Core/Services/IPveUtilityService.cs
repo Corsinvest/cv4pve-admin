@@ -9,6 +9,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
 public interface IPveUtilityService : IScopedDependency
 {
-    Task<IEnumerable<Result>> FreeMemory(string clusterName, IEnumerable<string> nodes);
-    Task<Result> BlinkDiskLed(string clusterName, string node, string devPath, bool blink);
+    Task<IEnumerable<Result>> FreeMemoryAsync(string clusterName, IEnumerable<string> nodes);
+    Task<Result> BlinkDiskLedAsync(string clusterName, string node, string devPath, bool blink);
 }

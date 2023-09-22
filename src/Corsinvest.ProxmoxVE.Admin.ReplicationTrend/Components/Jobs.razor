@@ -1,0 +1,85 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+<Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoScheduler Enabled="@Options.Value.Get(ClusterName).Enabled"
+                                                             CronExpression="@Options.Value.Get(ClusterName).CronExpression" />
+
+<AHDataGrid T="ReplicationResult"
+            Permissions="Module.Permissions.Job.Data"
+            DataGridManager="DataGridManager"
+            Elevation="0"
+            FixedHeader="true"
+            FixedFooter="true"
+            Filterable="true"
+            Groupable="true"
+            ShowFilterIcons="false"
+            Height="calc(100vh - 420px)">
+    <ToolBarContent>
+        <AHDataGridToolBarRead T="ReplicationResult" DataGridManager="DataGridManager">
+            <ToolBarContentBefore>
+                <AHPermissionButtonIcon Permission="Module.Permissions.Job.Scan" OnClick="@Scan" />
+            </ToolBarContentBefore>
+        </AHDataGridToolBarRead>
+    </ToolBarContent>
+
+    <Columns>
+        <AHPropertyColumn T="ReplicationResult" TProperty="string" Property="a => a.JobId" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        <AHPropertyColumn T="ReplicationResult" TProperty="string" Property="a => a.VmId" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        <AHPropertyColumn T="ReplicationResult" TProperty="DateTime" Property="a => a.Start" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        <AHPropertyColumn T="ReplicationResult" TProperty="DateTime?" Property="a => a.End" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        <AHPropertyColumn T="ReplicationResult" TProperty="string" Property="a => a.DurationText" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        <AHPropertyColumn T="ReplicationResult" TProperty="string" Property="a => a.SizeString" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        @*        <AHPropertyColumn T="ReplicationResult" TProperty="string" Property="a => a.TransferSpeedText" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+        *@
+
+        <AHPropertyColumn T="ReplicationResult" TProperty="bool" Property="a => a.Status" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc">
+            <CellTemplate>
+                <MudCheckBox Checked="@context.Item.Status" ReadOnly />
+             </CellTemplate>
+         </AHPropertyColumn>
+
+         <AHPropertyColumn T="ReplicationResult" TProperty="string" Property="a => a.Error" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc" />
+
+         <TemplateColumn T="ReplicationResult" CellClass="justify-end" Sortable="false" Filterable="false" Groupable="false" ShowColumnOptions="false">
+             <CellTemplate>
+                 <MudButtonGroup Variant="Variant.Text">
+                     <AHPermissionButtonIcon Permission="Module.Permissions.Job.ShowLog" OnClick="@(() => ShowLog(context.Item))" Size="Size.Small" />
+                 </MudButtonGroup>
+             </CellTemplate>
+         </TemplateColumn>
+     </Columns>
+
+     <NoRecordsContent>
+         <AHNoRecordsContent />
+     </NoRecordsContent>
+
+     <LoadingContent>
+         <AHLoadingContent />
+     </LoadingContent>
+
+     <PagerContent>
+         <MudDataGridPager T="ReplicationResult" />
+     </PagerContent>
+ </AHDataGrid>
+
+ <MudDialog IsVisible="@ShowDialog"
+            Style="width:80%;"
+            Options="new DialogOptions { CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick=true, MaxWidth = MaxWidth.Large }">
+     <TitleContent>
+         <div class="d-flex gap-4">
+             <MudIcon Icon="@Icons.Material.Filled.Description" />
+             <MudText>@L["Log"]</MudText>
+         </div>
+     </TitleContent>
+
+     <DialogContent>
+         <MudTextField T="string" Lines="20" Text="@DialogContent" ReadOnly Style="margin-top: 0px;" />
+     </DialogContent>
+     <DialogActions>
+         <MudButton Variant="Variant.Filled"
+                    OnClick="@(() => ShowDialog = false)" Color="Color.Primary">@L["Close"]</MudButton>
+     </DialogActions>
+ </MudDialog>

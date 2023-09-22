@@ -10,13 +10,15 @@
             Permissions="Permissions"
             DataGridManager="DataGridManagerInt"
             Elevation="0"
-            FixedHeader
-            FixedFooter
-            Filterable
-            Groupable
+            Style="@Style"
+            Class="@Class"
+            FixedHeader="true"
+            FixedFooter="true"
+            Filterable="true"
+            Groupable="true"
             ShowColumnOptions="false"
             ChildRowContent="@ChildRowContent"
-            MultiSelection="@Multiselect"
+            MultiSelection="@MultiSelect"
             ShowFilterIcons="false"
             SelectedItemsChanged="@SelectedItemsChanged"
             Height="@Height">
@@ -44,7 +46,7 @@
             <HierarchyColumn T="ClusterResource" />
         }
 
-        @if (Multiselect)
+        @if (MultiSelect)
         {
             <SelectColumn T="ClusterResource" ShowInFooter="false" />
         }
@@ -56,8 +58,8 @@
                 <TemplateColumn T="ClusterResource" Sortable="false">
                     <CellTemplate>
                         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.IconStatusResource Status="@context.Item.Status"
-                                                                                        Type="@context.Item.Type"
-                                                                                        Locked="@context.Item.IsLocked" />
+                                                                                                Type="@context.Item.Type"
+                                                                                                Locked="@context.Item.IsLocked" />
                     </CellTemplate>
                 </TemplateColumn>
             }

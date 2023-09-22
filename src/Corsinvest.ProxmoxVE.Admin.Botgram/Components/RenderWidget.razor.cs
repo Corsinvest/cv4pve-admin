@@ -23,7 +23,7 @@ public partial class RenderWidget
                                                   .OfType<BotgramService>()
                                                   .FirstOrDefault();
 
-        var clusterName = await PveClientService.GetCurrentClusterName();
+        var clusterName = await PveClientService.GetCurrentClusterNameAsync();
 
         Count = botgramService?.GetChats(clusterName).Count ?? 0;
         LastUpdate = botgramService?.GetLastUpdate(clusterName);

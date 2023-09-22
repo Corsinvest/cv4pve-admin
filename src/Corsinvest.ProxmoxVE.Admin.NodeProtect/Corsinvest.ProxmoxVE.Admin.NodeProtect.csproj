@@ -3,8 +3,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Corsinvest.ProxmoxVE.NodeProtect.Api" Version="1.5.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

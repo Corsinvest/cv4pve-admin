@@ -16,7 +16,7 @@ public partial class RenderIndex
     {
         try
         {
-            PveClient = await PveClientService.GetClientCurrentCluster();
+            PveClient = await PveClientService.GetClientCurrentClusterAsync();
         }
         catch { }
     }

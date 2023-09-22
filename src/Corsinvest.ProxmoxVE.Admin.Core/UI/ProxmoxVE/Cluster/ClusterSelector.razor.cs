@@ -18,7 +18,7 @@ public partial class ClusterSelector
 
     private async Task ValueChanged(string value)
     {
-        ClusterName = await PveClientService.ClusterIsValid(value)
+        ClusterName = await PveClientService.ClusterIsValidAsync(value)
                                 ? value
                                 : string.Empty;
         await ClusterNameChanged.InvokeAsync(ClusterName);

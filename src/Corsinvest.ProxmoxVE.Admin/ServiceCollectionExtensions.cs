@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddHangfireServer();
         GlobalConfiguration.Configuration.UseStorage(new SQLiteStorage(Path.Combine(ApplicationHelper.PathData, "hangfire.db")));
+        GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 1 });
         return services;
     }
 

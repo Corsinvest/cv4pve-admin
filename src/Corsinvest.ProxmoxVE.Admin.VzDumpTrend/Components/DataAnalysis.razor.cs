@@ -9,7 +9,6 @@ using Corsinvest.AppHero.Core.MudBlazorUI.Style;
 using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.VzDumpTrend.Repository;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
-using MudBlazor;
 using Nextended.Core.Extensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.VzDumpTrend.Components;
@@ -28,6 +27,11 @@ public partial class DataAnalysis
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
+        Chart = new()
+        {
+            Group = "VzDumpTrend",
+            Background = "trasparent"
+        },
         Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
@@ -39,6 +43,11 @@ public partial class DataAnalysis
             Shape = ShapeEnum.Circle,
             Size = 5,
             FillOpacity = new Opacity(0.8d),
+        },
+        Chart = new()
+        {
+            Group = "VzDumpTrend",
+            Background = "trasparent"
         },
         Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
@@ -52,40 +61,52 @@ public partial class DataAnalysis
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
+        Chart = new()
+        {
+            Group = "VzDumpTrend",
+            Background = "trasparent"
+        },
         Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
-    class Data<T>
+    class Data
     {
         public string Title { get; set; } = default!;
         public int CountOk { get; set; }
         public int CountKo { get; set; }
         public string Size { get; set; } = default!;
-        public T Tag { get; set; } = default!;
-        public T Tag1 { get; set; } = default!;
+        public DateRange DateRange { get; set; } = default!;
+        public string VmId { get; set; } = default!;
+        public string Storage { get; set; } = default!;
     }
 
     private ApexChart<VzDumpDetail> RefChart1 { get; set; } = default!;
     private ApexChart<VzDumpDetail> RefChart2 { get; set; } = default!;
     private ApexChart<VzDumpDetail> RefChart3 { get; set; } = default!;
-    private DateTime? DateSelectedStart { get; set; }
-    private DateTime? DateSelectedEnd { get; set; }
-    private string? DateSelectedTitle { get; set; }
     private string? StorageSelected { get; set; }
     private string? VmIdSelected { get; set; }
-    private IEnumerable<Data<DateTime>> Dates { get; set; } = Array.Empty<Data<DateTime>>();
-    private IEnumerable<Data<string>> Storages { get; set; } = Array.Empty<Data<string>>();
-    private IEnumerable<Data<string>> Vms { get; set; } = Array.Empty<Data<string>>();
+    private IEnumerable<Data> Dates { get; set; } = Array.Empty<Data>();
+    private IEnumerable<Data> Storages { get; set; } = Array.Empty<Data>();
+    private IEnumerable<Data> Vms { get; set; } = Array.Empty<Data>();
+    private Data DateSelected { get; set; } = default!;
+    private string _clusterName { get; set; } = default!;
+    private DateRange DateRange { get; set; } = new(DateTime.Now.AddDays(0).Date, DateTime.Now.Date);
     private IEnumerable<IGrouping<string?, VzDumpDetail>> DataChart { get; set; } = Array.Empty<IGrouping<string?, VzDumpDetail>>();
 
     protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            _clusterName = await PveClientService.GetCurrentClusterNameAsync();
+        }
+        catch { }
+
         Dates = await GetDates();
         await OnClickDate(Dates.ToList()[0]);
     }
 
-    private async Task<IEnumerable<Data<DateTime>>> GetDates()
+    private async Task<IEnumerable<Data>> GetDates()
     {
         var range = new List<(string Name, int Start, int End)>
         {
@@ -105,70 +126,76 @@ public partial class DataAnalysis
             ( L["3 Month"], 60, 30),
         };
 
-        var clusterName = await PveClientService.GetCurrentClusterName();
-
-        var ret = new List<Data<DateTime>>();
+        var ret = new List<Data>();
         foreach (var (name, startR, endR) in range)
         {
             var start = DateTime.Now.Date.AddDays(startR * -1);
             var end = start.AddDays(endR);
-            ret.Add(new()
-            {
-                Title = name,
-                CountOk = await VzDumpDetails.CountAsync(new VzDumpDetailSpec(clusterName, start, end, true)),
-                CountKo = await VzDumpDetails.CountAsync(new VzDumpDetailSpec(clusterName, start, end, false)),
-                Size = FormatHelper.FromBytes((await VzDumpDetails.ListAsync(new VzDumpDetailSpec(clusterName, start, end, true))).Sum(a => a.Size)),
-                Tag = start,
-                Tag1 = end
-            });
+            ret.Add(await Calculate(name, start, end));
         }
 
         return ret;
     }
 
-    private async Task OnClickDate(Data<DateTime> item)
+    private async Task<Data> Calculate(string name, DateTime start, DateTime end)
+        => new()
+        {
+            Title = name,
+            CountOk = await VzDumpDetails.CountAsync(new VzDumpDetailSpec(_clusterName, start, end, true)),
+            CountKo = await VzDumpDetails.CountAsync(new VzDumpDetailSpec(_clusterName, start, end, false)),
+            Size = FormatHelper.FromBytes((await VzDumpDetails.ListAsync(new VzDumpDetailSpec(_clusterName, start, end, true))).Sum(a => a.Size)),
+            DateRange = new DateRange(start, end)
+        };
+
+    private async Task DateRangeChanged(DateRange dateRange)
     {
-        DateSelectedStart = item.Tag;
-        DateSelectedEnd = item.Tag1;
-        DateSelectedTitle = item.Title;
+        DateRange = dateRange;
+        DateSelected = await Calculate($"{dateRange.Start!.Value.ToShortDateString()} - {dateRange.End!.Value.ToShortDateString()}",
+                                       dateRange.Start.Value,
+                                       dateRange.End.Value);
+    }
+
+    private async Task OnClickDate(Data item)
+    {
+        DateRange = item.DateRange;
         Storages = await GetStorages();
         await OnClickStorage(null);
     }
 
-    private async Task<IEnumerable<Data<string>>> GetStorages()
+    private async Task<IEnumerable<Data>> GetStorages()
         => (await GetData(true, false, false))
             .GroupBy(a => a.Task.Storage)
-            .Select(a => new Data<string>
+            .Select(a => new Data
             {
                 Title = a.Key!,
                 CountOk = a.Count(a => a.Status),
                 CountKo = a.Count(a => !a.Status),
                 Size = FormatHelper.FromBytes(a.Where(a => a.Status).Sum(a => a.Size)),
-                Tag = a.Key!,
+                Storage = a.Key!,
             });
 
-    private async Task OnClickStorage(Data<string>? item)
+    private async Task OnClickStorage(Data? item)
     {
-        StorageSelected = item?.Tag;
+        StorageSelected = item?.Storage;
         Vms = await GetVms();
         await OnClickVm(null);
     }
 
-    private async Task<IEnumerable<Data<string>>> GetVms()
+    private async Task<IEnumerable<Data>> GetVms()
         => (await GetData(true, true, false))
             .GroupBy(a => a.VmId)
-            .Select(a => new Data<string>
+            .Select(a => new Data
             {
                 Title = a.Key!,
                 CountOk = a.Count(a => a.Status),
                 CountKo = a.Count(a => !a.Status),
                 Size = FormatHelper.FromBytes(a.Where(a => a.Status).Sum(a => a.Size)),
-                Tag = a.Key!,
+                VmId = a.Key!,
             });
 
-    private async Task OnClickVm(Data<string>? item)
+    private async Task OnClickVm(Data? item)
     {
-        VmIdSelected = item?.Tag;
+        VmIdSelected = item?.VmId;
         DataChart = await GetDataChart();
 
         try
@@ -193,9 +220,9 @@ public partial class DataAnalysis
                 .GroupBy(a => a.VmId);
 
     private async Task<IQueryable<VzDumpDetail>> GetData(bool whereDate, bool whereStorage, bool whereVm)
-        => (await VzDumpDetails.ListAsync(new VzDumpDetailSpec(await PveClientService.GetCurrentClusterName())
+        => (await VzDumpDetails.ListAsync(new VzDumpDetailSpec(_clusterName)
                                             .StorageExists()
-                                            .InDate(whereDate && DateSelectedStart.HasValue, DateSelectedStart, DateSelectedEnd)
+                                            .InDate(whereDate, DateRange.Start, DateRange.End)
                                             .InStorage(whereStorage && !string.IsNullOrWhiteSpace(StorageSelected), StorageSelected!)
                                             .InVm(whereVm && !string.IsNullOrWhiteSpace(VmIdSelected), VmIdSelected)))
                                             .AsQueryable();

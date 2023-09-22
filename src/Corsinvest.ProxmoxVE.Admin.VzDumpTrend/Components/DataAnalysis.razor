@@ -7,8 +7,14 @@
 @inherits AHComponentBase
 
 <MudText>
-    <strong>@L["Range:"]</strong> @DateSelectedTitle
+    <strong>@L["Range:"]</strong>
+    <MudDateRangePicker DateRange="DateRange"
+                        DateRangeChanged="DateRangeChanged"
+                        Required="true"
+                        ShowWeekNumbers="true" />
 </MudText>
+
+<br />
 
 <br />
 
@@ -17,6 +23,13 @@
     {
         <MudButton Variant="Variant.Filled" OnClick="@(() => OnClickDate(item))">
             @RenderItem(item)
+        </MudButton>
+    }
+
+    @if (DateSelected != null && !Dates.Any(a => a.DateRange == DateSelected.DateRange))
+    {
+        <MudButton Variant="Variant.Filled" OnClick="@(() => OnClickDate(DateSelected))">
+            @RenderItem(DateSelected)
         </MudButton>
     }
 </div>
@@ -136,27 +149,27 @@
 
 
 @code {
-    private RenderFragment RenderItem<T>(Data<T> item) => __builder =>
-        {
-            <div>
-                <MudText>@item.Title</MudText>
+    private RenderFragment RenderItem(Data item) => __builder =>
+    {
+        <div>
+            <MudText>@item.Title</MudText>
 
-                <div class="d-flex gap-2">
-                    @if (item.CountOk > 0)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="@MudBlazor.Color.Success" />
-                        <MudText>@item.CountOk</MudText>
-                    }
+            <div class="d-flex gap-2">
+                @if (item.CountOk > 0)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Color="@MudBlazor.Color.Success" />
+                    <MudText>@item.CountOk</MudText>
+                }
 
-                    @if (item.CountKo > 0)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" />
-                        <MudText>@item.CountKo</MudText>
-                    }
+                @if (item.CountKo > 0)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" />
+                    <MudText>@item.CountKo</MudText>
+                }
 
-                </div>
-
-                <MudText Typo="Typo.caption">@item.Size</MudText>
             </div>
-        };
+
+            <MudText Typo="Typo.caption">@item.Size</MudText>
+        </div>
+    };
 }

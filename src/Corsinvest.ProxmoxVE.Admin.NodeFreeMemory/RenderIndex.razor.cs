@@ -18,7 +18,7 @@ public partial class RenderIndex
     private bool LoadingFreeMemory { get; set; }
 
     private async Task<IEnumerable<ClusterResource>> GetItems()
-        => (await (await PveClientService.GetClientCurrentCluster())
+        => (await (await PveClientService.GetClientCurrentClusterAsync())
             .GetResources(ClusterResourceType.Node))
             .Where(a => a.IsOnline);
 
@@ -27,7 +27,7 @@ public partial class RenderIndex
         LoadingFreeMemory = true;
         if (await UIMessageBox.ShowQuestionAsync(L["Unlock"], L["Unlock VM/CT?"]))
         {
-            var ret = await PveUtilityService.FreeMemory(await PveClientService.GetCurrentClusterName(),
+            var ret = await PveUtilityService.FreeMemoryAsync(await PveClientService.GetCurrentClusterNameAsync(),
                                                          RefResources!.DataGridManager.SelectedItems.Select(a => a.Node));
 
             UINotifier.Show(!ret.Any(a => a.IsFailed),

@@ -2,55 +2,22 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-@using Corsinvest.ProxmoxVE.Admin.Core.Models;
-@*
- * SPDX-FileCopyrightText: Copyright Corsinvest Srl
- * SPDX-License-Identifier: AGPL-3.0-only
-*@
 @inherits AHModuleOptionsBase<Options>
 
 <PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
     <Row>
         <MudGrid>
-            @foreach (var (item, idx) in new[] { context.Cpu, context.Memory, context.Storage }.Select((item, idx) => (item, idx)))
-            {
-                <MudItem xs="12" md="4">
-                    @RenderOptionsThreshold(L[ThresholdTexts[idx]], ThresholdIcons[idx], item)
-                </MudItem>
-            }
+            <MudItem xs="12" md="4">
+                <ThresholdPercentageOptions Title="CPU" Icon="@PveBlazorHelper.Icons.Cpu" Threshold="@context.Cpu" />
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <ThresholdPercentageOptions Title="Memory" Icon="@PveBlazorHelper.Icons.Memory" Threshold="@context.Memory" />
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <ThresholdPercentageOptions Title="Storage" Icon="@PveBlazorHelper.Icons.Storage" Threshold="@context.Storage" />
+            </MudItem>
         </MudGrid>
     </Row>
 </PveOptionsModuleRender>
-
-
-@code
-{
-    private RenderFragment RenderOptionsThreshold(string title, string icon, ThresholdPercentual threshold) => __builder =>
-    {
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <div class="d-flex gap-2">
-                        <MudIcon Icon="@icon" />
-                        <MudText>@L[title]</MudText>
-                    </div>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem xs="12" md="6">
-                        <MudNumericField T="double" @bind-Value="@threshold.Warning"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warning" AdornmentColor="Color.Warning"
-                                 Label="@L["Warning %"]" For="@(() => threshold.Warning)" />
-                    </MudItem>
-
-                    <MudItem xs="12" md="6">
-                        <MudNumericField T="double" @bind-Value="@threshold.Critical"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Error" AdornmentColor="Color.Error"
-                                 Label="@L["Critical %"]" For="@(() => threshold.Critical)" />
-                    </MudItem>
-                </MudGrid>
-            </MudCardContent>
-        </MudCard>
-    };
-}

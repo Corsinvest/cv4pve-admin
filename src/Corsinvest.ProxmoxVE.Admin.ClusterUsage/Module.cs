@@ -40,6 +40,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
                     {
                         Permissions.Costs.Scan
                     })
+                    .Union(Permissions.Vms.Data.Permissions)
                     .Union(Permissions.Storages.Data.Permissions))
         };
 
@@ -63,6 +64,11 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         {
             public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(Costs)}.{nameof(Data)}");
             public static Permission Scan { get; } = new($"{Data.Prefix}.{nameof(Scan)}", "Scan", Icons.Material.Filled.PlayArrow, UIColor.Success);
+        }
+
+        public class Vms
+        {
+            public static PermissionsRead Data { get; } = new($"{typeof(Module).FullName}.{nameof(Vms)}.{nameof(Data)}");
         }
 
         public class Storages

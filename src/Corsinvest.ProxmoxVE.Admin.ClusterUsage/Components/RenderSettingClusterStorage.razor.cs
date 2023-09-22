@@ -20,7 +20,7 @@ public partial class RenderSettingClusterStorage
         DataGridManager.QueryAsync = async () =>
         {
             //load existing storages
-            var client = await PveClientService.GetClient(ModuleClusterOptions.ClusterName);
+            var client = await PveClientService.GetClientAsync(ModuleClusterOptions.ClusterName);
             foreach (var item in await client.GetStorages())
             {
                 if (!ModuleClusterOptions.Storages.Any(a => a.Storage == item.Storage))

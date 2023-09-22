@@ -29,8 +29,11 @@ else
             }
         </MudItem>
 
-        <MudItem sm="12" md="3">
-            <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L["Content"]"
+        <MudItem sm="12" md="6">
+            <ApexChart TItem="NodeStorageContent"
+                       Height="@("400px")"
+                       XAxisType="XAxisType.Category"
+                       Title="@L["Content"]"
                        Options="@ChartOption">
                 <ApexPointSeries TItem="NodeStorageContent"
                                  Items="Contents"
@@ -41,8 +44,13 @@ else
                                  YAggregate="@(a => a.Sum(a => a.Size / 1024m / 1024 / 1024))"
                                  OrderByDescending="a => a.Y" />
             </ApexChart>
+        </MudItem>
 
-            <ApexChart TItem="NodeStorageContent" XAxisType="XAxisType.Category" Title="@L[(IsGroupByStorage ? "Storage" : "Vm")]"
+        <MudItem sm="12" md="6">
+            <ApexChart TItem="NodeStorageContent"
+                       Height="@("400px")"
+                       XAxisType="XAxisType.Category"
+                       Title="@L[(IsGroupByStorage ? "Storage" : "Vm")]"
                        Options="@ChartOption">
                 <ApexPointSeries TItem="NodeStorageContent"
                                  Items="Contents"
@@ -55,7 +63,7 @@ else
             </ApexChart>
         </MudItem>
 
-        <MudItem sm="12" md="9">
+        <MudItem sm="12" md="12">
             <StorageContents GetItems="GetContents" PropertiesName="@PropertiesName" GroupBy="@GroupBy" />
         </MudItem>
     </MudGrid>

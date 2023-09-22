@@ -15,7 +15,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Module.Infos.TryGetValue(await PveClientService.GetCurrentClusterName(), out var info))
+        if (Module.Infos.TryGetValue(await PveClientService.GetCurrentClusterNameAsync(), out var info))
         {
             Info = info;
         }

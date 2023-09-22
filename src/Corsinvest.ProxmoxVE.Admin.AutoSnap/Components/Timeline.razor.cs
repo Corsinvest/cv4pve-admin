@@ -18,7 +18,7 @@ public partial class Timeline
 
     protected override async Task OnInitializedAsync()
     {
-        var spec = new AutoSnapJobHistorySpec(await PveClientService.GetCurrentClusterName());
+        var spec = new AutoSnapJobHistorySpec(await PveClientService.GetCurrentClusterNameAsync());
         Data = (await History.ListAsync(spec)).GroupBy(a => a.Start.Date).Take(10);
     }
 }

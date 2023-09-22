@@ -6,15 +6,15 @@
 
 <AHDataGrid T="VmSnapshot"
             Permissions="Permissions"
-            FixedHeader
-            FixedFooter
+            FixedHeader="true"
+            FixedFooter="true"
             DataGridManager="DataGridManager"
-            Filterable
+            Filterable="true"
             Groupable="false"
             ShowFilterIcons="false"
             Height="@Height"
             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
-            MultiSelection>
+            MultiSelection="true">
     <ToolBarContent>
         <AHDataGridToolBarRead T="VmSnapshot" DataGridManager="DataGridManager">
             <ToolBarContentBefore>

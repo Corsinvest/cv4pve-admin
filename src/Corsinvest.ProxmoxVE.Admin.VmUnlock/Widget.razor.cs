@@ -15,7 +15,7 @@ public partial class Widget
 
     protected override async Task OnInitializedAsync()
     {
-        var data = await Helper.GetVmLocks(await PveClientService.GetClientCurrentCluster());
+        var data = await Helper.GetVmLocks(await PveClientService.GetClientCurrentClusterAsync());
         Count = data.Count();
         Locks = data.Select(a => a.Lock).Distinct().JoinAsString(",");
     }

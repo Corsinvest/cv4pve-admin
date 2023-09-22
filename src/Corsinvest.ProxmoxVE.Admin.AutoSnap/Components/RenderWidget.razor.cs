@@ -16,7 +16,7 @@ public partial class RenderWidget
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        (Scheduled, Last, SnapCount, VmScheduled, _) = await Helper.Info(ScopeFactory, await PveClientService.GetCurrentClusterName());
+        (Scheduled, Last, SnapCount, VmScheduled, _) = await Helper.Info(ScopeFactory, await PveClientService.GetCurrentClusterNameAsync());
         StateHasChanged();
     }
 }
