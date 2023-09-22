@@ -49,12 +49,12 @@ public partial class BackupsManager
         }
 
         var url = GetUrlRestoreFile == null
-                    ? PveHelper.GetDownloadBackupFileUrl(PveClient.Host,
-                                                         PveClient.Port,
-                                                         Vm.Node,
-                                                         storageContent.Storage,
-                                                         storageContent.Volume,
-                                                         NodeBackupFileToRestore.FilePath)
+                    ? BackupHelper.GetDownloadFileUrl(PveClient.Host,
+                                                      PveClient.Port,
+                                                      Vm.Node,
+                                                      storageContent.Storage,
+                                                      storageContent.Volume,
+                                                      NodeBackupFileToRestore.FilePath)
                     : GetUrlRestoreFile.Invoke(storageContent, NodeBackupFileToRestore);
 
         await BrowserService.Open(url, "_blank");

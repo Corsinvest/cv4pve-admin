@@ -18,7 +18,7 @@ public partial class RenderWidget
 
     protected override async Task OnInitializedAsync()
     {
-        var clusterName = await PveClientService.GetCurrentClusterName();
+        var clusterName = await PveClientService.GetCurrentClusterNameAsync();
 
         var date = DateTime.Now.AddDays(-1);
         CountOk = await ReplicationResults.CountAsync(new ReplicationResultSpec(clusterName, true, date));

@@ -19,7 +19,7 @@ public partial class Widget
 
     protected override async Task OnInitializedAsync()
     {
-        var clusterName = await PveClientService.GetCurrentClusterName();
+        var clusterName = await PveClientService.GetCurrentClusterNameAsync();
 
         Enabled = Options.Value.Get(clusterName).Enabled;
         var spec = new ClusterByNameSpec<NodeProtectJobHistory>(clusterName);

@@ -18,7 +18,7 @@ public partial class WidgetInfoBase
     {
         if (GetStatus != null)
         {
-            Status = await GetStatus(await PveClientService.GetClientCurrentCluster(), await PveClientService.GetCurrentClusterName());
+            Status = await GetStatus(await PveClientService.GetClientCurrentClusterAsync(), await PveClientService.GetCurrentClusterNameAsync());
         }
     }
 }

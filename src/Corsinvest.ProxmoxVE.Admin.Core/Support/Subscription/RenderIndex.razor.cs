@@ -32,7 +32,7 @@ public partial class RenderIndex
         InRetrieveNodeInfo = true;
         try
         {
-            var ret = await PveClientService.PopulateInfoNodes(clusterOptions);
+            var ret = await PveClientService.PopulateInfoNodesAsync(clusterOptions);
 
             switch (ret)
             {

@@ -15,13 +15,13 @@ public class PveUtilityService : IPveUtilityService
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result> BlinkDiskLed(string clusterName, string node, string devPath, bool blink)
+    public async Task<FluentResults.Result> BlinkDiskLedAsync(string clusterName, string node, string devPath, bool blink)
     {
         FluentResults.Result result;
 
         try
         {
-            var clusterOptions = (await _pveClientService.GetCurrentClusterOptions())!;
+            var clusterOptions = (await _pveClientService.GetCurrentClusterOptionsAsync())!;
             var (host, ipAddress) = (await GetHostAndIp(clusterOptions)).Where(a => a.Key == node).FirstOrDefault();
             var info = clusterOptions.GetNodeOptions(ipAddress, host);
             if (info != null)
@@ -49,13 +49,13 @@ public class PveUtilityService : IPveUtilityService
 
     private async Task<IReadOnlyDictionary<string, string>> GetHostAndIp(ClusterOptions clusterOptions)
     {
-        var client = await _pveClientService.GetClient(clusterOptions);
+        var client = await _pveClientService.GetClientAsync(clusterOptions);
 
         //decode host ip
         return await client.GetHostAndIp();
     }
 
-    public async Task<IEnumerable<FluentResults.Result>> FreeMemory(string clusterName, IEnumerable<string> nodes)
+    public async Task<IEnumerable<FluentResults.Result>> FreeMemoryAsync(string clusterName, IEnumerable<string> nodes)
     {
         var results = new List<FluentResults.Result>();
 
@@ -63,7 +63,7 @@ public class PveUtilityService : IPveUtilityService
 
         try
         {
-            var clusterOptions = (await _pveClientService.GetCurrentClusterOptions())!;
+            var clusterOptions = (await _pveClientService.GetCurrentClusterOptionsAsync())!;
             //decode host ip
             foreach (var (host, ipAddress) in await GetHostAndIp(clusterOptions))
             {

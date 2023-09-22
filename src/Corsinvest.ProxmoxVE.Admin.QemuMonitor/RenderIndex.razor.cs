@@ -80,7 +80,7 @@ public partial class RenderIndex
 
     private async Task<List<BlockStats>> LoadData()
     {
-        var client = await PveClientService.GetClientCurrentCluster();
+        var client = await PveClientService.GetClientCurrentClusterAsync();
 
         var timestamp = DateTime.Now;
         foreach (var vm in (await client.GetVms()).Where(a => a.IsRunning && a.VmType == VmType.Qemu))

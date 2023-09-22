@@ -96,17 +96,18 @@ internal class Helper
                 };
                 await jobHistoryRepo.AddAsync(history);
                 await jobHistoryRepo.SaveChangesAsync();
+            }
 
-                //keep history
-                var histories = await jobHistoryRepo.ListAsync(new NodeProtectJobHistorySpec(clusterName,
-                                                                                                         history.Start,
-                                                                                                         moduleClusterOptions.Keep));
+            //keep history
+            var histories = (await jobHistoryRepo.ListAsync(new NodeProtectJobHistorySpec(clusterName)))
+                                .DistinctBy(a => a.Start)
+                                .Skip(moduleClusterOptions.Keep)
+                                .ToList();
 
-                if (histories.Any())
-                {
-                    await jobHistoryRepo.DeleteRangeAsync(histories);
-                    await jobHistoryRepo.SaveChangesAsync();
-                }
+            if (histories.Any())
+            {
+                await jobHistoryRepo.DeleteRangeAsync(histories);
+                await jobHistoryRepo.SaveChangesAsync();
             }
         }
     }

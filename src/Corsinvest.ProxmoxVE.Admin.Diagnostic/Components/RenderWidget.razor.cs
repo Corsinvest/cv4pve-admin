@@ -19,7 +19,7 @@ public partial class RenderWidget
 
     protected override async Task OnInitializedAsync()
     {
-        var clusterName = await PveClientService.GetCurrentClusterName();
+        var clusterName = await PveClientService.GetCurrentClusterNameAsync();
         ModuleClusterOptions = Options.Value.Get(clusterName);
         Count = await Execution.CountAsync(new ExecutionSpec(clusterName));
         Last = await Execution.FirstOrDefaultAsync(new ExecutionSpec(clusterName).Last());

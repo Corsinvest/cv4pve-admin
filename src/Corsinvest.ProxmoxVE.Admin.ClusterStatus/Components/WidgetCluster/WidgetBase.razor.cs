@@ -23,13 +23,13 @@ public partial class WidgetBase
 
     protected override async Task OnInitializedAsync()
     {
-        var pveClient = await PveClientService.GetClientCurrentCluster();
+        var pveClient = await PveClientService.GetClientCurrentClusterAsync();
         var resources = (await pveClient.GetResources(ClusterResourceType.All))
                             .CalculateHostUsage();
 
         Image = new[] { PveBlazorHelper.Icons.Cpu, PveBlazorHelper.Icons.Memory, PveBlazorHelper.Icons.Storage }[Index];
 
-        var thresholds = Options.Value.Get(await PveClientService.GetCurrentClusterName());
+        var thresholds = Options.Value.Get(await PveClientService.GetCurrentClusterNameAsync());
         Threshold = new[] { thresholds.Cpu, thresholds.Memory, thresholds.Storage }[Index];
 
         DataUsage = ResourceUsage.GetUsages(resources, L).ToArray()[Index];

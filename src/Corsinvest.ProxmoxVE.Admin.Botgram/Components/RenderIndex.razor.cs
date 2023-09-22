@@ -44,7 +44,7 @@ public partial class RenderIndex : IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _clusterName = await PveClientService.GetCurrentClusterName();
+        _clusterName = await PveClientService.GetCurrentClusterNameAsync();
 
         var scope = ServiceScopeFactory.CreateScope();
         BotgramService = scope.ServiceProvider.GetServices<IHostedService>()

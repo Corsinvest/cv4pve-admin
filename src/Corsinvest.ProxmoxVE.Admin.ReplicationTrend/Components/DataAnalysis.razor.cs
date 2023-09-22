@@ -74,7 +74,7 @@ public partial class DataAnalysis
     {
         try
         {
-            _clusterName = await PveClientService.GetCurrentClusterName();
+            _clusterName = await PveClientService.GetCurrentClusterNameAsync();
         }
         catch { }
 

@@ -21,7 +21,7 @@ public partial class ClusterReplications
         DataGridManager.Title = L["Replication Trend"];
         DataGridManager.QueryAsync = async () =>
         {
-            var client = await PveClientService.GetClientCurrentCluster();
+            var client = await PveClientService.GetClientCurrentClusterAsync();
             var ret = new List<NodeReplication>();
 
             foreach (var node in (await client.GetNodes()).Where(a => a.IsOnline))

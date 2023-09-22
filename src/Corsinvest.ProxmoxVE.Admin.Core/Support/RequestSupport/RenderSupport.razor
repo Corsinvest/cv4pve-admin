@@ -6,6 +6,8 @@
 
 <MudGrid>
     <MudItem md="6">
+        <MudImage Src="/images/community.png" Fluid="true" />
+
         <MudText Typo="Typo.h4">@L["Community Support"]</MudText>
         <br />
         <MudText Typo="Typo.body1">
@@ -15,23 +17,25 @@
             </MudLink>.
             @L["Join the growing community and participate in the discussions!"]
 
-            @L["Corsinvest team monitors but does not guarantee a response to every question. For guaranteed responses you may consider the"]
+            @L["Corsinvest team monitors but does not guarantee a response to every question. For guaranteed responses and more, you may consider the"]
             <MudLink Href="https://shop.corsinvest.it/index.php?rp=/store/cv4pve-admin-pve" Target="_blank" Color="Color.Info">
-                Dedicated support
+                Enterprise Support
             </MudLink>.
             @L["option."]
         </MudText>
     </MudItem>
 
     <MudItem md="6">
-        <MudText Typo="Typo.h4">@L["Dedicated Support"]</MudText>
+        <MudImage Src="/images/enterprise.png" Fluid="true" />
+
+        <MudText Typo="Typo.h4">@L["Enterprise Support"]</MudText>
         <br />
         <MudText Typo="Typo.body1">
-            @L["Corsinvest offers dedicated support with the subscriptions."]
+            @L["Corsinvest offers Enterprise Support with the subscriptions."]
 
             <br />
             <MudButton Href="https://shop.corsinvest.it/index.php?rp=/store/cv4pve-admin-pve" Target="_blank" StartIcon="@Icons.Material.Filled.Support" Color="Color.Info" Variant="Variant.Filled">
-                @L["See price"]
+                @L["Find out more"]
             </MudButton>
         </MudText>
     </MudItem>
@@ -50,7 +54,7 @@
 
     <MudItem md="12">
         <MudText Style="font-family: Courier New; font-size: inherit;">
-            @((MarkupString)WhoUsing?.Replace(" ", "&nbsp;").Replace(Environment.NewLine, "<br />"))
+            @((MarkupString)WhoUsing.Replace(" ", "&nbsp;").Replace(Environment.NewLine, "<br />"))
         </MudText>
     </MudItem>
     <MudItem md="12">
@@ -69,7 +73,7 @@
 
     <MudItem md="12">
         <MudText Style="font-family: Courier New; font-size: inherit;">
-            @((MarkupString)Info?.Replace(" ", "&nbsp;").Replace(Environment.NewLine, "<br />"))
+            @((MarkupString)Info.Replace(" ", "&nbsp;").Replace(Environment.NewLine, "<br />"))
         </MudText>
     </MudItem>
     <MudItem md="12">

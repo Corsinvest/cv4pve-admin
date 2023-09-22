@@ -15,7 +15,7 @@ public partial class Storages
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
     private PveClient PveClient { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentCluster();
+    protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentClusterAsync();
     private async Task<IEnumerable<StorageItem>> GetConfigStorages() => (await PveClient.Storage.Get()).OrderBy(a => a.Storage);
     private async Task<IEnumerable<ClusterResource>> GetStorages() => await PveClient.GetResources(ClusterResourceType.Storage);
 

@@ -16,5 +16,5 @@
 
     private ClusterOptions ClusterOptions { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => ClusterOptions = (await PveClientService.GetCurrentClusterOptions())!;
+    protected override async Task OnInitializedAsync() => ClusterOptions = (await PveClientService.GetCurrentClusterOptionsAsync())!;
 }

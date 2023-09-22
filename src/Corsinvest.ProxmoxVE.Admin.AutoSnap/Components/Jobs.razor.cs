@@ -26,7 +26,7 @@ public partial class Jobs
     {
         DataGridManager.Title = L["Jobs "];
         DataGridManager.DefaultSort = new() { [nameof(AutoSnapJob.Id)] = false };
-        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new AutoSnapJobSpec(await PveClientService.GetCurrentClusterName()));
+        DataGridManager.QueryAsync = async () => await DataGridManager.Repository.ListAsync(new AutoSnapJobSpec(await PveClientService.GetCurrentClusterNameAsync()));
 
         DataGridManager.SaveAfterAsync = async (item, isNew) =>
         {
@@ -44,7 +44,7 @@ public partial class Jobs
 
         DataGridManager.BeforeEditAsync = async (item, isNew) =>
         {
-            VmIds = (await (await PveClientService.GetClientCurrentCluster())
+            VmIds = (await (await PveClientService.GetClientCurrentClusterAsync())
                          .GetVmsJollyKeys(true, true, true, true, true, true))
                     .ToList();
 
@@ -52,7 +52,7 @@ public partial class Jobs
             VmIds.AddRange(item.VmIdsList);
             VmIds = VmIds.Distinct().Order().ToList();
 
-            item.ClusterName = await PveClientService.GetCurrentClusterName();
+            item.ClusterName = await PveClientService.GetCurrentClusterNameAsync();
 
             return item;
         };

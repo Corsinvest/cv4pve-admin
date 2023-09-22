@@ -6,4 +6,4 @@
 
 @inject IPveClientService PveClientService
 
-<WidgetInfoBase Description="@L["Cluster Status"]" GetStatus="@(async (c,n) => (await PveClientService.GetClusterStatus(c))?.Quorate == 1)" />
+<WidgetInfoBase Description="@L["Cluster Status"]" GetStatus="@(async (c,n) => (await PveClientService.GetClusterStatusAsync(c))?.Quorate == 1)" />

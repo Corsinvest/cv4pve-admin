@@ -20,7 +20,7 @@ public partial class Vms
     private PveClient PveClient { get; set; } = default!;
     private bool OnlyRun { get; set; } = true;
 
-    protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentCluster();
+    protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentClusterAsync();
 
     private async Task OnlyRunChanged(bool value)
     {

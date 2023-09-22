@@ -82,7 +82,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
 
                         try
                         {
-                            await exporter.Collect(await pveClientService.GetClient(clusterName));
+                            await exporter.Collect(await pveClientService.GetClientAsync(clusterName));
                         }
                         catch (Exception ex) { logger.LogError(ex, ex.Message); }
                     });

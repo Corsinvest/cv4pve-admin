@@ -9,8 +9,6 @@ namespace Corsinvest.ProxmoxVE.Admin.NodeProtect.Repository;
 
 internal class NodeProtectJobHistorySpec : ClusterByNameSpec<NodeProtectJobHistory>
 {
-    public NodeProtectJobHistorySpec(string clusterName, DateTime start, int keep) : base(clusterName)
-        => Query.Where(a => a.Start < start)
-                .OrderByDescending(a => a.End)
-                .Skip(keep);
+    public NodeProtectJobHistorySpec(string clusterName) : base(clusterName)
+        => Query.OrderByDescending(a => a.End);
 }

@@ -168,7 +168,7 @@ public partial class Summary : IRefreshable
                          Name = a.Status.Name,
                          Id = a.Status.NodeId,
                          IsOnLine = a.Status.IsOnline,
-                         Support = PveHelper.DecodeLevelSupport(a.Status.Level).ToString(),
+                         Support = NodeHelper.DecodeLevelSupport(a.Status.Level).ToString(),
                          IpAddress = a.Status.IpAddress,
                          CpuUsagePercentage = a.Node.CpuUsagePercentage,
                          MemoryUsagePercentage = a.Node.MemoryUsagePercentage,

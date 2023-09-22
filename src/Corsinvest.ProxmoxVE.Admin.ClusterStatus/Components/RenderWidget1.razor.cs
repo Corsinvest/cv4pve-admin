@@ -19,7 +19,7 @@ public partial class RenderWidget1
 
     protected override async Task OnInitializedAsync()
     {
-        var pveClient = await PveClientService.GetClientCurrentCluster();
+        var pveClient = await PveClientService.GetClientCurrentClusterAsync();
         var resources = (await pveClient.GetResources(ClusterResourceType.All))
                             .CalculateHostUsage();
         DataUsages = ResourceUsage.GetUsages(resources, L);

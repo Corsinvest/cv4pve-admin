@@ -50,7 +50,7 @@ public partial class DisksList
                 }
                 blink = !blink;
 
-                ret.Add(await PveUtilityService.BlinkDiskLed(await PveClientService.GetCurrentClusterName(), node, item.DevPath, blink));
+                ret.Add(await PveUtilityService.BlinkDiskLedAsync(await PveClientService.GetCurrentClusterNameAsync(), node, item.DevPath, blink));
             }
 
             UINotifier.Show(!ret.Any(a => a.IsFailed),

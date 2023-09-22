@@ -16,7 +16,7 @@ public partial class RenderAdminOptions
         {
             try
             {
-                await PveClientService.PopulateInfoNodes(item);
+                await PveClientService.PopulateInfoNodesAsync(item);
             }
             catch (Exception ex) { UINotifier.Show(ex.Message, UINotifierSeverity.Error); }
         }

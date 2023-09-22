@@ -30,7 +30,7 @@ public partial class Jobs
 
         try
         {
-            ClusterName = await PveClientService.GetCurrentClusterName();
+            ClusterName = await PveClientService.GetCurrentClusterNameAsync();
         }
         catch { }
     }

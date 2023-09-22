@@ -73,7 +73,7 @@ public partial class Costs
 
     protected override async Task OnInitializedAsync()
     {
-        PveClient = await PveClientService.GetClientCurrentCluster();
+        PveClient = await PveClientService.GetClientCurrentClusterAsync();
 
         DataGridManager.Title = L["Costs"];
         DataGridManager.DefaultSort = new() { [nameof(DataVmEx.VmId)] = false };
@@ -135,7 +135,7 @@ public partial class Costs
 
         try
         {
-            ClusterName = await PveClientService.GetCurrentClusterName();
+            ClusterName = await PveClientService.GetCurrentClusterNameAsync();
         }
         catch { }
     }
