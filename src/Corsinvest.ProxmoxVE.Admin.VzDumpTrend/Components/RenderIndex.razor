@@ -16,6 +16,7 @@
     <MudTabPanel Text="@L["Not scheduled"]" Icon="@Icons.Material.Filled.AlarmOff">
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Height="calc(100vh - 370px)"
                                                                         GetItems="GetNotScheduled"
+                                                                        T="ClusterResource"
                                                                         PropertiesName="new[]
                                                                         {
                                                                              nameof(IClusterResourceVm.Status),

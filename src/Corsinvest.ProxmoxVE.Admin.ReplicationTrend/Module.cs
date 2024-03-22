@@ -31,27 +31,17 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
-            new("",
-                "",
-                Permissions.Job.Data.Permissions
-                    .Union(new []
-                    {
-                        Permissions.Job.Scan,
-                        Permissions.Job.ShowLog,
-                    }))
-        };
+        Roles = [new("", "", Permissions.Job.Data.Permissions.Union([Permissions.Job.Scan, Permissions.Job.ShowLog,]))];
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             new ModuleWidget(this,"Status")
             {
                 GroupName = Category,
                 Render = typeof(RenderWidget),
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             }
-        };
+        ];
 
         UrlHelp += "#chapter_module_replication_trend";
     }
@@ -59,7 +49,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)
         => AddOptions<Options, RenderOptions>(services, config)
             .AddDbContext<ReplicationTrendDbContext>(options => options.UseSqlite($"Data Source={Path.Combine(PathData, "db.db")}"))
-            .AddRepositories<ReplicationTrendDbContext>(new[] { typeof(ReplicationResult) });
+            .AddRepositories<ReplicationTrendDbContext>([typeof(ReplicationResult)]);
 
     public override async Task OnApplicationInitializationAsync(IHost host)
     {

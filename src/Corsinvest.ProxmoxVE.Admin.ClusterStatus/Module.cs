@@ -30,13 +30,10 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
-            new("", "", Permissions.DataGrid.Data.Permissions)
-        };
+        Roles = [new("", "", Permissions.DataGrid.Data.Permissions)];
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             //new ModuleWidget(this,"Status")
             //{
             //    Render= typeof(RenderWidget1),
@@ -104,7 +101,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             },
             #endregion
-        };
+        ];
 
         UrlHelp += "#chapter_module_cluster_status";
     }

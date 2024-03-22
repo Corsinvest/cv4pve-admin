@@ -1,0 +1,34 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AHComponentBase
+
+@if (Enabled)
+{
+    <MudAlert Severity="Severity.Info">
+        @L["Calculation snapshots occupation enabled (require time)!"]
+    </MudAlert>
+}
+else
+{
+    <MudAlert Severity="Severity.Warning">
+        @L["Calculation snapshots occupation disabled! (Options cluster for enabled)"]
+    </MudAlert>
+}
+
+@code
+{
+    [Inject] private IPveClientService PveClientService { get; set; } = default!;
+
+    private bool Enabled { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (PveClientService != null)
+        {
+            var clusterOptions = await PveClientService.GetCurrentClusterOptionsAsync();
+            if (clusterOptions != null) { Enabled = clusterOptions.CalculateSnapshotSize; }
+        }
+    }
+}

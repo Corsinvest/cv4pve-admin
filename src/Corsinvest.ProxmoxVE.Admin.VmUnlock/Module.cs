@@ -26,26 +26,17 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             new ModuleWidget(this,"Status")
             {
                 GroupName = Category,
                 Render= typeof(Widget),
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             }
-        };
+        ];
 
-        Roles = new Role[]
-        {
-            new("",
-                "",
-                Permissions.DataGrid.Data.Permissions
-                .Union(new[]
-                {
-                    Permissions.DataGrid.Unlock
-                }))
-        };
+        Roles = [new("", "", Permissions.DataGrid.Data.Permissions.Union([Permissions.DataGrid.Unlock]))];
 
         UrlHelp += "#chapter_module_vm_unlock";
     }

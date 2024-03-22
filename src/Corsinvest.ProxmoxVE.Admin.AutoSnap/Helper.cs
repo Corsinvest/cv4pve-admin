@@ -54,18 +54,18 @@ internal class Helper
                 if (job == null) { continue; }
 
                 var moduleClusterOptions = GetModuleClusterOptions(scope, job.ClusterName);
-                if (moduleClusterOptions.OnRemoveJobRemoveSnapshots) { await Clean(scope, id); }
+                if (moduleClusterOptions.OnRemoveJobRemoveSnapshots) { await Purge(scope, id); }
                 await jobRepo.DeleteAsync(job);
             }
         }
     }
 
-    public static async Task Clean(IServiceScope scope, int id)
+    public static async Task Purge(IServiceScope scope, int id)
     {
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Cleans snapshot from Job {Id}", id))
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Purge snapshot from Job {Id}", id))
         {
             var jobRepo = scope.GetReadRepository<AutoSnapJob>();
             var job = await GetAutoSnapJob(jobRepo, id, logger);
@@ -186,7 +186,7 @@ internal class Helper
                                          .Skip(moduleClusterOptions.KeepHistory + job.Keep)
                                          .ToArray();
 
-            if (histories.Any())
+            if (histories.Length != 0)
             {
                 foreach (var item in histories) { job.Histories.Remove(item); }
                 await jobRepo.SaveChangesAsync();

@@ -32,7 +32,7 @@ public partial class DataAnalysis
             Group = "VzDumpTrend",
             Background = "trasparent"
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Yaxis = [new YAxis { DecimalsInFloat = 0 }],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -49,7 +49,7 @@ public partial class DataAnalysis
             Group = "VzDumpTrend",
             Background = "trasparent"
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Yaxis = [new YAxis { DecimalsInFloat = 0 }],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -66,7 +66,7 @@ public partial class DataAnalysis
             Group = "VzDumpTrend",
             Background = "trasparent"
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Yaxis = [new YAxis { DecimalsInFloat = 0 }],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -86,13 +86,13 @@ public partial class DataAnalysis
     private ApexChart<VzDumpDetail> RefChart3 { get; set; } = default!;
     private string? StorageSelected { get; set; }
     private string? VmIdSelected { get; set; }
-    private IEnumerable<Data> Dates { get; set; } = Array.Empty<Data>();
-    private IEnumerable<Data> Storages { get; set; } = Array.Empty<Data>();
-    private IEnumerable<Data> Vms { get; set; } = Array.Empty<Data>();
+    private IEnumerable<Data> Dates { get; set; } = [];
+    private IEnumerable<Data> Storages { get; set; } = [];
+    private IEnumerable<Data> Vms { get; set; } = [];
     private Data DateSelected { get; set; } = default!;
-    private string _clusterName { get; set; } = default!;
     private DateRange DateRange { get; set; } = new(DateTime.Now.AddDays(0).Date, DateTime.Now.Date);
-    private IEnumerable<IGrouping<string?, VzDumpDetail>> DataChart { get; set; } = Array.Empty<IGrouping<string?, VzDumpDetail>>();
+    private IEnumerable<IGrouping<string?, VzDumpDetail>> DataChart { get; set; } = [];
+    private string _clusterName = default!;
 
     protected override async Task OnInitializedAsync()
     {

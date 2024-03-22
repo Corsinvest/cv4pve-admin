@@ -13,5 +13,5 @@ public abstract class PveAdminModuleBase : ModuleBase
         if (PveAdminHelper.ModuleCategories.TryGetValue(category, out var value)) { Category = value.Name; }
     }
 
-    public IEnumerable<string> PvePermissionRequired { get; protected set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> PvePermissionRequired { get; protected set; } = [];
 }

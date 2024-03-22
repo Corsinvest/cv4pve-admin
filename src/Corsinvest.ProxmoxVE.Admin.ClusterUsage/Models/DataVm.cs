@@ -18,7 +18,6 @@ public class DataVm : EntityBase<int>, IClusterName
     public string Node { get; set; } = default!;
     public int CpuSize { get; set; }
 
-
     [Display(Name = "CPU Usage %")]
     [DisplayFormat(DataFormatString = "{0:P1}")]
     public double CpuUsagePercentage { get; set; }
@@ -36,5 +35,5 @@ public class DataVm : EntityBase<int>, IClusterName
     public double MemoryUsagePercentage => MemoryUsage / MemorySize;
 
     public DateTime Date { get; set; } = default!;
-    public List<DataVmStorage> Storages { get; set; } = new();
+    public List<DataVmStorage> Storages { get; set; } = [];
 }

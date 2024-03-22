@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Blazored.LocalStorage;
+using Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.Api.Shared;
@@ -32,7 +33,7 @@ public class PveClientService : IPveClientService
     public async Task<PveClient?> GetClientAsync(ClusterOptions clusterOptions)
     {
         var client = await GetClientAsync(clusterOptions, _logger);
-        client.LoggerFactory = _loggerFactory;
+        if (client != null) { client.LoggerFactory = _loggerFactory; }
         return client;
     }
 
@@ -182,4 +183,19 @@ public class PveClientService : IPveClientService
             ? throw new PveException("GetUrl error")
             : $"https://{client.Host}:{client.Port}";
     }
+
+    public async Task<IEnumerable<DiskInfoBase>> GetDisksInfo(PveClient client, ClusterOptions clusterOptions)
+    {
+        var ret = new List<DiskInfoBase>();
+
+        if (clusterOptions.CalculateSnapshotSize)
+        {
+            ret.AddRange(await ZfsDiskInfo.Read(client, clusterOptions));
+            ret.AddRange(await CephDiskInfo.Read(client, clusterOptions));
+        }
+
+        return ret;
+    }
+
+
 }

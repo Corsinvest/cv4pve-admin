@@ -19,7 +19,7 @@ public class VzDumpTask : EntityBase<int>, IClusterName
     public string? Node { get; set; }
     public string? Log { get; set; }
     public string? Storage { get; set; }
-    public List<VzDumpDetail> Details { get; set; } = new List<VzDumpDetail>();
+    public List<VzDumpDetail> Details { get; set; } = [];
 }
 
 

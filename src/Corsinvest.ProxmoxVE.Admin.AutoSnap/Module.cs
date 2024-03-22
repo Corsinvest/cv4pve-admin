@@ -32,25 +32,18 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex),
         };
 
-        Roles = new Role[]
-        {
+        Roles =
+        [
             new("",
                 "",
-                Permissions.Job.Data.Permissions.Union(new []
-                {
-                    Permissions.Job.Snap,
-                    Permissions.Job.Clean
-                }).Union(Permissions.Status.Data.Permissions.Union(new []
-                {
-                    Permissions.Status.Delete
-                })).Union(Permissions.History.Data.Permissions.Union(new []
-                {
-                    Permissions.History.ShowLog
-                })))
-        };
+                Permissions.Job.Data.Permissions.Union([Permissions.Job.Snap,Permissions.Job.Clean])
+                                                .Union(Permissions.Status.Data.Permissions
+                                                .Union([Permissions.Status.Delete]))
+                                                .Union(Permissions.History.Data.Permissions.Union([Permissions.History.ShowLog])))
+        ];
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             new ModuleWidget(this,"99Info")
             {
                 Render= typeof(RenderWidgetInfo),
@@ -64,22 +57,22 @@ public class Module : PveAdminModuleBase, IForceLoadModule
                 Render= typeof(RenderWidget),
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             }
-        };
+        ];
 
         UrlHelp += "#chapter_module_autosnap";
 
-        PvePermissionRequired = new[] { "VM.Audit", "VM.Snapshot", "Datastore.Audit", "Pool.Allocate" };
+        PvePermissionRequired = ["VM.Audit", "VM.Snapshot", "Datastore.Audit", "Pool.Allocate"];
     }
 
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)
         => AddOptions<Options, RenderOptions>(services, config)
             .AddDbContext<AutoSnapDbContext>(options => options.UseSqlite($"Data Source={Path.Combine(PathData, "db.db")}"))
-            .AddRepositories<AutoSnapDbContext>(new[]
-                                               {
+            .AddRepositories<AutoSnapDbContext>(
+                                               [
                                                     typeof(AutoSnapJob),
                                                     typeof(AutoSnapJobHistory),
                                                     typeof(AutoSnapJobHook)
-                                               });
+                                               ]);
     public override async Task OnApplicationInitializationAsync(IHost host)
     {
         await Task.CompletedTask;
@@ -92,7 +85,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         {
             public static PermissionsCrud Data { get; } = new($"{typeof(Module).FullName}.{nameof(Job)}.{nameof(Data)}");
             public static Permission Snap { get; } = new($"{Data.Prefix}.{nameof(Snap)}", "Snap", Icons.Material.Filled.PlayArrow, UIColor.Success);
-            public static Permission Clean { get; } = new($"{Data.Prefix}.{nameof(Clean)}", "Clean", Icons.Material.Filled.CleaningServices, UIColor.Warning);
+            public static Permission Clean { get; } = new($"{Data.Prefix}.{nameof(Clean)}", "Purge Snapshots", Icons.Material.Filled.CleaningServices, UIColor.Warning);
         }
 
         public class Status

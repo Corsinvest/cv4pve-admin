@@ -10,16 +10,17 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster;
 
-public partial class Resources : IRefreshable
+public partial class Resources<T> : IRefreshable
+    where T: ClusterResource
 {
     [Parameter] public string Height { get; set; } = default!;
     [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public PermissionsRead Permissions { get; set; } = default!;
     [Parameter] public RenderFragment ToolBarContentBefore { get; set; } = default!;
     [Parameter] public RenderFragment ToolBarContentAfter { get; set; } = default!;
-    [Parameter] public RenderFragment<CellContext<ClusterResource>> ChildRowContent { get; set; } = default!;
+    [Parameter] public RenderFragment<CellContext<T>> ChildRowContent { get; set; } = default!;
     [Parameter] public IEnumerable<string> PropertiesName { get; set; } = default!;
-    [Parameter] public EventCallback<HashSet<ClusterResource>> SelectedItemsChanged { get; set; } = default!;
+    [Parameter] public EventCallback<HashSet<T>> SelectedItemsChanged { get; set; } = default!;
 
     [Parameter]
     public Dictionary<string, bool> DefaultSort { get; set; } =
@@ -29,12 +30,12 @@ public partial class Resources : IRefreshable
             [nameof(ClusterResource.Name)] = false,
         };
 
-    [EditorRequired][Parameter] public Func<Task<IEnumerable<ClusterResource>>> GetItems { get; set; } = default!;
+    [EditorRequired][Parameter] public Func<Task<IEnumerable<T>>> GetItems { get; set; } = default!;
     [Parameter] public string NoRecordsContentIcon { get; set; } = Icons.Material.Filled.SentimentDissatisfied;
 
-    [Inject] private IDataGridManager<ClusterResource> DataGridManagerInt { get; set; } = default!;
+    [Inject] private IDataGridManager<T> DataGridManagerInt { get; set; } = default!;
 
-    public DataGridManager<ClusterResource> DataGridManager => DataGridManagerInt.ToDataGridManager();
+    public DataGridManager<T> DataGridManager => DataGridManagerInt.ToDataGridManager();
 
     protected override void OnInitialized()
     {
@@ -44,6 +45,6 @@ public partial class Resources : IRefreshable
     }
 
     public async Task Refresh() => await DataGridManager.Refresh();
-    private static Type GetDynamicType(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicType<ClusterResource>(propertyName);
-    private static Dictionary<string, object> GetDynamicParameters(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicParameters<ClusterResource>(propertyName);
+    private static Type GetDynamicType(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicType<T>(propertyName);
+    private static Dictionary<string, object> GetDynamicParameters(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicParameters<T>(propertyName);
 }

@@ -14,7 +14,7 @@ public partial class RenderIndex
     [Inject] private IWritableOptionsService<AdminOptions> WritableOptionsService { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
 
-    private Dictionary<ClusterNodeOptions, Info> Checks { get; } = new();
+    private Dictionary<ClusterNodeOptions, Info> Checks { get; } = [];
     private bool Initialized { get; set; }
     private bool InSave { get; set; }
     private bool InRetrieveNodeInfo { get; set; }

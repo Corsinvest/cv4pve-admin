@@ -25,10 +25,10 @@ public partial class DialogFastConfig
 
     protected override void OnInitialized()
     {
-        if (!AdminOptions.Value.Clusters.Any()) { AdminOptions.Value.Clusters.Add(new()); }
+        if (AdminOptions.Value.Clusters.Count == 0) { AdminOptions.Value.Clusters.Add(new()); }
     }
 
-    private async Task<bool> PreventStepChangeAsync(StepChangeDirection direction)
+    private async Task<bool> PreventStepChangeAsync(StepChangeDirection direction, int activeIndex)
     {
         var ret = false;
 

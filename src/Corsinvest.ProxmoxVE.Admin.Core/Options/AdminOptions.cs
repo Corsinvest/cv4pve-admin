@@ -6,8 +6,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Configurations;
 
 public class AdminOptions
 {
-    public List<ClusterOptions> Clusters { get; set; } = new();
-
+    public List<ClusterOptions> Clusters { get; set; } = [];
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Company { get; set; } = default!;

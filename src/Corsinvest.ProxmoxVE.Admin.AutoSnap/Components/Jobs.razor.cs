@@ -6,6 +6,7 @@ using Corsinvest.AppHero.Core.BaseUI.DataManager;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Repository;
+using Corsinvest.ProxmoxVE.Api.Extension;
 using MudExtensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Components;
@@ -45,8 +46,8 @@ public partial class Jobs
         DataGridManager.BeforeEditAsync = async (item, isNew) =>
         {
             VmIds = (await (await PveClientService.GetClientCurrentClusterAsync())
-                         .GetVmsJollyKeys(true, true, true, true, true, true))
-                    .ToList();
+                         .GetVmIds(true, true, true, true, true, true))
+                         .ToList();
 
             //add customs
             VmIds.AddRange(item.VmIdsList);
@@ -75,11 +76,11 @@ public partial class Jobs
         }
     }
 
-    private async Task Clean(AutoSnapJob item)
+    private async Task Purge(AutoSnapJob item)
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Clean"], L["Execute Clean?"]))
         {
-            JobService.Schedule<Job>(a => a.Clean(item.Id), TimeSpan.FromSeconds(10));
+            JobService.Schedule<Job>(a => a.Purge(item.Id), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Cleaning snapshots!"], UINotifierSeverity.Info);
         }
     }

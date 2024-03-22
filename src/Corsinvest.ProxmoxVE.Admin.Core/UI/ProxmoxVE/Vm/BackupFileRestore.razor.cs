@@ -58,7 +58,7 @@ public partial class BackupFileRestore
             _ => Icons.Material.Filled.Description,
         };
 
-    HashSet<NodeBackupFile> TreeItems { get; set; } = new HashSet<NodeBackupFile>();
+    HashSet<NodeBackupFile> TreeItems { get; set; } = [];
 
     protected override async void OnInitialized()
     {

@@ -23,15 +23,15 @@ public partial class Tasks : IRefreshable
     public async Task Refresh() => await DataGridManager.Refresh();
 
     [Parameter]
-    public IEnumerable<string> PropertiesName { get; set; } = new[]
-    {
+    public IEnumerable<string> PropertiesName { get; set; } =
+    [
         nameof(NodeTask.StartTimeDate),
         nameof(NodeTask.EndTimeDate),
         nameof(NodeTask.DurationInfo),
         nameof(NodeTask.DescriptionFull),
         nameof(NodeTask.Status),
         nameof(NodeTask.User)
-    };
+    ];
 
     private bool DialogVisible { get; set; }
     private string Logs { get; set; } = default!;

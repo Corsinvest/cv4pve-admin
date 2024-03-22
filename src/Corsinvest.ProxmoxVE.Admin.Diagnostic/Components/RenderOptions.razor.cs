@@ -11,8 +11,8 @@ public partial class RenderOptions
 {
     [Inject] private IJobService JobService { get; set; } = default!;
 
-    private string[] ThresholdTexts { get; } = new[] { "CPU", "Memory", "Network" };
-    private string[] ThresholdIcons { get; } = new[] { PveBlazorHelper.Icons.Cpu, PveBlazorHelper.Icons.Memory, PveBlazorHelper.Icons.Network };
+    private string[] ThresholdTexts { get; } = ["CPU", "Memory", "Network"];
+    private string[] ThresholdIcons { get; } = [PveBlazorHelper.Icons.Cpu, PveBlazorHelper.Icons.Memory, PveBlazorHelper.Icons.Network];
 
     public override async Task SaveAsync()
     {

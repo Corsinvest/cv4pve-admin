@@ -24,7 +24,7 @@ public class ModuleClusterOptions : IClusterName
     [Display(Name = "Number of months which should will keep")]
     public int Keep { get; set; } = 12;
 
-    public List<StorageOptions> Storages { get; set; } = new();
+    public List<StorageOptions> Storages { get; set; } = [];
 
     [Display(Name = "Cost Day CPU Running")]
     public double CostDayCpuRunning { get; set; }

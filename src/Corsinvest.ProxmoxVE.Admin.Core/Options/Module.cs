@@ -23,16 +23,13 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         Type = ModuleType.Service;
         Description = "cv4pve-Admin";
 
-        Roles = new Role[]
-        {
+        Roles =
+        [
             new("",
                 "",
                 Permissions.Clusters.Data.Permissions.Union(
-                Permissions.Nodes.Data.Permissions.Union(new []
-                {
-                    Permissions.Nodes.FindNewNodes
-                })))
-        };
+                Permissions.Nodes.Data.Permissions.Union([Permissions.Nodes.FindNewNodes])))
+        ];
     }
 
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)

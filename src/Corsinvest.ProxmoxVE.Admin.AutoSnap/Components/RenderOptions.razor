@@ -20,29 +20,36 @@
                     <MudCardContent>
                         <MudGrid>
                             <MudItem xs="6" md="4">
-                                <AHEnumSelect TEnum="SearchMode" @bind-Value="@context.SearchMode"
+                                <AHEnumSelect TEnum="SearchMode"
+                                              @bind-Value="@context.SearchMode"
                                               Label="@L[GetDescriptionProperty(a => a.Clusters[0].SearchMode)]" />
                             </MudItem>
 
                             <MudItem xs="6" md="4">
-                                <MudTextField T="string" @bind-Value="@context.TimestampFormat"
+                                <MudTextField T="string"
+                                              @bind-Value="@context.TimestampFormat"
                                               Label="@L[GetDescriptionProperty(a => a.Clusters[0].TimestampFormat)]" />
                             </MudItem>
 
                             <MudItem xs="6" md="4">
-                                <MudNumericField T="int" @bind-Value="@context.KeepHistory"
+                                <MudNumericField T="int"
+                                                 @bind-Value="@context.KeepHistory"
                                                  Label="@L[GetDescriptionProperty(a => a.Clusters[0].KeepHistory)]"
-                                                 Variant="Variant.Text" Min="0" Max="99" />
+                                                 Variant="Variant.Text"
+                                                 Min="0"
+                                                 Max="99" />
                             </MudItem>
 
                             <MudItem xs="6" md="4">
-                                <MudNumericField T="int" @bind-Value="@context.MaxPercentageStorage"
+                                <MudNumericField T="int"
+                                                 @bind-Value="@context.MaxPercentageStorage"
                                                  Label="@L[GetDescriptionProperty(a => a.Clusters[0].MaxPercentageStorage)]" />
                             </MudItem>
 
                             <MudItem xs="6" md="8">
-                                <MudSwitch @bind-Checked="@context.OnRemoveJobRemoveSnapshots"
-                                           Label="@L[GetDescriptionProperty(a => a.Clusters[0].OnRemoveJobRemoveSnapshots)]" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="@context.OnRemoveJobRemoveSnapshots"
+                                           Label="@L[GetDescriptionProperty(a => a.Clusters[0].OnRemoveJobRemoveSnapshots)]"
+                                           Color="Color.Primary" />
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>

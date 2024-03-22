@@ -16,8 +16,8 @@ public partial class StorageContents
     [Parameter] public PermissionsRead Permissions { get; set; } = default!;
 
     [Parameter]
-    public IEnumerable<string> PropertiesName { get; set; } = new[]
-    {
+    public IEnumerable<string> PropertiesName { get; set; } =
+    [
         nameof(NodeStorageContent.Storage),
         nameof(NodeStorageContent.VmId),
         nameof(NodeStorageContent.FileName),
@@ -26,7 +26,7 @@ public partial class StorageContents
         nameof(NodeStorageContent.Format),
         nameof(NodeStorageContent.Verified),
         nameof(NodeStorageContent.Encrypted),
-    };
+    ];
 
     [Inject] private IDataGridManager<NodeStorageContent> DataGridManager { get; set; } = default!;
 

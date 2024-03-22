@@ -40,7 +40,7 @@ public partial class RenderIndex
                 if (File.Exists(item.GetPath())) { File.Delete(item.GetPath()); }
 
                 //remove folder id empty
-                if (!Directory.GetFiles(item.GetDirectoryWorkJobId()).Any())
+                if (Directory.GetFiles(item.GetDirectoryWorkJobId()).Length == 0)
                 {
                     Directory.Delete(item.GetDirectoryWorkJobId(), true);
                 }

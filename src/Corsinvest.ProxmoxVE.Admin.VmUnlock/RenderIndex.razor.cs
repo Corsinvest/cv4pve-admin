@@ -11,7 +11,7 @@ public partial class RenderIndex
 {
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
 
-    private Resources? RefResources { get; set; } = default!;
+    private Resources<ClusterResource>? RefResources { get; set; } = default!;
     private bool LoadingUnlock { get; set; }
 
     private async Task<IEnumerable<ClusterResource>> GetItems() => await Helper.GetVmLocks(await PveClientService.GetClientCurrentClusterAsync());

@@ -15,8 +15,8 @@ public partial class StorageUsage
     [Parameter] public string GroupBy { get; set; } = nameof(NodeStorageContent.Storage);
 
     [Parameter]
-    public IEnumerable<string> PropertiesName { get; set; } = new[]
-    {
+    public IEnumerable<string> PropertiesName { get; set; } =
+    [
         nameof(NodeStorageContent.Storage),
         nameof(NodeStorageContent.FileName),
         nameof(NodeStorageContent.Size),
@@ -25,7 +25,7 @@ public partial class StorageUsage
         nameof(NodeStorageContent.Content),
         nameof(NodeStorageContent.Verified),
         nameof(NodeStorageContent.Encrypted),
-    };
+    ];
 
     [Inject] private LayoutService LayoutService { get; set; } = default!;
 

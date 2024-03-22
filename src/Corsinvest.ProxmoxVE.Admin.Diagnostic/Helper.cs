@@ -121,7 +121,7 @@ internal class Helper
                 {
                     Subject = L["{0} - Diagnostic result of cluster '{1}'", appOptions.Name, clusterName],
                     Body = L["Diagnostic result of {0}", info.Date],
-                    Attachments = new[] { new Attachment(ms, "Diagnostic.pdf", System.Net.Mime.MediaTypeNames.Application.Pdf) }
+                    Attachments = [new Attachment(ms, "Diagnostic.pdf", System.Net.Mime.MediaTypeNames.Application.Pdf)]
                 });
             }
         }

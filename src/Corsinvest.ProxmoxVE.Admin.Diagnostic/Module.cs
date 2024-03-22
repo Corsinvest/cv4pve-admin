@@ -28,29 +28,24 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
+        Roles =
+        [
             new("",
                 "",
                 Permissions.Issue.Data.Permissions
                     .Union(Permissions.Result.Data.Permissions)
-                    .Union(new []
-                    {
-                        Permissions.Result.Run ,
-                        Permissions.Result.Delete,
-                        Permissions.Result.DownloadPdf,
-                    }))
-        };
+                    .Union([Permissions.Result.Run ,Permissions.Result.Delete,Permissions.Result.DownloadPdf]))
+        ];
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             new ModuleWidget(this,"Status")
             {
                 GroupName = Category,
                 Render = typeof(RenderWidget),
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             }
-        };
+        ];
 
         UrlHelp += "#chapter_module_diagnostic";
     }
@@ -58,7 +53,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)
         => AddOptions<Options, RenderOptions>(services, config)
             .AddDbContext<DiagnosticDbContext>(options => options.UseSqlite($"Data Source={Path.Combine(PathData, "db.db")}"))
-            .AddRepositories<DiagnosticDbContext>(new[] { typeof(Execution), typeof(ExecutionData), typeof(IgnoredIssue) });
+            .AddRepositories<DiagnosticDbContext>([typeof(Execution), typeof(ExecutionData), typeof(IgnoredIssue)]);
 
     public override async Task OnApplicationInitializationAsync(IHost host)
     {

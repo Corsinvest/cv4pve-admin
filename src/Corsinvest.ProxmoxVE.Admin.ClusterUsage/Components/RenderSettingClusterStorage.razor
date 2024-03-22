@@ -37,17 +37,21 @@
     <EditTemplate>
         <MudGrid>
             <MudItem md="6">
-                <MudTextField @bind-Value="@context.Storage" Label="@(L[GetDescriptionProperty<StorageOptions>(a => a.Storage)])"
-                              For="@(() => context.Storage)" ReadOnly />
+                <MudTextField @bind-Value="@context.Storage"
+                              Label="@(L[GetDescriptionProperty<StorageOptions>(a => a.Storage)])"
+                              For="@(() => context.Storage)"
+                              ReadOnly="true" />
             </MudItem>
 
             <MudItem md="3">
-                <MudNumericField @bind-Value="@context.CostDayGbRunning" Label="@(L[GetDescriptionProperty<StorageOptions>(a => a.CostDayGbRunning)])"
+                <MudNumericField @bind-Value="@context.CostDayGbRunning"
+                                 Label="@(L[GetDescriptionProperty<StorageOptions>(a => a.CostDayGbRunning)])"
                                  For="@(() => context.CostDayGbRunning)" />
             </MudItem>
 
             <MudItem md="3">
-                <MudNumericField @bind-Value="@context.CostDayGbStopped" Label="@(L[GetDescriptionProperty<StorageOptions>(a => a.CostDayGbStopped)])"
+                <MudNumericField @bind-Value="@context.CostDayGbStopped"
+                                 Label="@(L[GetDescriptionProperty<StorageOptions>(a => a.CostDayGbStopped)])"
                                  For="@(() => context.CostDayGbStopped)" />
             </MudItem>
         </MudGrid>

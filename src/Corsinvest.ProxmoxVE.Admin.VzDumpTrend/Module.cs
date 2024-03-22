@@ -32,28 +32,28 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
+        Roles =
+        [
             new("",
                 "",
                 Permissions.Job.Data.Permissions
-                    .Union(new []
-                    {
+                    .Union(
+                    [
                         Permissions.Job.Scan,
                         Permissions.Job.ShowLogFull,
                         Permissions.Job.ShowLogVm
-                    }))
-        };
+                    ]))
+        ];
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             new ModuleWidget(this,"Status")
             {
                 GroupName = Category,
                 Render = typeof(RenderWidget),
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             }
-        };
+        ];
 
         UrlHelp += "#chapter_module_vzdump_trend";
     }
@@ -61,7 +61,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)
         => AddOptions<Options, RenderOptions>(services, config)
             .AddDbContext<VzDumpTrendDbContext>(options => options.UseSqlite($"Data Source={Path.Combine(PathData, "db.db")}"))
-            .AddRepositories<VzDumpTrendDbContext>(new[] { typeof(VzDumpDetail), typeof(VzDumpTask) });
+            .AddRepositories<VzDumpTrendDbContext>([typeof(VzDumpDetail), typeof(VzDumpTask)]);
     public override async Task OnApplicationInitializationAsync(IHost host)
     {
         await Task.CompletedTask;

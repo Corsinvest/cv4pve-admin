@@ -20,7 +20,7 @@
     <Columns>
         <AHPropertyColumn T="NodeReplication" TProperty="bool" Property="a => a.Disable" FormatProvider="typeof(PveFormatProvider)">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.Disable" ReadOnly />
+                <MudCheckBox Value="@context.Item.Disable" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 

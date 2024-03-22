@@ -5,6 +5,7 @@
 using Corsinvest.AppHero.Core.BaseUI.DataManager;
 using Corsinvest.AppHero.Core.Domain.Repository;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
+using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Components;
@@ -20,6 +21,12 @@ public partial class Status
     [Inject] private ILoggerFactory LoggerFactory { get; set; } = default!;
     [Inject] private IReadRepository<AutoSnapJob> Jobs { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
+
+    private readonly AggregateDefinition<AutoSnapInfo> SizeAggregation = new()
+    {
+        Type = AggregateType.Custom,
+        CustomAggregate = x => $"Total: {FormatHelper.FromBytes(x.Sum(a => a.Size))}"
+    };
 
     protected override void OnInitialized()
     {
@@ -44,7 +51,23 @@ public partial class Status
                                     : Helper.AllVms;
             }
 
-            return await Helper.GetInfo((await PveClientService.GetClientCurrentClusterAsync())!, options, LoggerFactory, vmIdsOrNames);
+            var client = (await PveClientService.GetClientCurrentClusterAsync())!;
+            var data = await Helper.GetInfo(client, options, LoggerFactory, vmIdsOrNames);
+
+            //snapshot size
+            var disks = await PveClientService.GetDisksInfo(client, (await PveClientService.GetCurrentClusterOptionsAsync())!);
+
+            foreach (var item in data)
+            {
+                item.Size = disks.Where(a => a.VmId == item.VmId)
+                                 .SelectMany(a => a.Snapshots)
+                                 .Where(a => a.Name == item.Name && !a.Replication)
+                                 .Select(a => a.Size)
+                                 .DefaultIfEmpty(0)
+                                 .Sum();
+            }
+
+            return data;
         };
     }
 

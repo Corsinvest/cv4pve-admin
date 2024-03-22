@@ -27,16 +27,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
-            new("",
-                "",
-                Permissions.DataGrid.Data.Permissions
-                    .Union(new[]
-                    {
-                        Permissions.DataGrid.BlinkLed
-                    }))
-        };
+        Roles = [new("", "", Permissions.DataGrid.Data.Permissions.Union([Permissions.DataGrid.BlinkLed]))];
 
         UrlHelp += "#chapter_module_disks_status";
     }

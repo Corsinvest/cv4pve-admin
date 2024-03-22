@@ -35,7 +35,7 @@
 
         <AHPropertyColumn T="VzDumpDetail" TProperty="bool" Property="a => a.Status" FormatProvider="typeof(PveFormatProvider)" CellClassFunc="CellClassFunc">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.Status" ReadOnly />
+                <MudCheckBox Value="@context.Item.Status" ReadOnly="true" />
              </CellTemplate>
          </AHPropertyColumn>
 
@@ -77,7 +77,7 @@
      </TitleContent>
 
      <DialogContent>
-         <MudTextField T="string" Lines="20" Text="@DialogContent" ReadOnly Style="margin-top: 0px;" />
+            <MudTextField T="string" Lines="20" Text="@DialogContent" ReadOnly="true" Style="margin-top: 0px;" />
      </DialogContent>
      <DialogActions>
          <MudButton Variant="Variant.Filled"

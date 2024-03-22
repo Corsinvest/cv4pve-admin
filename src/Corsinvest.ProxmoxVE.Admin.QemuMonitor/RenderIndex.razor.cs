@@ -18,7 +18,7 @@ public partial class RenderIndex
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
     [Inject] private IDataGridManager<BlockStats> DataGridManager { get; set; } = default!;
 
-    private readonly List<BlockStats> _data = new();
+    private readonly List<BlockStats> _data = [];
 
     class BlockStats
     {

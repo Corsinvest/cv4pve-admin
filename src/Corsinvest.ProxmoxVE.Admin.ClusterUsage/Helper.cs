@@ -4,9 +4,13 @@
  */
 using Corsinvest.ProxmoxVE.Admin.ClusterUsage.Repository;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
+using Corsinvest.ProxmoxVE.Admin.Core.Models;
+using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
+using Mapster;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 
@@ -14,6 +18,33 @@ namespace Corsinvest.ProxmoxVE.Admin.ClusterUsage;
 
 internal class Helper
 {
+    public static async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetDataVms(PveClient client, bool onlyRun, IPveClientService pveClientService)
+    {
+        var data = (await client.GetResources(ClusterResourceType.All))
+                        .CalculateHostUsage()
+                        .Where(a => a.ResourceType == ClusterResourceType.Vm)
+                        .Where(a => a.IsRunning, onlyRun)
+                        .ToList()
+                        .AsQueryable()
+                        .ProjectToType<ClusterResourceVmExtraInfo>()
+                        .ToList();
+
+        //snapshot size
+        var disks = await pveClientService.GetDisksInfo(client, (await pveClientService.GetCurrentClusterOptionsAsync())!);
+
+        foreach (var item in data)
+        {
+            item.SnapshotsSize = disks.Where(a => a.VmId == item.VmId)
+                                      .SelectMany(a => a.Snapshots)
+                                      .Where(a => !a.Replication)
+                                      .Select(a => a.Size)
+                                      .DefaultIfEmpty(0)
+                                      .Sum();
+        }
+
+        return data;
+    }
+
     public static async Task Scan(IServiceScope scope, string clusterName)
     {
         var loggerFactory = scope.GetLoggerFactory();

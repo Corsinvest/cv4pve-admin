@@ -31,7 +31,7 @@ public class Info
     public DateTime? NextDueDate { get; set; } = default!;
 
     [XmlElement("nextduedate")]
-    public string NextDueDatetring
+    public string NextDueDateString
     {
         get => NextDueDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty;
         set => NextDueDate = DateTime.TryParse(value, out var date) ? date : null;

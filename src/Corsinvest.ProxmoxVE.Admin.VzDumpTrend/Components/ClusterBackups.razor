@@ -20,7 +20,7 @@
     <Columns>
         <AHPropertyColumn T="ClusterBackup" TProperty="bool" Property="a => a.Enabled" FormatProvider="typeof(PveFormatProvider)">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.Enabled" ReadOnly />
+                <MudCheckBox Value="@context.Item.Enabled" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 
@@ -32,7 +32,7 @@
 
         <AHPropertyColumn T="ClusterBackup" TProperty="bool" Property="a => a.All" FormatProvider="typeof(PveFormatProvider)">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.All" ReadOnly />
+                 <MudCheckBox Value="@context.Item.All" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 

@@ -25,10 +25,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
-            new("","", Permissions.DataGrid.Data.Permissions)
-        };
+        Roles = [new("", "", Permissions.DataGrid.Data.Permissions)];
 
         UrlHelp += "#chapter_module_qemu_monitor";
     }

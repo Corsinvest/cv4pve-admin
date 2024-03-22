@@ -14,7 +14,7 @@ public partial class RenderIndex
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
     [Inject] private IPveUtilityService PveUtilityService { get; set; } = default!;
 
-    private Resources? RefResources { get; set; }
+    private Resources<ClusterResource>? RefResources { get; set; }
     private bool LoadingFreeMemory { get; set; }
 
     private async Task<IEnumerable<ClusterResource>> GetItems()
