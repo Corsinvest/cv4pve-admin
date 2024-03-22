@@ -17,6 +17,8 @@ internal class Helper
 {
     public static DateTime ParseDateBackup(string value) => DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", null);
 
+    private static readonly string[] _sizes = ["KIB", "MIB", "GIB", "TIB"];
+
     public static List<VzDumpDetail> ParserVzDumpFromTaskLog(VzDumpTask task)
     {
         const string KEY_STARTING = "INFO: Starting Backup of VM ";
@@ -50,7 +52,7 @@ internal class Helper
                     {
                         Task = task,
                         VmId = vmId,
-                        Logs = new List<string>(),
+                        Logs = [],
                         Error = row
                     };
                     backups.Add(backup);
@@ -62,7 +64,7 @@ internal class Helper
                 {
                     Task = task,
                     VmId = row[KEY_STARTING.Length..].Split(' ')[0],
-                    Logs = new List<string>()
+                    Logs = []
                 };
                 backups.Add(backup);
             }
@@ -116,9 +118,8 @@ internal class Helper
                                  .Trim()
                                  .Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
 
-                    var sizes = new[] { "KIB", "MIB", "GIB", "TIB" }.ToList();
                     var data = value.Split(" ");
-                    var indexSize = sizes.IndexOf(data[1].ToUpper());
+                    var indexSize = _sizes.IndexOf(data[1].ToUpper());
                     if (indexSize >= 0)
                     {
                         indexSize++;

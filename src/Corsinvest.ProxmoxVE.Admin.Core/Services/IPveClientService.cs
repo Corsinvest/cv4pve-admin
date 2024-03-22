@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.DependencyInjection;
+using Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo;
 using Corsinvest.ProxmoxVE.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
@@ -24,4 +25,5 @@ public interface IPveClientService : IScopedDependency
     Task<bool> CheckIsValidVersionAsync(PveClient client);
     Task<Api.Shared.Models.Cluster.ClusterStatus?> GetClusterStatusAsync(PveClient client);
     string GetUrl(ClusterOptions clusterOptions);
+    Task<IEnumerable<DiskInfoBase>> GetDisksInfo(PveClient client, ClusterOptions clusterOptions);
 }

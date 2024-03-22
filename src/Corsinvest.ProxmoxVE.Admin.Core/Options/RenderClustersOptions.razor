@@ -4,7 +4,7 @@
 *@
 @inherits AHComponentBase
 
-<MudAlert Severity="Severity.Error">@L["The minimal version for Proxmoxm VE {0}",PveAdminHelper.MinimalVersion]</MudAlert>
+<MudAlert Severity="Severity.Error">@L["The minimal version for Proxmox VE {0}", PveAdminHelper.MinimalVersion]</MudAlert>
 
 <br />
 
@@ -48,13 +48,23 @@
     <EditTemplate>
         <MudGrid>
             <MudItem md="9">
-                <MudTextField @bind-Value="@context.Description" Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Description)])"
+                <MudTextField @bind-Value="@context.Description"
+                              Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Description)])"
                               For="@(() => context.Description)" />
             </MudItem>
 
             <MudItem md="3">
-                <MudNumericField @bind-Value="@context.Timeout" Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Timeout)])"
+                <MudNumericField @bind-Value="@context.Timeout"
+                                 Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.Timeout)])"
                                  For="@(() => context.Timeout)" />
+            </MudItem>
+
+            <MudItem md="12">
+                <MudSwitch T="bool"
+                           @bind-Value="@context.CalculateSnapshotSize"
+                           Label="@(L[GetDescriptionProperty<ClusterOptions>(a => a.CalculateSnapshotSize)])"
+                           For="@(() => context.CalculateSnapshotSize)"
+                           Color="Color.Primary" />
             </MudItem>
 
             <MudItem md="12">

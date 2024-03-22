@@ -104,7 +104,7 @@ internal class Helper
                                 .Skip(moduleClusterOptions.Keep)
                                 .ToList();
 
-            if (histories.Any())
+            if (histories.Count != 0)
             {
                 await jobHistoryRepo.DeleteRangeAsync(histories);
                 await jobHistoryRepo.SaveChangesAsync();

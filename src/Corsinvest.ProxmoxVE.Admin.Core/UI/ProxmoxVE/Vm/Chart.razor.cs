@@ -19,7 +19,7 @@ partial class Chart
     private string Name2 { get; set; } = default!;
     private string Title { get; set; } = default!;
     private string Icon { get; set; } = default!;
-    private IEnumerable<Data> Items { get; set; } = new List<Data>();
+    private IEnumerable<Data> Items { get; set; } = [];
     private ApexChartOptions<Data> ChartOptions { get; set; } = new();
     private SeriesType SeriesType { get; set; } = SeriesType.Line;
 
@@ -36,8 +36,8 @@ partial class Chart
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new()
-        {
+        Yaxis =
+        [
             new YAxis
             {
                 Title = new AxisTitle { Text = L["CPU Size"] },
@@ -49,7 +49,7 @@ partial class Chart
                 DecimalsInFloat = 1,
                 Opposite = true
             }
-        },
+        ],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -66,14 +66,14 @@ partial class Chart
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new()
-        {
+        Yaxis =
+        [
             new YAxis
             {
                 Title = new AxisTitle { Text = L["Usage (GB)"] },
                 DecimalsInFloat = 1,
             }
-        },
+        ],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -90,14 +90,14 @@ partial class Chart
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new()
-        {
+        Yaxis =
+        [
             new YAxis
             {
                 Title = new AxisTitle { Text = L["Usage (Kb)"] },
                 DecimalsInFloat = 1,
             }
-        },
+        ],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 

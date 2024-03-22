@@ -1,0 +1,97 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo
+
+@inherits AHComponentBase
+
+<MudCard>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@L["Snapshots"]</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        @RenderTable(false)
+
+        <br />
+
+        @RenderTable(true)
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    [Parameter] public IEnumerable<DiskInfoBase> Disks { get; set; } = [];
+
+    [Inject] public Corsinvest.AppHero.Core.MudBlazorUI.Style.UIOptions UIOptions { get; set; } = default!;
+
+    private RenderFragment RenderTable(bool replication) => __builder =>
+    {
+        @if (replication)
+        {
+            <MudText>
+                <div class="d-flex">
+                    <MudIcon Icon="@PveBlazorHelper.Icons.Replication" />
+                    Replication
+                </div>
+            </MudText>
+        }
+        else
+        {
+            <MudText>
+                <div class="d-flex">
+                    <MudIcon Icon="@PveBlazorHelper.Icons.Snapshot" />
+                    Normal
+                </div>
+            </MudText>
+        }
+
+        <MudSimpleTable Style="overflow-x: auto;"
+                        Bordered="@UIOptions.Theme.Table.IsBordered"
+                        Striped="@UIOptions.Theme.Table.IsStriped"
+                        Hover="@UIOptions.Theme.Table.IsHoverable"
+                        Dense="@UIOptions.Theme.Table.IsDense">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Host</th>
+                    <th>Space</th>
+                    <th>Snapshots</th>
+                    <th>Size</th>
+                    <th>VMs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var disks = Disks.Where(a => a.Snapshots.Any(b => b.Replication == replication));
+                }
+
+                @foreach (var item in disks.GroupBy(a => new { a.Type, a.Host, a.SpaceName }))
+                {
+                    var snaspshots = item.SelectMany(a => a.Snapshots).Where(a => a.Replication == replication);
+
+                    <tr>
+                        <td>@item.Key.Type</td>
+                        <td>@item.Key.Host</td>
+                        <td>@item.Key.SpaceName</td>
+                        <td>@snaspshots.Count()</td>
+                        <td>@Humanizer.Bytes.ByteSize.FromBytes(snaspshots.Sum(a => a.Size))</td>
+                        <td>@item.DistinctBy(a => a.VmId).Count()</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th>@disks.DistinctBy(a => a.Host).Count()</th>
+                    <th></th>
+                    <th></th>
+                    <td>@Humanizer.Bytes.ByteSize.FromBytes(disks.SelectMany(a => a.Snapshots).Where(a => a.Replication == replication).Sum(a => a.Size))</td>
+                    <th>@disks.DistinctBy(a => a.VmId).Count()</th>
+                </tr>
+            </tfoot>
+        </MudSimpleTable>
+    };
+}

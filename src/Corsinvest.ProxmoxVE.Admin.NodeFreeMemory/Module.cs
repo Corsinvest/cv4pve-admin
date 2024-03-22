@@ -15,8 +15,8 @@ public class Module : PveAdminModuleBase, IForceLoadModule
     {
         Authors = "Corsinvest Srl";
         Company = "Corsinvest Srl";
-        Keywords = "Node,Host,Free,Memory";
-        Description = "Free Memory Node";
+        Keywords = "Node,Host,Free,Memory,Clean";
+        Description = "Memory Cleanup";
         SetCategory(AdminModuleCategory.Utilities);
         InfoText = "Free up the node's memory space in case of error: \"out of memory\" or \"kvm: failed to initialize KVM: Cannot allocate memory\"";
 
@@ -26,16 +26,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
-            new("",
-                "",
-                Permissions.DataGrid.Data.Permissions
-                    .Union(new[]
-                    {
-                        Permissions.DataGrid.FreeMemory
-                    }))
-        };
+        Roles = [new("", "", Permissions.DataGrid.Data.Permissions.Union([Permissions.DataGrid.FreeMemory]))];
 
         UrlHelp += "#chapter_module_node_free_memory";
     }

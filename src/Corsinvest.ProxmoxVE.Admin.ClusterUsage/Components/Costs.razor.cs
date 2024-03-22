@@ -42,13 +42,13 @@ public partial class Costs
             Size = 5,
             FillOpacity = new Opacity(0.8d),
         },
-        Yaxis = new() {
+        Yaxis = [
             new YAxis
             {
                 Title = new AxisTitle { Text = "Usage (GB)" },
                 DecimalsInFloat = 0,
             }
-        },
+        ],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 

@@ -31,18 +31,15 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Roles = new Role[]
-        {
+        Roles =
+        [
             new("",
                 "",
                 Permissions.Costs.Data.Permissions
-                    .Union(new []
-                    {
-                        Permissions.Costs.Scan
-                    })
+                    .Union([Permissions.Costs.Scan])
                     .Union(Permissions.Vms.Data.Permissions)
                     .Union(Permissions.Storages.Data.Permissions))
-        };
+        ];
 
         UrlHelp += "#chapter_module_cluster_usage";
     }
@@ -50,7 +47,7 @@ public class Module : PveAdminModuleBase, IForceLoadModule
     public override void ConfigureServices(IServiceCollection services, IConfiguration config)
         => AddOptions<Options, RenderOptions>(services, config)
             .AddDbContext<ClusterUsageDbContext>(options => options.UseSqlite($"Data Source={Path.Combine(PathData, "db.db")}"))
-            .AddRepositories<ClusterUsageDbContext>(new[] { typeof(DataVm), typeof(DataVmStorage) });
+            .AddRepositories<ClusterUsageDbContext>([typeof(DataVm), typeof(DataVmStorage)]);
 
     public override async Task OnApplicationInitializationAsync(IHost host)
     {

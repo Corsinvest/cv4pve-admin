@@ -21,7 +21,7 @@ public partial class DisksList
 
     private bool BlinkLedLoading { get; set; }
 
-    private readonly List<string> BlinkStatus = new();
+    private readonly List<string> BlinkStatus = [];
 
     protected override void OnInitialized()
     {

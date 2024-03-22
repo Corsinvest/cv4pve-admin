@@ -62,8 +62,8 @@ internal class Helper
                         ClusterName = clusterName,
                         JobId = job.Id,
                         VmId = job.Guest,
-                        Start = ParseDateTime(rows[0]!.Substring(0, 19)),
-                        End = ParseDateTime(rows[^1]!.Substring(0, 19)),
+                        Start = ParseDateTime(rows[0]![..19]),
+                        End = ParseDateTime(rows[^1]![..19]),
                         Log = string.Join(Environment.NewLine, rows),
                         LastSync = lastSync,
                         Error = job.Error,
@@ -71,7 +71,7 @@ internal class Helper
                         Duration = job.Duration,
                         Size = rows.Where(a => a!.Contains(KEY_SIZE))
                                    .Select(a => ByteSize.Parse(a![(a!.IndexOf(KEY_SIZE) + KEY_SIZE.Length)..]
-                                                               .EnsureEndsWith("B")
+                                                               .EnsureEndsWith(ByteSize.ByteSymbol)
                                                                .Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator))
                                                         .Bytes)
                                    .Sum()

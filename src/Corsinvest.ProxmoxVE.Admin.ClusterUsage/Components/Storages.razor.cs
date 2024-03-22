@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Models;
+using Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
@@ -13,16 +15,22 @@ namespace Corsinvest.ProxmoxVE.Admin.ClusterUsage.Components;
 public partial class Storages
 {
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
+
     private PveClient PveClient { get; set; } = default!;
+    private bool OnlyRun { get; set; } = true;
+    private Resources<ClusterResourceVmExtraInfo>? RefResourcesByVmCt { get; set; } = default!;
 
     protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentClusterAsync();
     private async Task<IEnumerable<StorageItem>> GetConfigStorages() => (await PveClient.Storage.Get()).OrderBy(a => a.Storage);
     private async Task<IEnumerable<ClusterResource>> GetStorages() => await PveClient.GetResources(ClusterResourceType.Storage);
 
-    private async Task<IEnumerable<ClusterResource>> GetVms()
-        => (await PveClient.GetResources(ClusterResourceType.All))
-            .CalculateHostUsage()
-            .Where(a => a.ResourceType == ClusterResourceType.Vm);
+    private async Task OnlyRunChanged(bool value)
+    {
+        OnlyRun = value;
+        await RefResourcesByVmCt!.Refresh();
+    }
+
+    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVms(PveClient, OnlyRun, PveClientService);
 
     private async Task<IEnumerable<NodeStorageContent>> GetContents(ClusterResource item)
     {

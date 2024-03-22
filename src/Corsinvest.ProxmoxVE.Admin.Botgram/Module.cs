@@ -28,15 +28,15 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Render = typeof(RenderIndex)
         };
 
-        Widgets = new[]
-        {
+        Widgets =
+        [
             new ModuleWidget(this,"Status")
             {
                 GroupName = Category,
                 Render = typeof(RenderWidget),
                 Class = "mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-6 mud-grid-item-md-4 mud-grid-item-lg-4"
             }
-        };
+        ];
 
         UrlHelp += "#chapter_module_botgram";
     }

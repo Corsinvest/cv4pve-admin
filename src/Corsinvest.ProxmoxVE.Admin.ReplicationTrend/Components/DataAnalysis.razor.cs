@@ -29,7 +29,7 @@ public partial class DataAnalysis
             Group = "ReplicationTrend",
             Background = "trasparent"
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Yaxis = [new YAxis { DecimalsInFloat = 0 }],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -46,7 +46,7 @@ public partial class DataAnalysis
             Group = "ReplicationTrend",
             Background = "trasparent"
         },
-        Yaxis = new() { new YAxis { DecimalsInFloat = 0 } },
+        Yaxis = [new YAxis { DecimalsInFloat = 0 }],
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
@@ -63,12 +63,12 @@ public partial class DataAnalysis
     private ApexChart<ReplicationResult> RefChart1 { get; set; } = default!;
     private ApexChart<ReplicationResult> RefChart2 { get; set; } = default!;
     private string? VmIdSelected { get; set; }
-    private IEnumerable<Data> Dates { get; set; } = Array.Empty<Data>();
-    private IEnumerable<Data> Vms { get; set; } = Array.Empty<Data>();
+    private IEnumerable<Data> Dates { get; set; } = [];
+    private IEnumerable<Data> Vms { get; set; } = [];
     private Data DateSelected { get; set; } = default!;
     private DateRange DateRange { get; set; } = new(DateTime.Now.AddDays(0).Date, DateTime.Now.Date);
-    private IEnumerable<IGrouping<string?, ReplicationResult>> DataChart { get; set; } = Array.Empty<IGrouping<string?, ReplicationResult>>();
-    private string _clusterName { get; set; } = default!;
+    private IEnumerable<IGrouping<string?, ReplicationResult>> DataChart { get; set; } = [];
+    private string _clusterName = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -139,7 +139,7 @@ public partial class DataAnalysis
     }
 
     private async Task<IEnumerable<Data>> GetVms()
-        => (await GetData(true, true, false))
+        => (await GetData(true, false))
             .GroupBy(a => a.VmId)
             .Select(a => new Data
             {
@@ -172,10 +172,10 @@ public partial class DataAnalysis
     }
 
     private async Task<IEnumerable<IGrouping<string?, ReplicationResult>>> GetDataChart()
-        => (await GetData(true, true, true))
+        => (await GetData(true, true))
                 .GroupBy(a => a.VmId);
 
-    private async Task<IQueryable<ReplicationResult>> GetData(bool whereDate, bool whereStorage, bool whereVm)
+    private async Task<IQueryable<ReplicationResult>> GetData(bool whereDate, bool whereVm)
         => (await ReplicationResults.ListAsync(new ReplicationResultSpec(_clusterName)
                                                     .InDate(whereDate, DateRange.Start, DateRange.End)
                                                     .InVm(whereVm && !string.IsNullOrWhiteSpace(VmIdSelected), VmIdSelected)))

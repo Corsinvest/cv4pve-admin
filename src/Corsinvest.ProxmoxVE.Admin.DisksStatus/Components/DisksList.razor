@@ -42,7 +42,7 @@
         <AHPropertyColumn T="NodeDiskList" TProperty="int" Property="a => a.Gpt" FormatProvider="typeof(PveFormatProvider)"
                           ShowColumnOptions="false" Sortable="false">
             <CellTemplate>
-                <MudCheckBox Checked="context.Item.Gpt == 1" ReadOnly />
+                <MudCheckBox Value="context.Item.Gpt == 1" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 

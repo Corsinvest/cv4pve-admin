@@ -85,6 +85,7 @@ public static class PveBlazorHelper
         public static string Network { get; } = MudBlazor.Icons.Material.Outlined.Lan;
         public static string Node { get; } = MudBlazor.Icons.Material.Outlined.Domain;
         public static string Snapshot { get; } = MudBlazor.Icons.Material.Outlined.CameraAlt;
+        public static string Replication { get; } = MudBlazor.Icons.Material.Outlined.Sync;
         public static string Backup { get; } = MudBlazor.Icons.Material.Outlined.Backup;
 
         public static string GetStatus(string status)
@@ -132,7 +133,7 @@ public static class PveBlazorHelper
     public class AHPropertyColumn
     {
         public static Type GetDynamicType<T>(string propertyName)
-            => typeof(AHPropertyColumn<,>).MakeGenericType(new[] { typeof(T), typeof(T).GetProperty(propertyName)!.PropertyType });
+            => typeof(AHPropertyColumn<,>).MakeGenericType([typeof(T), typeof(T).GetProperty(propertyName)!.PropertyType]);
 
         public static Dictionary<string, object> GetDynamicParameters<T>(string propertyName)
         {

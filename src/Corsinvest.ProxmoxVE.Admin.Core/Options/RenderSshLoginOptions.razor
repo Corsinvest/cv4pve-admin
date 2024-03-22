@@ -4,17 +4,21 @@
 *@
 @inherits AHComponentBase
 
+<MudAlert Severity="Severity.Warning">@L["All nodes in the cluster must have the same credentials!"]</MudAlert>
+
 <MudGrid>
     <MudItem md="6">
         <MudTextField @bind-Value="@ClusterOptions.SshCredential.Username"
                       Label="@L[GetDescriptionProperty<ClusterOptions>(a => a.SshCredential.Username)]"
-                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Person" />
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Material.Filled.Person" />
     </MudItem>
     <MudItem md="6">
-        <MudPasswordField T="string" @bind-Value="@ClusterOptions.SshCredential.Password" PasswordMode
+        <MudPasswordField T="string" @bind-Value="@ClusterOptions.SshCredential.Password"
+                          PasswordMode="true"
                           Label="@L[GetDescriptionProperty<ClusterOptions>(a => a.SshCredential.Password)]" />
-        </MudItem>
-        </MudGrid>
+    </MudItem>
+</MudGrid>
 
 @code
 {

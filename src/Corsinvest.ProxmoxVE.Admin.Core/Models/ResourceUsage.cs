@@ -25,8 +25,8 @@ public class ResourceUsage
         var storages = allStorage.Where(a => !a.Shared).ToList();
         storages.AddRange(allStorage.Where(a => a.Shared).DistinctBy(a => a.Storage));
 
-        return new List<ResourceUsage>
-        {
+        return
+        [
             new()
             {
                 Name = L["CPU"],
@@ -51,6 +51,6 @@ public class ResourceUsage
                          FormatHelper.FromBytes(storages.Sum(a => a.DiskUsage)),
                          FormatHelper.FromBytes(storages.Sum(a => a.DiskSize))]
             }
-        };
+        ];
     }
 }

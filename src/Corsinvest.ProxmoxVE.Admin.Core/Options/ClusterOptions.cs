@@ -20,16 +20,19 @@ public class ClusterOptions
     [Display(Name = "Timeout (millisec)")]
     public int Timeout { get; set; } = 1000;
 
+    [Display(Name = "Calculate snapshot size (require time)")]
+    public bool CalculateSnapshotSize { get; set; }
+
     public bool UseApiToken { get; set; }
     public Credential ApiCredential { get; } = new();
     public Credential SshCredential { get; } = new();
-    public List<ClusterNodeOptions> Nodes { get; set; } = new();
+    public List<ClusterNodeOptions> Nodes { get; set; } = [];
 
     [JsonIgnore]
     public string FullName => $"{Type}: {Name} - {Description}";
 
     public ClusterNodeOptions? GetNodeOptions(string ipAddress, string host)
-        => Nodes.FirstOrDefault(a => a.IpAddress == ipAddress || a.IpAddress.ToLower() == host.ToLower());
+        => Nodes.FirstOrDefault(a => a.IpAddress == ipAddress || a.IpAddress.Equals(host, StringComparison.CurrentCultureIgnoreCase));
 
     [JsonIgnore]
     public string ApiHostsAndPortHA => Nodes.Select(a => $"{a.IpAddress}:{a.ApiPort}").JoinAsString(",");

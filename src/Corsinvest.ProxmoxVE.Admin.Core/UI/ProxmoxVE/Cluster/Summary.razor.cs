@@ -47,9 +47,9 @@ public partial class Summary : IRefreshable
         public Color Color { get; set; }
     }
 
-    private List<VmStatus> VmsStatus { get; set; } = new();
-    private List<DataUsage> DataUsages { get; set; } = new();
-    private List<ItemStatus> NodeHealts { get; set; } = new();
+    private List<VmStatus> VmsStatus { get; set; } = [];
+    private List<DataUsage> DataUsages { get; set; } = [];
+    private List<ItemStatus> NodeHealts { get; set; } = [];
     private ItemStatus StatusInfo { get; set; } = new();
 
     private class ClusterStatusEx
@@ -108,7 +108,7 @@ public partial class Summary : IRefreshable
                 Name = item.Name,
                 Usage = item.Usage,
                 Info = item.Info,
-                Colors = new() { item.Color }
+                Colors = [item.Color]
             });
         }
 

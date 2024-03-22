@@ -26,13 +26,13 @@
         <AHPropertyColumn T="StorageItem" TProperty="string" Property="a => a.Content" FormatProvider="typeof(PveFormatProvider)" />
         <AHPropertyColumn T="StorageItem" TProperty="bool" Property="a => a.Shared">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.Shared" ReadOnly />
+                <MudCheckBox Value="@context.Item.Shared" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 
         <AHPropertyColumn T="StorageItem" TProperty="bool" Property="a => a.Disable">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.Disable" ReadOnly />
+                 <MudCheckBox Value="@context.Item.Disable" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 

@@ -32,7 +32,7 @@ public partial class VmManager
     private int ActivePanelIndex { get; set; }
     private Detail? RefDetail { get; set; } = default!;
     private Charts? RefCharts { get; set; } = default!;
-    private IEnumerable<string> PropertiesNameTasks { get; set; } = Enumerable.Empty<string>();
+    private IEnumerable<string> PropertiesNameTasks { get; set; } = [];
 
     protected override void OnInitialized()
     {

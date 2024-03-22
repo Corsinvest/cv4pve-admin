@@ -2,7 +2,9 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@using Corsinvest.ProxmoxVE.Admin.Core.Models
 @using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
+
 @inherits AHComponentBase
 
 @if (PveClient == null)
@@ -12,6 +14,7 @@
 else
 {
     <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources @ref="@RefResources"
+                                                                    T="ClusterResourceVmExtraInfo"
                                                                     Permissions="Module.Permissions.Vms.Data"
                                                                     GetItems="GetVms"
                                                                     DefaultSort="new()
@@ -32,10 +35,11 @@ else
                                                                         nameof(ClusterResource.Node),
                                                                         nameof(ClusterResource.Pool),
                                                                         nameof(ClusterResource.Tags),
+                                                                        nameof(ClusterResourceVmExtraInfo.SnapshotsSize),
                                                                         nameof(ClusterResource.Uptime)
                                                                     }">
         <ToolBarContentBefore>
-            <MudSwitch T="bool" Label="Only run" Color="Color.Primary" Checked="@OnlyRun" CheckedChanged="OnlyRunChanged" />
+            <MudSwitch T="bool" Label="Only run" Color="Color.Primary" Value="@OnlyRun" ValueChanged="OnlyRunChanged" />
         </ToolBarContentBefore>
 
         <ChildRowContent>

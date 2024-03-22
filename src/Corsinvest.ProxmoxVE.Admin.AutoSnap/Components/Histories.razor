@@ -22,16 +22,16 @@
     <Columns>
         <AHPropertyColumn T="AutoSnapJobHistory" TProperty="int" Property="a => a.JobIdTmp" />
         <AHPropertyColumn T="AutoSnapJobHistory" TProperty="DateTime" Property="a => a.Start" />
-        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="DateTime" Property="a => a.End"  />
+        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="DateTime" Property="a => a.End" />
         <AHPropertyColumn T="AutoSnapJobHistory" TProperty="string" Property="a => a.Duration" />
 
-        <TemplateColumn T="AutoSnapJobHistory">
+        <AHPropertyColumn T="AutoSnapJobHistory" TProperty="bool" Property="a => a.Status">
             <CellTemplate>
                 <AHBoolIcon IconType="AHBoolIconType.Thumb" Value="@context.Item.Status" ColorTrue="Color.Success" ColorFalse="Color.Error" />
             </CellTemplate>
-        </TemplateColumn>
+        </AHPropertyColumn>
 
-        <TemplateColumn T="AutoSnapJobHistory" CellClass="justify-end">
+        <TemplateColumn T="AutoSnapJobHistory" CellClass="justify-end" Title="Logs" ShowColumnOptions="false" Sortable="false">
             <CellTemplate>
                 <MudButtonGroup Variant="Variant.Text">
                     <AHPermissionButtonIcon Permission="Module.Permissions.History.ShowLog" OnClick="@(() => ShowLog(context.Item))" />
@@ -60,16 +60,20 @@
         <div class="d-flex gap-2">
             <MudIcon Icon="@Icons.Material.Filled.Description" />
             <MudText>@L["Job Log"]</MudText>
-        </div>
-    </TitleContent>
+            </div>
+        </TitleContent>
 
-    <DialogContent>
-        <MudTextField style="font-family: Courier New; font-size: inherit;"
-                            ReadOnly T="string" Variant="Variant.Text" Text="@DialogContent" Lines="20" />
-    </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled" OnClick="@(() => ShowDialog = false)" Color="Color.Primary">
-            @L["Close"]
+        <DialogContent>
+            <MudTextField style="font-family: Courier New; font-size: inherit;"
+                          ReadOnly="true"
+                          T="string"
+                          Variant="Variant.Text"
+                          Text="@DialogContent"
+                          Lines="20" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="@(() => ShowDialog = false)" Color="Color.Primary">
+                @L["Close"]
         </MudButton>
     </DialogActions>
-    </MudDialog>
+</MudDialog>

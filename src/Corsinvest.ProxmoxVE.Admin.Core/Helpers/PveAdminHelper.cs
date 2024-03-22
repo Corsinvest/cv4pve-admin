@@ -8,7 +8,6 @@ using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
-using QuestPDF.Drawing;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
@@ -38,6 +37,8 @@ public static class PveAdminHelper
     public static Version MinimalVersion { get; } = new Version(6, 4);
 
     public static Dictionary<AdminModuleCategory, ModuleCategory> ModuleCategories { get; } = default!;
+
+    private static readonly string[] headers = ["Server Id", "PVE Version", "Name", "IpAddress", "Subscription Id"];
 
     public static async Task<string> GenerateWhoUsing(PveClient client, AdminOptions adminOptions)
     {
@@ -76,17 +77,17 @@ Company: {adminOptions.Company}
                             ? (await client.Nodes[item.Name].Version.Get())?.Version
                             : "";
 
-            rows.Add(new string[]
-            {
+            rows.Add(
+            [
                 nodeOptions?.ServerId,
                 version,
                 item.Name,
                 item.IpAddress,
                 nodeOptions?.SubscriptionId
-            });
+            ]);
         }
 
-        return TableGenerator.ToText(new[] { "Server Id", "PVE Version", "Name", "IpAddress", "Subscription Id" }, rows);
+        return TableGenerator.ToText(headers, rows);
     }
 
     public static async Task<string> GetSupportInfo(PveClient client)

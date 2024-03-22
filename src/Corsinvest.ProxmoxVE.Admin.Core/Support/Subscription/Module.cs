@@ -29,16 +29,12 @@ public class Module : PveAdminModuleBase, IForceLoadModule
             Order = 1
         };
 
-        Roles = new Role[]
-        {
+        Roles =
+        [
             new("",
                 "",
-                Permissions.Subscription.Data.Permissions.Union(new []
-                {
-                    Permissions.Subscription.Check,
-                    Permissions.Subscription.Register,
-                }))
-        };
+                Permissions.Subscription.Data.Permissions.Union([Permissions.Subscription.Check,Permissions.Subscription.Register,]))
+        ];
     }
 
     public class Permissions

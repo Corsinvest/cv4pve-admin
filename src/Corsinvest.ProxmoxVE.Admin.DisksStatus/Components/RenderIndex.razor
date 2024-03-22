@@ -12,23 +12,24 @@
     else
     {
         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources Height="calc(100vh - 320px)"
-                                                                    Permissions="Module.Permissions.DataGrid.Data"
-                                                                    GetItems="GetNodes"
-                                                                    PropertiesName="new[]
-                                                                    {
-                                                                        nameof(ClusterResource.Status),
-                                                                        nameof(ClusterResource.Type),
-                                                                        nameof(ClusterResource.Description),
-                                                                        nameof(ClusterResource.DiskUsagePercentage),
-                                                                        nameof(ClusterResource.MemoryUsagePercentage),
-                                                                        nameof(ClusterResource.CpuUsagePercentage),
-                                                                        nameof(ClusterResource.Uptime)
-                                                                    }"
-                                                                    DefaultSort="new()
-                                                                    {
-                                                                        [nameof(ClusterResource.Type)] = false,
-                                                                        [nameof(ClusterResource.Description)] = false,
-                                                                    }">
+                                                                        T="ClusterResource"
+                                                                        Permissions="Module.Permissions.DataGrid.Data"
+                                                                        GetItems="GetNodes"
+                                                                        PropertiesName="new[]
+                                                                        {
+                                                                            nameof(ClusterResource.Status),
+                                                                            nameof(ClusterResource.Type),
+                                                                            nameof(ClusterResource.Description),
+                                                                            nameof(ClusterResource.DiskUsagePercentage),
+                                                                            nameof(ClusterResource.MemoryUsagePercentage),
+                                                                            nameof(ClusterResource.CpuUsagePercentage),
+                                                                            nameof(ClusterResource.Uptime)
+                                                                        }"
+                                                                        DefaultSort="new()
+                                                                        {
+                                                                            [nameof(ClusterResource.Type)] = false,
+                                                                            [nameof(ClusterResource.Description)] = false,
+                                                                        }">
             <ChildRowContent>
                 <DisksList PveClient="PveClient" Node="@context.Item.Node" />
             </ChildRowContent>

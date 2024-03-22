@@ -14,28 +14,31 @@
                             <div class="d-flex gap-4">
                                 <MudIcon Icon="@Icons.Material.Filled.Schedule" />
                                 <MudText>@L["Scheduling"]</MudText>
-                            </div>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudGrid>
-                            <MudItem xs="6" md="6">
-                                <MudSwitch T="bool" @bind-Checked="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
-                                           For="@(() => context.Enabled)" Color="Color.Primary" />
-                            </MudItem>
+                                </div>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="6" md="6">
+                                    <MudSwitch T="bool"
+                                               @bind-Value="@context.Enabled"
+                                               Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
+                                               For="@(() => context.Enabled)"
+                                               Color="Color.Primary" />
+                                </MudItem>
 
-                            <MudItem xs="6" md="6">
-                                <MudNumericField T="int" @bind-Value="@context.MaxDaysLogs" Label="@L[GetDescriptionProperty(a => a.Clusters[0].MaxDaysLogs)]"
-                                                 Variant="Variant.Text" />
-                            </MudItem>
+                                <MudItem xs="6" md="6">
+                                    <MudNumericField T="int" @bind-Value="@context.MaxDaysLogs" Label="@L[GetDescriptionProperty(a => a.Clusters[0].MaxDaysLogs)]"
+                                                     Variant="Variant.Text" />
+                                </MudItem>
 
-                            <MudItem xs="12" md="12">
-                                <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
-                           </MudItem>
-                        </MudGrid>
-                    </MudCardContent>
-               </MudCard>
-            </MudItem>
-        </MudGrid>
-    </Row>
-</PveOptionsModuleRender>
+                                <MudItem xs="12" md="12">
+                                    <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
+                             </MudItem>
+                         </MudGrid>
+                     </MudCardContent>
+                 </MudCard>
+             </MudItem>
+         </MudGrid>
+     </Row>
+ </PveOptionsModuleRender>

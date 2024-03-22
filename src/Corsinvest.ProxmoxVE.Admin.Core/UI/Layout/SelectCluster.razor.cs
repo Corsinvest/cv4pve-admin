@@ -19,7 +19,7 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
     public Type Render { get; } = typeof(SelectCluster);
     private string CurrentClusterName { get; set; } = default!;
     private bool _refresh;
-    private Dictionary<ClusterNodeOptions, Info> Checks { get; } = new();
+    private Dictionary<ClusterNodeOptions, Info> Checks { get; } = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

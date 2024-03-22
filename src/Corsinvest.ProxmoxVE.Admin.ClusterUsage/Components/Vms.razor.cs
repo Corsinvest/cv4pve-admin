@@ -2,10 +2,10 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
@@ -15,8 +15,7 @@ public partial class Vms
 {
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
 
-
-    private Resources? RefResources { get; set; } = default!;
+    private Resources<ClusterResourceVmExtraInfo>? RefResources { get; set; } = default!;
     private PveClient PveClient { get; set; } = default!;
     private bool OnlyRun { get; set; } = true;
 
@@ -28,11 +27,7 @@ public partial class Vms
         await RefResources!.Refresh();
     }
 
-    private async Task<IEnumerable<ClusterResource>> GetVms()
-        => (await PveClient.GetResources(ClusterResourceType.All))
-            .CalculateHostUsage()
-            .Where(a => a.ResourceType == ClusterResourceType.Vm)
-            .Where(a => a.IsRunning, OnlyRun);
+    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVms(PveClient, OnlyRun, PveClientService);
 
     private async Task<IEnumerable<VmRrdData>> GetVmRrdData(long vmId, RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
         => await PveClient.GetVmRrdData(await PveClient.GetVm(vmId), rrdDataTimeFrame, rrdDataConsolidation);

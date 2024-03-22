@@ -16,7 +16,7 @@ public class BotgramService : BackgroundService
 {
     private readonly ILogger _logger;
     private readonly IServiceScopeFactory _scopeFactory;
-    private List<BotData> BotDatas { get; } = new List<BotData>();
+    private List<BotData> BotDatas { get; } = [];
 
     class BotData : IClusterName
     {
@@ -87,7 +87,7 @@ public class BotgramService : BackgroundService
 
         try
         {
-            while (!stoppingToken.IsCancellationRequested && BotDatas.Any())
+            while (!stoppingToken.IsCancellationRequested && BotDatas.Count != 0)
             {
                 await Task.Delay(1000, stoppingToken);
             }

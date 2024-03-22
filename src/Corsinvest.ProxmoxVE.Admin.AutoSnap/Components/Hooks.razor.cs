@@ -47,7 +47,16 @@ public partial class Hooks
 
     private async Task OnClickHookEnv() => await BrowserService.CopyToClipboard($"%{HookEnv}%");
 
-    private static ICollection<string> GetEnvironments()
-        => new PhaseEventArgs(HookPhase.SnapJobStart, new ClusterResource(), null, 0, null, false, 0, false)
-                .Environments.Keys.ToList();
+    private static IList<string> Environments 
+        => new PhaseEventArgs(HookPhase.SnapJobStart,
+                              new ClusterResource(),
+                              null,
+                              0,
+                              null,
+                              false,
+                              0,
+                              false)
+                            .Environments
+                            .Keys
+                            .ToList();
 }

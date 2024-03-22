@@ -20,7 +20,7 @@
                     <MudCardContent>
                         <MudGrid>
                             <MudItem xs="6" md="6">
-                                <MudSwitch T="bool" @bind-Checked="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
+                                    <MudSwitch T="bool" @bind-Value="@context.Enabled" Label="@L[GetDescriptionProperty(a => a.Clusters[0].Enabled)]"
                                            For="@(() => context.Enabled)" Color="Color.Primary" />
                             </MudItem>
 

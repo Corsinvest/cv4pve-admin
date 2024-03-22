@@ -5,8 +5,9 @@
 @using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster
 
 @inherits AHComponentBase
+@typeparam T
 
-<AHDataGrid T="ClusterResource"
+<AHDataGrid T="T"
             Permissions="Permissions"
             DataGridManager="DataGridManagerInt"
             Elevation="0"
@@ -21,9 +22,12 @@
             MultiSelection="@MultiSelect"
             ShowFilterIcons="false"
             SelectedItemsChanged="@SelectedItemsChanged"
+            ShowMenuIcon="true"
+            Hideable="true"
+            ColumnsPanelReordering="true"
             Height="@Height">
     <ToolBarContent>
-        <AHDataGridToolBarRead T="ClusterResource" DataGridManager="DataGridManagerInt">
+        <AHDataGridToolBarRead T="T" DataGridManager="DataGridManagerInt">
             <ToolBarContentBefore>
                 @if (ToolBarContentBefore != null)
                 {
@@ -43,19 +47,19 @@
     <Columns>
         @if (ChildRowContent != null)
         {
-            <HierarchyColumn T="ClusterResource" />
+            <HierarchyColumn T="T" />
         }
 
         @if (MultiSelect)
         {
-            <SelectColumn T="ClusterResource" ShowInFooter="false" />
+            <SelectColumn T="T" ShowInFooter="false" />
         }
 
         @foreach (var item in PropertiesName)
         {
             @if (item == nameof(ClusterResource.Status))
             {
-                <TemplateColumn T="ClusterResource" Sortable="false">
+                <TemplateColumn T="T" Sortable="false" Title="@L["Status"]">
                     <CellTemplate>
                         <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.IconStatusResource Status="@context.Item.Status"
                                                                                                 Type="@context.Item.Type"
@@ -79,6 +83,6 @@
     </LoadingContent>
 
     <PagerContent>
-        <MudDataGridPager T="ClusterResource" />
+        <MudDataGridPager T="T" />
     </PagerContent>
 </AHDataGrid>

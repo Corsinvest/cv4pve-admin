@@ -27,7 +27,7 @@ public class AutoSnapJob : JobSchedule, IAggregateRoot<int>, IClusterName
     public IEnumerable<string> VmIdsList
     {
         get => string.IsNullOrEmpty(VmIds)
-                ? Enumerable.Empty<string>()
+                ? []
                 : VmIds.Split(",").AsEnumerable();
 
         set => VmIds = value.Order().JoinAsString(",");
@@ -41,13 +41,16 @@ public class AutoSnapJob : JobSchedule, IAggregateRoot<int>, IClusterName
     [Range(1, 100)]
     public int Keep { get; set; }
 
+    [Display(Name = "Include RAM")]
     public bool VmStatus { get; set; }
+
+    [Display(Name = "While VM/CT Running")]
     public bool OnlyRuns { get; set; }
 
     [Required]
     public long TimeoutSnapshot { get; set; } = 30;
 
-    public List<AutoSnapJobHistory> Histories { get; set; } = new();
-    public List<AutoSnapJobHook> Hooks { get; set; } = new();
+    public List<AutoSnapJobHistory> Histories { get; set; } = [];
+    public List<AutoSnapJobHook> Hooks { get; set; } = [];
     public DateTimeOffset? LastRunTime => Histories?.LastOrDefault()?.Start;
 }

@@ -39,7 +39,7 @@
 
                 @if (OnlyErrors.HasDelegate)
                 {
-                    <MudSwitch T="bool" CheckedChanged="OnlyErrors" Color="Color.Error" Label="@L["Only errors"]" />
+                    <MudSwitch T="bool" ValueChanged="OnlyErrors" Color="Color.Error" Label="@L["Only errors"]" />
                 }
             </ToolBarContentBefore>
         </AHDataGridToolBarRead>
@@ -78,10 +78,10 @@
     </TitleContent>
 
     <DialogContent>
-        <MudTextField T="string" Lines="20" Text="@Logs" ReadOnly Style="margin-top: 0px;" />
+        <MudTextField T="string" Lines="20" Text="@Logs" ReadOnly="true" Style="margin-top: 0px;" />
     </DialogContent>
 
     <DialogActions>
         <MudButton Variant="Variant.Filled" OnClick="@(() => DialogVisible = false)" Color="Color.Primary">@L["Close"]</MudButton>
     </DialogActions>
-    </MudDialog>
+</MudDialog>

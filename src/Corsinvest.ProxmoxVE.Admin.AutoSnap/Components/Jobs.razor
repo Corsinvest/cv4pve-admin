@@ -27,7 +27,7 @@
 
         <AHPropertyColumn T="AutoSnapJob" TProperty="bool" Property="a => a.Enabled" Sortable="false">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.Enabled" ReadOnly />
+                <MudCheckBox Value="@context.Item.Enabled" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 
@@ -37,13 +37,13 @@
         <AHPropertyColumn T="AutoSnapJob" TProperty="int" Property="a => a.Keep" Sortable="false" />
         <AHPropertyColumn T="AutoSnapJob" TProperty="bool" Property="a => a.VmStatus" Sortable="false">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.VmStatus" ReadOnly />
+                <MudCheckBox Value="@context.Item.VmStatus" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 
         <AHPropertyColumn T="AutoSnapJob" TProperty="bool" Property="a => a.OnlyRuns" Sortable="false">
             <CellTemplate>
-                <MudCheckBox Checked="@context.Item.OnlyRuns" ReadOnly />
+                <MudCheckBox Value="@context.Item.OnlyRuns" ReadOnly="true" />
             </CellTemplate>
         </AHPropertyColumn>
 
@@ -59,7 +59,7 @@
                 <MudButtonGroup Variant="Variant.Text">
                     <AHDataGridColumnEdit T="AutoSnapJob" DataGridManager="DataGridManager" Context="@context" />
                     <AHPermissionButtonIcon Permission="Module.Permissions.Job.Snap" OnClick="@(() => Snap(context.Item))" />
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Clean" OnClick="@(() => Clean(context.Item))" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Clean" OnClick="@(() => Purge(context.Item))" />
                 </MudButtonGroup>
             </CellTemplate>
         </TemplateColumn>
@@ -70,42 +70,61 @@
             <MudTabPanel Text="@L["Autosnap"]" Icon="@Icons.Material.Filled.CameraAlt">
                 <MudGrid Class="pa-4">
                     <MudItem md="6">
-                        <MudTextField Value="@context.Id" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Id)])"
-                                      For="@(() => context.Id)" ReadOnly />
+                        <MudTextField Value="@context.Id"
+                                      Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Id)])"
+                                      For="@(() => context.Id)"
+                                      ReadOnly="true" />
                     </MudItem>
 
                     <MudItem md="6">
-                        <MudSwitch @bind-Checked="@context.Enabled" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Enabled)])"
-                                   For="@(() => context.Enabled)" Color="Color.Primary" />
+                        <MudSwitch @bind-Value="@context.Enabled"
+                                   Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Enabled)])"
+                                   For="@(() => context.Enabled)"
+                                   Color="Color.Primary" />
 
-                        <MudSwitch @bind-Checked="@context.VmStatus" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.VmStatus)])"
-                                   For="@(() => context.VmStatus)" Color="Color.Primary" />
+                        <MudSwitch @bind-Value="@context.VmStatus"
+                                   Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.VmStatus)])"
+                                   For="@(() => context.VmStatus)"
+                                   Color="Color.Primary" />
 
-                        <MudSwitch @bind-Checked="@context.OnlyRuns" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.OnlyRuns)])"
-                                   For="@(() => context.OnlyRuns)" Color="Color.Primary" />
+                        <MudSwitch @bind-Value="@context.OnlyRuns"
+                                   Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.OnlyRuns)])"
+                                   For="@(() => context.OnlyRuns)"
+                                   Color="Color.Primary" />
                     </MudItem>
 
                     <MudItem md="6">
-                        <MudTextField @bind-Value="@context.Label" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Label)])"
+                        <MudTextField @bind-Value="@context.Label"
+                                      Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Label)])"
                                       For="@(() => context.Label)" />
                     </MudItem>
 
                     <MudItem md="6">
-                        <MudNumericField @bind-Value="@context.Keep" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Keep)])"
+                        <MudNumericField @bind-Value="@context.Keep"
+                                         Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Keep)])"
                                          For="@(() => context.Keep)" />
                     </MudItem>
 
                     <MudItem md="6">
-                        <MudTextField @bind-Value="@context.Description" Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Description)])"
+                        <MudTextField @bind-Value="@context.Description"
+                                      Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.Description)])"
                                       For="@(() => context.Description)" />
                     </MudItem>
 
                     <MudItem md="6">
                         <MudComboBox @ref="RefMudComboBox" @bind-SelectedValues="@context.VmIdsList"
-                                     InputPresenter="ValuePresenter.Chip" ChipCloseable="true" ChipVariant="Variant.Filled"
+                                     InputPresenter="ValuePresenter.Chip"
+                                     ChipCloseable="true"
+                                     ChipVariant="Variant.Filled"
                                      Label="@(L[GetDescriptionProperty<AutoSnapJob>(a => a.VmIds)])"
-                                     MultiSelection="true" Editable="true" ShowCheckbox="true" Bordered="true" Dense="Dense.Standard"
-                                     Color="Color.Primary" Clearable="true" For="@(() => context.VmIds)">
+                                     MultiSelection="true"
+                                     Editable="true"
+                                     ShowCheckbox="true"
+                                     Bordered="true"
+                                     Dense="Dense.Standard"
+                                     Color="Color.Primary"
+                                     Clearable="true"
+                                     For="@(() => context.VmIds)">
                             <ChildContent>
                                 @foreach (var item in VmIds)
                                 {
@@ -124,19 +143,19 @@
 
                     <MudItem md="12">
                         <AHCronScheduler @bind-Expression="@context.CronExpression" ShowDescriptor Orientation="Orientation.Landscape" />
-                    </MudItem>
-                </MudGrid>
-            </MudTabPanel>
+                     </MudItem>
+                 </MudGrid>
+             </MudTabPanel>
 
-            <MudTabPanel Text="@L["Hooks"]" Icon="@Icons.Material.Filled.Api">
-                <Hooks Job="@context" />
-            </MudTabPanel>
-        </MudTabs>
+             <MudTabPanel Text="@L["Hooks"]" Icon="@Icons.Material.Filled.Api">
+                 <Hooks Job="@context" />
+             </MudTabPanel>
+         </MudTabs>
 
-    </EditTemplate>
+     </EditTemplate>
 
-    <ChildRowContent>
-        <MudTabs Elevation="1" ApplyEffectsToContainer Border>
+     <ChildRowContent>
+         <MudTabs Elevation="1" ApplyEffectsToContainer Border>
             <MudTabPanel Text="@L["Histories"]" Icon="@Icons.Material.Filled.History">
                 <Histories JobId="@context.Item.Id" />
             </MudTabPanel>

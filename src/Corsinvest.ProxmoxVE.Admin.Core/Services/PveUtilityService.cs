@@ -6,11 +6,15 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
 public class PveUtilityService : IPveUtilityService
 {
+    private readonly ISshService _sshService;
     private readonly IPveClientService _pveClientService;
     private readonly ILogger<PveUtilityService> _logger;
 
-    public PveUtilityService(IPveClientService pveClientService, ILogger<PveUtilityService> logger)
+    public PveUtilityService(IPveClientService pveClientService,
+                             ISshService sshService,
+                             ILogger<PveUtilityService> logger)
     {
+        _sshService = sshService;
         _pveClientService = pveClientService;
         _logger = logger;
     }
@@ -26,12 +30,11 @@ public class PveUtilityService : IPveUtilityService
             var info = clusterOptions.GetNodeOptions(ipAddress, host);
             if (info != null)
             {
-                var ret = SshHelper.Execute(ipAddress,
-                                            info.SshPort,
-                                            clusterOptions.SshCredential.Username!,
-                                            clusterOptions.SshCredential.Password!,
-                                            new[] { $"ledctl locate{(blink ? "" : "_off")}={devPath}" })
-                                    .ToList();
+                var ret = _sshService.Execute(clusterOptions,
+                                              ipAddress,
+                                              info.SshPort,
+                                              [$"ledctl locate{(blink ? "" : "_off")}={devPath}"])
+                                     .ToList();
 
                 result = FluentResults.Result.OkIf(ret[0].ExitCode == 0, ret[0].Error);
             }
@@ -72,12 +75,7 @@ public class PveUtilityService : IPveUtilityService
                     var info = clusterOptions.GetNodeOptions(ipAddress, host);
                     if (info != null)
                     {
-                        var rets = SshHelper.Execute(ipAddress,
-                                                       info.SshPort,
-                                                       clusterOptions.SshCredential.Username,
-                                                       clusterOptions.SshCredential.Password,
-                                                       new[] { command });
-
+                        var rets = _sshService.Execute(clusterOptions, ipAddress, info.SshPort, [command]);
                         foreach (var (ExitCode, _, Error) in rets)
                         {
                             results.Add(FluentResults.Result.OkIf(ExitCode == 0, Error));

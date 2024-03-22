@@ -19,10 +19,10 @@ internal class Job
         if (ModuleEnabled(scope)) { await Helper.Create(scope, id); }
     }
 
-    public async Task Clean(int id)
+    public async Task Purge(int id)
     {
         using var scope = _scopeFactory.CreateScope();
-        await Helper.Clean(scope, id);
+        await Helper.Purge(scope, id);
     }
 
     public async Task Delete(IEnumerable<int> ids)

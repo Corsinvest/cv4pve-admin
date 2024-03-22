@@ -2,9 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-using System.Web;
-
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.Layout;
 
 public partial class PveWidgets

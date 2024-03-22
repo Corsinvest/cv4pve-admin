@@ -9,7 +9,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.UI.Options;
 
 public abstract class PveModuleClustersOptions<T> where T : IClusterName
 {
-    public List<T> Clusters { get; set; } = new();
+    public List<T> Clusters { get; set; } = [];
 
     public T Get(string clusterName)
     {
