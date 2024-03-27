@@ -2,13 +2,14 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 using System.ComponentModel;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 
-internal class AutoSnapInfo
+internal class AutoSnapInfo : INode, IVmId, ISnapshotsSize, IName
 {
     public string Node { get; set; } = default!;
     public long VmId { get; set; }
@@ -20,8 +21,11 @@ internal class AutoSnapInfo
     public string Label { get; set; } = default!;
     public string Description { get; set; } = default!;
     public bool VmStatus { get; set; }
-    public double Size { get; set; }
+
+    [Display(Name = "Snapshots Size")]
+    [DisplayFormat(DataFormatString = "{0:" + FormatHelper.FormatBytes + "}")]
+    public double SnapshotsSize { get; set; }
 
     [DisplayName("Size")]
-    public string TextSize => FormatHelper.FromBytes(Size);
+    public string TextSize => FormatHelper.FromBytes(SnapshotsSize);
 }

@@ -9,17 +9,11 @@ using System.Globalization;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo;
 
-public class ZfsDiskInfo : DiskInfoBase
+public class ZfsDiskInfo(string ipAddress, string path, long vmId, string disk, string host, string spaceName) 
+    : DiskInfoBase(vmId, disk, host, spaceName, true)
 {
-    public ZfsDiskInfo(string ipAddress, string path, long vmId, string disk, string host, string spaceName) :
-        base(vmId, disk, host, spaceName)
-    {
-        IpAddress = ipAddress;
-        Path = path;
-    }
-
-    public string IpAddress { get; }
-    public string Path { get; }
+    public string IpAddress { get; } = ipAddress;
+    public string Path { get; } = path;
     public override string Type => "ZFS";
 
     public static async Task<IEnumerable<ZfsDiskInfo>> Read(PveClient client, ClusterOptions clusterOptions)
@@ -60,7 +54,7 @@ public class ZfsDiskInfo : DiskInfoBase
                                                                fullPath[0],
                                                                long.Parse(diskVm.Split('-')[1]),
                                                                diskVm,
-                                                               ipAddress,
+                                                               host,
                                                                spaceName);
 
                                     //check if exists

@@ -8,19 +8,12 @@ using Renci.SshNet;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo;
 
-public class CephDiskInfo : DiskInfoBase
+public class CephDiskInfo(string storage, string pool, long vmId, string disk, string monitorHosts)
+    : DiskInfoBase(vmId, disk, monitorHosts, pool, false)
 {
-    public CephDiskInfo(string storage, string pool, long vmId, string disk, string monitorHosts)
-        : base(vmId, disk, monitorHosts, pool)
-    {
-        Storage = storage;
-        Pool = pool;
-        MonitorHosts = monitorHosts;
-    }
-
-    public string Storage { get; }
-    public string Pool { get; }
-    public string MonitorHosts { get; }
+    public string Storage { get; } = storage;
+    public string Pool { get; } = pool;
+    public string MonitorHosts { get; } = monitorHosts;
     public override string Type => "Ceph";
 
     class ImageSnapshot

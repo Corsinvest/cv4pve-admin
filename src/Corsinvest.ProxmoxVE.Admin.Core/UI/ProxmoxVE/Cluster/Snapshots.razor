@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@using Corsinvest.AppHero.Core.MudBlazorUI.Style
 @using Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo
 
 @inherits AHComponentBase
@@ -25,14 +26,14 @@
 {
     [Parameter] public IEnumerable<DiskInfoBase> Disks { get; set; } = [];
 
-    [Inject] public Corsinvest.AppHero.Core.MudBlazorUI.Style.UIOptions UIOptions { get; set; } = default!;
+    [Inject] public IOptionsSnapshot<UIOptions> UIOptions { get; set; } = default!;
 
     private RenderFragment RenderTable(bool replication) => __builder =>
     {
         @if (replication)
         {
             <MudText>
-                <div class="d-flex">
+                <div class="d-flex gap-3">
                     <MudIcon Icon="@PveBlazorHelper.Icons.Replication" />
                     Replication
                 </div>
@@ -49,10 +50,10 @@
         }
 
         <MudSimpleTable Style="overflow-x: auto;"
-                        Bordered="@UIOptions.Theme.Table.IsBordered"
-                        Striped="@UIOptions.Theme.Table.IsStriped"
-                        Hover="@UIOptions.Theme.Table.IsHoverable"
-                        Dense="@UIOptions.Theme.Table.IsDense">
+                        Bordered="@UIOptions.Value.Theme.Table.IsBordered"
+                        Striped="@UIOptions.Value.Theme.Table.IsStriped"
+                        Hover="@UIOptions.Value.Theme.Table.IsHoverable"
+                        Dense="@UIOptions.Value.Theme.Table.IsDense">
             <thead>
                 <tr>
                     <th>Type</th>

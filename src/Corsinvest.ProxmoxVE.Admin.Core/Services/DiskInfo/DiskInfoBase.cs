@@ -4,11 +4,12 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo;
 
-public abstract class DiskInfoBase(long vmId, string disk, string host, string spaceName)
+public abstract class DiskInfoBase(long vmId, string disk, string host, string spaceName,bool hostContainSnapshot)
 {
     public long VmId { get; } = vmId;
     public string Disk { get; } = disk;
     public string Host { get; } = host;
+    public bool HostContainSnapshot { get; }= hostContainSnapshot;
     public string SpaceName { get; } = spaceName;
     public abstract string Type { get; }
 

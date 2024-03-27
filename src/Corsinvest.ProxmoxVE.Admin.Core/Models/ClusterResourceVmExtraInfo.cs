@@ -8,7 +8,7 @@ using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Models;
 
-public class ClusterResourceVmExtraInfo : ClusterResource, IClusterResourceVmOsInfo
+public class ClusterResourceVmExtraInfo : ClusterResource, IClusterResourceVmOsInfo, INode, IVmId, ISnapshotsSize
 {
     [Display(Name = "Snapshots Size")]
     [DisplayFormat(DataFormatString = "{0:" + FormatHelper.FormatBytes + "}")]

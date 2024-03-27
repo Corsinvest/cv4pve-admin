@@ -20,7 +20,7 @@ public class ClusterOptions
     [Display(Name = "Timeout (millisec)")]
     public int Timeout { get; set; } = 1000;
 
-    [Display(Name = "Calculate snapshot size (require time)")]
+    [Display(Name = "Calculate snapshot size (require ssh configuration)")]
     public bool CalculateSnapshotSize { get; set; }
 
     public bool UseApiToken { get; set; }

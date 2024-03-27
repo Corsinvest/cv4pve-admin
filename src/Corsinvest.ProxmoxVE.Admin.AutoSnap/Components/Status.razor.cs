@@ -25,7 +25,7 @@ public partial class Status
     private readonly AggregateDefinition<AutoSnapInfo> SizeAggregation = new()
     {
         Type = AggregateType.Custom,
-        CustomAggregate = x => $"Total: {FormatHelper.FromBytes(x.Sum(a => a.Size))}"
+        CustomAggregate = x => $"Total: {FormatHelper.FromBytes(x.Sum(a => a.SnapshotsSize))}"
     };
 
     protected override void OnInitialized()
@@ -55,17 +55,7 @@ public partial class Status
             var data = await Helper.GetInfo(client, options, LoggerFactory, vmIdsOrNames);
 
             //snapshot size
-            var disks = await PveClientService.GetDisksInfo(client, (await PveClientService.GetCurrentClusterOptionsAsync())!);
-
-            foreach (var item in data)
-            {
-                item.Size = disks.Where(a => a.VmId == item.VmId)
-                                 .SelectMany(a => a.Snapshots)
-                                 .Where(a => a.Name == item.Name && !a.Replication)
-                                 .Select(a => a.Size)
-                                 .DefaultIfEmpty(0)
-                                 .Sum();
-            }
+            await PveAdminHelper.MapSnapshotSize(client, PveClientService, data, false, true);
 
             return data;
         };
