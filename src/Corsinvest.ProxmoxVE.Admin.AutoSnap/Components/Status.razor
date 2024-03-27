@@ -30,7 +30,7 @@
         <AHPropertyColumn T="AutoSnapInfo" TProperty="string" Property="a => a.Label" Grouping="true">
             <GroupTemplate>
                 <span style="font-weight:bold">
-                    @L["Label"]: @context.Grouping.Key (@context.Grouping.Count()) - Size: @FormatHelper.FromBytes(context.Grouping.Sum(a => a.Size))
+                    @L["Label"]: @context.Grouping.Key (@context.Grouping.Count()) - Size: @FormatHelper.FromBytes(context.Grouping.Sum(a => a.SnapshotsSize))
                 </span>
             </GroupTemplate>
         </AHPropertyColumn>

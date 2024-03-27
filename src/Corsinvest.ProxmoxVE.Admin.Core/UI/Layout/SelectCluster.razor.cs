@@ -55,7 +55,7 @@ public partial class SelectCluster : AHComponentBase, IUIAppBarItem
         {
             await PveClientService.SetCurrentClusterNameAsync(value);
             CurrentClusterName = value;
-            if (_refresh) { NavigationManager.NavigateTo(NavigationManager.Uri, true); }
+            if (_refresh) { NavigationManager.Refresh(true); }
         }
         else
         {

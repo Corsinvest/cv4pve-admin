@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Modularity;
+using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
@@ -101,12 +102,41 @@ Company: {adminOptions.Company}
             if (!string.IsNullOrEmpty(subscription.Key))
             {
                 var data = subscription.Key.Split("-");
-                level = NodeHelper.DecodeLevelSupport(data[0][^1]+"").ToString();
-            }            
+                level = NodeHelper.DecodeLevelSupport(data[0][^1] + "").ToString();
+            }
 
             rows.Add($"{item.Node}: {subscription.Serverid} {level}");
         }
 
         return rows.JoinAsString(Environment.NewLine);
+    }
+
+    public static async Task<IEnumerable<Services.DiskInfo.DiskInfoBase>> MapSnapshotSize<T>(PveClient client,
+                                                                                             IPveClientService pveClientService,
+                                                                                             IEnumerable<T> items,
+                                                                                             bool includeReplication,
+                                                                                             bool filterByName)
+        where T : ISnapshotsSize, INode, IVmId
+    {
+        //snapshot size
+        var disks = await pveClientService.GetDisksInfo(client, (await pveClientService.GetCurrentClusterOptionsAsync())!);
+
+        foreach (var item in items)
+        {
+            var aa = disks.Where(a => a.VmId == item.VmId
+                                       && (!a.HostContainSnapshot || a.Host == item.Node))
+                          .ToArray();
+
+            item.SnapshotsSize = disks.Where(a => a.VmId == item.VmId
+                                                    && (!a.HostContainSnapshot || a.Host == item.Node))
+                                      .SelectMany(a => a.Snapshots)
+                                      .Where(a => !a.Replication, !includeReplication)
+                                      .Where(a => a.Name == ((IName)item).Name, filterByName)
+                                      .Select(a => a.Size)
+                                      .DefaultIfEmpty(0)
+                                      .Sum();
+        }
+
+        return disks;
     }
 }

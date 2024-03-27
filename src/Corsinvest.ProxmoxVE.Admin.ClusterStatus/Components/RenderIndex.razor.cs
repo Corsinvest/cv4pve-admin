@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Domain.Contracts;
+using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Services.DiskInfo;
 using Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster;
@@ -93,22 +94,8 @@ public partial class RenderIndex : IRefreshable
 
         if (ClusterOptions.CalculateSnapshotSize)
         {
-            Disks = (await PveClientService.GetDisksInfo(PveClient, ClusterOptions))
-                        .OrderBy(a => a.Type)
-                        .ThenBy(a => a.Host)
-                        .ThenBy(a => a.SpaceName)
-                        .ToList();
-
-            foreach (var item in data)
-            {
-                item.SnapshotsSize = Disks.Where(a => a.VmId == item.VmId)
-                                          .SelectMany(a => a.Snapshots)
-                                          .Where(a => !a.Replication)
-                                          .Select(a => a.Size)
-                                          .DefaultIfEmpty(0)
-                                          .Sum();
-            }
-
+            //snapshot size
+            Disks = await PveAdminHelper.MapSnapshotSize(PveClient, PveClientService, data, false, false);
             StateHasChanged();
         }
 
