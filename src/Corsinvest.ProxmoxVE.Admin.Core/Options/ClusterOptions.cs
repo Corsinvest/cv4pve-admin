@@ -23,6 +23,9 @@ public class ClusterOptions
     [Display(Name = "Calculate snapshot size (require ssh configuration)")]
     public bool CalculateSnapshotSize { get; set; }
 
+    [Display(Name = "Verify Certificate SSL")]
+    public bool VerifyCertificate { get; set; }
+
     public bool UseApiToken { get; set; }
     public Credential ApiCredential { get; } = new();
     public Credential SshCredential { get; } = new();

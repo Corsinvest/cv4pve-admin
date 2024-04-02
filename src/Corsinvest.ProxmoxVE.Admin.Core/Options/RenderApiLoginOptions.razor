@@ -4,12 +4,22 @@
 *@
 @inherits AHComponentBase
 
-<div class="d-flex gap-4 align-center">
-    <MudText>@L["Modal"]</MudText>
-    <MudSwitch @bind-Value="@ClusterOptions.UseApiToken" Label="@L[ClusterOptions.UseApiToken ? "API Token": "Credential"]" Color="Color.Primary" />
-</div>
-
 <MudGrid>
+    <MudItem xs="12" md="6">
+        <div class="d-flex gap-4 align-center">
+            <MudText>@L["Modal"]</MudText>
+            <MudSwitch @bind-Value="@ClusterOptions.UseApiToken"
+                       Label="@L[ClusterOptions.UseApiToken ? "API Token": "Credential"]"
+                       Color="Color.Primary" />
+        </div>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudSwitch @bind-Value="@ClusterOptions.VerifyCertificate"
+                   Label="@L[GetDescriptionProperty<ClusterOptions>(a => a.VerifyCertificate)]"
+                   Color="Color.Primary" />
+    </MudItem>
+
     @if (ClusterOptions.UseApiToken)
     {
         <MudItem xs="12">
