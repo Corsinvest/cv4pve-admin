@@ -42,6 +42,7 @@ public class PveClientService : IPveClientService
         try
         {
             var client = ClientHelper.GetClientFromHA(clusterOptions.ApiHostsAndPortHA, clusterOptions.Timeout);
+            client.VerifyCertificate = clusterOptions.VerifyCertificate;
             if (client != null)
             {
                 bool login;

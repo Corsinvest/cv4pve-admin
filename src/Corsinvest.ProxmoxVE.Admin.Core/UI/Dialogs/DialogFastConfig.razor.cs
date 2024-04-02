@@ -5,6 +5,7 @@
 using Corsinvest.AppHero.Core.Options;
 using Corsinvest.AppHero.Core.Service;
 using Corsinvest.AppHero.Core.UI;
+using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using MudExtensions;
 using MudExtensions.Enums;
 
@@ -38,17 +39,15 @@ public partial class DialogFastConfig
             {
                 case 0:
                     ret = ClusterOptions.UseApiToken
-                            ? string.IsNullOrEmpty(ClusterOptions.ApiToken)
-                                || string.IsNullOrWhiteSpace(ClusterOptions.ApiToken)
-                            : string.IsNullOrEmpty(ClusterOptions.ApiCredential.Username)
-                                || string.IsNullOrWhiteSpace(ClusterOptions.ApiCredential.Username);
+                            ? ClusterOptions.ApiToken.IsNullOrEmptyOrWhiteSpace()
+                            : ClusterOptions.ApiCredential.Username.IsNullOrEmptyOrWhiteSpace();
 
-                    if (ret) { UINotifier.Show(L[(ClusterOptions.UseApiToken ? "Api Token" : "Credential") + " is required!"], UINotifierSeverity.Error); }
+                    if (ret) { UINotifier.Show(L[(ClusterOptions.UseApiToken ? "Api Token" : "Credential") + " is required!"], 
+                               UINotifierSeverity.Error); }
                     break;
 
                 case 1:
-                    ret = string.IsNullOrEmpty(ClusterOptions.SshCredential.Username)
-                            || string.IsNullOrWhiteSpace(ClusterOptions.SshCredential.Username);
+                    ret = ClusterOptions.SshCredential.Username.IsNullOrEmptyOrWhiteSpace();
                     if (ret) { UINotifier.Show(L["Credential is required!"], UINotifierSeverity.Error); }
                     break;
 
@@ -60,7 +59,8 @@ public partial class DialogFastConfig
                         ret = client == null;
                         if (!ret && !await PveClientService.CheckIsValidVersionAsync(client!))
                         {
-                            UINotifier.Show(L["Proxmox VE version not valid! Required {0}", PveAdminHelper.MinimalVersion], UINotifierSeverity.Error);
+                            UINotifier.Show(L["Proxmox VE version not valid! Required {0}", PveAdminHelper.MinimalVersion],
+                                            UINotifierSeverity.Error);
                         }
                         else
                         {
