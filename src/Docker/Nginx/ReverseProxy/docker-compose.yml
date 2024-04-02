@@ -6,7 +6,7 @@ services:
   cv4pve-admin:
      image: corsinvest/cv4pve-admin:${VERSION}
      ports:
-       - "5000:5000"
+       - "5001:5000"
      environment:
        - TZ=Europe/Rome
      volumes:

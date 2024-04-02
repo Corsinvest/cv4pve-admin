@@ -123,10 +123,6 @@ Company: {adminOptions.Company}
 
         foreach (var item in items)
         {
-            var aa = disks.Where(a => a.VmId == item.VmId
-                                       && (!a.HostContainSnapshot || a.Host == item.Node))
-                          .ToArray();
-
             item.SnapshotsSize = disks.Where(a => a.VmId == item.VmId
                                                     && (!a.HostContainSnapshot || a.Host == item.Node))
                                       .SelectMany(a => a.Snapshots)
