@@ -4,7 +4,8 @@
 [![GitHub All Releases](https://img.shields.io/github/downloads/Corsinvest/cv4pve-admin/total.svg)](https://github.com/Corsinvest/cv4pve-admin/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
 [![.NET C#](https://img.shields.io/badge/.NET-C%23-blue)](https://docs.microsoft.com/en-us/dotnet/csharp/)
-![Matomo](https://matomo.corsinvest.it/matomo.php?idsite=4&rec=1&url=https://github.com/Corsinvest/cv4pve-admin)
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://matomo.corsinvest.it/matomo.php?idsite=4&amp;rec=1&amp;action_name=cv4pve-admin" style="border:0" alt="" />
 
 # CV4PVE-ADMIN
 
