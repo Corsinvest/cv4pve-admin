@@ -5,7 +5,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
 [![.NET C#](https://img.shields.io/badge/.NET-C%23-blue)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 
-<img src="https://matomo.corsinvest.it/matomo.php?idsite=4&rec=1&url=https://github.com/Corsinvest/cv4pve-admin" style="border:0; visibility: hidden;" alt="" />
+<img src="https://matomo.corsinvest.it/matomo.php?idsite=4&rec=1&url=https://github.com/Corsinvest/cv4pve-admin" style="border:0;" alt="" width="1" />
 
 # CV4PVE-ADMIN
 
