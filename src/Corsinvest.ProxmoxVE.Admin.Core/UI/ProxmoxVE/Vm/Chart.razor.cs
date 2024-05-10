@@ -40,12 +40,12 @@ partial class Chart
         [
             new YAxis
             {
-                Title = new AxisTitle { Text = L["CPU Size"] },
+                Title = new AxisTitle { Text = L["CPU Size"].Value },
                 DecimalsInFloat = 0
             },
             new YAxis
             {
-                Title = new AxisTitle { Text = L["CPU Usage %"] },
+                Title = new AxisTitle { Text = L["CPU Usage %"].Value },
                 DecimalsInFloat = 1,
                 Opposite = true
             }
@@ -70,7 +70,7 @@ partial class Chart
         [
             new YAxis
             {
-                Title = new AxisTitle { Text = L["Usage (GB)"] },
+                Title = new AxisTitle { Text = L["Usage (GB)"].Value },
                 DecimalsInFloat = 1,
             }
         ],
@@ -94,7 +94,7 @@ partial class Chart
         [
             new YAxis
             {
-                Title = new AxisTitle { Text = L["Usage (Kb)"] },
+                Title = new AxisTitle { Text = L["Usage (Kb)"].Value },
                 DecimalsInFloat = 1,
             }
         ],

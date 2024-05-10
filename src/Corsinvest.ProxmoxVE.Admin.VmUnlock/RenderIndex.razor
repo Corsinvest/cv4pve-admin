@@ -25,7 +25,7 @@
                                                                     }"
                                                                     NoRecordsContentIcon="@Icons.Material.Filled.SentimentSatisfied">
         <ToolBarContentBefore>
-            <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.Unlock" OnClick="@Unlock"
+            <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.Unlock" OnClick="@UnlockAsync"
                                     Disabled="!RefResources!.DataGridManager.ExistsSelection"
                                     Loading="@LoadingUnlock" />
         </ToolBarContentBefore>

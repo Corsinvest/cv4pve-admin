@@ -10,9 +10,9 @@ internal class Job
     public Job(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
     private static bool ModuleEnabled(IServiceScope scope) => scope.GetModule<Module>()!.Enabled;
 
-    public async Task Scan(string clusterName)
+    public async Task ScanAsync(string clusterName)
     {
         using var scope = _scopeFactory.CreateScope();
-        if (ModuleEnabled(scope)) { await Helper.Scan(scope, clusterName); }
+        if (ModuleEnabled(scope)) { await Helper.ScanAsync(scope, clusterName); }
     }
 }

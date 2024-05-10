@@ -56,7 +56,7 @@ public partial class RenderIndex
         InRetrieveNodeInfo = false;
     }
 
-    private async Task Save(ClusterNodeOptions nodeOptions)
+    private async Task SaveAsync(ClusterNodeOptions nodeOptions)
     {
         InSave = true;
         WritableOptionsService.Update(AdminOptions.Value);

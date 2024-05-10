@@ -18,6 +18,6 @@ public partial class ClusterBackups
     protected override void OnInitialized()
     {
         DataGridManager.Title = L["VZ Dump Trend"];
-        DataGridManager.QueryAsync = async () => (await PveClient.Cluster.Backup.Get()).OrderBy(a => a.Id);
+        DataGridManager.QueryAsync = async () => (await PveClient.Cluster.Backup.GetAsync()).OrderBy(a => a.Id);
     }
 }

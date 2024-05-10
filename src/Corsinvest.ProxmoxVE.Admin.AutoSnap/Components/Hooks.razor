@@ -103,11 +103,8 @@
 
             <MudItem md="6">
                 <div class="d-flex gap-2 ">
-                    <MudSelectExtended @bind-Value="@HookEnv"
-                                       ItemCollection="@Environments"
-                                       Label="@L["Hook environment"]" />
-                    <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
-                                   OnClick="OnClickHookEnv" />
+                    <MudSelectExtended @bind-Value="@HookEnv" ItemCollection="@Environments" Label="@L["Hook environment"]" />
+                    <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" OnClick="OnClickHookEnvAsync" />
                 </div>
             </MudItem>
 

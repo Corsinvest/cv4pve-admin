@@ -40,7 +40,7 @@ public partial class DisksNotBackedUp
     private async Task<IEnumerable<Data>> GetDisksNotBackupped()
     {
         var ret = new List<Data>();
-        var vms = (await PveClient.GetVms())
+        var vms = (await PveClient.GetVmsAsync())
                     .AsQueryable()
                     .ProjectToType<Data>()
                     .ToArray();
@@ -49,8 +49,8 @@ public partial class DisksNotBackedUp
         {
             VmConfig config = item.VmType switch
             {
-                VmType.Qemu => await PveClient.Nodes[item.Node].Qemu[item.VmId].Config.Get(),
-                VmType.Lxc => await PveClient.Nodes[item.Node].Lxc[item.VmId].Config.Get(),
+                VmType.Qemu => await PveClient.Nodes[item.Node].Qemu[item.VmId].Config.GetAsync(),
+                VmType.Lxc => await PveClient.Nodes[item.Node].Lxc[item.VmId].Config.GetAsync(),
                 _ => throw new InvalidEnumArgumentException(),
             };
 

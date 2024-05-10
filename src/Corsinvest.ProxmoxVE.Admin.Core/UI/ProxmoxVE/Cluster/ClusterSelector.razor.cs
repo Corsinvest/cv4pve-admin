@@ -25,5 +25,5 @@ public partial class ClusterSelector
         StateHasChanged();
     }
 
-    public async Task OpenUrl(ClusterOptions item) => await BrowserService.Open(PveClientService.GetUrl(item), "_blank");
+    public async Task OpenUrlAsync(ClusterOptions item) => await BrowserService.OpenAsync(PveClientService.GetUrl(item), "_blank");
 }

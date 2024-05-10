@@ -58,8 +58,8 @@
             <CellTemplate>
                 <MudButtonGroup Variant="Variant.Text">
                     <AHDataGridColumnEdit T="AutoSnapJob" DataGridManager="DataGridManager" Context="@context" />
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Snap" OnClick="@(() => Snap(context.Item))" />
-                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Clean" OnClick="@(() => Purge(context.Item))" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Snap" OnClick="@(() => SnapAsync(context.Item))" />
+                    <AHPermissionButtonIcon Permission="Module.Permissions.Job.Clean" OnClick="@(() => PurgeAsync(context.Item))" />
                 </MudButtonGroup>
             </CellTemplate>
         </TemplateColumn>
@@ -134,7 +134,7 @@
 
                             <PopoverEndContent>
                                 <div class="d-flex gap-4 pa-4">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddItem" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddItemAsync" />
                                     <MudTextFieldExtended @bind-Value="AddedValue" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                 </div>
                             </PopoverEndContent>

@@ -42,7 +42,7 @@ public class PveClientService : IPveClientService
         try
         {
             var client = ClientHelper.GetClientFromHA(clusterOptions.ApiHostsAndPortHA, clusterOptions.Timeout);
-            client.VerifyCertificate = clusterOptions.VerifyCertificate;
+            client.ValidateCertificate = clusterOptions.VerifyCertificate;
             if (client != null)
             {
                 bool login;
@@ -53,7 +53,7 @@ public class PveClientService : IPveClientService
                 }
                 else
                 {
-                    login = await client.Login(clusterOptions.ApiCredential.Username, clusterOptions.ApiCredential.Password);
+                    login = await client.LoginAsync(clusterOptions.ApiCredential.Username, clusterOptions.ApiCredential.Password);
                 }
 
                 if (!login) { logger.LogError("GetPveClient error! {error}", client.LastResult.ReasonPhrase); }
@@ -100,11 +100,11 @@ public class PveClientService : IPveClientService
         var client = await GetClientAsync(clusterOptions);
         if (client != null)
         {
-            var info = await client.GetClusterInfo();
+            var info = await client.GetClusterInfoAsync();
             clusterOptions.Name = info.Name;
             clusterOptions.Type = info.Type;
 
-            var status = await client.Cluster.Status.Get();
+            var status = await client.Cluster.Status.GetAsync();
 
             //check new nodes
             foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)))
@@ -125,7 +125,7 @@ public class PveClientService : IPveClientService
                 var nodeStatus = status.FirstOrDefault(x => x.IpAddress == node.IpAddress);
                 if (nodeStatus != null && nodeStatus.IsOnline)
                 {
-                    var serverId = (await client.Nodes[nodeStatus.Name].Subscription.GetEx()).Serverid;
+                    var serverId = (await client.Nodes[nodeStatus.Name].Subscription.GetAsync()).Serverid;
                     if (node.ServerId != serverId)
                     {
                         node.ServerId = serverId;
@@ -169,13 +169,13 @@ public class PveClientService : IPveClientService
 
     public async Task<bool> CheckIsValidVersionAsync(PveClient client)
     {
-        var info = await client.Version.Get();
+        var info = await client.Version.GetAsync();
         return Version.TryParse(info.Version.Split("-")[0], out var version)
                 && version >= PveAdminHelper.MinimalVersion;
     }
 
     public async Task<Api.Shared.Models.Cluster.ClusterStatus?> GetClusterStatusAsync(PveClient client)
-        => (await client.Cluster.Status.Get()).FirstOrDefault(a => a.Type == PveConstants.KeyApiCluster);
+        => (await client.Cluster.Status.GetAsync()).FirstOrDefault(a => a.Type == PveConstants.KeyApiCluster);
 
     public string GetUrl(ClusterOptions clusterOptions)
     {
@@ -185,14 +185,14 @@ public class PveClientService : IPveClientService
             : $"https://{client.Host}:{client.Port}";
     }
 
-    public async Task<IEnumerable<DiskInfoBase>> GetDisksInfo(PveClient client, ClusterOptions clusterOptions)
+    public async Task<IEnumerable<DiskInfoBase>> GetDisksInfoAsync(PveClient client, ClusterOptions clusterOptions)
     {
         var ret = new List<DiskInfoBase>();
 
         if (clusterOptions.CalculateSnapshotSize)
         {
-            ret.AddRange(await ZfsDiskInfo.Read(client, clusterOptions));
-            ret.AddRange(await CephDiskInfo.Read(client, clusterOptions));
+            ret.AddRange(await ZfsDiskInfo.ReadAsync(client, clusterOptions));
+            ret.AddRange(await CephDiskInfo.ReadAsync(client, clusterOptions));
         }
 
         return ret;

@@ -35,7 +35,7 @@ else
                          <PickerActions>
                              <MudButton Class="mr-auto align-self-start" OnClick="@(() => RefPicker!.Clear())">@L["Clear"]</MudButton>
                              <MudButton OnClick="@(() => RefPicker!.Close(false))">@L["Cancel"]</MudButton>
-                             <MudButton Color="MudBlazor.Color.Primary" OnClick="Ok">@L["OK"]</MudButton>
+                             <MudButton Color="MudBlazor.Color.Primary" OnClick="OkAsync">@L["OK"]</MudButton>
                          </PickerActions>
                      </MudDateRangePicker>
 

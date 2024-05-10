@@ -27,11 +27,11 @@ public partial class SnapshotManager
     {
         DataGridManager.Title = L["Snapshots"];
         DataGridManager.DefaultSort = new() { [nameof(VmSnapshot.Time)] = false };
-        DataGridManager.QueryAsync = async () => await SnapshotHelper.GetSnapshots(PveClient, Vm.Node, Vm.VmType, Vm.VmId);
+        DataGridManager.QueryAsync = async () => await SnapshotHelper.GetSnapshotsAsync(PveClient, Vm.Node, Vm.VmType, Vm.VmId);
 
         DataGridManager.SaveAsync = async (item, isNew) =>
         {
-            await SnapshotHelper.CreateSnapshot(PveClient, Vm.Node, Vm.VmType, Vm.VmId, item.Name, item.Description, item.VmStatus, 30000);
+            await SnapshotHelper.CreateSnapshotAsync(PveClient, Vm.Node, Vm.VmType, Vm.VmId, item.Name, item.Description, item.VmStatus, 30000);
             return true;
         };
 
@@ -39,7 +39,7 @@ public partial class SnapshotManager
         {
             foreach (var item in items)
             {
-                await SnapshotHelper.RemoveSnapshot(PveClient, Vm.Node, Vm.VmType, Vm.VmId, item.Name, 30000, true);
+                await SnapshotHelper.RemoveSnapshotAsync(PveClient, Vm.Node, Vm.VmType, Vm.VmId, item.Name, 30000, true);
             }
 
             return true;
@@ -50,8 +50,8 @@ public partial class SnapshotManager
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Rollback Snapshot"], L["Rollback Snapshot?"]))
         {
-            await SnapshotHelper.RollbackSnapshot(PveClient, Vm.Node, Vm.VmType, Vm.VmId, DataGridManager.SelectedItem.Name, 30000);
-            await DataGridManager.Refresh();
+            await SnapshotHelper.RollbackSnapshotAsync(PveClient, Vm.Node, Vm.VmType, Vm.VmId, DataGridManager.SelectedItem.Name, 30000);
+            await DataGridManager.RefreshAsync();
         }
     }
 }

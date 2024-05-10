@@ -47,26 +47,26 @@ public partial class Status
             if (string.IsNullOrWhiteSpace(VmIdsOrNames))
             {
                 vmIdsOrNames = options.SearchMode == SearchMode.Managed
-                                    ? await Helper.GetVmIdsOrNames(Jobs, clusterName, false)
+                                    ? await Helper.GetVmIdsOrNamesAsync(Jobs, clusterName, false)
                                     : Helper.AllVms;
             }
 
             var client = (await PveClientService.GetClientCurrentClusterAsync())!;
-            var data = await Helper.GetInfo(client, options, LoggerFactory, vmIdsOrNames);
+            var data = await Helper.GetInfoAsync(client, options, LoggerFactory, vmIdsOrNames);
 
             //snapshot size
-            await PveAdminHelper.MapSnapshotSize(client, PveClientService, data, false, true);
+            await PveAdminHelper.MapSnapshotSizeAsync(client, PveClientService, data, false, true);
 
             return data;
         };
     }
 
-    private async Task Delete()
+    private async Task DeleteAsync()
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Delete AutoSnap?"], "Delete AutoSnap"))
         {
             var clusterName = await PveClientService.GetCurrentClusterNameAsync();
-            JobService.Schedule<Job>(a => a.Delete(DataGridManager.SelectedItems, clusterName), TimeSpan.FromSeconds(10));
+            JobService.Schedule<Job>(a => a.DeleteAsync(DataGridManager.SelectedItems, clusterName), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Deleting snapshots!"], UINotifierSeverity.Info);
             DataGridManager.SelectedItems.Clear();
         }

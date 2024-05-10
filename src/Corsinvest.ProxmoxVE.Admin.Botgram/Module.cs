@@ -49,5 +49,5 @@ public class Module : PveAdminModuleBase, IForceLoadModule
         => await scope.ServiceProvider.GetServices<IHostedService>()
                                       .OfType<BotgramService>()
                                       .FirstOrDefault()!
-                                      .Restart();
+                                      .RestartAsync();
 }

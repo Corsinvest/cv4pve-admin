@@ -27,7 +27,7 @@ public partial class DisksList
     {
         DataGridManager.Title = L["Disks"];
         DataGridManager.DefaultSort = new() { [nameof(NodeDiskList.DevPath)] = false };
-        DataGridManager.QueryAsync = async () => await PveClient.Nodes[Node].Disks.List.Get();
+        DataGridManager.QueryAsync = async () => await PveClient.Nodes[Node].Disks.List.GetAsync();
     }
 
     private async Task BlinkLed(string node)

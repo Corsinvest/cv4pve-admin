@@ -33,7 +33,7 @@ public partial class RenderNodesOptions
         };
     }
 
-    private async Task FindNewNodes()
+    private async Task FindNewNodesAsync()
     {
         LoadingFindNewNodes = true;
 
@@ -50,7 +50,7 @@ public partial class RenderNodesOptions
                     break;
 
                 case 1:
-                    await DataGridManager.Refresh();
+                    await DataGridManager.RefreshAsync();
                     UINotifier.Show(L["New nodes added and updated! Please save."], UINotifierSeverity.Info);
                     break;
 

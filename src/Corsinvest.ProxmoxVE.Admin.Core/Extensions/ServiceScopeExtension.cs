@@ -11,7 +11,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
 public static class ServiceScopeExtension
 {
-    public static async Task<PveClient> GetPveClient(this IServiceScope scope, string clusterName)
+    public static async Task<PveClient> GetPveClientAsync(this IServiceScope scope, string clusterName)
         => (await scope.GetPveClientService().GetClientAsync(clusterName))!;
 
     public static IPveClientService GetPveClientService(this IServiceScope scope)

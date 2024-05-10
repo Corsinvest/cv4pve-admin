@@ -24,11 +24,11 @@ public partial class Vms
     private async Task OnlyRunChanged(bool value)
     {
         OnlyRun = value;
-        await RefResources!.Refresh();
+        await RefResources!.RefreshAsync();
     }
 
-    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVms(PveClient, OnlyRun, PveClientService);
+    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVmsAsync(PveClient, OnlyRun, PveClientService);
 
     private async Task<IEnumerable<VmRrdData>> GetVmRrdData(long vmId, RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
-        => await PveClient.GetVmRrdData(await PveClient.GetVm(vmId), rrdDataTimeFrame, rrdDataConsolidation);
+        => await PveClient.GetVmRrdDataAsync(await PveClient.GetVmAsync(vmId), rrdDataTimeFrame, rrdDataConsolidation);
 }

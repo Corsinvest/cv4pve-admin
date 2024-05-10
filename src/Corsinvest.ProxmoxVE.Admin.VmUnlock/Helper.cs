@@ -43,7 +43,7 @@ internal static class Helper
 
         //return count;
         //CalculateHostUsage
-        return (await client.GetResources(ClusterResourceType.All))
+        return (await client.GetResourcesAsync(ClusterResourceType.All))
                     .CalculateHostUsage()
                     .Where(a => a.ResourceType == ClusterResourceType.Vm)
                     .Where(a => a.IsLocked);

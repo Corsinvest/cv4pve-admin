@@ -14,7 +14,7 @@
             @if (OpenPve)
             {
                 <div class="d-flex gap-2">
-                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick="@(async () => await OpenUrl(item))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick="@(async () => await OpenUrlAsync(item))" />
                     @if (RenderRow != null)
                     {
                         @RenderRow(item)

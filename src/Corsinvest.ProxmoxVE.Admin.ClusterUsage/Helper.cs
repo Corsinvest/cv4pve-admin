@@ -18,9 +18,9 @@ namespace Corsinvest.ProxmoxVE.Admin.ClusterUsage;
 
 internal class Helper
 {
-    public static async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetDataVms(PveClient client, bool onlyRun, IPveClientService pveClientService)
+    public static async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetDataVmsAsync(PveClient client, bool onlyRun, IPveClientService pveClientService)
     {
-        var data = (await client.GetResources(ClusterResourceType.All))
+        var data = (await client.GetResourcesAsync(ClusterResourceType.All))
                         .CalculateHostUsage()
                         .Where(a => a.ResourceType == ClusterResourceType.Vm)
                         .Where(a => a.IsRunning, onlyRun)
@@ -30,7 +30,7 @@ internal class Helper
                         .ToList();
 
         //snapshot size
-        var disks = await pveClientService.GetDisksInfo(client, (await pveClientService.GetCurrentClusterOptionsAsync())!);
+        var disks = await pveClientService.GetDisksInfoAsync(client, (await pveClientService.GetCurrentClusterOptionsAsync())!);
 
         foreach (var item in data)
         {
@@ -45,29 +45,29 @@ internal class Helper
         return data;
     }
 
-    public static async Task Scan(IServiceScope scope, string clusterName)
+    public static async Task ScanAsync(IServiceScope scope, string clusterName)
     {
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
 
         using (logger.LogTimeOperation(LogLevel.Information, true, "Collect usage"))
         {
-            var client = await scope.GetPveClient(clusterName);
+            var client = await scope.GetPveClientAsync(clusterName);
             //var db = scope.ServiceProvider.GetRequiredService<ClusterUsageDbContext>();
             var dataVms = scope.GetRepository<DataVm>();
 
             var date = DateTime.Now.AddDays(-1).Date;
             var end = date.AddDays(1).Date;
 
-            foreach (var vm in await client.GetVms())
+            foreach (var vm in await client.GetVmsAsync())
             {
                 if (!(await dataVms.AnyAsync(new DataVmSpec(clusterName, vm.VmId, date))))
                 {
                     var pveNode = client.Nodes[vm.Node];
                     var rrdData = (vm.VmType switch
                     {
-                        VmType.Qemu => await pveNode.Qemu[vm.VmId].Rrddata.Get(RrdDataTimeFrame.Day, RrdDataConsolidation.Average),
-                        VmType.Lxc => await pveNode.Lxc[vm.VmId].Rrddata.Get(RrdDataTimeFrame.Day, RrdDataConsolidation.Average),
+                        VmType.Qemu => await pveNode.Qemu[vm.VmId].Rrddata.GetAsync(RrdDataTimeFrame.Day, RrdDataConsolidation.Average),
+                        VmType.Lxc => await pveNode.Lxc[vm.VmId].Rrddata.GetAsync(RrdDataTimeFrame.Day, RrdDataConsolidation.Average),
                         _ => throw new InvalidEnumArgumentException(),
                     })
                     .Where(a => a.TimeDate >= date && a.TimeDate <= end);
@@ -86,9 +86,9 @@ internal class Helper
                     };
 
                     //storages
-                    foreach (var storage in (await pveNode.Storage.Get(enabled: true)).Where(a => a.Active && a.Enabled))
+                    foreach (var storage in (await pveNode.Storage.GetAsync(enabled: true)).Where(a => a.Active && a.Enabled))
                     {
-                        var content = await pveNode.Storage[storage.Storage].Content.Get(vmid: Convert.ToInt32(vm.VmId));
+                        var content = await pveNode.Storage[storage.Storage].Content.GetAsync(vmid: Convert.ToInt32(vm.VmId));
                         if (content.Any())
                         {
                             data.Storages.Add(new()

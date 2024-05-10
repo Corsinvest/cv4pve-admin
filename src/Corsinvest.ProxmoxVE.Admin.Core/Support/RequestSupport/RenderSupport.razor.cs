@@ -20,8 +20,8 @@ public partial class RenderSupport
         var client = await PveClientService.GetClientAsync(clusterOptions);
         if (client != null)
         {
-            WhoUsing = await PveAdminHelper.GenerateWhoUsing(client, AdminOptions.Value);
-            Info = await PveAdminHelper.GetClusterInfo(client, clusterOptions);
+            WhoUsing = await PveAdminHelper.GenerateWhoUsingAsync(client, AdminOptions.Value);
+            Info = await PveAdminHelper.GetClusterInfoAsync(client, clusterOptions);
         }
     }
 }

@@ -151,10 +151,10 @@ internal class Helper
     {
         const string KEY_STORAGE = "--storage ";
 
-        foreach (var node in (await client.GetNodes()).Where(a => a.IsOnline))
+        foreach (var node in (await client.GetNodesAsync()).Where(a => a.IsOnline))
         {
             //list task backup
-            foreach (var taskItem in await client.Nodes[node.Node].Tasks.Get(typefilter: "vzdump")) //, limit: 9999
+            foreach (var taskItem in await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "vzdump")) //, limit: 9999
             {
                 var task = await dumpTaskRepo.FirstOrDefaultAsync(new VzDumpTaskSpec(clusterName, taskItem.UniqueTaskId));
                 if (task != null)
@@ -169,7 +169,7 @@ internal class Helper
                     }
                 }
 
-                var logLines = await client.Nodes[node.Node].Tasks[taskItem.UniqueTaskId].Log.Get(limit: 10000);
+                var logLines = await client.Nodes[node.Node].Tasks[taskItem.UniqueTaskId].Log.GetAsync(limit: 10000);
                 var rowStorage = logLines.Where(a => a.StartsWith("INFO: starting new backup job: vzdump")).FirstOrDefault();
                 var storage = "";
                 if (rowStorage != null)
@@ -195,9 +195,9 @@ internal class Helper
             }
 
             //list task backup delete
-            foreach (var taskItem in await client.Nodes[node.Node].Tasks.Get(typefilter: "imgdel", limit: 1000))
+            foreach (var taskItem in await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "imgdel", limit: 1000))
             {
-                var logLines = (await client.Nodes[node.Node].Tasks[taskItem.UniqueTaskId].Log.Get(limit: 10000))
+                var logLines = (await client.Nodes[node.Node].Tasks[taskItem.UniqueTaskId].Log.GetAsync(limit: 10000))
                                      .Where(a => a.StartsWith("Removed volume "));
 
                 foreach (var item in logLines) { var data = item[17..]; }
@@ -217,7 +217,7 @@ internal class Helper
 
     public static async Task Scan(IServiceScope scope, string clusterName)
     {
-        var client = await scope.GetPveClient(clusterName);
+        var client = await scope.GetPveClientAsync(clusterName);
         if (client == null) { return; }
 
         var loggerFactory = scope.GetLoggerFactory();

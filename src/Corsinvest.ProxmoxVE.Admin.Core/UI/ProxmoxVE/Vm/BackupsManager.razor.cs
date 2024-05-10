@@ -30,13 +30,13 @@ public partial class BackupsManager
     protected override void OnInitialized()
     {
         DataGridManager.Title = L["Backups"];
-        DataGridManager.QueryAsync = async () => await PveClient.Nodes[Vm.Node].GetBackupsInAllStorages(Convert.ToInt32(Vm.VmId));
+        DataGridManager.QueryAsync = async () => await PveClient.Nodes[Vm.Node].GetBackupsInAllStoragesAsync(Convert.ToInt32(Vm.VmId));
     }
 
     private void SelectedFileChanged(NodeBackupFile nodeBackupFile) => NodeBackupFileToRestore = nodeBackupFile;
     private bool BackupIsRestorable() => !DataGridManager.ExistsSelection || DataGridManager.SelectedItems.ToArray()[0].Format == "PBS";
 
-    private async Task DownloadFileRestore()
+    private async Task DownloadFileRestoreAsync()
     {
         if (NodeBackupFileToRestore == null) { return; }
         var storageContent = DataGridManager.SelectedItem;
@@ -57,13 +57,13 @@ public partial class BackupsManager
                                                       NodeBackupFileToRestore.FilePath)
                     : GetUrlRestoreFile.Invoke(storageContent, NodeBackupFileToRestore);
 
-        await BrowserService.Open(url, "_blank");
+        await BrowserService.OpenAsync(url, "_blank");
     }
 
     private async Task<HashSet<NodeBackupFile>> GetItemsBackups(NodeBackupFile nodeBackupFile)
         => (await PveClient.Nodes[Vm.Node]
             .Storage[DataGridManager.SelectedItem.Storage]
-            .FileRestore.List.Get(filepath: nodeBackupFile.FilePath, volume: DataGridManager.SelectedItem.Volume))
+            .FileRestore.List.GetAsync(filepath: nodeBackupFile.FilePath, volume: DataGridManager.SelectedItem.Volume))
             .OrderBy(a => a.Text)
             .ToHashSet();
 

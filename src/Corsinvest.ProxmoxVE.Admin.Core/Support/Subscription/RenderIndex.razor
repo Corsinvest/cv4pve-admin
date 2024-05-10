@@ -56,7 +56,7 @@
                                         <MudLoadingButton Color="Color.Success" StartIcon="@Icons.Material.Filled.Check"
                                                           Style="min-height: 30px !important;height: 30px;width: 30px;align-self: center"
                                                           Size="Size.Small" @bind-Loading="InSave" ButtonVariant="ButtonVariant.Fab"
-                                                          OnClick="@(async () => await Save(node))"
+                                                          OnClick="@(async () => await SaveAsync(node))"
                                                           Disabled="string.IsNullOrWhiteSpace(node.ServerId) || string.IsNullOrWhiteSpace(node.SubscriptionId)" />
                                     </div>
                                 </td>

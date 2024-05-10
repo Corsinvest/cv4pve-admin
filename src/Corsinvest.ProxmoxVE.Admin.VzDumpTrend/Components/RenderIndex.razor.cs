@@ -30,9 +30,9 @@ public partial class RenderIndex
         //StateHasChanged();
         var ret = new List<NodeStorageContent>();
 
-        foreach (var node in (await PveClient.GetNodes()).Where(a => a.IsOnline))
+        foreach (var node in (await PveClient.GetNodesAsync()).Where(a => a.IsOnline))
         {
-            ret.AddRange(await PveClient.Nodes[node.Node].GetBackupsInAllStorages());
+            ret.AddRange(await PveClient.Nodes[node.Node].GetBackupsInAllStoragesAsync());
         }
 
         return ret.Distinct().ToList();
@@ -41,7 +41,7 @@ public partial class RenderIndex
     private async Task<IEnumerable<ClusterResource>> GetNotScheduled()
     {
         var ret = new List<ClusterResource>();
-        var backups = (await PveClient.Cluster.Backup.Get()).Where(a => a.Enabled);
+        var backups = (await PveClient.Cluster.Backup.GetAsync()).Where(a => a.Enabled);
 
         if (!backups.Any(a => a.All))
         {
@@ -49,7 +49,7 @@ public partial class RenderIndex
                                        .Select(a => long.Parse(a))
                                        .ToList();
 
-            var vms = (await PveClient.GetResources(ClusterResourceType.All))
+            var vms = (await PveClient.GetResourcesAsync(ClusterResourceType.All))
                                 .Where(a => a.ResourceType == ClusterResourceType.Vm && !a.IsTemplate);
 
             ret = vms.Where(a => !vmIdsInBackup.Contains(a.VmId)).ToList();

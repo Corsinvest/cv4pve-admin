@@ -32,21 +32,21 @@ public partial class Jobs
         DataGridManager.SaveAfterAsync = async (item, isNew) =>
         {
             await Task.CompletedTask;
-            JobService.ScheduleOrRemove<Job>(a => a.Create(item.Id), item.CronExpression, item.Enabled, item.ClusterName, item.Id);
+            JobService.ScheduleOrRemove<Job>(a => a.CreateAsync(item.Id), item.CronExpression, item.Enabled, item.ClusterName, item.Id);
         };
 
         DataGridManager.DeleteAfterAsync = async (items) =>
         {
             await Task.CompletedTask;
             var ids = items.Select(a => a.Id).ToArray();
-            JobService.Schedule<Job>(a => a.Delete(ids), TimeSpan.FromSeconds(10));
+            JobService.Schedule<Job>(a => a.DeleteAsync(ids), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Delete jobs started!"], UINotifierSeverity.Info);
         };
 
         DataGridManager.BeforeEditAsync = async (item, isNew) =>
         {
             VmIds = (await (await PveClientService.GetClientCurrentClusterAsync())
-                         .GetVmIds(true, true, true, true, true, true))
+                         .GetVmIdsAsync(true, true, true, true, true, true))
                          .ToList();
 
             //add customs
@@ -59,7 +59,7 @@ public partial class Jobs
         };
     }
 
-    private async Task AddItem()
+    private async Task AddItemAsync()
     {
         if (string.IsNullOrEmpty(AddedValue)) { return; }
         VmIds.Add(AddedValue);
@@ -67,20 +67,20 @@ public partial class Jobs
         await RefMudComboBox!.ForceRender(true);
     }
 
-    private async Task Snap(AutoSnapJob item)
+    private async Task SnapAsync(AutoSnapJob item)
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Snap"], L["Execute Snap?"]))
         {
-            JobService.Schedule<Job>(a => a.Create(item.Id), TimeSpan.FromSeconds(10));
+            JobService.Schedule<Job>(a => a.CreateAsync(item.Id), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Creating snapshot!"], UINotifierSeverity.Info);
         }
     }
 
-    private async Task Purge(AutoSnapJob item)
+    private async Task PurgeAsync(AutoSnapJob item)
     {
         if (await UIMessageBox.ShowQuestionAsync(L["Clean"], L["Execute Clean?"]))
         {
-            JobService.Schedule<Job>(a => a.Purge(item.Id), TimeSpan.FromSeconds(10));
+            JobService.Schedule<Job>(a => a.PurgeAsync(item.Id), TimeSpan.FromSeconds(10));
             UINotifier.Show(L["Cleaning snapshots!"], UINotifierSeverity.Info);
         }
     }

@@ -28,13 +28,13 @@ public partial class RenderIndex : IRefreshable
     private Tasks? RefTasks { get; set; } = default!;
     private Logs? RefLogs { get; set; } = default!;
 
-    public async Task Refresh()
+    public async Task RefreshAsync()
     {
-        await RefSummary!.Refresh();
-        await RefResources!.Refresh();
+        await RefSummary!.RefreshAsync();
+        await RefResources!.RefreshAsync();
 
-        if (RefTasks != null) { await RefTasks.Refresh(); }
-        if (RefLogs != null) { await RefLogs.Refresh(); }
+        if (RefTasks != null) { await RefTasks.RefreshAsync(); }
+        if (RefLogs != null) { await RefLogs.RefreshAsync(); }
     }
 
     private IEnumerable<string> ResourcesColumns
@@ -81,13 +81,12 @@ public partial class RenderIndex : IRefreshable
         catch { }
     }
 
-    private async Task<IEnumerable<ClusterResource>> GetResourcesBase()
-        => (await PveClient.GetResources(ClusterResourceType.All)).CalculateHostUsage();
+    private async Task<IEnumerable<ClusterResource>> GetResourcesBaseAsync()
+        => (await PveClient.GetResourcesAsync(ClusterResourceType.All)).CalculateHostUsage();
 
-
-    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetResources()
+    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetResourcesAsync()
     {
-        var data = (await GetResourcesBase())
+        var data = (await GetResourcesBaseAsync())
                     .AsQueryable()
                     .ProjectToType<ClusterResourceVmExtraInfo>()
                     .ToArray();
@@ -95,7 +94,7 @@ public partial class RenderIndex : IRefreshable
         if (ClusterOptions.CalculateSnapshotSize)
         {
             //snapshot size
-            Disks = await PveAdminHelper.MapSnapshotSize(PveClient, PveClientService, data, false, false);
+            Disks = await PveAdminHelper.MapSnapshotSizeAsync(PveClient, PveClientService, data, false, false);
             StateHasChanged();
         }
 
@@ -104,8 +103,8 @@ public partial class RenderIndex : IRefreshable
         return data;
     }
 
-    private async Task<IEnumerable<ClasterStatusModel>> GetStatus() => await PveClient.Cluster.Status.Get();
-    private async Task<string?> GetCephStatus()
+    private async Task<IEnumerable<ClasterStatusModel>> GetStatusAsync() => await PveClient.Cluster.Status.GetAsync();
+    private async Task<string?> GetCephStatusAsync()
     {
         var result = await PveClient.Cluster.Ceph.Status.Status();
         return result.IsSuccessStatusCode
@@ -113,5 +112,5 @@ public partial class RenderIndex : IRefreshable
                 : null;
     }
 
-    private async Task<IEnumerable<NodeTask>> GetTasks() => await PveClient.Cluster.Tasks.Get();
+    private async Task<IEnumerable<NodeTask>> GetTasksAsync() => await PveClient.Cluster.Tasks.GetAsync();
 }

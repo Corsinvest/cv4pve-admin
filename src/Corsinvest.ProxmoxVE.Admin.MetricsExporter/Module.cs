@@ -76,13 +76,11 @@ public class Module : PveAdminModuleBase, IForceLoadModule
                     registry.AddBeforeCollectCallback(async () =>
                     {
                         var moduleClusterOptions = options.CurrentValue.Get(clusterName);
-                        var exporter = new PrometheusExporter(registry,
-                                                              moduleClusterOptions.PrometheusExporterPrefix,
-                                                              moduleClusterOptions.PrometheusExporterNodeDiskInfo);
+                        var exporter = new PrometheusExporter(registry, moduleClusterOptions.PrometheusExporterPrefix);
 
                         try
                         {
-                            await exporter.Collect(await pveClientService.GetClientAsync(clusterName));
+                            await exporter.CollectAsync(await pveClientService.GetClientAsync(clusterName));
                         }
                         catch (Exception ex) { logger.LogError(ex, ex.Message); }
                     });

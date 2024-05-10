@@ -67,7 +67,7 @@ public partial class DialogFastConfig
                             //get cluster name
                             if (client != null)
                             {
-                                var info = await client.GetClusterInfo();
+                                var info = await client.GetClusterInfoAsync();
                                 ClusterOptions.Name = info.Name;
                                 ClusterOptions.Type = info.Type;
                             }
@@ -99,5 +99,5 @@ public partial class DialogFastConfig
         return ret;
     }
 
-    private async Task ResultStepClick() => await BrowserService.Open(NavigationManager.Uri.ToString(), "_self");
+    private async Task ResultStepClick() => await BrowserService.OpenAsync(NavigationManager.Uri.ToString(), "_self");
 }

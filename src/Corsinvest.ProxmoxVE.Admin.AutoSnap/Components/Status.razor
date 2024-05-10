@@ -20,7 +20,7 @@
     <ToolBarContent>
         <AHDataGridToolBarRead T="AutoSnapInfo" DataGridManager="DataGridManager">
             <ToolBarContentBefore>
-                <AHPermissionButtonIcon Permission="Module.Permissions.Status.Delete" OnClick="@Delete" Disabled="@(!DataGridManager.ExistsSelection)" />
+                <AHPermissionButtonIcon Permission="Module.Permissions.Status.Delete" OnClick="@DeleteAsync" Disabled="@(!DataGridManager.ExistsSelection)" />
             </ToolBarContentBefore>
         </AHDataGridToolBarRead>
     </ToolBarContent>

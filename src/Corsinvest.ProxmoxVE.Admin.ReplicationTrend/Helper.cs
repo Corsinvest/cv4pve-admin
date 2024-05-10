@@ -17,7 +17,7 @@ internal class Helper
 {
     public static async Task Scan(IServiceScope scope, string clusterName)
     {
-        var client = await scope.GetPveClient(clusterName);
+        var client = await scope.GetPveClientAsync(clusterName);
         if (client == null) { return; }
 
         var loggerFactory = scope.GetLoggerFactory();
@@ -43,9 +43,9 @@ internal class Helper
 
         var list = new List<ReplicationResult>();
 
-        foreach (var node in (await client.GetNodes()).Where(a => a.IsOnline))
+        foreach (var node in (await client.GetNodesAsync()).Where(a => a.IsOnline))
         {
-            foreach (var job in await client.Nodes[node.Node].Replication.Get())
+            foreach (var job in await client.Nodes[node.Node].Replication.GetAsync())
             {
                 var rows = (await client.Nodes[node.Node].Replication[job.Id].Log.ReadJobLog())
                             .ToEnumerable()

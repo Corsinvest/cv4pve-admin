@@ -19,10 +19,10 @@ public partial class RenderIndex
 
     private async Task<IEnumerable<ClusterResource>> GetItems()
         => (await (await PveClientService.GetClientCurrentClusterAsync())
-            .GetResources(ClusterResourceType.Node))
+            .GetResourcesAsync(ClusterResourceType.Node))
             .Where(a => a.IsOnline);
 
-    private async Task FreeMemory()
+    private async Task FreeMemoryAsync()
     {
         LoadingFreeMemory = true;
         if (await UIMessageBox.ShowQuestionAsync(L["Unlock"], L["Unlock VM/CT?"]))
@@ -35,7 +35,7 @@ public partial class RenderIndex
                             L["Error execution!<br>"] + ret.SelectMany(a => a.Errors.Select(a => a.Message)).JoinAsString("<br>"));
 
             RefResources!.DataGridManager.SelectedItems.Clear();
-            await RefResources!.DataGridManager.Refresh();
+            await RefResources!.DataGridManager.RefreshAsync();
         }
         LoadingFreeMemory = false;
     }

@@ -31,14 +31,14 @@ internal class Helper
     private static ModuleClusterOptions GetModuleClusterOptions(IServiceScope scope, string clusterName)
         => scope.GetModuleClusterOptions<Options, ModuleClusterOptions>(clusterName);
 
-    private static async Task<AutoSnapJob?> GetAutoSnapJob(IReadRepositoryBase<AutoSnapJob> jobRepo, int id, ILogger logger)
+    private static async Task<AutoSnapJob?> GetAutoSnapJobAsync(IReadRepositoryBase<AutoSnapJob> jobRepo, int id, ILogger logger)
     {
         var job = await jobRepo.FirstOrDefaultAsync(new AutoSnapJobSpec(id));
         if (job == null) { logger.LogWarning("Job Id = {Id} not exists!", id); }
         return job;
     }
 
-    public static async Task Delete(IServiceScope scope, IEnumerable<int> ids)
+    public static async Task DeleteAsync(IServiceScope scope, IEnumerable<int> ids)
     {
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
@@ -50,17 +50,17 @@ internal class Helper
             //remove snapshot
             foreach (var id in ids)
             {
-                var job = await GetAutoSnapJob(jobRepo, id, logger);
+                var job = await GetAutoSnapJobAsync(jobRepo, id, logger);
                 if (job == null) { continue; }
 
                 var moduleClusterOptions = GetModuleClusterOptions(scope, job.ClusterName);
-                if (moduleClusterOptions.OnRemoveJobRemoveSnapshots) { await Purge(scope, id); }
+                if (moduleClusterOptions.OnRemoveJobRemoveSnapshots) { await PurgeAsync(scope, id); }
                 await jobRepo.DeleteAsync(job);
             }
         }
     }
 
-    public static async Task Purge(IServiceScope scope, int id)
+    public static async Task PurgeAsync(IServiceScope scope, int id)
     {
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
@@ -68,20 +68,20 @@ internal class Helper
         using (logger.LogTimeOperation(LogLevel.Information, true, "Purge snapshot from Job {Id}", id))
         {
             var jobRepo = scope.GetReadRepository<AutoSnapJob>();
-            var job = await GetAutoSnapJob(jobRepo, id, logger);
+            var job = await GetAutoSnapJobAsync(jobRepo, id, logger);
             if (job == null) { return; }
 
             var moduleClusterOptions = GetModuleClusterOptions(scope, job.ClusterName);
-            var client = await scope.GetPveClient(job.ClusterName);
+            var client = await scope.GetPveClientAsync(job.ClusterName);
 
             using var log = new StringWriterEvent();
             var app = GetApp(client, loggerFactory, log);
 
-            await app.Clean(job.VmIds, job.Label, 0, job.TimeoutSnapshot * 1000, moduleClusterOptions.TimestampFormat);
+            await app.CleanAsync(job.VmIds, job.Label, 0, job.TimeoutSnapshot * 1000, moduleClusterOptions.TimestampFormat);
         }
     }
 
-    public static async Task Create(IServiceScope scope, int id)
+    public static async Task CreateAsync(IServiceScope scope, int id)
     {
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(Helper));
@@ -89,7 +89,7 @@ internal class Helper
         using (logger.LogTimeOperation(LogLevel.Information, true, "Execution AutoSnap from Job {id}", id))
         {
             var jobRepo = scope.GetRepository<AutoSnapJob>();
-            var job = await GetAutoSnapJob(jobRepo, id, logger);
+            var job = await GetAutoSnapJobAsync(jobRepo, id, logger);
             if (job == null)
             {
                 logger.LogWarning("Job Id = {Id} not exists!", id);
@@ -121,7 +121,7 @@ internal class Helper
 
             logger.LogInformation("Execution AutoSnap Job: {Id}", id);
 
-            var client = await scope.GetPveClient(job.ClusterName);
+            var client = await scope.GetPveClientAsync(job.ClusterName);
             var app = GetApp(client, loggerFactory, log);
 
             var statusEventOk = true;
@@ -162,14 +162,14 @@ internal class Helper
 
             using (logger.LogTimeOperation(LogLevel.Debug, true, "Execution physical Snap"))
             {
-                var retSnap = await app.Snap(job.VmIds,
-                                             job.Label,
-                                             job.Keep,
-                                             job.VmStatus,
-                                             job.TimeoutSnapshot * 1000,
-                                             moduleClusterOptions.TimestampFormat,
-                                             moduleClusterOptions.MaxPercentageStorage,
-                                             job.OnlyRuns);
+                var retSnap = await app.SnapAsync(job.VmIds,
+                                                  job.Label,
+                                                  job.Keep,
+                                                  job.VmStatus,
+                                                  job.TimeoutSnapshot * 1000,
+                                                  moduleClusterOptions.TimestampFormat,
+                                                  moduleClusterOptions.MaxPercentageStorage,
+                                                  job.OnlyRuns);
                 history.Status = retSnap.Status;
             }
 
@@ -211,14 +211,14 @@ internal class Helper
         }
     }
 
-    public static async Task<IEnumerable<AutoSnapInfo>> GetInfo(PveClient client,
-                                                                ModuleClusterOptions moduleClusterOptions,
-                                                                ILoggerFactory loggerFactory,
-                                                                string vmIdsOrNames)
+    public static async Task<IEnumerable<AutoSnapInfo>> GetInfoAsync(PveClient client,
+                                                                     ModuleClusterOptions moduleClusterOptions,
+                                                                     ILoggerFactory loggerFactory,
+                                                                     string vmIdsOrNames)
     {
         var ret = new List<AutoSnapInfo>();
         foreach (var item in await GetApp(client, loggerFactory, null!)
-                                        .Status(vmIdsOrNames, null, moduleClusterOptions.TimestampFormat))
+                                        .StatusAsync(vmIdsOrNames, null, moduleClusterOptions.TimestampFormat))
         {
             var snaposhots = item.Value.Where(a => !string.IsNullOrWhiteSpace(Application.GetLabelFromName(a.Name, moduleClusterOptions.TimestampFormat)));
             ret.AddRange(snaposhots.Select(a => new AutoSnapInfo()
@@ -291,16 +291,16 @@ internal class Helper
         });
     }
 
-    public static async Task Delete(IServiceScope scope, IEnumerable<AutoSnapInfo> snapshots, string clusterName)
+    public static async Task DeleteAsync(IServiceScope scope, IEnumerable<AutoSnapInfo> snapshots, string clusterName)
     {
-        var client = await scope.GetPveClient(clusterName);
+        var client = await scope.GetPveClientAsync(clusterName);
         foreach (var item in snapshots)
         {
-            await SnapshotHelper.RemoveSnapshot(client, item.Node, item.VmType, item.VmId, item.Name, 30000, true);
+            await SnapshotHelper.RemoveSnapshotAsync(client, item.Node, item.VmType, item.VmId, item.Name, 30000, true);
         }
     }
 
-    public static async Task<string> GetVmIdsOrNames(IReadRepository<AutoSnapJob> jobRepo, string clusterName, bool enabled)
+    public static async Task<string> GetVmIdsOrNamesAsync(IReadRepository<AutoSnapJob> jobRepo, string clusterName, bool enabled)
     {
         var specJob = new AutoSnapJobSpec(clusterName);
         if (enabled) { specJob = specJob.Enabled(); }
@@ -308,24 +308,24 @@ internal class Helper
     }
 
     public static async Task<(int scheduled, DateTime? last, int snapCount, int vmsScheduled, int inError)>
-        Info(IServiceScopeFactory ServiceScopeFactory, string clusterName)
+        InfoAsync(IServiceScopeFactory ServiceScopeFactory, string clusterName)
     {
         using var scope = ServiceScopeFactory.CreateScope();
-        var client = await scope.GetPveClient(clusterName);
+        var client = await scope.GetPveClientAsync(clusterName);
         var jobRepo = scope.GetReadRepository<AutoSnapJob>();
         var jobHistoryRepo = scope.GetReadRepository<AutoSnapJobHistory>();
         var moduleClusterOptions = GetModuleClusterOptions(scope, clusterName);
         var loggerFactory = scope.GetLoggerFactory();
 
-        var vmIdsOrNames = await GetVmIdsOrNames(jobRepo, clusterName, true);
+        var vmIdsOrNames = await GetVmIdsOrNamesAsync(jobRepo, clusterName, true);
         var vmsCount = string.IsNullOrWhiteSpace(vmIdsOrNames) ?
                         0 :
-                        (await client.GetVms(vmIdsOrNames)).Where(a => !a.IsUnknown).Count();
+                        (await client.GetVmsAsync(vmIdsOrNames)).Where(a => !a.IsUnknown).Count();
 
         var snapCount = moduleClusterOptions.SearchMode == SearchMode.Managed
                             ? vmsCount
                             : (await GetApp(client, loggerFactory, null!)
-                                    .Status(AllVms, null, moduleClusterOptions.TimestampFormat))
+                                    .StatusAsync(AllVms, null, moduleClusterOptions.TimestampFormat))
                                     .Count;
 
         var specJob = new AutoSnapJobSpec(clusterName).Enabled();
