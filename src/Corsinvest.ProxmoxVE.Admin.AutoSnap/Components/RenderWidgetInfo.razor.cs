@@ -12,12 +12,12 @@ public partial class RenderWidgetInfo
 
     private string Description { get; set; } = default!;
 
-    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    private async Task<bool> GetStatusAsync(PveClient client, string clusterName)
     {
         var ret = false;
         Description = "AutoSnap";
 
-        var (scheduled, _, snapCount, _, inError) = await Helper.Info(ScopeFactory, clusterName);
+        var (scheduled, _, snapCount, _, inError) = await Helper.InfoAsync(ScopeFactory, clusterName);
         if (scheduled == 0) { Description = L["AutoSnap not scheduled!"]; }
         else if (inError > 0) { Description = L["AutoSnap in error!"]; }
         else if (snapCount == 0) { Description = L["AutoSnap not found!"]; }

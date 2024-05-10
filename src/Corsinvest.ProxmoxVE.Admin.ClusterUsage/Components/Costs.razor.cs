@@ -141,17 +141,17 @@ public partial class Costs
     }
 
     private async Task<IEnumerable<VmRrdData>> GetVmRrdData(DataVmEx item, RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
-        => await PveClient.GetVmRrdData(await PveClient.GetVm(item.VmId), rrdDataTimeFrame, rrdDataConsolidation);
+        => await PveClient.GetVmRrdDataAsync(await PveClient.GetVmAsync(item.VmId), rrdDataTimeFrame, rrdDataConsolidation);
 
-    private async Task Ok()
+    private async Task OkAsync()
     {
         RefPicker!.Close();
-        await DataGridManager.Refresh();
+        await DataGridManager.RefreshAsync();
     }
 
     private void Scan()
     {
-        JobService.Schedule<Job>(a => a.Scan(ClusterName), TimeSpan.FromSeconds(10));
+        JobService.Schedule<Job>(a => a.ScanAsync(ClusterName), TimeSpan.FromSeconds(10));
         UINotifier.Show(L["Scan jobs started!"], UINotifierSeverity.Info);
     }
 }

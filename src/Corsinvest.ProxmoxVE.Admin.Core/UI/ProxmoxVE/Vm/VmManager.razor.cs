@@ -51,7 +51,7 @@ public partial class VmManager
     private async Task<VmBaseStatusCurrent> GetStatusAsync()
     {
         //StateHasChanged();
-        return await PveClient.GetVmStatus(Vm);
+        return await PveClient.GetVmStatusAsync(Vm);
     }
 
     private async Task Refresh()
@@ -69,7 +69,7 @@ public partial class VmManager
         VmQemuAgentGetFsInfo ret = null!;
         try
         {
-            ret = await PveClient.Nodes[Vm.Node].Qemu[Vm.VmId].Agent.GetFsinfo.Get();
+            ret = await PveClient.Nodes[Vm.Node].Qemu[Vm.VmId].Agent.GetFsinfo.GetAsync();
         }
         catch { }
 
@@ -78,7 +78,7 @@ public partial class VmManager
 
     private async Task ChangeStatusAsync(VmStatus status)
     {
-        await VmHelper.ChangeStatusVm(PveClient, Vm.Node, Vm.VmType, Vm.VmId, status);
+        await VmHelper.ChangeStatusVmAsync(PveClient, Vm.Node, Vm.VmType, Vm.VmId, status);
 
         //todo salavare log su db
         //await DbHelper.SaveLogAction(Db,
@@ -99,12 +99,12 @@ public partial class VmManager
                                                 Vm.Name)
                     : GetUrlShowConsole.Invoke();
 
-        await BrowserService.Open(url, "_blank");
+        await BrowserService.OpenAsync(url, "_blank");
     }
 
     private async Task<IEnumerable<VmRrdData>> GetRrdDataAsync(RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
-        => await PveClient.GetVmRrdData(Vm, rrdDataTimeFrame, rrdDataConsolidation);
+        => await PveClient.GetVmRrdDataAsync(Vm, rrdDataTimeFrame, rrdDataConsolidation);
 
     private async Task<IEnumerable<NodeTask>> GetTasks()
-        => await PveClient.Nodes[Vm.Node].Tasks.Get(start: 0, limit: 500, vmid: Convert.ToInt32(Vm.VmId));
+        => await PveClient.Nodes[Vm.Node].Tasks.GetAsync(start: 0, limit: 500, vmid: Convert.ToInt32(Vm.VmId));
 }

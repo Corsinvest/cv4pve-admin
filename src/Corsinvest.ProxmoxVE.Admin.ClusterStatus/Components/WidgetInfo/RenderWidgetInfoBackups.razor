@@ -4,18 +4,18 @@
 *@
 @inherits AHComponentBase
 
-<WidgetInfoBase Description="@L["VM/CT Backups"]" GetStatus="GetStatus" />
+<WidgetInfoBase Description="@L["VM/CT Backups"]" GetStatus="GetStatusAsync" />
 
 @code
 {
-    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    private async Task<bool> GetStatusAsync(PveClient client, string clusterName)
     {
         var dateCheck = new DateTimeOffset(DateTime.Now.Date.AddDays(-10)).ToUnixTimeSeconds();
         var ret = true;
 
-        foreach (var node in (await client.Nodes.Get()).Where(a => a.IsOnline))
+        foreach (var node in (await client.Nodes.GetAsync()).Where(a => a.IsOnline))
         {
-            if ((await client.Nodes[node.Node].Tasks.Get(errors: true, limit: 1, typefilter: "vzdump"))
+            if ((await client.Nodes[node.Node].Tasks.GetAsync(errors: true, limit: 1, typefilter: "vzdump"))
                             .Count(a => a.StartTime >= dateCheck) > 0)
             {
                 ret = false;

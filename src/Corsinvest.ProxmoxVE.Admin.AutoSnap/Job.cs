@@ -13,27 +13,27 @@ internal class Job
     public Job(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
     private static bool ModuleEnabled(IServiceScope scope) => scope.GetModule<Module>()!.Enabled;
 
-    public async Task Create(int id)
+    public async Task CreateAsync(int id)
     {
         using var scope = _scopeFactory.CreateScope();
-        if (ModuleEnabled(scope)) { await Helper.Create(scope, id); }
+        if (ModuleEnabled(scope)) { await Helper.CreateAsync(scope, id); }
     }
 
-    public async Task Purge(int id)
+    public async Task PurgeAsync(int id)
     {
         using var scope = _scopeFactory.CreateScope();
-        await Helper.Purge(scope, id);
+        await Helper.PurgeAsync(scope, id);
     }
 
-    public async Task Delete(IEnumerable<int> ids)
+    public async Task DeleteAsync(IEnumerable<int> ids)
     {
         using var scope = _scopeFactory.CreateScope();
-        await Helper.Delete(scope, ids);
+        await Helper.DeleteAsync(scope, ids);
     }
 
-    public async Task Delete(IEnumerable<AutoSnapInfo> snapshots, string clusterName)
+    public async Task DeleteAsync(IEnumerable<AutoSnapInfo> snapshots, string clusterName)
     {
         using var scope = _scopeFactory.CreateScope();
-        await Helper.Delete(scope, snapshots, clusterName);
+        await Helper.DeleteAsync(scope, snapshots, clusterName);
     }
 }

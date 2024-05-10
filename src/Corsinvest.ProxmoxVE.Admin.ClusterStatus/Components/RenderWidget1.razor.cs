@@ -20,7 +20,7 @@ public partial class RenderWidget1
     protected override async Task OnInitializedAsync()
     {
         var pveClient = await PveClientService.GetClientCurrentClusterAsync();
-        var resources = (await pveClient.GetResources(ClusterResourceType.All))
+        var resources = (await pveClient.GetResourcesAsync(ClusterResourceType.All))
                             .CalculateHostUsage();
         DataUsages = ResourceUsage.GetUsages(resources, L);
 
@@ -120,7 +120,7 @@ public partial class RenderWidget1
     ///// Create General Info
     ///// </summary>
     ///// <returns></returns>
-    //public async Task CreateGenealInfo()
+    //public async Task CreateGenealInfoAsync()
     //{
     //    var licenses = true;
     //    var updates = true;
@@ -193,10 +193,10 @@ public partial class RenderWidget1
     //    if (!nodesEndOfLine) { GeneralInfo.Add(new(nodesEndOfLine, "Nodes End Of Life", TypeData.NodesEndOfLine, new())); }
     //}
 
-    //private static async Task<bool> CheckLicense(PveClient.PveNodes.PveNodeItem node)
+    //private static async Task<bool> CheckLicenseAsync(PveClient.PveNodes.PveNodeItem node)
     //    => (await node.Subscription.GetEx()).Status != "Active";
 
-    //private static async Task<bool> CheckEOL(PveClient.PveNodes.PveNodeItem node)
+    //private static async Task<bool> CheckEOLAsync(PveClient.PveNodes.PveNodeItem node)
     //{
     //    var endOfLife = new Dictionary<string, DateTime>()
     //            {

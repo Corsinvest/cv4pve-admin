@@ -16,13 +16,13 @@ public partial class Logs : IRefreshable
 
     [Inject] private IDataGridManager<ClusterLog> DataGridManager { get; set; } = default!;
 
-    public async Task Refresh() => await DataGridManager.Refresh();
+    public async Task RefreshAsync() => await DataGridManager.RefreshAsync();
 
     protected override void OnInitialized()
     {
         DataGridManager.Title = L["Cluster Log"];
         DataGridManager.DefaultSort = new() { [nameof(ClusterLog.Time)] = true };
-        DataGridManager.QueryAsync = async () => await PveClient.Cluster.Log.Get(100);
+        DataGridManager.QueryAsync = async () => await PveClient.Cluster.Log.GetAsync(100);
 
     }
 }

@@ -14,7 +14,7 @@ public partial class RenderOptions
     {
         foreach (var item in Options.Clusters)
         {
-            JobService.ScheduleOrRemove<Job>(a => a.Scan(item.ClusterName), item.CronExpression, item.Enabled, item.ClusterName);
+            JobService.ScheduleOrRemove<Job>(a => a.ScanAsync(item.ClusterName), item.CronExpression, item.Enabled, item.ClusterName);
         }
 
         await base.SaveAsync();

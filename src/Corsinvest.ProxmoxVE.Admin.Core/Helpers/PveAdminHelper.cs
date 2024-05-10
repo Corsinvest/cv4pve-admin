@@ -41,9 +41,9 @@ public static class PveAdminHelper
 
     private static readonly string[] headers = ["Server Id", "PVE Version", "Name", "IpAddress", "Subscription Id"];
 
-    public static async Task<string> GenerateWhoUsing(PveClient client, AdminOptions adminOptions)
+    public static async Task<string> GenerateWhoUsingAsync(PveClient client, AdminOptions adminOptions)
     {
-        var resources = (await client.GetResources(ClusterResourceType.All))
+        var resources = (await client.GetResourcesAsync(ClusterResourceType.All))
                             .CalculateHostUsage();
         var lxc = resources.Where(a => a.ResourceType == ClusterResourceType.Vm && a.VmType == VmType.Lxc).Count();
         var qemu = resources.Where(a => a.ResourceType == ClusterResourceType.Vm && a.VmType == VmType.Qemu).Count();
@@ -54,7 +54,7 @@ public static class PveAdminHelper
         var storages = allStorage.Where(a => !a.Shared).ToList();
         storages.AddRange(allStorage.Where(a => a.Shared).DistinctBy(a => a.Storage));
 
-        return @$"Proxmox VE Version: {(await client.Version.Get()).Version}
+        return @$"Proxmox VE Version: {(await client.Version.GetAsync()).Version}
 Host Number: {nodes.Count()}
 CPUs: {nodes.Sum(a => a.CpuSize)}
 Memory: {FormatHelper.FromBytes(nodes.Sum(a => a.MemorySize))}
@@ -64,18 +64,18 @@ Company: {adminOptions.Company}
 ";
     }
 
-    public static async Task<string> GetClusterInfo(PveClient client, Configurations.ClusterOptions clusterOptions)
+    public static async Task<string> GetClusterInfoAsync(PveClient client, Configurations.ClusterOptions clusterOptions)
     {
         var rows = new List<IEnumerable<string>>();
 
-        var status = await client.Cluster.Status.Get();
+        var status = await client.Cluster.Status.GetAsync();
 
         foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)).OrderBy(a => a.Name))
         {
             var nodeOptions = clusterOptions.GetNodeOptions(item.IpAddress, item.Name);
 
             var version = item.IsOnline
-                            ? (await client.Nodes[item.Name].Version.Get())?.Version
+                            ? (await client.Nodes[item.Name].Version.GetAsync())?.Version
                             : "";
 
             rows.Add(
@@ -91,12 +91,12 @@ Company: {adminOptions.Company}
         return TableGenerator.ToText(headers, rows);
     }
 
-    public static async Task<string> GetSupportInfo(PveClient client)
+    public static async Task<string> GetSupportInfoAsync(PveClient client)
     {
         var rows = new List<string>();
-        foreach (var item in await client.Nodes.Get())
+        foreach (var item in await client.Nodes.GetAsync())
         {
-            var subscription = await client.Nodes[item.Node].Subscription.GetEx();
+            var subscription = await client.Nodes[item.Node].Subscription.GetAsync();
 
             var level = string.Empty;
             if (!string.IsNullOrEmpty(subscription.Key))
@@ -111,7 +111,7 @@ Company: {adminOptions.Company}
         return rows.JoinAsString(Environment.NewLine);
     }
 
-    public static async Task<IEnumerable<Services.DiskInfo.DiskInfoBase>> MapSnapshotSize<T>(PveClient client,
+    public static async Task<IEnumerable<Services.DiskInfo.DiskInfoBase>> MapSnapshotSizeAsync<T>(PveClient client,
                                                                                              IPveClientService pveClientService,
                                                                                              IEnumerable<T> items,
                                                                                              bool includeReplication,
@@ -119,7 +119,7 @@ Company: {adminOptions.Company}
         where T : ISnapshotsSize, INode, IVmId
     {
         //snapshot size
-        var disks = await pveClientService.GetDisksInfo(client, (await pveClientService.GetCurrentClusterOptionsAsync())!);
+        var disks = await pveClientService.GetDisksInfoAsync(client, (await pveClientService.GetCurrentClusterOptionsAsync())!);
 
         foreach (var item in items)
         {

@@ -27,7 +27,7 @@ public partial class Summary : IRefreshable
     private ItemStatus CephStatus { get; set; } = default!;
     private bool CephInstalled { get; set; }
 
-    public async Task Refresh() => await DataGridManager.Refresh();
+    public async Task RefreshAsync() => await DataGridManager.RefreshAsync();
 
     private class DataUsage : ResourceUsage
     {

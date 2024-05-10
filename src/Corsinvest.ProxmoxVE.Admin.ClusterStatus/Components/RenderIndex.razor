@@ -12,9 +12,9 @@ else
 {
     <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Summary @ref="RefSummary"
                                                                   Permissions="Module.Permissions.DataGrid.Data"
-                                                                  GetResources="GetResourcesBase"
-                                                                  GetStatus="GetStatus"
-                                                                  GetCephStatus="GetCephStatus" />
+                                                                  GetResources="GetResourcesBaseAsync"
+                                                                  GetStatus="GetStatusAsync"
+                                                                  GetCephStatus="GetCephStatusAsync" />
     <br />
 
     <Corsinvest.ProxmoxVE.Admin.Core.UI.Components.InfoCalculateSnapshots />
@@ -36,7 +36,7 @@ else
             <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources @ref="RefResources"
                                                                             T="ClusterResourceVmExtraInfo"
                                                                             Permissions="Module.Permissions.DataGrid.Data"
-                                                                            GetItems="GetResources"
+                                                                            GetItems="GetResourcesAsync"
                                                                             PropertiesName="ResourcesColumns" />
         </MudCardContent>
     </MudCard>
@@ -47,7 +47,7 @@ else
         <MudTabPanel Text="@L["Tasks"]" Icon="@Icons.Material.Filled.Task">
             <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common.Tasks @ref="RefTasks"
                                                                        Permissions="Module.Permissions.DataGrid.Data"
-                                                                       GetItems="GetTasks"
+                                                                       GetItems="GetTasksAsync"
                                                                        PveClient="PveClient" />
         </MudTabPanel>
 

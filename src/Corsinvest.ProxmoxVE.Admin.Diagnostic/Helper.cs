@@ -83,8 +83,8 @@ internal class Helper
             InfoHelper.Info info;
             using (logger.LogTimeOperation(LogLevel.Information, true, "Collect data from cluster"))
             {
-                var client = await scope.GetPveClient(clusterName);
-                info = await InfoHelper.Collect(client, true, tasksDays, true, false);
+                var client = await scope.GetPveClientAsync(clusterName);
+                info = await InfoHelper.CollectAsync(client, true, tasksDays, true, false);
             }
 
             var execution = new Execution()

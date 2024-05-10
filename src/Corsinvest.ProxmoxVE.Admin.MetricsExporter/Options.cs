@@ -14,8 +14,8 @@ public class ModuleClusterOptions : IClusterName
 {
     public string ClusterName { get; set; } = default!;
 
-    [Display(Name = "Prometheus Exporter Node Disk Info (require more time)")]
-    public bool PrometheusExporterNodeDiskInfo { get; set; }
+    //[Display(Name = "Prometheus Exporter Node Disk Info (require more time)")]
+    //public bool PrometheusExporterNodeDiskInfo { get; set; }
 
     [Display(Name = "Prometheus Exporter Prefix")]
     public string PrometheusExporterPrefix { get; set; } = "cv4pve";

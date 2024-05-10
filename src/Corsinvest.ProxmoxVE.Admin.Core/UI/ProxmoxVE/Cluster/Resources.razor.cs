@@ -44,7 +44,7 @@ public partial class Resources<T> : IRefreshable
         DataGridManagerInt.QueryAsync = GetItems;
     }
 
-    public async Task Refresh() => await DataGridManager.Refresh();
+    public async Task RefreshAsync() => await DataGridManager.RefreshAsync();
     private static Type GetDynamicType(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicType<T>(propertyName);
     private static Dictionary<string, object> GetDynamicParameters(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicParameters<T>(propertyName);
 }

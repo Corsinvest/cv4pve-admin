@@ -34,15 +34,15 @@ public class CephDiskInfo(string storage, string pool, long vmId, string disk, s
         //public DateTime Timestamp { get; set; }
     }
 
-    public static async Task<IEnumerable<CephDiskInfo>> Read(PveClient client, ClusterOptions clusterOptions)
+    public static async Task<IEnumerable<CephDiskInfo>> ReadAsync(PveClient client, ClusterOptions clusterOptions)
     {
         var ret = new List<CephDiskInfo>();
 
-        var (host, ipAddress) = (await client.GetHostAndIp()).FirstOrDefault(a => a.Value == client.Host);
+        var (host, ipAddress) = (await client.GetHostAndIpAsync()).FirstOrDefault(a => a.Value == client.Host);
         var info = clusterOptions.GetNodeOptions(ipAddress, host);
         if (info != null)
         {
-            var storages = (await client.Storage.Get("rbd")).Where(a => !a.Disable).ToList();
+            var storages = (await client.Storage.GetAsync("rbd")).Where(a => !a.Disable).ToList();
             if (storages.Count != 0)
             {
                 using var sshClient = new SshClient(ipAddress,

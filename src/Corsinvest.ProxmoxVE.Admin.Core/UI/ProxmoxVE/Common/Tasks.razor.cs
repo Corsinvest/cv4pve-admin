@@ -20,7 +20,7 @@ public partial class Tasks : IRefreshable
 
     [Inject] private IDataGridManager<NodeTask> DataGridManager { get; set; } = default!;
 
-    public async Task Refresh() => await DataGridManager.Refresh();
+    public async Task RefreshAsync() => await DataGridManager.RefreshAsync();
 
     [Parameter]
     public IEnumerable<string> PropertiesName { get; set; } =
@@ -70,7 +70,7 @@ public partial class Tasks : IRefreshable
     }
 
     private async Task<string> GetTaskLog(NodeTask item)
-        => (await PveClient.Nodes[item.Node].Tasks[item.UniqueTaskId].Log.Get(10000))
+        => (await PveClient.Nodes[item.Node].Tasks[item.UniqueTaskId].Log.GetAsync(10000))
                 .JoinAsString(Environment.NewLine);
 
     private static Type GetDynamicType(string propertyName) => PveBlazorHelper.AHPropertyColumn.GetDynamicType<NodeTask>(propertyName);

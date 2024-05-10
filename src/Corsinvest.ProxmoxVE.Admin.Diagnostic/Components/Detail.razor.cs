@@ -112,7 +112,7 @@ public partial class Detail
         return result;
     }
 
-    private async Task ShowInfo(Data item) => await BrowserService.Open(item.Url!, "_blank");
+    private async Task ShowInfoAsync(Data item) => await BrowserService.OpenAsync(item.Url!, "_blank");
 
     private static string GroupClassFunc(GroupDefinition<Data> group)
         => (DiagnosticResultGravity)group.Grouping.Key switch

@@ -18,7 +18,7 @@ public partial class PveWidgets
         {
             Valid = await PveClientService.ExistsCurrentClusterNameAsync();
 
-            var data = await PveAdminHelper.GetSupportInfo(await PveClientService.GetClientCurrentClusterAsync());
+            var data = await PveAdminHelper.GetSupportInfoAsync(await PveClientService.GetClientCurrentClusterAsync());
             MailTo = $"mailto:support@corsinvets.it?subject=Request%20quote%20license&body=" + 
                         data.ToArray().Select(a => Uri.HexEscape(a)).JoinAsString("");
         }

@@ -21,6 +21,6 @@ public partial class RenderIndex
         catch { }
     }
 
-    public async Task<IEnumerable<ClusterResource>> GetNodes() => (await PveClient.GetResources(ClusterResourceType.Node)).Where(a => a.IsOnline);
+    public async Task<IEnumerable<ClusterResource>> GetNodes() => (await PveClient.GetResourcesAsync(ClusterResourceType.Node)).Where(a => a.IsOnline);
 
 }

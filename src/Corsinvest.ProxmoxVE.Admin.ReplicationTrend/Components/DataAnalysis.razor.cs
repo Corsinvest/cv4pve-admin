@@ -126,7 +126,7 @@ public partial class DataAnalysis
     private async Task DateRangeChanged(DateRange dateRange)
     {
         DateRange = dateRange;
-        DateSelected = await Calculate($"{dateRange.Start.Value.ToShortDateString()} - {dateRange.End.Value.ToShortDateString()}",
+        DateSelected = await Calculate($"{dateRange.Start!.Value.ToShortDateString()} - {dateRange.End!.Value.ToShortDateString()}",
                                        dateRange.Start.Value,
                                        dateRange.End.Value);
     }

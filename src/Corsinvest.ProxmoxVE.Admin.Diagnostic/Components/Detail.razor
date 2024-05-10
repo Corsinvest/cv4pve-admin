@@ -39,7 +39,7 @@
 
                     @if (!string.IsNullOrEmpty(context.Item.Url))
                     {
-                        <MudIconButton Icon="@Icons.Material.Filled.Info" OnClick="@(() => ShowInfo(context.Item))"
+                        <MudIconButton Icon="@Icons.Material.Filled.Info" OnClick="@(() => ShowInfoAsync(context.Item))"
                                    Size="Size.Small" Title="@L["Info"]" />
                     }
                 </MudButtonGroup>

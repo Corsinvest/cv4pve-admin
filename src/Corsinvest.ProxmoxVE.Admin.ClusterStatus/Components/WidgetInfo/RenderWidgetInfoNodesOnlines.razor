@@ -4,15 +4,15 @@
 *@
 @inherits AHComponentBase
 
-<WidgetInfoBase Description="@Description" GetStatus="GetStatus" />
+<WidgetInfoBase Description="@Description" GetStatus="GetStatusAsync" />
 
 @code
 {
     private string Description { get; set; } = default!;
 
-    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    private async Task<bool> GetStatusAsync(PveClient client, string clusterName)
     {
-        var nodes = await client.Nodes.Get();
+        var nodes = await client.Nodes.GetAsync();
         var onLine = nodes.Where(a => a.IsOnline).Count();
         Description = L["{0} of {1} Nodes online", onLine, nodes.Count()];
         StateHasChanged();

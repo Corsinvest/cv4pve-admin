@@ -21,16 +21,16 @@ public partial class Storages
     private Resources<ClusterResourceVmExtraInfo>? RefResourcesByVmCt { get; set; } = default!;
 
     protected override async Task OnInitializedAsync() => PveClient = await PveClientService.GetClientCurrentClusterAsync();
-    private async Task<IEnumerable<StorageItem>> GetConfigStorages() => (await PveClient.Storage.Get()).OrderBy(a => a.Storage);
-    private async Task<IEnumerable<ClusterResource>> GetStorages() => await PveClient.GetResources(ClusterResourceType.Storage);
+    private async Task<IEnumerable<StorageItem>> GetConfigStorages() => (await PveClient.Storage.GetAsync()).OrderBy(a => a.Storage);
+    private async Task<IEnumerable<ClusterResource>> GetStorages() => await PveClient.GetResourcesAsync(ClusterResourceType.Storage);
 
     private async Task OnlyRunChanged(bool value)
     {
         OnlyRun = value;
-        await RefResourcesByVmCt!.Refresh();
+        await RefResourcesByVmCt!.RefreshAsync();
     }
 
-    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVms(PveClient, OnlyRun, PveClientService);
+    private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVmsAsync(PveClient, OnlyRun, PveClientService);
 
     private async Task<IEnumerable<NodeStorageContent>> GetContents(ClusterResource item)
     {
@@ -41,17 +41,17 @@ public partial class Storages
             case ClusterResourceType.All: break;
             case ClusterResourceType.Node: break;
             case ClusterResourceType.Vm:
-                foreach (var node in (await PveClient.GetNodes()).Where(a => a.IsOnline))
+                foreach (var node in (await PveClient.GetNodesAsync()).Where(a => a.IsOnline))
                 {
-                    foreach (var storage in (await PveClient.Nodes[node.Node].Storage.Get(enabled: true)).Where(a => a.Active && a.Enabled))
+                    foreach (var storage in (await PveClient.Nodes[node.Node].Storage.GetAsync(enabled: true)).Where(a => a.Active && a.Enabled))
                     {
-                        ret.AddRange(await PveClient.Nodes[node.Node].Storage[storage.Storage].Content.Get(vmid: Convert.ToInt32(item.VmId)));
+                        ret.AddRange(await PveClient.Nodes[node.Node].Storage[storage.Storage].Content.GetAsync(vmid: Convert.ToInt32(item.VmId)));
                     }
                 }
                 break;
 
             case ClusterResourceType.Storage:
-                ret.AddRange(await PveClient.Nodes[item.Node].Storage[item.Storage].Content.Get());
+                ret.AddRange(await PveClient.Nodes[item.Node].Storage[item.Storage].Content.GetAsync());
                 break;
 
             case ClusterResourceType.Pool: break;

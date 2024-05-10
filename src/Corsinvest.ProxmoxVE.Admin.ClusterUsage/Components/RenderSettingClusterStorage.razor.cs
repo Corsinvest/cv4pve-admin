@@ -21,7 +21,7 @@ public partial class RenderSettingClusterStorage
         {
             //load existing storages
             var client = await PveClientService.GetClientAsync(ModuleClusterOptions.ClusterName);
-            foreach (var item in await client.GetStorages())
+            foreach (var item in await client.GetStoragesAsync())
             {
                 if (!ModuleClusterOptions.Storages.Any(a => a.Storage == item.Storage))
                 {

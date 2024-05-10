@@ -42,7 +42,7 @@ public class BotgramService : BackgroundService
     public IReadOnlyDictionary<long, string> GetChats(string clusterName) => BotDatas.IsCluster(clusterName)?.BotManager.Chats ?? new Dictionary<long, string>();
     public StringWriterEvent? GetLog(string clusterName) => BotDatas.IsCluster(clusterName)?.Log;
 
-    public async Task Restart()
+    public async Task RestartAsync()
     {
         await StopAsync(new CancellationToken());
         await StartAsync(new CancellationToken());
@@ -52,6 +52,7 @@ public class BotgramService : BackgroundService
     {
         using var scope = _scopeFactory.CreateScope();
         var pveClientService = scope.GetPveClientService();
+        var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
         var options = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<Options>>().Value;
 
         foreach (var item in options.Clusters)
@@ -74,6 +75,8 @@ public class BotgramService : BackgroundService
                                                         clusterOptions.ApiToken,
                                                         clusterOptions.ApiCredential.Username,
                                                         clusterOptions.ApiCredential.Password,
+                                                        clusterOptions.VerifyCertificate,
+                                                        loggerFactory,
                                                         item.Token,
                                                         item.GetChatsId(),
                                                         botData.Log);

@@ -2,8 +2,8 @@
 	<Import Project="..\common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.6.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.7.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

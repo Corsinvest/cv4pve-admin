@@ -4,16 +4,16 @@
 *@
 @inherits AHComponentBase
 
-<WidgetInfoBase Description="@L["Node Updates"]" GetStatus="GetStatus" />
+<WidgetInfoBase Description="@L["Node Updates"]" GetStatus="GetStatusAsync" />
 
 @code
 {
-    private async Task<bool> GetStatus(PveClient client, string clusterName)
+    private async Task<bool> GetStatusAsync(PveClient client, string clusterName)
     {
         var ret = true;
-        foreach (var node in (await client.Nodes.Get()).Where(a => a.IsOnline))
+        foreach (var node in (await client.Nodes.GetAsync()).Where(a => a.IsOnline))
         {
-            if ((await client.Nodes[node.Node].Apt.Update.Get()).Count() > 0)
+            if ((await client.Nodes[node.Node].Apt.Update.GetAsync()).Count() > 0)
             {
                 ret = false;
                 break;

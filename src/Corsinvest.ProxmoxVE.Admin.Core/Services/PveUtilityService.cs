@@ -26,7 +26,7 @@ public class PveUtilityService : IPveUtilityService
         try
         {
             var clusterOptions = (await _pveClientService.GetCurrentClusterOptionsAsync())!;
-            var (host, ipAddress) = (await GetHostAndIp(clusterOptions)).Where(a => a.Key == node).FirstOrDefault();
+            var (host, ipAddress) = (await GetHostAndIpAsync(clusterOptions)).Where(a => a.Key == node).FirstOrDefault();
             var info = clusterOptions.GetNodeOptions(ipAddress, host);
             if (info != null)
             {
@@ -50,12 +50,12 @@ public class PveUtilityService : IPveUtilityService
         return result;
     }
 
-    private async Task<IReadOnlyDictionary<string, string>> GetHostAndIp(ClusterOptions clusterOptions)
+    private async Task<IReadOnlyDictionary<string, string>> GetHostAndIpAsync(ClusterOptions clusterOptions)
     {
         var client = await _pveClientService.GetClientAsync(clusterOptions);
 
         //decode host ip
-        return await client.GetHostAndIp();
+        return await client.GetHostAndIpAsync();
     }
 
     public async Task<IEnumerable<FluentResults.Result>> FreeMemoryAsync(string clusterName, IEnumerable<string> nodes)
@@ -68,7 +68,7 @@ public class PveUtilityService : IPveUtilityService
         {
             var clusterOptions = (await _pveClientService.GetCurrentClusterOptionsAsync())!;
             //decode host ip
-            foreach (var (host, ipAddress) in await GetHostAndIp(clusterOptions))
+            foreach (var (host, ipAddress) in await GetHostAndIpAsync(clusterOptions))
             {
                 if (nodes.Contains(host))
                 {

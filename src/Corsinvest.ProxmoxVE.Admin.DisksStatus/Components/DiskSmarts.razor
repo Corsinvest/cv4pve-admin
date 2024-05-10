@@ -8,43 +8,53 @@
 
 <MudText Typo="Typo.subtitle1" Align="Align.Center"><b>@L["S.M.A.R.T. values"]</b></MudText>
 
-<AHDataGrid T="NodeDiskSmart.NodeDiskSmartAttribute"
-            Permissions="Module.Permissions.DataGrid.Data"
-            DataGridManager="DataGridManager"
-            FixedHeader="true"
-            FixedFooter="true"
-            Filterable="true"
-            Groupable="true"
-            ShowFilterIcons="false">
-    <ToolBarContent>
-        <AHDataGridToolBarRead T="NodeDiskSmart.NodeDiskSmartAttribute" DataGridManager="DataGridManager" />
-    </ToolBarContent>
+@if (Data != null)
+{
+    @if (Data.Attributes != null)
+    {
+        <AHDataGrid T="NodeDiskSmart.NodeDiskSmartAttribute"
+                    Permissions="Module.Permissions.DataGrid.Data"
+                    DataGridManager="DataGridManager"
+                    FixedHeader="true"
+                    FixedFooter="true"
+                    Filterable="true"
+                    Groupable="true"
+                    ShowFilterIcons="false">
+            <ToolBarContent>
+                <AHDataGridToolBarRead T="NodeDiskSmart.NodeDiskSmartAttribute" DataGridManager="DataGridManager" />
+            </ToolBarContent>
 
-    <Columns>
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Id" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Name" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Value" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Threshold" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Worst" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Flags" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Fail" FormatProvider="typeof(PveFormatProvider)" />
-        <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Raw" FormatProvider="typeof(PveFormatProvider)" />
+            <Columns>
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Id" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Name" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Value" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Threshold" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="int" Property="a => a.Worst" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Flags" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Fail" FormatProvider="typeof(PveFormatProvider)" />
+                <AHPropertyColumn T="NodeDiskSmart.NodeDiskSmartAttribute" TProperty="string" Property="a => a.Raw" FormatProvider="typeof(PveFormatProvider)" />
 
-        @*
+                @*
         TODO
         <AHDataGridColumn T="NodeDiskList" Field="@item"  ShowColumnOptions="false" Sortable="false" />
         *@
-    </Columns>
+            </Columns>
 
-    <NoRecordsContent>
-        <AHNoRecordsContent />
-    </NoRecordsContent>
+            <NoRecordsContent>
+                <AHNoRecordsContent />
+            </NoRecordsContent>
 
-    <LoadingContent>
-        <AHLoadingContent />
-    </LoadingContent>
+            <LoadingContent>
+                <AHLoadingContent />
+            </LoadingContent>
 
-    <PagerContent>
-        <MudDataGridPager T="NodeDiskSmart.NodeDiskSmartAttribute" />
-    </PagerContent>
-</AHDataGrid>
+            <PagerContent>
+                <MudDataGridPager T="NodeDiskSmart.NodeDiskSmartAttribute" />
+            </PagerContent>
+        </AHDataGrid>
+    }
+    else
+    {
+        @((MarkupString)Data.Text)
+    }
+}

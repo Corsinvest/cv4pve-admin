@@ -22,7 +22,7 @@
             ShowColumnOptions="false"
             ShowFilterIcons="false">
     <ToolBarContent>
-        <AHDataGridToolBarRead T="NodeDiskList" DataGridManager="DataGridManager" >
+        <AHDataGridToolBarRead T="NodeDiskList" DataGridManager="DataGridManager">
             <ToolBarContentBefore>
                 <AHPermissionButtonIcon Permission="Module.Permissions.DataGrid.BlinkLed" OnClick="@(() => BlinkLed(Node))"
                                         Disabled="!DataGridManager.ExistsSelection" Loading="BlinkLedLoading" />
@@ -68,7 +68,7 @@
     </Columns>
 
     <ChildRowContent>
-        <DiskSmarts PveClient="PveClient" Node="@Node" Disk="@context.Item.DevPath" />
+        <DiskSmarts PveClient="PveClient" Node="@Node" Type="@context.Item.Type" Disk="@context.Item.DevPath" />
     </ChildRowContent>
 
     <NoRecordsContent>

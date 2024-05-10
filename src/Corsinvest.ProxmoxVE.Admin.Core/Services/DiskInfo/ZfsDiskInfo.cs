@@ -16,16 +16,16 @@ public class ZfsDiskInfo(string ipAddress, string path, long vmId, string disk, 
     public string Path { get; } = path;
     public override string Type => "ZFS";
 
-    public static async Task<IEnumerable<ZfsDiskInfo>> Read(PveClient client, ClusterOptions clusterOptions)
+    public static async Task<IEnumerable<ZfsDiskInfo>> ReadAsync(PveClient client, ClusterOptions clusterOptions)
     {
         var ret = new List<ZfsDiskInfo>();
 
-        var storages = (await client.Storage.Get("zfspool")).Where(a => !a.Disable).ToList();
+        var storages = (await client.Storage.GetAsync("zfspool")).Where(a => !a.Disable).ToList();
         if (storages.Count != 0)
         {
-            var nodes = await client.GetResources(Api.Shared.Models.Cluster.ClusterResourceType.Node);
+            var nodes = await client.GetResourcesAsync(Api.Shared.Models.Cluster.ClusterResourceType.Node);
 
-            foreach (var (host, ipAddress) in await client.GetHostAndIp())
+            foreach (var (host, ipAddress) in await client.GetHostAndIpAsync())
             {
                 if (nodes.FirstOrDefault(a => a.Node == host)!.IsOnline)
                 {

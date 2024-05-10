@@ -24,9 +24,9 @@ public partial class ClusterReplications
             var client = await PveClientService.GetClientCurrentClusterAsync();
             var ret = new List<NodeReplication>();
 
-            foreach (var node in (await client.GetNodes()).Where(a => a.IsOnline))
+            foreach (var node in (await client.GetNodesAsync()).Where(a => a.IsOnline))
             {
-                foreach (var job in await client.Nodes[node.Node].Replication.Get())
+                foreach (var job in await client.Nodes[node.Node].Replication.GetAsync())
                 {
                     ret.Add(job);
                 }

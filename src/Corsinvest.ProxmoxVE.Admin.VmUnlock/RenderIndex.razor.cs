@@ -16,14 +16,14 @@ public partial class RenderIndex
 
     private async Task<IEnumerable<ClusterResource>> GetItems() => await Helper.GetVmLocks(await PveClientService.GetClientCurrentClusterAsync());
 
-    private async Task Unlock()
+    private async Task UnlockAsync()
     {
         LoadingUnlock = true;
         if (await UIMessageBox.ShowQuestionAsync(L["Unlock"], L["Unlock VM/CT?"]))
         {
             await Helper.Unlock(await PveClientService.GetClientCurrentClusterAsync(), RefResources!.DataGridManager.SelectedItems);
             RefResources!.DataGridManager.SelectedItems.Clear();
-            await RefResources!.DataGridManager.Refresh();
+            await RefResources!.DataGridManager.RefreshAsync();
         }
         LoadingUnlock = false;
     }

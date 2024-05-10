@@ -25,5 +25,5 @@ public interface IPveClientService : IScopedDependency
     Task<bool> CheckIsValidVersionAsync(PveClient client);
     Task<Api.Shared.Models.Cluster.ClusterStatus?> GetClusterStatusAsync(PveClient client);
     string GetUrl(ClusterOptions clusterOptions);
-    Task<IEnumerable<DiskInfoBase>> GetDisksInfo(PveClient client, ClusterOptions clusterOptions);
+    Task<IEnumerable<DiskInfoBase>> GetDisksInfoAsync(PveClient client, ClusterOptions clusterOptions);
 }

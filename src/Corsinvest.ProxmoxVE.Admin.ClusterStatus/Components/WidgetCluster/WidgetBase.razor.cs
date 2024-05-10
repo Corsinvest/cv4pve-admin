@@ -24,7 +24,7 @@ public partial class WidgetBase
     protected override async Task OnInitializedAsync()
     {
         var pveClient = await PveClientService.GetClientCurrentClusterAsync();
-        var resources = (await pveClient.GetResources(ClusterResourceType.All))
+        var resources = (await pveClient.GetResourcesAsync(ClusterResourceType.All))
                             .CalculateHostUsage();
 
         Image = new[] { PveBlazorHelper.Icons.Cpu, PveBlazorHelper.Icons.Memory, PveBlazorHelper.Icons.Storage }[Index];
