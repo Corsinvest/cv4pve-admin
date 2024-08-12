@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -194,7 +194,7 @@ internal class Helper
 
             //send notification
             if (moduleClusterOptions.NotificationChannels?.Any() is true
-                && (moduleClusterOptions.Notify == Notify.Allways || moduleClusterOptions.Notify == Notify.OnFailureOnly && !history.Status))
+                && (moduleClusterOptions.Notify == Notify.Allways || moduleClusterOptions.Notify == Notify.OnFailureOnly) && !history.Status)
             {
                 var L = scope.ServiceProvider.GetRequiredService<IStringLocalizer<Helper>>();
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -6,7 +6,6 @@ using Corsinvest.AppHero.Core.Validators;
 using Corsinvest.ProxmoxVE.Admin.Core.Repository;
 using Corsinvest.ProxmoxVE.Admin.Core.UI.Options;
 using Newtonsoft.Json;
-
 
 namespace Corsinvest.ProxmoxVE.Admin.NodeProtect;
 

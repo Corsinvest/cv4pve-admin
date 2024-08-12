@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -12,7 +12,6 @@ public class ExecutionData : EntityBase<int>
 
     [Required]
     public Execution Execution { get; set; } = default!;
-
 
     public string Data { get; set; } = default!;
 }

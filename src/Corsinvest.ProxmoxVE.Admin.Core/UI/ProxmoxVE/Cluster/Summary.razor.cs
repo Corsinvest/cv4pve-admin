@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -145,7 +145,6 @@ public partial class Summary : IRefreshable
             StatusInfo.Status = L["Cluster: {0}, Quorate: {1}",
                                   cluster.Name,
                                   cluster.Quorate == 1 ? L["Yes"] : L["No"]];
-
 
             if (status.Count(a => a.Type != PveConstants.KeyApiCluster) == cluster.Nodes)
             {

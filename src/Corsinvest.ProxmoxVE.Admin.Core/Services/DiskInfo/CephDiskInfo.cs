@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -16,7 +16,7 @@ public class CephDiskInfo(string storage, string pool, long vmId, string disk, s
     public string MonitorHosts { get; } = monitorHosts;
     public override string Type => "Ceph";
 
-    class ImageSnapshot
+    private class ImageSnapshot
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -76,7 +76,7 @@ public class CephDiskInfo(string storage, string pool, long vmId, string disk, s
                         var retSnaps = ExecuteSsh(images.Select(a => $"{cmdBase} snap ls {item.Pool}/{a} --format json").ToList())
                                             .ToList();
 
-                        for (int i = 0; i < images.Length; i++)
+                        for (var i = 0; i < images.Length; i++)
                         {
                             if (retSnaps[i].ExitCode == 0)
                             {

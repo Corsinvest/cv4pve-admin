@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -21,5 +21,3 @@ public class VzDumpTask : EntityBase<int>, IClusterName
     public string? Storage { get; set; }
     public List<VzDumpDetail> Details { get; set; } = [];
 }
-
-

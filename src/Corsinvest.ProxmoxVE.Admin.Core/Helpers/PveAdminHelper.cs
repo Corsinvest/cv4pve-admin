@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -80,11 +80,11 @@ Company: {adminOptions.Company}
 
             rows.Add(
             [
-                nodeOptions?.ServerId,
-                version,
+                nodeOptions?.ServerId!,
+                version!,
                 item.Name,
                 item.IpAddress,
-                nodeOptions?.SubscriptionId
+                nodeOptions?.SubscriptionId!
             ]);
         }
 
