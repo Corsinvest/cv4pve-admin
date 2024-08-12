@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -92,7 +92,7 @@ public class PveClientService : IPveClientService
                                  .ToList();
 
     public async Task SetCurrentClusterNameAsync(string clusterName) => await _localStorageService.SetItemAsStringAsync("CurrentClusterName", clusterName);
-    public async Task<string> GetCurrentClusterNameAsync() => await _localStorageService.GetItemAsStringAsync("CurrentClusterName");
+    public async Task<string> GetCurrentClusterNameAsync() => (await _localStorageService.GetItemAsStringAsync("CurrentClusterName"))!;
 
     public async Task<int> PopulateInfoNodesAsync(ClusterOptions clusterOptions)
     {
@@ -141,7 +141,6 @@ public class PveClientService : IPveClientService
 
         return ret;
     }
-
 
     public async Task<bool> ClusterIsValidAsync(string clusterName)
     {

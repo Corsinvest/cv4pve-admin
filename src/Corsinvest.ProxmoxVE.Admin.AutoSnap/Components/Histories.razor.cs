@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -16,7 +16,6 @@ public partial class Histories
 
     [Inject] private IDataGridManagerRepository<AutoSnapJobHistory> DataGridManager { get; set; } = default!;
     [Inject] private IPveClientService PveClientService { get; set; } = default!;
-
 
     private bool ShowDialog { get; set; }
     private string DialogContent { get; set; } = default!;

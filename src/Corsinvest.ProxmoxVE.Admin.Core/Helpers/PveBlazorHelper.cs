@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -75,7 +75,6 @@ public static class PveBlazorHelper
                var s when s == PveConstants.StatusOnline => Color.Success,
                _ => Color.Default,
            };
-
 
     public static class Icons
     {
