@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -19,7 +19,8 @@ public partial class DisksNotBackedUp
 
     [Inject] private IDataGridManager<Data> DataGridManager { get; set; } = default!;
 
-    private class Data : ClusterResource
+
+    class Data : ClusterResource
     {
         [Display(Name = "Disk")]
         public string Disks { get; set; } = default!;

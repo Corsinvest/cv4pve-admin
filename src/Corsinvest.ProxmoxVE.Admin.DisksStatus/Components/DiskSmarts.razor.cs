@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -19,7 +19,7 @@ public partial class DiskSmarts
 
     protected override async Task OnInitializedAsync()
     {
-        var data = await PveClient.Nodes[Node].Disks.Smart.GetAsync(Disk);
+        var data = (await PveClient.Nodes[Node].Disks.Smart.GetAsync(Disk));
         data.Text = (data.Text + "").Replace("\n", "<br>");
         Data = data;
 

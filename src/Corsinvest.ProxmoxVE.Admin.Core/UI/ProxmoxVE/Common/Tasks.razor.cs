@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -6,6 +6,7 @@ using Corsinvest.AppHero.Core.Domain.Contracts;
 using Corsinvest.AppHero.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
+using Nextended.Core.Extensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Common;
 

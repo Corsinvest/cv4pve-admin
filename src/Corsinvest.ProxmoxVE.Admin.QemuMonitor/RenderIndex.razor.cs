@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -20,7 +20,7 @@ public partial class RenderIndex
 
     private readonly List<BlockStats> _data = [];
 
-    private class BlockStats
+    class BlockStats
     {
         public long VmId { get; set; }
         public string Name { get; set; } = default!;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -18,7 +18,7 @@ public class BotgramService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private List<BotData> BotDatas { get; } = [];
 
-    private class BotData : IClusterName
+    class BotData : IClusterName
     {
         public BotManager BotManager { get; set; } = default!;
         public StringWriterEvent Log { get; set; } = default!;

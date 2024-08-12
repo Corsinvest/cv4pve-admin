@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -37,6 +37,7 @@ public class VzDumpDetail : EntityBase<int>
     public bool Status { get; set; }
     public double TransferSize { get; set; }
     public double TransferSpeed => Duration > 0 ? TransferSize / Duration : 0;
+
 
     [Display(Name = "Transfer Speed")]
     public string TransferSpeedText => FormatHelper.FromBytes(TransferSize);

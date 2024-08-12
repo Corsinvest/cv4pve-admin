@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -12,7 +12,7 @@ public partial class BackupFileRestore
     [Parameter] public Func<NodeBackupFile, Task<HashSet<NodeBackupFile>>> GetItems { get; set; } = default!;
     [Parameter] public EventCallback<NodeBackupFile> SelectedFileChanged { get; set; }
 
-    private static string GetEndText(NodeBackupFile item)
+    static string GetEndText(NodeBackupFile item)
     {
         var text = new List<string>();
         if (item.Size > 0) { text.Add(FormatHelper.FromBytes(item.Size)); }
@@ -29,7 +29,7 @@ public partial class BackupFileRestore
             _ => null!,
         };
 
-    private static string GetIconFile(string fileName)
+    static string GetIconFile(string fileName)
         => fileName.Split('.').Last().ToLower() switch
         {
             //excel
@@ -58,7 +58,7 @@ public partial class BackupFileRestore
             _ => Icons.Material.Filled.Description,
         };
 
-    private HashSet<NodeBackupFile> TreeItems { get; set; } = [];
+    HashSet<NodeBackupFile> TreeItems { get; set; } = [];
 
     protected override async void OnInitialized()
     {

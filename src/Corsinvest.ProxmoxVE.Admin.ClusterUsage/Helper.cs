@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -61,7 +61,7 @@ internal class Helper
 
             foreach (var vm in await client.GetVmsAsync())
             {
-                if (!await dataVms.AnyAsync(new DataVmSpec(clusterName, vm.VmId, date)))
+                if (!(await dataVms.AnyAsync(new DataVmSpec(clusterName, vm.VmId, date))))
                 {
                     var pveNode = client.Nodes[vm.Node];
                     var rrdData = (vm.VmType switch

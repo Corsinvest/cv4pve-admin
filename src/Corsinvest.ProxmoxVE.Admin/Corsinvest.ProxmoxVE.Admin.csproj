@@ -20,10 +20,10 @@
 
 		<PackageReference Include="Hangfire.Storage.SQLite" Version="0.4.2" />
 
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

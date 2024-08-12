@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -13,6 +13,7 @@ internal class DataVmSpec : ClusterByNameSpec<DataVm>
 
     public DataVmSpec(string clusterName, long vmId, DateTime date) : base(clusterName)
         => Query.Where(a => a.VmId == vmId && a.Date == date);
+
 
     //public DataVmSpec(string clusterName, bool status, DateTime date) : this(clusterName)
     //    => Query.Where(a => a.Status == status && a.Start >= date);

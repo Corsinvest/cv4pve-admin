@@ -1,10 +1,11 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
+using Nextended.Core.Extensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.ReplicationTrend.Components;
 

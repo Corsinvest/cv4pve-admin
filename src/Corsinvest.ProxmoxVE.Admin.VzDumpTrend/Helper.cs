@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -40,7 +40,7 @@ internal class Helper
         var start = task.Start;
         var isIncrementally = false;
 
-        for (var i = 0; i < rows.Length; i++)
+        for (int i = 0; i < rows.Length; i++)
         {
             var row = rows[i];
             if (row.StartsWith(KEY_STARTING_ERROR))
@@ -123,7 +123,7 @@ internal class Helper
                     if (indexSize >= 0)
                     {
                         indexSize++;
-                        value = (double.Parse(data[0]) * Math.Pow(2, indexSize * 10)) + " B";
+                        value = double.Parse(data[0]) * Math.Pow(2, indexSize * 10) + " B";
                     }
 
                     backup.TransferSize = ByteSize.Parse(value).Bytes;

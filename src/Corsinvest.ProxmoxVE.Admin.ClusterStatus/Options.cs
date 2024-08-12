@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -17,6 +17,7 @@ public class ModuleClusterOptions : IClusterName
     public ThresholdPercentual Cpu { get; set; } = new ThresholdPercentual();
     public ThresholdPercentual Memory { get; set; } = new ThresholdPercentual();
     public ThresholdPercentual Storage { get; set; } = new ThresholdPercentual();
+
 
     //    [Range(0, 100)]
     //    [Display(Name = "Max Storage Usage (default: 85%)")]
