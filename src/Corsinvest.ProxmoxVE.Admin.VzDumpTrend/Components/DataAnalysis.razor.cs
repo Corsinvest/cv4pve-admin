@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -70,7 +70,7 @@ public partial class DataAnalysis
         Theme = new() { Mode = LayoutService.IsDarkMode ? Mode.Dark : Mode.Light }
     };
 
-    class Data
+    private class Data
     {
         public string Title { get; set; } = default!;
         public int CountOk { get; set; }

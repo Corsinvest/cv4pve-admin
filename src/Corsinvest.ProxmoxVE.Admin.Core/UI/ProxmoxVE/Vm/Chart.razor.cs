@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -8,7 +8,7 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm;
 
-partial class Chart
+public partial class Chart
 {
     [Parameter] public IEnumerable<VmRrdData> RrdData { get; set; } = default!;
     [Parameter] public VmChart VmChart { get; set; } = default!;
