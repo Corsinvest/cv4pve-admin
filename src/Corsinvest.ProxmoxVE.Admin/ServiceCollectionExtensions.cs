@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddHangfireServer();
         GlobalConfiguration.Configuration.UseStorage(new SQLiteStorage(Path.Combine(ApplicationHelper.PathData, "hangfire.db")));
-        GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 1 });
+        GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 0 });
         return services;
     }
 
