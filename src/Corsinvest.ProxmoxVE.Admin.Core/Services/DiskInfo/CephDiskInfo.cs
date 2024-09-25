@@ -57,7 +57,7 @@ public class CephDiskInfo(string storage, string pool, long vmId, string disk, s
                     foreach (var command in commands)
                     {
                         using var cmd = sshClient.CreateCommand(command);
-                        ret.Add((cmd.ExitStatus, cmd.Execute(), cmd.Error));
+                        ret.Add((Convert.ToInt32(cmd.ExitStatus), cmd.Execute(), cmd.Error));
                     }
                     return ret;
                 }
