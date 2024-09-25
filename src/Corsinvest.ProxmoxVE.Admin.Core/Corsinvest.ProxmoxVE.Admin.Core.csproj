@@ -1,21 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <Import Project="..\common.props" />
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.1.14" />
-    <PackageReference Include="QuestPDF" Version="2024.7.2" />
+    <PackageReference Include="Corsinvest.AppHero.Core.MudBlazorUI" Version="0.1.15" />
+    <PackageReference Include="QuestPDF" Version="2024.7.3" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.2" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.8" />
     <PackageReference Include="Blazor-ApexCharts" Version="3.4.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
-    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Extension" Version="8.2.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.1" />
+    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Extension" Version="8.2.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.3" />
     <PackageReference Include="SSH.NET" Version="2024.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
   </ItemGroup>
 </Project>

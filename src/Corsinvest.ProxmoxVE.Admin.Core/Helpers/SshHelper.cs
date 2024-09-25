@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -31,7 +31,7 @@ public static class SshHelper
         foreach (var command in commands)
         {
             using var cmd = sshClient.CreateCommand(command);
-            ret.Add((cmd.ExitStatus, cmd.Execute(), cmd.Error));
+            ret.Add((Convert.ToInt32(cmd.ExitStatus), cmd.Execute(), cmd.Error));
         }
         sshClient.Disconnect();
 
