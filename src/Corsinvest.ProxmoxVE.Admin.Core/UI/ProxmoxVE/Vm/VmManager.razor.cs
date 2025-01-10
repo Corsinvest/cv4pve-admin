@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -41,7 +41,7 @@ public partial class VmManager
             nameof(NodeTask.StartTimeDate),
             nameof(NodeTask.EndTimeDate),
             nameof(NodeTask.DurationInfo),
-            nameof(NodeTask.DescriptionFull),
+            nameof(NodeTask.Description),
             nameof(NodeTask.Status),
         }.ToList();
         fieldsTasks.AddIf(ShowDetailProxmoxVE, nameof(NodeTask.User));
@@ -96,7 +96,9 @@ public partial class VmManager
                                                 NoVncHelper.GetConsoleType(Vm.VmType),
                                                 Vm.Node,
                                                 Vm.VmId,
-                                                Vm.Name)
+                                                Vm.Name,
+                                                true,
+                                                false)
                     : GetUrlShowConsole.Invoke();
 
         await BrowserService.OpenAsync(url, "_blank");

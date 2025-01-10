@@ -27,7 +27,7 @@ public partial class Tasks : IRefreshable
         nameof(NodeTask.StartTimeDate),
         nameof(NodeTask.EndTimeDate),
         nameof(NodeTask.DurationInfo),
-        nameof(NodeTask.DescriptionFull),
+        nameof(NodeTask.Description),
         nameof(NodeTask.Status),
         nameof(NodeTask.User)
     ];

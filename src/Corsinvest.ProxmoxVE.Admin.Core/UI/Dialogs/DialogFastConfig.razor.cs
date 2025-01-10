@@ -1,11 +1,10 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Options;
 using Corsinvest.AppHero.Core.Service;
 using Corsinvest.AppHero.Core.UI;
-using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using MudExtensions;
 using MudExtensions.Enums;
 
