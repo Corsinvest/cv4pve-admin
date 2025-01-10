@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.ClusterUsage.Repository;
-using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
@@ -81,8 +80,8 @@ internal class Helper
                         Node = vm.Node,
                         CpuSize = Convert.ToInt32(vm.CpuSize),
                         CpuUsagePercentage = rrdData.Select(a => a.CpuUsagePercentage).DefaultIfEmpty(0).Average(),
-                        MemorySize = vm.MemorySize,
-                        MemoryUsage = Convert.ToInt64(rrdData.Select(a => a.MemoryUsage).DefaultIfEmpty(0).Average())
+                        MemorySize = Convert.ToInt64(vm.MemorySize),
+                        MemoryUsage = Convert.ToInt64(rrdData.Average(a => Convert.ToInt64(a.MemoryUsage)))
                     };
 
                     //storages
