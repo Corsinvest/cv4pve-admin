@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -89,44 +89,44 @@ public partial class Costs
                             .GroupBy(a => a.VmId)
                             .Select(a => new DataVmEx
                             {
-                                Data = a.ToList(),
+                                Data = [.. a],
                                 RrdData = a.Select(a => new VmRrdData()
                                 {
                                     Time = new DateTimeOffset(a.Date).ToUnixTimeSeconds(),
                                     CpuSize = a.CpuSize,
                                     CpuUsagePercentage = a.CpuUsagePercentage,
-                                    MemorySize = a.MemorySize,
-                                    MemoryUsage = a.MemoryUsage,
+                                    MemorySize = Convert.ToUInt64(a.MemorySize),
+                                    MemoryUsage = Convert.ToUInt64(a.MemoryUsage),
                                 }),
 
                                 VmId = a.Key,
-                                VmName = string.Join(",", a.Select(a => a.VmName).Distinct()),
-                                Node = string.Join(",", a.Select(a => a.Node).Distinct()),
-                                CpuSize = a.Max(a => a.CpuSize),
-                                CpuUsagePercentage = a.Average(a => a.CpuUsagePercentage),
-                                MemorySize = a.Max(a => a.MemorySize),
-                                MemoryUsage = Convert.ToInt64(a.Average(a => a.MemoryUsage)),
+                                VmName = string.Join(",", a.Select(b => b.VmName).Distinct()),
+                                Node = string.Join(",", a.Select(b => b.Node).Distinct()),
+                                CpuSize = a.Max(b => b.CpuSize),
+                                CpuUsagePercentage = a.Average(b => b.CpuUsagePercentage),
+                                MemorySize = a.Max(b => b.MemorySize),
+                                MemoryUsage = Convert.ToInt64(a.Average(b => b.MemoryUsage)),
 
-                                StorageMax = a.Max(a => a.Storages.Sum(a => a.Size)),
+                                StorageMax = a.Max(b => b.Storages.Select(a => a.Size).Sum()),
 
-                                CpuCost = Math.Round(a.Select(a => a.CpuSize *
-                                                                    (a.CpuUsagePercentage == 0
+                                CpuCost = Math.Round(a.Select(b => b.CpuSize *
+                                                                    (b.CpuUsagePercentage == 0
                                                                         ? moduleClusterOptions.CostDayCpuStopped
                                                                         : moduleClusterOptions.CostDayCpuRunning))
                                                       .Sum(), 2),
 
-                                MemoryCost = Math.Round(a.Select(a => a.MemorySize / 1024.0 / 1024.0 / 1024.0 *
-                                                                        (a.CpuUsagePercentage == 0
+                                MemoryCost = Math.Round(a.Select(b => b.MemorySize / 1024.0 / 1024.0 / 1024.0 *
+                                                                        (b.CpuUsagePercentage == 0
                                                                             ? moduleClusterOptions.CostDayMemoryGbStopped
                                                                             : moduleClusterOptions.CostDayMemoryGbRunning))
                                                          .Sum(), 2),
 
-                                StorageCost = Math.Round(a.SelectMany(a => a.Storages)
-                                                           .Select(a => a.Size / 1024.0 / 1024.0 / 1024.0 *
-                                                                            (a.DataVm.CpuUsagePercentage == 0
-                                                                                ? GetData(a.Storage).CostDayGbStopped
-                                                                                : GetData(a.Storage).CostDayGbRunning))
-                                                           .Sum(), 2)
+                                StorageCost = Math.Round(a.SelectMany(b => b.Storages)
+                                                          .Select(b => b.Size / 1024.0 / 1024.0 / 1024.0 *
+                                                                           (b.DataVm.CpuUsagePercentage == 0
+                                                                               ? GetData(b.Storage).CostDayGbStopped
+                                                                               : GetData(b.Storage).CostDayGbRunning))
+                                                          .Sum(), 2)
                             })
                             .ToArray();
 
