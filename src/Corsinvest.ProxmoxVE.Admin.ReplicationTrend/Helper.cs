@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -53,7 +53,7 @@ internal class Helper
                             .Select(a => a.t as string)
                             .ToArray();
 
-                var lastSync = DateTimeOffset.FromUnixTimeMilliseconds(job.LastSync).DateTime;
+                var lastSync = DateTimeOffset.FromUnixTimeSeconds(job.LastSync).DateTime;
 
                 if (!await replicationResultRepo.AnyAsync(new ReplicationResultSpec(clusterName).Exists(job.Id, lastSync)))
                 {
