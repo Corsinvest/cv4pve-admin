@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.Diagnostic.Persistence;
 
-public class DiagnosticDbContext : DbContext
+public class DiagnosticDbContext(DbContextOptions<DiagnosticDbContext> options) : DbContext(options)
 {
-    public DiagnosticDbContext(DbContextOptions<DiagnosticDbContext> options) : base(options) { }
     public DbSet<Execution> Executions { get; set; } = default!;
     public DbSet<ExecutionData> ExecutionDatas { get; set; } = default!;
     public DbSet<IgnoredIssue> IgnoredIssues { get; set; } = default!;

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -34,9 +34,7 @@ internal class Helper
         => await GetIgnoredIssue(scope.GetReadRepository<IgnoredIssue>(), clusterName);
 
     public static async Task<List<DiagnosticResult>> GetIgnoredIssue(IReadRepositoryBase<IgnoredIssue> ignoredIssuesRepo, string clusterName)
-        => (await ignoredIssuesRepo.ListAsync(new IgnoredIssueSpec(clusterName)))
-                        .Select(a => a.ToDiagnosticResult())
-                        .ToList();
+        => [.. (await ignoredIssuesRepo.ListAsync(new IgnoredIssueSpec(clusterName))).Select(a => a.ToDiagnosticResult())];
 
     public static async Task Rescan(IServiceScope scope, string clusterName)
     {
@@ -68,7 +66,7 @@ internal class Helper
     }
 
     public static ICollection<DiagnosticResult> Analyze(ExecutionData executionData, ModuleClusterOptions moduleClusterOptions, IEnumerable<DiagnosticResult> ignoreIssues)
-        => Application.Analyze(JsonConvert.DeserializeObject<InfoHelper.Info>(executionData.Data), moduleClusterOptions, ignoreIssues.ToList());
+        => Application.Analyze(JsonConvert.DeserializeObject<InfoHelper.Info>(executionData.Data), moduleClusterOptions, [.. ignoreIssues]);
 
     public static async Task Create(IServiceScope scope, string clusterName)
     {
@@ -149,13 +147,13 @@ internal class Helper
                                  .FontSize(14)
                                  .Bold();
 
-                    column.Item().Table(table => ContentTable(L, table, results.Where(a => !a.IsIgnoredIssue).ToList()));
+                    column.Item().Table(table => ContentTable(L, table, [.. results.Where(a => !a.IsIgnoredIssue)]));
 
                     column.Item().PageBreak();
 
                     column.Item().Text(L["Ignored"]).FontSize(16).Bold();
 
-                    column.Item().Table(table => ContentTable(L, table, results.Where(a => a.IsIgnoredIssue).ToList()));
+                    column.Item().Table(table => ContentTable(L, table, [.. results.Where(a => a.IsIgnoredIssue)]));
                 });
 
                 static void ContentTable(IStringLocalizer L, TableDescriptor table, ICollection<DiagnosticResult> results)

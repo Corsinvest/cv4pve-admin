@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -6,13 +6,8 @@ using Ardalis.Specification;
 
 namespace Corsinvest.ProxmoxVE.Admin.Diagnostic.Repository;
 
-internal class ExecutionSpec : ClusterByNameSpec<Execution>
+internal class ExecutionSpec(string clusterName) : ClusterByNameSpec<Execution>(clusterName)
 {
-    public ExecutionSpec(string clusterName) : base(clusterName)
-    {
-        //Query.OrderByDescending(a => a.Date);
-    }
-
     public ExecutionSpec(string clusterName, int keep) : this(clusterName)
         => Query.OrderByDescending(a => a.Date)
                 .Skip(keep);
