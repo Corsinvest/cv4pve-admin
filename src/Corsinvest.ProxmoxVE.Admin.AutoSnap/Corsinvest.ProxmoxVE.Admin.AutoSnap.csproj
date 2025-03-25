@@ -2,7 +2,7 @@
 	<Import Project="..\common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.9.1" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.10.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
 			<PrivateAssets>all</PrivateAssets>

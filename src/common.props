@@ -6,7 +6,7 @@
 		<PublishTrimmed>false</PublishTrimmed>
 
 		<LangVersion>latest</LangVersion>
-		<Version>1.2.0</Version>
+		<Version>1.3.0</Version>
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<!--<NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>-->
 
@@ -14,6 +14,6 @@
 		<Authors>Corsinvest Srl</Authors>
 		<Copyright>Corsinvest Srl</Copyright>
 		<RepositoryUrl>https://github.com/Corsinvest/cv4pve-admin</RepositoryUrl>
-		<RepositoryType>Github</RepositoryType>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 </Project>
