@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.VzDumpTrend.Persistence;
 
-public class VzDumpTrendDbContext : DbContext
+public class VzDumpTrendDbContext(DbContextOptions<VzDumpTrendDbContext> options) : DbContext(options)
 {
-    public VzDumpTrendDbContext(DbContextOptions<VzDumpTrendDbContext> options) : base(options) { }
-
     public DbSet<VzDumpTask> VzDumpTasks { get; set; } = default!;
     public DbSet<VzDumpDetail> VzDumpDetails { get; set; } = default!;
 

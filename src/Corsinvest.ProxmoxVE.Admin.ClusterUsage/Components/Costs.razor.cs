@@ -100,6 +100,7 @@ public partial class Costs
                                 }),
 
                                 VmId = a.Key,
+                                VmType = a.First().VmType,
                                 VmName = string.Join(",", a.Select(b => b.VmName).Distinct()),
                                 Node = string.Join(",", a.Select(b => b.Node).Distinct()),
                                 CpuSize = a.Max(b => b.CpuSize),
@@ -141,7 +142,7 @@ public partial class Costs
     }
 
     private async Task<IEnumerable<VmRrdData>> GetVmRrdData(DataVmEx item, RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
-        => await PveClient.GetVmRrdDataAsync(await PveClient.GetVmAsync(item.VmId), rrdDataTimeFrame, rrdDataConsolidation);
+        => await PveClient.GetVmRrdDataAsync(item.Node, item.VmType, item.VmId, rrdDataTimeFrame, rrdDataConsolidation);
 
     private async Task OkAsync()
     {

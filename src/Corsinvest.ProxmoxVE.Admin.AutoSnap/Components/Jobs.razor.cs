@@ -1,11 +1,11 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.BaseUI.DataManager;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
+using Corsinvest.ProxmoxVE.Admin.AutoSnap.Repository;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
-using Corsinvest.ProxmoxVE.Admin.Core.Repository;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using MudExtensions;
 
@@ -45,13 +45,12 @@ public partial class Jobs
 
         DataGridManager.BeforeEditAsync = async (item, isNew) =>
         {
-            VmIds = (await (await PveClientService.GetClientCurrentClusterAsync())
-                         .GetVmIdsAsync(true, true, true, true, true, true))
-                         .ToList();
+            VmIds = [.. await (await PveClientService.GetClientCurrentClusterAsync())
+                         .GetVmIdsAsync(true, true, true, true, true, true)];
 
             //add customs
             VmIds.AddRange(item.VmIdsList);
-            VmIds = VmIds.Distinct().Order().ToList();
+            VmIds = [.. VmIds.Distinct().Order()];
 
             item.ClusterName = await PveClientService.GetCurrentClusterNameAsync();
 

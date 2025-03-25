@@ -28,14 +28,15 @@ internal class Helper
 
         using (logger.LogTimeOperation(LogLevel.Information, true, "Collect replication data"))
         {
-            await PopulateDb(client, moduleClusterOptions, replicationResultRepo, clusterName);
+            await PopulateDb(client, moduleClusterOptions, replicationResultRepo, clusterName, logger);
         }
     }
 
     private static async Task PopulateDb(PveClient client,
                                          ModuleClusterOptions moduleClusterOptions,
                                          IRepository<ReplicationResult> replicationResultRepo,
-                                         string clusterName)
+                                         string clusterName,
+                                         ILogger logger)
     {
         const string KEY_SIZE = ": total estimated size is";
 
@@ -57,25 +58,32 @@ internal class Helper
 
                 if (!await replicationResultRepo.AnyAsync(new ReplicationResultSpec(clusterName).Exists(job.Id, lastSync)))
                 {
-                    list.Add(new()
+                    try
                     {
-                        ClusterName = clusterName,
-                        JobId = job.Id,
-                        VmId = job.Guest,
-                        Start = ParseDateTime(rows[0]![..19]),
-                        End = ParseDateTime(rows[^1]![..19]),
-                        Log = string.Join(Environment.NewLine, rows),
-                        LastSync = lastSync,
-                        Error = job.Error,
-                        Status = string.IsNullOrWhiteSpace(job.Error),
-                        Duration = job.Duration,
-                        Size = rows.Where(a => a!.Contains(KEY_SIZE))
-                                   .Select(a => ByteSize.Parse(a![(a!.IndexOf(KEY_SIZE) + KEY_SIZE.Length)..]
-                                                               .EnsureEndsWith(ByteSize.ByteSymbol)
-                                                               .Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator))
-                                                        .Bytes)
-                                   .Sum()
-                    });
+                        list.Add(new()
+                        {
+                            ClusterName = clusterName,
+                            JobId = job.Id,
+                            VmId = job.Guest,
+                            Start = ParseDateTime(rows[0]![..19]),
+                            End = ParseDateTime(rows[^1]![..19]),
+                            Log = string.Join(Environment.NewLine, rows),
+                            LastSync = lastSync,
+                            Error = job.Error,
+                            Status = string.IsNullOrWhiteSpace(job.Error),
+                            Duration = job.Duration,
+                            Size = rows.Where(a => a!.Contains(KEY_SIZE))
+                                          .Select(a => ByteSize.Parse(a![(a!.IndexOf(KEY_SIZE) + KEY_SIZE.Length)..]
+                                                                      .EnsureEndsWith(ByteSize.ByteSymbol)
+                                                                      .Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator))
+                                                                      .Bytes)
+                                          .Sum()
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Error import {ClusterName} job {JobId}", clusterName, job.Id);
+                    }
                 }
             }
         }

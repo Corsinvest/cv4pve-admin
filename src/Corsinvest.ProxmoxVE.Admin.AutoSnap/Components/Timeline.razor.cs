@@ -1,11 +1,11 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Ardalis.Specification;
 using Corsinvest.AppHero.Core.Domain.Repository;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
-using Corsinvest.ProxmoxVE.Admin.Core.Repository;
+using Corsinvest.ProxmoxVE.Admin.AutoSnap.Repository;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Components;
 

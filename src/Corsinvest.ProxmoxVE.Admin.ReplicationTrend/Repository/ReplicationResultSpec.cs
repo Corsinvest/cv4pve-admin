@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -6,10 +6,8 @@ using Ardalis.Specification;
 
 namespace Corsinvest.ProxmoxVE.Admin.ReplicationTrend.Repository;
 
-internal class ReplicationResultSpec : ClusterByNameSpec<ReplicationResult>
+internal class ReplicationResultSpec(string clusterName) : ClusterByNameSpec<ReplicationResult>(clusterName)
 {
-    public ReplicationResultSpec(string clusterName) : base(clusterName) { }
-
     public ReplicationResultSpec(string clusterName, DateTime start, DateTime end, bool status) : this(clusterName)
         => Query.Where(a => a.Status == status && a.Start > start && a.Start < end);
 

@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.ClusterUsage.Persistence;
 
-internal class ClusterUsageDbContext : DbContext
+internal class ClusterUsageDbContext(DbContextOptions<ClusterUsageDbContext> options) : DbContext(options)
 {
-    public ClusterUsageDbContext(DbContextOptions<ClusterUsageDbContext> options) : base(options) { }
-
     public DbSet<DataVm> DataVms { get; set; } = default!;
     public DbSet<DataVmStorage> DataVmStorages { get; set; } = default!;
 

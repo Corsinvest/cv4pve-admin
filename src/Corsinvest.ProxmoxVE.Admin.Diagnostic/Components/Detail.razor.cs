@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -52,13 +52,12 @@ public partial class Detail
         {
             _clusterName = execution.ClusterName;
             var ignoreIssues = await Helper.GetIgnoredIssue(IgnoredIssuesRepo, execution.ClusterName);
-            result = Application.Analyze(JsonConvert.DeserializeObject<InfoHelper.Info>(data),
+            result = [.. Application.Analyze(JsonConvert.DeserializeObject<InfoHelper.Info>(data),
                                          Options.Value.Get(execution.ClusterName),
                                          ignoreIssues)
                                 .Where(a => !a.IsIgnoredIssue)
                                 .AsQueryable()
-                                .ProjectToType<Data>()
-                                .ToList();
+                                .ProjectToType<Data>()];
 
             foreach (var item in result)
             {

@@ -112,25 +112,25 @@ public partial class Summary : IRefreshable
             });
         }
 
-        VmsStatus = resources.Where(a => a.ResourceType == ClusterResourceType.Vm)
-                             .GroupBy(a => new { a.VmType, a.Status })
-                             .Select(a => new VmStatus
-                             {
-                                 Type = a.Key.VmType,
-                                 Count = a.Count(),
-                                 Status = a.Key.Status,
-                                 Icon = PveBlazorHelper.Icons.GetStatus(a.Key.Status),
-                                 Color = PveBlazorHelper.GetColorStatus(a.Key.Status)
-                             }).ToList();
+        VmsStatus = [.. resources.Where(a => a.ResourceType == ClusterResourceType.Vm)
+                                 .GroupBy(a => new { a.VmType, a.Status })
+                                 .Select(a => new VmStatus
+                                 {
+                                    Type = a.Key.VmType,
+                                    Count = a.Count(),
+                                    Status = a.Key.Status,
+                                    Icon = PveBlazorHelper.Icons.GetStatus(a.Key.Status),
+                                    Color = PveBlazorHelper.GetColorStatus(a.Key.Status)
+                                 })];
 
         var nodes = resources.Where(a => a.ResourceType == ClusterResourceType.Node).ToArray();
-        NodeHealts = nodes.GroupBy(a => a.Status).Select(a => new ItemStatus
+        NodeHealts = [.. nodes.GroupBy(a => a.Status).Select(a => new ItemStatus
         {
             Count = a.Count(),
             Status = a.Key,
             Icon = PveBlazorHelper.Icons.GetStatus(a.Key),
             Color = PveBlazorHelper.GetColorStatus(a.Key)
-        }).ToList();
+        })];
 
         var status = (await GetStatus()).ToArray();
         var cluster = status.FirstOrDefault(a => a.Type == PveConstants.KeyApiCluster);

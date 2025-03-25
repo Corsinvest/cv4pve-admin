@@ -1,9 +1,10 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.AppHero.Core.Domain.Entities;
 using Corsinvest.ProxmoxVE.Admin.Core.Repository;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 
 namespace Corsinvest.ProxmoxVE.Admin.ClusterUsage.Models;
@@ -14,6 +15,7 @@ public class DataVm : EntityBase<int>, IClusterName
     public string ClusterName { get; set; } = default!;
 
     public long VmId { get; set; }
+    public VmType VmType { get; set; }
     public string VmName { get; set; } = default!;
     public string Node { get; set; } = default!;
     public int CpuSize { get; set; }

@@ -78,6 +78,7 @@ internal class Helper
                         VmId = vm.VmId,
                         VmName = vm.Name,
                         Node = vm.Node,
+                        VmType = vm.VmType,
                         CpuSize = Convert.ToInt32(vm.CpuSize),
                         CpuUsagePercentage = rrdData.Select(a => a.CpuUsagePercentage).DefaultIfEmpty(0).Average(),
                         MemorySize = Convert.ToInt64(vm.MemorySize),

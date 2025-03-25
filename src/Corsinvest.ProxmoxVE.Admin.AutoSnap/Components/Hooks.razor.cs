@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -48,7 +48,7 @@ public partial class Hooks
     private async Task OnClickHookEnvAsync() => await BrowserService.CopyToClipboardAsync($"%{HookEnv}%");
 
     private static IList<string> Environments 
-        => new PhaseEventArgs(HookPhase.SnapJobStart,
+        => [.. new PhaseEventArgs(HookPhase.SnapJobStart,
                               new ClusterResource(),
                               null,
                               0,
@@ -57,6 +57,5 @@ public partial class Hooks
                               0,
                               false)
                             .Environments
-                            .Keys
-                            .ToList();
+                            .Keys];
 }

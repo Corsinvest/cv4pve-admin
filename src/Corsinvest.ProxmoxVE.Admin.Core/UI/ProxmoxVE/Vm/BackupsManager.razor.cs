@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -61,11 +61,10 @@ public partial class BackupsManager
     }
 
     private async Task<HashSet<NodeBackupFile>> GetItemsBackups(NodeBackupFile nodeBackupFile)
-        => (await PveClient.Nodes[Vm.Node]
+        => [.. (await PveClient.Nodes[Vm.Node]
             .Storage[DataGridManager.SelectedItem.Storage]
             .FileRestore.List.GetAsync(filepath: nodeBackupFile.FilePath, volume: DataGridManager.SelectedItem.Volume))
-            .OrderBy(a => a.Text)
-            .ToHashSet();
+            .OrderBy(a => a.Text)];
 
     private string RowClassFunc(NodeStorageContent item, int rowNumber)
         => DataGridManager.SelectedItem == item

@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.NodeProtect.Persistence;
 
-internal class NodeProtectDbContext : DbContext
+internal class NodeProtectDbContext(DbContextOptions<NodeProtectDbContext> options) : DbContext(options)
 {
-    public NodeProtectDbContext(DbContextOptions<NodeProtectDbContext> options) : base(options) { }
-
     public DbSet<NodeProtectJobHistory> JobHistories { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

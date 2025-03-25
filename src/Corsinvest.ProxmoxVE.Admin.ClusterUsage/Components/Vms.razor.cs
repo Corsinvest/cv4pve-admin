@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -29,6 +29,8 @@ public partial class Vms
 
     private async Task<IEnumerable<ClusterResourceVmExtraInfo>> GetVms() => await Helper.GetDataVmsAsync(PveClient, OnlyRun, PveClientService);
 
-    private async Task<IEnumerable<VmRrdData>> GetVmRrdData(long vmId, RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
-        => await PveClient.GetVmRrdDataAsync(await PveClient.GetVmAsync(vmId), rrdDataTimeFrame, rrdDataConsolidation);
+    private async Task<IEnumerable<VmRrdData>> GetVmRrdData(ClusterResourceVmExtraInfo vm,
+                                                            RrdDataTimeFrame rrdDataTimeFrame,
+                                                            RrdDataConsolidation rrdDataConsolidation)
+        => await PveClient.GetVmRrdDataAsync(vm.Node, vm.VmType, vm.VmId, rrdDataTimeFrame, rrdDataConsolidation);
 }

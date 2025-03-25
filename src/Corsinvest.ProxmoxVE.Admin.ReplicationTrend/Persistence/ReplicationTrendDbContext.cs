@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.ReplicationTrend.Persistence;
 
-public class ReplicationTrendDbContext : DbContext
+public class ReplicationTrendDbContext(DbContextOptions<ReplicationTrendDbContext> options) : DbContext(options)
 {
-    public ReplicationTrendDbContext(DbContextOptions<ReplicationTrendDbContext> options) : base(options) { }
-
     public DbSet<ReplicationResult> ReplicationResults { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

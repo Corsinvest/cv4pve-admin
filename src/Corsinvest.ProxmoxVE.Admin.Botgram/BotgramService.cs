@@ -12,10 +12,10 @@ using Microsoft.Extensions.Options;
 
 namespace Corsinvest.ProxmoxVE.Admin.Botgram;
 
-public class BotgramService : BackgroundService
+public class BotgramService(ILogger<BotgramService> logger, IServiceScopeFactory scopeFactory) : BackgroundService
 {
-    private readonly ILogger _logger;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger _logger = logger;
+
     private List<BotData> BotDatas { get; } = [];
 
     private class BotData : IClusterName
@@ -24,12 +24,6 @@ public class BotgramService : BackgroundService
         public StringWriterEvent Log { get; set; } = default!;
         public string ClusterName { get; set; } = default!;
         public DateTime LastUpdate { get; set; }
-    }
-
-    public BotgramService(ILogger<BotgramService> logger, IServiceScopeFactory scopeFactory)
-    {
-        _logger = logger;
-        _scopeFactory = scopeFactory;
     }
 
     public async Task SendMessageAsync(string clusterName, long chatId, string message)
@@ -50,7 +44,7 @@ public class BotgramService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         var pveClientService = scope.GetPveClientService();
         var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
         var options = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<Options>>().Value;

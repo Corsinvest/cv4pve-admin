@@ -7,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Persistence;
 
-public class AutoSnapDbContext : DbContext
+public class AutoSnapDbContext(DbContextOptions<AutoSnapDbContext> options) : DbContext(options)
 {
-    public AutoSnapDbContext(DbContextOptions<AutoSnapDbContext> options) : base(options) { }
     public DbSet<AutoSnapJob> Jobs { get; set; } = default!;
     public DbSet<AutoSnapJobHistory> JobHistories { get; set; } = default!;
     public DbSet<AutoSnapJobHook> JobHooks { get; set; } = default!;
