@@ -51,7 +51,7 @@ public partial class VmManager
     private async Task<VmBaseStatusCurrent> GetStatusAsync()
     {
         //StateHasChanged();
-        return await PveClient.GetVmStatusAsync(Vm);
+        return await PveClient.GetVmStatusAsync(Vm.Node, Vm.VmType, Vm.VmId);
     }
 
     private async Task Refresh()
@@ -105,7 +105,11 @@ public partial class VmManager
     }
 
     private async Task<IEnumerable<VmRrdData>> GetRrdDataAsync(RrdDataTimeFrame rrdDataTimeFrame, RrdDataConsolidation rrdDataConsolidation)
-        => await PveClient.GetVmRrdDataAsync(Vm, rrdDataTimeFrame, rrdDataConsolidation);
+        => await PveClient.GetVmRrdDataAsync(Vm.Node,
+                                             Vm.VmType,
+                                             Vm.VmId,
+                                             rrdDataTimeFrame,
+                                             rrdDataConsolidation);
 
     private async Task<IEnumerable<NodeTask>> GetTasks()
         => await PveClient.Nodes[Vm.Node].Tasks.GetAsync(start: 0, limit: 500, vmid: Convert.ToInt32(Vm.VmId));

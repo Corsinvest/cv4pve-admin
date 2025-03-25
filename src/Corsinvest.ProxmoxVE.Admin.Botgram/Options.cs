@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -24,13 +24,12 @@ public class ModuleClusterOptions : IClusterName
     public string ChatsId { get; set; } = default!;
 
     public long[] GetChatsId()
-        => ChatsId.Split(Environment.NewLine)
-                  .Select(a => new
-                  {
-                      Valid = long.TryParse(a, out var chatId),
-                      ChatId = chatId
-                  })
-                  .Where(a => a.Valid)
-                  .Select(a => a.ChatId)
-                  .ToArray();
+        => [.. ChatsId.Split(Environment.NewLine)
+                      .Select(a => new
+                      {
+                        Valid = long.TryParse(a, out var chatId),
+                        ChatId = chatId
+                      })
+                      .Where(a => a.Valid)
+                      .Select(a => a.ChatId)];
 }

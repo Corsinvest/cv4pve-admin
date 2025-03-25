@@ -4,7 +4,7 @@
  */
 using Corsinvest.AppHero.Core.BaseUI.DataManager;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
-using Corsinvest.ProxmoxVE.Admin.Core.Repository;
+using Corsinvest.ProxmoxVE.Admin.AutoSnap.Repository;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Components;
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -7,33 +7,31 @@ using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
 
 namespace Corsinvest.ProxmoxVE.Admin.AutoSnap;
 
-internal class Job
+internal class Job(IServiceScopeFactory scopeFactory)
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    public Job(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
     private static bool ModuleEnabled(IServiceScope scope) => scope.GetModule<Module>()!.Enabled;
 
     public async Task CreateAsync(int id)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         if (ModuleEnabled(scope)) { await Helper.CreateAsync(scope, id); }
     }
 
     public async Task PurgeAsync(int id)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         await Helper.PurgeAsync(scope, id);
     }
 
     public async Task DeleteAsync(IEnumerable<int> ids)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         await Helper.DeleteAsync(scope, ids);
     }
 
     public async Task DeleteAsync(IEnumerable<AutoSnapInfo> snapshots, string clusterName)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         await Helper.DeleteAsync(scope, snapshots, clusterName);
     }
 }

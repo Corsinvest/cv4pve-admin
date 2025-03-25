@@ -43,7 +43,7 @@ else
         </ToolBarContentBefore>
 
         <ChildRowContent>
-            <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Charts GetItems="@(async (a,b) => await GetVmRrdData(context.Item.VmId, a,b))" />
+            <Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Vm.Charts GetItems="@(async (a,b) => await GetVmRrdData(context.Item, a,b))" />
         </ChildRowContent>
     </Corsinvest.ProxmoxVE.Admin.Core.UI.ProxmoxVE.Cluster.Resources>
 }

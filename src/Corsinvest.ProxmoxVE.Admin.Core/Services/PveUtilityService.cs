@@ -1,36 +1,25 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
-public class PveUtilityService : IPveUtilityService
+public class PveUtilityService(IPveClientService pveClientService,
+                               ISshService sshService,
+                               ILogger<PveUtilityService> logger) : IPveUtilityService
 {
-    private readonly ISshService _sshService;
-    private readonly IPveClientService _pveClientService;
-    private readonly ILogger<PveUtilityService> _logger;
-
-    public PveUtilityService(IPveClientService pveClientService,
-                             ISshService sshService,
-                             ILogger<PveUtilityService> logger)
-    {
-        _sshService = sshService;
-        _pveClientService = pveClientService;
-        _logger = logger;
-    }
-
     public async Task<FluentResults.Result> BlinkDiskLedAsync(string clusterName, string node, string devPath, bool blink)
     {
         FluentResults.Result result;
 
         try
         {
-            var clusterOptions = (await _pveClientService.GetCurrentClusterOptionsAsync())!;
+            var clusterOptions = (await pveClientService.GetCurrentClusterOptionsAsync())!;
             var (host, ipAddress) = (await GetHostAndIpAsync(clusterOptions)).Where(a => a.Key == node).FirstOrDefault();
             var info = clusterOptions.GetNodeOptions(ipAddress, host);
             if (info != null)
             {
-                var ret = _sshService.Execute(clusterOptions,
+                var ret = sshService.Execute(clusterOptions,
                                               ipAddress,
                                               info.SshPort,
                                               [$"ledctl locate{(blink ? "" : "_off")}={devPath}"])
@@ -52,7 +41,7 @@ public class PveUtilityService : IPveUtilityService
 
     private async Task<IReadOnlyDictionary<string, string>> GetHostAndIpAsync(ClusterOptions clusterOptions)
     {
-        var client = await _pveClientService.GetClientAsync(clusterOptions);
+        var client = await pveClientService.GetClientAsync(clusterOptions);
 
         //decode host ip
         return await client.GetHostAndIpAsync();
@@ -66,7 +55,7 @@ public class PveUtilityService : IPveUtilityService
 
         try
         {
-            var clusterOptions = (await _pveClientService.GetCurrentClusterOptionsAsync())!;
+            var clusterOptions = (await pveClientService.GetCurrentClusterOptionsAsync())!;
             //decode host ip
             foreach (var (host, ipAddress) in await GetHostAndIpAsync(clusterOptions))
             {
@@ -75,7 +64,7 @@ public class PveUtilityService : IPveUtilityService
                     var info = clusterOptions.GetNodeOptions(ipAddress, host);
                     if (info != null)
                     {
-                        var rets = _sshService.Execute(clusterOptions, ipAddress, info.SshPort, [command]);
+                        var rets = sshService.Execute(clusterOptions, ipAddress, info.SshPort, [command]);
                         foreach (var (ExitCode, _, Error) in rets)
                         {
                             results.Add(FluentResults.Result.OkIf(ExitCode == 0, Error));
@@ -90,7 +79,7 @@ public class PveUtilityService : IPveUtilityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
             results.Add(FluentResults.Result.Fail(ex.Message));
         }
 

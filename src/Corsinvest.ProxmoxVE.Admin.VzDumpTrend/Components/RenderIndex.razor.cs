@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -35,7 +35,7 @@ public partial class RenderIndex
             ret.AddRange(await PveClient.Nodes[node.Node].GetBackupsInAllStoragesAsync());
         }
 
-        return ret.Distinct().ToList();
+        return [.. ret.Distinct()];
     }
 
     private async Task<IEnumerable<ClusterResource>> GetNotScheduled()
@@ -52,7 +52,7 @@ public partial class RenderIndex
             var vms = (await PveClient.GetResourcesAsync(ClusterResourceType.All))
                                 .Where(a => a.ResourceType == ClusterResourceType.Vm && !a.IsTemplate);
 
-            ret = vms.Where(a => !vmIdsInBackup.Contains(a.VmId)).ToList();
+            ret = [.. vms.Where(a => !vmIdsInBackup.Contains(a.VmId))];
         }
 
         return ret;

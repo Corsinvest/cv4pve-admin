@@ -73,7 +73,7 @@ public class CephDiskInfo(string storage, string pool, long vmId, string disk, s
                     if (ExitCode == 0)
                     {
                         var images = StdOut.Split('\n').Where(a => !string.IsNullOrEmpty(a)).ToArray();
-                        var retSnaps = ExecuteSsh(images.Select(a => $"{cmdBase} snap ls {item.Pool}/{a} --format json").ToList())
+                        var retSnaps = ExecuteSsh([.. images.Select(a => $"{cmdBase} snap ls {item.Pool}/{a} --format json")])
                                             .ToList();
 
                         for (var i = 0; i < images.Length; i++)

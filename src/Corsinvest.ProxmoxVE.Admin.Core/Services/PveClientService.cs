@@ -11,29 +11,15 @@ using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
-public class PveClientService : IPveClientService
+public class PveClientService(IOptionsSnapshot<AdminOptions> clustersOptions,
+                              ILocalStorageService localStorageService,
+                              ILoggerFactory loggerFactory,
+                              ILogger<PveClientService> logger) : IPveClientService
 {
-    //private PveClient _client = default!;
-    private readonly IOptionsSnapshot<AdminOptions> _clustersOptions;
-    private readonly ILocalStorageService _localStorageService;
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly ILogger<PveClientService> _logger;
-
-    public PveClientService(IOptionsSnapshot<AdminOptions> clustersOptions,
-                            ILocalStorageService localStorageService,
-                            ILoggerFactory loggerFactory,
-                            ILogger<PveClientService> logger)
-    {
-        _clustersOptions = clustersOptions;
-        _localStorageService = localStorageService;
-        _loggerFactory = loggerFactory;
-        _logger = logger;
-    }
-
     public async Task<PveClient?> GetClientAsync(ClusterOptions clusterOptions)
     {
-        var client = await GetClientAsync(clusterOptions, _logger);
-        if (client != null) { client.LoggerFactory = _loggerFactory; }
+        var client = await GetClientAsync(clusterOptions, logger);
+        if (client != null) { client.LoggerFactory = loggerFactory; }
         return client;
     }
 
@@ -82,17 +68,16 @@ public class PveClientService : IPveClientService
     }
 
     public async Task<PveClient> GetClientCurrentClusterAsync() => (await GetClientAsync(await GetCurrentClusterNameAsync()))!;
-    public ClusterOptions? GetClusterOptions(string clusterName) => _clustersOptions.Value.Clusters.FirstOrDefault(a => a.Name == clusterName);
+    public ClusterOptions? GetClusterOptions(string clusterName) => clustersOptions.Value.Clusters.FirstOrDefault(a => a.Name == clusterName);
     public async Task<ClusterOptions?> GetCurrentClusterOptionsAsync() => GetClusterOptions(await GetCurrentClusterNameAsync());
 
     public IEnumerable<ClusterOptions> GetClusters()
-        => _clustersOptions.Value.Clusters
+        => [.. clustersOptions.Value.Clusters
                                  .Where(a => !string.IsNullOrEmpty(a.Name))
-                                 .OrderBy(a => a.FullName)
-                                 .ToList();
+                                 .OrderBy(a => a.FullName)];
 
-    public async Task SetCurrentClusterNameAsync(string clusterName) => await _localStorageService.SetItemAsStringAsync("CurrentClusterName", clusterName);
-    public async Task<string> GetCurrentClusterNameAsync() => (await _localStorageService.GetItemAsStringAsync("CurrentClusterName"))!;
+    public async Task SetCurrentClusterNameAsync(string clusterName) => await localStorageService.SetItemAsStringAsync("CurrentClusterName", clusterName);
+    public async Task<string> GetCurrentClusterNameAsync() => (await localStorageService.GetItemAsStringAsync("CurrentClusterName"))!;
 
     public async Task<int> PopulateInfoNodesAsync(ClusterOptions clusterOptions)
     {
@@ -163,7 +148,7 @@ public class PveClientService : IPveClientService
     public async Task<bool> ExistsCurrentClusterNameAsync()
     {
         var currentClusterName = await GetCurrentClusterNameAsync();
-        return _clustersOptions.Value.Clusters.Any(a => a.Name == currentClusterName);
+        return clustersOptions.Value.Clusters.Any(a => a.Name == currentClusterName);
     }
 
     public async Task<bool> CheckIsValidVersionAsync(PveClient client)

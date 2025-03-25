@@ -1,11 +1,12 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Ardalis.Specification;
 using Corsinvest.ProxmoxVE.Admin.AutoSnap.Models;
+using Corsinvest.ProxmoxVE.Admin.Core.Repository;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Repository;
+namespace Corsinvest.ProxmoxVE.Admin.AutoSnap.Repository;
 
 internal class AutoSnapJobSpec : ClusterByNameSpec<AutoSnapJob>
 {
