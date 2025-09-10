@@ -19,7 +19,6 @@
 
 The easiest and most effective solution to monitor your multiple Proxmox VE cluster in a single web portal.
 
-
 ## 🚀 Main features
 
 > Discover all the features on the official website: [here](https://corsinvest.it/cv4pve-admin-proxmox)
