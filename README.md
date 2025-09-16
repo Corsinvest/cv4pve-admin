@@ -1,3 +1,18 @@
+<div align="center">
+
+# 🚀🚀🚀 VERSION 2.0 COMING SOON 🚀🚀🚀
+
+## ⚡ NEXT MAJOR RELEASE ⚡
+
+### 🔥 ENHANCED • OPTIMIZED • REFINED 🔥
+
+---
+
+## 📅 WE'RE ALMOST THERE • ⭐ STAR FOR UPDATES
+
+---
+
+</div>
 
 [![License](https://img.shields.io/github/license/Corsinvest/cv4pve-admin.svg)](LICENSE)
 [![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-admin.svg)](https://github.com/Corsinvest/cv4pve-admin/releases/latest) 
@@ -9,11 +24,11 @@
 
 # CV4PVE-ADMIN
 
-
 > [!WARNING]
 > Technical support is considered valid only if each node of the cluster is covered by the cv4pve-admin license.
 
 ![image](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/Corsinvest.ProxmoxVE.Admin/wwwroot/doc/images/screenshot/modules/home/home-computerscreen.png)
+
 
 ## 💻 What is it?
 
