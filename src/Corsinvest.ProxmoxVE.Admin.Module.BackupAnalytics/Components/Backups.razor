@@ -1,0 +1,123 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="Data"
+                LoadData="LoadDataAsync"
+                Data="@ResultLoadData.Data"
+                Count="@ResultLoadData.TotalCount"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                Style="height: calc(100vh - 140px);"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowGrouping="true"
+                RowRender="RowRender"
+                AllowColumnPicking="true">
+    <HeaderTemplate>
+        <CrudToolbar OnRefresh="RefreshDataAsync">
+            <TemplateBefore>
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Scan"]"
+                              Click="Scan"
+                              Icon="play_arrow"
+                              Style="--rz-icon-fill: 1;"
+                              ButtonStyle="ButtonStyle.Success"
+                              title="@L["Scan"]"
+                              aria-label="@L["Scan"]" />
+
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Remove All Data"]"
+                              Click="RemoveAllDataAsync"
+                              Icon="delete"
+                              ButtonStyle="ButtonStyle.Danger"
+                              title="@L["Remove All Data"]"
+                              aria-label="@L["Remove All Data"]" />
+            </TemplateBefore>
+
+            <TemplateAfter>
+                <InfoScheduler TModule="Module" JobSchedule="@Settings" />
+            </TemplateAfter>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <EmptyTemplate>
+        <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                            Click="Scan"
+                            Icon="play_arrow"
+                            Style="--rz-icon-fill: 1;" />
+    </EmptyTemplate>
+
+    <GroupHeaderTemplate>
+        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>: @FormatHelper.FromBytes(context.Data.Items!.Cast<Data>().Sum(a => a.Size))
+    </GroupHeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(Data.VmId)" Title="@L["VM Id"]" Width="120px" />
+        <RadzenDataGridColumn Property="@nameof(Data.VmName)" Title="@L["VM Name"]" Visible="false" Sortable="false" Filterable="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.VmDescription)" Title="@L["VM Description"]" Visible="false" Sortable="false" Filterable="false" />
+        <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" Width="160px" />
+        <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" Width="160px" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Duration)"
+                              Title="@L["Duration"]"
+                              FormatString="{0:hh':'mm':'ss}"
+                              Width="100px"
+                              Filterable="false" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Size)"
+                              Title="@L["Size"]"
+                              TextAlign="TextAlign.Right"
+                              FormatString="@(FormatHelper.DataFormatBytes)"
+                              FormatProvider="FormatterHelper.FormatProvider"
+                              Width="120px" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.TransferSpeed)"
+                              Title="@L["Transfer Speed"]"
+                              TextAlign="TextAlign.Right"
+                              FormatString="@(FormatHelper.DataFormatBytes)"
+                              FormatProvider="FormatterHelper.FormatProvider" />
+
+        <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" Width="120px" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Node)" Title="@L["Node"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Storage)" Title="@L["Storage"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.TaskId)" Title="@L["Task Id"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.Error)" Title="@L["Error"]" />
+
+        <RadzenDataGridColumn Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Right"
+                              Frozen="true"
+                              FrozenPosition="FrozenColumnPosition.Right"
+                              Reorderable="false"
+                              Pickable="false"
+                              Resizable="false"
+                              Groupable="false"
+                              Width="70px">
+            <Template Context="ctx">
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Icon="description"
+                              ButtonStyle="ButtonStyle.Primary"
+                              Click="@(() => ShowLogAsync(ctx, false))"
+                              @onclick:stopPropagation="true"
+                              title="@L["Show VM log"]"
+                              aria-label="@L["Show VM log"]" />
+
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Icon="description"
+                              ButtonStyle="ButtonStyle.Success"
+                              Click="@(() => ShowLogAsync(ctx, true))"
+                              @onclick:stopPropagation="true"
+                              title="@L["Show Job log"]"
+                              aria-label="@L["Show Job log"]" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

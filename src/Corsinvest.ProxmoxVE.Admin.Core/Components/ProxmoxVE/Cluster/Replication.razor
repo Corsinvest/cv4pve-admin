@@ -1,0 +1,31 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="ClusterReplication"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="@Style"
+                IsLoading="IsLoading"
+                AllowColumnPicking="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        <BoolIconColumn Property="@nameof(ClusterReplication.Disable)" Title="@L["Enabled"]" IconFalse="" Inverted="true" />
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.Guest)" Title="@L["Guest"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.JobNum)" Title="@L["Job N°"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.Source)" Title="@L["Source"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.Target)" Title="@L["Target"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.Schedule)" Title="@L["Schedule"]" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.Id)"
+                              Title="@L["Id"]"
+                              Visible="false"
+                              SortOrder="SortOrder.Ascending"
+                              OrderIndex="0" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterReplication.Type)" Title="@L["Type"]" Visible="false" />
+    </Columns>
+</RadzenDataGrid>
+

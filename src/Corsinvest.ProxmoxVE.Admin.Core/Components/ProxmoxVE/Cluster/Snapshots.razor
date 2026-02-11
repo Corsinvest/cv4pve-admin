@@ -1,0 +1,68 @@
+﻿@inherits AdminComponentBase
+
+<SubscriptionGate>
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Start">
+            <RadzenText TextStyle="TextStyle.H6" Text="@L["Snapshots Usage"]" />
+
+            <RadzenRow>
+                <RadzenColumn Size="6">
+                    @RenderTable(false)
+                </RadzenColumn>
+                <RadzenColumn Size="6">
+                    @RenderTable(true)
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenStack>
+    </RadzenCard>
+</SubscriptionGate>
+
+@code
+{
+    private RenderFragment RenderTable(bool replication) => __builder =>
+    {
+        var items = GetItems(replication);
+
+        <RadzenDataGrid TItem="Data"
+                        Data="@items"
+                        AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="false"
+                        AllowSorting="true"
+                        IsLoading="IsLoading"
+                        FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        Density="Density.Compact">
+            <HeaderTemplate>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10px">
+                    <RadzenIcon Icon="@(replication? PveAdminUIHelper.Icons.Replication : PveAdminUIHelper.Icons.Snapshot)" />
+                    <RadzenText TextStyle="TextStyle.H6" Text="@L["For " + (replication ? "Replication" : "Snapshots")]" class="rz-mb-0" />
+                </RadzenStack>
+            </HeaderTemplate>
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(Data.Type)" Sortable="true" Title="@L["Type"]" FilterMode="FilterMode.CheckBoxList" />
+
+                <RadzenDataGridColumn Property="@nameof(Data.Host)" Sortable="true" Title="@L["Host"]" FilterMode="FilterMode.CheckBoxList">
+                    <FooterTemplate>
+                        <b>@items.DistinctBy(a => a.Host).Count()</b>
+                    </FooterTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn Property="@nameof(Data.Space)" Sortable="true" Title="@L["Space"]" FilterMode="FilterMode.CheckBoxList" />
+                <RadzenDataGridColumn Property="@nameof(Data.Snapshots)" Sortable="true" Title="@L["Snapshots"]" />
+
+                <RadzenDataGridColumn Property="@nameof(Data.Size)" Sortable="true" Title="@L["Size"]">
+                    <Template>
+                        @ByteHelper.ToSizeString(context.Size, true)
+                    </Template>
+
+                    <FooterTemplate>
+                        <b>@ByteHelper.ToSizeString(items.Sum(a => a.Size), true)</b>
+                    </FooterTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn Property="@nameof(Data.VMs)" Sortable="true" Title="@L["VMs"]" />
+            </Columns>
+        </RadzenDataGrid>
+    };
+}

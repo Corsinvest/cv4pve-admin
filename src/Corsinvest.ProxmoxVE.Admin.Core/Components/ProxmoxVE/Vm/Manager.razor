@@ -1,0 +1,106 @@
+﻿@inherits AdminComponentBase
+
+@if (Vm.IsUnknown)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" Text="@L["Status unknown!"]" />
+}
+else
+{
+    @*   <HeaderTemplate>
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="width:100%;">
+                    <ToolBar ClusterName="@ClusterName"
+                             Vm="@Vm"
+                             CanChangeStatus="true"
+                             CanConsole="true" />
+                </RadzenStack>
+            </HeaderTemplate> *@
+
+    <RadzenTabs @ref="RadzenTabsRef" TabPosition="TabPosition.Left" SelectedIndexChanged="SelectedIndexChangedAsync">
+        <Tabs>
+            <RadzenTabsItem Text="@L["Summary"]" Icon="summarize" tab-content="@TabContent.Summary">
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="10px">
+                    <ToolBar ClusterName="@ClusterName"
+                             Vm="@Vm"
+                             CanChangeStatus="CanPowerManagement"
+                             CanConsole="CanConsole" />
+                </RadzenStack>
+
+                <Summary @ref="@SummaryRef" Vm="@Vm" ClusterName="@ClusterName" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Config"]" Icon="settings" Visible="@CanAudit" tab-content="@TabContent.Config">
+                <Config Vm="@Vm" ClusterName="@ClusterName" />
+            </RadzenTabsItem>
+
+            @if (Vm.VmType == VmType.Qemu)
+            {
+                <RadzenTabsItem Text="@L["Guest Info"]" Icon="info" Visible="@CanAudit" tab-content="@TabContent.QemuGeuestInfo">
+                    <QemuGuestInfo Vm="@Vm" ClusterName="@ClusterName" />
+                </RadzenTabsItem>
+            }
+
+            @*
+                    <RadzenTabsItem Text="@L["Processes"]" Icon="memory">
+                        <Processes Vm="@Vm" ClusterName="@ClusterName" />
+                    </RadzenTabsItem>
+
+                    <RadzenTabsItem Text="@L["Services"]" Icon="settings">
+                    </RadzenTabsItem>
+                *@
+
+            <RadzenTabsItem Text="@L["Performance"]" Icon="multiline_chart" tab-content="@TabContent.Charts">
+                <Charts @ref="@ChartsRef" ClusterName="@ClusterName" Vm="@Vm" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Task History"]"
+                            Icon="list_alt"
+                            Visible="@CanAudit"
+                            tab-content="@TabContent.Tasks">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.Tasks @ref="@TasksRef"
+                                                                                   ClusterName="@ClusterName"
+                                                                                   Node="@Vm.Node"
+                                                                                   VmId="@Vm.VmId"
+                                                                                   Style="height:400px" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Backups"]"
+                            Icon="@PveAdminUIHelper.Icons.Backup"
+                            Visible="@CanBackups"
+                            tab-content="@TabContent.Backup">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.Backup.Manager Vm="@Vm"
+                                                                                        CanBackup="@true"
+                                                                                        CanDelete="@true"
+                                                                                        CanEdit="@true"
+                                                                                        CanRestoreFile="@CanBackupRestoreFile"
+                                                                                        CanRestore="@CanBackupRestore"
+                                                                                        ClusterName="@ClusterName"
+                                                                                        Style="height:400px" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Replication"]"
+                            Icon="@PveAdminUIHelper.Icons.Replication"
+                            Visible="CanReplication"
+                            tab-content="@TabContent.Replication">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.Replication @ref="@ReplicationRef"
+                                                                                        Node="@Vm.Node"
+                                                                                        VmId="@Vm.VmId"
+                                                                                        ClusterName="@ClusterName"
+                                                                                        CanScheduleNow="@CanReplicationScheduleNow" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Snapshots"]"
+                            Icon="@PveAdminUIHelper.Icons.Snapshot"
+                            Visible="@CanSnapshots"
+                            tab-content="@TabContent.Snapshot">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.Snapshot.Manager @ref="@SnapshotManagerRef"
+                                                                                          ClusterName="@ClusterName"
+                                                                                          Vm="@Vm"
+                                                                                          CanCreate="@true"
+                                                                                          CanDelete="@true"
+                                                                                          CanEdit="@true"
+                                                                                          CanRollback="@CanSnapshotRallback"
+                                                                                          Style="height:400px" />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+}

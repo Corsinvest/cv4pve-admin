@@ -1,0 +1,43 @@
+<Project>
+  <!-- Package Management -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- Common Build Settings -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <!-- Version and Package Info -->
+  <PropertyGroup>
+    <Version>2.0.0-rc1</Version>
+    <!-- TESTING constant when pre-release version -->
+    <DefineConstants Condition="$(Version.Contains('-'))">$(DefineConstants);TESTING</DefineConstants>
+    <Company>Corsinvest Srl</Company>
+    <Authors>Corsinvest Srl</Authors>
+    <Copyright>Copyright © $(Company). All rights reserved.</Copyright>
+    <Product>cv4pve-admin Community Edition</Product>
+    <RepositoryUrl>https://github.com/Corsinvest/cv4pve-admin</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Corsinvest/cv4pve-admin</PackageProjectUrl>
+  </PropertyGroup>
+
+  <!-- Blazor Settings -->
+  <PropertyGroup>
+    <EnableScopedCss>true</EnableScopedCss>
+  </PropertyGroup>
+
+  <!-- Code Analysis -->
+  <PropertyGroup>
+    <WarningsAsErrors>IDE0059;IDE0060;CS0168;CS0219</WarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <NoWarn>$(NoWarn);EnableGenerateDocumentationFile</NoWarn>
+  </PropertyGroup>
+</Project>

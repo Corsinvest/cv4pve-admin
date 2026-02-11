@@ -1,0 +1,30 @@
+﻿<RadzenFormField Style="@Style" Text="@PlaceHoder" Variant="Variant.Outlined">
+    <ChildContent>
+        <RadzenTextBox @bind-Value="@Keyword" @oninput="HandleInput" @onkeydown="HandleKeyDown" typeof="search"/>
+    </ChildContent>
+    <End>
+        <RadzenIcon Icon="search" IconStyle="IconStyle.Secondary" />
+    </End>
+</RadzenFormField>
+
+@code {
+    [Parameter] public string Style { get; set; } = "width:100%";
+    [Parameter] public string PlaceHoder { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> KeywordChanged { get; set; }
+    [Parameter] public string? Keyword { get; set; }
+    [Parameter] public Func<Task>? SearchAsync { get; set; }
+
+    async Task HandleInput(ChangeEventArgs e)
+    {
+        Keyword = e.Value?.ToString();
+        await KeywordChanged.InvokeAsync(Keyword);
+    }
+
+    async Task HandleKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter" && SearchAsync is not null)
+        {
+            await SearchAsync.Invoke();
+        }
+    }
+}

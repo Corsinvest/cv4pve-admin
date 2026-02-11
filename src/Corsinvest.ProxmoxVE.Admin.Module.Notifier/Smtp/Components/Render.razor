@@ -1,0 +1,24 @@
+﻿@inherits AdminComponentBase
+
+<NotifierSettingsDataGrid TSettings="Settings">
+    <GridColumns>
+        <RadzenDataGridColumn TItem="Settings" Property="SmtpConfig.Host" Sortable="true" Title="@L["Host"]" />
+        <RadzenDataGridColumn TItem="Settings" Property="SmtpConfig.Port" Sortable="true" Title="@L["Port"]" />
+        <RadzenDataGridColumn TItem="Settings" Property="SmtpConfig.FromAddress" Sortable="true" Title="@L["From"]" />
+        <RadzenDataGridColumn TItem="Settings" Property="@nameof(Settings.ToAddresses)" Sortable="true" Title="@L["To"]" />
+    </GridColumns>
+
+    <EditContent>
+        <SmtpEmailConfigEdit @bind-Config="context.SmtpConfig" />
+
+        <RadzenFormField Text="@L["To Addresses"]" AllowFloatingLabel="false">
+            <ChildContent>
+                <RadzenTextArea Name="@nameof(context.ToAddresses)" @bind-Value="@context.ToAddresses" Rows="3" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@nameof(context.ToAddresses)" />
+                <RadzenText TextStyle="TextStyle.Caption" Text="@L["Separate multiple addresses with comma, semicolon or plus sign"]" />
+            </Helper>
+        </RadzenFormField>
+    </EditContent>
+</NotifierSettingsDataGrid>

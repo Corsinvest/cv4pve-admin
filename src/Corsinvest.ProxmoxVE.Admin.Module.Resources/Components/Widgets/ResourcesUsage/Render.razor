@@ -1,0 +1,28 @@
+﻿@inherits AdminComponentBase
+
+@if (ShowGrid)
+{
+    <ResourcesEx @ref="ResourcesExRef"
+                 Style="border: 0;height: 100%;"
+                 AvailableCommands="true"
+                 ClusterNames="@ClusterNames"
+                 @bind-DataGridSettings="Settings.DataGridSettings"
+                 @bind-DataGridSettings:after="DataGridSettingsAfter"
+                 UseProgressBarPercentage="Settings.UseProgressBarPercentage"
+                 PropertyIconStatus="Settings.PropertyIconStatus"
+                 AllowColumnPicking="InEditing"
+                 IconStatus="Settings.IconStatus"
+                 DescriptionAsLink="Settings.DescriptionAsLink">
+        <TemplateToolbar>
+            @if (InEditing)
+            {
+                <RadzenDropDown TValue="ResourcePreset?"
+                                @bind-Value="@_selectedPreset"
+                                @bind-Value:after="OnPresetChanged"
+                                Data="@(Enum.GetValues<ResourcePreset>())"
+                                Placeholder="@L["Preset..."]"
+                                Style="width: 120px;" />
+            }
+        </TemplateToolbar>
+    </ResourcesEx>
+}

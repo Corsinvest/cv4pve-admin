@@ -1,0 +1,107 @@
+site_name: cv4pve-admin - Professional Administration for Proxmox VE
+site_url: https://corsinvest.github.io/cv4pve-admin/
+site_description: Professional administration interface for Proxmox VE with advanced features and support.
+site_author: Corsinvest Srl
+repo_url: https://github.com/Corsinvest/cv4pve-admin
+repo_name: Corsinvest/cv4pve-admin
+edit_uri: edit/master/docs/user/new/docs/
+docs_dir: docs
+use_directory_urls: true
+copyright: Copyright &copy; 2024 Corsinvest Srl
+
+nav:
+    - Home: index.md
+    - Community vs Enterprise: editions.md
+    - Installation: installation.md
+    - User Guide: user_guide.md
+
+theme:
+  name: material
+  language: en
+  logo: icon.png
+  favicon: icon.png
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.sections
+    - navigation.expand
+    - toc.follow
+    - toc.integrate
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+    version:
+        provider: mike
+    generator: false
+    social:
+        - icon: fontawesome/brands/gitlab
+          link: https://github.com/Corsinvest/cv4pve-admin
+          name: Gitlab
+        - icon: fontawesome/brands/docker
+          link: https://hub.docker.com/r/corsinvest/cv4pve-admin
+          name: Docker
+        - icon: material/web
+          link: https://corsinvest.it/cv4pve-admin-proxmox/
+          name: Website
+        # - icon: fontawesome/brands/youtube
+        #   link: https://www.youtube.com/channel/UCq0PeNQCfu4IOttZoiyNZLA
+        #   name: Youtube
+    analytics:
+        feedback:
+            title: Was this page helpful?
+            ratings:
+                - icon: material/emoticon-happy-outline
+                  data: 1
+                  name: This page was helpful
+                  note: >-
+                    Thanks for your feedback!
+                - icon: material/emoticon-sad-outline
+                  data: 0
+                  name: This page was not helpful
+                  note: >-
+                    Thanks for your feedback!
+    # alternate:
+    #     - name: English
+    #       link: /en/
+    #       lang: en
+    #     - name: Italiano
+    #       link: /it/
+    #       lang: it

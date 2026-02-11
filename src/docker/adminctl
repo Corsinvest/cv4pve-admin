@@ -1,0 +1,267 @@
+#!/bin/bash
+# CV4PVE Admin Management Script
+# Copyright (c) Corsinvest Srl
+# Website: https://corsinvest.it
+# Repository: https://gitlab.com/Corsinvest/cv4pve-admin
+#
+# Works on: Linux, macOS, Windows (Git Bash/WSL)
+
+set -e
+cd "$(dirname "$0")"
+
+# Load configuration
+if [ -f .env ]; then
+    # Export variables from .env (skip comments and empty lines)
+    export $(grep -v '^#' .env | grep -v '^$' | xargs)
+else
+    echo "Error: .env file not found"
+    echo "Copy .env.example to .env and configure it"
+    exit 1
+fi
+
+show_help() {
+    cat << 'EOF'
+  ______                _                      __
+ / ____/___  __________(_)___ _   _____  _____/ /_
+/ /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
+/ /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
+\____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
+
+CV4PVE Admin - Management Helper
+
+Usage: ./adminctl COMMAND [OPTIONS]
+
+Commands:
+  start                    Start all services
+  stop                     Stop all services
+  restart                  Restart all services
+  admin start|stop         Start/stop admin tools (PgWeb)
+  status                   Show services status
+  logs [SERVICE]           Show logs (optionally for specific service)
+  backup
+      db create|list       Database backups
+      data create|list     Application data backups
+      all create|list      Full backups (db + data)
+  help                     Show this help message
+
+Examples:
+  ./adminctl start
+  ./adminctl logs postgres
+  ./adminctl backup db create
+  ./adminctl backup all list
+  ./adminctl admin start
+  ./adminctl admin stop
+
+Note: You can also use 'docker compose' commands directly if you prefer.
+      See README.md for more information.
+EOF
+}
+
+case "${1:-}" in
+    start)
+        echo "Starting CV4PVE Admin..."
+        docker compose up -d
+        echo ""
+        echo "CV4PVE Admin started successfully"
+        echo "Access: http://localhost:${CV4PVE_ADMIN_PORT}"
+        echo ""
+        ;;
+
+    stop)
+        echo "Stopping CV4PVE Admin..."
+        docker compose down
+        echo "Services stopped"
+        ;;
+
+    restart)
+        echo "Restarting CV4PVE Admin..."
+        docker compose restart
+        echo "Services restarted"
+        ;;
+
+    admin)
+        case "${2:-}" in
+            start)
+                echo "Starting CV4PVE Admin with admin tools..."
+                docker compose --profile admin up -d
+                echo ""
+                echo "Started with admin tools"
+                echo "CV4PVE Admin: http://localhost:${CV4PVE_ADMIN_PORT}"
+                echo "PgWeb:        http://localhost:${PGWEB_PORT}"
+                echo ""
+                ;;
+            stop)
+                echo "Stopping admin tools..."
+                docker compose --profile admin stop pgweb
+                docker compose --profile admin rm -f pgweb
+                echo "Admin tools stopped"
+                ;;
+            *)
+                echo "Usage: ./adminctl admin [start|stop]"
+                exit 1
+                ;;
+        esac
+        ;;
+
+    status)
+        docker compose ps
+        ;;
+
+    logs)
+        if [ -z "${2:-}" ]; then
+            echo "Showing logs for all services (Ctrl+C to stop)..."
+            echo ""
+            docker compose logs -f --tail=50
+        else
+            echo "Showing logs for $2 (Ctrl+C to stop)..."
+            echo ""
+            docker compose logs -f --tail=100 "$2"
+        fi
+        ;;
+
+    backup)
+        # Ensure backup directories exist
+        mkdir -p "${BACKUP_DIR}/db" "${BACKUP_DIR}/data" "${BACKUP_DIR}/all"
+
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+        case "${2:-}" in
+            db)
+                case "${3:-}" in
+                    create)
+                        BACKUP_FILE="${BACKUP_DIR}/db/db-${TIMESTAMP}.sql.gz"
+                        echo "Creating database backup..."
+                        if docker compose exec -T postgres pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} | gzip > "$BACKUP_FILE" 2>/dev/null; then
+                            BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+                            echo "Backup created successfully"
+                            echo "   File: $BACKUP_FILE"
+                            echo "   Size: $BACKUP_SIZE"
+                            echo ""
+                            echo "Restore: gunzip -c $BACKUP_FILE | docker compose exec -T postgres psql -U ${POSTGRES_USER} ${POSTGRES_DB}"
+                        else
+                            echo "Backup failed"
+                            rm -f "$BACKUP_FILE"
+                            exit 1
+                        fi
+                        ;;
+                    list)
+                        echo "Database backups:"
+                        echo ""
+                        if ls "${BACKUP_DIR}"/db/*.sql.gz 1> /dev/null 2>&1; then
+                            ls -lh "${BACKUP_DIR}"/db/*.sql.gz | awk '{print "   " $9 " (" $5 ")"}'
+                        else
+                            echo "   No backups found"
+                        fi
+                        ;;
+                    *)
+                        echo "Usage: ./adminctl backup db [create|list]"
+                        exit 1
+                        ;;
+                esac
+                ;;
+            data)
+                case "${3:-}" in
+                    create)
+                        BACKUP_FILE="${BACKUP_DIR}/data/data-${TIMESTAMP}.tar.gz"
+                        echo "Creating data backup..."
+                        if docker compose exec -T cv4pve-admin tar -czf - -C /app data > "$BACKUP_FILE" 2>/dev/null; then
+                            BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+                            echo "Backup created successfully"
+                            echo "   File: $BACKUP_FILE"
+                            echo "   Size: $BACKUP_SIZE"
+                            echo ""
+                            echo "Restore: docker compose exec -T cv4pve-admin tar -xzf - -C /app < $BACKUP_FILE"
+                        else
+                            echo "Backup failed"
+                            rm -f "$BACKUP_FILE"
+                            exit 1
+                        fi
+                        ;;
+                    list)
+                        echo "Data backups:"
+                        echo ""
+                        if ls "${BACKUP_DIR}"/data/*.tar.gz 1> /dev/null 2>&1; then
+                            ls -lh "${BACKUP_DIR}"/data/*.tar.gz | awk '{print "   " $9 " (" $5 ")"}'
+                        else
+                            echo "   No backups found"
+                        fi
+                        ;;
+                    *)
+                        echo "Usage: ./adminctl backup data [create|list]"
+                        exit 1
+                        ;;
+                esac
+                ;;
+            all)
+                case "${3:-}" in
+                    create)
+                        BACKUP_FILE="${BACKUP_DIR}/all/all-${TIMESTAMP}.tar.gz"
+                        TMP_DIR=$(mktemp -d)
+                        echo "Creating full backup..."
+
+                        # Backup database
+                        echo "   Backing up database..."
+                        if ! docker compose exec -T postgres pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} | gzip > "$TMP_DIR/db.sql.gz" 2>/dev/null; then
+                            echo "Database backup failed"
+                            rm -rf "$TMP_DIR"
+                            exit 1
+                        fi
+
+                        # Backup data
+                        echo "   Backing up data..."
+                        if ! docker compose exec -T cv4pve-admin tar -czf - -C /app data > "$TMP_DIR/data.tar.gz" 2>/dev/null; then
+                            echo "Data backup failed"
+                            rm -rf "$TMP_DIR"
+                            exit 1
+                        fi
+
+                        # Create combined archive
+                        echo "   Creating archive..."
+                        if tar -czf "$BACKUP_FILE" -C "$TMP_DIR" db.sql.gz data.tar.gz 2>/dev/null; then
+                            rm -rf "$TMP_DIR"
+                            BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+                            echo "Backup created successfully"
+                            echo "   File: $BACKUP_FILE"
+                            echo "   Size: $BACKUP_SIZE"
+                            echo ""
+                            echo "Restore manually: extract and restore db + data separately"
+                        else
+                            echo "Backup failed"
+                            rm -rf "$TMP_DIR"
+                            rm -f "$BACKUP_FILE"
+                            exit 1
+                        fi
+                        ;;
+                    list)
+                        echo "Full backups:"
+                        echo ""
+                        if ls "${BACKUP_DIR}"/all/*.tar.gz 1> /dev/null 2>&1; then
+                            ls -lh "${BACKUP_DIR}"/all/*.tar.gz | awk '{print "   " $9 " (" $5 ")"}'
+                        else
+                            echo "   No backups found"
+                        fi
+                        ;;
+                    *)
+                        echo "Usage: ./adminctl backup all [create|list]"
+                        exit 1
+                        ;;
+                esac
+                ;;
+            *)
+                echo "Usage: ./adminctl backup [db|data|all] [create|list]"
+                exit 1
+                ;;
+        esac
+        ;;
+
+    help|--help|-h|"")
+        show_help
+        ;;
+
+    *)
+        echo "Unknown command: $1"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac

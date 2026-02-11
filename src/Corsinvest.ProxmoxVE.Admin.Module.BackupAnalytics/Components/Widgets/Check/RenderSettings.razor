@@ -1,0 +1,12 @@
+﻿@inherits AdminComponentBase
+@implements ISettingsParameter<CheckSettings>
+
+<RadzenFormField Text="@L["Days to analyze"]" AllowFloatingLabel="false" class="rz-w-100">
+    <RadzenNumeric @bind-Value="@Settings.Day" Min="1" />
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public CheckSettings Settings { get; set; } = default!;
+    [Parameter] public EventCallback<CheckSettings> SettingsChanged { get; set; }
+}

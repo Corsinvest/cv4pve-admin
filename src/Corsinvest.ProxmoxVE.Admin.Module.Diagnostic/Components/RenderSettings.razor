@@ -1,0 +1,169 @@
+﻿@using Corsinvest.ProxmoxVE.Api.Shared.Utils
+@using Corsinvest.ProxmoxVE.Diagnostic.Api
+@using SettingsTimeSeriesType = Corsinvest.ProxmoxVE.Diagnostic.Api.SettingsTimeSeriesType
+@using SettingsThresholdDouble = Corsinvest.ProxmoxVE.Diagnostic.Api.SettingsThreshold<double>
+
+@inherits AdminComponentBase
+@implements IModelParameter<Diagnostic.Settings>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
+</SubscriptionGate>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
+</SubscriptionGate>
+
+<RadzenFormField Text="@L["Number which should will keep"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="layers" />
+    </Start>
+    <ChildContent>
+        <RadzenNumeric Name="@nameof(Model.Keep)" @bind-Value="@Model.Keep" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Keep)" />
+    </Helper>
+</RadzenFormField>
+
+<Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Diagnostic.Settings" Settings="Model" />
+
+<RadzenPanel Text="@L["Threshold"]" Icon="data_thresholding">
+    <RadzenAccordion>
+        <Items>
+            <RadzenAccordionItem Text="@L["Node"]" Icon="@GetIconType(0)">
+                @RenderHost(Model.ApiSettings.Node, nameof(Model.ApiSettings.Node))
+            </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["Qemu"]" Icon="@GetIconType(1)">
+                @RenderHost(Model.ApiSettings.Qemu, nameof(Model.ApiSettings.Qemu))
+            </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["Lxc"]" Icon="@GetIconType(2)">
+                @RenderHost(Model.ApiSettings.Lxc, nameof(Model.ApiSettings.Lxc))
+            </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
+                @{
+                    var timeSeriesPropertyName = $"{Model.ApiSettings.Storage}.{nameof(Model.ApiSettings.Storage.TimeSeries)}";
+                }
+
+                <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
+                        <ChildContent>
+                            <RadzenDropDown TValue="SettingsTimeSeriesType"
+                                            Name="@timeSeriesPropertyName"
+                                            @bind-Value="@Model.ApiSettings.Storage.TimeSeries"
+                                            Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
+                        </ChildContent>
+                        <End>
+                            <InfoIcon>
+                                <strong>@L["Day"]:</strong> @L["Analyze metrics from the last 24 hours"]
+                                <br />
+                                <strong>@L["Week"]:</strong> @L["Analyze metrics from the last 7 days"]
+                            </InfoIcon>
+                        </End>
+                        <Helper>
+                            <RadzenDataAnnotationValidator Component="@timeSeriesPropertyName" />
+                        </Helper>
+                    </RadzenFormField>
+
+                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                        <RadzenColumn Size="4">
+                            @RenderThreshold("Usage", "Model.Settings.Storage.Threshold", Model.ApiSettings.Storage.Threshold)
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenStack>
+            </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["SSD"]" Icon="@PveAdminUIHelper.Icons.Storage">
+                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenColumn Size="4">
+                        @RenderThreshold("Wearout", "Model.Settings.SsdWearoutThreshold", Model.ApiSettings.SsdWearoutThreshold)
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenAccordionItem>
+        </Items>
+    </RadzenAccordion>
+</RadzenPanel>
+
+@code
+{
+    [Parameter] public Diagnostic.Settings Model { get; set; } = default!;
+
+    private static string GetIconType(int index)
+        => PveAdminUIHelper.Icons.GetResourceType(new[] { PveConstants.KeyApiNode, PveConstants.KeyApiQemu, PveConstants.KeyApiLxc }[index]);
+
+    private RenderFragment RenderHost(SettingsThresholdHost host, string propertyName) => __builder =>
+    {
+        var basePropertyName = $"Model.Settings.{propertyName}";
+
+        var timeSeriesPropertyName = $"{basePropertyName}.{nameof(host.TimeSeries)}";
+
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
+                <ChildContent>
+                    <RadzenDropDown TValue="SettingsTimeSeriesType"
+                                    Name="@timeSeriesPropertyName"
+                                    @bind-Value="@host.TimeSeries"
+                                    Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
+                </ChildContent>
+                <End>
+                    <InfoIcon>
+                        <strong>@L["Day"]:</strong> @L["Analyze metrics from the last 24 hours"]
+                        <br />
+                        <strong>@L["Week"]:</strong> @L["Analyze metrics from the last 7 days"]
+                    </InfoIcon>
+                </End>
+                <Helper>
+                    <RadzenDataAnnotationValidator Component="@timeSeriesPropertyName" />
+                </Helper>
+            </RadzenFormField>
+
+            <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenColumn Size="4">
+                    @RenderThreshold(L["CPU"], $"{basePropertyName}.{nameof(host.Cpu)}", host.Cpu)
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    @RenderThreshold(L["Memory"], $"{basePropertyName}.{nameof(host.Memory)}", host.Memory)
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    @RenderThreshold(L["Network"], $"{basePropertyName}.{nameof(host.Network)}", host.Network)
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenStack>
+    };
+
+    private RenderFragment RenderThreshold(string title, string pathBaseProperty, SettingsThresholdDouble threshold) => __builder =>
+    {
+        <RadzenText Text="@L[title]" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle2" />
+
+        var nameWarning = $"{pathBaseProperty}.{nameof(threshold.Warning)}";
+        <RadzenFormField Text="@L["Warning"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenNumeric Name="@nameWarning" @bind-Value="@threshold.Warning" />
+            </ChildContent>
+            <End>
+                <RadzenIcon Icon="warning" IconColor="@Colors.Warning" />
+            </End>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@nameWarning" />
+            </Helper>
+        </RadzenFormField>
+
+        var nameCritical = $"{pathBaseProperty}.{nameof(threshold.Critical)}";
+        <RadzenFormField Text="@L["Critical"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenNumeric Name="@nameCritical" @bind-Value="@threshold.Critical" />
+            </ChildContent>
+            <End>
+                <RadzenIcon Icon="error" IconColor="@Colors.Danger" />
+            </End>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@nameCritical" />
+            </Helper>
+        </RadzenFormField>
+    };
+}

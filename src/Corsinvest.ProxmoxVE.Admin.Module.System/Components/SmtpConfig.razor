@@ -1,0 +1,30 @@
+@inherits AdminComponentBase
+
+<RadzenRow>
+    <RadzenColumn SizeXS="12" SizeSM="12" SizeMD="10" SizeLG="6" SizeXL="4" SizeXX="4">
+        <SmtpEmailConfigEdit @bind-Config="Settings.SmtpEmailConfig" />
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn SizeXS="12" SizeSM="12" SizeMD="10" SizeLG="6" SizeXL="4" SizeXX="4">
+        <RadzenCard>
+            <RadzenStack Gap="1rem">
+                <RadzenText TextStyle="TextStyle.H6">@L["Test SMTP Configuration"]</RadzenText>
+
+                <RadzenFormField Text="@L["Test Email Address"]" AllowFloatingLabel="false" class="rz-w-100">
+                    <RadzenTextBox @bind-Value="TestEmailAddress"
+                                   Placeholder="user@example.com"
+                                   class="rz-w-100" />
+                </RadzenFormField>
+
+                <RadzenButton Icon="send"
+                              Text="@L["Send Test Email"]"
+                              ButtonStyle="ButtonStyle.Success"
+                              Click="SendTestEmailAsync"
+                              Disabled="IsSendingTest"
+                              class="rz-w-100" />
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>

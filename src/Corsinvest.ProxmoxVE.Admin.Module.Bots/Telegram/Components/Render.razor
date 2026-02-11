@@ -1,0 +1,65 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical">
+    <RadzenTextArea Value="@Log" Style="height: calc(100vh - 200px);" ReadOnly="true" />
+
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End">
+        <RadzenButton Click="@(() => browserService.OpenAsync("https://web.telegram.org", "_blank"))"
+                      Icon="link"
+                      title="@L["Open Telegram Web"]"
+                      aria-label="@L["Open Telegram Web"]" />
+
+        <RadzenButton Click="ShowInfo"
+                      Icon="info"
+                      title="@L["Open info"]"
+                      aria-label="@L["Open info"]" />
+
+
+        <RadzenFormField Text="@L["Users"]" AllowFloatingLabel="false" Visible="Chats.Count() > 1">
+            <RadzenDropDown TValue="long"
+                            TextProperty="@nameof(Data.User)"
+                            ValueProperty="@nameof(Data.ChatId)"
+                            AllowClear="true"
+                            @bind-Value="@ChatId"
+                            title="@L["ChatId: {0}", ChatId]"
+                            Data="@Chats" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="@L["Message"]" AllowFloatingLabel="false" class="rz-w-100" Visible="Chats.Count() > 1">
+            <RadzenTextBox @bind-Value="@Message"
+                           @onkeyup="KeyUpAsync"
+                           class="rz-w-100"
+                           type="search"
+                           Placeholder="@L["Enter your message..."]" />
+        </RadzenFormField>
+    </RadzenStack>
+</RadzenStack>
+
+
+@code {
+    private async Task ShowInfo()
+    {
+        await dialogService.OpenAsync(L["Set up your bot in Telegram"], _ =>
+                @<div>
+    <p>Go to the Telegram app on your phone or computer and…</p>
+    <ul>
+        <li>
+            <p>Search for the “<a href="https://web.telegram.org/k/#@@BotFather" target="_blank">BotFather</a>” telegram bot (he’s the one that’ll assist you with creating and managing your bot)</p>
+        </li>
+        <li>
+            <p>Type <strong>/help</strong> to see all possible commands the botfather can handle</p>
+        </li>
+        <li>
+            <p>
+                Click on or type <strong>/newbot</strong>  to create a new bot. Follow instructions and make a new name for your bot. If you are making a bot just for experimentation, it can be useful to namespace your bot by placing your name before it in its username, since it has to be a unique name. Although, its screen name can be whatever you like.
+                I have chosen “Frank Test PVE Bot” as the screen name and “frank_test_pve_bot” as its username.
+            </p>
+        </li>
+        <li>
+            <p>Congratulations! You have created your first bot. You should see a new API token generated for it (for example my newly generated token is <strong>707587383:AAHD9D***************</strong>). Now copy the <strong>token</strong> in te settings.</p>
+        </li>
+    </ul>
+</div>
+            , new DialogOptions { CloseDialogOnOverlayClick = true });
+    }
+}

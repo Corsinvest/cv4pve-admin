@@ -1,0 +1,38 @@
+﻿@using Corsinvest.ProxmoxVE.Api.Shared.Models.Storage
+
+@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="StorageItem"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                Density="Density.Compact"
+                Style="@Style"
+                AllowColumnPicking="true"
+                ColumnsPickerAllowFiltering="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Storage)" Title="@L["Storage"]" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Type)" Title="@L["Type"]" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Content)" Title="@L["Content"]" />
+        <BoolIconColumn Property="@nameof(StorageItem.Shared)" Title="@L["Shared"]" IconFalse="" />
+        <BoolIconColumn Property="@nameof(StorageItem.Disable)" Title="@L["Enabled"]" IconFalse="" Inverted="true" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Nodes)" Title="@L["Nodes"]" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Path)" Title="@L["Path"]" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Pool)" Title="@L["Pool"]" />
+
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Datastore)" Title="@L["Datastore"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Export)" Title="@L["Export"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Krbd)" Title="@L["Krbd"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Monhost)" Title="@L["Mon. host"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Mountpoint)" Title="@L["Mount point"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Preallocation)" Title="@L["Preallocation"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Server)" Title="@L["Server"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Sparse)" Title="@L["Sparse"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(StorageItem.Username)" Title="@L["Username"]" Visible="false" />
+    </Columns>
+</RadzenDataGrid>

@@ -1,0 +1,71 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical">
+    <RadzenRow>
+        <RadzenColumn Size="6">
+            <RadzenFormField Text="@L["Time frame"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenDropDown TValue="RrdDataTimeFrame"
+                                    Name="@nameof(RrdDataTimeFrame)"
+                                    @bind-Value="@RrdDataTimeFrame"
+                                    @bind-Value:after="@RefreshDataAsync"
+                                    Data="@(Enum.GetValues<RrdDataTimeFrame>())" />
+                </ChildContent>
+                <End>
+                    <InfoIcon>
+                        <strong>@L["Hour"]:</strong> @L["Last hour data"]
+                        <br />
+                        <strong>@L["Day"]:</strong> @L["Last 24 hours data"]
+                        <br />
+                        <strong>@L["Week"]:</strong> @L["Last 7 days data"]
+                        <br />
+                        <strong>@L["Month"]:</strong> @L["Last 30 days data"]
+                        <br />
+                        <strong>@L["Year"]:</strong> @L["Last 12 months data"]
+                    </InfoIcon>
+                </End>
+            </RadzenFormField>
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <RadzenFormField Text="@L["Consolidation data"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenDropDown TValue="RrdDataConsolidation"
+                                    Name="@nameof(RrdDataConsolidation)"
+                                    @bind-Value="@RrdDataConsolidation"
+                                    @bind-Value:after="@RefreshDataAsync"
+                                    Data="@(Enum.GetValues<RrdDataConsolidation>())" />
+                </ChildContent>
+                <End>
+                    <InfoIcon>
+                        <strong>@L["Average"]:</strong> @L["Average values over time period"]
+                        <br />
+                        <strong>@L["Maximum"]:</strong> @L["Maximum peak values"]
+                    </InfoIcon>
+                </End>
+            </RadzenFormField>
+        </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenRow>
+        <RadzenColumn Size="6">
+            <Chart Data="@Items" ChartType="RrdChartType.Cpu" />
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <Chart Data="@Items" ChartType="RrdChartType.Memory" />
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <Chart Data="@Items" ChartType="RrdChartType.ServerLoad" />
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <Chart Data="@Items" ChartType="RrdChartType.Network" />
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <Chart Data="@Items" ChartType="RrdChartType.Swap" />
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>

@@ -1,0 +1,44 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="Data"
+                Data="@ResultLoadData.Data"
+                Count="@ResultLoadData.TotalCount"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
+                KeyDown="KeyDownAsync"
+                LoadData="LoadDataAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnDelete="DeleteAsync"
+                     DeleteDisabled="!SelectedItems.Any()"
+                     Permissions="Module.Permissions.Results.Data"
+                     PermissionDelete="Module.Permissions.Results.Delete" />
+    </HeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(Data.SnapName)" Sortable="true" Title="@L["Name"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.Start</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <DateTimeLocalColumn Property="@nameof(Data.Start)" Sortable="true" Title="@L["Start"]" SortOrder="SortOrder.Descending" />
+        <DateTimeLocalColumn Property="@nameof(Data.End)" Sortable="true" Title="@L["End"]" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Duration)"
+                              Title="@L["Duration"]"
+                              FormatString="{0:hh':'mm':'ss}"
+                              Width="100px"
+                              Filterable="false" />
+
+        <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" />
+    </Columns>
+</RadzenDataGrid>

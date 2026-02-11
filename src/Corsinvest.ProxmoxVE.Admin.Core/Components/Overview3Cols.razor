@@ -1,0 +1,53 @@
+﻿@inherits AdminComponentBase
+
+<RadzenRow class="rz-w-100 rz-mx-auto" Gap="0.5rem" RowGap="1rem">
+    @for (var i = 0; i < Titles.Length; i++)
+    {
+        var idx = i;
+        <RadzenColumn Size="12" SizeXS="4" class="rz-p-6 rz-panel">
+            <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4" AlignItems="Radzen.AlignItems.Center">
+                @if (Icons[idx] != null)
+                {
+                    <RadzenIcon Icon="@Icons[idx]" class="rz-color-primary" Style="font-size: 32px"></RadzenIcon>
+                }
+
+                <RadzenText Text="@L[Titles[idx]]" TextStyle="Radzen.Blazor.TextStyle.DisplayH5" class="rz-m-0" />
+            </RadzenStack>
+
+            @if (Texts[idx] != null)
+            {
+                <RadzenText TextStyle="TextStyle.Body2">
+                    @Texts[idx]
+                </RadzenText>
+            }
+
+            @if (Contents[idx] != null)
+            {
+                @Contents[idx]
+            }
+        </RadzenColumn>
+    }
+</RadzenRow>
+
+@code
+{
+    private string[] Titles => [Title1, Title2, Title3];
+    private string?[] Icons => [Icon1, Icon2, Icon3];
+    private RenderFragment?[] Texts => [Text1, Text2, Text3];
+    private RenderFragment?[] Contents => [Content1, Content2, Content3];
+
+    [Parameter] public string Icon1 { get; set; } = "overview";
+    [Parameter] public string Title1 { get; set; } = "Overview";
+    [Parameter] public RenderFragment? Text1 { get; set; }
+    [Parameter] public RenderFragment? Content1 { get; set; }
+
+    [Parameter] public string Icon2 { get; set; } = "thumb_up";
+    [Parameter] public string Title2 { get; set; } = "Benefit";
+    [Parameter] public RenderFragment? Text2 { get; set; }
+    [Parameter] public RenderFragment? Content2 { get; set; }
+
+    [Parameter] public string Icon3 { get; set; } = "self_improvement";
+    [Parameter] public string Title3 { get; set; } = "Experience";
+    [Parameter] public RenderFragment? Text3 { get; set; }
+    [Parameter] public RenderFragment? Content3 { get; set; }
+}

@@ -1,0 +1,63 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowGrouping="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowColumnPicking="true"
+                Density="Density.Compact"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnRefresh="RefreshDataAsync">
+            <SubscriptionGate Size="SubscriptionGateSize.Compact" FullMode="false">
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Send Message"]"
+                              Icon="message"
+                              Click="SendMessageAsync"
+                              Disabled="!SelectedItems.Any()"
+                              ButtonStyle="ButtonStyle.Info"
+                              title="@L["Send Message"]"
+                              aria-label="@L["Send Message"]" />
+            </SubscriptionGate>
+
+            <SubscriptionGate Size="SubscriptionGateSize.Compact" FullMode="false">
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Force logout"]"
+                              Icon="logout"
+                              Click="LogoutAsync"
+                              Disabled="!SelectedItems.Any()"
+                              ButtonStyle="ButtonStyle.Danger"
+                              title="@L["Force logout"]"
+                              aria-label="@L["Force logout"]" />
+            </SubscriptionGate>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.UserName)" Sortable="true" Title="@L["UserName"]" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.Login)" Sortable="true" Title="@L["Login"]" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.IpAddress)" Sortable="true" Title="@L["Ip Address"]" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.Device)" Sortable="true" Title="@L["Device"]" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.Platform)" Sortable="true" Title="@L["Platform"]" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.PlatformVersion)" Sortable="true" Title="@L["Platform Version"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.Browser)" Sortable="true" Title="@L["Browser"]" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.BrowserVersion)" Sortable="true" Title="@L["Browser Version"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.UserAgent)" Sortable="true" Title="@L["User Agent"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.CurrentPage)" Sortable="true" Title="@L["Current Page"]">
+            <Template>
+                <SubscriptionGate Size="SubscriptionGateSize.Compact">
+                    @context.CurrentPage
+                </SubscriptionGate>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.LastActivity)" Sortable="true" Title="@L["Last Activity"]" />
+    </Columns>
+</RadzenDataGrid>
+

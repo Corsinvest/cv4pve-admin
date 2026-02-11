@@ -1,0 +1,15 @@
+﻿<RadzenIcon Style="@Style"
+            Icon="@( Value ? IconTrue : IconFalse)"
+            IconColor="@(Value ? IconColorTrue : IconColorFalse)"
+            @attributes="AdditionalAttributes" />
+
+@code
+{
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public string Style { get; set; } = default!;
+    [Parameter] public string IconTrue { get; set; } = "check";
+    [Parameter] public string IconColorTrue { get; set; } = Colors.Success;
+    [Parameter] public string IconFalse { get; set; } = "close";
+    [Parameter] public string IconColorFalse { get; set; } = Colors.Danger;
+    [Parameter] public bool Value { get; set; }
+}

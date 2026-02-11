@@ -1,0 +1,155 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenTabs>
+        <Tabs>
+            <RadzenTabsItem Text="@L["Snapshots"]" Icon="@PveAdminUIHelper.Icons.Snapshot">
+                <RadzenDataGrid @ref="@DataGridRef"
+                                Data="@Items"
+                                AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="false"
+                                AllowSorting="false"
+                                AllowVirtualization="true"
+                                IsLoading="IsLoading"
+                                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                AllowGrouping="true"
+                                AllGroupsExpanded="false"
+                                AllowMultiColumnSorting="true"
+                                AllowColumnPicking="true"
+                                ShowExpandAll="true"
+                                Render="OnRender"
+                                ShowMultiColumnSortingIndex="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                    <HeaderTemplate>
+                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                    </HeaderTemplate>
+
+                    <GroupHeaderTemplate>
+                        @GetGroupTitle(context)
+                    </GroupHeaderTemplate>
+
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Data.Host)" Title="@L["Host"]" OrderIndex="1" />
+                        <RadzenDataGridColumn Property="@nameof(Data.VmId)" Title="@L["VmId"]" OrderIndex="3" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Data.Space)" Title="@L["Space"]" OrderIndex="2" Visible="AllowCalculateSnapshotSize" />
+                        <RadzenDataGridColumn Property="@nameof(Data.Type)" Title="@L["Type"]" OrderIndex="4" Width="150px" Visible="AllowCalculateSnapshotSize" />
+                        <RadzenDataGridColumn Property="@nameof(Data.Disk)" Title="@L["Disk"]" OrderIndex="5" Visible="AllowCalculateSnapshotSize" />
+                        <RadzenDataGridColumn Property="@nameof(Data.Name)" Title="@L["Name"]" />
+                        <RadzenDataGridColumn Property="@nameof(Data.Date)" Title="@L["Date"]" FormatString="{0:G}" />
+
+                        <RadzenDataGridColumn Property="@nameof(Data.SnapshotSize)"
+                                              Title="@L["Size"]"
+                                              FormatString="@FormatHelper.DataFormatBytes"
+                                              FormatProvider="FormatterHelper.FormatProvider"
+                                              Width="100px"
+                                              Visible="AllowCalculateSnapshotSize" />
+
+                        <BoolIconColumn Property="@nameof(Data.ForReplication)" Title="@L["Replication"]" IconFalse="" IconTrue="sync" Width="100px" Visible="AllowCalculateSnapshotSize">
+                            <HeaderTemplate>
+                                <RadzenIcon Icon="@PveAdminUIHelper.Icons.Replication" />
+                            </HeaderTemplate>
+                        </BoolIconColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Trends"]" Icon="@PveAdminUIHelper.Icons.Trends" Visible="AllowCalculateSnapshotSize">
+                <RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <RadzenFormField Text="@L["Host"]">
+                            <RadzenDropDown @bind-Value="@SelectedHosts"
+                                            @bind-Value:after="LoadStorages"
+                                            Data="@Items.Select(a => a.Host).Distinct()"
+                                            Multiple="true"
+                                            AllowClear="true"
+                                            AllowFiltering="true"
+                                            MaxSelectedLabels="99"
+                                            Chips="true" />
+                        </RadzenFormField>
+
+                        <RadzenFormField Text="@L["Space"]">
+                            <RadzenDropDown @bind-Value="@SelectedStorages"
+                                            @bind-Value:after="LoadVmIds"
+                                            Data="@Storages"
+                                            Multiple="true"
+                                            AllowClear="true"
+                                            AllowFiltering="true"
+                                            MaxSelectedLabels="99"
+                                            Chips="true"
+                                            Disabled="!SelectedHosts.Any()">
+                                <Template>
+                                    @context.Host - @context.Space
+                                </Template>
+                            </RadzenDropDown>
+                        </RadzenFormField>
+
+                        <RadzenFormField Text="@L["Vm Id"]">
+                            <RadzenDropDown @bind-Value="@SelectedVmIds"
+                                            @bind-Value:after="LoadDataCharts"
+                                            Data="@VmIds"
+                                            Multiple="true"
+                                            AllowClear="true"
+                                            AllowFiltering="true"
+                                            MaxSelectedLabels="99"
+                                            Chips="true"
+                                            Disabled="!SelectedStorages.Any()" />
+                        </RadzenFormField>
+                    </RadzenStack>
+
+                    @foreach (var item in ItemsCharts.GroupBy(a => new { a.Host, a.Space }))
+                    {
+                        <RadzenText Text="@($"{item.Key.Host} - {item.Key.Space}")" />
+
+                        <RadzenStack Orientation="Orientation.Horizontal" class="rz-w-100">
+                            <RadzenChart>
+                                <RadzenDonutSeries Data="@item.GroupBy(a => a.VmId).Select(a => new { VmId = a.Key, Size = a.Sum(a => a.SnapshotSize) })"
+                                                   Title="@L["Snapshots Size"]"
+                                                   ValueProperty="Size"
+                                                   CategoryProperty="VmId">
+                                    <ChildContent>
+                                        <RadzenSeriesDataLabels Visible="false" />
+                                    </ChildContent>
+                                    <TitleTemplate>
+                                        <div class="rz-donut-content">
+                                            <div>@FormatHelper.FromBytes(item.Sum(a => a.SnapshotSize))</div>
+                                        </div>
+                                    </TitleTemplate>
+                                </RadzenDonutSeries>
+
+                                <RadzenLegend Visible="false" />
+                                <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                                    <RadzenAxisTitle Text="@L["Size"]" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+
+                            <RadzenChart class="rz-w-100" Style="margin:30px;">
+                                <RadzenChartTooltipOptions Shared="true" />
+
+                                @foreach (var grpItem in item.GroupBy(a => a.VmId))
+                                {
+                                    <RadzenLineSeries Smooth="true"
+                                                      Data="@grpItem.GroupBy(a => a.Date).Select(a => new { Date = a.Key, SnapshotSize = a.Sum(b => b.SnapshotSize) })"
+                                                      ValueProperty="SnapshotSize"
+                                                      CategoryProperty="Date"
+                                                      Title="@grpItem.Key.ToString()"
+                                                      LineType="LineType.Solid">
+                                        <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                                    </RadzenLineSeries>
+                                }
+
+                                <RadzenLegend Position="LegendPosition.Top" />
+                                <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+
+                                <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                                    <RadzenGridLines Visible="true" />
+                                    <RadzenAxisTitle Text="@L["Size"]" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        </RadzenStack>
+                    }
+                </RadzenStack>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenPanel>

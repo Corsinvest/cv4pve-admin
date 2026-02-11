@@ -1,0 +1,35 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="ClusterBackup"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="@Style"
+                AllowVirtualization="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        <BoolIconColumn Property="@nameof(ClusterBackup.Enabled)" Title="@L["Enabled"]" IconFalse="" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.Mode)" Title="@L["Mode"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.Node)" Title="@L["Node"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.DayOfWeek)" Title="@L["Day Of Week"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.Schedule)" Title="@L["Schedule"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.StartTime)" Title="@L["Start Time"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.Storage)" Title="@L["Storage"]" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.VmId)" Title="@L["VmId"]">
+            <Template>
+                <p style="white-space:pre-wrap">
+                    @((context.VmId + string.Empty).Replace(',', ' '))
+                </p>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <BoolIconColumn Property="@nameof(ClusterBackup.All)" Title="@L["All"]" IconFalse="" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.Mailto)" Title="@L["Mail to"]" />
+        <RadzenDataGridColumn Property="@nameof(ClusterBackup.MailNotification)" Title="@L["Mail Notification"]" />
+    </Columns>
+</RadzenDataGrid>
+

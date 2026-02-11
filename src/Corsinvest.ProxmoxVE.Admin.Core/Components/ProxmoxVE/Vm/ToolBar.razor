@@ -1,0 +1,123 @@
+﻿@inherits AdminComponentBase
+
+@if (CanChangeStatus)
+{
+    @if (Vm.IsPaused)
+    {
+        <RadzenButton Text="@L[OnlyIcon ? string.Empty : "Resume"]"
+                      Icon="play_arrow"
+                      Click="@(() => ChageStatus(VmStatus.Resume))"
+                      ButtonStyle="ButtonStyle.Success"
+                      Variant="Variant.Text"
+                      Size="ButtonSize.ExtraSmall"
+                      Style="--rz-icon-fill: 1; width: 41px;"
+                      title="@L["Resume"]"
+                      aria-label="@L["Resume"]" />
+    }
+    else if (Vm.IsRunning)
+    {
+        <RadzenSplitButton Text="@L[OnlyIcon ? string.Empty : "Shutdown"]"
+                           Icon="power_settings_new"
+                           ButtonStyle="ButtonStyle.Danger"
+                           Click="OnClickPower"
+                           Variant="Variant.Text"
+                           Size="ButtonSize.ExtraSmall"
+                           Style="--rz-icon-fill: 1;"
+                           title="@L["Shutdown"]">
+            <ChildContent>
+                <RadzenSplitButtonItem Text="@L["Reboot"]" Style="--rz-icon-fill: 1;" Icon="replay" Value="@VmStatus.Reboot.ToString()" />
+                <RadzenSplitButtonItem Text="@L["Pause"]" Style="--rz-icon-fill: 1;" Icon="pause" Value="@VmStatus.Suspend.ToString()" />
+                <RadzenSplitButtonItem Text="@L["Reset"]" Style="--rz-icon-fill: 1;" Icon="flash_on" Value="@VmStatus.Reset.ToString()" />
+                <RadzenSplitButtonItem Text="@L["Stop"]" Style="--rz-icon-fill: 1;" Icon="stop" Value="@VmStatus.Stop.ToString()" />
+            </ChildContent>
+        </RadzenSplitButton>
+    }
+    else if (!Vm.IsRunning)
+    {
+        <RadzenButton Text="@L[OnlyIcon ? string.Empty : "Play"]"
+                      Style="--rz-icon-fill: 1; width: 41px;"
+                      Icon="play_arrow"
+                      Click="@(() => ChageStatus(VmStatus.Start))"
+                      ButtonStyle="ButtonStyle.Success"
+                      Variant="Variant.Text"
+                      Size="ButtonSize.ExtraSmall"
+                      title="@L["Play"]"
+                      aria-label="@L["Play"]" />
+    }
+}
+
+@if (CanConsole)
+{
+    @if (Vm.VmType == VmType.Qemu)
+    {
+        <RadzenSplitButton Text="@L[OnlyIcon ? string.Empty : "Console"]"
+                           Icon="desktop_windows"
+                           Click="OnClickOpenConsole"
+                           Variant="Variant.Text"
+                           Size="ButtonSize.ExtraSmall"
+                           title="@L["Open console"]">
+            <ChildContent>
+                <RadzenSplitButtonItem Text="@L["NoVnc"]"
+                                       Value="@WebConsoleType.NoVnc.ToString()"
+                                       Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.NoVnc)"
+                                       title="@L["Open NoVnc console"]" />
+
+                <RadzenSplitButtonItem Text="@L["Spice"]"
+                                       Value="@WebConsoleType.Spice.ToString()"
+                                       Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.Spice)"
+                                       Visible="SpiceEnabled"
+                                       title="@L["Open Spice console"]" />
+            </ChildContent>
+        </RadzenSplitButton>
+    }
+    else if (Vm.VmType == VmType.Lxc)
+    {
+        <RadzenSplitButton Text="@L[OnlyIcon ? string.Empty : "Console"]"
+                           Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(DefaultWebConsoleType)"
+                           Click="OnClickOpenConsole"
+                           Variant="Variant.Text"
+                           Size="ButtonSize.ExtraSmall">
+            <ChildContent>
+                <RadzenSplitButtonItem Text="@L["NoVnc"]"
+                                       Value="@WebConsoleType.NoVnc.ToString()"
+                                       Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.NoVnc)"
+                                       title="@L["Open NoVnc console"]" />
+
+                <RadzenSplitButtonItem Text="@L["Xterm.js"]"
+                                       Value="@WebConsoleType.XtermJs.ToString()"
+                                       Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.XtermJs)"
+                                       title="@L["Open Xterm console"]" />
+
+                <RadzenSplitButtonItem Text="@L["Spice"]"
+                                       Value="@WebConsoleType.Spice.ToString()"
+                                       Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.Spice)"
+                                       Visible="SpiceEnabled"
+                                       title="@L["Open Spice console"]" />
+            </ChildContent>
+        </RadzenSplitButton>
+    }
+}
+
+@if (Utility.Any(a => a.IsVIsible(Vm)))
+{
+    <RadzenButton Variant="Variant.Text"
+                  Size="ButtonSize.ExtraSmall"
+                  ButtonStyle="ButtonStyle.Warning"
+                  Icon="more_vert"
+                  Click="ShowMoreMenu" />
+}
+
+@code
+{
+    private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
+        @<RadzenMenu Click="@(() => ds.Close())">
+@foreach (var item in Utility.Where(a=> a.IsVIsible(Vm)))
+    {
+    <RadzenMenuItem Text="@L[item.Text]"
+                    Style="--rz-icon-fill: 1;"
+                    Icon="@item.Icon"
+                    IconColor="@Colors.Warning"
+                    Click="@(() => OnClickUtilityMenu(item))" />
+    }
+</RadzenMenu>);
+}

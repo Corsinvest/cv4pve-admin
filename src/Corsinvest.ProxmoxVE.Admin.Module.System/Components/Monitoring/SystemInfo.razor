@@ -1,0 +1,23 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid Data="@Info" IsLoading="@(!Info.Any())" ShowPagingSummary="false" ShowPagination="false">
+    <Columns>
+        <RadzenDataGridColumn Property="Key" Title="Property">
+            <Template Context="item">
+                @if (item.Key.StartsWith("--") && item.Key.EndsWith("--"))
+                {
+                    <strong>@item.Key</strong>
+                }
+                else
+                {
+                    @item.Key
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Property="Value" Title="Value">
+            <Template Context="item">
+                @((MarkupString)item.Value)
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

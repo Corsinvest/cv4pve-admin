@@ -1,0 +1,46 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="@Style"
+                IsLoading="IsLoading"
+                AllowColumnPicking="true"
+                RowRender="RowRender"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.DevPath)" Title="@L["Dev Path"]" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Type)" Title="@L["Type"]" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Size)" Title="@L["Size"]" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Used)" Title="@L["Used"]" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Gpt)" Title="@L["Gpt"]">
+            <Template>
+                <BoolIcon Value="context.Gpt == 1" IconFalse="" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Vendor)" Title="@L["Vendor"]" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Model)" Title="@L["Model"]" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Serial)" Title="@L["Serial"]" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Health)" Title="@L["Health"]" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Wearout)" Title="@L["Wearout"]">
+            <Template>
+                @(context.IsSsd && context.Wearout != "N/A" ? $"{100.0 - Convert.ToDouble(context.Wearout)}%" : context.Wearout)
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.OsdId)" Title="@L["Osd Id"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(NodeDiskList.Rpm)" Title="@L["Rpm+"]" Visible="false" />
+    </Columns>
+
+    <Template>
+        <RadzenText TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center"><b>@L["S.M.A.R.T. values"]</b></RadzenText>
+
+        <DiskSmarts ClusterName="@ClusterName" Node="@Node" Disk="@context.DevPath"/>
+    </Template>
+</RadzenDataGrid>

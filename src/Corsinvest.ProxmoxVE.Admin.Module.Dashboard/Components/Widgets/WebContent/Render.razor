@@ -1,0 +1,27 @@
+@inherits AdminComponentBase
+
+@switch (Settings?.Type)
+{
+    case ContentType.Link:
+        <RadzenLink Text="@Settings.Text"
+                    Icon="@Settings.Icon"
+                    Path="@Settings.Url"
+                    Target="_blank" />
+        break;
+
+    case ContentType.Iframe:
+        @if (!string.IsNullOrEmpty(IframeUrl))
+        {
+            <iframe src="@IframeUrl"
+                    class="rz-w-100 rz-h-100"
+                    style="border:none;"
+                    frameborder="0"
+                    allowfullscreen>
+            </iframe>
+        }
+        break;
+
+    case ContentType.Html:
+        @((MarkupString)(Settings?.Html ?? string.Empty))
+        break;
+}

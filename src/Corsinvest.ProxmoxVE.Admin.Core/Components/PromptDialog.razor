@@ -1,0 +1,20 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem">
+    <RadzenFormField Text="@Label">
+        <RadzenTextBox @bind-Value="@Value" Style="width: 100%;" />
+    </RadzenFormField>
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.End">
+        <RadzenButton Text="@L["Cancel"]" Click="@(() => DialogService.Close(false))" ButtonStyle="ButtonStyle.Light" />
+        <RadzenButton Text="@L["Save"]" Click="@(() => DialogService.Close(Value))" ButtonStyle="ButtonStyle.Primary" />
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [Parameter] public string Label { get; set; } = default!;
+    [Parameter] public string DefaultValue { get; set; } = default!;
+    [CascadingParameter] public DialogService DialogService { get; set; } = default!;
+
+    private string Value { get; set; } = default!;
+    protected override void OnInitialized() => Value = DefaultValue;
+}

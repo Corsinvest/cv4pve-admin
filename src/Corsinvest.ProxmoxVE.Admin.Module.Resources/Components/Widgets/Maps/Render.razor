@@ -1,0 +1,79 @@
+﻿@using OpenLayers.Blazor
+@inherits AdminComponentBase
+
+
+@if (Initalized)
+{
+    <OpenStreetMap @ref="@RefMap"
+                   class="rz-w-100 rz-h-100"
+                   FullScreenControl="true"
+                   OnLayerAdded="OnLayerAdded">
+        <Features>
+            @foreach (var item in Items)
+            {
+                <Marker Type="OpenLayers.Blazor.MarkerType.MarkerPin"
+                        Coordinate="item.Coordinate"
+                        Text="@item.ClusterName"
+                        OnClick="@(() => OnMarkerClickAsync(item.ClusterName))"
+                        PinColor="item.PinColor" />
+            }
+        </Features>
+    </OpenStreetMap>
+}
+else
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}
+
+
+@code
+{
+    private async Task OnMarkerClickAsync(string clusterName)
+    {
+        _ = Task.Run(async () =>
+        {
+            var resources = await adminService[clusterName].CachedData.GetResourcesAsync(false);
+
+            DataUsages = ResourceUsage.Get(resources, L);
+            DataUsages.Add(await ResourceUsage.GetSnapshots(resources, L, adminService[clusterName]));
+
+            Details = [.. resources.Where(a => a.ResourceType is ClusterResourceType.Vm or ClusterResourceType.Node)
+                               .OrderBy(a => a.ResourceType)
+                               .ThenBy(a => a.Type)
+                               .GroupBy(a => new { a.Type, a.Status })
+                               .Select(a=> new Detail(FormatValue(a.Key.Type),
+                                                      FormatValue(a.Key.Status),
+                                                      a.Count()))];
+
+            DialogService.Close();
+
+            await DialogService.OpenAsync(L["Cluster {0}", clusterName], ds =>
+                @<RadzenStack Orientation="Orientation.Vertical">
+                <ResourceUsageGauge Data="@DataUsages" Class="rz-h-100" />
+
+                <RadzenTable AllowAlternatingRows="true">
+                    <RadzenTableHeader>
+                        <RadzenTableHeaderRow>
+                            <RadzenTableHeaderCell>@L["Type"]</RadzenTableHeaderCell>
+                            <RadzenTableHeaderCell>@L["Status"]</RadzenTableHeaderCell>
+                            <RadzenTableHeaderCell>@L["Count"]</RadzenTableHeaderCell>
+                        </RadzenTableHeaderRow>
+                    </RadzenTableHeader>
+
+                    <RadzenTableBody>
+                        @foreach (var item in Details)
+                        {
+                            <RadzenTableRow>
+                                <RadzenTableCell>@item.Type</RadzenTableCell>
+                                <RadzenTableCell>@item.Status</RadzenTableCell>
+                                <RadzenTableCell>@item.Count</RadzenTableCell>
+                            </RadzenTableRow>
+                        }
+                    </RadzenTableBody>
+                </RadzenTable>
+            </RadzenStack>);
+        });
+
+        await DialogService.BusyAsync(L["Collect info..."]);
+    }
+}

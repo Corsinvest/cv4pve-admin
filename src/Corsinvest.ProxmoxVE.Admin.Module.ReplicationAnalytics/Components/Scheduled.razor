@@ -1,0 +1,6 @@
+﻿<Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.Replication ClusterName="@ClusterName" />
+
+@code
+{
+    [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
+}

@@ -1,0 +1,74 @@
+﻿@using Corsinvest.ProxmoxVE.Diagnostic.Api
+
+@inherits AdminComponentBase
+@implements IModelParameter<IgnoredIssue>
+
+<RadzenFormField Text="@L["Id Resource"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.IdResource)" @bind-Value="@Model.IdResource" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.IdResource)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Gravity"]" AllowFloatingLabel="false" class="rz-w-100">
+    <ChildContent>
+        <RadzenDropDown TValue="DiagnosticResultGravity"
+                        Name="@nameof(Model.Gravity)"
+                        @bind-Value="@Model.Gravity"
+                        Data="@(Enum.GetValues<DiagnosticResultGravity>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Info"]:</strong> @L["Informational findings"]
+            <br />
+            <strong>@L["Warning"]:</strong> @L["Issues that should be reviewed"]
+            <br />
+            <strong>@L["Critical"]:</strong> @L["Critical issues requiring immediate attention"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Context"]" AllowFloatingLabel="false" class="rz-w-100">
+    <ChildContent>
+        <RadzenDropDown TValue="DiagnosticResultContext"
+                        Name="@nameof(Model.Context)"
+                        @bind-Value="@Model.Context"
+                        Data="@(Enum.GetValues<DiagnosticResultContext>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Node"]:</strong> @L["Physical/virtual server context"]
+            <br />
+            <strong>@L["Qemu"]:</strong> @L["Virtual machine context"]
+            <br />
+            <strong>@L["Lxc"]:</strong> @L["Container context"]
+            <br />
+            <strong>@L["Storage"]:</strong> @L["Storage repository context"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Sub Context"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.SubContext)" @bind-Value="@Model.SubContext" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.SubContext)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Description)" />
+    </Helper>
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public IgnoredIssue Model { get; set; } = default!;
+}

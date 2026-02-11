@@ -1,0 +1,61 @@
+﻿@inherits AdminComponentBase
+@implements ISettingsParameter<Settings>
+
+<SwitchField @bind-Value="@Settings.UseProgressBarPercentage" Label="@L["Use ProgressBar for percentage value"]" Name="@nameof(Settings.UseProgressBarPercentage)" />
+<SwitchField @bind-Value="@Settings.DescriptionAsLink" Label="@L["Description as link"]" Name="@nameof(Settings.DescriptionAsLink)" />
+
+<RadzenFormField Text="@L["Property Icon Status"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenDropDown TValue="ResourcesExPropertyIconStatus"
+                        Name="@nameof(Settings.PropertyIconStatus)"
+                        @bind-Value="@Settings.PropertyIconStatus"
+                        Data="@(Enum.GetValues<ResourcesExPropertyIconStatus>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["None"]:</strong> @L["No icon displayed"]
+            <br />
+            <strong>@L["Type"]:</strong> @L["Show resource type icon (Node/VM/Storage)"]
+            <br />
+            <strong>@L["Status"]:</strong> @L["Show resource status icon (Running/Stopped)"]
+            <br />
+            <strong>@L["Description"]:</strong> @L["Show description icon"]
+            <br />
+            <strong>@L["VmId"]:</strong> @L["Show VM ID icon"]
+            <br />
+            <strong>@L["Node"]:</strong> @L["Show node icon"]
+            <br />
+            <strong>@L["Storage"]:</strong> @L["Show storage icon"]
+        </InfoIcon>
+    </End>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Settings.PropertyIconStatus)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Icon Status"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenDropDown TValue="ResourceColumnIconStatus"
+                        Name="@nameof(Settings.IconStatus)"
+                        @bind-Value="@Settings.IconStatus"
+                        Data="@(Enum.GetValues<ResourceColumnIconStatus>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["None"]:</strong> @L["No status visualization"]
+            <br />
+            <strong>@L["Icon"]:</strong> @L["Display status as icon only"]
+            <br />
+            <strong>@L["IconAndText"]:</strong> @L["Display status with both icon and text"]
+        </InfoIcon>
+    </End>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Settings.IconStatus)" />
+    </Helper>
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public Settings Settings { get; set; } = default!;
+    [Parameter] public EventCallback<Settings> SettingsChanged { get; set; }
+}

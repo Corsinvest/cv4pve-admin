@@ -1,0 +1,61 @@
+﻿@page "/tools-libraries"
+@inherits AdminComponentBase
+@attribute [Authorize]
+
+<PageTitle>Tools & Libraries</PageTitle>
+
+<RadzenStack Gap="1rem">
+    <RadzenText TextStyle="TextStyle.H3" Text="@L["Tools & Libraries"]" />
+
+    <RadzenText TextStyle="TextStyle.Body1" Text="@L["Explore our comprehensive collection of open source tools, command-line utilities, and API libraries designed to enhance your Proxmox VE experience"]" />
+
+    <RadzenRow Gap="1rem">
+        @RenderColumn("More Projects", "Discover all our open source projects and contributions to the Proxmox VE ecosystem", "https://github.com/Corsinvest?q=cv4pve", "explore", "", "var(--rz-info)")
+    </RadzenRow>
+
+    <RadzenText TextStyle="TextStyle.H4" Text="@L["Command Line Tools"]" class="rz-mt-6" />
+    <RadzenText TextStyle="TextStyle.Body2" Text="@L["Command line utilities for Proxmox VE management"]" />
+
+    <RadzenRow Gap="1rem">
+        @RenderColumn("cv4pve-pepper", "Launch SPICE remote console sessions directly from your desktop with seamless integration", "https://github.com/Corsinvest/cv4pve-pepper", "desktop_windows", "")
+        @RenderColumn("cv4pve-cli", "Powerful command-line interface for managing Proxmox VE from your terminal", "https://github.com/Corsinvest/cv4pve-cli", "terminal", "")
+        @RenderColumn("cv4pve-botgram", "Manage and monitor your Proxmox VE infrastructure directly from Telegram", "https://github.com/Corsinvest/cv4pve-botgram", "smart_toy", "")
+        @RenderColumn("cv4pve-autosnap", "Automated snapshot creation, retention, and management with flexible scheduling", "https://github.com/Corsinvest/cv4pve-autosnap", "camera_alt", "")
+        @RenderColumn("cv4pve-diag", "Generate comprehensive diagnostic reports and system health analysis", "https://github.com/Corsinvest/cv4pve-diag", "stethoscope", "")
+        @RenderColumn("cv4pve-node-protect", "Prevent accidental VM migrations and protect critical cluster nodes", "https://github.com/Corsinvest/cv4pve-node-protect", "safety_check", "")
+        @RenderColumn("cv4pve-metrics-exporter", "Export Proxmox VE metrics to Prometheus for advanced monitoring and alerting", "https://github.com/Corsinvest/cv4pve-metrics-exporter", "multiline_chart", "")
+    </RadzenRow>
+
+    <RadzenText TextStyle="TextStyle.H4" Text="@L["API Libraries"]" class="rz-mt-6" />
+    <RadzenText TextStyle="TextStyle.Body2" Text="@L["Official API libraries for Proxmox VE in multiple programming languages"]" />
+
+    <RadzenRow Gap="1rem">
+        @RenderColumn("DotNet", "Full-featured .NET library with async/await support and comprehensive API coverage", "https://github.com/Corsinvest/cv4pve-api-dotnet", "󰪮", "mdi")
+        @RenderColumn("PowerShell", "PowerShell module with cmdlets similar to VMware PowerCLI for familiar scripting", "https://github.com/Corsinvest/cv4pve-api-powershell", "󰨊", "mdi")
+        @RenderColumn("Java", "Robust Java library for enterprise applications and JVM-based projects", "https://github.com/Corsinvest/cv4pve-api-java", "󰬷", "mdi")
+        @RenderColumn("PHP", "Easy-to-use PHP library for web applications and backend integration", "https://github.com/Corsinvest/cv4pve-api-php", "󰌟", "mdi")
+        @RenderColumn("JavaScript", "Modern JavaScript/TypeScript library for Node.js and browser applications", "https://github.com/Corsinvest/cv4pve-api-javascript", "󰌞", "mdi")
+    </RadzenRow>
+</RadzenStack>
+
+@code
+{
+    private RenderFragment RenderColumn(string title, string description, string githubUrl, string icon, string iconClass, string iconColor = "") => __builder =>
+    {
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenCard Style="height: 100%;">
+                <RadzenStack Gap="0.5rem">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0.5rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                            <RadzenIcon class="@iconClass" Icon="@icon" Style="@($"font-size: 2rem;{(string.IsNullOrEmpty(iconColor) ? "" : $" color: {iconColor};")}")" />
+                            <RadzenText TextStyle="TextStyle.H5" Style="margin: 0;">@title</RadzenText>
+                        </RadzenStack>
+                        <RadzenLink class="mdi" Icon="󰊤" Style="font-size: 1.5rem; color: var(--rz-base-dark);" Path="@githubUrl" Target="_blank" />
+                    </RadzenStack>
+
+                    <RadzenText TextStyle="TextStyle.Body2" Text="@L[description]" />
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+    };
+}

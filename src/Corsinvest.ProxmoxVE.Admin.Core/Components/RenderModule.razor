@@ -1,0 +1,69 @@
+﻿@page "/module/{*PageRoute}"
+@attribute [Authorize]
+@inherits AdminComponentBase
+
+ @if (CurrentModule != null)
+{
+    <RadzenLayout Style="height: calc(100vh - 90px);">
+        <RadzenHeader Style="background-color: transparent;">
+
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenText TextStyle="TextStyle.H4">@CurrentModule.Description</RadzenText>
+
+                <RadzenButton Icon="settings"
+                              Click="OpenSettingsAsync"
+                              Visible="ShowButtonSettings"
+                              title="@L["Settings"]"
+                              aria-label="@L["Settings"]" />
+            </RadzenStack>
+        </RadzenHeader>
+
+        @if (NavBar.Any())
+        {
+            <RadzenSidebar Style="width: max-content; height: fit-content;">
+                <RadzenPanelMenu>
+                    @RenderMenuItem(NavBar, string.Empty)
+                </RadzenPanelMenu>
+            </RadzenSidebar>
+        }
+
+        <RadzenBody Style="@BodyStyle">
+            @if (Render != null)
+            {
+                <DynamicComponent Type="@Render.Type" Parameters="@Render.Parameters" />
+            }
+        </RadzenBody>
+    </RadzenLayout>
+}
+
+@code
+{
+    private RenderFragment RenderMenuItem(IEnumerable<ModuleLinkBase> navBar, string pathParent) => __builder =>
+    {
+        @foreach (var item in navBar.OrderBy(a => a.OrderIndex))
+        {
+            string path = null!;
+            string target = null!;
+            if (item.IsExternal)
+            {
+                path = item.RealUrl;
+                target = "_blank";
+            }
+            else if (!item.Child.Any())
+            {
+                path = string.IsNullOrEmpty(pathParent)
+                ? item.RealUrl
+                : $"{pathParent}/{item.RealUrl}";
+            }
+
+            <RadzenPanelMenuItem Text="@L[item.Text]"
+                                 Path="@path"
+                                 Target="@target"
+                                 Match="NavLinkMatch.All"
+                                 Icon="@item.Icon"
+                                 IconColor="@item.IconColor">
+                @RenderMenuItem(item.Child, path)
+            </RadzenPanelMenuItem>
+        }
+    };
+}

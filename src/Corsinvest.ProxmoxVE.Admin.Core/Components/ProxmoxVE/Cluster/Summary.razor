@@ -1,0 +1,105 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
+    <RadzenRow>
+        <RadzenColumn Size="6">
+            <RadzenCard Style="height:150px;">
+                <RadzenRow>
+                    <RadzenColumn>
+                        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+                            <RadzenText TextStyle="TextStyle.H6" Text="@L["Status"]" />
+                            <RadzenIcon Icon="@StatusInfo.Icon" IconColor="@StatusInfo.Color" Style="font-size: 48px;" />
+                            <RadzenText TextStyle="TextStyle.Body2" Text="@StatusInfo.Status" />
+                        </RadzenStack>
+                    </RadzenColumn>
+
+                    @if (CephInstalled)
+                    {
+                        <RadzenColumn>
+                            <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+                                <RadzenText TextStyle="TextStyle.H6" Text="@L["Ceph"]" />
+                                <RadzenIcon Icon="@CephStatus.Icon" IconColor="@CephStatus.Color" Style="font-size: 48px;" />
+                                <RadzenText TextStyle="TextStyle.Body2" Text="@CephStatus.Status" />
+                            </RadzenStack>
+                        </RadzenColumn>
+                    }
+                </RadzenRow>
+            </RadzenCard>
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <RadzenCard Style="height:150px;">
+                <RadzenRow>
+                    <RadzenColumn>
+                        <RadzenText TextStyle="TextStyle.H6" Text="@L["Nodes"]" Style="text-align: center;" />
+                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Node"
+                                                                                                        ClusterName="@ClusterName"
+                                                                                                        ShowHeader="true" />
+                    </RadzenColumn>
+
+                    <RadzenColumn>
+                        <RadzenText TextStyle="TextStyle.H6" Text="@L["Storages"]" Style="text-align: center;" />
+                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Storage"
+                                                                                                        ClusterName="@ClusterName"
+                                                                                                        ShowHeader="true" />
+                    </RadzenColumn>
+
+                </RadzenRow>
+            </RadzenCard>
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <RadzenCard Style="height:150px;">
+                <ResourceUsageGauge Data="@DataUsages" class="rz-h-100 rz-w-100" />
+            </RadzenCard>
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <RadzenCard Style="height:150px;">
+                <RadzenRow>
+                    @foreach (var type in Enum.GetValues<VmType>())
+                    {
+                        <RadzenColumn>
+                            <RadzenText TextStyle="TextStyle.H6" Text="@L[type == VmType.Qemu ? "Virtual Machines" : "LXC Container"]" Style="text-align: center;" />
+                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Vm"
+                                                                                                            VmType="type"
+                                                                                                            ClusterName="@ClusterName"
+                                                                                                            ShowHeader="true" />
+                        </RadzenColumn>
+                    }
+                </RadzenRow>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenCard class="rz-w-100">
+        <RadzenText TextStyle="TextStyle.H6" Text="@L["Nodes"]" />
+
+        <RadzenDataGrid TItem="ClusterStatus"
+                        Data="@Nodes"
+                        AllowFiltering="false"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="false"
+                        AllowSorting="false"
+                        AllowVirtualization="true"
+                        Density="Density.Compact"
+                        FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(ClusterStatus.Name)" Title="@L["Name"]" />
+                <RadzenDataGridColumn Property="@nameof(ClusterStatus.Id)" Title="@L["Id"]" />
+                <RadzenDataGridColumn Property="@nameof(ClusterStatus.Support)" Title="@L["Support"]" />
+                <BoolIconColumn Property="@nameof(ClusterStatus.IsOnLine)" Title="@L["Is OnLine"]" IconFalse="" />
+                <RadzenDataGridColumn Property="@nameof(ClusterStatus.IpAddress)" Title="@L["Ip Address"]" />
+                <BaseColumn Property="@nameof(ClusterStatus.CpuUsagePercentage)" Title="@L["Cpu %"]" UseProgressBarPercentage="true" />
+                <BaseColumn Property="@nameof(ClusterStatus.MemoryUsagePercentage)" Title="@L["Memory %"]" UseProgressBarPercentage="true" />
+
+                <RadzenDataGridColumn Property="@nameof(ClusterStatus.Uptime)" Title="@L["Uptime"]">
+                    <Template>
+                        @FormatHelper.UptimeInfo(context.Uptime)
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenCard>
+</RadzenStack>

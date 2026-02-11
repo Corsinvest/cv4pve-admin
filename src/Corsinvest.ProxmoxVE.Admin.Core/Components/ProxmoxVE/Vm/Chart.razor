@@ -1,0 +1,133 @@
+﻿@inherits AdminComponentBase
+
+@switch (ChartType)
+{
+    case RrdChartType.Cpu:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.CpuUsagePercentage)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["CPU"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis FormatString="@FormatHelper.DataFormatPercentage">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["%"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new ("CPU", "%","P1", a => a.CpuUsagePercentage)])" />
+        break;
+
+    case RrdChartType.Memory:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.MemorySize)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["Total"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.MemoryUsage)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["Usage"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Bytes"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new ("Usage", "Bytes", string.Empty, a => a.MemoryUsage) { Formatter = FormatHelper.FromBytes },
+                                                 new ("Usage", "%","P1", a => a.MemoryUsagePercentage)])" />
+        break;
+
+    case RrdChartType.Network:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.NetIn)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["Net in"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.NetOut)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["Net out"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Bytes"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new ("In", "Bytes", string.Empty, a => a.NetIn) { Formatter = FormatHelper.FromBytes },
+                                                 new ("Out", "Bytes", string.Empty, a => a.NetOut) { Formatter = FormatHelper.FromBytes }])" />
+        break;
+
+    case RrdChartType.DiskIO:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.DiskRead)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["Read"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(VmRrdData.DiskWrite)"
+                              CategoryProperty="@nameof(VmRrdData.TimeDate)"
+                              Title="@L["Write"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Bytes"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new ("Read", "Bytes", string.Empty, a => a.DiskRead) { Formatter = FormatHelper.FromBytes },
+                                                 new ("Write", "Bytes", string.Empty, a => a.DiskWrite) { Formatter = FormatHelper.FromBytes }])" />
+        break;
+    default: break;
+}
+
+@code
+{
+    [Parameter] public IEnumerable<VmRrdData> Data { get; set; } = default!;
+    [Parameter] public RrdChartType ChartType { get; set; } = default!;
+}

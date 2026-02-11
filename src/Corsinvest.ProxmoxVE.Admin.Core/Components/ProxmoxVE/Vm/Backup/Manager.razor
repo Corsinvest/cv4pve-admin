@@ -1,0 +1,144 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="NodeStorageContent"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                IsLoading="IsLoading"
+                Style="@Style"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                Density="Density.Compact"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
+                KeyDown="KeyDownAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnAdd="AddAsync"
+                     AddDisabled="!CanBackup"
+                     OnRefresh="RefreshDataAsync"
+                     OnDelete="DeleteAsync"
+                     DeleteDisabled="!CanDelete || !SelectedItems.Any()">
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Restore"]"
+                          Icon="history"
+                          Click="RestoreAsync"
+                          Disabled="!CanRestoreFile || !SelectedItems.Any()"
+                          ButtonStyle="ButtonStyle.Danger"
+                          title="@L["Restore"]"
+                          aria-label="@L["Restore"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Restore File"]"
+                          Icon="download"
+                          Click="RestoreFileAsync"
+                          Disabled="@(!CanRestoreFile || !SelectedItems.Any() || (SelectedItems.Any() && !SelectedItems[0].Format.StartsWith("pbs")))"
+                          ButtonStyle="ButtonStyle.Primary"
+                          title="@L["Restore File"]"
+                          aria-label="@L["Restore File"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Show configuration"]"
+                          Icon="visibility"
+                          Click="ShowConfigurationAsync"
+                          Disabled="!CanRestoreFile || !SelectedItems.Any()"
+                          ButtonStyle="ButtonStyle.Primary"
+                          title="@L["Show configuration"]"
+                          aria-label="@L["Show configuration"]" />
+
+            <RadzenDropDownDataGrid @bind-Value="@StorageName"
+                                    @bind-Value:after="RefreshDataAsync"
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                    TextProperty="@nameof(NodeStorage.Storage)"
+                                    ValueProperty="@nameof(NodeStorage.Storage)"
+                                    Data="@Storages"
+                                    AllowFilteringByAllStringColumns="true"
+                                    title="@L["Storage"]">
+                <Columns>
+                    <RadzenDropDownDataGridColumn Property="@nameof(NodeStorage.Storage)" Title="@L["Storage"]" />
+                    <RadzenDropDownDataGridColumn Property="@nameof(NodeStorage.Type)" Title="@L["Type"]" />
+                    <RadzenDropDownDataGridColumn Property="@nameof(NodeStorage.Available)"
+                                                  Title="@L["Available"]"
+                                                  FormatString="@FormatHelper.DataFormatBytes"
+                                                  FormatProvider="@FormatterHelper.FormatProvider" />
+
+                    <RadzenDropDownDataGridColumn Property="@nameof(NodeStorage.Size)"
+                                                  Title="@L["Capacity"]"
+                                                  FormatString="@FormatHelper.DataFormatBytes"
+                                                  FormatProvider="@FormatterHelper.FormatProvider" />
+                </Columns>
+            </RadzenDropDownDataGrid>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <EmptyTemplate>
+        <EmptyExecuteAction Text="@L["Create your first backup"]" Click="AddAsync" />
+    </EmptyTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(NodeStorageContent.FileName)" Sortable="true" Title="@L["Name"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.FileName</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(NodeStorageContent.Notes)" Sortable="true" Title="@L["Notes"]" />
+
+        <BoolIconColumn Property="@nameof(NodeStorageContent.Protected)"
+                        Sortable="true"
+                        Title="@L["Protected"]"
+                        IconFalse=""
+                        IconTrue="security"
+                        Width="80px">
+            <HeaderTemplate>
+                <RadzenIcon Icon="security" />
+            </HeaderTemplate>
+        </BoolIconColumn>
+
+        @*    <RadzenDataGridColumn Property="@nameof(NodeStorageContent.Storage)"
+                              Sortable="true"
+                              Title="@L["Storage"]"
+                              FilterMode="FilterMode.CheckBoxList"
+                              Width="150px" /> *@
+
+        <DateTimeLocalColumn Property="@nameof(NodeStorageContent.CreationDate)"
+                             Sortable="true"
+                             Title="@L["Date"]"
+                             FormatString="{0:G}"
+                             OrderIndex="0"
+                             SortOrder="SortOrder.Descending"
+                             Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeStorageContent.Format)"
+                              Sortable="true"
+                              Title="@L["Format"]"
+                              FilterMode="FilterMode.CheckBoxList"
+                              Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeStorageContent.Size)"
+                              Sortable="true"
+                              Title="@L["Size"]"
+                              FormatString="@(TypeHelper.GetDisplayFormatAttribute<NodeStorageContent>(nameof(NodeStorageContent.Size)))"
+                              FormatProvider="FormatterHelper.FormatProvider"
+                              Width="100px" />
+
+        <BoolIconColumn Property="@nameof(NodeStorageContent.Verified)" Title="@L["Verified"]" IconFalse="" Width="80px">
+            <HeaderTemplate>
+                <RadzenIcon Icon="verified" />
+            </HeaderTemplate>
+        </BoolIconColumn>
+
+        <BoolIconColumn Property="@nameof(NodeStorageContent.Encrypted)" Title="@L["Encrypted"]" IconFalse="" Width="80px">
+            <HeaderTemplate>
+                <RadzenIcon Icon="encrypted" />
+            </HeaderTemplate>
+        </BoolIconColumn>
+    </Columns>
+</RadzenDataGrid>

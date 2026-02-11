@@ -1,0 +1,39 @@
+﻿@inherits AdminComponentBase
+
+@typeparam TItem
+
+<RadzenTable Style="border:none;" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
+    <RadzenTableHeader>
+        <RadzenTableHeaderRow>
+            <RadzenTableHeaderCell>@L["Counter"]</RadzenTableHeaderCell>
+
+            @if (ShowUnit)
+            {
+                <RadzenTableHeaderCell>@L["Unit"]</RadzenTableHeaderCell>
+            }
+            <RadzenTableHeaderCell class="rz-text-align-right">@L["Latest"]</RadzenTableHeaderCell>
+            <RadzenTableHeaderCell class="rz-text-align-right">@L["Min"]</RadzenTableHeaderCell>
+            <RadzenTableHeaderCell class="rz-text-align-right">@L["Avg"]</RadzenTableHeaderCell>
+            <RadzenTableHeaderCell class="rz-text-align-right">@L["Max"]</RadzenTableHeaderCell>
+        </RadzenTableHeaderRow>
+    </RadzenTableHeader>
+
+    <RadzenTableBody>
+        @foreach (var item in Counters)
+        {
+            <RadzenTableRow>
+                <RadzenTableCell>@item.Name</RadzenTableCell>
+
+                @if (ShowUnit)
+                {
+                    <RadzenTableCell>@item.Unit</RadzenTableCell>
+                }
+
+                <RadzenTableCell class="rz-text-align-right">@GetValue(item, TypeValue.Latest)</RadzenTableCell>
+                <RadzenTableCell class="rz-text-align-right">@GetValue(item, TypeValue.Min)</RadzenTableCell>
+                <RadzenTableCell class="rz-text-align-right">@GetValue(item, TypeValue.Average)</RadzenTableCell>
+                <RadzenTableCell class="rz-text-align-right">@GetValue(item, TypeValue.Max)</RadzenTableCell>
+            </RadzenTableRow>
+        }
+    </RadzenTableBody>
+</RadzenTable>

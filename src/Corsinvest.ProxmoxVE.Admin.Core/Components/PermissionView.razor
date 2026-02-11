@@ -1,0 +1,20 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions
+@inject IPermissionService PermissionService
+
+@if (IsAuthorized)
+{
+    @ChildContent
+}
+
+@code {
+    [CascadingParameter(Name = nameof(IClusterName.ClusterName))] public string? CascadedClusterName { get; set; }
+    [Parameter] public string? PermissionClusterName { get; set; }
+    [Parameter, EditorRequired] public string PermissionKey { get; set; } = default!;
+    [Parameter] public string Path { get; set; } = default!;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private bool IsAuthorized { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+        => IsAuthorized = await PermissionService.HasAsync(PermissionClusterName ?? CascadedClusterName!, PermissionKey, Path);
+}

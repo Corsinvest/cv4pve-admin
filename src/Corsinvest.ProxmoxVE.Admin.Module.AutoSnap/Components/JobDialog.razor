@@ -1,0 +1,71 @@
+﻿@inherits AdminComponentBase
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["General"]" Icon="tune">
+
+            <RadzenStack Orientation="Orientation.Vertical">
+                @* <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenLabel Text="@L["Id"]" Component="@nameof(Model.Id)" />
+                    <RadzenLabel Text="@Model.Id.ToString()" />
+                </RadzenStack> *@
+
+                <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
+                <SwitchField @bind-Value="@Model.VmStatus" Label="@L["Include RAM"]" Name="@nameof(Model.VmStatus)" />
+                <SwitchField @bind-Value="@Model.OnlyRuns" Label="@L["While VM/CT Running"]" Name="@nameof(Model.OnlyRuns)" />
+
+                <RadzenFormField Text="@L["Label"]" AllowFloatingLabel="false">
+                    <ChildContent>
+                        <RadzenTextBox Name="@nameof(Model.Label)" @bind-Value="@Model.Label" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameof(Model.Label)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="@L["Retention"]" AllowFloatingLabel="false">
+                    <ChildContent>
+                        <RadzenNumeric Name="@nameof(Model.Keep)" @bind-Value="@Model.Keep" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameof(Model.Keep)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+                    <ChildContent>
+                        <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameof(Model.Description)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
+
+                <RadzenFormField Text="@L["Vm Ids"]" AllowFloatingLabel="false">
+                    <ChildContent>
+                        <RadzenDropDown @bind-Value="@Model.VmIdsList"
+                                        Data="VmIds"
+                                        Name="@nameof(Model.VmIdsList)"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        AllowFiltering="true"
+                                        MaxSelectedLabels="99"
+                                        SearchTextChanged="SearchTextChanged"
+                                        Chips="true" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenCustomValidator Component="@nameof(Model.VmIdsList)"
+                                               Validator="@(() => (Model.VmIdsList?.Count() ?? 0) > 0)"
+                                               Text="@L["Select VM/CT id!"]" />
+                    </Helper>
+                </RadzenFormField>
+            </RadzenStack>
+        </RadzenTabsItem>
+
+        @*   <RadzenTabsItem Text="@L["Web API Hook"]">
+            <Hooks />
+        </RadzenTabsItem> *@
+    </Tabs>
+</RadzenTabs>

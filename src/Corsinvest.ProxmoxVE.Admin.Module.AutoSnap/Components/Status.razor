@@ -1,0 +1,107 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="AutoSnapInfo"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                AllowGrouping="true"
+                GroupRowRender="OnGroupRowRender"
+                AllGroupsExpanded="false"
+                Render="OnRender"
+                ShowMultiColumnSortingIndex="true"
+                AllowMultiColumnSorting="true"
+                IsLoading="IsLoading"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                KeyDown="KeyDownAsync"
+                SelectionMode="DataGridSelectionMode.Multiple"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnDelete="DeleteAsync"
+                     OnRefresh="RefreshDataAsync"
+                     DeleteDisabled="!SelectedItems.Any()"
+                     Permissions="Module.Permissions.Status.Data"
+                     PermissionDelete="Module.Permissions.Status.Delete" />
+    </HeaderTemplate>
+
+    <GroupHeaderTemplate>
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>:
+
+            @if (AllowCalculateSnapshotSize)
+            {
+                @if (IsCalculateSnapshotSize)
+                {
+                    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary"
+                                               Value="100"
+                                               ShowValue="false"
+                                               Mode="ProgressBarMode.Indeterminate"
+                                               Size="ProgressBarCircularSize.ExtraSmall" />
+                }
+                else
+                {
+                    @FormatHelper.FromBytes(context.Data.Items!.Cast<AutoSnapInfo>().Sum(a => a.SnapshotsSize))
+                }
+            }
+        </RadzenStack>
+    </GroupHeaderTemplate>
+
+    <LoadingTemplate>
+        <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </LoadingTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Width="40px" Sortable="false" Filterable="false" Groupable="false" Resizable="false">
+            <HeaderTemplate>
+                <RadzenCheckBox TabIndex="-1"
+                                TriState="false"
+                                TValue="bool?"
+                                ReadOnly="IsLoading"
+                                aria-label="@L["Select all items"]"
+                                Value="@(SelectedItems == null || SelectedItems?.Any() != true ? false : !Items.All(i => SelectedItems.Contains(i)) ? null : Items.Any(i => SelectedItems.Contains(i)))"
+                                Change="@(args => SelectedItems = args == true ? Items.ToList() : [])" />
+            </HeaderTemplate>
+
+            <Template>
+                <RadzenCheckBox TabIndex="-1"
+                                TriState="false"
+                                Value="@(SelectedItems != null && SelectedItems.Contains(context))"
+                                aria-label="@L["Select item"]"
+                                TValue="bool" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.Label)"
+                              Sortable="true"
+                              Title="@L["Label"]"
+                              OrderIndex="1"
+                              SortOrder="SortOrder.Ascending"
+                              FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.Node)" Sortable="true" Title="@L["Node"]" FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.VmId)"
+                              Sortable="true"
+                              Title="@L["Vm Id"]"
+                              OrderIndex="0"
+                              SortOrder="SortOrder.Ascending"
+                              FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.VmName)" Sortable="true" Title="@L["Vm Name"]" FilterMode="FilterMode.CheckBoxList" />
+
+        <DateTimeLocalColumn Property="@nameof(AutoSnapInfo.Date)" Sortable="true" Title="@L["Date"]" OrderIndex="2" SortOrder="SortOrder.Descending" />
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.Parent)" Sortable="true" Title="@L["Parent"]" />
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.Name)" Sortable="true" Title="@L["Name"]" />
+        <RadzenDataGridColumn Property="@nameof(AutoSnapInfo.Description)" Sortable="true" Title="@L["Description"]" />
+
+        @if (AllowCalculateSnapshotSize)
+        {
+            <SnapshotSizeColumn Property="@nameof(AutoSnapInfo.SnapshotsSize)" Title="@L["Size"]" ShowWating="IsCalculateSnapshotSize" />
+        }
+
+        <BoolIconColumn Property="@nameof(AutoSnapInfo.VmStatus)" Title="@L["Mem. Status"]" IconFalse="" />
+    </Columns>
+</RadzenDataGrid>

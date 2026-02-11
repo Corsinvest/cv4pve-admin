@@ -1,0 +1,54 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+
+# Build output
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# Temporary files
+**/.tmp/
+**/temp/
+**/*.tmp
+**/*.log
+
+# Documentation
+README.md
+LICENSE
+**/*.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (se presenti)
+node_modules/
+npm-debug.log
+
+# Test files
+**/test/
+**/*test*
+**/*.test.*
+
+# Package managers
+packages/
+*.nupkg
+
+# Logs
+*.log
+logs/

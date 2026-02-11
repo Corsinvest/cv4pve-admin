@@ -1,0 +1,161 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenStack Orientation="Orientation.Vertical">
+        @if (MinDate.HasValue && MaxDate.HasValue)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenFormField Text="@L["From"]">
+                    <RadzenDatePicker @bind-Value="Start"
+                                      @bind-Value:after="LoadStoragesAsync"
+                                      ShowTime="false"
+                                      AllowClear="true"
+                                      Min="MinDate.Value.AddDays(-1)"
+                                      Max="MaxDate.Value"
+                                      ShowCalendarWeek="true"
+                                      Disabled="MinDate is null"
+                                      DateFormat="d" />
+                </RadzenFormField>
+
+                <RadzenFormField Text="@L["To"]">
+                    <RadzenDatePicker @bind-Value="End"
+                                      @bind-Value:after="LoadStoragesAsync"
+                                      ShowTime="false"
+                                      AllowClear="true"
+                                      Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
+                                      Max="MaxDate.Value.AddDays(1)"
+                                      ShowCalendarWeek="true"
+                                      Disabled="Start is null"
+                                      DateFormat="d" />
+                </RadzenFormField>
+
+                <RadzenFormField Text="@L["Storages"]">
+                    <RadzenDropDown @bind-Value="@SelectedStorages"
+                                    @bind-Value:after="LoadVmIdsAsync"
+                                    Data="@Storages"
+                                    TextProperty="@nameof(StorageBackup.FullName)"
+                                    Multiple="true"
+                                    AllowClear="true"
+                                    AllowFiltering="true"
+                                    MaxSelectedLabels="99"
+                                    Chips="true"
+                                    Disabled="!End.HasValue" />
+                </RadzenFormField>
+
+                <RadzenFormField Text="@L["VM / CT"]">
+                    <RadzenDropDown @bind-Value="@SelectedVmIds"
+                                    @bind-Value:after="LoadDataAsync"
+                                    Data="@VmIds"
+                                    Multiple="true"
+                                    AllowClear="true"
+                                    AllowFiltering="true"
+                                    MaxSelectedLabels="99"
+                                    Chips="true"
+                                    Disabled="SelectedStorages == null || !SelectedStorages.Any()" />
+                </RadzenFormField>
+            </RadzenStack>
+
+            <RadzenChart>
+                @*             <RadzenChartTooltipOptions Shared="true" />  *@
+
+
+                @foreach (var item in Items.GroupBy(a => a.VmId))
+                {
+                    <RadzenLineSeries Smooth="true"
+                                      Data="@item"
+                                      ValueProperty="@nameof(Data.Size)"
+                                      CategoryProperty="@nameof(Data.Date)"
+                                      Title="@item.Key"
+                                      LineType="LineType.Solid">
+                        <ChildContent>
+                            <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                        </ChildContent>
+                        <TooltipTemplate>
+                            <div><strong>@context.Date</strong></div>
+                            <div>@context.Descrition : @FormatHelper.FromBytes(context.Size)</div>
+                        </TooltipTemplate>
+                    </RadzenLineSeries>
+                }
+
+                <RadzenLegend Position="LegendPosition.Top" />
+                <RadzenCategoryAxis FormatString="{0:G}" LabelRotation="-10" />
+                <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))" LabelRotation="-20">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="@L["Size"]" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+            <RadzenChart>
+                @foreach (var item in Items.GroupBy(a => a.VmId))
+                {
+                    <RadzenLineSeries Smooth="true"
+                                      Data="@item"
+                                      ValueProperty="@nameof(Data.TransferSpeed)"
+                                      CategoryProperty="@nameof(Data.Date)"
+                                      Title="@item.Key"
+                                      LineType="LineType.Solid">
+                        <ChildContent>
+                            <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                        </ChildContent>
+                        <TooltipTemplate>
+                            <div><strong>@context.Date</strong></div>
+                            <div>@context.Descrition : @FormatHelper.FromBytes(context.TransferSpeed)</div>
+                        </TooltipTemplate>
+                    </RadzenLineSeries>
+                }
+
+                <RadzenLegend Position="LegendPosition.Top" />
+                <RadzenCategoryAxis FormatString="{0:G}" LabelRotation="-10" />
+                <RadzenValueAxis Formatter="@(value => ByteSize.FromBytes((double)value).Per(TimeSpan.FromSeconds(1)).Humanize())" LabelRotation="-10">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="@L["Speed"]" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+            <RadzenChart>
+                @foreach (var item in Items.GroupBy(a => a.VmId))
+                {
+                    <RadzenLineSeries Smooth="true"
+                                      Data="@item"
+                                      ValueProperty="@nameof(Data.Duration)"
+                                      CategoryProperty="@nameof(Data.Date)"
+                                      Title="@item.Key"
+                                      LineType="LineType.Solid">
+                        <ChildContent>
+                            <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
+                        </ChildContent>
+                        <TooltipTemplate>
+                            <div><strong>@context.Date</strong></div>
+                            <div>@context.Descrition : @TimeSpan.FromSeconds(context.Duration).Humanize(2))</div>
+                        </TooltipTemplate>
+                    </RadzenLineSeries>
+                }
+
+                <RadzenLegend Position="LegendPosition.Top" />
+                <RadzenCategoryAxis FormatString="{0:G}" LabelRotation="-10" />
+                <RadzenValueAxis Formatter="@(value => TimeSpan.FromSeconds((double)value).Humanize(2))" LabelRotation="-10">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="@L["Duration"]" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+            @*     <RadzenChart>
+                <RadzenPieSeries Data="@Items.GroupBy(a=> a.VmId).Select(a=> new { VmId = a.Key, Size = a.Max(b => b.Size) })"
+                                 Title="@L["Size"]"
+                                 ValueProperty="@nameof(Data.Size)"
+                                 CategoryProperty="@nameof(Data.VmId)">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenPieSeries>
+
+                <RadzenLegend Position="LegendPosition.Bottom" />
+                <RadzenValueAxis Formatter="@((value) => FormatterHelper.FromBytes((double)value))">
+                    <RadzenAxisTitle Text="@L["Size"]" />
+                </RadzenValueAxis>
+            </RadzenChart> *@
+        }
+        else
+        {
+            <RadzenAlert AllowClose="false" Text="@L["No data available to display."]" />
+        }
+    </RadzenStack>
+</RadzenPanel>

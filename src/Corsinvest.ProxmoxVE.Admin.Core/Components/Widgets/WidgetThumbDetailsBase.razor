@@ -1,0 +1,27 @@
+﻿@inherits AdminComponentBase
+
+@typeparam TWidgetSettings
+
+<RadzenStack class="rz-p-2 rz-w-100 rz-h-100" Orientation="Orientation.Vertical">
+    @if (ShowIcon)
+    {
+        <BoolIcon Value="!Items.Any()"
+                  IconTrue="thumb_up"
+                  IconFalse="thumb_down"
+                  class="rz-w-100 rz-h-100"
+                  Style="font-size: xxx-large; --rz-icon-fill: 1;" />
+    }
+
+    @foreach (var item in Items)
+    {
+        <RadzenText>
+            @item.Action
+            <RadzenBadge BadgeStyle="BadgeStyle.Danger" IsPill="true" Text="@item.Count.ToString()" />
+        </RadzenText>
+    }
+
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <RadzenText Text="@Message" class="rz-w-100 rz-text-align-center" TextStyle="TextStyle.Subtitle2" />
+    }
+</RadzenStack>

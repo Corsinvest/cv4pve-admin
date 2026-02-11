@@ -1,0 +1,25 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="Data"
+                Data="@Items"
+                IsLoading="IsLoading"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        @foreach (var item in PropertiesName)
+        {
+            <ResourceColumn Property="@item" Sortable="true" />
+        }
+
+        <RadzenDataGridColumn Property="@nameof(Data.Disks)" Sortable="true" Title="@L["Disks"]">
+            <Template>
+                @((MarkupString)context.Disks)
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

@@ -1,0 +1,12 @@
+:root {
+  /* Blue Fluent UI: #0078d4 */
+  --md-primary-fg-color: #0078d4;
+  --md-primary-fg-color--dark: #005a9e;
+  --md-accent-fg-color: #0078d4;
+}
+
+/* Nella Dark Mode Fluent UI tende a essere leggermente più chiaro per contrasto */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #2b88d8;
+  --md-accent-fg-color: #2b88d8;
+}

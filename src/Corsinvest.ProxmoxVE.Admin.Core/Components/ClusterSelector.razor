@@ -1,0 +1,41 @@
+﻿@inherits AdminComponentBase
+
+@if (Data.Any())
+{
+    <RadzenButton @ref="@ButtonRef"
+                  title="@FullName"
+                  Variant="Variant.Text"
+                  ButtonStyle="ButtonStyle.Light"
+                  Style="display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                  Click="@(() => PopupRef.ToggleAsync(ButtonRef.Element))">
+        <RadzenIcon Icon="@Icon" />
+        <div>@FullNamePart1</div>
+    </RadzenButton>
+
+    <Radzen.Blazor.Rendering.Popup @ref="@PopupRef" Lazy="true" Style="display: none; position: absolute; overflow: hidden; border: var(--rz-panel-border); background-color: var(--rz-panel-background-color); box-shadow: var(--rz-panel-shadow); border-radius: var(--rz-border-radius);">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-h-100 rz-p-4">
+            <RadzenTextBox Placeholder="@L["Type to search..."]"
+                           type="search"
+                           @oninput="@(args => SearchString = args.Value + string.Empty)"
+                           Value="@SearchString" />
+
+            <RadzenDataList Data="@Data"
+                            Style="flex: 1; --rz-datalist-padding: 0.5rem 0; --rz-datalist-item-margin-inline: 0; overflow:auto; --rz-datalist-item-padding: 0;"
+                            ShowEmptyMessage="true"
+                            EmptyText="@L["No results found!"]">
+                <Template>
+                    <RadzenButton ButtonStyle="ButtonStyle.Base"
+                                  Variant="Variant.Flat"
+                                  Click="@(() => SelectAsync(context.Name))"
+                                  class="rz-w-100">
+                        <RadzenIcon Icon="@Icon" />
+                        <div>
+                            <div>@context.FullNamePart1</div>
+                            <div>@context.Description</div>
+                        </div>
+                    </RadzenButton>
+                </Template>
+            </RadzenDataList>
+        </RadzenStack>
+    </Radzen.Blazor.Rendering.Popup>
+}

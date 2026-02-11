@@ -1,0 +1,103 @@
+﻿@inherits AdminComponentBase
+
+@if (VmConfig == null)
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}
+else
+{
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            @RenderTitle(PveAdminUIHelper.Icons.Storage, "Disks", string.Empty)
+
+            <RadzenDataGrid Data="@VmConfig.Disks"
+                            AllowFiltering="true"
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="false"
+                            AllowSorting="true"
+                            AllowVirtualization="true"
+                            AllowColumnPicking="true"
+                            Density="Density.Compact"
+                            FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(VmDisk.Id)" Title="@L["Id"]" OrderIndex="0" SortOrder="SortOrder.Descending" Width="150px" />
+                    <RadzenDataGridColumn Property="@nameof(VmDisk.Storage)" Title="@L["Storage"]" />
+                    <RadzenDataGridColumn Property="@nameof(VmDisk.FileName)" Title="@L["FileName"]" />
+
+                    @if (Vm.VmType == VmType.Qemu)
+                    {
+                    }
+                    else if (Vm.VmType == VmType.Lxc)
+                    {
+                        <RadzenDataGridColumn Property="@nameof(VmDisk.Device)" Title="@L["Device"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmDisk.MountPoint)" Title="@L["Mount Point"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmDisk.MountSourcePath)" Title="@L["Mount Source Path"]" />
+                    }
+
+                    <BoolIconColumn Property="@nameof(VmDisk.Passthrough)" Title="@L["Passthrough"]" IconFalse="" />
+                    <RadzenDataGridColumn Property="@nameof(VmDisk.Size)" Title="@L["Size"]" Width="100px" />
+
+                    <BoolIconColumn Property="@nameof(VmDisk.Backup)" Title="@L["Backup"]" Width="120px" IconFalse="">
+                        <HeaderTemplate>
+                            <RadzenIcon Icon="backup" />
+                        </HeaderTemplate>
+                    </BoolIconColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenColumn>
+
+        <RadzenColumn Size="12">
+            @RenderTitle(PveAdminUIHelper.Icons.Network, "Network", string.Empty)
+
+            <RadzenDataGrid Data="@VmConfig.Networks"
+                            AllowFiltering="true"
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="false"
+                            AllowSorting="true"
+                            AllowVirtualization="true"
+                            AllowColumnPicking="true"
+                            FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(VmNetwork.Bridge)" Title="@L["Bridge"]" Width="120px" />
+                    <BoolIconColumn Property="@nameof(VmNetwork.Firewall)" Title="@L["Firewall"]" Width="120px" IconFalse="" />
+                    <RadzenDataGridColumn Property="@nameof(VmNetwork.Tag)" Title="@L["VLAN Tag"]" Width="100px" />
+                    <RadzenDataGridColumn Property="@nameof(VmNetwork.MacAddress)" Title="@L["Mac Address"]" OrderIndex="0" SortOrder="SortOrder.Ascending" />
+
+                    @if (Vm.VmType == VmType.Qemu)
+                    {
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Model)" Title="@L["Model"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Trunks)" Title="@L["Trunks"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Queues)" Title="@L["Queues"]" />
+                        <BoolIconColumn Property="@nameof(VmNetwork.Disconnect)" Title="@L["Disconnect"]" IconFalse="" />
+                    }
+                    else if (Vm.VmType == VmType.Lxc)
+                    {
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Name)" Title="@L["Name"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.IpAddress)" Title="@L["IpAddress"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.IpAddress6)" Title="@L["IpAddress 6"]" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Gateway)" Title="@L["Gateway"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Gateway6)" Title="@L["Gateway 6"]" Visible="false" />
+                        <BoolIconColumn Property="@nameof(VmNetwork.LinkDown)" Title="@L["Disconnect"]" IconFalse="" />
+                    }
+
+                    <RadzenDataGridColumn Property="@nameof(VmNetwork.Mtu)" Title="@L["MTU"]" Width="120px" />
+                    <RadzenDataGridColumn Property="@nameof(VmNetwork.Rate)" Title="@L["Rate"]" Width="120px" Visible="false" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenColumn>
+    </RadzenRow>
+}
+
+@code
+{
+    private RenderFragment RenderTitle(string icon, string title, string value) => __builder =>
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
+            <RadzenIcon Icon="@icon" />
+            <RadzenText TextStyle="TextStyle.Body2"><strong>@L[title]</strong></RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2" Text="@value" />
+        </RadzenStack>
+    };
+}

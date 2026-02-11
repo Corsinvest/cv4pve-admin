@@ -1,0 +1,23 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenText>
+        @L["Prometheus Exporter"]
+    </RadzenText>
+
+    @if (!PrometheusEnabled)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" Text="@L["Metrics Exporter is disabled"]" />
+    }
+    else
+    {
+        <RadzenDataList AllowVirtualization="true" Style="height:400px;overflow:auto;" Data="@Items">
+            <Template>
+                <RadzenLink Path="@context.Url" Target="_blank">@context.FullName</RadzenLink>
+                <RadzenText><strong>@L["Request:"]</strong> @context.CountRequest</RadzenText>
+                <RadzenText><strong>@L["Last:"]</strong> @context.LastRequest</RadzenText>
+            </Template>
+        </RadzenDataList>
+    }
+
+</RadzenPanel>

@@ -1,0 +1,102 @@
+﻿@inherits AdminComponentBase
+
+@attribute [CascadingTypeParameter(nameof(TItem))]
+@typeparam TItem where TItem : notnull
+
+<RadzenDataGridColumn TItem="TItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+    <Template Context="ctx">
+        @if (!Disabled)
+        {
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="edit"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Click="@(() => EditRowAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          aria-label="@L["Edit"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="delete"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Click="@(() => DeleteRowAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          aria-label="@L["Remove"]" />
+        }
+    </Template>
+
+    <EditTemplate Context="ctx">
+        @if (!Disabled)
+        {
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="check"
+                          ButtonStyle="ButtonStyle.Success"
+                          Click="@(() => SaveRowAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          aria-label="@L["Save"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="close"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Click="@(() => CancelEditAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          aria-label="@L["Cancel"]" />
+        }
+    </EditTemplate>
+</RadzenDataGridColumn>
+
+@code
+{
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool InEdit { get; set; }
+    [Parameter] public EventCallback<bool> InEditChanged { get; set; }
+    [CascadingParameter] public RadzenDataGrid<TItem> Grid { get; set; } = default!;
+
+    protected override void OnInitialized()
+        => Grid.RowCreate = EventCallback.Factory.Create<TItem>(this, OnCreateRowAsync);
+
+
+    private async Task EditRowAsync(TItem item)
+    {
+        await Grid.EditRow(item);
+        InEdit = true;
+        await InEditChanged.InvokeAsync(InEdit);
+    }
+
+    private async Task OnCreateRowAsync(TItem item)
+    {
+        ((ICollection<TItem>)Grid.Data!).Add(item);
+        InEdit = false;
+        await InEditChanged.InvokeAsync(InEdit);
+    }
+
+    private async Task SaveRowAsync(TItem item)
+    {
+        await Grid.UpdateRow(item);
+        await Grid.Reload();
+        InEdit = false;
+        await InEditChanged.InvokeAsync(InEdit);
+    }
+
+    private async Task CancelEditAsync(TItem item)
+    {
+        Grid.CancelEditRow(item);
+        InEdit = false;
+        await InEditChanged.InvokeAsync(InEdit);
+    }
+
+    public async Task InsertRowAsync()
+    {
+        await Grid.InsertRow(Activator.CreateInstance<TItem>());
+        InEdit = true;
+        await InEditChanged.InvokeAsync(InEdit);
+    }
+
+    private async Task DeleteRowAsync(TItem item)
+    {
+        ((ICollection<TItem>)Grid.Data!).Remove(item);
+        await Grid.Reload();
+    }
+}

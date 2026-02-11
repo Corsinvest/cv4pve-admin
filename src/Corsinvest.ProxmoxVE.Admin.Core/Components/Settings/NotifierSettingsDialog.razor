@@ -1,0 +1,33 @@
+﻿@inherits AdminComponentBase
+@typeparam TSettings
+
+<RadzenTemplateForm TItem="TSettings" Data="@Model" Submit="@OnSubmit" EditContext="@EditContext">
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
+        <RadzenStack Orientation="Orientation.Vertical">
+            <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
+
+            <RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" />
+                </ChildContent>
+                <Helper>
+                    <RadzenDataAnnotationValidator Component="@nameof(Model.Name)" />
+                </Helper>
+            </RadzenFormField>
+
+            @if (EditContent != null)
+            {
+                @EditContent(Model)
+            }
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          Text="@Text"
+                          Style="width: fit-content;"
+                          Size="ButtonSize.Small"
+                          title="@Text"
+                          aria-label="@Text" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>

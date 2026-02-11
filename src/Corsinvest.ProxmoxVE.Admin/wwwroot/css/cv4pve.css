@@ -1,0 +1,87 @@
+/**
+ * CV4PVE Admin - Component Styles
+ * Corsinvest Srl - https://corsinvest.it
+ */
+
+/* ========================================
+   WidgetGrid - Generic Widget Grid Component
+   ======================================== */
+
+.cv4pve-widgetgrid-widget {
+    position: absolute;
+    background: var(--rz-base-background-color);
+    border: 1px solid var(--rz-border-color);
+    border-radius: var(--rz-border-radius);
+    box-shadow: var(--rz-shadow-1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.cv4pve-widgetgrid-widget.editable .cv4pve-widgetgrid-header {
+    cursor: move;
+}
+
+.cv4pve-widgetgrid-widget.dragging {
+    opacity: 0.8;
+    z-index: 999;
+    box-shadow: var(--rz-shadow-3);
+}
+
+.cv4pve-widgetgrid-header {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 0.5rem;
+    border-bottom: 1px solid var(--rz-border-color);
+    background: var(--rz-base-background-color);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.cv4pve-widgetgrid-header .rz-button {
+    color: var(--rz-text-color);
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.cv4pve-widgetgrid-header .rz-button:hover {
+    background: var(--rz-secondary-light) !important;
+    color: var(--rz-text-color);
+}
+
+.cv4pve-widgetgrid-content {
+    padding: 1rem;
+    overflow: auto;
+    flex: 1;
+    cursor: default;
+}
+
+.cv4pve-widgetgrid-resize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border: 14px solid transparent;
+    border-right-color: var(--rz-primary);
+    border-bottom-color: var(--rz-primary);
+    cursor: nwse-resize;
+}
+
+.cv4pve-widgetgrid.show-grid {
+    background-image:
+        linear-gradient(to bottom, var(--rz-primary-light) 1px, transparent 1px),
+        linear-gradient(to right, var(--rz-primary-light) 1px, transparent 1px);
+    background-size: calc(100% / var(--cols)) calc(100% / var(--rows));
+    background-position: 0 0;
+
+    border-right: 1px solid var(--rz-primary-light);
+    border-bottom: 1px solid var(--rz-primary-light);
+}
+
+.cv4pve-widgetgrid.editable {
+    border: 2px dashed var(--rz-primary-light) !important;
+    border-radius: var(--rz-border-radius);
+}

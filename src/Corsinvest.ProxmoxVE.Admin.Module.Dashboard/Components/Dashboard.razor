@@ -1,0 +1,151 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid
+
+@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
+    <RadzenStack Orientation="Orientation.Horizontal" Style="align-items: baseline !important; margin-right: 0.5em;" class="rz-panel">
+        @if (InEditing)
+        {
+            <RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
+                <RadzenTextBox @bind-Value="@CurrentDashboard.Name" Style="width: 200px;" />
+            </RadzenFormField>
+
+            <RadzenButton Size="ButtonSize.Small"
+                          Text="@L["Save"]"
+                          Icon="save"
+                          Click="SaveAsync"
+                          ButtonStyle="ButtonStyle.Primary" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Cancel"]"
+                          Icon="close"
+                          Click="EndEditAsync" />
+
+            <RadzenFormField Text="@L["Refresh interval (sec.)"]" AllowFloatingLabel="false">
+                <RadzenNumeric @bind-Value="@CurrentDashboard.RefreshInterval" Min="0" Step="10" />
+            </RadzenFormField>
+
+            <SwitchField @bind-Value="@CurrentDashboard.AllowClustersSelect"
+                         Label="@L["Allow clusters select"]"
+                         Name="@nameof(CurrentDashboard.AllowClustersSelect)" />
+
+            <RadzenButton Size="ButtonSize.Small"
+                          Text="@L["Add widget"]"
+                          Icon="widgets"
+                          Click="ShowAddWidgetMenu" />
+
+            <RadzenButton Size="ButtonSize.Small"
+                          Icon="@(ShowGrid ? "grid_off" : "grid_on")"
+                          Click="@(() => ShowGrid = !ShowGrid)"
+                          ButtonStyle="ButtonStyle.Light" />
+
+            <RadzenFormField Text="@L["Test resolution"]" AllowFloatingLabel="false">
+                <RadzenDropDown @bind-Value="@SelectedScreenResolution"
+                                @bind-Value:after="@OnScreenResolutionChanged"
+                                Data="@ScreenResolutions"
+                                TextProperty="@nameof(ScreenResolution.Name)"
+                                Style="min-width: 180px;" />
+            </RadzenFormField>
+
+            <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-tertiary-color);">
+                @L["Current"]: @CurrentWidth x @CurrentHeight
+            </RadzenText>
+        }
+        else
+        {
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.ExtraSmall"
+                          Style="float:right;"
+                          Icon="more_vert"
+                          Click="ShowManageMenu" />
+
+            <RadzenFormField Text="@L["Dashboards"]" Style="min-width: 200px;" AllowFloatingLabel="false">
+                <RadzenDropDown @bind-Value="@SelectedItem"
+                                @bind-Value:after="@LoadAsync"
+                                Data="@Items"
+                                TextProperty="@nameof(Data.Name)"
+                                AllowFiltering="true" />
+            </RadzenFormField>
+
+            @if (CurrentDashboard.AllowClustersSelect)
+            {
+                <RadzenFormField Text="@L["Clusters"]" Style="min-width: 200px;" AllowFloatingLabel="false">
+                    <RadzenDropDown @bind-Value="@SelectedClusterNames"
+                                    @bind-Value:after="@SetClusterNames"
+                                    Data="@ClustersSettings"
+                                    TextProperty="@nameof(ClusterSettings.FullName)"
+                                    ValueProperty="@nameof(ClusterSettings.Name)"
+                                    Multiple="true"
+                                    Chips="true"
+                                    AllowClear="true"
+                                    AllowFiltering="true" />
+                </RadzenFormField>
+            }
+        }
+    </RadzenStack>
+
+    <div style="overflow: auto; width: 100%; height: calc(100vh - 225px);">
+        <div style="@GridContainerStyle">
+            <WidgetGrid @ref="GridRef"
+                    Items="@WidgetItems"
+                    Rows="GridRows"
+                    Cols="GridCols"
+                    Margin="5"
+                    EditMode="@InEditing"
+                    ShowGrid="@ShowGrid"
+                    Height="100%"
+                    OnPositionChanged="OnWidgetPositionChanged">
+            <MenuTemplate>
+                <RadzenButton Icon="more_vert"
+                              Variant="Variant.Text"
+                              Size="ButtonSize.ExtraSmall"
+                              Click="@(args => ShowWidgetMenu(args, context))" />
+            </MenuTemplate>
+        </WidgetGrid>
+        </div>
+    </div>
+</RadzenStack>
+
+<InputFile id="@FileUploadId" OnChange="HandleFileSelectedAsync" Accept=".json" style="display:none" />
+
+@code
+{
+    private void ShowManageMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="@(() => ds.Close())">
+        <RadzenMenuItem Text="@L["Refresh"]" Icon="refresh" Disabled="CurrentDashboard == null" Click="RefreshAllWidgetsAsync" />
+        <hr />
+        <RadzenMenuItem Text="@L["New"]" Icon="add" Click="NewAsync" />
+        <RadzenMenuItem Text="@L["Upload"]" Icon="upload" Click="UploadAsync" />
+        <RadzenMenuItem Text="@L["Clone"]" Icon="file_copy" Disabled="CurrentDashboard == null" Click="CloneAsync" />
+        <RadzenMenuItem Text="@L["Create default dashboard"]" Icon="dashboard" Click="CreateDefaultDashboardAsync" />
+        <hr />
+        <RadzenMenuItem Text="@L["Edit"]" Icon="edit" Disabled="CurrentDashboard == null" Click="StartEditAsync" />
+        <RadzenMenuItem Text="@L["Delete"]" Icon="delete" Disabled="CurrentDashboard == null" Click="DeleteAsync" IconColor="@Colors.Danger" />
+        <hr />
+        <RadzenMenuItem Text="@L["Export"]" Icon="download" Disabled="CurrentDashboard == null" Click="ExportAsync" />
+    </RadzenMenu>);
+
+    private void ShowAddWidgetMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
+    @<RadzenMenu>
+        @foreach (var item in moduleService.Modules.Where(a => a.Widgets.Any()).OrderBy(a=> a.Name))
+        {
+            <RadzenMenuItem Text="@item.Name" Icon="@item.Icon">
+                @foreach (var widget in item.Widgets.OrderBy(a=> a.Name))
+                {
+                    <RadzenMenuItem Text="@widget.Name"
+                                    title="@widget.Description"
+                                    Click="@(async () => { ds.Close(); await AddWidgetAsync(widget); })" />
+                }
+            </RadzenMenuItem>
+        }
+    </RadzenMenu>);
+
+    private void ShowWidgetMenu(MouseEventArgs args, WidgetGridItem item) => contextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="@(() => ds.Close())">
+        <RadzenMenuItem Text="@L["Configure"]" Icon="settings" Click="@(() => ConfigureWidgetAsync(item))" />
+        <RadzenMenuItem Text="@L["Clone"]" Icon="file_copy" Click="@(() => CloneWidgetAsync(item))" />
+        <RadzenMenuItem Text="@L["Refresh"]" Icon="refresh" Click="@(() => RefreshWidgetAsync(item))" />
+        <RadzenMenuItem Text="@L["Remove"]" Icon="delete" IconColor="@Colors.Danger" Click="@(() => RemoveWidgetAsync(item))" />
+    </RadzenMenu>);
+}

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire" />
+    <PackageReference Include="Hangfire.Console" />
+    <PackageReference Include="Hangfire.Console.Extensions" />
+    <PackageReference Include="Hangfire.Console.Extensions.Serilog" />
+    <PackageReference Include="Hangfire.PostgreSql" />
+    <PackageReference Include="Semver" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
+  </ItemGroup>
+</Project>

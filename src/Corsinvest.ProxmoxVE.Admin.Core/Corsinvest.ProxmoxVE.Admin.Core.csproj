@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- Generate BuildInfo class -->
+  <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <_VersionPreRelease>$([System.Text.RegularExpressions.Regex]::Match($(Version), '-(.+)$').Groups[1].Value)</_VersionPreRelease>
+      <_IsTesting Condition="'$(_VersionPreRelease)' != ''">true</_IsTesting>
+      <_IsTesting Condition="'$(_VersionPreRelease)' == ''">false</_IsTesting>
+      <_TestingExpirationMonths>3</_TestingExpirationMonths>
+    </PropertyGroup>
+
+    <WriteLinesToFile
+      File="$(IntermediateOutputPath)BuildInfo.g.cs"
+      Lines="// &lt;auto-generated/&gt;
+using System.Reflection%3B
+
+namespace Corsinvest.ProxmoxVE.Admin.Core%3B
+
+public static class BuildInfo
+{
+    public const string Version = &quot;$(Version)&quot;%3B
+    public const string PreRelease = &quot;$(_VersionPreRelease)&quot;%3B
+    public const bool IsTesting = $(_IsTesting)%3B
+    public const int TestingExpirationMonths = $(_TestingExpirationMonths)%3B
+
+    private static DateTime? _buildDate%3B
+    public static DateTime BuildDate =&gt; _buildDate ??= File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().Location)%3B
+    public static bool IsTestingExpired =&gt; IsTesting %26%26 DateTime.UtcNow &gt; BuildDate.AddMonths(TestingExpirationMonths)%3B
+}"
+      Overwrite="true" />
+
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)BuildInfo.g.cs" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" />
+    <PackageReference Include="Blazored.SessionStorage" />
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="ClosedXML.Report" />
+    <PackageReference Include="Humanizer" />
+    <PackageReference Include="Mapster" />
+    <PackageReference Include="PDFsharp-MigraDoc" />
+
+    <PackageReference Include="BlazorDownloadFile" />
+    <PackageReference Include="FluentResults" />
+
+    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Extension" />
+
+    <PackageReference Include="Radzen.Blazor" />
+
+    <PackageReference Include="SixLabors.ImageSharp" />
+    <!--<PackageReference Include="SSH.NET" />-->
+
+    <PackageReference Include="CronExpressionDescriptor" />
+    <PackageReference Include="cronos" />
+    <PackageReference Include="Toolbelt.Blazor.HotKeys2" />
+    <PackageReference Include="ZiggyCreatures.FusionCache" />
+    <PackageReference Include="System.Linq.Dynamic.Core" />
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\*.ttf" />
+  </ItemGroup>
+</Project>

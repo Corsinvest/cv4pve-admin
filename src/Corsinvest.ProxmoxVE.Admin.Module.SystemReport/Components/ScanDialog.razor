@@ -1,0 +1,72 @@
+﻿@inherits AdminComponentBase
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["General"]" Icon="tune">
+
+            <RadzenStack Orientation="Orientation.Vertical">
+
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenFormField Text="@L["Vm Ids"]" AllowFloatingLabel="false">
+                        <ChildContent>
+                            <RadzenTextBox Name="@nameof(Model.VmIds)" @bind-Value="@Model.VmIds" />
+                        </ChildContent>
+                        <Helper>
+                            <RadzenDataAnnotationValidator Component="@nameof(Model.VmIds)" />
+                        </Helper>
+                    </RadzenFormField>
+
+                    <RadzenFormField Text="@L["Feature"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <RadzenDropDown Name="@nameof(VmFeature)"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        Placeholder="@L["All (leave empty)"]"
+                                        @bind-Value="@VmFeatures"
+                                        Data="@(Enum.GetValues<VmFeature>().Where(a => a != VmFeature.All))" />
+                    </RadzenFormField>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenFormField Text="@L["Node Names"]" AllowFloatingLabel="false">
+                        <ChildContent>
+                            <RadzenTextBox Name="@nameof(Model.NodeNames)" @bind-Value="@Model.NodeNames" />
+                        </ChildContent>
+                        <Helper>
+                            <RadzenDataAnnotationValidator Component="@nameof(Model.NodeNames)" />
+                        </Helper>
+                    </RadzenFormField>
+
+                    <RadzenFormField Text="@L["Feature"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <RadzenDropDown Name="@nameof(NodeFeature)"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        Placeholder="@L["All (leave empty)"]"
+                                        @bind-Value="@NodeFeatures"
+                                        Data="@(Enum.GetValues<NodeFeature>().Where(a => a != NodeFeature.All))" />
+                    </RadzenFormField>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenFormField Text="@L["Storage Names"]" AllowFloatingLabel="false">
+                        <ChildContent>
+                            <RadzenTextBox Name="@nameof(Model.StorageNames)" @bind-Value="@Model.StorageNames" />
+                        </ChildContent>
+                        <Helper>
+                            <RadzenDataAnnotationValidator Component="@nameof(Model.StorageNames)" />
+                        </Helper>
+                    </RadzenFormField>
+
+                    <RadzenFormField Text="@L["Feature"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <RadzenDropDown Name="@nameof(StorageFeature)"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        Placeholder="@L["All (leave empty)"]"
+                                        @bind-Value="@StorageFeatures"
+                                        Data="@(Enum.GetValues<StorageFeature>().Where(a => a != StorageFeature.All))" />
+                    </RadzenFormField>
+                </RadzenStack>
+
+            </RadzenStack>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>

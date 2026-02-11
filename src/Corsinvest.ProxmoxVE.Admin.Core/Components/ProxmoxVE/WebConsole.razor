@@ -1,0 +1,25 @@
+﻿@implements IClusterName
+@implements INode
+@implements IVmId
+
+<iframe src="@Url" frameborder="0" scrolling="no" style="@Style" @attributes="AdditionalAttributes">
+</iframe>
+
+@code
+{
+    [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
+    [EditorRequired, Parameter] public string Node { get; set; } = default!;
+    [EditorRequired, Parameter] public VmType VmType { get; set; } = default!;
+    [EditorRequired, Parameter] public long VmId { get; set; }
+    [EditorRequired, Parameter] public string VmName { get; set; } = default!;
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public bool XtermJs { get; set; } = default!;
+    [Parameter] public string Style { get; set; } = default!;
+
+    private string Url { get; set; } = default!;
+
+    protected override void OnInitialized()
+        => Url = VmId == 0
+                ? PveAdminHelper.GetUrlWebConsole(ClusterName, Node, XtermJs)
+                : PveAdminHelper.GetUrlWebConsole(ClusterName, Node, VmType, VmId, VmName, XtermJs);
+}

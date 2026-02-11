@@ -1,0 +1,46 @@
+﻿@inherits ComponentBase
+
+<RadzenRow>
+    @foreach (var item in Data)
+    {
+        <RadzenColumn Size="@(12 / Data.Count())">
+            <div>
+                @if (item.Group == "Snapshot")
+                {
+                    <SubscriptionGate Size="SubscriptionGateSize.Compact">
+                        @RenderGauge(item)
+                    </SubscriptionGate>
+                }
+                else
+                {
+                    @RenderGauge(item)
+                }
+            </div>
+        </RadzenColumn>
+    }
+</RadzenRow>
+
+@code
+{
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public string Style { get; set; } = "width:auto";
+    [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
+
+    private RenderFragment RenderGauge(ResourceUsage item) => __builder =>
+    {
+        <RadzenText TextStyle="TextStyle.H6" Text="@item.Name" TextAlign="TextAlign.Center" />
+        <RadzenArcGauge @attributes="AdditionalAttributes" Style="@Style">
+            <RadzenArcGaugeScale Margin="0" Min="0" Max="260" Radius="1" Y="0.5">
+                <RadzenArcGaugeScaleValue Value="@Math.Round(item.Usage, item.Usage < 10 ? 1 : 0)" Fill="@item.Color">
+                    <Template Context="pointer">
+                        @*                             <RadzenText TextStyle="TextStyle.H3">@pointer.Value%</RadzenText> *@
+                        <RadzenStack AlignItems="AlignItems.Center" Gap="0" Style="width: max-content;">
+                            <RadzenText TextStyle="TextStyle.H5">@pointer.Value%</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Caption" Text="@item.Info" />
+                        </RadzenStack>
+                    </Template>
+                </RadzenArcGaugeScaleValue>
+            </RadzenArcGaugeScale>
+        </RadzenArcGauge>
+    };
+}

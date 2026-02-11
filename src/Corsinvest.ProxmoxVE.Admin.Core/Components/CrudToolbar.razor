@@ -1,0 +1,86 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="3px">
+    @if (AllowMoreMenu)
+    {
+        <RadzenButton Variant="Variant.Text"
+                      Size="ButtonSize.Small"
+                      Style="float:right;"
+                      Icon="more_vert"
+                      Click="ShowMoreMenu" />
+    }
+
+    @if (TemplateBefore != null)
+    {
+        @TemplateBefore
+    }
+
+    @if (CanCreate && OnAdd.HasDelegate)
+    {
+        <RadzenButton Variant="Variant.Text"
+                      Size="ButtonSize.Small"
+                      Text="@L["New"]"
+                      Icon="add"
+                      Click="OnAdd"
+                      Disabled="AddDisabled || Disabled"
+                      ButtonStyle="ButtonStyle.Primary"
+                      title="@L["New"]"
+                      aria-label="@L["New"]" />
+    }
+
+    @if (CanDelete && OnDelete.HasDelegate)
+    {
+        <RadzenButton Variant="Variant.Text"
+                      Size="ButtonSize.Small"
+                      Text="@L["Delete"]"
+                      Icon="delete"
+                      Click="OnDelete"
+                      Disabled="DeleteDisabled || Disabled"
+                      ButtonStyle="ButtonStyle.Danger"
+                      title="@L["Delete"]"
+                      aria-label="@L["Delete"]" />
+    }
+
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+
+    @if (OnRefresh.HasDelegate)
+    {
+        <RadzenButton Variant="Variant.Text"
+                      Size="ButtonSize.Small"
+                      Text="@L["Refresh"]"
+                      Click="Refresh"
+                      IsBusy="InRefresh"
+                      Disabled="Disabled"
+                      Icon="refresh"
+                      title="@L["Refresh"]"
+                      aria-label="@L["Refresh"]" />
+    }
+
+    @if (CanExport && OnExport.HasDelegate)
+    {
+        <RadzenButton Variant="Variant.Text"
+                      Size="ButtonSize.Small"
+                      Text="@L["Export"]"
+                      Click="OnExport"
+                      Disabled="Disabled"
+                      Icon="download"
+                      title="@L["Export"]"
+                      aria-label="@L["Export"]" />
+    }
+
+    @if (TemplateAfter != null)
+    {
+        @TemplateAfter
+    }
+</RadzenStack>
+
+@code
+{
+    private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="@(() => ds.Close())">
+        @TemplateMoreMenu
+    </RadzenMenu>);
+}

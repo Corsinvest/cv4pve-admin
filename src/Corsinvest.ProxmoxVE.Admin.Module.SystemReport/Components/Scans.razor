@@ -1,0 +1,56 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="Data"
+                Data="@ResultLoadData.Data"
+                Count="@ResultLoadData.TotalCount"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                Style="height: calc(100vh - 140px);"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                KeyDown="KeyDownAsync"
+                LoadData="LoadDataAsync"
+                AllowColumnPicking="true"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnAdd="AddAsync"
+                     OnDelete="DeleteAsync"
+                     OnRefresh="RefreshDataAsync"
+                     DeleteDisabled="!SelectedItems.Any()">
+            <TemplateAfter>
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Download XLSX"]"
+                              Click="DownloadAsync"
+                              Icon="download"
+                              Disabled="!SelectedItems.Any() || !SelectedItems[0].End.HasValue"
+                              IsBusy="InDownload"
+                              title="@L["Download XLSX"]"
+                              aria-label="@L["Download XLSX"]" />
+            </TemplateAfter>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <EmptyTemplate>
+        <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                            Click="AddAsync"
+                            Icon="play_arrow"
+                            Style="--rz-icon-fill: 1;" />
+    </EmptyTemplate>
+
+    <Columns>
+        <BaseColumn TItem="Data" Property="@nameof(Data.VmIds)" Title="@L["Vm Ids"]" ShowWatingFunc="ShowWating" />
+        <RadzenDataGridColumn Property="@nameof(Data.VmFeatures)" Title="@L["Vm Features"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.NodeNames)" Title="@L["Nodes"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.NodeFeatures)" Title="@L["Node Features"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.StorageNames)" Title="@L["Storages"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.StorageFeatures)" Title="@L["Storage Features"]" />
+        <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" OrderIndex="0" />
+        <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.Duration)" Title="@L["Duration"]" FormatString="{0:hh':'mm':'ss'.'fff}" />
+    </Columns>
+</RadzenDataGrid>

@@ -1,0 +1,17 @@
+﻿@inject IModuleService ModuleService
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="@ModuleService.Assemblies">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin />
+                </NotAuthorized>
+                <Authorizing></Authorizing>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <NotFound/>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

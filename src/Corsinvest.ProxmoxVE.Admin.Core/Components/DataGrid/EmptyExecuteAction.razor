@@ -1,0 +1,22 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Orientation="Orientation.Vertical" Style="height:200px">
+    <RadzenImage Path="images/misc/empty-box.png" AlternateText="empty box" Style="height:50px" />
+
+    <RadzenButton Text="@Text"
+                  Click="@Click"
+                  Icon="@Icon"
+                  Shade="Shade.Lighter"
+                  ButtonStyle="ButtonStyle.Primary"
+                  Style="@Style"
+                  title="@Text"
+                  aria-label="@Text" />
+</RadzenStack>
+
+@code
+{
+    [Parameter] public EventCallback<MouseEventArgs> Click { get; set; } = default!;
+    [Parameter] public string Text { get; set; } = default!;
+    [Parameter] public string Icon { get; set; } = "add";
+    [Parameter] public string Style { get; set; } = default!;
+}

@@ -1,0 +1,24 @@
+﻿@inherits AdminComponentBase
+
+<div class="rz-p-2">
+    @foreach (var item in Items)
+    {
+        <RadzenRow>
+            <RadzenColumn Size="2">
+                <RadzenIcon Icon="@item.Icon" IconColor="@item.Color" Style="--rz-icon-fill: 1;" />
+            </RadzenColumn>
+            <RadzenColumn Size="8">
+                @L[item.Status]
+            </RadzenColumn>
+            <RadzenColumn Size="2" Style="text-align:right;">
+                @item.Count
+            </RadzenColumn>
+        </RadzenRow>
+    }
+</div>
+
+@code
+{
+    [EditorRequired, Parameter] public IEnumerable<ItemStatus> Items { get; set; } = [];
+    [Parameter] public RenderFragment HeaderTemplate { get; set; } = default!;
+}

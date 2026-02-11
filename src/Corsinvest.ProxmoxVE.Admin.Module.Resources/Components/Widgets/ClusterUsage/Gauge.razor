@@ -1,0 +1,12 @@
+﻿@inherits AdminComponentBase
+
+@if (Initalized)
+{
+    <div class="rz-mt-3">
+        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster.ResourceUsageGauge Data="@Items" class="rz-h-100" />
+    </div>
+}
+else
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}

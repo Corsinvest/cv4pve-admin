@@ -1,0 +1,46 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="ClusterSettings"
+                Data="@ClustersSettings"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="height: calc(100vh - 140px);"
+                PagerHorizontalAlign="HorizontalAlign.Left"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnAdd="AddAsync" OnDelete="DeleteAsync" DeleteDisabled="!SelectedItems.Any()" />
+    </HeaderTemplate>
+
+    <Columns>
+        <BoolIconColumn Property="@nameof(ClusterSettings.Enabled)" Title="@L["Enabled"]" IconFalse="" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterSettings.Name)" Sortable="true" Title="@L["Name"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.Name</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(ClusterSettings.PveName)" Sortable="true" Title="@L["PVE Name"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.PveName</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(ClusterSettings.Description)" Sortable="true" Title="@L["Description"]" />
+
+        <RadzenDataGridColumn Sortable="false" Title="@L["Nodes"]">
+            <Template>
+                @context.Nodes.Count
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(ClusterSettings.Timeout)" Sortable="true" Title="@L["Timeout"]" />
+    </Columns>
+</RadzenDataGrid>

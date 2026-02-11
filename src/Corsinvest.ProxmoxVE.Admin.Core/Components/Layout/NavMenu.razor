@@ -1,0 +1,61 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanelMenu Style="flex: 1;">
+    <RadzenPanelMenuItem Text="@L["Home"]"
+                         Icon="home"
+                         Path="/"
+                         Match="NavLinkMatch.All"
+                         title="@L["Home"]"
+                         aria-label="@L["Home"]" />
+
+    @* <RadzenPanelMenuItem Text="@L[" All services"]" Icon="list" Path="/all-services" Match="NavLinkMatch.All" /> *@
+
+    @foreach (var item in Links.Where(a => a.Module.Category == null))
+    {
+        @RenderLink(item)
+    }
+
+    @foreach (var category in Links.Where(a => a.Module.Category != null).GroupBy(a => a.Module.Category).OrderBy(a => a.Key!.Description))
+    {
+        <RadzenPanelMenuItem Text="@category.Key!.Description"
+                             Match="NavLinkMatch.Prefix"
+                             Icon="@category.Key!.Icon"
+                             title="@category.Key!.Description"
+                             aria-label="@category.Key!.Description">
+
+            @foreach (var item in category.OrderBy(a => a.OrderIndex).ThenBy(a => a.Text))
+            {
+                @RenderLink(item)
+            }
+        </RadzenPanelMenuItem>
+    }
+
+    <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"
+                    PermissionClusterName="@ApplicationHelper.AllClusterName"
+                    Path="*">
+        <RadzenPanelMenuItem Text="@L["Tools & Libraries"]"
+                             Icon="handyman"
+                             Path="/tools-libraries"
+                             Match="NavLinkMatch.All"
+                             title="@L["Tools & Libraries"]"
+                             aria-label="@L["Tools & Libraries"]" />
+    </PermissionView>
+</RadzenPanelMenu>
+
+@code
+{
+    [Parameter] public IEnumerable<ModuleLinkBase> Links { get; set; } = [];
+
+    private RenderFragment RenderLink(ModuleLinkBase item) => __builder =>
+    {
+        <RadzenPanelMenuItem Text="@item.Text"
+                             Icon="@item.Icon"
+                             IconColor="@item.IconColor"
+                             Path="@item.RealUrl"
+                             Target="@(item.IsExternal ? "_blank": string.Empty)"
+                             Match="NavLinkMatch.Prefix"
+                             title="@L[item.Module.Description]"
+                             aria-label="@L[item.Module.Description]" />
+
+    };
+}

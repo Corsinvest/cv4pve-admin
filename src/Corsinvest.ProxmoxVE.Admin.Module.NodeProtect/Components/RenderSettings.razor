@@ -1,0 +1,46 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+@inject IModuleService ModuleService
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
+</SubscriptionGate>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
+</SubscriptionGate>
+
+<RadzenFormField Text="@L["Directory or file to backup"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="folder_copy" />
+    </Start>
+    <ChildContent>
+        <RadzenTextArea Name="@nameof(Model.PathsToBackup)" @bind-Value="@Model.PathsToBackup" Rows="10" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.PathsToBackup)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenTabs>
+    <Tabs>
+        @foreach (var provider in Providers)
+        {
+            var item = provider;
+            <RadzenTabsItem Text="@item.Name" Icon="@item.Icon">
+                <DynamicComponent Type="item.Settings.Type" Parameters="Parameters" />
+            </RadzenTabsItem>
+        }
+    </Tabs>
+</RadzenTabs>
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+
+    private IEnumerable<Provider> Providers { get; set; } = [];
+
+    protected override void OnInitialized() => Providers = ModuleService.Get<Module>()!.GetProviders();
+
+    private IDictionary<string, object> Parameters => new Dictionary<string, object> { { nameof(IModelParameter<>.Model), Model } };
+}

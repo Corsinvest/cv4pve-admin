@@ -1,0 +1,32 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="@DialogStyle">
+    <ResourcesEx @bind-ClusterNames="@ClusterNames"
+                 Style="@Style"
+                 UseProgressBarPercentage="@UseProgressBarPercentage"
+                 DescriptionAsLink="@DescriptionAsLink"
+                 Filter="@Filter"
+                 ShowSnapshotSize="@ShowSnapshotSize"
+                 ShowOsInfo="@ShowOsInfo"
+                 Template="@Template"
+                 ShowLoading="@ShowLoading"
+                 AvailableCommands="@AvailableCommands"
+                 PropertyIconStatus="@PropertyIconStatus"
+                 IconStatus="@IconStatus"
+                 ResourceType="@ResourceType"
+                 TemplateToolbar="@TemplateToolbar"
+                 SelectionMode="@SelectionMode"
+                 @bind-DataGridSettings="DataGridSettings"
+                 @bind-SelectedItems="@SelectedItems"
+                 PickableColumns="@PickableColumns"
+                 AllowColumnPicking="@AllowColumnPicking"
+                 RefreshInterval="@RefreshInterval"
+                 AdditionalAttributes="@AdditionalAttributes" />
+
+    <RadzenButton Click="OnSelect"
+                  Text="@L["Select"]"
+                  Style="width: fit-content;"
+                  Size="ButtonSize.Small"
+                  title="@L["Select"]"
+                  aria-label="@L["Select"]" />
+</RadzenStack>

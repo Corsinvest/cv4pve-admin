@@ -1,0 +1,24 @@
+﻿@inherits AdminComponentBase
+
+@typeparam TModule
+
+@if (JobSchedule.Enabled)
+{
+    @if (JobSchedule.CronExpressionIsValid)
+    {
+        <div>
+            <RadzenText Text="@($"{L["Next Execution"]} : {JobSchedule.CronNextExecution:g} - {JobSchedule.CronExpressionDescriptor}")" TextStyle="TextStyle.Caption" />
+        </div>
+    }
+}
+else
+{
+    <RadzenButton Size="ButtonSize.Small"
+                  Text="@L["Activate schedulation"]"
+                  class="animate__animated animate__pulse animate__infinite"
+                  Click="OpenSettingsAsync"
+                  Shade="Shade.Light"
+                  ButtonStyle="ButtonStyle.Warning"
+                  title="@L["Activate schedulation"]"
+                  aria-label="@L["Activate schedulation"]" />
+}

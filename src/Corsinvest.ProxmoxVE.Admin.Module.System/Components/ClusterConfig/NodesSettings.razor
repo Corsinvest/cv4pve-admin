@@ -1,0 +1,84 @@
+﻿@inherits AdminComponentBase
+
+@*
+//TODO
+<style>
+    .rz-custom-header {
+        width: 100%;
+    }
+
+    .my-class td {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+</style> *@
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="ClusterNodeSettings"
+                Data="@Model.Nodes"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="@Style"
+                PagerHorizontalAlign="HorizontalAlign.Left"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                EditMode="DataGridEditMode.Single"
+                RowRender="RowRender"
+                RowCreate="@OnCreateRow">
+    <HeaderTemplate>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["New"]"
+                          Icon="add"
+                          Click="InsertRowAsync"
+                          Disabled="Disabled || InEdit"
+                          ButtonStyle="ButtonStyle.Primary"
+                          title="@L["New"]"
+                          aria-label="@L["New"]" />
+
+            <RadzenButton Size="ButtonSize.Small"
+                          Text="@L["Discover Nodes"]"
+                          Disabled="Disabled || !Model.Nodes.Any() || InEdit"
+                          Click="DiscoverAsync"
+                          ButtonStyle="ButtonStyle.Success"
+                          Icon="travel_explore"
+                          title="@L["Discover Nodes"]"
+                          aria-label="@L["Discover Nodes"]" />
+        </RadzenStack>
+    </HeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.IPAddress)" Sortable="true" Title="@L["IP Address/Host"]" Width="200px">
+            <EditTemplate Context="ctx">
+                <RadzenTextBox Name="@nameof(ctx.IPAddress)" @bind-Value="@ctx.IPAddress" class="rz-w-100" />
+                <RadzenDataAnnotationValidator Component="@nameof(ctx.IPAddress)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.ApiPort)" Sortable="true" Title="@L["API Port"]" Width="120px">
+            <EditTemplate Context="ctx">
+                <RadzenNumeric Name="@nameof(ctx.ApiPort)" @bind-Value="@ctx.ApiPort" />
+                <RadzenDataAnnotationValidator Component="@nameof(ctx.ApiPort)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        @*
+        <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.SshPort)" Sortable="true" Title="@L["SSH Port"]" Width="120px">
+        <EditTemplate Context="ctx">
+        <RadzenNumeric Name="@nameof(ctx.SshPort)" @bind-Value="@ctx.SshPort" />
+        <RadzenDataAnnotationValidator Component="@nameof(ctx.SshPort)" />
+        </EditTemplate>
+        </RadzenDataGridColumn>
+        *@
+
+        <CommandEditInlineColumn TItem="ClusterNodeSettings"
+                                 CancelEdit="@CancelEdit"
+                                 DeleteRow="@DeleteRowAsync"
+                                 EditRow="@EditRowAsync"
+                                 Disabled="@Disabled"
+                                 SaveRow="@SaveRowAsync" />
+    </Columns>
+</RadzenDataGrid>

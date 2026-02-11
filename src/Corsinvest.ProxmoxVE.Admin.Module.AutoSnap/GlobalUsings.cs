@@ -1,0 +1,16 @@
+global using System.ComponentModel.DataAnnotations;
+global using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
+global using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+global using Corsinvest.ProxmoxVE.Admin.Core.Models;
+global using Corsinvest.ProxmoxVE.Admin.Core.Services;
+global using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Helpers;
+global using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Models;
+global using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Persistence;
+global using Corsinvest.ProxmoxVE.Api.Extension;
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Radzen;
+global using Radzen.Blazor;

@@ -1,0 +1,134 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Search
+@inherits AdminComponentBase
+
+@if (IsOpen)
+{
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; padding-top: 80px;"
+         @onclick="Close">
+
+        <RadzenCard Style="width: 600px; max-height: 500px; display: flex; flex-direction: column; overflow: hidden;"
+                    class="rz-p-0 rz-shadow-10"
+                    @onclick:stopPropagation="true">
+
+            @* Search Input *@
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-p-3 rz-border-bottom">
+
+                @if (IsSearch)
+                {
+                    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary"
+                                               Value="100"
+                                               ShowValue="false"
+                                               Mode="ProgressBarMode.Indeterminate" Style="height: 20px;width: 20px;" />
+                }
+                else
+                {
+                    <RadzenIcon Icon="search" class="rz-color-secondary" />
+                }
+
+                <RadzenTextBox @ref="TextBoxRef"
+                               @bind-Value="SearchText"
+                               Placeholder="@Placeholder"
+                               class="rz-border-0"
+                               Style="flex: 1;"
+                               type="search"
+                               @oninput="OnSearchInput"
+                               @onkeydown="HandleKeyDown" />
+            </RadzenStack>
+
+            @* Results *@
+            <div style="flex: 1; overflow-y: auto; max-height: 350px;">
+                @if (!FilteredItems.Any())
+                {
+                    <RadzenStack AlignItems="AlignItems.Center"
+                                 JustifyContent="JustifyContent.Center"
+                                 Gap="0.5rem"
+                                 class="rz-p-5">
+                        <RadzenIcon Icon="search_off" Style="font-size: 48px;" class="rz-color-secondary" />
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            @L["No results for \"{0}\"", SearchText]
+                        </RadzenText>
+                    </RadzenStack>
+                }
+                else
+                {
+                    <div @onkeydown="HandleListKeyDown" @onkeydown:stopPropagation="false">
+                        <RadzenListBox @ref="ListBoxRef"
+                                       TValue="SearchResultItem"
+                                       @bind-Value="SelectedItem"
+                                       Data="@FilteredItems"
+                                       Style="border: none; width: 100%;"
+                                       Change="@OnListBoxChange">
+                            <Template Context="item">
+                                @* @{
+                                    var item = (SearchResultItem)item1;
+                                } *@
+
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.25rem 0;">
+                                    @* Icon *@
+                                    <RadzenStack AlignItems="AlignItems.Center"
+                                                 JustifyContent="JustifyContent.Center"
+                                                 Style="@($"width: 36px; height: 36px; border-radius: var(--rz-border-radius); background-color: {item.Color}22;")">
+                                        <RadzenIcon Icon="@item.Icon" Style="@($"color: {item.Color};")" />
+                                    </RadzenStack>
+
+                                    @* Content *@
+                                    <RadzenStack Gap="0" Style="flex: 1; min-width: 0; overflow: hidden;">
+                                        <RadzenText TextStyle="TextStyle.Body1"
+                                                    Style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                                    Text="@item.Title" />
+
+                                        <RadzenText TextStyle="TextStyle.Caption"
+                                                    class="rz-color-secondary"
+                                                    Style="overflow: hidden; text-overflow: ellipsis;"
+                                                    Text="@item.Subtitle" />
+                                    </RadzenStack>
+
+                                    @if (item.Tags != null)
+                                    {
+                                        <RadzenStack Orientation="Orientation.Vertical">
+                                            @foreach (var tag in item.Tags)
+                                            {
+                                                <RadzenBadge Shade="Shade.Lighter" BadgeStyle="@tag.Style" Text="@tag.Value" IsPill="true" Style="width: 150px; text-wrap:auto;" />
+                                            }
+                                        </RadzenStack>
+                                    }
+
+                                    @if (item.ResultType == SearchResultType.Command && item.Command != null)
+                                    {
+                                        <RadzenIcon Icon="@(item.Command.RequiresDialog ? "open_in_new" : "bolt")"
+                                                    Style="font-size: 16px;"
+                                                    class="rz-color-secondary"
+                                                    title="@(L[item.Command.RequiresDialog ? "Opens a dialog" : "Quick action"])" />
+                                    }
+
+                                    @if (item.ResultType == SearchResultType.Module)
+                                    {
+                                        <RadzenIcon Icon="widgets" Style="font-size: 16px;" class="rz-color-secondary" />
+                                    }
+                                </div>
+                            </Template>
+                        </RadzenListBox>
+                    </div>
+                }
+            </div>
+
+            @* Dynamic Footer hints *@
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         AlignItems="AlignItems.Center"
+                         Gap="0.75rem"
+                         class="rz-px-3 rz-py-1 rz-border-top rz-color-secondary"
+                         Style="font-size: 0.75rem; flex-wrap: wrap;">
+                @foreach (var hint in GetFooterHints())
+                {
+                    <span>
+                        <RadzenBadge Text="@hint.Text"
+                                     Shade="Shade.Lighter"
+                                     BadgeStyle="@hint.BadgeStyle"
+                                     Style="font-size: 0.65rem;" />
+                        @hint.Label
+                    </span>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    </div>
+}

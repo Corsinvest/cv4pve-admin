@@ -1,0 +1,23 @@
+﻿@inherits AdminComponentBase
+
+@typeparam T
+
+<RadzenFormField Text="@L["Notifier"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="notifications" Style="margin-right: 4px;" />
+    </Start>
+    <ChildContent>
+        <RadzenDropDown @bind-Value="@Settings.NotifierConfigurations" Data="@Items" ValueProperty="@nameof(Item.Name)"
+            Multiple="true" AllowClear="true" AllowFiltering="true" MaxSelectedLabels="10" Chips="true">
+            <Template>
+                (@(((Item)context).Type)) @(((Item)context).Name)
+            </Template>
+        </RadzenDropDown>
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <p>@L["Select one or more notification channels to receive alerts when events occur."]</p>
+            <p>@L["Configure notification channels in the global Settings> Notifications section."]</p>
+        </InfoIcon>
+    </End>
+</RadzenFormField>

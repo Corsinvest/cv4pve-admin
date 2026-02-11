@@ -1,0 +1,29 @@
+﻿@inherits AdminComponentBase
+
+@implements IModelParameter<SnapshotModel>
+
+<SwitchField @bind-Value="@Model.VmStatus"
+             Label="@L["Include RAM"]"
+             Name="@nameof(Model.VmStatus)"
+             ReadOnly="!IsNew"
+             class="rz-w-100"
+             Style="@(Model.HasVmStatus ? "" : "display: none;")" />
+
+<RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" ReadOnly="!IsNew" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Name)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+    <RadzenTextBox @bind-Value="@Model.Description" />
+</RadzenFormField>
+
+@code
+{
+    [CascadingParameter] public bool IsNew { get; set; } = default!;
+    [Parameter] public SnapshotModel Model { get; set; } = default!;
+}

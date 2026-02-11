@@ -1,0 +1,27 @@
+﻿@inherits AdminComponentBase
+
+<div class="rz-p-4">
+    <RadzenAccordion Multiple="true" @key="@string.Join(",", Sections.Select(s => s.Title))">
+        <Items>
+            @foreach (var item in Sections)
+            {
+                <RadzenAccordionItem Text="@item.Title" Icon="@item.Icon" >
+                    <Template>
+                        <div><strong>@item.Title</strong></div>
+                        @if (!string.IsNullOrEmpty(item.Description))
+                        {
+                            <div class="rz-text-secondary-color"> - @item.Description</div>
+                        }
+                    </Template>
+                    <ChildContent>
+                        <DynamicComponent Type="@item.ComponentType" Parameters="@GetParameters()" />
+
+                        <div class="rz-mt-4">
+                            <RadzenButton Text="@L["Save changes"]" ButtonStyle="ButtonStyle.Primary" Click="@SaveAsync" />
+                        </div>
+                    </ChildContent>
+                </RadzenAccordionItem>
+            }
+        </Items>
+    </RadzenAccordion>
+</div>

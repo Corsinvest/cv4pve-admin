@@ -1,0 +1,18 @@
+﻿@inherits AdminComponentBase
+
+<ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
+             ClusterNames="[ClusterName]"
+             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+             IconStatus="ResourceColumnIconStatus.IconAndText"
+             ResourceType="ClusterResourceType.Node"
+             ShowSnapshotSize="true"
+             RefreshInterval="10"
+             UseProgressBarPercentage="false"
+             @bind-DataGridSettings="@DataGridSettings"
+             DescriptionAsLink="true">
+    <Template>
+        <RadzenPanel>
+            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.Manager Node="@context" ClusterName="@ClusterName" />
+        </RadzenPanel>
+    </Template>
+</ResourcesEx>

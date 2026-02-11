@@ -1,0 +1,95 @@
+﻿@inherits AdminComponentBase
+@implements ISettingsParameter<Settings>
+
+<RadzenFormField Text="@L["Type"]" AllowFloatingLabel="false" class="rz-w-100">
+    <ChildContent>
+        <RadzenDropDown TValue="ContentType"
+                        @bind-Value="@Settings.Type"
+                        Data="@(Enum.GetValues<ContentType>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Link"]:</strong> @L["Display a clickable link with text and icon"]
+            <br />
+            <strong>@L["Iframe"]:</strong> @L["Embed web content (YouTube, Vimeo, etc.)"]
+            <br />
+            <strong>@L["Html"]:</strong> @L["Render custom HTML code"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+@switch (Settings.Type)
+{
+    case ContentType.Link:
+        <RadzenFormField Text="@L["Url"]" AllowFloatingLabel="false" class="rz-w-100">
+            <RadzenTextBox Name="@nameof(Settings.Url)" @bind-Value="@Settings.Url" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="@L["Text"]" AllowFloatingLabel="false" class="rz-w-100">
+            <RadzenTextBox Name="@nameof(Settings.Text)" @bind-Value="@Settings.Text" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="@L["Icon"]" AllowFloatingLabel="false" class="rz-w-100">
+            <RadzenTextBox Name="@nameof(Settings.Icon)" @bind-Value="@Settings.Icon" />
+        </RadzenFormField>
+        break;
+
+    case ContentType.Iframe:
+        <RadzenFormField Text="@L["Url"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenTextBox Name="@nameof(Settings.Url)"
+                               Value="@Settings.Url"
+                               Change="@OnUrlChanged" />
+            </ChildContent>
+            <Helper>
+                <RadzenText TextStyle="TextStyle.Caption">@L["Supports YouTube, Vimeo, and other embeddable URLs"]</RadzenText>
+            </Helper>
+        </RadzenFormField>
+        break;
+
+    case ContentType.Html:
+        <RadzenFormField Text="@L["HTML Content"]" AllowFloatingLabel="false" class="rz-w-100">
+            <RadzenTextArea Name="@nameof(Settings.Html)"
+                            @bind-Value="@Settings.Html"
+                            Rows="10"
+                            Style="width: 100%; font-family: monospace;" />
+        </RadzenFormField>
+        break;
+}
+
+@code
+{
+    [Parameter] public Settings Settings { get; set; } = default!;
+    [Parameter] public EventCallback<Settings> SettingsChanged { get; set; }
+
+    private void OnUrlChanged(string url)
+    {
+        Settings.Url = ConvertToEmbedUrl(url);
+    }
+
+    private static string ConvertToEmbedUrl(string url)
+    {
+        // YouTube: https://www.youtube.com/watch?v=VIDEO_ID
+        var youtubeMatch = System.Text.RegularExpressions.Regex.Match(url, @"youtube\.com/watch\?v=([^&]+)");
+        if (youtubeMatch.Success)
+        {
+            return $"https://www.youtube.com/embed/{youtubeMatch.Groups[1].Value}";
+        }
+
+        // YouTube short: https://youtu.be/VIDEO_ID
+        var youtubeShortMatch = System.Text.RegularExpressions.Regex.Match(url, @"youtu\.be/([^?]+)");
+        if (youtubeShortMatch.Success)
+        {
+            return $"https://www.youtube.com/embed/{youtubeShortMatch.Groups[1].Value}";
+        }
+
+        // Vimeo: https://vimeo.com/VIDEO_ID
+        var vimeoMatch = System.Text.RegularExpressions.Regex.Match(url, @"vimeo\.com/(\d+)");
+        if (vimeoMatch.Success)
+        {
+            return $"https://player.vimeo.com/video/{vimeoMatch.Groups[1].Value}";
+        }
+
+        return url;
+    }
+}

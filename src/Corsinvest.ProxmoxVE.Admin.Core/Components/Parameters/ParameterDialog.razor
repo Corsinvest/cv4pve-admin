@@ -1,0 +1,31 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem" JustifyContent="JustifyContent.SpaceBetween" >
+    <RadzenStack Gap="1rem">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+            <RadzenIcon Icon="@Icon" Style="font-size: 24px;" class="rz-color-primary" />
+            <RadzenStack Gap="0">
+                <RadzenText TextStyle="TextStyle.H6" Style="margin: 0;">@Title</RadzenText>
+                <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">@Description</RadzenText>
+            </RadzenStack>
+        </RadzenStack>
+
+        @foreach (var param in Parameters)
+        {
+            <ParameterEditor @ref="@Refs[param.Id]"
+                             @bind-IsValid="@IsValids[param.Id]"
+                             Parameter="param"
+                             @bind-Value="@Values[param.Id]"
+                             @bind-Value:after="@(() => ValueChagedAsync(param))"
+                             GetDataSourceContext="@GetDataSourceContext" />
+        }
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="@L["Execute"]"
+                      Icon="@Icon"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Click="@OnExecute"
+                      Disabled="@(!IsValid())" />
+    </RadzenStack>
+</RadzenStack>

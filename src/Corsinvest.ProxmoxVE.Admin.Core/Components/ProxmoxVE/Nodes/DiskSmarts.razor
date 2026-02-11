@@ -1,0 +1,33 @@
+﻿@inherits AdminComponentBase
+
+@if (Data != null)
+{
+    @if (Data.Attributes != null)
+    {
+        <RadzenDataGrid Data="@Data.Attributes"
+                        AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="false"
+                        AllowSorting="true"
+                        Style="@Style"
+                        IsLoading="IsLoading"
+                        AllowColumnPicking="true"
+                        FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Id)" Title="@L["Id"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Name)" Title="@L["Name"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Value)" Title="@L["Value"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Threshold)" Title="@L["Threshold"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Worst)" Title="@L["Worst"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Flags)" Title="@L["Flags"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Fail)" Title="@L["Fail"]" />
+                <RadzenDataGridColumn Property="@nameof(NodeDiskSmart.NodeDiskSmartAttribute.Raw)" Title="@L["Raw"]" />
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        @((MarkupString)Data.Text)
+    }
+}

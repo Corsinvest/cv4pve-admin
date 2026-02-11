@@ -1,0 +1,15 @@
+﻿@inherits AdminComponentBase
+@inject INotifierService NotifierService
+
+<RadzenTabs>
+    <Tabs>
+        @foreach (var item in NotifierService.Modules.Where(a => a.Link?.Render != null).OrderBy(a => a.Link!.OrderIndex).ThenBy(a => a.Name))
+        {
+            var render = item.Link!.Render!;
+
+            <RadzenTabsItem Icon="@item.Icon" Text="@L[item.Name]" title="@L[item.Description]">
+                <DynamicComponent Type="@render.Type" Parameters="@render.Parameters" />
+            </RadzenTabsItem>
+        }
+    </Tabs>
+</RadzenTabs>

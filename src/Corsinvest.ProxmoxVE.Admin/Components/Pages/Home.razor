@@ -1,0 +1,45 @@
+﻿@inherits AdminComponentBase
+@attribute [Authorize]
+@page "/"
+
+<RadzenAlert AlertStyle="AlertStyle.Dark" Icon="rocket_launch" Size="AlertSize.Large" Variant="Variant.Flat" class="hero-section rz-mt-6" AllowClose="false">
+    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" class="rz-mb-3 rz-color-on-base-darker">
+        <strong>
+            Take Control of Your Proxmox VE Cluster with Ease and Power
+        </strong>
+    </RadzenText>
+
+    <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-base-darker">
+        Take full control of your Proxmox VE cluster with <strong>cv4pve-admin</strong> built <strong>by IT managers, for IT managers</strong>.
+        We understand the challenges of managing complex infrastructures, so we created a solution that puts <strong>power, automation, and security</strong> at your fingertips.
+        Monitor, optimize, and streamline your cluster effortlessly.
+        <strong>Because real control belongs to those who know what it takes.</strong>
+        <RadzenLink Path="https://www.corsinvest.it/cv4pve-admin" target="_blank" Style="color: #FFB9FF !important;">Learn More ↗</RadzenLink>
+    </RadzenText>
+
+    @*
+      <RadzenStack Orientation="Orientation.Horizontal" Gap="2rem" AlignItems="AlignItems.Center" class="rz-mt-6">
+        <RadzenButton Text="See in Action" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat" Size="ButtonSize.Medium" />
+        </RadzenStack>
+    *@
+</RadzenAlert>
+
+<Overview3Cols>
+    <Text1>
+        <strong>cv4pve-admin</strong> is a comprehensive suite of tools designed to enhance and simplify the administration of Proxmox VE environments.<br />
+        It provides advanced features such as automation, compliance checks, snapshot scheduling, security insights, and performance monitoring.<br />
+        Built for system administrators and IT professionals, the suite helps reduce manual effort while increasing reliability and control.
+    </Text1>
+
+    <Text2>
+        <strong>Security & Compliance</strong>: Perform hardening checks and vulnerability assessments to ensure your infrastructure is safe and up to date.<br />
+        <strong>Automation & Efficiency</strong>: Automate tasks like snapshot creation, VM operations, and alerting to save time and reduce human error.<br />
+        <strong>Visibility & Control</strong>: Gain insights into cluster health, resource usage, and configuration drift with a clear and actionable interface.
+    </Text2>
+
+    <Text3>
+        Whether you're managing a small lab or a large production cluster, <strong>cv4pve-admin</strong> brings powerful management capabilities to your fingertips.<br />
+        Designed to be intuitive yet powerful, it adapts to your workflow while enhancing security, operational efficiency, and visibility.<br />
+        It's the essential companion for any Proxmox VE administrator looking for more control, safety, and peace of mind.
+    </Text3>
+</Overview3Cols>

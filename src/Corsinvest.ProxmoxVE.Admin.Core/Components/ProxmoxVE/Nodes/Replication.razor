@@ -1,0 +1,97 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="@Style"
+                IsLoading="IsLoading"
+                AllowColumnPicking="true"
+                RowRender="RowRender"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar>
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Schedule now"]"
+                          Click="ScheduleNowAsync"
+                          Icon="play_arrow"
+                          Style="--rz-icon-fill: 1;"
+                          Disabled="!SelectedItems.Any() || !CanScheduleNow"
+                          ButtonStyle="ButtonStyle.Success"
+                          title="@L["Schedule now"]"
+                          aria-label="@L["Schedule now"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Log"]"
+                          Icon="description"
+                          Click="LogAsync"
+                          Disabled="!SelectedItems.Any()"
+                          title="@L["Log"]"
+                          aria-label="@L["Log"]" />
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <Columns>
+        <BoolIconColumn Property="@nameof(Data.Disable)" Title="@L["Enabled"]" IconFalse="" Inverted="true" Width="120px" />
+        <RadzenDataGridColumn Property="@nameof(Data.Guest)" Title="@L["Guest"]" Width="120px" />
+        <RadzenDataGridColumn Property="@nameof(Data.JobNum)" Title="@L["Job N°"]" Width="120px" />
+        <RadzenDataGridColumn Property="@nameof(Data.Source)" Title="@L["Source"]" Visible="@string.IsNullOrEmpty(Node)" />
+        <RadzenDataGridColumn Property="@nameof(Data.Target)" Title="@L["Target"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Schedule)" Title="@L["Schedule"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Rate)" Title="@L["Rate limit"]">
+            <Template>
+                @if (context.Rate == 0)
+                {
+                    @L["Unlimited"]
+                }
+                else
+                {
+                    @($"{context.Rate} Mb/s")
+                }
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(Data.LastSync)" Title="@L["Last Sync"]">
+            <Template>
+                @DateTimeOffset.FromUnixTimeSeconds(context.LastSync).ToLocalTime().DateTime
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(Data.NextSync)" Title="@L["Next Sync"]">
+            <Template>
+                @DateTimeOffset.FromUnixTimeSeconds(context.NextSync).ToLocalTime().DateTime
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(Data.Duration)" Title="@L["Duration"]">
+            <Template>
+                @($"{TimeSpan.FromSeconds(context.Duration):hh':'mm':'ss}")
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(Data.Comment)" Title="@L["Comment"]" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Id)"
+                              Title="@L["Id"]"
+                              Visible="false"
+                              SortOrder="SortOrder.Ascending"
+                              OrderIndex="0" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Type)" Title="@L["Type"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.VmType)" Title="@L["Vm Type"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.FailCount)" Title="@L["Fail"]" Visible="false" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.LastTry)" Title="@L["Last Try"]" Visible="false">
+            <Template>
+                @DateTimeOffset.FromUnixTimeSeconds(context.LastTry).ToLocalTime().DateTime
+            </Template>
+        </RadzenDataGridColumn>
+
+    </Columns>
+</RadzenDataGrid>
+

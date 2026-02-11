@@ -1,0 +1,29 @@
+﻿@using Toolbelt.Blazor.HotKeys2
+@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem">
+    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+        @L["Available keyboard shortcuts in the application"]
+    </RadzenText>
+
+    <RadzenDataList Data="@HotKeysContext.HotKeyEntries" Style="border: none;">
+        <Template Context="shortcut">
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween"
+                         class="rz-py-2">
+                <RadzenText TextStyle="TextStyle.Body1">@shortcut.Description</RadzenText>
+
+                <RadzenBadge Text="@shortcut.ToString("{0}")"
+                             Shade="Shade.Lighter"
+                             BadgeStyle="BadgeStyle.Primary"
+                             Style="font-family: monospace;" />
+            </RadzenStack>
+        </Template>
+    </RadzenDataList>
+</RadzenStack>
+
+@code
+{
+    [Parameter] public HotKeysContext HotKeysContext { get; set; } = default!;
+}

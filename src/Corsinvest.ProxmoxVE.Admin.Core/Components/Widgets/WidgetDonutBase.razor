@@ -1,0 +1,32 @@
+﻿@inherits AdminComponentBase
+@typeparam TSettings
+
+<RadzenStack class="rz-w-100 rz-h-100">
+    <RadzenChart Style="flex: 1">
+        <RadzenDonutSeries Data="@Items"
+                           Fills="@Items.Select(a => a.Color)"
+                           Title="@SerieTitle"
+                           CategoryProperty="@nameof(Item.Category)"
+                           ValueProperty="@nameof(Item.Count)">
+            <ChildContent>
+                <RadzenSeriesDataLabels Visible="false" />
+            </ChildContent>
+
+            <TitleTemplate>
+                <div class="rz-donut-content">
+                    @if (Title != null)
+                    {
+                        @Title
+                    }
+                </div>
+            </TitleTemplate>
+        </RadzenDonutSeries>
+
+        <RadzenLegend Visible="true" Position="LegendPosition.Left" />
+    </RadzenChart>
+
+    @if (Footer != null)
+    {
+        @Footer
+    }
+</RadzenStack>

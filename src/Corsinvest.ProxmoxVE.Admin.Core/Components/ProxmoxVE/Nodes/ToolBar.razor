@@ -1,0 +1,68 @@
+﻿@inherits AdminComponentBase
+
+@if (CanChangeStatus && Node.IsOnline)
+{
+    <RadzenSplitButton Text="@L[OnlyIcon ? string.Empty : "Shutdown"]"
+                       Icon="power_settings_new"
+                       ButtonStyle="ButtonStyle.Danger"
+                       Click="OnClickPower"
+                       Variant="Variant.Text"
+                       Size="ButtonSize.ExtraSmall"
+                       Style="--rz-icon-fill: 1;">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="@L["Reboot"]" Style="--rz-icon-fill: 1;" Icon="replay" Value="reboot" />
+        </ChildContent>
+    </RadzenSplitButton>
+}
+
+@if (CanConsole)
+{
+    <RadzenSplitButton Text="@L[OnlyIcon ? string.Empty : "Console"]"
+                       Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(DefaultWebConsoleType)"
+                       Click="OnClickOpenConsole"
+                       Variant="Variant.Text"
+                       Size="ButtonSize.ExtraSmall"
+                       title="@L["Open console"]">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="@L["NoVnc"]"
+                                   Value="@WebConsoleType.NoVnc.ToString()"
+                                   Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.NoVnc)"
+                                   title="@L["Open NoVnc console"]" />
+
+            <RadzenSplitButtonItem Text="@L["Xterm.js"]"
+                                   Value="@WebConsoleType.XtermJs.ToString()"
+                                   Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.XtermJs)"
+                                   title="@L["Open Xterm console"]" />
+
+            <RadzenSplitButtonItem Text="@L["Spice"]"
+                                   Value="@WebConsoleType.Spice.ToString()"
+                                   Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.Spice)"
+                                   Visible="SpiceEnabled"
+                                   title="@L["Spice NoVnc console"]" />
+        </ChildContent>
+    </RadzenSplitButton>
+}
+
+@if (Utility.Any(a => a.IsVIsible(Node)))
+{
+    <RadzenButton Variant="Variant.Text"
+                  Size="ButtonSize.ExtraSmall"
+                  ButtonStyle="ButtonStyle.Warning"
+                  Icon="more_vert"
+                  Click="ShowMoreMenu" />
+}
+
+@code
+{
+    private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="@(() => ds.Close())">
+@foreach (var item in Utility.Where(a=> a.IsVIsible(Node)))
+    {
+    <RadzenMenuItem Text="@L[item.Text]"
+                    Style="--rz-icon-fill: 1;"
+                    Icon="@item.Icon"
+                    IconColor="@Colors.Warning"
+                    Click="@(() => OnClickUtilityMenu(item))" />
+    }
+</RadzenMenu>);
+}

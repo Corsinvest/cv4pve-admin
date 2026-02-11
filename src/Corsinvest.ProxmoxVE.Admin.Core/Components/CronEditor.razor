@@ -1,0 +1,51 @@
+﻿@using Radzen.Blazor.Rendering
+
+@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
+    <RadzenFormField Text="@L["Cron Shedule"]" AllowFloatingLabel="false" class="rz-w-100">
+        <Start>
+            @if (AllowEditor)
+            {
+                <RadzenButton @ref="ButtonRef"
+                              Icon="schedule"
+                              Click="@(args => PopupRef.ToggleAsync(ButtonRef.Element))"
+                              Size="ButtonSize.ExtraSmall"
+                              Variant="Variant.Text" />
+            }
+        </Start>
+        <ChildContent>
+            <RadzenTextBox Name="@Id"
+                           Value="@Expression"
+                           ValueChanged="@(async (string value) => { Expression = value; await UpdateAsync(); })" />
+        </ChildContent>
+        <End>
+            <InfoIcon>
+                @L["Descriptor:"] - @Descriptor
+                <br />
+                @L["Next Occurrence"] - @NextOccurrence
+            </InfoIcon>
+        </End>
+        <Helper>
+            <RadzenCustomValidator Component="@Id" Validator="@(() => IsValid)" Text="@L["Cron syntax not valid!"]" />
+        </Helper>
+    </RadzenFormField>
+</RadzenStack>
+
+<Popup @ref="PopupRef" Lazy="true" Style="display: none;
+        position: absolute;
+        overflow: hidden;
+        padding: 15px;
+        border: var(--rz-panel-border);
+        background-color: var(--rz-panel-background-color);
+        box-shadow: var(--rz-panel-shadow);
+        border-radius: var(--rz-border-radius)">
+
+    <SchedulerEditor CronExpression="@Expression"
+                     CronExpressionChanged="@(async (string value) => { Expression = value; await UpdateAsync(); })" />
+
+    <hr />
+
+    <RadzenText TextStyle="TextStyle.Subtitle2"><strong>@L["Schedule:"]</strong> @Descriptor </RadzenText>
+    <RadzenText TextStyle="TextStyle.Subtitle2"><strong>@L["Next occurrence:"]</strong> @NextOccurrence</RadzenText>
+</Popup>

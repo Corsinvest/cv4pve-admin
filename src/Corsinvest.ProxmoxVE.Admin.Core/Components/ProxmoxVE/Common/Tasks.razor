@@ -1,0 +1,64 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="NodeTask"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                IsLoading="IsLoading"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                Density="Density.Compact"
+                Style="@Style"
+                RowRender="RowRender"
+                AllowColumnPicking="true"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnRefresh="RefreshDataAsync" />
+    </HeaderTemplate>
+
+    <Columns>
+        <DateTimeLocalColumn Property="@nameof(NodeTask.StartTimeDate)"
+                              Sortable="true"
+                              FormatString="{0:G}"
+                              Title="@L["Start"]"
+                              OrderIndex="0"
+                              SortOrder="SortOrder.Descending"
+                              Width="150px" />
+
+        <DateTimeLocalColumn Property="@nameof(NodeTask.EndTimeDate)" Sortable="true" FormatString="{0:G}" Title="@L["End"]" Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeTask.Node)"
+                              Sortable="true"
+                              Title="@L["Node"]"
+                              Visible="!ForNode"
+                              FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeTask.DurationInfo)" Sortable="true" Title="@L["Duration"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(NodeTask.User)" Sortable="true" Title="@L["User"]" FilterMode="FilterMode.CheckBoxList" />
+        <RadzenDataGridColumn Property="@nameof(NodeTask.Description)" Sortable="true" Title="@L["Description"]" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeTask.VmId)"
+                              Sortable="true"
+                              Title="@L["Vm Id"]"
+                              Visible="!ForVm"
+                              FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeTask.Status)" Sortable="true" Title="@L["Status"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.Status</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(NodeTask.Type)"
+                              Sortable="true"
+                              Title="@L["Type"]"
+                              Visible="false"
+                              FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(NodeTask.UniqueTaskId)" Sortable="true" Title="@L["UID Task"]" Visible="false" />
+    </Columns>
+</RadzenDataGrid>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\WindowsExecuteUpdate.ps1" />
+    <EmbeddedResource Include="Scripts\WindowsSearchUpdate.ps1" />
+    <EmbeddedResource Include="Scripts\LinuxExecuteUpdate.sh" />
+    <EmbeddedResource Include="Scripts\LinuxSearchUpdate.sh" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
+  </ItemGroup>
+</Project>

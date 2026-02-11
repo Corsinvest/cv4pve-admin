@@ -1,0 +1,22 @@
+﻿@inherits AdminComponentBase
+
+@if (Settings != null)
+{
+    <RadzenTemplateForm TItem="object" Data="@Settings" Submit="@OnSubmitAsync" EditContext="@EditContext">
+        <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
+
+            <RadzenStack Orientation="Orientation.Vertical">
+                <DynamicComponent Type="Module.RenderSettingsInfo!.Render" Parameters="ContentParameters" />
+            </RadzenStack>
+
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                <RadzenButton ButtonType="ButtonType.Submit"
+                              Text="@L["Save"]"
+                              Style="width: fit-content;"
+                              Size="ButtonSize.Small"
+                              title="@L["Save"]"
+                              aria-label="@L["Save"]" />
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenTemplateForm>
+}

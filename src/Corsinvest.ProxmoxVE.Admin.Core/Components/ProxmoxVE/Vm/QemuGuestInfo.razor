@@ -1,0 +1,126 @@
+﻿@inherits AdminComponentBase
+
+@if (IsLoading)
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}
+
+@if (Vm.VmType == VmType.Qemu)
+{
+    <RadzenRow>
+        @if (FsInfo != null && FsInfo.Result.Any())
+        {
+            <RadzenColumn Size="12">
+                <RadzenText TextStyle="TextStyle.Body2"><strong>@L["File Systems"]</strong></RadzenText>
+
+                <RadzenDataGrid Data="@FsInfo.Result"
+                                AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="false"
+                                AllowSorting="true"
+                                Density="Density.Compact"
+                                AllowVirtualization="true"
+                                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                    <Columns>
+                        <RadzenDataGridColumn Property="Name" Title="@L["Name"]" />
+                        <RadzenDataGridColumn Property="MountPoint" Title="@L["Mount Point"]" />
+                        <RadzenDataGridColumn Property="Type" Title="@L["Type"]" Width="150px" />
+
+                        <RadzenDataGridColumn Property="UsedBytes"
+                                              Title="@L["Used Bytes"]"
+                                              FormatString="@FormatHelper.DataFormatBytes"
+                                              FormatProvider="@FormatterHelper.FormatProvider"
+                                              Width="150px" />
+
+                        <RadzenDataGridColumn Property="TotalBytes"
+                                              Title="@L["Total Bytes"]"
+                                              FormatString="@FormatHelper.DataFormatBytes"
+                                              FormatProvider="@FormatterHelper.FormatProvider"
+                                              Width="150px" />
+
+                        <RadzenDataGridColumn Title="@L["Disks"]">
+                            <Template>
+                                @((MarkupString)context.Disks.Select(a => $"{a.Dev} - {a.BusType} {a.Target}:{a.Bus}").JoinAsString("<br />"))
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenColumn>
+        }
+
+        <RadzenColumn Size="6">
+            <RadzenTable Style="border:none;">
+
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;">
+                        <RadzenText TextStyle="TextStyle.Body2"><strong>@L["Qemu Agent is guest"]</strong></RadzenText>
+                    </RadzenTableCell>
+                    <RadzenTableCell Style="border:none; text-align: end;">
+                        <RadzenBadge BadgeStyle="@(QemuAgentRunning ? BadgeStyle.Success : BadgeStyle.Danger)"
+                                     Text="@L[QemuAgentRunning ? "running":"not running"]"
+                                     Style="height: max-content;" />
+                    </RadzenTableCell>
+                </RadzenTableRow>
+
+                @if (!string.IsNullOrEmpty(HostName))
+                {
+                    @RenderRow("Host Name", HostName)
+                }
+
+                @if (!string.IsNullOrEmpty(OsInfo?.PrettyName))
+                {
+                    @RenderRow("OS Info", OsInfo.PrettyName)
+                }
+            </RadzenTable>
+        </RadzenColumn>
+
+        @if (NetworkGetInterfaces != null && NetworkGetInterfaces.Result.Any())
+        {
+            <RadzenColumn Size="6">
+                <RadzenText TextStyle="TextStyle.Body2"><strong>@L["Network"]</strong></RadzenText>
+
+                <RadzenDataGrid Data="@NetworkGetInterfaces.Result"
+                                AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="false"
+                                AllowSorting="true"
+                                AllowPaging="true"
+                                Density="Density.Compact"
+                                ShowPagingSummary="true"
+                                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+
+                    <Columns>
+                        <RadzenDataGridColumn Property="Name" Title="@L["Name"]" OrderIndex="0" />
+                        <RadzenDataGridColumn Property="HardwareAddress" Title="@L["Mac Address"]" />
+                        <RadzenDataGridColumn Title="@L["IP Addresses"]">
+                            <Template>
+                                @if (context.IpAddresses != null)
+                                {
+                                    @((MarkupString)context.IpAddresses.Select(a => a.IpAddress + "/" + a.Prefix).JoinAsString("<br />"))
+                                }
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenColumn>
+        }
+    </RadzenRow>
+}
+
+@code
+{
+    private RenderFragment RenderRow(string title, string value) => __builder =>
+    {
+        <RadzenTableRow>
+            <RadzenTableCell Style="border:none;">
+                <RadzenText TextStyle="TextStyle.Body2"><strong>@L[title]</strong></RadzenText>
+            </RadzenTableCell>
+
+            <RadzenTableCell Style="border:none; text-align: end;">
+                <RadzenText TextStyle="TextStyle.Body2" Text="@value" />
+            </RadzenTableCell>
+        </RadzenTableRow>
+    };
+}

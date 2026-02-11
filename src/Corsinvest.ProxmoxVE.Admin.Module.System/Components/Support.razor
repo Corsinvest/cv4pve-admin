@@ -1,0 +1,74 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6">
+            <a name="#community"></a>
+
+            <div style="text-align:center;">
+                <RadzenImage Path="images/community.svg" AlternateText="community" Style="height:300px;" />
+            </div>
+
+            <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H2" TextAlign="TextAlign.Center" class="rz-pt-8" Text="@L["Community Support"]" />
+            <RadzenText>
+                @L["Everybody is welcome to visit the"]
+                <RadzenLink Text="cv4pve-admin Community." Path="https://github.com/Corsinvest/cv4pve-admin" Target="_blank" />
+                @L["Join the growing community and participate in the discussions!"]
+            </RadzenText>
+
+            <RadzenText>
+                @L["The Corsinvest team monitors but does not guarantee a response to every question. For guaranteed responses and more, you may consider the"]
+                <RadzenLink Text="@L["Dedicated support"]" Path="#dedicated" /> @L["option"].
+            </RadzenText>
+
+            <br />
+
+            <RadzenLink Path="https://github.com/Corsinvest/cv4pve-admin/issues/11" Target="_blank" Text="@L["Who's using cv4pve-admin?"]" />
+
+            <br />
+
+            <RadzenFormField Text="@L["Proxmox VE Clusters"]" AllowFloatingLabel="false" class="rz-w-100">
+                <RadzenDropDown TValue="string"
+                                ValueChanged="ValueChanged"
+                                TextProperty="@nameof(ClusterSettings.FullName)"
+                                ValueProperty="@nameof(ClusterSettings.Name)"
+                                AllowClear="true"
+                                Data="@ClustersSettings" />
+            </RadzenFormField>
+
+            @if (!string.IsNullOrEmpty(WhoUsing))
+            {
+                <RadzenFormField Text="@L["Who Using"]" AllowFloatingLabel="false" class="rz-w-100">
+                    <RadzenText Style="font-family: Courier New; font-size: inherit; padding:10px;">
+                        @((MarkupString)WhoUsing.Replace(" ", "&nbsp;").Replace(Environment.NewLine, "<br />"))
+                    </RadzenText>
+                </RadzenFormField>
+            }
+
+            @if (!string.IsNullOrEmpty(Info))
+            {
+                <RadzenFormField Text="@L["Info"]" AllowFloatingLabel="false" class="rz-w-100">
+                    <RadzenText Style="font-family: Courier New; font-size: small; padding:10px;">
+                        @((MarkupString)Info.Replace(" ", "&nbsp;").Replace(Environment.NewLine, "<br />"))
+                    </RadzenText>
+                </RadzenFormField>
+            }
+        </RadzenColumn>
+
+        <RadzenColumn Size="12" SizeMD="6">
+            <a name="#dedicated"></a>
+
+            <div style="text-align:center;">
+                <RadzenImage Path="images/dedicated.svg" AlternateText="dedicated" Style="height:300px;" />
+            </div>
+
+            <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H2" TextAlign="TextAlign.Center" class="rz-pt-8" Text="@L["Dedicated Support"]" />
+            <RadzenText Text="@L["Corsinvest offers enterprise support with the subscriptions."]" />
+            <RadzenText TextAlign="TextAlign.Center">
+                <a class="rz-button rz-button-lg rz-primary rz-m-4"
+                   target="_blank"
+                   href="@ApplicationHelper.UrlShopSubscription">@L["See Pricing"]</a>
+            </RadzenText>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenPanel>

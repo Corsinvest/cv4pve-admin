@@ -1,0 +1,96 @@
+﻿@inherits AdminComponentBase
+
+@typeparam TItem
+
+<RadzenDataGrid TItem="TItem"
+                Data="Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowGrouping="true"
+                Style="@Style"
+                IsLoading="@IsLoading"
+                AllGroupsExpanded="false"
+                AllowMultiColumnSorting="true"
+                ShowMultiColumnSortingIndex="true"
+                Render="OnRender"
+                GroupRowRender="OnGroupRowRender"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <GroupHeaderTemplate>
+        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>: @FormatHelper.FromBytes(context.Data.Items!.Cast<NodeStorageContent>().Sum(a => a.Size))
+    </GroupHeaderTemplate>
+
+    <Columns>
+        @foreach (var item in PropertiesName)
+        {
+            var orderIndex = GetOrderIndex(item);
+
+            @if (item == nameof(NodeStorageContent.Verified))
+            {
+                <BoolIconColumn Property="@item" Title="@L["Verified"]" IconFalse="" Width="100px">
+                    <HeaderTemplate>
+                        <RadzenIcon Icon="verified" />
+                    </HeaderTemplate>
+                </BoolIconColumn>
+            }
+            else if (item == nameof(NodeStorageContent.Encrypted))
+            {
+                <BoolIconColumn Property="@item" Title="@L["Encrypted"]" IconFalse="" Width="100px">
+                    <HeaderTemplate>
+                        <RadzenIcon Icon="encrypted" />
+                    </HeaderTemplate>
+                </BoolIconColumn>
+            }
+            else if (item == nameof(NodeStorageContent.Protected))
+            {
+                <BoolIconColumn Property="@item" Title="@L["Protected"]" IconFalse="" Width="100px">
+                    <HeaderTemplate>
+                        <RadzenIcon Icon="security" />
+                    </HeaderTemplate>
+                </BoolIconColumn>
+            }
+            else if (item == nameof(NodeStorageContent.CreationDate) || item == nameof(NodeStorageContent.Creation))
+            {
+                <DateTimeLocalColumn Property="@nameof(NodeStorageContent.CreationDate)"
+                                     Title="@(TypeHelper.GetDisplayDescription<TItem>(item))"
+                                     FormatString="@(TypeHelper.GetDisplayFormatAttribute<TItem>(item))"
+                                     FormatProvider="FormatterHelper.FormatProvider"
+                                     FilterMode="StorageContents<TItem>.GetFilterMode(item)"
+                                     Sortable="true"
+                                     SortOrder="orderIndex.HasValue? SortOrder.Ascending: null"
+                                     OrderIndex="@orderIndex" />
+            }
+            else if (typeof(TItem).GetProperty(item)!.PropertyType == typeof(bool))
+            {
+                <BoolIconColumn Property="@item"
+                                Title="@(TypeHelper.GetDisplayDescription<TItem>(item))"
+                                Width="150px"
+                                SortOrder="orderIndex.HasValue? SortOrder.Ascending: null"
+                                OrderIndex="@orderIndex"
+                                IconFalse="" />
+            }
+            else if (item == nameof(ISnapshotsSize.SnapshotsSize))
+            {
+                <SnapshotSizeColumn Property="@nameof(ISnapshotsSize.SnapshotsSize)" Title="@L["Snapshots Size"]" />
+            }
+            else if (item == nameof(ISnapshotsReplicationSize.SnapshotsReplicationSize))
+            {
+                <SnapshotSizeColumn Property="@nameof(ISnapshotsReplicationSize.SnapshotsReplicationSize)" Title="@L["Snapshots Repl. Size"]" Replication="true" />
+
+            }
+            else
+            {
+                <RadzenDataGridColumn Property="@item"
+                                      Title="@(TypeHelper.GetDisplayDescription<TItem>(item))"
+                                      FormatString="@(TypeHelper.GetDisplayFormatAttribute<TItem>(item))"
+                                      FormatProvider="FormatterHelper.FormatProvider"
+                                      FilterMode="StorageContents<TItem>.GetFilterMode(item)"
+                                      Sortable="true"
+                                      SortOrder="orderIndex.HasValue? SortOrder.Ascending: null"
+                                      OrderIndex="@orderIndex" />
+            }
+        }
+    </Columns>
+</RadzenDataGrid>

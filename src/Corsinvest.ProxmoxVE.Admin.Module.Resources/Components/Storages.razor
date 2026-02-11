@@ -1,0 +1,79 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenTabs>
+        <Tabs>
+            <RadzenTabsItem Text="@L["Configuration"]" Icon="settings">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Storage.Storages ClusterName="@ClusterName" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Storages"]" Icon="storage">
+                <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
+                             ClusterNames="@([ClusterName])"
+                             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                             IconStatus="ResourceColumnIconStatus.IconAndText"
+                             ResourceType="ClusterResourceType.Storage"
+                             ShowSnapshotSize="true"
+                             UseProgressBarPercentage="false"
+                             @bind-DataGridSettings="DataGridSettingsStorage"
+                             DescriptionAsLink="true">
+                    <Template>
+                        <RadzenPanel>
+                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Storage.Manager Storage="context" ClusterName="@ClusterName" />
+                        </RadzenPanel>
+                    </Template>
+                </ResourcesEx>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Usage"]" Icon="trending_up">
+                <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat">
+                    <strong>@L["ATTENTION!"]</strong> @L["Storage occupation shown may not reflect actual disk usage."] @L["Storage with compression/deduplication"] (<strong>PBS, ZFS, CEPH, Btrfs</strong>) @L["displays uncompressed sizes, which can differ significantly from real disk space used."]
+                </RadzenAlert>
+
+                <RadzenTabs>
+                    <Tabs>
+                        <RadzenTabsItem Text="@L["By Storage"]" Icon="storage">
+                            <RadzenStack Orientation="Orientation.Vertical">
+                                <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
+                                             ClusterNames="@([ClusterName])"
+                                             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                                             IconStatus="ResourceColumnIconStatus.IconAndText"
+                                             ResourceType="ClusterResourceType.Storage"
+                                             ShowSnapshotSize="true"
+                                             UseProgressBarPercentage="false"
+                                             @bind-DataGridSettings="DataGridSettingsStorage"
+                                             DescriptionAsLink="true">
+                                    <Template>
+                                        <div class="rz-panel">
+                                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.StorageUsage Resource="context" ClusterName="@ClusterName" />
+                                        </div>
+                                    </Template>
+                                </ResourcesEx>
+                            </RadzenStack>
+                        </RadzenTabsItem>
+
+                        <RadzenTabsItem Text="@L["By VMs"]" Icon="computer">
+                            <RadzenStack Orientation="Orientation.Vertical">
+                                <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Vm)"
+                                             ClusterNames="@([ClusterName])"
+                                             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                                             IconStatus="ResourceColumnIconStatus.IconAndText"
+                                             ResourceType="ClusterResourceType.Vm"
+                                             ShowSnapshotSize="true"
+                                             UseProgressBarPercentage="false"
+                                             @bind-DataGridSettings="DataGridSettingsVm"
+                                             DescriptionAsLink="true">
+                                    <Template>
+                                        <div class="rz-panel">
+                                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.StorageUsage Resource="context" ClusterName="@ClusterName" />
+                                        </div>
+                                    </Template>
+                                </ResourcesEx>
+                            </RadzenStack>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenPanel>

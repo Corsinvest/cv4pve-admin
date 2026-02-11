@@ -1,0 +1,32 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="Model.Enabled" />
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["Telegram"]" Icon="send">
+            <SwitchField @bind-Value="@Model.Telegram.Enabled" Label="@L["Enabled"]" Name="Model.Telegram.Enabled" />
+
+            <PasswordField @bind-Value="@Model.Telegram.Token" Label="@L["Token"]" class="rz-w-100" Name="@nameof(Model.Telegram.Token)">
+                <Helper>
+                    <RadzenDataAnnotationValidator Component="@nameof(Model.Telegram.Token)" />
+                </Helper>
+            </PasswordField>
+
+            <RadzenFormField Text="@L["Chats Id"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenTextBox Name="@nameof(Model.Telegram.ChatsId)" @bind-Value="@Model.Telegram.ChatsId" />
+                </ChildContent>
+                <Helper>
+                    <RadzenDataAnnotationValidator Component="@nameof(Model.Telegram.ChatsId)" />
+                </Helper>
+            </RadzenFormField>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+}

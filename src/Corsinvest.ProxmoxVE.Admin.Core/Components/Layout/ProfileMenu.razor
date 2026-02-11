@@ -1,0 +1,75 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem">
+	<RadzenProfileMenu Click="OnClick">
+		<Template>
+			<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-me-2">
+				@if (string.IsNullOrEmpty(ProfileImageUrl))
+				{
+					<RadzenGravatar Email="@Email" />
+				}
+				else
+				{
+					<RadzenImage Path="@ProfileImageUrl" class="rz-gravatar" AlternateText="@DisplayName" />
+				}
+
+				<RadzenText TextStyle="TextStyle.Body2" class="rz-m-0 rz-display-none rz-display-md-block" Style="line-height: 1; color: inherit;" Text="@DisplayName" />
+
+				@*
+                <div class="d-flex">
+                    <div title="@CurrentUserFullName">
+                        @CurrentUserFullName
+                    </div>
+                    <div style="text-decoration: underline;" title="@ClusterFullName">
+                        @ClusterFullName
+                    </div>
+                </div>
+            *@
+			</RadzenStack>
+		</Template>
+		<ChildContent>
+			<RadzenStack Style="width:300px; padding: 10px;" Orientation="Orientation.Horizontal">
+				@if (string.IsNullOrEmpty(ProfileImageUrl))
+				{
+					<RadzenGravatar Email="@Email" Size="64" Style="width:64px; height:64px;" />
+				}
+				else
+				{
+					<RadzenImage Path="@ProfileImageUrl" class="rz-gravatar" AlternateText="@DisplayName" Style="width:64px; height:64px;" />
+				}
+
+				<RadzenStack Orientation="Orientation.Vertical" Gap="0px">
+					<RadzenText TextStyle="TextStyle.Body1">
+						<strong>@DisplayName</strong>
+					</RadzenText>
+					<RadzenText Text="@Email" TextStyle="TextStyle.Body2" />
+				</RadzenStack>
+			</RadzenStack>
+
+			<RadzenProfileMenuItem Icon="@(!IsDark ? "dark_mode" : "light_mode")"
+								   Text="@L[!IsDark ? "Dark" :"Light"]"
+								   title="@L["Theme"]"
+								   Value="Theme" />
+
+			@foreach (var item in Links)
+			{
+				<RadzenProfileMenuItem Text="@item.Text"
+									   Icon="@item.Icon"
+									   IconColor="@item.IconColor"
+									   Path="@item.RealUrl"
+									   Target="@(item.IsExternal ? "_blank": string.Empty)"
+									   Match="NavLinkMatch.Prefix"
+									   title="@L[item.Module.Description]"
+									   aria-label="@L[item.Module.Description]" />
+			}
+
+			<hr class="solid">
+
+			<RadzenProfileMenuItem Text="@L["Sign Out"]"
+								   Path="/Logout"
+								   Icon="logout"
+								   title="@L["Sign Out"]"
+								   aria-label="@L["Sign Out"]" />
+		</ChildContent>
+	</RadzenProfileMenu>
+</RadzenStack>

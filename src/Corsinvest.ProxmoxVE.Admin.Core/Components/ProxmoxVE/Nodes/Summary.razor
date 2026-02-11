@@ -1,0 +1,122 @@
+﻿@inherits AdminComponentBase
+
+@if (Status == null)
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}
+else
+{
+    <RadzenRow>
+        <RadzenColumn Size="6">
+            <RadzenTable Style="border:none;">
+                @RenderRow("schedule", "Uptime", FormatHelper.UptimeInfo(Status.Uptime))
+
+                @RenderRow("avg_pace", "Load Average", $"{Status.LoadAvg.ToArray()[0]}, {Status.LoadAvg.ToArray()[1]}, {Status.LoadAvg.ToArray()[2]}")
+
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;" colspan="2">
+                        @RenderTitle(PveAdminUIHelper.Icons.Cpu, "CPU", FormatHelper.CpuInfo(Status.Cpu, Status.CpuInfo.Cpus))
+                        @RenderProgress(Status.Cpu * 100)
+                    </RadzenTableCell>
+                </RadzenTableRow>
+
+                @RenderRow(string.Empty, "KSM sharing", FormatHelper.FromBytes(Status.Ksm.Shared))
+
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;" colspan="2">
+                        @RenderTitle(PveAdminUIHelper.Icons.Storage, "SWAP", FormatHelper.UsageInfo((ulong)Status.Swap.Used, (ulong)Status.Swap.Total))
+                        @RenderProgress(FormatHelper.CalculatePercentage((ulong)Status.Swap.Used, (ulong)Status.Swap.Total) * 100)
+                    </RadzenTableCell>
+                </RadzenTableRow>
+            </RadzenTable>
+        </RadzenColumn>
+
+        <RadzenColumn Size="6">
+            <RadzenTable Style="border:none;">
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;">
+                        <RadzenStack Orientation="Orientation.Horizontal">
+                            <div style="width: 5px;">
+                                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.IconStatusResource Status="@Node.Status" Type="@Node.Type" />
+                            </div>
+                            <RadzenText TextStyle="TextStyle.Body2"><strong>@L["Status"]</strong></RadzenText>
+                        </RadzenStack>
+                    </RadzenTableCell>
+
+                    <RadzenTableCell Style="border:none; text-align: end;">
+                        <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(Node.Status, false))"
+                                     Text="@L[Node.Status]"
+                                     Style="height: max-content;" />
+                    </RadzenTableCell>
+                </RadzenTableRow>
+
+                @RenderRow(string.Empty, "IO delay", $"{Status.Wait:P2}")
+
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;" colspan="2">
+                        @RenderTitle(PveAdminUIHelper.Icons.Memory, "Memory Usage", FormatHelper.UsageInfo((ulong)Status.Memory.Used, (ulong)Status.Memory.Total))
+                        @RenderProgress(FormatHelper.CalculatePercentage((ulong)Status.Memory.Used, (ulong)Status.Memory.Total) * 100)
+                    </RadzenTableCell>
+                </RadzenTableRow>
+
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;" colspan="2">
+                        @RenderTitle(PveAdminUIHelper.Icons.Storage, "/ HD Space", FormatHelper.UsageInfo((ulong)Status.RootFs.Used, (ulong)Status.RootFs.Total))
+                        @RenderProgress(FormatHelper.CalculatePercentage((ulong)Status.RootFs.Used, (ulong)Status.RootFs.Total) * 100)
+                    </RadzenTableCell>
+                </RadzenTableRow>
+
+            </RadzenTable>
+        </RadzenColumn>
+
+        <RadzenColumn Size="12">
+            <RadzenTable Style="border:none;">
+                @RenderRow(string.Empty, "CPU(s)", CpuModel)
+                @RenderRow(string.Empty, "Kernel Version", Status.Kversion)
+                @RenderRow(string.Empty, "Manager Version", Status.PveVersion)
+            </RadzenTable>
+        </RadzenColumn>       
+    </RadzenRow>
+}
+
+@code
+{
+    private RenderFragment RenderRow(string icon, string title, string value) => __builder =>
+    {
+        <RadzenTableRow>
+            <RadzenTableCell Style="border:none;">
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
+                    @if (!string.IsNullOrEmpty(icon))
+                    {
+                        <RadzenIcon Icon="@icon" />
+                    }
+                    <RadzenText TextStyle="TextStyle.Body2"><strong>@L[title]</strong></RadzenText>
+                </RadzenStack>
+            </RadzenTableCell>
+
+            <RadzenTableCell Style="border:none; text-align: end;">
+                <RadzenText TextStyle="TextStyle.Body2" Text="@value" />
+            </RadzenTableCell>
+        </RadzenTableRow>
+    };
+
+    private RenderFragment RenderTitle(string icon, string title, string value) => __builder =>
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
+            @if (!string.IsNullOrEmpty(icon))
+            {
+                <RadzenIcon Icon="@icon" />
+            }
+            <RadzenText TextStyle="TextStyle.Body2" class="rz-w-100"><strong>@L[title]</strong></RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2" Text="@value" />
+        </RadzenStack>
+    };
+
+    private RenderFragment RenderProgress(double value) => __builder =>
+    {
+        <RadzenProgressBar Value="@value"
+                           ShowValue="false"
+                           class="rz-w-100"
+                           ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(value))" />
+    };
+}

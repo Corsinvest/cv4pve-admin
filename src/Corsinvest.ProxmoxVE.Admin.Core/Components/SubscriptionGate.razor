@@ -1,0 +1,104 @@
+﻿@inherits AdminComponentBase
+@inject IBrowserService BrowserService
+
+@if (ApplicationHelper.IsEnterpriseEdition)
+{
+    @ChildContent
+}
+else
+{
+    @if (Size == SubscriptionGateSize.Banner)
+    {
+        <div style="position: relative;">
+            <div style="pointer-events: none; min-height: 40px;">
+                @ChildContent
+            </div>
+
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 193, 7, 0.3); pointer-events: none; z-index: 999;"></div>
+
+            <div style="position: absolute; top: 0; right: 0; z-index: 1000; pointer-events: none;">
+                <div style="background: var(--rz-base-background-color); border: 2px solid var(--rz-warning); padding: 0.2rem; border-radius: var(--rz-border-radius); display: flex; align-items: center; gap: 0.5rem; align-items: center; justify-content: space-between; box-shadow: var(--rz-shadow-3); pointer-events: auto;">
+                    @if (FullMode)
+                    {
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <RadzenIcon Icon="diamond" Style="color: var(--rz-danger); font-size: 1.5rem;" />
+                            <RadzenText Style="margin: 0;">@L["Requires subscription:"] <strong>Enterprise</strong></RadzenText>
+                        </div>
+                    }
+
+                    <RadzenButton Icon="vpn_key"
+                                  ButtonStyle="ButtonStyle.Warning"
+                                  Size="ButtonSize.ExtraSmall"
+                                  Click="@(() => BrowserService.OpenAsync(ApplicationHelper.UrlShopSubscription, "_blank"))"
+                                  title="@L["Get Enterprise"]" />
+                </div>
+            </div>
+        </div>
+    }
+    else if (Size == SubscriptionGateSize.Compact)
+    {
+        <div style="position: relative;">
+            <div style="pointer-events: none; min-height: 35px;">
+                @ChildContent
+            </div>
+
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 193, 7, 0.3); pointer-events: none; z-index: 999;"></div>
+
+            <div style="position: absolute; top: 0; right: 0; z-index: 1000;">
+                <div style="background: var(--rz-base-background-color); border: 2px solid var(--rz-warning); padding: 0.2rem; border-radius: var(--rz-border-radius); box-shadow: var(--rz-shadow-3); display: flex; align-items: center; gap: 0.5rem;">
+                    @if (FullMode)
+                    {
+                        <RadzenIcon Icon="diamond" Style="color: var(--rz-danger); font-size: 1.25rem;" />
+                        <RadzenText TextStyle="TextStyle.Caption" Style="margin: 0; font-weight: 600;" Text="@L["Enterprise"]" />
+                    }
+                    <RadzenButton Icon="vpn_key"
+                                  ButtonStyle="ButtonStyle.Warning"
+                                  Size="ButtonSize.ExtraSmall"
+                                  Click="@(() => BrowserService.OpenAsync(ApplicationHelper.UrlShopSubscription, "_blank"))"
+                                  title="@L["Get Enterprise"]" />
+
+                </div>
+            </div>
+        </div>
+    }
+    else if (Size == SubscriptionGateSize.Full)
+    {
+        <div style="position: relative;">
+            <div style="pointer-events: none;">
+                @ChildContent
+            </div>
+
+            <div role="alert"
+                 aria-label="@L["Subscription required"]"
+                 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 193, 7, 0.3); display: flex; justify-content: center; align-items: center; pointer-events: auto; z-index: 1000;">
+
+                <div style="text-align: center; background: var(--rz-base-background-color); padding: 1.5rem; border-radius: var(--rz-border-radius); border: 2px solid var(--rz-warning); box-shadow: var(--rz-shadow-6);">
+
+                    @if (FullMode)
+                    {
+                        <RadzenIcon Icon="diamond"
+                                    Style="font-size: 2.5rem; color: var(--rz-danger); margin-bottom: 0.5rem;" />
+
+                        <RadzenText TextStyle="TextStyle.Subtitle1" style="margin-bottom: 1rem;">
+                            @L["Requires subscription:"] <strong>Enterprise</strong>
+                        </RadzenText>
+                    }
+
+                    <RadzenButton Icon="vpn_key"
+                                  Text="@L["Get Enterprise"]"
+                                  ButtonStyle="ButtonStyle.Warning"
+                                  Size="ButtonSize.Small"
+                                  Click="@(() => BrowserService.OpenAsync(ApplicationHelper.UrlShopSubscription,"_blank"))"
+                                  title="@L["Get Enterprise"]" />
+
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool FullMode { get; set; } = true;
+    [Parameter] public SubscriptionGateSize Size { get; set; } = SubscriptionGateSize.Full;
+}

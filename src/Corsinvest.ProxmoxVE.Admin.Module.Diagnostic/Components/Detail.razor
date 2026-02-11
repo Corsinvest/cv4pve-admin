@@ -1,0 +1,74 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="JobDetail"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                AllowMultiColumnSorting="true"
+                PagerHorizontalAlign="HorizontalAlign.Left"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowGrouping="true"
+                AllGroupsExpanded="false"
+                ShowMultiColumnSortingIndex="true"
+                HideGroupedColumn="false"
+                Render="@OnRender"
+                GroupRowRender="OnGroupRowRender">
+    <GroupHeaderTemplate>
+        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count)
+    </GroupHeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(JobDetail.Gravity)" Title="@L["Gravity"]" Width="150px" OrderIndex="1" SortOrder="SortOrder.Ascending">
+            <Template>
+                @context.Gravity.ToString()
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(JobDetail.IdResource)" Title="@L["Id"]" Width="150px" OrderIndex="2" SortOrder="SortOrder.Ascending">
+            <Template>
+                <RadzenLink class="rz-link link"
+                            Text="@context.IdResource"
+                            title="@L["Open Web UI Proxmox VE"]"
+                            Path="@GetPveUrl(context)"
+                            Target="_blank" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(JobDetail.Context)" Title="@L["Context"]" Width="150px" OrderIndex="3" SortOrder="SortOrder.Ascending" />
+        <RadzenDataGridColumn Property="@nameof(JobDetail.SubContext)" Title="@L["SubContext"]" Width="150px" OrderIndex="4" SortOrder="SortOrder.Ascending" />
+        <RadzenDataGridColumn Property="@nameof(JobDetail.Description)" Title="@L["Description"]" OrderIndex="5" SortOrder="SortOrder.Ascending" />
+
+        <RadzenDataGridColumn Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Right"
+                              Frozen="true"
+                              FrozenPosition="FrozenColumnPosition.Right"
+                              Width="100px"
+                              Reorderable="false"
+                              Groupable="false">
+            <Template Context="ctx">
+                @{
+                    var helpUrl = GetHelpUrl(ctx);
+                }
+                @if (!string.IsNullOrEmpty(helpUrl))
+                {
+                    <RadzenLink Icon="info" Target="_blank" Path="@helpUrl" />
+                }
+
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Icon="visibility_off"
+                              ButtonStyle="ButtonStyle.Primary"
+                              Click="@(() => IgnoreIssueAsync(ctx))"
+                              @onclick:stopPropagation="true"
+                              title="@L["Ignore Issue"]"
+                              aria-label="@L["Ignore Issue"]" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

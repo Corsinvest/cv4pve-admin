@@ -1,0 +1,129 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem">
+    <!-- Periodically every -->
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+        <RadzenRadioButtonList @bind-Value="ScheduleType" TValue="ScheduleTypeEnum" Orientation="Orientation.Vertical">
+            <Items>
+                <RadzenRadioButtonListItem Text="@L["Periodically every:"]" Value="ScheduleTypeEnum.Periodic" />
+            </Items>
+        </RadzenRadioButtonList>
+
+        <RadzenNumeric @bind-Value="PeriodicValue"
+                       Min="1"
+                       Max="PeriodicMax"
+                       Style="width: 80px"
+                       Disabled="@(!IsPeriodicMode)" />
+
+        <RadzenDropDown Data="AvailableTimeUnits"
+                        @bind-Value="SelectedTimeUnit"
+                        Style="width: 100px"
+                        Disabled="@(!IsPeriodicMode)" />
+    </RadzenStack>
+
+    <!-- Daily at -->
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+        <RadzenRadioButtonList @bind-Value="ScheduleType" TValue="ScheduleTypeEnum" Orientation="Orientation.Vertical">
+            <Items>
+                <RadzenRadioButtonListItem Text="@L["Daily at:"]" Value="ScheduleTypeEnum.Daily" />
+            </Items>
+        </RadzenRadioButtonList>
+
+        <RadzenDatePicker @bind-Value="DailyTime"
+                          ShowTime="true"
+                          TimeOnly="true"
+                          DateFormat="HH:mm"
+                          Style="width: 120px"
+                          Disabled="@(!IsDailyMode)" />
+
+        <RadzenText Text="@L["Days:"]" TextStyle="TextStyle.Subtitle2" />
+        <RadzenDropDown Data="Enum.GetValues<DayOfWeek>()"
+                        Count="7"
+                        @bind-Value="SelectedDays"
+                        Multiple="true"
+                        Style="width: 150px"
+                        Disabled="@(!IsDailyMode)" />
+    </RadzenStack>
+
+    <!-- Monthly -->
+    <RadzenStack Gap="0.5rem">
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+            <RadzenRadioButtonList @bind-Value="ScheduleType"
+                                   TValue="ScheduleTypeEnum"
+                                   Orientation="Orientation.Vertical">
+                <Items>
+                    <RadzenRadioButtonListItem Text="@L["Monthly:"]" Value="ScheduleTypeEnum.Monthly" />
+                </Items>
+            </RadzenRadioButtonList>
+
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             Gap="1rem"
+                             AlignItems="AlignItems.Center">
+                    <RadzenText Text="@L["Start at:"]" TextStyle="TextStyle.Subtitle2" />
+                    <RadzenDatePicker @bind-Value="MonthlyStartTime"
+                                      ShowTime="true"
+                                      TimeOnly="true"
+                                      DateFormat="HH:mm"
+                                      Style="width: 120px"
+                                      Disabled="@(!IsMonthlyMode)" />
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             Gap="1rem"
+                             AlignItems="AlignItems.Center">
+
+                    <RadzenText Text="@L["Months:"]" TextStyle="TextStyle.Subtitle2" />
+                    <RadzenDropDown Data="Enum.GetValues<MonthEnum>()"
+                                    @bind-Value="SelectedMonths"
+                                    Multiple="true"
+                                    Count="12"
+                                    Style="width: 300px"
+                                    Disabled="@(!IsMonthlyMode)" />
+                </RadzenStack>
+
+
+                <!-- Monthly Mode Selection -->
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                    <RadzenRadioButtonList @bind-Value="MonthlyMode"
+                                           TValue="MonthlyModeEnum"
+                                           Disabled="@(!IsMonthlyMode)"
+                                           Orientation="Orientation.Vertical">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="@L["Day"]" Value="MonthlyModeEnum.DayOfMonth" />
+                        </Items>
+                    </RadzenRadioButtonList>
+
+                    <RadzenNumeric @bind-Value="MonthlyDay"
+                                   Min="1"
+                                   Max="31"
+                                   Style="width: 80px"
+                                   Disabled="@(!IsMonthlyMode || !IsMonthlyDayMode)" />
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                    <RadzenRadioButtonList @bind-Value="MonthlyMode"
+                                           TValue="MonthlyModeEnum"
+                                           Disabled="@(!IsMonthlyMode)"
+                                           Orientation="Orientation.Vertical">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="@L["Week"]" Value="MonthlyModeEnum.DayOfWeek" />
+                        </Items>
+                    </RadzenRadioButtonList>
+
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                        <RadzenDropDown Data="Enum.GetValues<MonthlyTypeEnum>()"
+                                        @bind-Value="MonthlyType"
+                                        Style="width: 100px"
+                                        Disabled="@(!IsMonthlyMode || !IsMonthlyWeekMode)" />
+
+                        <RadzenDropDown Data="Enum.GetValues<DayOfWeek>()"
+                                        @bind-Value="MonthlyDayOfWeek"
+                                        Style="width: 100px"
+                                        Disabled="@(!IsMonthlyMode || !IsMonthlyWeekMode)" />
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenStack>
+</RadzenStack>

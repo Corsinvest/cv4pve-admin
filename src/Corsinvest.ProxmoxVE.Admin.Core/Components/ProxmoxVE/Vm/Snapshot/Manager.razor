@@ -1,0 +1,64 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+				TItem="Data"
+				Data="@Items"
+				AllowFiltering="true"
+				AllowColumnResize="true"
+				AllowAlternatingRows="false"
+				AllowSorting="true"
+				Style="@Style"
+				FilterPopupRenderMode="PopupRenderMode.OnDemand"
+				FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+				Density="Density.Compact"
+				CellClick="CellClick"
+				RowSelect="RowSelectAsync"
+				RowCollapse="@(args => DataGridRef.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"
+				KeyDown="KeyDownAsync"
+				RowRender="RowRender"
+				LoadChildData="LoadChildData"
+				@bind-Value="@SelectedItems">
+	<HeaderTemplate>
+		<CrudToolbar OnAdd="AddAsync"
+					 AddDisabled="!CanCreate"
+					 OnDelete="DeleteAsync"
+					 DeleteDisabled="!CanDelete || !SelectedItems.Any()"
+					 OnRefresh="RefreshDataAsync">
+			<ChildContent>
+				<RadzenButton Variant="Variant.Text"
+							  Size="ButtonSize.Small"
+							  Text="@L["Rollback"]"
+							  Icon="history"
+							  Click="RollbackAsync"
+							  Disabled="!CanRollback || !SelectedItems.Any()"
+							  ButtonStyle="ButtonStyle.Danger"
+							  title="@L["Rollback"]"
+							  aria-label="@L["Rollback"]" />
+			</ChildContent>			
+		</CrudToolbar>
+	</HeaderTemplate>
+
+	<EmptyTemplate>
+		@if (CanCreate)
+		{
+			<EmptyExecuteAction Text="@L["Create your first snapshots"]" Click="AddAsync" />
+		}
+		else
+		{
+			@L["No records to display."]
+		}
+	</EmptyTemplate>
+
+	<Columns>
+		<RadzenDataGridColumn Property="@nameof(Data.Name)" Sortable="true" Title="@L["Name"]">
+			<Template>
+				<span class="rz-link link" style="text-decoration: underline;">@context.Name</span>
+			</Template>
+		</RadzenDataGridColumn>
+
+		<BoolIconColumn Property="@nameof(Data.VmStatus)" Title="@L["Include RAM"]" IconFalse="" />
+        <DateTimeLocalColumn Property="@nameof(Data.Date)" Sortable="true" Title="@L["Date"]" Width="200px" />
+		<RadzenDataGridColumn Property="@nameof(Data.Description)" Sortable="true" Title="@L["Description"]" />
+        <SnapshotSizeColumn Property="@nameof(Data.SnapshotSize)" Title="@L["Size"]" ShowWating="IsCalculateSnapshotSize" Visible="AllowCalculateSnapshotSize" />
+	</Columns>
+</RadzenDataGrid>

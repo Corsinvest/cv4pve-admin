@@ -1,0 +1,71 @@
+﻿@inherits AdminComponentBase
+
+@attribute [CascadingTypeParameter(nameof(TItem))]
+@typeparam TItem where TItem : notnull
+
+<RadzenDataGridColumn TItem="TItem"
+                      Filterable="false"
+                      Sortable="false"
+                      TextAlign="TextAlign.Right"
+                      Frozen="true"
+                      FrozenPosition="FrozenColumnPosition.Right"
+                      Reorderable="false"
+                      Pickable="false"
+                      Resizable="false"
+                      Groupable="false"
+                      Width="70px">
+    <Template Context="ctx">
+        @if (!Disabled)
+        {
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="edit"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Click="@(() => EditRow.InvokeAsync(ctx))"
+                          @onclick:stopPropagation="true"                         
+                          title="@L["Edit"]"
+                          aria-label="@L["Edit"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="delete"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Click="@(() => DeleteRow.InvokeAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          title="@L["Remove"]"
+                          aria-label="@L["Remove"]" />
+        }
+    </Template>
+
+    <EditTemplate Context="ctx">
+        @if (!Disabled)
+        {
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="check"
+                          ButtonStyle="ButtonStyle.Success"
+                          Click="@(() => SaveRow.InvokeAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          title="@L["Save"]"
+                          aria-label="@L["Save"]" />
+
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Icon="close"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Click="@(() => CancelEdit.InvokeAsync(ctx))"
+                          @onclick:stopPropagation="true"
+                          title="@L["Cancel"]"
+                          aria-label="@L["Cancel"]" />
+        }
+    </EditTemplate>
+</RadzenDataGridColumn>
+
+@code
+{
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback<TItem> EditRow { get; set; } = default!;
+    [Parameter] public EventCallback<TItem> DeleteRow { get; set; } = default!;
+    [Parameter] public EventCallback<TItem> SaveRow { get; set; } = default!;
+    [Parameter] public EventCallback<TItem> CancelEdit { get; set; } = default!;
+}

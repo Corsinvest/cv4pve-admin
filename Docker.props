@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
+    <ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
+    <ContainerImageTags>$(Version);latest</ContainerImageTags>
+    <ContainerUser>app</ContainerUser>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Default environment variables -->
+    <ContainerEnvironmentVariable Include="ASPNETCORE_URLS" Value="http://+:8080" />
+    <ContainerEnvironmentVariable Include="ASPNETCORE_ENVIRONMENT" Value="Production" />
+    <ContainerEnvironmentVariable Include="ASPNETCORE_FORWARDEDHEADERS_ENABLED" Value="true" />
+    <ContainerEnvironmentVariable Include="DOTNET_EnableDiagnostics" Value="0" />
+
+    <!-- Exposed ports -->
+    <ContainerPort Include="8080" Type="tcp" />
+
+    <!-- OCI metadata labels -->
+    <ContainerLabel Include="org.opencontainers.image.title" Value="$(Product)" />
+    <ContainerLabel Include="org.opencontainers.image.description" Value="$(Description)" />
+    <ContainerLabel Include="org.opencontainers.image.vendor" Value="$(Company)" />
+    <ContainerLabel Include="org.opencontainers.image.authors" Value="$(Authors)" />
+    <ContainerLabel Include="org.opencontainers.image.url" Value="$(PackageProjectUrl)" />
+    <ContainerLabel Include="org.opencontainers.image.version" Value="$(Version)" />
+    <ContainerLabel Include="org.opencontainers.image.source" Value="$(RepositoryUrl)" />
+    <ContainerLabel Include="org.opencontainers.image.licenses" Value="$(PackageLicenseExpression)" />
+    <ContainerLabel Include="org.opencontainers.image.documentation" Value="$(PackageProjectUrl)" />
+  </ItemGroup>
+</Project>

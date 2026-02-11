@@ -1,0 +1,19 @@
+﻿@inherits AdminComponentBase
+
+@if (IsInitialized)
+{
+    <ResourcesEx Filter="Filter"
+                 ClusterNames="@([ClusterName])"
+                 PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                 IconStatus="ResourceColumnIconStatus.IconAndText"
+                 ResourceType="ClusterResourceType.Vm"
+                 ShowSnapshotSize="true"
+                 UseProgressBarPercentage="false"
+                 RefreshInterval="10"
+                 @bind-DataGridSettings="DataGridSettings"
+                 DescriptionAsLink="true" />
+}
+else
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}

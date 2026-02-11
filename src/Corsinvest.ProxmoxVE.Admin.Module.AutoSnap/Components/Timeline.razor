@@ -1,0 +1,73 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <CrudToolbar OnRefresh="RefreshDataAsync" InRefresh="@InRefresh" />
+
+    <RadzenTimeline AlignItems="AlignItems.Start" LinePosition="LinePosition.Alternate" Orientation="Orientation.Vertical">
+        <Items>
+            @foreach (var item in Items)
+            {
+                <RadzenTimelineItem PointStyle="@(item.Status? PointStyle.Success: PointStyle.Warning)">
+                    <PointContent>
+                        @item.Count
+                    </PointContent>
+
+                    <ChildContent>
+                        <RadzenAccordion>
+                            <Items>
+                                <RadzenAccordionItem>
+                                    <Template>
+                                        @GetTitle(item)
+                                    </Template>
+
+                                    <ChildContent>
+                                        <RadzenAccordion>
+                                            <Items>
+                                                @foreach (var job in GetJobs(item.Date))
+                                                {
+                                                    <RadzenAccordionItem>
+                                                        <Template>
+                                                            <RadzenStack Orientation="Orientation.Horizontal">
+                                                                <RadzenText>
+                                                                    <RadzenBadge Text="@job.Count.ToString()"
+                                                                                 IsPill="true"
+                                                                                 BadgeStyle="@(job.Status ? BadgeStyle.Success : BadgeStyle.Warning)" />
+                                                                    @GetTitle(job)
+                                                                </RadzenText>
+                                                            </RadzenStack>
+                                                        </Template>
+
+                                                        <ChildContent>
+                                                            <RadzenDataGrid TItem="DataSnapshot"
+                                                                            Data="@Get(item,job)"
+                                                                            AllowFiltering="true"
+                                                                            AllowColumnResize="true"
+                                                                            AllowAlternatingRows="false"
+                                                                            AllowSorting="true"
+                                                                            AllowVirtualization="true"
+                                                                            Density="Density.Compact"
+                                                                            FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                                                                <Columns>
+                                                                    <RadzenDataGridColumn Property="@nameof(DataSnapshot.SnapName)" Sortable="true" Title="@L["Name"]" />
+                                                                    <DateTimeLocalColumn Property="@nameof(DataSnapshot.Start)" Sortable="true" Title="@L["Start"]" SortOrder="SortOrder.Descending" />
+                                                                    <RadzenDataGridColumn Property="@nameof(DataSnapshot.Duration)" Sortable="true" Title="@L["Duration"]" FormatString="{0:hh':'mm':'ss}" />
+                                                                    <SnapshotSizeColumn Property="@nameof(DataSnapshot.SnapshotsSize)" ShowWating="IsCalculateSnapshotSize" Visible="AllowCalculateSnapshotSize" />
+                                                                    <BoolIconColumn Property="@nameof(DataSnapshot.Status)" Title="@L["Status"]" IconFalse="" />
+                                                                </Columns>
+                                                            </RadzenDataGrid>
+                                                        </ChildContent>
+                                                    </RadzenAccordionItem>
+                                                }
+                                            </Items>
+                                        </RadzenAccordion>
+                                    </ChildContent>
+                                </RadzenAccordionItem>
+                            </Items>
+                        </RadzenAccordion>
+                    </ChildContent>
+                </RadzenTimelineItem>
+            }
+        </Items>
+    </RadzenTimeline>
+</RadzenPanel>

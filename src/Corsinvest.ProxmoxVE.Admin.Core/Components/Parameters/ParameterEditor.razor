@@ -1,0 +1,183 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Models.Parameters
+@inherits AdminComponentBase
+
+<RadzenStack Gap="0.25rem">
+    @switch (Parameter.Type)
+    {
+        case ParameterType.Text:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenTextBox Value="@(Value?.ToString() ?? string.Empty)"
+                                   ValueChanged="@ValueChangedAsync"
+                                   Name="@Parameter.Id"
+                                   Placeholder="@Parameter.Options?.Placeholder"
+                                   Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+
+        case ParameterType.Password:
+            <PasswordField Label="@Parameter.Label"
+                           Value="@(Value?.ToString() ?? string.Empty)"
+                           ValueChanged="@ValueChangedAsync"
+                           Name="@Parameter.Id"
+                           Placeholder="@Parameter.Options?.Placeholder"
+                           Style="width: 100%;" />
+            break;
+
+        case ParameterType.Number:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenNumeric TValue="int?"
+                                   Value="@(Value as int?)"
+                                   ValueChanged="@(v => ValueChangedAsync(v))"
+                                   Placeholder="@Parameter.Options?.Placeholder"
+                                   Name="@Parameter.Id"
+                                   Min="@Parameter.Options?.Min"
+                                   Max="@Parameter.Options?.Max"
+                                   Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+
+        case ParameterType.Decimal:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenNumeric TValue="double?"
+                                   Value="@(Value as double?)"
+                                   ValueChanged="@(v => ValueChangedAsync(v))"
+                                   Placeholder="@Parameter.Options?.Placeholder"
+                                   Name="@Parameter.Id"
+                                   Min="@Parameter.Options?.Min"
+                                   Max="@Parameter.Options?.Max"
+                                   Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+
+        case ParameterType.Bool:
+            <SwitchField Label="@Parameter.Label"
+                         Value="@(Value as bool? ?? false)"
+                         ValueChanged="@(v => ValueChangedAsync(v))"
+                         Placeholder="@Parameter.Options?.Placeholder"
+                         Name="@Parameter.Id" />
+            break;
+
+        case ParameterType.Date:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenDatePicker TValue="DateTime ?"
+                                      Value="@(Value as DateTime?)"
+                                      ValueChanged="@(v => ValueChangedAsync(v))"
+                                      Placeholder="@Parameter.Options?.Placeholder"
+                                      Name="@Parameter.Id"
+                                      DateFormat="yyyy-MM-dd"
+                                      Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+
+        case ParameterType.Time:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenDatePicker TValue="DateTime ?"
+                                      Value="@(Value as DateTime?)"
+                                      ValueChanged="@(v => ValueChangedAsync(v))"
+                                      Placeholder="@Parameter.Options?.Placeholder"
+                                      Name="@Parameter.Id"
+                                      ShowTime="true"
+                                      TimeOnly="true"
+                                      DateFormat="HH:mm"
+                                      Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+
+        case ParameterType.DateTime:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenDatePicker TValue="DateTime ?"
+                                      Value="@(Value as DateTime?)"
+                                      ValueChanged="@(v => ValueChangedAsync(v))"
+                                      Placeholder="@Parameter.Options?.Placeholder"
+                                      Name="@Parameter.Id"
+                                      ShowTime="true"
+                                      DateFormat="yyyy-MM-dd HH:mm"
+                                      Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+
+        case ParameterType.Select:
+        case ParameterType.MultiSelect:
+            <RadzenFormField Text="@Parameter.Label" AllowFloatingLabel="false">
+                <ChildContent>
+                    @if (Parameter.Options?.DataSource != null && DataSourceCache is var ds && ds != null)
+                    {
+                        @if (ds.Columns != null && ds.Columns.Count > 0)
+                        {
+                            <RadzenDropDownDataGrid TValue="object"
+                                                    Value="@Value"
+                                                    ValueChanged="@ValueChangedAsync"
+                                                    Data="@ds.Data"
+                                                    TextProperty="@ds.TextProperty"
+                                                    ValueProperty="@ds.ValueProperty"
+                                                    Name="@Parameter.Id"
+                                                    Multiple="@(Parameter.Type ==ParameterType.MultiSelect)"
+                                                    AllowFiltering="true"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                    Placeholder="@(Parameter.Options?.Placeholder ?? L["Select..."])"
+                                                    Style="width: 100%;">
+                                <Columns>
+                                    @foreach (var col in ds.Columns)
+                                    {
+                                        <RadzenDropDownDataGridColumn Property="@col.Property" Title="@col.Title" Width="@col.Width" />
+                                    }
+                                </Columns>
+                            </RadzenDropDownDataGrid>
+                        }
+                        else
+                        {
+                            <RadzenDropDown TValue="object"
+                                            Value="@Value"
+                                            ValueChanged="@(v => ValueChangedAsync(v))"
+                                            Data="@ds.Data"
+                                            TextProperty="@ds.TextProperty"
+                                            ValueProperty="@ds.ValueProperty"
+                                            Multiple="@(Parameter.Type ==ParameterType.MultiSelect)"
+                                            Name="@Parameter.Id"
+                                            Placeholder="@(Parameter.Options?.Placeholder ?? L["Select..."])"
+                                            Style="width: 100%;" />
+                        }
+                    }
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@Parameter.Id" Text="@L["This field is required."]" Visible="@(Parameter.Required)" />
+                </Helper>
+            </RadzenFormField>
+            break;
+    }
+
+    @if (!string.IsNullOrEmpty(Parameter.Description))
+    {
+        <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">@Parameter.Description</RadzenText>
+    }
+</RadzenStack>

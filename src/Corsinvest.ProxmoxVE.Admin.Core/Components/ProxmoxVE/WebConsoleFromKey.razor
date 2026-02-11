@@ -1,0 +1,21 @@
+﻿@layout WebConsoleLayout
+@page "/webconsole/-/{Key}"
+
+@if (Info == null)
+{
+    @if (Initalized)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" Text="Oops, Something went wrong..." />
+    }
+}
+else
+{
+    <WebConsole ClusterName="@Info.ClusterName"
+                Node="@Info.Node"
+                VmId="@Info.VmId"
+                VmName="@Info.VmName"
+                VmType="@Info.VmType"
+                XtermJs="@Info.XtermJs"
+                class="rz-w-100 rz-h-100"
+                Style="position: absolute;border: none;" />
+}

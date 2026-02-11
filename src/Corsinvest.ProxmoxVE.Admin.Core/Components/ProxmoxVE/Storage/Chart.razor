@@ -1,0 +1,37 @@
+﻿@inherits AdminComponentBase
+
+<RadzenChart>
+    <RadzenChartTooltipOptions Shared="true" />
+    <RadzenAreaSeries Smooth="true"
+                      Data="@Data"
+                      ValueProperty="@nameof(NodeStorageRrdData.Size)"
+                      CategoryProperty="@nameof(NodeStorageRrdData.TimeDate)"
+                      Title="@L["Total"]"
+                      LineType="LineType.Solid">
+        <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+    </RadzenAreaSeries>
+
+    <RadzenAreaSeries Smooth="true"
+                      Data="@Data"
+                      ValueProperty="@nameof(NodeStorageRrdData.Used)"
+                      CategoryProperty="@nameof(NodeStorageRrdData.TimeDate)"
+                      Title="@L["Usage"]"
+                      LineType="LineType.Solid">
+        <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+    </RadzenAreaSeries>
+
+    <RadzenLegend Position="LegendPosition.Top" />
+    <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+    <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+        <RadzenGridLines Visible="true" />
+        <RadzenAxisTitle Text="@L["Bytes"]" />
+    </RadzenValueAxis>
+</RadzenChart>
+
+<LegendCounter Data="@Data" Counters="@([new ("Usage", "Bytes", string.Empty, a => a.Used) { Formatter = FormatHelper.FromBytes },
+                                         new ("Usage", "%","P1", a =>  FormatHelper.CalculatePercentage((ulong)a.Used, (ulong)a.Size))])" />
+
+@code
+{
+    [Parameter] public IEnumerable<NodeStorageRrdData> Data { get; set; } = default!;
+}

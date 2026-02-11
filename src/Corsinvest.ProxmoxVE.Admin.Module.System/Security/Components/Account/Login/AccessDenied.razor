@@ -1,0 +1,14 @@
+﻿@page "/AccessDenied"
+
+@inherits AdminComponentBase
+
+<PageTitle>@L["Access denied"]</PageTitle>
+
+<RadzenAlert Shade="Shade.Lighter"
+             Variant="Variant.Flat"
+             Size="AlertSize.Small"
+             AlertStyle="AlertStyle.Danger"
+             AllowClose="false"
+             Title="@L["Access Denied"]"
+             Text="@L["You do not have access to this resource."]" />
+<AntiforgeryToken />

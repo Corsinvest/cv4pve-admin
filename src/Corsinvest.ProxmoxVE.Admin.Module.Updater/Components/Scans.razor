@@ -1,0 +1,112 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                AllowGrouping="true"
+                IsLoading="IsLoading"
+                ShowMultiColumnSortingIndex="true"
+                AllowMultiColumnSorting="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                SelectionMode="DataGridSelectionMode.Multiple"
+                AllowColumnPicking="true"
+                RowRender="RowRender"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar>
+            @*OnRefresh="RefreshDataAsync"*@
+            <TemplateBefore>
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Scan"]"
+                              Click="Scan"
+                              Icon="play_arrow"
+                              Style="--rz-icon-fill: 1;"
+                              ButtonStyle="ButtonStyle.Success"
+                              title="@L["Scan"]"
+                              aria-label="@L["Scan"]" />
+
+                @*  <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Upgrade"]"
+                              Click="UpgradeAsync"
+                              Icon="update"
+                              IsBusy="IsUpgrade"
+                              ButtonStyle="ButtonStyle.Danger"
+                              Disabled="!SelectedItems.Any()" /> *@
+
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Download PDF"]"
+                              Click="DownloadAsync"
+                              Icon="download"
+                              Disabled="!Items.Any()"
+                              IsBusy="InDownload"
+                              title="@L["Download PDF"]"
+                              aria-label="@L["Download PDF"]" />
+            </TemplateBefore>
+
+            <TemplateAfter>
+                <InfoScheduler TModule="Module" JobSchedule="@Settings" />
+            </TemplateAfter>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <EmptyTemplate>
+        <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                            Click="Scan"
+                            Icon="play_arrow"
+                            Style="--rz-icon-fill: 1;" />
+    </EmptyTemplate>
+
+    <Columns>
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Status)" Sortable="true" ShowIconStatus="ResourceColumnIconStatus.Icon" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Type)" Sortable="true" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Node)" Sortable="true" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Description)" Sortable="true" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.DiskUsagePercentage)" Sortable="true" Visible="false" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.MemoryUsagePercentage)" Sortable="true" Visible="false" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.CpuUsagePercentage)" Sortable="true" Visible="false" />
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Uptime)" Sortable="true" />
+
+        <BaseColumn TItem="ClusterResourceUpdateScanInfo"
+                    Property="@nameof(ClusterResourceUpdateScanInfo.UpdateScanStatus)"
+                    Sortable="true"
+                    ShowWatingFunc="ShowWatingUpdate" />
+
+        <BoolIconColumn TItem="ClusterResourceUpdateScanInfo"
+                        Property="@nameof(ClusterResourceUpdateScanInfo.UpdateNormalAvailable)"
+                        IconTrue="update"
+                        IconFalse="" />
+
+        <BoolIconColumn TItem="ClusterResourceUpdateScanInfo"
+                        Property="@nameof(ClusterResourceUpdateScanInfo.UpdateSecurityAvailable)"
+                        IconTrue="update"
+                        IconFalse="" />
+
+        <BoolIconColumn TItem="ClusterResourceUpdateScanInfo"
+                        Property="@nameof(ClusterResourceUpdateScanInfo.UpdateRequireReboot)"
+                        IconTrue="restart_alt"
+                        IconFalse="" />
+
+        <BaseColumn TItem="ClusterResourceUpdateScanInfo"
+                    Property="@nameof(ClusterResourceUpdateScanInfo.UpdateScanTimestamp)"
+                    Sortable="true"
+                    ShowWatingFunc="ShowWatingUpdate" />
+
+        <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Error)" Sortable="false" Width="100px">
+            <Template>
+                @if (!string.IsNullOrEmpty(context.Error))
+                {
+                    <RadzenIcon Icon="error" title="@context.Error" Style="cursor: pointer;" />
+                }
+            </Template>
+        </ResourceColumn>
+    </Columns>
+</RadzenDataGrid>
+
+

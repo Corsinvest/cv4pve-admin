@@ -1,0 +1,26 @@
+﻿@inherits AdminComponentBase
+
+<ResourcesEx @ref="ResourcesExRef"
+             Filter="@((a, b) => a.ResourceType == ClusterResourceType.Vm)"
+             ClusterNames="@([ClusterName])"
+             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+             IconStatus="ResourceColumnIconStatus.IconAndText"
+             ResourceType="ClusterResourceType.Vm"
+             ShowSnapshotSize="true"
+             UseProgressBarPercentage="false"
+             RefreshInterval="10"
+             @bind-DataGridSettings="DataGridSettings"
+             ShowOsInfo="@ShowOsInfo"
+             DescriptionAsLink="true">
+
+    <TemplateToolbar>
+        <SwitchField Label="@L["Show OS Info"]" @bind-Value="@ShowOsInfo" @bind-Value:after="ShowOsInfoAfter" />
+    </TemplateToolbar>
+
+    <Template>
+        <RadzenPanel>
+            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.Manager Vm="context"
+                                                                             ClusterName="@ClusterName" />
+        </RadzenPanel>
+    </Template>
+</ResourcesEx>

@@ -1,0 +1,50 @@
+﻿@page "/LoginWith2fa"
+@inherits AdminComponentBase
+
+<PageTitle>@L["Two-factor authentication"]</PageTitle>
+
+<RadzenText Text="@L["Two-factor authentication"]" TextStyle="TextStyle.H5" />
+<RadzenText Text="@L["Your login is protected with an authenticator app. Enter your authenticator code below."]" TextStyle="TextStyle.H6" />
+
+<RadzenTemplateForm TItem="InputModel"
+                    Data="@Input"
+                    Action="@($"/Login2fa?returnUrl={ReturnUrl}")"
+                    Method="post">
+    <RadzenStack Orientation="Orientation.Vertical">
+
+        <AntiforgeryToken />
+
+        <input type="hidden" name="@nameof(Key2FA)" value="@Key2FA" />
+        <input type="hidden" name="@nameof(ReturnUrl)" value="@ReturnUrl" />
+        <input type="hidden" name="@nameof(RememberMe)" value="@RememberMe.ToString().ToLower()" />
+
+        <RadzenSecurityCode @ref="@SecurityCodeRef"
+                            @bind-Value="@Input.TwoFactorCode"
+                            Type="SecurityCodeType.String"
+                            Count="6"
+                            Name="@nameof(Input.TwoFactorCode)" />
+
+        <RadzenDataAnnotationValidator Component="@nameof(Input.TwoFactorCode)" />
+
+        <br />
+
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+            <RadzenSwitch Name="@nameof(Input.RememberMachine)" @bind-Value="@Input.RememberMachine" />
+            <RadzenLabel Text="@L["Remember Machine"]" Component="@nameof(Input.RememberMachine)" />
+        </RadzenStack>
+
+        <br />
+
+        <RadzenButton ButtonType="ButtonType.Submit"
+                      Text="@L["Log in"]"
+                      Variant="Variant.Flat"
+                      title="@L["Log in"]"
+                      aria-label="@L["Log in"]"
+                      Style="width:fit-content;" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+<br />
+
+<RadzenText Text="@L["Don't have access to your authenticator device? You can"]" TextStyle="TextStyle.Body1" />
+<RadzenLink Path="@($"/LoginWithRecoveryCode?ReturnUrl={@ReturnUrl}")" Text="@L["log in with a recovery code"]" />

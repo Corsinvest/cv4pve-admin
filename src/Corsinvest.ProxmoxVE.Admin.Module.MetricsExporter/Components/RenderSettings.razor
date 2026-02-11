@@ -1,0 +1,30 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["Prometheus"]" Icon="monitoring">
+            <SwitchField @bind-Value="@Model.Prometheus.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Prometheus.Enabled)" />
+
+            <RadzenFormField Text="@L["Prefix"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenTextBox Name="@nameof(Model.Prometheus.ExporterPrefix)" @bind-Value="@Model.Prometheus.ExporterPrefix" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="@nameof(Model.Prometheus.ExporterPrefix)" />
+                </Helper>
+            </RadzenFormField>
+
+            <PasswordField @bind-Value="@Model.Prometheus.Token" Label="@L["Token"]" Name="@nameof(Model.Prometheus.Token)" class="rz-w-100">
+                <Helper>
+                    <RadzenRequiredValidator Component="@nameof(Model.Prometheus.Token)" />
+                </Helper>
+            </PasswordField>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+}

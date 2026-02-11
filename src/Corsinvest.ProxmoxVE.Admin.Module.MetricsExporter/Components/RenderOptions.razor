@@ -1,0 +1,26 @@
+﻿@* @inherits AHModuleOptionsBase<Options>
+
+<PveOptionsModuleRender T="ModuleClusterOptions" Options="@Options">
+    <Row>
+        <MudGrid>
+            <MudItem md="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText>Prometheus</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="6" md="6">
+                                <MudTextField T="string" @bind-Value="@context.PrometheusExporterPrefix"
+                                              Label="@L[GetDescriptionProperty(a => a.Clusters[0].PrometheusExporterPrefix)]" />
+                            </MudItem>
+                       </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </Row>
+</PveOptionsModuleRender>
+ *@

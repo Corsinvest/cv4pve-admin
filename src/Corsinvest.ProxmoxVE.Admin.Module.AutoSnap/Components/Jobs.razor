@@ -1,0 +1,95 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="Data"
+                Data="@ResultLoadData.Data"
+                Count="@ResultLoadData.TotalCount"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                Style="height: calc(100vh - 140px)"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowGrouping="true"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
+                KeyDown="KeyDownAsync"
+                LoadData="LoadDataAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnAdd="AddAsync"
+                     OnDelete="DeleteAsync"
+                     DeleteDisabled="!SelectedItems.Any()"
+                     OnRefresh="RefreshDataAsync"
+                     Permissions="Module.Permissions.Job.Data">
+            <PermissionView PermissionKey="@Module.Permissions.Job.Snap.Key" Path="*">
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Snap"]"
+                              Click="Snap"
+                              Icon="play_arrow"
+                              Style="--rz-icon-fill: 1;"
+                              Disabled="!SelectedItems.Any()"
+                              ButtonStyle="ButtonStyle.Success"
+                              title="@L["Snap"]"
+                              aria-label="@L["Snap"]" />
+            </PermissionView>
+
+            <PermissionView PermissionKey="@Module.Permissions.Job.Purge.Key" Path="*">
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Purge Snapshots"]"
+                              Click="PurgeAsync"
+                              Icon="mop"
+                              Disabled="!SelectedItems.Any()"
+                              ButtonStyle="ButtonStyle.Danger"
+                              title="@L["Purge Snapshots"]"
+                              aria-label="@L["Purge Snapshots"]" />
+            </PermissionView>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <EmptyTemplate>
+        <PermissionView PermissionKey="@Module.Permissions.Job.Data.Create.Key" Path="*">
+            <EmptyExecuteAction Text="@L["Create your first autosnap job"]" Click="AddAsync" />
+        </PermissionView>
+    </EmptyTemplate>
+
+    <Template>
+        <RadzenPanel>
+            <RadzenTabs>
+                <Tabs>
+                    <RadzenTabsItem Text="@L["Histories"]" Icon="history">
+                        <Results JobId="context.Id" />
+                    </RadzenTabsItem>
+
+                    <RadzenTabsItem Text="@L["Status"]" Icon="list">
+                        <Status VmIds="@context.VmIds" />
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </RadzenPanel>
+    </Template>
+
+    <Columns>
+        <BoolIconColumn Property="@nameof(Data.Enabled)" Title="@L["Enabled"]" IconFalse="" />
+        <RadzenDataGridColumn Property="@nameof(Data.VmIds)" Title="@L["Vm Ids"]" Sortable="false" />
+
+        <RadzenDataGridColumn Property="@nameof(Data.Label)" Sortable="true" Title="@L["Label"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.Label</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(Data.Description)" Sortable="true" Title="@L["Description"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Keep)" Sortable="true" Title="@L["Keep"]" />
+        <BoolIconColumn Property="@nameof(Data.VmStatus)" Title="@L["Include RAM"]" IconFalse="" />
+        <BoolIconColumn Property="@nameof(Data.OnlyRuns)" Title="@L["VM/CT Running"]" IconFalse="" />
+        <RadzenDataGridColumn Property="@nameof(Data.TimeoutSnapshot)" Sortable="true" Title="@L["Timeout"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.CronExpressionDescriptor)" Sortable="true" Title="@L["Cron Descriptor"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.LastRunTime)" Sortable="true" Title="@L["Last Execution"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.CronNextExecution)" Sortable="true" Title="@L["Next Execution"]" />
+    </Columns>
+</RadzenDataGrid>

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <Content Remove="dashboards.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="dashboards.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
+  </ItemGroup>
+</Project>

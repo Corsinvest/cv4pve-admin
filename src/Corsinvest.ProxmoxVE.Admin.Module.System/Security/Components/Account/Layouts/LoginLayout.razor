@@ -1,0 +1,83 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core
+@inherits LayoutComponentBase
+@inject IStringLocalizer<LoginLayout> L
+@inject ISettingsService SettingsService
+
+<style>
+    .rz-markdown,
+    .rz-markdown p,
+    .rz-markdown a,
+    .rz-markdown .rz-link,
+    .rz-markdown .rz-link-text {
+        color: var(--rz-on-primary) !important;
+    }
+
+    .rz-markdown {
+        margin-bottom: 3rem;
+        padding-bottom: 0;
+    }
+
+    @@media (max-width: 576px) {
+        .rz-markdown {
+            display: none;
+        }
+    }
+</style>
+
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+<RadzenContextMenu />
+
+<RadzenLayout style="background: url('images/login-wallpaper.gif'); background-size: cover;">
+    <RadzenBody>
+        <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center"
+                     AlignItems="AlignItems.Center"
+                     class="rz-h-100">
+            <RadzenCard class="rz-shadow-3 rz-border-radius-4"
+                        Style="padding: 0; overflow: hidden; background-color: var(--rz-base-background-color); width:800px;">
+                <RadzenRow Gap="0">
+                    <RadzenColumn Size="12"
+                                  SizeSM="6"
+                                  Class="rz-background-color-primary rz-p-12"
+                                  style="background-image: radial-gradient(circle at 4rem 4rem, var(--rz-primary) 0%, var(--rz-primary-darker) 80%); position: relative;">
+
+                        @* <RadzenImage Path="images/logo-login.png" style="width: 120px"></RadzenImage> *@
+                        <RadzenImage Path="images/cv4pve.png" style="width: 200px"></RadzenImage>
+
+                        <RadzenText Text="@L[AppSettings.LoginTitle]"
+                                    TextStyle="TextStyle.H2"
+                                    class="rz-mt-4 rz-mt-md-12 rz-pt-0 rz-pt-md-12 rz-mb-6 rz-color-on-primary rz-display-none rz-display-sm-block" />
+
+                        <RadzenMarkdown Text="@AppSettings.LoginDescription" />
+
+                        @*   <RadzenText TextStyle="TextStyle.Body1" class="rz-mb-12 rz-pb-0 rz-pb-md-12 rz-color-on-primary rz-display-none rz-display-sm-block">
+                            @L[AppSettings.LoginDescription]
+                        </RadzenText> *@
+
+                        <RadzenText Text="@($"{AppSettings.AppName} - {BuildInfo.Version}")"
+                                    TextStyle="TextStyle.Caption"
+                                    TextAlign="TextAlign.Center"
+                                    class="rz-color-on-primary rz-w-100"
+                                    Style="margin-top: 20px"
+                                    TagName="TagName.P" />
+
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeSM="6" class="rz-p-12">
+                        @Body
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenCard>
+        </RadzenStack>
+    </RadzenBody>
+</RadzenLayout>
+
+@code
+{
+    private AppSettings AppSettings { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        AppSettings = SettingsService.GetAppSettings();
+    }
+}

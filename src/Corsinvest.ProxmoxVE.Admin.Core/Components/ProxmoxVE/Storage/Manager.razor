@@ -1,0 +1,65 @@
+﻿@inherits AdminComponentBase
+
+@if (Storage.IsUnknown)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" Text="@L["Status unknown!"]" />
+}
+else
+{
+    <RadzenTabs @ref="RadzenTabsRef" TabPosition="TabPosition.Left">
+        <Tabs>
+            <RadzenTabsItem Text="@L["Summary"]" Icon="summarize" tab-content="@TabContent.Summary">
+                <Summary @ref="@SummaryRef" Storage="@Storage" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Performance"]" Icon="multiline_chart" tab-content="@TabContent.Charts">
+                <Charts @ref="@ChartsRef"
+                        ClusterName="@ClusterName"
+                        Node="@Storage.Node"
+                        Storage="@Storage.Storage" />
+            </RadzenTabsItem>
+            @* 
+                @if (IsContent("images"))
+                {
+                    <RadzenTabsItem Text="@L["VM Disks"]" Icon="">
+                    </RadzenTabsItem>
+                }
+
+                @if (IsContent("rootdir"))
+                {
+                    <RadzenTabsItem Text="@L["CT Volumes"]" Icon="">
+                    </RadzenTabsItem>
+                }
+
+                @if (IsContent("backup"))
+                {
+                    <RadzenTabsItem Text="@L["Backups"]" Icon="save">
+                    </RadzenTabsItem>
+                }
+
+                @if (IsContent("iso"))
+                {
+                    <RadzenTabsItem Text="@L["ISO Images"]" Icon="album">
+                    </RadzenTabsItem>
+                }
+
+                @if (IsContent("vztmpl"))
+                {
+                    <RadzenTabsItem Text="@L["CT template"]" Icon="">
+                    </RadzenTabsItem>
+                }
+
+                @if (IsContent("snippets"))
+                {
+                    <RadzenTabsItem Text="@L["Snippets"]" Icon="">
+                    </RadzenTabsItem>
+                }
+
+                @if (IsContent("import"))
+                {
+                    <RadzenTabsItem Text="@L["Import"]" Icon="">
+                    </RadzenTabsItem>
+                } *@
+        </Tabs>
+    </RadzenTabs>
+}

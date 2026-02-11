@@ -1,0 +1,108 @@
+﻿@inherits AdminComponentBase
+
+<RadzenRow>
+    <RadzenColumn Size="8">
+        <RadzenFormField Text="@L["Host"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenTextBox Name="@($"{Prefix}.Host")" @bind-Value="@Config.Host" class="rz-w-100" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.Host")" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+    <RadzenColumn Size="4">
+        <RadzenFormField Text="@L["Port"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenNumeric TValue="int" Name="@($"{Prefix}.Port")" @bind-Value="@Config.Port" class="rz-w-100" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.Port")" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenFormField Text="@L["SSL/TLS Options"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenDropDown TValue="MailKit.Security.SecureSocketOptions"
+                                Name="@($"{Prefix}.SecureSocketOption")"
+                                @bind-Value="@Config.SecureSocketOption"
+                                Data="@(Enum.GetValues<MailKit.Security.SecureSocketOptions>())"
+                                class="rz-w-100" />
+            </ChildContent>
+            <End>
+                <InfoIcon>
+                    <strong>@L["None"]:</strong> @L["No SSL/TLS encryption (not recommended)"]
+                    <br />
+                    <strong>@L["Auto"]:</strong> @L["Automatically detect and use the best available encryption"]
+                    <br />
+                    <strong>@L["SslOnConnect"]:</strong> @L["Use SSL/TLS immediately on connection (port 465)"]
+                    <br />
+                    <strong>@L["StartTls"]:</strong> @L["Upgrade connection to TLS after connecting (port 587)"]
+                    <br />
+                    <strong>@L["StartTlsWhenAvailable"]:</strong> @L["Use STARTTLS if available, plain connection otherwise"]
+                </InfoIcon>
+            </End>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.SecureSocketOption")" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow>
+    <RadzenColumn Size="6">
+        <RadzenFormField Text="@L["Username"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="account_circle" />
+            </Start>
+            <ChildContent>
+                <RadzenTextBox Name="@($"{Prefix}.Username")" @bind-Value="@Config.Username" class="rz-w-100" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.Username")" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+    <RadzenColumn Size="6">
+        <PasswordField @bind-Value="@Config.Password" Label="@L["Password"]" Name="@($"{Prefix}.Password")" class="rz-w-100">
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.Password")" />
+            </Helper>
+        </PasswordField>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow>
+    <RadzenColumn Size="6">
+        <RadzenFormField Text="@L["From Address"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenTextBox Name="@($"{Prefix}.FromAddress")" @bind-Value="@Config.FromAddress" class="rz-w-100" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.FromAddress")" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+    <RadzenColumn Size="6">
+        <RadzenFormField Text="@L["From Display Name"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenTextBox Name="@($"{Prefix}.FromDisplayName")" @bind-Value="@Config.FromDisplayName" class="rz-w-100" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@($"{Prefix}.FromDisplayName")" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+</RadzenRow>
+
+@code
+{
+    [Parameter] public SmtpEmailConfig Config { get; set; } = default!;
+    [Parameter] public EventCallback<SmtpEmailConfig> ConfigChanged { get; set; } = default!;
+
+    private string Prefix { get; set; } = $"SmtpConfig_{Guid.NewGuid():N}";
+}

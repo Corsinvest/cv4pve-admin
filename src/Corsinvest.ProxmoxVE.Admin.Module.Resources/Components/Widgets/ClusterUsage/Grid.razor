@@ -1,0 +1,46 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid Data="@Items"
+                GridLines="DataGridGridLines.None"
+                AllowFiltering="true"
+                AllowColumnPicking="true"
+                Style="border: none;"
+                AllowAlternatingRows="false"
+                Density="Density.Compact"
+                AllowGrouping="true"
+                AllowSorting="true"
+                AllowMultiColumnSorting="true"
+                ShowMultiColumnSortingIndex="true"
+                AllowColumnResize="true"
+                AllowColumnReorder="true"
+                ColumnsPickerAllowFiltering="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(Data.ClusterName)" Title="@L["Name"]">
+            <Template>
+                <RadzenIcon Icon="@context.Icon" />
+                <RadzenLink Text="@context.ClusterName" title="@L["Open Web UI Proxmox VE"]" Path="@context.Link" Target="_blank" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(Data.PveName)" Title="@L["Pve Name"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.Type)" Title="@L["Type"]" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(Data.Description)" Title="@L["Description"]" Visible="false" />
+
+        <BaseColumn Property="@nameof(Data.CpuUsage)"
+                    Title="@L["Cpu %"]"
+                    UseProgressBarPercentage="true"
+                    TooltipBarPercentage="@(a => a.CpuInfo)" />
+
+        <BaseColumn Property="@nameof(Data.MemoryUsage)"
+                    Title="@L["Mem. %"]"
+                    UseProgressBarPercentage="true"
+                    TooltipBarPercentage="@(a => a.MemoryInfo)" />
+
+        <BaseColumn Property="@nameof(Data.DiskUsage)"
+                    Title="@L["Disk. %"]"
+                    UseProgressBarPercentage="true"
+                    TooltipBarPercentage="@(a => a.DiskInfo)" />
+    </Columns>
+</RadzenDataGrid>

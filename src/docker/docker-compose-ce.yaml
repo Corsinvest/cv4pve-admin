@@ -1,0 +1,137 @@
+# CV4PVE Admin Docker Compose
+# Copyright (c) Corsinvest Srl
+# Website: https://corsinvest.it
+# Repository: https://gitlab.com/Corsinvest/cv4pve-admin
+#
+# Usage:
+#   Start stack:     docker compose up -d
+#   Stop stack:      docker compose down
+#   View logs:       docker compose logs -f
+#   Start with admin tools: docker compose --profile admin up -d
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16.9-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ${DATA_DIR}/postgres/data:/var/lib/postgresql/data
+      - ${DATA_DIR}/postgres/backups:/backups
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # Init container to create data directories and config files with correct permissions
+  cv4pve-admin-init:
+    image: busybox:latest
+    command: >
+      sh -c "
+        mkdir -p /app/data /app/config &&
+        touch /app/config/appsettings.extra.json &&
+        chown -R 1654:1654 /app/data /app/config
+      "
+    volumes:
+      - ${DATA_DIR}/cv4pve-admin/data:/app/data
+      - ${DATA_DIR}/cv4pve-admin/config:/app/config
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # CV4PVE Admin - Main Application (Community Edition)
+  cv4pve-admin:
+    image: corsinvest/cv4pve-admin:${CV4PVE_ADMIN_TAG:-latest}
+    restart: unless-stopped
+    user: "1654:1654"
+    ports:
+      - "${CV4PVE_ADMIN_PORT}:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Container__Watchtower__Url=http://watchtower:8080
+      - Container__Watchtower__Token=${WATCHTOWER_HTTP_API_TOKEN}
+      - TZ=${TZ}
+    volumes:
+      - ${DATA_DIR}/cv4pve-admin/data:/app/data
+      - ${DATA_DIR}/cv4pve-admin/config/appsettings.extra.json:/app/appsettings.extra.json:ro
+    networks:
+      - appnet
+      - publicnet
+    depends_on:
+      cv4pve-admin-init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # Watchtower - Container Update Service
+  watchtower:
+    image: nickfedor/watchtower:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_HTTP_API_UPDATE=true
+      - WATCHTOWER_HTTP_API_PERIODIC_POLLS=false
+      - WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_INCLUDE_STOPPED=false
+      - WATCHTOWER_REVIVE_STOPPED=false
+    networks:
+      - appnet
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # PgWeb - PostgreSQL Web Admin (Optional)
+  # Start with: docker compose --profile admin up -d
+  pgweb:
+    image: sosedoff/pgweb:0.16.2
+    restart: unless-stopped
+    ports:
+      - "${PGWEB_PORT}:8081"
+    environment:
+      - PGWEB_DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      - PGWEB_BIND=0.0.0.0
+      - PGWEB_PORT=8081
+    volumes:
+      - ${DATA_DIR}/pgweb:/root/.pgweb
+    networks:
+      - appnet
+      - publicnet
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8081/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    profiles:
+      - admin
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+# Network Configuration
+networks:
+  appnet:
+    driver: bridge
+  publicnet:
+    driver: bridge

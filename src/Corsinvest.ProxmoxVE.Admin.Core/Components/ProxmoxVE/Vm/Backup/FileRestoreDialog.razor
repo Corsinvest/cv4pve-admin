@@ -1,0 +1,114 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
+    <RadzenDataGrid @ref="@DataGridRef"
+                    TItem="NodeBackupFile"
+                    Data="@Items"
+                    AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="false"
+                    AllowSorting="true"
+                    IsLoading="IsLoading"
+                    FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    RowCollapse="@(args => DataGridRef.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"
+                    LoadChildData="LoadChildData"
+                    RowRender="RowRender"
+                    @bind-Value="@SelectedItems">
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(NodeBackupFile.Text)"
+                                  Sortable="true"
+                                  Title="@L["Name"]"
+                                  OrderIndex="0"
+                                  SortOrder="SortOrder.Ascending">
+                <Template>
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px" AlignItems="AlignItems.Center">
+                        <RadzenIcon Icon="@GetIcon(context)" />
+                        @context.Text
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Property="@nameof(NodeBackupFile.Size)"
+                                  Sortable="true"
+                                  Title="@L["Size"]"
+                                  FormatString="@(TypeHelper.GetDisplayFormatAttribute<NodeBackupFile>(nameof(NodeBackupFile.Size)))"
+                                  FormatProvider="FormatterHelper.FormatProvider"
+                                  Width="100px">
+                <Template>
+                    @if (context.Size > 0)
+                    {
+                        @FormatHelper.FromBytes(context.Size)
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Property="@nameof(NodeBackupFile.ModifiedTimeDate)" Sortable="true" Title="@L["Modified"]" Width="160px">
+                <Template>
+                    @if (context.ModifiedTimeDate != new DateTime(1970, 1, 1))
+                    {
+                        @($"{context.ModifiedTimeDate:G}")
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Property="@nameof(NodeBackupFile.Type)"
+                                  Sortable="true"
+                                  Title="@L["Type"]"
+                                  Width="100px"
+                                  FilterMode="FilterMode.CheckBoxList">
+                <Template>
+                    @if (context.Type == "l")
+                    {
+                        @L["Softlink"]
+                    }
+                    else if (context.Type == "d")
+                    {
+                        @L["Directory"]
+                    }
+                    else if (context.Type == "f")
+                    {
+                        @L["File"]
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+    @if (SelectedItems.Any())
+    {
+        @if (SelectedItem.Type == "d")
+        {
+            <RadzenSplitButton Text="@L["Download as"]"
+                               Click="DownloadFolderAsync"
+                               Icon="download"
+                               Style="width: fit-content;"
+                               Size="ButtonSize.Small">
+                <ChildContent>
+                    <RadzenSplitButtonItem Text="@L[Zip]" Value="@Zip" />
+                    <RadzenSplitButtonItem Text="@L[TarZst]" Value="@TarZst" />
+                </ChildContent>
+            </RadzenSplitButton>
+        }
+        else if (SelectedItem.Type == "f")
+        {
+            <RadzenButton Click="DownloadFileAsync"
+                          Text="@L["Download"]"
+                          Style="width: fit-content;"
+                          Size="ButtonSize.Small"
+                          Icon="download"
+                          title="@L["Download"]"
+                          aria-label="@L["Download"]" />
+        }
+    }
+    else
+    {
+        <RadzenButton Text="@L["Download"]"
+                      Style="width: fit-content;"
+                      Size="ButtonSize.Small"
+                      Disabled="true"
+                      Icon="download"
+                      title="@L["Download"]"
+                      aria-label="@L["Download"]" />
+    }
+</RadzenStack>

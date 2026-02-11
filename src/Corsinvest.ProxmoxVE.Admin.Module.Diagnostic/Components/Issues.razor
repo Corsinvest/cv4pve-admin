@@ -1,0 +1,41 @@
+﻿@inherits AdminComponentBase
+
+@if (!string.IsNullOrEmpty(ClusterName))
+{
+    <RadzenDataGrid @ref="@DataGridRef"
+                    TItem="IgnoredIssue"
+                    Data="@ResultLoadData.Data"
+                    AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="false"
+                    AllowSorting="true"
+                    Style="height: calc(100vh - 140px);"
+                    AllowVirtualization="true"
+                    PagerHorizontalAlign="HorizontalAlign.Left"
+                    FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    KeyProperty="@nameof(IgnoredIssue.Id)"
+                    LoadData="LoadDataAsync"
+                    RowSelect="RowSelectAsync"
+                    CellClick="CellClick"
+                    KeyDown="KeyDownAsync"
+                    Count="ResultLoadData.TotalCount"
+                    @bind-Value="@SelectedItems">
+        <HeaderTemplate>
+            <CrudToolbar OnDelete="DeleteAsync" DeleteDisabled="!SelectedItems.Any()" OnRefresh="RefreshDataAsync" />
+        </HeaderTemplate>
+
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(IgnoredIssue.IdResource)" Title="@L["Id Resource"]" Width="150px">
+                <Template>
+                    <span class="rz-link link" style="text-decoration: underline;">@context.IdResource</span>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Property="@nameof(IgnoredIssue.Gravity)" Title="@L["Gravity"]" Width="150px" />
+            <RadzenDataGridColumn Property="@nameof(IgnoredIssue.Context)" Title="@L["Context"]" Width="150px" />
+            <RadzenDataGridColumn Property="@nameof(IgnoredIssue.SubContext)" Title="@L["SubContext"]" Width="150px" />
+            <RadzenDataGridColumn Property="@nameof(IgnoredIssue.Description)" Title="@L["Description"]" />
+        </Columns>
+    </RadzenDataGrid>
+}

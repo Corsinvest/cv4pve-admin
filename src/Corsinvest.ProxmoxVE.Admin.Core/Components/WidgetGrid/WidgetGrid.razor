@@ -1,0 +1,73 @@
+﻿@inherits AdminComponentBase
+@implements IAsyncDisposable
+
+<div style="height: @Height; overflow: auto;">
+    <div id="@_gridId" class="cv4pve-widgetgrid @(EditMode ? "editable" : "") @(ShowGrid ? "show-grid" : "")" style="position: relative; width: 100%; height: 100%;">
+        @foreach (var item in Items)
+        {
+            <div @key="item.Id"
+                 class="cv4pve-widgetgrid-widget @(EditMode ? "editable" : "")"
+                 data-id="@item.Id"
+                 data-col="@item.Col"
+                 data-row="@item.Row"
+                 data-cs="@item.ColSpan"
+                 data-rs="@item.RowSpan">
+
+                <div class="cv4pve-widgetgrid-header" style="@item.TitleCss">
+                    @if (EditMode)
+                    {
+                        <RadzenIcon Icon="drag_indicator" Style="cursor: move; color: var(--rz-text-tertiary-color);" />
+                    }
+
+                    @if (HeaderTemplate != null)
+                    {
+                        @HeaderTemplate(item)
+                    }
+                    else
+                    {
+                        @if (!string.IsNullOrEmpty(item.Icon))
+                        {
+                            <RadzenIcon Icon="@item.Icon" Style="margin: 0 0.5rem; color: var(--rz-primary);" />
+                        }
+                        <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-0" Style="flex: 1;">@item.Title</RadzenText>
+                    }
+
+                    @if (EditMode)
+                    {
+                        <span style="font-size: 0.75rem; color: var(--rz-text-tertiary-color); margin-right: 0.5rem;">
+                            @item.ColSpan×@item.RowSpan
+                        </span>
+                    }
+
+                    @if (EditMode && MenuTemplate != null)
+                    {
+                        @MenuTemplate(item)
+                    }
+                </div>
+
+                <div class="cv4pve-widgetgrid-content" style="@item.BodyCss">
+                    <ErrorBoundary>
+                        <ChildContent>
+                            @if (item.Template != null)
+                            {
+                                @item.Template
+                            }
+                        </ChildContent>
+                        <ErrorContent>
+                            <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                         Text="@context.Message"
+                                         Shade="Shade.Lighter"
+                                         Size="AlertSize.ExtraSmall"
+                                         AllowClose="false" />
+                        </ErrorContent>
+                    </ErrorBoundary>
+                </div>
+
+                @if (EditMode)
+                {
+                    <div class="cv4pve-widgetgrid-resize"></div>
+                }
+            </div>
+        }
+    </div>
+</div>

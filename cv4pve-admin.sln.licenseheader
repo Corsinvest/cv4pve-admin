@@ -1,0 +1,21 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+extensions:  .xml .config .xsd
+<!--
+ SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+extensions: .cshtml .razor
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+extensions: .ps1
+#
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
+#

@@ -1,0 +1,46 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid TItem="ClusterLog"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                IsLoading="IsLoading"
+                Style="@Style"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                Density="Density.Compact">
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.TimeDate)"
+                              Sortable="true"
+                              FormatString="{0:G}"
+                              Title="@L["Time"]"
+                              OrderIndex="0"
+                              SortOrder="SortOrder.Descending"
+                              Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.Node)"
+                              Sortable="true"
+                              Title="@L["Node"]"
+                              FilterMode="FilterMode.CheckBoxList"
+                              Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.Service)"
+                              Sortable="true"
+                              Title="@L["Service"]"
+                              FilterMode="FilterMode.CheckBoxList"
+                              Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.Pid)" Sortable="true" Title="@L["Pid"]" Width="100px" />
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.User)" Sortable="true" Title="@L["User"]" FilterMode="FilterMode.CheckBoxList" Width="150px" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.SeverityEnum)"
+                              Sortable="true"
+                              Title="@L["Severity"]"
+                              FilterMode="FilterMode.CheckBoxList"
+                              Width="120px" />
+
+        <RadzenDataGridColumn Property="@nameof(ClusterLog.Message)" Sortable="true" Title="@L["Message"]" />
+    </Columns>
+</RadzenDataGrid>

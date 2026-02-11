@@ -1,0 +1,165 @@
+﻿@inherits AdminComponentBase
+
+@switch (ChartType)
+{
+    case RrdChartType.Cpu:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.CpuUsagePercentage)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["CPU"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.IoWait)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["IO delay"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis FormatString="@FormatHelper.DataFormatPercentage">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["%"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new("CPU", "%", "P1", a => a.CpuUsagePercentage), new("IO delay", "%", "P1", a => a.IoWait)])" />
+        break;
+
+    case RrdChartType.Memory:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.MemorySize)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Total"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.MemoryUsage)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Usage"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Bytes"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new (L["Usage"], "Bytes", string.Empty, a => a.MemoryUsage) { Formatter = FormatHelper.FromBytes },
+                                                 new (L["Usage"], "%", "P1", a => a.MemoryUsagePercentage)])" />
+        break;
+
+    case RrdChartType.Network:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.NetIn)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Net in"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.NetOut)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Net out"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Bytes"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new (L["In"], "Bytes", string.Empty, a => a.NetIn) { Formatter = FormatHelper.FromBytes },
+                                                 new (L["Out"], "Bytes", string.Empty, a => a.NetOut) { Formatter = FormatHelper.FromBytes }])" />
+        break;
+
+    case RrdChartType.ServerLoad:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.Loadavg)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Server Load"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis FormatString="{0:#.00}">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Load average"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new (L["Usage"], string.Empty, "0.0", a => a.Loadavg)])" />
+        break;
+
+    case RrdChartType.Swap:
+        <RadzenChart>
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.SwapSize)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Swap Total"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenAreaSeries Smooth="true"
+                              Data="@Data"
+                              ValueProperty="@nameof(NodeRrdData.SwapUsage)"
+                              CategoryProperty="@nameof(NodeRrdData.TimeDate)"
+                              Title="@L["Swap Usage"]"
+                              LineType="LineType.Solid">
+                <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
+            </RadzenAreaSeries>
+
+            <RadzenLegend Position="LegendPosition.Top" />
+            <RadzenCategoryAxis FormatString="{0:g}" LabelRotation="-10" />
+            <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="@L["Bytes"]" />
+            </RadzenValueAxis>
+        </RadzenChart>
+
+        <LegendCounter Data="@Data" Counters="@([new (L["Usage"], "Bytes", string.Empty, a => a.SwapUsage) { Formatter = FormatHelper.FromBytes }])" />
+        break;
+
+    default: break;
+}
+
+@code
+{
+    [Parameter] public IEnumerable<NodeRrdData> Data { get; set; } = default!;
+    [Parameter] public RrdChartType ChartType { get; set; } = default!;
+}

@@ -1,0 +1,58 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Session
+@inject DialogService DialogService
+
+@inherits AdminComponentBase
+
+<RadzenTemplateForm TItem="SendMessageModel" Data="@Model" Submit="@(() => DialogService.CloseSide(Model))">
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+            <RadzenFormField Text="@L["Title"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
+                <RadzenTextBox @bind-Value="@Model.Title" Style="width: 100%;" />
+            </RadzenFormField>
+
+            <RadzenFormField Text="@L["Message"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenTextArea Name="Message" @bind-Value="@Model.Message" Rows="4" Style="width: 100%;" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="Message" Text="@L["Required"]" />
+                </Helper>
+            </RadzenFormField>
+
+            <RadzenFormField Text="@L["Severity"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
+                <ChildContent>
+                    <RadzenDropDown TValue="MessageSeverity"
+                                    @bind-Value="@Model.Severity"
+                                    Data="@(Enum.GetValues<MessageSeverity>())"
+                                    Style="width: 100%;" />
+                </ChildContent>
+                <End>
+                    <InfoIcon>
+                        <strong>@L["Info"]:</strong> @L["Informational message"]
+                        <br />
+                        <strong>@L["Success"]:</strong> @L["Success notification"]
+                        <br />
+                        <strong>@L["Warning"]:</strong> @L["Warning that requires attention"]
+                        <br />
+                        <strong>@L["Error"]:</strong> @L["Error or critical issue"]
+                    </InfoIcon>
+                </End>
+            </RadzenFormField>
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          Text="@L["Send"]"
+                          Icon="send"
+                          Style="width: fit-content;"
+                          Size="ButtonSize.Small"
+                          title="@L["Send"]"
+                          aria-label="@L["Send"]" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code
+{
+    private SendMessageModel Model { get; set; } = new();
+}

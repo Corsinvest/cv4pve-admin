@@ -1,0 +1,48 @@
+﻿@inherits AdminComponentBase
+@implements ISettingsParameter<Settings>
+
+<RadzenFormField Text="@L["Resource Type"]" AllowFloatingLabel="false" class="rz-w-100">
+    <ChildContent>
+        <RadzenDropDown TValue="ClusterResourceType" @bind-Value="@Settings.ResourceType" Data="@EnumData" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Node"]:</strong> @L["Physical or virtual servers in the cluster"]
+            <br />
+            <strong>@L["Vm"]:</strong> @L["Virtual machines (Qemu) and containers (LXC)"]
+            <br />
+            <strong>@L["Storage"]:</strong> @L["Storage repositories for VM disks, backups, and ISO images"]
+            <br />
+            <strong>@L["Sdn"]:</strong> @L["Software-Defined Networking resources"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+@if (Settings.ResourceType == ClusterResourceType.Vm)
+{
+    <RadzenFormField Text="@L["VM Type"]" AllowFloatingLabel="false" class="rz-w-100">
+        <ChildContent>
+            <RadzenDropDown TValue="VmType" @bind-Value="@Settings.VmType" Data="@(Enum.GetValues<VmType>())" />
+        </ChildContent>
+        <End>
+            <InfoIcon>
+                <strong>@L["Qemu"]:</strong> @L["Full virtualization VMs running with KVM"]
+                <br />
+                <strong>@L["Lxc"]:</strong> @L["Lightweight Linux containers"]
+            </InfoIcon>
+        </End>
+    </RadzenFormField>
+}
+
+@code
+{
+    [Parameter] public Settings Settings { get; set; } = default!;
+    [Parameter] public EventCallback<Settings> SettingsChanged { get; set; }
+
+    private IEnumerable<ClusterResourceType> EnumData { get; set; } = [];
+
+    protected override void OnInitialized()
+        => EnumData = Enum.GetValues<ClusterResourceType>().Where(a => a != ClusterResourceType.Unknown
+                                                                        && a != ClusterResourceType.All
+                                                                        && a != ClusterResourceType.Pool);
+}

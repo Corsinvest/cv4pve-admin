@@ -1,0 +1,14 @@
+﻿@inherits AdminComponentBase
+
+<GridStatus Items="@Items" HeaderTemplate="@(ShowHeader? RenderHeader() : null!)" />
+
+@code
+{
+    private RenderFragment RenderHeader() => __builder =>
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
+            <RadzenIcon Icon="@PveAdminUIHelper.Icons.GetResourceType(Type)" />
+            <RadzenText TextStyle="TextStyle.Subtitle2" Text="@L[GetText()]" />
+        </RadzenStack>
+    };
+}

@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <Description>$(Product) - Proxmox VE Advanced Administration Interface</Description>
+  </PropertyGroup>
+
+  <!-- Docker configuration -->
+  <Import Project="..\..\Docker.props" />
+
+  <PropertyGroup>
+    <ContainerRepository>corsinvest/cv4pve-admin</ContainerRepository>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="libman.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Settings.Configuration" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Serilog.Sinks.SQLite" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.System\Corsinvest.ProxmoxVE.Admin.Module.System.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Profile\Corsinvest.ProxmoxVE.Admin.Module.Profile.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.AutoSnap\Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.BackupAnalytics\Corsinvest.ProxmoxVE.Admin.Module.BackupAnalytics.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Bots\Corsinvest.ProxmoxVE.Admin.Module.Bots.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Dashboard\Corsinvest.ProxmoxVE.Admin.Module.Dashboard.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Diagnostic\Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.AIServer\Corsinvest.ProxmoxVE.Admin.Module.AIServer.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.MetricsExporter\Corsinvest.ProxmoxVE.Admin.Module.MetricsExporter.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.NodeProtect\Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Notifier\Corsinvest.ProxmoxVE.Admin.Module.Notifier.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics\Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Resources\Corsinvest.ProxmoxVE.Admin.Module.Resources.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.SystemReport\Corsinvest.ProxmoxVE.Admin.Module.SystemReport.csproj" />
+    <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Module.Updater\Corsinvest.ProxmoxVE.Admin.Module.Updater.csproj" />
+  </ItemGroup>
+
+  <Target Name="DownloadFiles" BeforeTargets="Build" Condition="'$(InDocker)' != 'true'">
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)DownloadFiles.ps1&quot;" />
+  </Target>
+</Project>

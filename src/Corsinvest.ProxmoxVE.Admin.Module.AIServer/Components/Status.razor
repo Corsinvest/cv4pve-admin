@@ -1,0 +1,32 @@
+﻿@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenText Text="@L["MCP Server Status"]" />
+
+    @if (!McpEnabled)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" Text="@L["MCP Server is disabled"]" />
+    }
+    else
+    {
+        <RadzenStack Gap="1rem">
+            <RadzenText><strong>@L["Status:"]</strong> @L["Running"]</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body1" Style="font-weight: bold;">@($"/mcp/{ClusterName}")</RadzenText>
+
+            @* <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6">@L["Enabled Tools"]</RadzenText>
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+                    @foreach (var tool in Settings.Tools)
+                    {
+                        <RadzenText>
+                            <RadzenIcon Icon="@(tool.Value ? "check_circle" : "cancel")"
+                                        Style="@(tool.Value ? "color: green;" : "color: gray;")" />
+                            @tool.Key
+                        </RadzenText>
+                    }
+                </RadzenStack>
+            </RadzenCard> *@
+
+        </RadzenStack>
+    }
+</RadzenPanel>

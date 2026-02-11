@@ -1,0 +1,148 @@
+﻿@inherits LayoutComponentBase
+@attribute [Authorize]
+
+<RadzenComponents />
+
+<CommandPalette @ref="CommandPaletteRef" ClusterName="@ClusterName" />
+
+@foreach (var componentType in AdditionalLayoutComponents)
+{
+    <DynamicComponent Type="@componentType" />
+}
+
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenRow>
+            <RadzenColumn Size="4" Style="align-content:center">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0px">
+                    <RadzenSidebarToggle Click="@(() => SidebarExpanded = !SidebarExpanded)" />
+                    <RadzenLink Text="@($"CV4PVE Admin 360 - {EditionName}")" Path="@AppSettings.AppUrl" Target="_blank" />
+                </RadzenStack>
+            </RadzenColumn>
+
+            <RadzenColumn Size="4" Style="display: flex; align-items: center;">
+                <RadzenCard Style="padding: 0.4rem 0.75rem; cursor: pointer; width: 100%;" @onclick="OpenCommandPalette">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenIcon Icon="search" class="rz-color-primary" />
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="flex: 1;" Text="@L["Search..."]"/>                           
+                        <RadzenBadge Text="Ctrl+K" Shade="Shade.Lighter" BadgeStyle="BadgeStyle.Base" Style="font-size: 0.65rem;" />
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+
+            <RadzenColumn Size="4">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                    @*    <RadzenButton Variant="Variant.Flat">
+                        <RadzenIcon Icon="terminal" />
+                        <div class="d-flex">
+                            <div style="font-family: var(--rz-text-font-family); font-size: var(--rz-text-caption-font-size); line-height: var(--rz-text-caption-line-height); font-weight: var(--rz-text-caption-font-weight);">
+                                @L["Enviroment"]
+                            </div>
+                            <div style="text-decoration: underline; font-family: var(--rz-text-font-family); font-size: var(--rz-text-body2-font-size); line-height: var(--rz-text-body2-line-height); font-weight: var(--rz-text-body2-font-weight);">
+                                @ClusterName
+                            </div>
+                        </div>
+                    </RadzenButton> *@
+
+                    @*  <RadzenButton Variant="Variant.Text" ButtonStyle="ButtonStyle.Light">
+                        <RadzenIcon Icon="notifications" />
+                        <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="15" IsPill="true" />
+                    </RadzenButton> *@
+
+                    @foreach (var item in HeaderLinks)
+                    {
+                        <RadzenButton Icon="@item.Icon"
+                                      Variant="Variant.Text"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Click="@(() => navigationManager.NavigateTo(item.RealUrl))"
+                                      title="@L[item.Text]"
+                                      aria-label="@L[item.Text]" />
+                    }
+
+                    <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"
+                                    PermissionClusterName="@ApplicationHelper.AllClusterName"
+                                    Path="*">
+                        @if (NewRelease != null)
+                        {
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                <RadzenLink Path="@NewRelease.Url" Target="_blank" Style="text-decoration: none;">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Success"
+                                                 Shade="Shade.Lighter"
+                                                 Text="@($"🆕 v{NewRelease.Version}")"
+                                                 IsPill="true"
+                                                 title="@L["New version available"]" />
+                                </RadzenLink>
+
+                                <RadzenButton Icon="upgrade"
+                                              ButtonStyle="ButtonStyle.Success"
+                                              Variant="Variant.Flat"
+                                              Size="ButtonSize.ExtraSmall"
+                                              Click="TriggerUpdateAsync"
+                                              title="@(releaseService.IsAutoUpdateSupported? L["Trigger automatic update"] : L["Automatic update not available"])"
+                                              Disabled="@(!releaseService.IsAutoUpdateSupported)"
+                                              IsBusy="@IsUpdating" />
+                            </RadzenStack>
+                        }
+                    </PermissionView>
+
+                    <PermissionView PermissionKey="@ClusterPermissions.Cluster.SelectCluster.Key"
+                                    PermissionClusterName="@ApplicationHelper.AllClusterName"
+                                    Path="*">
+                        <ClusterSelector @bind-ClusterName="@ClusterName" @bind-ClusterName:after="SetClusterNameAsync" />
+                    </PermissionView>
+
+                    @* <RadzenButton Icon="notifications" ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" class="rz-display-none rz-display-md-block" />
+	<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" class="rz-display-none rz-display-md-block" />
+	<RadzenAppearanceToggle class="rz-display-none rz-display-md-block"  /> *@
+
+                    <HelpMenu HotKeysContext="@HotKeysContext" />
+
+                    <ProfileMenu Links="@ProfileMenuLinks" />
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenHeader>
+
+    <RadzenSidebar Responsive="false" Style="width: max-content" @bind-Expanded="@SidebarExpanded">
+        @*DisplayStyle="@(SidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="SidebarExpanded"*@
+        <RadzenStack Gap="0" Style="height: 100%;" JustifyContent="JustifyContent.SpaceBetween">
+            <NavMenu Links="@NavBarLinks" />
+
+            @* <RadzenText TextStyle="TextStyle.Caption" class="rz-mb-4 rz-ms-2 rz-text-tertiary-color" Path="@AppSettings.AppUrl" Target="_blank">
+                @AppSettings.AppName
+                @BuildInfo.Version
+            </RadzenText> *@
+        </RadzenStack>
+    </RadzenSidebar>
+
+    <RadzenBody>
+        <ErrorBoundary @ref="ErrorBoundaryRef">
+            <ChildContent>
+                @if (HasRendered)
+                {
+                    <CascadingValue Value="@ClusterName" Name="@nameof(ClusterName)">
+                        <div class="rz-p-0">
+                            @Body
+                        </div>
+                    </CascadingValue>
+                }
+            </ChildContent>
+
+            <ErrorContent>
+                <Error Exception="context" />
+            </ErrorContent>
+        </ErrorBoundary>
+    </RadzenBody>
+
+    @*
+    <RadzenFooter>
+        Footer
+    </RadzenFooter>
+    *@
+</RadzenLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

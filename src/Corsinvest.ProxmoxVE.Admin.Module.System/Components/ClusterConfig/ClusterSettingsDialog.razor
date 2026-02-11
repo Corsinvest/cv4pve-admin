@@ -1,0 +1,137 @@
+﻿@inherits AdminComponentBase
+
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
+
+<RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Name)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Description)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenStack Orientation="Orientation.Horizontal">
+    <RadzenFormField Text="@L["Latitude"]" AllowFloatingLabel="false" class="rz-w-100">
+        <RadzenNumeric Name="@nameof(Model.Latitude)" @bind-Value="@Model.Latitude" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="@L["Longitude"]" AllowFloatingLabel="false" class="rz-w-100">
+        <RadzenNumeric Name="@nameof(Model.Longitude)" @bind-Value="@Model.Longitude" />
+    </RadzenFormField>
+</RadzenStack>
+
+<RadzenPanel Text="@L["WEB API Access"]">
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <RadzenFormField Text="@L["Access Type"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenDropDown TValue="ClusterAccessType"
+                                    Name="@nameof(Model.AccessType)"
+                                    @bind-Value="@Model.AccessType"
+                                    Data="@(Enum.GetValues<ClusterAccessType>())" />
+                </ChildContent>
+                <End>
+                    <InfoIcon>
+                        <strong>@L["Credential"]:</strong> @L["Authenticate using username and password"]
+                        <br />
+                        <strong>@L["ApiToken"]:</strong> @L["Authenticate using API token (more secure)"]
+                    </InfoIcon>
+                </End>
+            </RadzenFormField>
+
+            <RadzenFormField Text="@L["Timeout (msec)"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenNumeric Name="@nameof(Model.Timeout)" @bind-Value="@Model.Timeout" />
+                </ChildContent>
+                <Helper>
+                    <RadzenDataAnnotationValidator Component="@nameof(Model.Timeout)" />
+                </Helper>
+            </RadzenFormField>
+        </RadzenStack>
+
+        @if (Model.AccessType == ClusterAccessType.Credential)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenFormField Text="@L["Username"]" AllowFloatingLabel="false" class="rz-w-100">
+                    <Start>
+                        <RadzenIcon Icon="account_circle" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenTextBox Name="@($"Api{nameof(Model.ApiCredential.Username)}")"
+                                       @bind-Value="@Model.ApiCredential.Username"
+                                       Placeholder="USER@REALM" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenRequiredValidator Component="@($"Api{nameof(Model.ApiCredential.Username)}")" />
+                    </Helper>
+                </RadzenFormField>
+
+                <PasswordField Label="@L["Password"]" Name="@nameof(Model.ApiCredential.Password)"
+                               @bind-Value="@Model.ApiCredential.Password" class="rz-w-100">
+                    <Helper>
+                        <RadzenRequiredValidator Component="@nameof(Model.ApiCredential.Password)" />
+                    </Helper>
+                </PasswordField>
+            </RadzenStack>
+        }
+        else if (Model.AccessType == ClusterAccessType.ApiToken)
+        {
+            <PasswordField @bind-Value="@Model.ApiToken"
+                           Label="@L["API Token"]"
+                           Name="@nameof(Model.ApiToken)"
+                           Placeholder="USER@REALM!TOKENID=UUID"
+                           class="rz-w-100">
+                <Helper>
+                    <RadzenRequiredValidator Component="@nameof(Model.ApiToken)" />
+                </Helper>
+            </PasswordField>
+        }
+
+        <SwitchField @bind-Value="@Model.ValidateCertificate" Label="@L["Validate Certificate"]" Name="@nameof(Model.ValidateCertificate)" class="rz-w-100" />
+    </RadzenStack>
+</RadzenPanel>
+
+@* <RadzenPanel Text="@L["SSH Credential"]">
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenFormField Text="@L["Username"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenTextBox Name="@nameof(Model.SshCredential.Username)" @bind-Value="@Model.SshCredential.Username" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="@nameof(Model.SshCredential.Username)" />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenFormField Text="@L["Password"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenPassword Name="@nameof(Model.SshCredential.Password)" @bind-Value="@Model.SshCredential.Password" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="@nameof(Model.SshCredential.Password)" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenStack>
+</RadzenPanel> *@
+
+<RadzenPanel Text="Feature">
+    <SubscriptionGate Size="SubscriptionGateSize.Compact">
+        <SwitchField @bind-Value="@Model.AllowCalculateSnapshotSize"
+                     Label="@L[$"Calculating the snapshot size may take some time. {Messages.WebShellPamUserRequired})."]"
+                     Name="@nameof(Model.AllowCalculateSnapshotSize)"
+                     class="rz-w-100" />
+    </SubscriptionGate>
+</RadzenPanel>
+
+<RadzenPanel Text="@L["Nodes"]">
+    <NodesSettings Model="Model" Disabled="@NodesDisabled" />
+</RadzenPanel>

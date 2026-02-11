@@ -1,0 +1,41 @@
+﻿@inherits AdminComponentBase
+
+<RadzenFormField Text="@L["Title (text or html)"]" AllowFloatingLabel="false">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.Widget.Title)" @bind-Value="@Model.Widget.Title" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Widget.Title)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenAccordion>
+    <Items>
+        <RadzenAccordionItem Text="Style" Icon="style">
+            <RadzenStack Orientation="Orientation.Vertical">
+                <RadzenFormField Text="@L["Title CSS"]" AllowFloatingLabel="false">
+                    <ChildContent>
+                        <RadzenTextArea Name="@nameof(Model.Widget.TitleCss)" @bind-Value="@Model.Widget.TitleCss" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameof(Model.Widget.TitleCss)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="@L["Body CSS"]" AllowFloatingLabel="false">
+                    <ChildContent>
+                        <RadzenTextArea Name="@nameof(Model.Widget.BodyCss)" @bind-Value="@Model.Widget.BodyCss" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameof(Model.Widget.BodyCss)" />
+                    </Helper>
+                </RadzenFormField>
+            </RadzenStack>
+        </RadzenAccordionItem>
+    </Items>
+</RadzenAccordion>
+
+@if (Model.RenderSettings != null)
+{
+    <DynamicComponent Type="Model.RenderSettings" Parameters="RenderParameters" />
+}

@@ -1,0 +1,427 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="ClusterResourceEx"
+                Data="@Items"
+                Style="@Style"
+                GridLines="DataGridGridLines.None"
+                AllowFiltering="true"
+                AllowColumnPicking="AllowColumnPicking"
+                AllowAlternatingRows="false"
+                Density="Density.Compact"
+                AllowGrouping="true"
+                IsLoading="IsLoading && ShowLoading"
+                AllowSorting="true"
+                AllowMultiColumnSorting="true"
+                ShowMultiColumnSortingIndex="true"
+                AllowColumnResize="true"
+                AllowColumnReorder="true"
+                AllowVirtualization="true"
+                ColumnsPickerAllowFiltering="true"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                Template="@Template"
+                Value="@SelectedItems"
+                ValueChanged="@SelectedItemsChanged"
+                SelectionMode="@SelectionMode"
+                @bind-Settings="DataGridSettings"
+                @bind-Settings:after="OnDataGridSettingsChanged"
+                @attributes="AdditionalAttributes">
+    <HeaderTemplate>
+        <CrudToolbar OnRefresh="RefreshDataAsync">
+
+            <TemplateAfter>
+                @if (TemplateToolbar != null)
+                {
+                    @TemplateToolbar
+                }
+            </TemplateAfter>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <GroupHeaderTemplate>
+        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) @((MarkupString)GetGroupHeader(context))
+    </GroupHeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(IClusterName.ClusterName)"
+                              Title="@L["Cluster Name"]"
+                              Visible="false"
+                              Pickable="IsPickable(nameof(IClusterName.ClusterName))" />
+
+        <ResourceColumn Property="@nameof(ClusterResource.Type)"
+                        Title="@L["Type"]"
+                        ShowIconStatus="@GetIconStatus(nameof(ClusterResource.Type))"
+                        FilterMode="FilterMode.CheckBoxList"
+                        Visible="false"
+                        Width="100px"
+                        Pickable="IsPickable(nameof(ClusterResource.Type))" />
+
+        <ResourceColumn Property="@nameof(ClusterResource.Status)"
+                        Title="@L["Status"]"
+                        Visible="false"
+                        ShowIconStatus="@GetIconStatus(nameof(ClusterResource.Status))"
+                        FilterMode="FilterMode.CheckBoxList"
+                        Pickable="IsPickable(nameof(ClusterResource.Status))" />
+
+        @if (HasColumnForVm)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.VmId)"
+                            ShowIconStatus="@GetIconStatus(nameof(ClusterResource.VmId))"
+                            Title="@L["Vm Id"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.VmId))" />
+        }
+
+        @if (HasColumnForVm || HasColumnForNode)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.Node)"
+                            ShowIconStatus="@GetIconStatus(nameof(ClusterResource.Node))"
+                            Title="@L["Node"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.Node))" />
+        }
+
+        @if (HasColumnForVm || HasColumnForStorage)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.Pool)"
+                            Title="@L["Pool"]"
+                            Visible="false"
+                            ShowIconStatus="@GetIconStatus(nameof(ClusterResource.Storage))"
+                            Pickable="IsPickable(nameof(ClusterResource.Pool))" />
+        }
+
+        @if (HasColumnForStorage)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.Storage)"
+                            Title="@L["Storage"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.Storage))" />
+        }
+
+        <ResourceColumn Property="@nameof(ClusterResource.Description)"
+                        ShowIconStatus="@GetIconStatus(nameof(ClusterResource.Description))"
+                        Visible="false"
+                        Title="@L["Description"]"
+                        Pickable="IsPickable(nameof(ClusterResource.Description))">
+            <Template>
+                @if (DescriptionAsLink)
+                {
+                    <RadzenLink class="rz-link link" Text="@context.Description" title="@L["Open Web UI Proxmox VE"]" Path="@context.Link" Target="_blank" />
+                }
+                else
+                {
+                    @context.Description
+                }
+            </Template>
+        </ResourceColumn>
+
+        @if (HasColumnForVm)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.HostCpuUsage)"
+                            Title="@L["Host Cpu %"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.HostCpuUsage))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.HostMemoryUsage)"
+                            Title="@L["Host Mem. %"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.HostMemoryUsage))" />
+        }
+
+        @if (HasColumnForVm)
+        {
+            <RadzenDataGridColumn Property="@nameof(ClusterResource.Tags)"
+                                  Title="@L["Tags"]"
+                                  Visible="false"
+                                  Pickable="IsPickable(nameof(ClusterResource.Tags))">
+                <Template>
+                    @if (!string.IsNullOrEmpty(context.Tags))
+                    {
+                        @((MarkupString)PveAdminUIHelper.GetTagsStyle(context.Tags, TagStyleColorMaps[context.ClusterName]).JoinAsString("<br />"))
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        }
+
+        @if (HasColumnForNode)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.NodeCpuAssigned)"
+                            Title="@L["Node Cpu Assigned"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.NodeCpuAssigned))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.NodeMemoryAssigned)"
+                            Title="@L["Node Mem. Assigned"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.NodeMemoryAssigned))" />
+        }
+
+        @if (HasColumnForVm || HasColumnForNode || HasColumnForStorage)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.DiskSize)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.DiskSize))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.DiskUsage)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.DiskUsage))" />
+        }
+
+        @if (HasColumnForVm)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.DiskRead)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.DiskRead))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.DiskWrite)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.DiskWrite))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.NetIn)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.NetIn))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.NetOut)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.NetOut))" />
+        }
+
+        @if (HasColumnForVm || HasColumnForNode)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.MemorySize)"
+                            Visible="false"
+                            Title="@L["Mem. Tot."]"
+                            Pickable="IsPickable(nameof(ClusterResource.MemorySize))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.MemoryUsage)"
+                            Visible="false"
+                            Title="@L["Mem. Usage"]"
+                            Pickable="IsPickable(nameof(ClusterResource.MemoryUsage))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.MemoryInfo)"
+                            Visible="false"
+                            Title="@L["Mem. Usage %"]"
+                            Pickable="IsPickable(nameof(ClusterResource.MemoryInfo))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.CpuInfo)"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.CpuInfo))" />
+        }
+
+        @if (HasColumnForStorage)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.PluginType)"
+                            Title="@L["Storage Type"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.PluginType))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.Shared)"
+                            Title="@L["Storage Shared"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.Shared))" />
+
+            <ResourceColumn Property="@nameof(ClusterResource.Content)"
+                            Title="@L["Storage Content"]"
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.Content))" />
+        }
+
+        @if (HasColumnForVm)
+        {
+            <BoolIconColumn Property="@nameof(ClusterResource.IsLocked)" Title="@L["Locked"]"
+                            Inverted="true"
+                            IconTrue=""
+                            Visible="false"
+                            Pickable="IsPickable(nameof(ClusterResource.IsLocked))" />
+
+            <RadzenDataGridColumn Property="@nameof(ClusterResource.Lock)"
+                                  Title="@L["Lock Action"]"
+                                  Visible="false"
+                                  Pickable="IsPickable(nameof(ClusterResource.Lock))" />
+        }
+
+        @if (HasColumnForVm && ShowOsInfo)
+        {
+            <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.HostName)"
+                        Title="@L["HostName"]"
+                        Visible="false"
+                        ShowWating="IsGetOsInfo"
+                        Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.HostName))" />
+
+            <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.OsVersion)"
+                        Title="@L["Os Version"]"
+                        Visible="false"
+                        ShowWating="IsGetOsInfo"
+                        Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.OsVersion))" />
+
+            <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.OsType)"
+                        Title="@L["Os Type"]"
+                        Visible="false"
+                        ShowWating="IsGetOsInfo"
+                        Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.OsType))" />
+
+            <BaseColumn Property="@ClusterResourceEx.OsIcon"
+                        Title="@L["OS Icon"]"
+                        Visible="false"
+                        ShowWating="IsGetOsInfo"
+                        Pickable="IsPickable(nameof(ClusterResourceEx.OsIcon))"
+                        Filterable="false"
+                        Groupable="false"
+                        Width="80px">
+                <Template>
+                    @switch (context.OsType ?? VmOsType.Other)
+                    {
+                        case VmOsType.Windows:
+                            <svg viewBox="0 0 24 24"
+                                 width="20"
+                                 height="20"
+                                 style="fill:#0078D4; vertical-align:middle;"
+                                 title="Windows">
+                                <path d="M2 3l9-1.5V11H2V3zm11-1.7L22 0v11h-9V1.3zM2 13h9v9.5L2 21V13zm11 0h9v11l-9-1.5V13z" />
+                            </svg>
+                            break;
+
+                        case VmOsType.Linux:
+                            @* <svg width="20" height="20" viewBox="0 0 512 512">
+                                <circle cx="256" cy="256" r="200" fill="#000000" />
+                                <ellipse cx="256" cy="270" rx="140" ry="150" fill="#FFFFFF" />
+                                <circle cx="210" cy="230" r="24" fill="#000000" />
+                                <circle cx="302" cy="230" r="24" fill="#000000" />
+                                <circle cx="200" cy="222" r="8" fill="#FFFFFF" />
+                                <circle cx="292" cy="222" r="8" fill="#FFFFFF" />
+                                <path d="M256 280 C 215 300, 200 340, 256 360 C 312 340, 297 300, 256 280 Z" fill="#FFCC00" />
+                            </svg> *@
+                            <svg fill="#000000" width="20px" height="20px" viewBox="0 0 32 32">
+                                <path d="M22.6121,20.5215A6.1582,6.1582,0,0,0,24,16.5254C24,13.4785,21.9812,11,19.5,11A4.2435,4.2435,0,0,0,16,13.06,4.2435,4.2435,0,0,0,12.5,11C10.0188,11,8,13.4785,8,16.5254a6.1593,6.1593,0,0,0,1.3879,3.9961c-.5688.3686-.9389.6416-.988.6787a1,1,0,0,0-.1807,1.4248C8.6592,23.1748,12.6169,28,16,28s7.3408-4.8252,7.7808-5.375A1,1,0,0,0,23.6,21.2C23.551,21.1631,23.1812,20.89,22.6121,20.5215ZM12.5,13c1.3552,0,2.5,1.6143,2.5,3.5254v1.5664a9.1005,9.1005,0,0,0-1.0244.2314A2.6411,2.6411,0,0,0,14,18c0-1.1045-.6716-2-1.5-2s-1.5.8955-1.5,2a2.38,2.38,0,0,0,.4072,1.3623c-.0813.0415-.1687.0806-.248.1221A4.0291,4.0291,0,0,1,10,16.5254C10,14.6143,11.1448,13,12.5,13ZM16,26c-1.5691,0-3.9648-2.084-5.52-3.8057C11.9,21.2788,14.2656,20,16,20s4.1,1.2788,5.52,2.1943C19.9648,23.916,17.5691,26,16,26Zm4.8408-6.5156c-.0793-.0415-.1667-.0806-.248-.1221A2.38,2.38,0,0,0,21,18c0-1.1045-.6716-2-1.5-2s-1.5.8955-1.5,2a2.6411,2.6411,0,0,0,.0244.3232A9.1005,9.1005,0,0,0,17,18.0918V16.5254C17,14.6143,18.1448,13,19.5,13S22,14.6143,22,16.5254A4.0291,4.0291,0,0,1,20.8408,19.4844Z" transform="translate(0 0)" />
+                                <path d="M30,30a3.8876,3.8876,0,0,1-4-4V14A10,10,0,0,0,6,14V26a3.8876,3.8876,0,0,1-4,4V28a1.8793,1.8793,0,0,0,2-2V14a12,12,0,0,1,24,0V26a1.8825,1.8825,0,0,0,2,2Z" transform="translate(0 0)" />
+                            </svg>
+
+                            break;
+
+                        default:
+                            break;
+                    }
+
+
+                </Template>
+            </BaseColumn>
+        }
+
+        @if (HasColumnForVm || HasColumnForNode)
+        {
+            <ResourceColumn Title="@L["CPU %"]"
+                            UseProgressBarPercentage="UseProgressBarPercentage"
+                            Property="@nameof(ClusterResource.CpuUsagePercentage)"
+                            TooltipBarPercentage="@(a => a.CpuInfo)"
+                            Visible="false"
+                            Width="@(UseProgressBarPercentage ? string.Empty : "120px")"
+                            Pickable="IsPickable(nameof(ClusterResource.CpuUsagePercentage))" />
+
+            <ResourceColumn Title="@L["Mem. %"]"
+                            UseProgressBarPercentage="UseProgressBarPercentage"
+                            Property="@nameof(ClusterResource.MemoryUsagePercentage)"
+                            TooltipBarPercentage="@(a => a.MemoryInfo)"
+                            Visible="false"
+                            Width="@(UseProgressBarPercentage ? string.Empty : "120px")"
+                            Pickable="IsPickable(nameof(ClusterResource.MemoryUsagePercentage))" />
+
+            <ResourceColumn Title="@L["Disk %"]"
+                            UseProgressBarPercentage="UseProgressBarPercentage"
+                            Property="@nameof(ClusterResource.DiskUsagePercentage)"
+                            Visible="false"
+                            Width="@(UseProgressBarPercentage ? string.Empty : "120px")"
+                            Pickable="IsPickable(nameof(ClusterResource.DiskUsagePercentage))" />
+
+            <RadzenDataGridColumn Title="@L["Usage Cpu/Mem/Disk %"]"
+                                  Visible="false"
+                                  Property="@ClusterResourceEx.UsageCpuMemDiskPercColumnName"
+                                  ColumnPickerTitle="@L["Usage Cpu/Mem/Disk %"]"
+                                  Pickable="IsPickable(nameof(ClusterResourceEx.UsageCpuMemDiskPercColumnName))">
+                <Template>
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(context.CpuUsagePercentage * 100))"
+                                           Value="@(Math.Round(context.CpuUsagePercentage * 100, 1))"
+                                           title="@(L["Cpu: {0}%", Math.Round(context.CpuUsagePercentage * 100, 1)])"
+                                           class="rz-w-100" />
+
+                        <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(context.MemoryUsagePercentage * 100))"
+                                           Value="@(Math.Round(context.MemoryUsagePercentage * 100, 1))"
+                                           title="@(L["Memory: {0}%", Math.Round(context.MemoryUsagePercentage * 100, 1)])"
+                                           class="rz-w-100" />
+
+                        <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(context.DiskUsagePercentage * 100))"
+                                           Value="@(Math.Round(context.DiskUsagePercentage * 100, 1))"
+                                           title="@(L["Disk: {0}&", Math.Round(context.DiskUsagePercentage * 100, 1)])"
+                                           class="rz-w-100" />
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+        }
+
+        <RadzenDataGridColumn Title="@L["Link"]"
+                              Property="@nameof(ClusterResourceEx.Link)"
+                              Sortable="false"
+                              Filterable="false"
+                              Groupable="false"
+                              Width="50px"
+                              Visible="false"
+                              Pickable="IsPickable(nameof(ClusterResourceEx.Link))">
+            <Template>
+                <RadzenLink Icon="link" title="@L["Open link to Proxmox VE"]" Path="@context.Link" Target="_blank" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        @if (AllowCalculateSnapshotSize)
+        {
+            <SnapshotSizeColumn Property="@nameof(ISnapshotsSize.SnapshotsSize)"
+                                Title="@L["Snapshots Size"]"
+                                ShowWating="IsCalculateSnapshotSize"
+                                Pickable="IsPickable(nameof(ISnapshotsSize.SnapshotsSize))" />
+
+            <SnapshotSizeColumn Property="@nameof(ISnapshotsReplicationSize.SnapshotsReplicationSize)"
+                                Title="@L["Snapshots Repl. Size"]"
+                                Replication="true"
+                                ShowWating="IsCalculateSnapshotSize"
+                                Pickable="IsPickable(nameof(ISnapshotsReplicationSize.SnapshotsReplicationSize))" />
+        }
+
+        @if (HasColumnForVm || HasColumnForNode)
+        {
+            <ResourceColumn Property="@nameof(ClusterResource.Uptime)" Visible="false" Pickable="IsPickable(nameof(ClusterResourceEx.Uptime))" />
+        }
+
+        @if (AvailableCommands)
+        {
+            <RadzenDataGridColumn Property="@ClusterResourceEx.CommandsColumnName"
+                                  ColumnPickerTitle="@L["Commands"]"
+                                  Sortable="false"
+                                  Filterable="false"
+                                  Groupable="false"
+                                  Width="@CommandsWidth"
+                                  Visible="false"
+                                  Pickable="IsPickable(nameof(ClusterResourceEx.CommandsColumnName))">
+                <Template>
+                    @if (context.ResourceType == ClusterResourceType.Vm)
+                    {
+                        CommandsWidth = "130px";
+                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.ToolBar Vm="context"
+                                                                                         ClusterName="@context.ClusterName"
+                                                                                         OnlyIcon="true"
+                                                                                         CanChangeStatus="true"
+                                                                                         CanConsole="true" />
+                    }
+                    else if (context.ResourceType == ClusterResourceType.Node)
+                    {
+                        CommandsWidth = "130px";
+                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.ToolBar Node="context"
+                                                                                            ClusterName="@context.ClusterName"
+                                                                                            OnlyIcon="true"
+                                                                                            CanChangeStatus="true"
+                                                                                            CanConsole="true" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        }
+    </Columns>
+</RadzenDataGrid>

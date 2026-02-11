@@ -1,0 +1,14 @@
+﻿@inherits AdminComponentBase
+
+@implements IModelParameter<NodeStorageContent>
+
+<SwitchField @bind-Value="@Model.Protected" Label="@L["Protected"]" Name="@nameof(Model.Protected)" class="rz-w-100" />
+
+<RadzenFormField Text="@L["Notes"]" AllowFloatingLabel="false">
+    <RadzenTextArea @bind-Value="@Model.Notes" Rows="10" />
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public NodeStorageContent Model { get; set; } = default!;
+}

@@ -1,0 +1,22 @@
+﻿@inherits AdminComponentBase
+
+@typeparam TModelEditor
+
+<RadzenTemplateForm TItem="object" Data="@Model" Submit="@OnSubmitAsync" EditContext="@EditContext">
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
+        <RadzenStack Orientation="Orientation.Vertical">
+            <CascadingValue Value="@IsNew" Name="@nameof(IsNew)">
+                <DynamicComponent Type="typeof(TModelEditor)" Parameters="EditorParameters" />
+            </CascadingValue>
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          Text="@ButtonText"
+                          Style="width: fit-content;"
+                          Size="ButtonSize.Small"
+                          title="@ButtonText"
+                          aria-label="@ButtonText" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>

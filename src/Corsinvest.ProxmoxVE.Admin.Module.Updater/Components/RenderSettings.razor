@@ -1,0 +1,77 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
+</SubscriptionGate>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
+</SubscriptionGate>
+
+<Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Settings" Settings="Model" />
+
+<RadzenFormField Text="@L["Script Windows Search Update"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenButton Icon="refresh"
+                      Click="@(() => Model.ScriptWindowsSearchUpdate = Helpers.ActionHelper.GetDefaultScript(ScriptType.WindowsSearchUpdate))"
+                      title="@L["Restore default script"]" />
+    </Start>
+    <ChildContent>
+        <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptWindowsSearchUpdate)" @bind-Value="@Model.ScriptWindowsSearchUpdate" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.ScriptWindowsSearchUpdate)" />
+    </Helper>
+</RadzenFormField>
+
+@*
+    <RadzenFormField Text="@L["Script Windows Execute Update"]" AllowFloatingLabel="false" class="rz-w-100">
+        <Start>
+            <RadzenButton Icon="refresh"
+                          Click="@(() => Model.ScriptWindowsExecuteUpdate= Helpers.ActionHelper.GetDefaultScript(ScriptType.WindowsExecuteUpdate))"
+                          title="@L["Restore default script"]" />
+        </Start>
+        <ChildContent>
+            <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptWindowsExecuteUpdate)" @bind-Value="@Model.ScriptWindowsExecuteUpdate" />
+        </ChildContent>
+        <Helper>
+            <RadzenDataAnnotationValidator Component="@nameof(Model.ScriptWindowsExecuteUpdate)" />
+        </Helper>
+    </RadzenFormField>
+*@
+
+<RadzenFormField Text="@L["Script Linux Search Update"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenButton Icon="refresh"
+                      Click="@(() => Model.ScriptLinuxSearchUpdate = Helpers.ActionHelper.GetDefaultScript(ScriptType.LinuxSearchUpdate))"
+                      title="@L["Restore default script"]" />
+    </Start>
+    <ChildContent>
+        <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptLinuxSearchUpdate)" @bind-Value="@Model.ScriptLinuxSearchUpdate" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.ScriptLinuxSearchUpdate)" />
+    </Helper>
+</RadzenFormField>
+
+@*
+    <RadzenFormField Text="@L["Script Linux Execute Update"]" AllowFloatingLabel="false" class="rz-w-100">
+        <Start>
+            <RadzenButton Icon="refresh"
+                          Click="@(() => Model.ScriptLinuxExecuteUpdate = Helper.GetDefaultScript(ScriptType.LinuxExecuteUpdate))"
+                          title="@L["Restore default script"]" />
+        </Start>
+        <ChildContent>
+            <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptLinuxExecuteUpdate)" @bind-Value="@Model.ScriptLinuxExecuteUpdate" />
+        </ChildContent>
+        <Helper>
+            <RadzenDataAnnotationValidator Component="@nameof(Model.ScriptLinuxExecuteUpdate)" />
+        </Helper>
+    </RadzenFormField>
+*@
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+}

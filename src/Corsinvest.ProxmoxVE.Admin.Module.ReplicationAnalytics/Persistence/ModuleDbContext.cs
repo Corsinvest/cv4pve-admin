@@ -1,0 +1,19 @@
+using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
+
+namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.Persistence;
+
+public class ModuleDbContext(DbContextOptions<ModuleDbContext> options) : ModuleDbContextBase<ModuleDbContext>(options)
+{
+    public DbSet<JobResult> JobResults { get; set; } = default!;
+
+    protected override string SchemaName => "replication_insights";
+
+    protected override void ConfigureEntities(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<JobResult>().HasIndex(a => a.ClusterName);
+        modelBuilder.Entity<JobResult>().HasIndex(a => a.LastSync);
+        modelBuilder.Entity<JobResult>().HasIndex(a => a.Start);
+        modelBuilder.Entity<JobResult>().HasIndex(a => a.End);
+        modelBuilder.Entity<JobResult>().HasIndex(a => a.VmId);
+    }
+}

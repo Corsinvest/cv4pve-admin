@@ -1,0 +1,13 @@
+﻿@inherits AdminComponentBase
+
+@*<MudBadge Icon="@GetIconStatus()" Color="@GetColorStatus()" Origin="Origin.CenterRight" Overlap>
+    <MudIcon Icon="@GetIconType()" Style="@GetStyleTypeStatus()"  Size="Size.Medium" />
+</MudBadge>*@
+
+<div style="display:flex;">
+    <RadzenIcon Icon="@PveAdminUIHelper.Icons.GetResourceType(Type)"
+                Style="@StyleTypeStatus" />
+    <RadzenIcon Icon="@PveAdminUIHelper.Icons.GetResourceStatus(Status, Locked, false)"
+                IconColor="@PveAdminUIHelper.GetResourcesColorStatus(Status, Locked)"
+                Style="position: relative;left: -14px; top: 4px; font-size: 21px; --rz-icon-fill: 1;" />
+</div>

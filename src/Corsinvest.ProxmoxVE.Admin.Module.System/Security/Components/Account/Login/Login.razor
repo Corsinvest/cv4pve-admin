@@ -1,0 +1,81 @@
+﻿@page "/Login"
+@using Corsinvest.ProxmoxVE.Admin.Core
+
+@inherits AdminComponentBase
+
+<PageTitle>@L["Login"]</PageTitle>
+
+@if (BuildInfo.IsTestingExpired)
+{
+    <RadzenAlert Shade="Shade.Lighter"
+                 Variant="Variant.Flat"
+                 Size="AlertSize.Medium"
+                 AlertStyle="AlertStyle.Warning"
+                 AllowClose="false"
+                 Visible="true">
+        <RadzenText TextStyle="TextStyle.Subtitle1" class="mb-2">
+            <strong>@L["Testing Version Expired"]</strong>
+        </RadzenText>
+        <RadzenText TextStyle="TextStyle.Body2">
+            @L["This testing version has expired. Please update to a newer version or contact Corsinvest for a production license."]
+            <a href="@ApplicationHelper.UrlShopSubscription">@L["shop"]</a>
+        </RadzenText>
+    </RadzenAlert>
+}
+else
+{
+    <RadzenText Text="@L["Login"]" TextStyle="TextStyle.H4" class="mb-4" TagName="TagName.H2" />
+
+    <RadzenTemplateForm TItem="InputModel" Data="@Input" Action="@($"/Login?returnUrl={ReturnUrl}")" Method="post">
+        <RadzenAlert Shade="Shade.Lighter"
+                     Variant="Variant.Flat"
+                     Size="AlertSize.Small"
+                     AlertStyle="AlertStyle.Danger"
+                     AllowClose="false"
+                     Visible="@(!string.IsNullOrEmpty(Error))"
+                     Text="@Error" />
+
+        <AntiforgeryToken />
+
+        <RadzenLogin AllowRegister="false"
+                     AllowResetPassword="true"
+                     AllowRememberMe="true"
+                     ResetPassword="@ForgotPassword"
+                     Username="@Input.Username"
+                     Password="@Input.Password"
+                     RememberMe="@Input.RememberMe"
+                     ResetPasswordText="@L["Forgot password?"]"
+                     LoginText="@L["Sign in"]"
+                     UserText="@L["User"]"
+                     UserRequired="@L["Username is required"]"
+                     PasswordRequired="@L["Password is required"]"
+                     PasswordText="@L["Password"]"
+                     RememberMeText="@L["Remember me"]" />
+
+        @*     <div>
+        <p>
+            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                article
+                about setting up this ASP.NET application to support logging in via external services
+            </a>.
+        </p>
+    </div> *@
+
+        @if (ExternalLogins.Any())
+        {
+            <form action="/PerformExternalLogin" method="post">
+                <div>
+                    <AntiforgeryToken />
+                    <input type="hidden" name="@nameof(ReturnUrl)" value="@ReturnUrl" />
+                    <p>
+                        @foreach (var provider in ExternalLogins)
+                        {
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="@provider.DisplayName" name="provider" value="@provider.Name" />
+                        }
+                    </p>
+                </div>
+            </form>
+        }
+
+    </RadzenTemplateForm>
+}

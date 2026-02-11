@@ -1,0 +1,52 @@
+﻿@using NotifierConfiguration = Corsinvest.ProxmoxVE.Admin.Core.Notifier.NotifierConfiguration
+@inherits AdminComponentBase
+@typeparam TSettings
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="TSettings"
+                Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                Style="height: calc(100vh - 210px);"
+                PagerHorizontalAlign="HorizontalAlign.Left"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <Corsinvest.ProxmoxVE.Admin.Core.Components.CrudToolbar OnAdd="AddAsync"
+                                                                OnDelete="DeleteAsync"
+                                                                OnRefresh="RefreshDataAsync"
+                                                                DeleteDisabled="!SelectedItems.Any()">
+            <RadzenButton Variant="Variant.Text"
+                          Size="ButtonSize.Small"
+                          Text="@L["Test"]"
+                          Click="TestAsync"
+                          Icon="send"
+                          Style="--rz-icon-fill: 1;"
+                          ButtonStyle="ButtonStyle.Success"
+                          Disabled="!SelectedItems.Any()"
+                          title="@L["Test"]"
+                          aria-label="@L["Test"]" />
+        </Corsinvest.ProxmoxVE.Admin.Core.Components.CrudToolbar>
+    </HeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(NotifierConfiguration.Name)" Sortable="true" Title="@L["Name"]">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.Name</span>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid.BoolIconColumn Property="@nameof(NotifierConfiguration.Enabled)"
+                                                                            Title="@L["Enabled"]" />
+
+        @if (GridColumns != null)
+        {
+            @GridColumns
+        }
+    </Columns>
+</RadzenDataGrid>

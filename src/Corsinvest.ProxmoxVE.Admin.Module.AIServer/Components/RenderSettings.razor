@@ -1,0 +1,22 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
+
+<PasswordField @bind-Value="@Model.ApiToken" Label="@L["X-API-Key Token"]" Name="@nameof(Model.ApiToken)" class="rz-w-100">
+    <End>
+        <InfoIcon>
+            <ChildContent>
+                <strong>X-API-Key</strong>: token used to authenticate the MCP server, valid for all clusters
+            </ChildContent>
+        </InfoIcon>
+    </End>
+    <Helper>
+        <RadzenRequiredValidator Component="@nameof(Model.ApiToken)" />
+    </Helper>
+</PasswordField>
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+}

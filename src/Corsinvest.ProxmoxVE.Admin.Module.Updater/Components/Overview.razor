@@ -1,0 +1,22 @@
+﻿@inherits AdminComponentBase
+
+<RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" Text="@L[Messages.WebShellPamUserRequired]" />
+
+<Overview3Cols Icon1="security" Title1="Security Scan" Icon2="visibility" Title2="Update Detection" Icon3="assessment" Title3="Compliance">
+    <Text1>
+        <strong>Update Scanner</strong> analyzes VM/CT in Proxmox VE to identify available updates, including critical security patches.<br />
+        It provides visibility into pending updates across your virtualized infrastructure without making any changes.<br />
+        Administrators get comprehensive reports on update status to plan maintenance windows accordingly.
+    </Text1>
+    <Text2>
+        <strong>Security Visibility</strong>: Identifies critical security patches that need attention across all VMs and containers.<br />
+        <strong>Update Inventory</strong>: Tracks available updates by system, package, and severity level.<br />
+        <strong>Compliance Reporting</strong>: Generates reports showing patch status for security audits and compliance.<br />
+        <strong>Proactive Planning</strong>: Enables informed decisions about update scheduling and maintenance windows.
+    </Text2>
+    <Text3>
+        <strong>Non-Intrusive Scanning</strong>: Only checks for updates without making any system changes.<br />
+        <strong>Comprehensive Coverage</strong>: Scans all VM and container systems from centralized interface.<br />
+        <strong>Clear Reporting</strong>: Provides detailed update status with priority indicators for critical patches.<br />
+    </Text3>
+</Overview3Cols>

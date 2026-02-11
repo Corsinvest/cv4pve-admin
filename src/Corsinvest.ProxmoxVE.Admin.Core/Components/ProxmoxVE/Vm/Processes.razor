@@ -1,0 +1,26 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid Data="@Items"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                AllowColumnPicking="true"
+                IsLoading="!Items.Any()"
+                Density="Density.Compact"
+                Style="max-height: 400px;"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <HeaderTemplate>
+        <CrudToolbar OnRefresh="RefreshDataAsync" />
+    </HeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(Data.Name)" Title="@L["Name"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.PID)" Title="@L["PID"]" TextAlign="TextAlign.Right" />
+        <RadzenDataGridColumn Property="@nameof(Data.Username)" Title="@L["User Name"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.CPU)" Title="@L["CPU %"]" FormatString="{0:P1}" TextAlign="TextAlign.Right" SortOrder="SortOrder.Ascending" OrderIndex="0" />
+        <BaseColumn Property="@nameof(Data.Memory)" Title="@L["Memory"]" FormatString="@FormatHelper.DataFormatBytes" TextAlign="TextAlign.Right" />
+    </Columns>
+</RadzenDataGrid>

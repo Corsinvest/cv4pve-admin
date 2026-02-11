@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "animate.css@4.1.1",
+      "destination": "wwwroot/lib/animate.css/",
+      "files": [
+        "animate.min.css"
+      ]
+    },
+    {
+      "library": "MaterialDesign-Webfont@7.4.47",
+      "destination": "wwwroot/lib/MaterialDesign-Webfont/"
+    },
+    {
+      "library": "openlayers@10.3.1",
+      "destination": "wwwroot/lib/openlayers/",
+      "files": [
+        "dist/ol.min.js",
+        "dist/ol.js.map",
+        "ol.min.css",
+        "ol.css"
+      ]
+    }
+  ]
+}

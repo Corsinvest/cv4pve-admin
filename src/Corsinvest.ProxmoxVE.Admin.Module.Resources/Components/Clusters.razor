@@ -1,0 +1,26 @@
+﻿@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
+    <Summary ClusterName="@ClusterName" />
+
+    <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster.Snapshots ClusterName="@ClusterName" />
+
+    <RadzenCard>
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Tasks" Icon="list_alt">
+                    <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.Tasks Style="height:400px" ClusterName="@ClusterName" />
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Logs" Icon="article">
+                    <Logs Style="height:400px;" ClusterName="@ClusterName" />
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </RadzenCard>
+</RadzenStack>
+
+@code
+{
+    [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
+}

@@ -1,0 +1,60 @@
+﻿@inherits AdminComponentBase
+
+@if (Node.IsUnknown)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" Text="@L["Status unknown!"]" />
+}
+else
+{
+    <RadzenTabs @ref="RadzenTabsRef" TabPosition="TabPosition.Left" SelectedIndexChanged="SelectedIndexChangedAsync">
+        <Tabs>
+            <RadzenTabsItem Text="@L["Summary"]" Icon="summarize" tab-content="@TabContent.Summary">
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="10px">
+                    <ToolBar ClusterName="@ClusterName"
+                             Node="@Node"
+                             CanChangeStatus="CanPowerManagement"
+                             CanConsole="CanConsole"/>
+                </RadzenStack>
+
+                <Summary @ref="@SummaryRef" Node="@Node" ClusterName="@ClusterName" />
+            </RadzenTabsItem>
+
+            @*
+                    <RadzenTabsItem Text="@L["Console"]" Icon="terminal">
+                        <WebConsole Vm="@Vm" ClusterName="@ClusterName" Style="height:400px; width:100%;" />
+                    </RadzenTabsItem>
+                    *@
+
+            @*   <RadzenTabsItem Text="@L["Processes"]" Icon="memory">
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="@L["Services"]" Icon="settings">
+                </RadzenTabsItem> *@
+
+            <RadzenTabsItem Text="@L["Performance"]" Icon="multiline_chart" tab-content="@TabContent.Charts">
+                <Charts @ref="@ChartsRef" ClusterName="@ClusterName" Node="@Node.Node" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Replication"]"
+                            Icon="@PveAdminUIHelper.Icons.Replication"
+                            Visible="CanReplication"
+                            tab-content="@TabContent.Replication">
+                <Replication @ref="@ReplicationRef"
+                             ClusterName="@ClusterName"
+                             Node="@Node.Node"
+                             CanScheduleNow="CanReplicationScheduleNow" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Disks"]" Icon="database" Visible="@CanAudit" tab-content="@TabContent.Disks">
+                <Disks Node="@Node.Node" ClusterName="@ClusterName" />
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Task History"]" Icon="list_alt" Visible="@CanAudit" tab-content="@TabContent.Tasks">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.Tasks @ref="@TasksRef"
+                                                                                   ClusterName="@ClusterName"
+                                                                                   Node="@Node.Node"
+                                                                                   Style="height:400px" />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+}

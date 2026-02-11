@@ -1,0 +1,12 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<string>
+
+<RadzenTextArea Value="@Model"
+                ReadOnly="true"
+                class="rz-w-100"
+                Style=" font-family: Courier New; font-size: inherit; font-size: 12px; height: calc(100vh - 100px); overflow-y: scroll; overflow: auto; white-space: pre;" />
+
+@code
+{
+    [Parameter] public string Model { get; set; } = default!;
+}

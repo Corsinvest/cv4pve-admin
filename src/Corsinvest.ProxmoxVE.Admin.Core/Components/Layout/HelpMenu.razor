@@ -1,0 +1,30 @@
+﻿@inherits AdminComponentBase
+
+<RadzenProfileMenu ShowIcon="false" Click="OnMenuClick">
+    <Template>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+            <RadzenIcon Icon="help_outline" Style="font-size: 1.5rem;" />
+        </RadzenStack>
+    </Template>
+    <ChildContent>
+        <RadzenStack Style="width:300px; padding: 10px;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;">🚀 @L["Your"] @AppSettings.AppName @L["version"]</RadzenText>
+            @if (NewRelease != null)
+            {
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@L["Update ASAP"]" IsPill="true" />
+            }
+        </RadzenStack>
+        <RadzenStack Style="width:300px; padding: 0 10px 10px 10px;" Orientation="Orientation.Horizontal">
+            <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">@BuildInfo.Version</RadzenText>
+        </RadzenStack>
+
+        <hr class="solid">
+
+        <RadzenProfileMenuItem Text="@L["Documentation"]" Icon="menu_book" Path="https://github.com/Corsinvest/cv4pve-admin" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Value="@("shortcuts")" />
+        @* <RadzenProfileMenuItem Text="@L["Community Forum"]" Icon="forum" Path="#" />
+        <RadzenProfileMenuItem Text="@L["What's New"]" Icon="celebration" />
+        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" /> *@
+    </ChildContent>
+</RadzenProfileMenu>

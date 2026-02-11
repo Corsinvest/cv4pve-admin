@@ -1,0 +1,96 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" k Name="@nameof(Model.Enabled)" />
+
+<RadzenFormField Text="@L["Search Mode"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="manage_search" />
+    </Start>
+    <ChildContent>
+        <RadzenDropDown TValue="SearchMode"
+                        Name="@nameof(Model.SearchMode)"
+                        @bind-Value="@Model.SearchMode"
+                        Data="@(Enum.GetValues<SearchMode>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Managed"]:</strong> @L["Only snapshots created and managed by AutoSnap"]
+            <br />
+            <strong>@L["All"]:</strong> @L["All snapshots on the cluster, including manually created ones"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Timestamp Format"]" AllowFloatingLabel="false" class="rz-w-100">
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.TimestampFormat)" @bind-Value="@Model.TimestampFormat" Placeholder="yyMMddHHmmss" />
+    </ChildContent>
+    <Helper>
+        <RadzenRequiredValidator Component="@nameof(Model.TimestampFormat)" s />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Keep history maintain after deletion snapshot in Proxmox VE"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="layers" />
+    </Start>
+    <ChildContent>
+        <RadzenNumeric Name="@nameof(Model.KeepHistory)" @bind-Value="@Model.KeepHistory" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.KeepHistory)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Max percentage storage (default 95%)"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="percent" />
+    </Start>
+    <ChildContent>
+        <RadzenNumeric Name="@nameof(Model.MaxPercentageStorage)" @bind-Value="@Model.MaxPercentageStorage" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.MaxPercentageStorage)" />
+    </Helper>
+</RadzenFormField>
+
+<SwitchField @bind-Value="@Model.OnRemoveJobRemoveSnapshots"
+             Label="@L["On remove job remove snapshots in Proxmox VE"]"
+             Name="@nameof(Model.OnRemoveJobRemoveSnapshots)" />
+
+<RadzenFormField Text="@L["Notify"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="@GetIconNotify()" />
+    </Start>
+    <ChildContent>
+        <RadzenDropDown TValue="Notify"
+                        Name="@nameof(Model.Notify)"
+                        @bind-Value="@Model.Notify"
+                        Data="@(Enum.GetValues<Notify>())" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["None"]:</strong> @L["No notifications will be sent"]
+            <br />
+            <strong>@L["Always"]:</strong> @L["Send notifications for all snapshot operations"]
+            <br />
+            <strong>@L["On Failure Only"]:</strong> @L["Send notifications only when snapshot operations fail"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+<Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Settings" Settings="Model" />
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+
+    private string GetIconNotify()
+        => Model.Notify switch
+        {
+            Notify.Allways => "notifications_active",
+            Notify.OnFailureOnly => "notification_important",
+            _ => "notifications_off"
+        };
+}

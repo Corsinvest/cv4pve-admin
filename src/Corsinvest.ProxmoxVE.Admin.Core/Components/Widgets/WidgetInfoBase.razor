@@ -1,0 +1,87 @@
+@inherits AdminComponentBase
+@typeparam TSettings
+
+<RadzenStack Gap="1rem">
+    <RadzenRow>
+        @foreach (var stat in Stats)
+        {
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenCard Variant="Variant.Outlined" Class="rz-text-align-center rz-p-4">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.25rem">
+                        <RadzenText TextStyle="TextStyle.Caption" Class="rz-text-uppercase rz-m-0" Text="@stat.Title" />
+                        @if (IsLoadingStats)
+                        {
+                            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
+                        }
+                    </RadzenStack>
+                    <RadzenText TextStyle="TextStyle.H4" Class="@($"{stat.Color} rz-my-2")" Text="@stat.Value" />
+                    <RadzenText TextStyle="TextStyle.Body2" Text="@stat.Subtitle" />
+                </RadzenCard>
+            </RadzenColumn>
+        }
+    </RadzenRow>
+
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenCard Style="height: 100%">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: 1px solid var(--rz-divider)">
+                    <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["ALERTS / WARNINGS"]" />
+                    @if (IsLoadingAlerts)
+                    {
+                        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
+                    }
+                </RadzenStack>
+
+                <RadzenStack Gap="0.75rem">
+                    @foreach (var alert in Alerts)
+                    {
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                            <RadzenIcon Icon="@alert.Icon" Class="@alert.Color" />
+                            <RadzenText TextStyle="TextStyle.Body2" Class="rz-m-0" Text="@alert.Text" />
+                        </RadzenStack>
+                    }
+                    @if (!IsLoadingAlerts && !Alerts.Any())
+                    {
+                        <RadzenText TextStyle="TextStyle.Body2" Class="rz-m-0 rz-color-success">
+                            @L["No issues found"]
+                        </RadzenText>
+                    }
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenCard Style="height: 100%">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: 1px solid var(--rz-divider)">
+                    <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["AGE DISTRIBUTION"]" />
+                    @if (IsLoadingDistribution)
+                    {
+                        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
+                    }
+                </RadzenStack>
+
+                <RadzenStack Gap="1rem">
+                    @foreach (var item in AgeDistribution)
+                    {
+                        <RadzenRow AlignItems="AlignItems.Center" Gap="0">
+                            <RadzenColumn Size="3">
+                                <RadzenText TextStyle="TextStyle.Caption" Class="rz-m-0">@item.Label</RadzenText>
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="7">
+                                <RadzenProgressBar Value="@item.Percent"
+                                                   ShowValue="false"
+                                                   ProgressBarStyle="@item.Style"
+                                                   Style="height: 10px;" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="2" Class="rz-text-align-right">
+                                <RadzenText TextStyle="TextStyle.Body2" Class="rz-m-0">@item.Value</RadzenText>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    }
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>

@@ -1,0 +1,86 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="Lextm.SharpSnmpLib" Version="12.5.7" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.2.0" />
+    <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.0" />
+  </ItemGroup>
+  <!-- Logging and Monitoring -->
+  <ItemGroup>
+    <PackageVersion Include="Serilog" Version="4.3.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageVersion Include="Serilog.Sinks.SQLite" Version="6.0.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+  </ItemGroup>
+  <!-- UI and Frontend -->
+  <ItemGroup>
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
+    <PackageVersion Include="Radzen.Blazor" Version="9.0.1" />
+    <PackageVersion Include="OpenLayers.Blazor" Version="2.4.1" />
+  </ItemGroup>
+  <!-- Utilities and Tools -->
+  <ItemGroup>
+    <PackageVersion Include="ClosedXML" Version="0.105.0" />
+    <PackageVersion Include="ClosedXML.Report" Version="0.2.12" />
+    <PackageVersion Include="Humanizer" Version="3.0.1" />
+    <PackageVersion Include="Mapster" Version="7.4.0" />
+    <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
+    <PackageVersion Include="BlazorDownloadFile" Version="2.4.0.2" />
+    <PackageVersion Include="FluentResults" Version="4.0.0" />
+    <PackageVersion Include="CronExpressionDescriptor" Version="2.44.0" />
+    <PackageVersion Include="cronos" Version="0.11.1" />
+    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.5.0" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageVersion Include="Semver" Version="3.0.0" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.12.4" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
+    <PackageVersion Include="MailKit" Version="4.14.1" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.2" />
+  </ItemGroup>
+  <!-- Scheduling and Background Jobs -->
+  <ItemGroup>
+    <PackageVersion Include="Hangfire" Version="1.8.23" />
+    <PackageVersion Include="Hangfire.Console" Version="1.4.3" />
+    <PackageVersion Include="Hangfire.Console.Extensions" Version="2.1.0" />
+    <PackageVersion Include="Hangfire.Console.Extensions.Serilog" Version="2.1.0" />
+    <PackageVersion Include="Hangfire.PostgreSql" Version="1.21.0" />
+  </ItemGroup>
+  <!-- Proxmox VE -->
+  <ItemGroup>
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.3.1" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="1.7.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.19.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.9.1" />
+  </ItemGroup>
+  <!-- Development and Code Quality -->
+  <ItemGroup>
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
+  </ItemGroup>
+  <!-- MCP Server -->
+  <ItemGroup>
+    <PackageVersion Include="ModelContextProtocol" Version="0.7.0-preview.1" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.7.0-preview.1" />
+  </ItemGroup>
+  <!-- Security and Authentication -->
+  <ItemGroup>
+    <PackageVersion Include="Otp.NET" Version="1.4.1" />
+    <PackageVersion Include="Wangkanai.Detection" Version="8.20.0" />
+  </ItemGroup>
+  <!-- Other Libraries -->
+  <ItemGroup>
+    <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,30 @@
+﻿<RadzenIcon @ref="@IconRef"
+            Icon="info"
+            Style="cursor: pointer;"
+            MouseEnter="ShowTooltip"
+            MouseLeave="HideTooltip" />
+
+@code
+{
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+    [Parameter] public string Text { get; set; } = default!;
+    [Inject] private TooltipService TooltipService { get; set; } = default!;
+
+    private RadzenIcon IconRef = default!;
+
+    private void ShowTooltip(ElementReference elementReference)
+    {
+        var options = new TooltipOptions { Duration = null };
+
+        if (ChildContent != null)
+        {
+            TooltipService.Open(elementReference, ds => @ChildContent, options);
+        }
+        else if (!string.IsNullOrEmpty(Text))
+        {
+            TooltipService.Open(IconRef.Element, Text, options);
+        }
+    }
+
+    private void HideTooltip(ElementReference elementReference) => TooltipService.Close();
+}

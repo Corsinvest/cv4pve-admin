@@ -1,0 +1,27 @@
+﻿@inherits AdminComponentBase
+@implements IModelParameter<Settings>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
+</SubscriptionGate>
+
+<SubscriptionGate Size="SubscriptionGateSize.Banner">
+    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
+</SubscriptionGate>
+
+<RadzenFormField Text="@L["Max days logs"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="date_range" />
+    </Start>
+    <ChildContent>
+        <RadzenNumeric Name="@nameof(Model.MaxDaysLogs)" @bind-Value="@Model.MaxDaysLogs" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.MaxDaysLogs)" />
+    </Helper>
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public Settings Model { get; set; } = default!;
+}

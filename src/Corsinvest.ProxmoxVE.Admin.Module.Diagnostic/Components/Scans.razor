@@ -1,0 +1,67 @@
+﻿@inherits AdminComponentBase
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="Data"
+                Data="@ResultLoadData.Data"
+                Count="@ResultLoadData.TotalCount"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="false"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                Style="height: calc(100vh - 140px);"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                KeyDown="KeyDownAsync"
+                LoadData="LoadDataAsync"
+                @bind-Value="@SelectedItems">
+    <HeaderTemplate>
+        <CrudToolbar OnDelete="DeleteAsync" DeleteDisabled="!SelectedItems.Any()" OnRefresh="RefreshDataAsync">
+            <TemplateBefore>
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Scan"]"
+                              Click="Scan"
+                              Icon="play_arrow"
+                              Style="--rz-icon-fill: 1;"
+                              ButtonStyle="ButtonStyle.Success"
+                              title="@L["Scan"]"
+                              aria-label="@L["Scan"]" />
+            </TemplateBefore>
+
+            <TemplateAfter>
+                <RadzenButton Variant="Variant.Text"
+                              Size="ButtonSize.Small"
+                              Text="@L["Download PDF"]"
+                              Click="DownloadAsync"
+                              Icon="download"
+                              Disabled="!SelectedItems.Any()"
+                              IsBusy="InDownload"
+                              title="@L["Download PDF"]"
+                              aria-label="@L["Download PDF"]" />
+
+                <InfoScheduler TModule="Module" JobSchedule="@Settings" />
+            </TemplateAfter>
+        </CrudToolbar>
+    </HeaderTemplate>
+
+    <EmptyTemplate>
+        <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                            Click="Scan"
+                            Icon="play_arrow"
+                            Style="--rz-icon-fill: 1;" />
+    </EmptyTemplate>
+
+    <Template>
+        <Detail ResultId="@context.Id" />
+    </Template>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(Data.Info)" Title="@L["Info"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Warning)" Title="@L["Warning"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Critical)" Title="@L["Critical"]" />
+        <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" />
+        <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Duration)" Title="@L["Duration"]" FormatString="{0:hh':'mm':'ss'.'fff}" />
+    </Columns>
+</RadzenDataGrid>

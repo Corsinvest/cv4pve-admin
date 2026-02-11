@@ -1,0 +1,9 @@
+﻿@inherits AdminComponentBase
+@attribute [Authorize]
+
+<iframe src="@BackgroundJobs.ServiceCollectionExtensions.BackgroundJobsDashboardUrl"
+        title="@L["Background Job"]"
+        frameborder="0"
+        class="rz-w-100"
+        style="height: 100vh;">
+</iframe>

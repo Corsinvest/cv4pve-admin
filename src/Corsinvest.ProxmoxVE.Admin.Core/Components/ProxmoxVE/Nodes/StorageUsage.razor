@@ -1,0 +1,130 @@
+﻿@inherits AdminComponentBase
+
+<RadzenRow>
+    <RadzenColumn Size="12">
+        @foreach (var item in Contents.GroupBy(a => a.Storage))
+        {
+            var info = Storages.FirstOrDefault(a => a.Storage == item.Key && a.Node == Resource.Node);
+            @if (info != null)
+            {
+                <RadzenText TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center">
+                    <b>@item.Key</b> - @GetInfo(info)
+                </RadzenText>
+            }
+        }
+    </RadzenColumn>
+
+    <RadzenColumn Size="6">
+        @if (IsLoading)
+        {
+            <RadzenProgressBarCircular ShowValue="true"
+                                       Mode="ProgressBarMode.Indeterminate"
+                                       Size="ProgressBarCircularSize.Large"
+                                       class="rz-w-100"
+                                       Style="height:200px;">
+                <Template>@L["Wait"]</Template>
+            </RadzenProgressBarCircular>
+        }
+        else
+        {
+            var items = Contents.GroupBy(a => a.Content).Select(a => new { Category = a.Key, Value = a.Sum(b => b.Size) });
+
+            <RadzenChart>
+                <RadzenDonutSeries Data="@items" Title="@L["Size"]" CategoryProperty="Category" ValueProperty="Value">
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="false" />
+                    </ChildContent>
+                    <TitleTemplate>
+                        <div class="rz-donut-content">
+                            <div>@L["Content"]</div>
+                        </div>
+                    </TitleTemplate>
+                </RadzenDonutSeries>
+
+                <RadzenLegend Visible="true" Position="LegendPosition.Left" />
+                <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                    <RadzenAxisTitle Text="@L["Size"]" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+            @* <RadzenTable Style="border:none;" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
+                <RadzenTableHeader>
+                    <RadzenTableHeaderRow>
+                        <RadzenTableHeaderCell>@L["Category"]</RadzenTableHeaderCell>
+                        <RadzenTableHeaderCell class="rz-text-align-right">@L["Usage"]</RadzenTableHeaderCell>
+                    </RadzenTableHeaderRow>
+                </RadzenTableHeader>
+
+                <RadzenTableBody>
+                    @foreach (var item in items)
+                    {
+                        <RadzenTableRow>
+                            <RadzenTableCell>@item.Category</RadzenTableCell>
+                            <RadzenTableCell class="rz-text-align-right">@FormatHelper.FromBytes(item.Value)</RadzenTableCell>
+                        </RadzenTableRow>
+                    }
+                </RadzenTableBody>
+            </RadzenTable> *@
+        }
+    </RadzenColumn>
+
+    <RadzenColumn Size="6">
+        @if (IsLoading)
+        {
+            <RadzenProgressBarCircular ShowValue="true"
+                                       Mode="ProgressBarMode.Indeterminate"
+                                       Size="ProgressBarCircularSize.Large"
+                                       class="rz-w-100"
+                                       Style="height:200px;">
+                <Template>@L["Wait"]</Template>
+            </RadzenProgressBarCircular>
+        }
+        else
+        {
+            var items = Contents.GroupBy(a => IsGroupByStorage ? a.VmId.ToString() : a.Storage).Select(a => new { Category = a.Key, Value = a.Sum(b => b.Size) });
+            var label = L[IsGroupByStorage ? "VM / CT" : "Storage"];
+
+            <RadzenChart>
+                <RadzenDonutSeries Data="@items" Title="@L["Size"]" CategoryProperty="Category" ValueProperty="Value">
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="false" />
+                    </ChildContent>
+                    <TitleTemplate>
+                        <div class="rz-donut-content">
+                            <div>@label</div>
+                        </div>
+                    </TitleTemplate>
+                </RadzenDonutSeries>
+
+                <RadzenLegend Visible="true" Position="LegendPosition.Left" />
+                <RadzenValueAxis Formatter="@(value => FormatHelper.FromBytes((double)value))">
+                    <RadzenAxisTitle Text="@label" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+            @* <RadzenTable Style="border:none;" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
+                <RadzenTableHeader>
+                    <RadzenTableHeaderRow>
+                        <RadzenTableHeaderCell>@label</RadzenTableHeaderCell>
+                        <RadzenTableHeaderCell class="rz-text-align-right">@L["Usage"]</RadzenTableHeaderCell>
+                    </RadzenTableHeaderRow>
+                </RadzenTableHeader>
+
+                <RadzenTableBody>
+                    @foreach (var item in items)
+                    {
+                        <RadzenTableRow>
+                            <RadzenTableCell>@item.Category</RadzenTableCell>
+                            <RadzenTableCell class="rz-text-align-right">@FormatHelper.FromBytes(item.Value)</RadzenTableCell>
+                        </RadzenTableRow>
+                    }
+                </RadzenTableBody>
+            </RadzenTable> *@
+
+        }
+    </RadzenColumn>
+
+    <RadzenColumn Size="12">
+        <StorageContents IsLoading="IsLoading" Items="Contents" PropertiesName="PropertiesName" Groups="Groups" Orderby="Orderby" />
+    </RadzenColumn>
+</RadzenRow>
