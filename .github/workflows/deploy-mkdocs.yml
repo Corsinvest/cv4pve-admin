@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
+
+name: Deploy MkDocs Documentation
+
+on:
+  push:
+    branches:
+      - master
+      - dev-v2
+    paths:
+      - 'docs/user/**'
+      - '.github/workflows/deploy-mkdocs.yml'
+  workflow_dispatch:
+    # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for git info
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install MkDocs Material
+        run: |
+          pip install mkdocs-material
+
+      - name: Build MkDocs site
+        run: |
+          cd docs/user
+          mkdocs build --strict
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/user/site
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'docs: deploy MkDocs documentation'
