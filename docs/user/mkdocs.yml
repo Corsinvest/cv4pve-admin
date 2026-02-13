@@ -1,4 +1,4 @@
-site_name: cv4pve-admin - Professional Administration for Proxmox VE
+site_name: cv4pve-admin
 site_url: https://corsinvest.github.io/cv4pve-admin/
 site_description: Professional administration interface for Proxmox VE with advanced features and support.
 site_author: Corsinvest Srl
@@ -11,20 +11,30 @@ copyright: Copyright &copy; 2024 Corsinvest Srl
 
 nav:
     - Home: index.md
-    - Community vs Enterprise: editions.md
-    - Installation: installation.md
-    - User Guide: user_guide.md
+    - Editions: editions.md
+    - Getting Started: getting-started.md
+    - Configuration:
+        - configuration/index.md
+        - appsettings.extra.json: configuration/appsettings-extra.md
+        - Admin Area: configuration/admin-area.md
+        - User Profile: configuration/profile.md
+    - Modules: modules/index.md
 
 theme:
   name: material
   language: en
   logo: icon.png
   favicon: icon.png
+  font:
+    text: Roboto
+    code: Roboto Mono
   features:
     - navigation.tabs
     - navigation.top
     - navigation.sections
     - navigation.expand
+    - navigation.indexes
+    - navigation.footer
     - toc.follow
     - toc.integrate
     - content.tabs.link
@@ -34,21 +44,37 @@ theme:
     # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: blue
-      accent: blue
+      primary: indigo
+      accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: blue
-      accent: blue
+      primary: black
+      accent: indigo
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
 
 markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -56,13 +82,9 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
-  - admonition
-  - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - attr_list
-  - md_in_html
+  - tables
+  - toc:
+      permalink: true
 
 extra_css:
   - stylesheets/extra.css

@@ -10,7 +10,9 @@ Enterprise management layer for Proxmox VE clusters.
 [![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Docker Pulls CE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin?label=docker%20pulls%20CE)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
 [![Docker Pulls EE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin-ee?label=docker%20pulls%20EE)](https://hub.docker.com/r/corsinvest/cv4pve-admin-ee)
-[![GitLab](https://img.shields.io/badge/GitLab-Repository-orange.svg)](https://gitlab.com/Corsinvest/cv4pve-admin)
+
+![Home Dashboard](docs/user/docs/images/home-computerscreen.png)
+*Professional Proxmox VE management interface*
 
 ---
 
@@ -63,7 +65,7 @@ irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/install.ps1
 
 Access the web interface at `http://localhost:8080` with default credentials: `admin@local` / `Password123!`
 
-**→ [Complete Installation Guide](https://corsinvest.github.io/cv4pve-admin/installation/)**
+**→ [Complete Installation Guide](https://corsinvest.github.io/cv4pve-admin/getting-started/)**
 
 ---
 
@@ -95,8 +97,9 @@ For a complete feature comparison between **Community Edition (CE)** and **Enter
 
 **📖 [Complete Documentation →](https://corsinvest.github.io/cv4pve-admin/)**
 
-- **[Installation Guide](https://corsinvest.github.io/cv4pve-admin/installation/)** - Quick start and Docker setup
-- **[User Guide](https://corsinvest.github.io/cv4pve-admin/user_guide/)** - Features and configuration
+- **[Getting Started](https://corsinvest.github.io/cv4pve-admin/getting-started/)** - Installation and setup
+- **[Configuration](https://corsinvest.github.io/cv4pve-admin/configuration/)** - Application settings and customization
+- **[Modules](https://corsinvest.github.io/cv4pve-admin/modules/)** - Available features and modules
 - **[CE vs EE Comparison](https://corsinvest.github.io/cv4pve-admin/editions/)** - Choose the right edition
 
 ### Additional Resources
@@ -127,14 +130,11 @@ Not a replacement - a completion. Automation, visibility, compliance, and contro
 
 ## Screenshots
 
-![Multi-cluster dashboard overview](docs/user/docs/images/screenshot-dashboard.png)
+![Multi-cluster dashboard overview](docs/user/docs/images/login.png)
 *Multi-cluster dashboard with resource summary and real-time metrics*
 
 ![Backup Analytics](docs/user/docs/images/screenshot-backup-analytics2.png)
 *Backup job success rate, trends, and unprotected VM detection*
-
-![AutoSnap Configuration](docs/user/docs/images/screenshot-autosnap.png)
-*Snapshot scheduling configuration with retention policies*
 
 **→ See more screenshots in the [User Guide](https://corsinvest.github.io/cv4pve-admin/user_guide/)**
 

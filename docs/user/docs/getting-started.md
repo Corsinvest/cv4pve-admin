@@ -1,9 +1,3 @@
----
-hide:
-  - navigation
-  #- toc
----
-
 # Installation Guide
 
 Get cv4pve-admin up and running in minutes with Docker.
@@ -92,45 +86,42 @@ After installation, access the application:
 
 ---
 
-## Configuration Options
+## Next Steps
 
-### Custom Configuration
+After installation, you can:
 
-You can override application settings by creating an `appsettings.extra.json` file:
+- **[Configuration](configuration/index.md)** - Customize application settings, security, and logging
+- **[Modules](modules/index.md)** - Explore available modules and features
 
-```bash
-# Create the file in your installation directory
-touch appsettings.extra.json
-```
+## Advanced Docker Setup
 
-Edit the file with your custom settings:
+For detailed Docker deployment information, see the complete Docker documentation:
 
-```json
-{
-  "Serilog": {
-    "MinimumLevel": {
-      "Default": "Debug"
-    }
-  },
-  "ApplicationOptions": {
-    "SomeSetting": "value"
-  }
-}
-```
+📖 **[Docker Deployment Guide](https://github.com/Corsinvest/cv4pve-admin/blob/dev-v2/src/docker/README.md)**
 
-The file is automatically mounted read-only into the container and hot-reloaded when changed.
+Includes:
+- Docker Compose commands reference
+- Backup and restore procedures
+- Update management (automatic and manual)
+- Testing pre-release versions (RC)
+- Custom configuration with `appsettings.extra.json`
+- Troubleshooting and common issues
+- Running multiple instances
+- Security best practices
 
 ### Environment Variables
 
-All settings in `.env` can be customized:
+Key settings in `.env`:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `POSTGRES_PASSWORD` | `cv4pve-admin` | PostgreSQL database password |
-| `CV4PVE_ADMIN_TAG` | `latest` | Docker image tag/version |
-| `POSTGRES_PORT` | `5432` | PostgreSQL port (internal) |
+| `POSTGRES_PASSWORD` | `cv4pve-admin` | PostgreSQL database password (change before production!) |
 | `CV4PVE_ADMIN_PORT` | `8080` | Application web port |
-| `PGWEB_PORT` | `8082` | PgWeb admin interface port |
+| `CV4PVE_ADMIN_TAG` | `latest` | Docker image tag/version |
+| `TZ` | `Europe/Rome` | Container timezone |
+
+!!! tip "Complete Configuration"
+    For all available environment variables and detailed descriptions, see the `.env` file in your installation directory. The file includes configuration for PostgreSQL, ports, data directories, timezone, backup location, and Watchtower settings.
 
 ### Port Configuration
 
