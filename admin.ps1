@@ -9,7 +9,7 @@ param(
 
     [Parameter(Mandatory=$false)]
     [ValidateSet("docker", "binary")]
-    [string]$Type = "docker",
+    [string]$Type = "docker"
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,12 +18,14 @@ $projectPath = "src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj
 
 # Get properties using MSBuild evaluation (handles Directory.Build.props inheritance automatically)
 $currentVersion = (dotnet msbuild $projectPath -getProperty:Version -nologo).Trim()
-$containerRepo = (dotnet msbuild $projectPath -getProperty:ContainerRepository -nologo).Trim()
 $containerImageTags = (dotnet msbuild $projectPath -getProperty:ContainerImageTags -nologo).Trim()
-$editionName = $containerRepo.Split('/')[-1]  # "cv4pve-admin" or "cv4pve-admin-ee"
+$editionName = (dotnet msbuild $projectPath -getProperty:Edition -nologo).Trim()
+$containerRepo = (dotnet msbuild $projectPath -getProperty:ContainerRepository -nologo).Trim()
 
 Write-Host "Edition : $editionName" -ForegroundColor Cyan
 Write-Host "Version : $currentVersion" -ForegroundColor Cyan
+Write-Host "Action: $Command" -ForegroundColor Cyan
+Write-Host "Container Repo: $containerRepo" -ForegroundColor Cyan
 
 switch ($Command) {
     "build" {
@@ -52,15 +54,18 @@ switch ($Command) {
     }
 
     "run" {
-        Write-Host "Starting $editionName with docker compose..." -ForegroundColor Cyan
-        Push-Location "src/docker"
+        $composeFile = "docker-compose-$($editionName.ToLower()).yaml"
+        $env:CV4PVE_ADMIN_TAG = $currentVersion
+        $env:DATA_DIR = "./data/$($editionName.ToLower())"
+        Write-Host "Starting docker compose ($composeFile)..." -ForegroundColor Cyan
+        Push-Location "$PSScriptRoot/src/docker"
 
         try {
-            docker compose up
+            docker compose -f $composeFile up
         }
         finally {
             Write-Host "`nStopping services..." -ForegroundColor Yellow
-            docker compose down
+            docker compose -f $composeFile down
             Pop-Location
         }
 

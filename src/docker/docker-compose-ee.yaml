@@ -2,17 +2,11 @@
 # Copyright (c) Corsinvest Srl
 # Website: https://corsinvest.it
 # Repository: https://gitlab.com/Corsinvest/cv4pve-admin
-#
-# Usage:
-#   Start stack:     docker compose up -d
-#   Stop stack:      docker compose down
-#   View logs:       docker compose logs -f
-#   Start with admin tools: docker compose --profile admin up -d
 
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:16.9-alpine
+    image: postgres:17-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
@@ -119,7 +113,7 @@ services:
   # PgWeb - PostgreSQL Web Admin (Optional)
   # Start with: docker compose --profile admin up -d
   pgweb:
-    image: sosedoff/pgweb:0.16.2
+    image: sosedoff/pgweb:0.17.0
     restart: unless-stopped
     ports:
       - "${PGWEB_PORT}:8081"

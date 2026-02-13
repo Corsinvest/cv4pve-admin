@@ -83,6 +83,9 @@ docs/user/site/
 # Application data
 src/Corsinvest.ProxmoxVE.Admin/data
 
+# Testing docker
+src/docker/data/
+
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-base.css
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-wcag.css
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-dark-base.css
