@@ -1,4 +1,8 @@
-﻿@inject IModuleService ModuleService
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inject IModuleService ModuleService
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="@ModuleService.Assemblies">
