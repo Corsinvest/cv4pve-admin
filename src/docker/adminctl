@@ -1,10 +1,6 @@
-#!/bin/bash
-# CV4PVE Admin Management Script
-# Copyright (c) Corsinvest Srl
-# Website: https://corsinvest.it
-# Repository: https://gitlab.com/Corsinvest/cv4pve-admin
-#
-# Works on: Linux, macOS, Windows (Git Bash/WSL)
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
 
 set -e
 cd "$(dirname "$0")"

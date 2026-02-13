@@ -41,22 +41,23 @@ ln -s docker-compose-ce.yaml docker-compose.yaml
 
 ### 2. Configure
 
-Edit `.env`:
+Edit `.env` and customize the following key settings:
 
 ```bash
-# IMPORTANT: Change this!
+# IMPORTANT: Change this before production!
 POSTGRES_PASSWORD=your-secure-password
 
-# Optional: adjust data directory
-DATA_DIR=./data
-
-# Optional: adjust ports
+# Optional: adjust port
 CV4PVE_ADMIN_PORT=8080
-PGWEB_PORT=8082
-
-# Watchtower token (for automatic updates)
-WATCHTOWER_HTTP_API_TOKEN=your-random-token
 ```
+
+The `.env` file includes all available configuration options with detailed comments:
+- PostgreSQL database settings
+- Network ports (application, PgWeb)
+- Data and backup directories
+- Docker image version/tag
+- Timezone configuration
+- Watchtower API token
 
 ### 3. Start
 
