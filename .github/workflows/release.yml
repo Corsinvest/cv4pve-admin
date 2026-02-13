@@ -62,15 +62,6 @@ jobs:
           echo "[Website](https://corsinvest.it/cv4pve-admin) | [Docker Hub CE](https://hub.docker.com/r/corsinvest/cv4pve-admin) | [Docker Hub EE](https://hub.docker.com/r/corsinvest/cv4pve-admin-ee)" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: v${{ steps.version.outputs.version }}
-          body: ${{ steps.changelog.outputs.notes }}
-          generate_release_notes: true
-          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -91,3 +82,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: corsinvest/cv4pve-admin
           readme-filepath: ./README.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.notes }}
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
