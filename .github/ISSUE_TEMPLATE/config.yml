@@ -1,0 +1,13 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentation
+    url: https://corsinvest.github.io/cv4pve-admin/
+    about: Check out our comprehensive documentation for guides and tutorials
+
+  - name: 💬 Discussions
+    url: https://github.com/Corsinvest/cv4pve-admin/discussions
+    about: Ask questions and discuss ideas with the community
+
+  - name: 🆘 Community Support
+    url: https://github.com/Corsinvest/cv4pve-admin/issues
+    about: Search existing issues or get help from the community
