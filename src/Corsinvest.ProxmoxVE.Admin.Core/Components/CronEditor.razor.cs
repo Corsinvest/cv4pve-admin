@@ -17,10 +17,16 @@ public partial class CronEditor
     [Parameter] public string Descriptor { get; set; } = default!;
     [Parameter] public EventCallback<string?> DescriptorChanged { get; set; } = default!;
     [Parameter] public bool AllowEditor { get; set; }
+    [Parameter] public string Label { get; set; } = default!;
 
     private string Id { get; set; } = UniqueID!;
     private Popup PopupRef { get; set; } = default!;
     private RadzenButton ButtonRef { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        if (string.IsNullOrEmpty(Label)) { Label = L[" Cron Schedule"]; }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
