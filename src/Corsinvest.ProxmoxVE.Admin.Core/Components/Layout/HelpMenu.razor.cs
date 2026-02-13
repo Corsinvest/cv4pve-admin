@@ -48,10 +48,10 @@ public partial class HelpMenu(ISettingsService settingsService,
 
     private async Task ShowReleaseNotesAsync()
         => await dialogService.OpenSideExAsync<ReleaseNotesDialog>(L["Release Notes"],
-                                                                     null,
-                                                                     new DialogOptions
-                                                                     {
-                                                                         CloseDialogOnOverlayClick = true,
-                                                                         ShowClose = true
-                                                                     });
+                                                                   [],
+                                                                   new DialogOptions
+                                                                   {
+                                                                       CloseDialogOnOverlayClick = true,
+                                                                       ShowClose = true
+                                                                   });
 }
