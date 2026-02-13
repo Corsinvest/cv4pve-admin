@@ -76,14 +76,6 @@ jobs:
             -c Release \
             /p:ContainerRegistry=registry.hub.docker.com
 
-      - name: Update Docker Hub description
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: corsinvest/cv4pve-admin
-          readme-filepath: ./README.md
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
