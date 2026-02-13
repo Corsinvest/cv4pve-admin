@@ -1,12 +1,32 @@
-:root {
-  /* Blue Fluent UI: #0078d4 */
-  --md-primary-fg-color: #0078d4;
-  --md-primary-fg-color--dark: #005a9e;
-  --md-accent-fg-color: #0078d4;
+/* Base font size to match official docs */
+/* html {
+  font-size: 137.5%;
+} */
+
+/* EE/CE Badges */
+.ee:before {
+  content: "EE";
+  background-color: #ff9800;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
-/* Nella Dark Mode Fluent UI tende a essere leggermente più chiaro per contrasto */
-[data-md-color-scheme="slate"] {
-  --md-primary-fg-color: #2b88d8;
-  --md-accent-fg-color: #2b88d8;
+.ce:before {
+  content: "CE";
+  background-color: #2196F3;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
+
