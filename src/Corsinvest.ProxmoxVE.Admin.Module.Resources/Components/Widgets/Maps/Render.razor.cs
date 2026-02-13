@@ -106,7 +106,7 @@ public partial class Render(IAdminService adminService,
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

@@ -29,7 +29,7 @@ public partial class Replication(IAdminService adminService) : IRefreshableData,
         finally
         {
             IsLoading = false;
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

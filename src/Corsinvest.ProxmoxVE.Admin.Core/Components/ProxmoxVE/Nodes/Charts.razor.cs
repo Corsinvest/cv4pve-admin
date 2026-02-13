@@ -31,7 +31,7 @@ public partial class Charts(IAdminService adminService) : IRefreshableData, INod
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

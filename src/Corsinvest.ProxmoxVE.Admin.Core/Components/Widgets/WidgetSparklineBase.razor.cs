@@ -42,7 +42,7 @@ public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWid
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

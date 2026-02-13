@@ -33,7 +33,7 @@ public partial class Gauge(IAdminService adminService) : IModuleWidget<object>, 
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

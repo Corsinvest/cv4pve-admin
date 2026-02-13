@@ -45,7 +45,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

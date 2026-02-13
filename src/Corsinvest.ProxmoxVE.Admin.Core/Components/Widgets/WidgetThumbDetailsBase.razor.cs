@@ -44,7 +44,7 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

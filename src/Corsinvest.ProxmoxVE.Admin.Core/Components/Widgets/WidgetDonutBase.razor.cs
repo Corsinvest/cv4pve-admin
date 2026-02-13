@@ -67,7 +67,7 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

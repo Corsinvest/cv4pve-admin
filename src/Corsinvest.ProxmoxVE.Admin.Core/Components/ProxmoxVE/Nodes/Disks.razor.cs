@@ -30,7 +30,7 @@ public partial class Disks(IAdminService adminService) : IRefreshableData, INode
         finally
         {
             IsLoading = false;
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 

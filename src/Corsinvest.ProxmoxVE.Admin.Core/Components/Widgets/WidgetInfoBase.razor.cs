@@ -36,7 +36,7 @@ public abstract partial class WidgetInfoBase<TSettings> : IModuleWidget<TSetting
         }
         finally
         {
-            _refreshLock?.Release();
+            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
         }
     }
 
