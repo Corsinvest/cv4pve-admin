@@ -75,10 +75,15 @@ artifacts/
 .DS_Store
 Thumbs.db
 
-# Application data
-data/
-
 # MkDocs build output
 docs/user/site/
 
 .claude
+
+# Application data
+src/Corsinvest.ProxmoxVE.Admin/data
+
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-base.css
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-wcag.css
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-dark-base.css
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-dark-wcag.css

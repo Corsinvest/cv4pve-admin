@@ -13,11 +13,24 @@
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
+  <!-- Edition (defaults to CE, can be overridden by parent Directory.Build.props in EE) -->
+  <PropertyGroup Condition="'$(Edition)' == ''">
+    <Edition>CE</Edition>
+  </PropertyGroup>
+
   <!-- Version and Package Info -->
   <PropertyGroup>
     <Version>2.0.0-rc1</Version>
+
+    <!-- Pre-release/Testing detection -->
+    <VersionPreRelease>$([System.Text.RegularExpressions.Regex]::Match($(Version), '-(.+)$').Groups[1].Value)</VersionPreRelease>
+    <IsTesting Condition="'$(VersionPreRelease)' != ''">true</IsTesting>
+    <IsTesting Condition="'$(VersionPreRelease)' == ''">false</IsTesting>
+    <TestingExpirationMonths>3</TestingExpirationMonths>
+
     <!-- TESTING constant when pre-release version -->
-    <DefineConstants Condition="$(Version.Contains('-'))">$(DefineConstants);TESTING</DefineConstants>
+    <DefineConstants Condition="'$(IsTesting)' == 'true'">$(DefineConstants);TESTING</DefineConstants>
+
     <Company>Corsinvest Srl</Company>
     <Authors>Corsinvest Srl</Authors>
     <Copyright>Copyright © $(Company). All rights reserved.</Copyright>
@@ -32,6 +45,11 @@
   <PropertyGroup>
     <EnableScopedCss>true</EnableScopedCss>
   </PropertyGroup>
+
+  <!-- Include LICENSE file in package -->
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <!-- Code Analysis -->
   <PropertyGroup>

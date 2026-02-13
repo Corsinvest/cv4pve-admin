@@ -2,7 +2,9 @@
   <PropertyGroup>
     <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
     <ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
-    <ContainerImageTags>$(Version);latest</ContainerImageTags>
+    <!-- Testing versions don't get 'latest' tag -->
+    <ContainerImageTags Condition="'$(IsTesting)' == 'true'">$(Version)</ContainerImageTags>
+    <ContainerImageTags Condition="'$(IsTesting)' == 'false'">$(Version);latest</ContainerImageTags>
     <ContainerUser>app</ContainerUser>
   </PropertyGroup>
 

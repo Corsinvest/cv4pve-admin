@@ -1,17 +1,16 @@
 <Project>
   <ItemGroup>
-    <PackageVersion Include="Lextm.SharpSnmpLib" Version="12.5.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.3.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.0" />
   </ItemGroup>
   <!-- Logging and Monitoring -->
   <ItemGroup>
-    <PackageVersion Include="Serilog" Version="4.3.0" />
+    <PackageVersion Include="Serilog" Version="4.3.1" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
@@ -27,7 +26,7 @@
   <ItemGroup>
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
-    <PackageVersion Include="Radzen.Blazor" Version="9.0.1" />
+    <PackageVersion Include="Radzen.Blazor" Version="9.0.3" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.4.1" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -44,10 +43,9 @@
     <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.5.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="Semver" Version="3.0.0" />
-    <PackageVersion Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.2" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.3" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->
   <ItemGroup>
@@ -55,7 +53,7 @@
     <PackageVersion Include="Hangfire.Console" Version="1.4.3" />
     <PackageVersion Include="Hangfire.Console.Extensions" Version="2.1.0" />
     <PackageVersion Include="Hangfire.Console.Extensions.Serilog" Version="2.1.0" />
-    <PackageVersion Include="Hangfire.PostgreSql" Version="1.21.0" />
+    <PackageVersion Include="Hangfire.PostgreSql" Version="1.21.1" />
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
@@ -74,13 +72,7 @@
     <PackageVersion Include="ModelContextProtocol" Version="0.7.0-preview.1" />
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.7.0-preview.1" />
   </ItemGroup>
-  <!-- Security and Authentication -->
   <ItemGroup>
-    <PackageVersion Include="Otp.NET" Version="1.4.1" />
     <PackageVersion Include="Wangkanai.Detection" Version="8.20.0" />
-  </ItemGroup>
-  <!-- Other Libraries -->
-  <ItemGroup>
-    <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
   </ItemGroup>
 </Project>
