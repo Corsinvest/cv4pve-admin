@@ -12,7 +12,7 @@ public record PveTaskResult : CommandResult<Result>
     /// </summary>
     public string? Upid => Data?.Response?.data;
 
-    public string ClusterName { get; private set; }=default!;
+    public string ClusterName { get; private set; } = default!;
 
     public static PveTaskResult Success(Result result, string clusterName)
         => new()

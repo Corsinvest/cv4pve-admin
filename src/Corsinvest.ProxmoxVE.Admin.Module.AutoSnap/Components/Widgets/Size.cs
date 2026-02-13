@@ -54,7 +54,7 @@ public class Size(IAdminService adminService,
 
                 if (item.SnapshotsSize > 0)
                 {
-                    items.Add(new (item.Date.Date, item.SnapshotsSize));
+                    items.Add(new(item.Date.Date, item.SnapshotsSize));
                 }
             }
         }

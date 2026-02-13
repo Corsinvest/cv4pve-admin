@@ -11,7 +11,7 @@ public partial class ToolBar(IBrowserService browserService,
                              IAdminService adminService,
                              DialogService dialogService,
                              ContextMenuService contextMenuService,
-                             IEnumerable<IToolBarUtility<IClusterResourceNode>>  Utility) : IRefreshableData, IClusterName
+                             IEnumerable<IToolBarUtility<IClusterResourceNode>> Utility) : IRefreshableData, IClusterName
 {
     [EditorRequired, Parameter] public IClusterResourceNode Node { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;

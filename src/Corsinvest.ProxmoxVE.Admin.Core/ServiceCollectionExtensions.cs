@@ -11,6 +11,8 @@ using Corsinvest.ProxmoxVE.Admin.Core.Common.Middleware;
 using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE;
 using Corsinvest.ProxmoxVE.Admin.Core.Fonts;
 using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
+using Corsinvest.ProxmoxVE.Admin.Core.Search;
+using Corsinvest.ProxmoxVE.Admin.Core.Search.Providers;
 using Corsinvest.ProxmoxVE.Admin.Core.Session;
 using Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
@@ -20,8 +22,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using PdfSharp.Fonts;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
-using Corsinvest.ProxmoxVE.Admin.Core.Search;
-using Corsinvest.ProxmoxVE.Admin.Core.Search.Providers;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core;
 

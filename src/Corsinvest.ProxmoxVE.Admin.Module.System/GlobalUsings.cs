@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+global using System.ComponentModel.DataAnnotations;
+global using System.Security.Claims;
 global using Corsinvest.ProxmoxVE.Admin.Core.Common;
 global using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 global using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
@@ -23,5 +25,3 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Radzen;
 global using Radzen.Blazor;
-global using System.ComponentModel.DataAnnotations;
-global using System.Security.Claims;
