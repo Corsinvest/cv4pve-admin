@@ -21,7 +21,7 @@
                         <DynamicComponent Type="@item.ComponentType" Parameters="@GetParameters()" />
 
                         <div class="rz-mt-4">
-                            <RadzenButton Text="@L["Save changes"]" ButtonStyle="ButtonStyle.Primary" Click="@SaveAsync" />
+                            <RadzenButton Text="@L["Save changes"]" ButtonStyle="ButtonStyle.Primary" Click="@(() => SaveSectionAsync(item))" />
                         </div>
                     </ChildContent>
                 </RadzenAccordionItem>
