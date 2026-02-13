@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Widgets;
 
 public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWidget<TSettings>, IDisposable

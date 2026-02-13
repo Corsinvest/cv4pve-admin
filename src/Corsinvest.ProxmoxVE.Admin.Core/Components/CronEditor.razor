@@ -1,4 +1,8 @@
-﻿@using Radzen.Blazor.Rendering
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Radzen.Blazor.Rendering
 
 @inherits AdminComponentBase
 
@@ -8,7 +12,7 @@
             @if (AllowEditor)
             {
                 <RadzenButton @ref="ButtonRef"
-                              Icon="schedule"
+                              Icon="expand_more"
                               Click="@(args => PopupRef.ToggleAsync(ButtonRef.Element))"
                               Size="ButtonSize.ExtraSmall"
                               Variant="Variant.Text" />

@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 
 internal class LoggingHandler(HttpMessageHandler innerHandler, ILogger logger) : DelegatingHandler(innerHandler)

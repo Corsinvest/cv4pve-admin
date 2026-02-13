@@ -1,4 +1,8 @@
-﻿@inherits AdminComponentBase
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
 
 <RadzenProfileMenu ShowIcon="false" Click="OnMenuClick">
     <Template>
@@ -8,23 +12,29 @@
     </Template>
     <ChildContent>
         <RadzenStack Style="width:300px; padding: 10px;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
-            <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;">🚀 @L["Your"] @AppSettings.AppName @L["version"]</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;">@L["Your"] @AppSettings.AppName @L["version"] 🚀</RadzenText>
             @if (NewRelease != null)
             {
                 <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@L["Update ASAP"]" IsPill="true" />
             }
         </RadzenStack>
         <RadzenStack Style="width:300px; padding: 0 10px 10px 10px;" Orientation="Orientation.Horizontal">
-            <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">@BuildInfo.Version</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">
+                @BuildInfo.Version
+
+                <RadzenBadge Text="@BuildInfo.EditionFull" BadgeStyle="@(BuildInfo.IsEnterpriseEdition? BadgeStyle.Warning: BadgeStyle.Primary)" />
+            </RadzenText>
         </RadzenStack>
 
         <hr class="solid">
 
-        <RadzenProfileMenuItem Text="@L["Documentation"]" Icon="menu_book" Path="https://github.com/Corsinvest/cv4pve-admin" Target="_blank" />
         <RadzenProfileMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Documentation"]" Icon="menu_book" Path="https://corsinvest.github.io/cv4pve-admin/" Target="_blank" />
+
+        <hr class="solid">
+
         <RadzenProfileMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Value="@("shortcuts")" />
-        @* <RadzenProfileMenuItem Text="@L["Community Forum"]" Icon="forum" Path="#" />
-        <RadzenProfileMenuItem Text="@L["What's New"]" Icon="celebration" />
-        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" /> *@
+        <RadzenProfileMenuItem Text="@L["Release notes"]" Icon="celebration" Value="@("release-notes")" />
+        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@($"https://github.com/Corsinvest/cv4pve-admin/issues/new?template=feedback.yml&edition={BuildInfo.Edition}&version={BuildInfo.Version}")" Target="_balnk" />
     </ChildContent>
 </RadzenProfileMenu>

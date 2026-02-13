@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.Rendering;
 using MigraDocColors = MigraDoc.DocumentObjectModel.Colors;

@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Toolbelt.Blazor.HotKeys2;
@@ -44,7 +48,6 @@ public partial class MainLayout(IModuleService moduleService,
         // Subscribe to new release notifications
         releaseService.NewReleaseDiscovered += OnNewReleaseDiscovered;
 
-        // Register Ctrl+K hotkey to open command palette
         HotKeysContext = hotKeys.CreateContext()
             .Add(ModCode.Ctrl, Code.K, OpenCommandPalette, new HotKeyOptions { Description = "Open Command Palette" });
     }
@@ -76,11 +79,6 @@ public partial class MainLayout(IModuleService moduleService,
     {
         if (CommandPaletteRef != null) { await CommandPaletteRef.Open(); }
     }
-
-    private static string EditionName
-        => ApplicationHelper.IsEnterpriseEdition
-            ? "Enterprise Edition"
-            : "Community Edition";
 
     private async Task SetClusterNameAsync()
     {

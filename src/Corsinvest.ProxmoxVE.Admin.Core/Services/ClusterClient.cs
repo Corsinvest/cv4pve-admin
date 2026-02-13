@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
@@ -10,7 +14,7 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
                            IFusionCache fusionCache,
                            IServiceProvider serviceProvider)
 {
-    public ClusterSettings Settings { get; } = clusterSettings;
+    public ClusterSettings Settings => clusterSettings;
     public ClusterCachedData CachedData { get; } = new(pveClientFactory, fusionCache, clusterSettings, serviceProvider);
     public async Task<PveClient> GetPveClientAsync() => await CachedData.GetPveClientAsync();
 

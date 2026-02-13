@@ -1,8 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using Toolbelt.Blazor.HotKeys2;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 
-public partial class HelpMenu(ISettingsService settingsService, IReleaseService releaseService, DialogService dialogService)
+public partial class HelpMenu(ISettingsService settingsService,
+                               IReleaseService releaseService,
+                               DialogService dialogService)
 {
     [Parameter] public HotKeysContext HotKeysContext { get; set; } = default!;
 
@@ -19,11 +25,15 @@ public partial class HelpMenu(ISettingsService settingsService, IReleaseService 
     {
         if (item.Value?.ToString() == "shortcuts")
         {
-            await ShowKeyboardShortcuts();
+            await ShowKeyboardShortcutsAsync();
+        }
+        else if (item.Value?.ToString() == "release-notes")
+        {
+            await ShowReleaseNotesAsync();
         }
     }
 
-    private async Task ShowKeyboardShortcuts()
+    private async Task ShowKeyboardShortcutsAsync()
         => await dialogService.OpenAsync<KeyboardShortcutsDialog>(L["Keyboard Shortcuts"],
             new Dictionary<string, object>
             {
@@ -35,4 +45,13 @@ public partial class HelpMenu(ISettingsService settingsService, IReleaseService 
                 CloseDialogOnOverlayClick = true,
                 ShowClose = true
             });
+
+    private async Task ShowReleaseNotesAsync()
+        => await dialogService.OpenSideExAsync<ReleaseNotesDialog>(L["Release Notes"],
+                                                                     null,
+                                                                     new DialogOptions
+                                                                     {
+                                                                         CloseDialogOnOverlayClick = true,
+                                                                         ShowClose = true
+                                                                     });
 }

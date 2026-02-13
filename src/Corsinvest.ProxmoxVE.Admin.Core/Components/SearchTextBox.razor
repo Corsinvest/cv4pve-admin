@@ -1,4 +1,8 @@
-﻿<RadzenFormField Style="@Style" Text="@PlaceHoder" Variant="Variant.Outlined">
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+<RadzenFormField Style="@Style" Text="@PlaceHoder" Variant="Variant.Outlined">
     <ChildContent>
         <RadzenTextBox @bind-Value="@Keyword" @oninput="HandleInput" @onkeydown="HandleKeyDown" typeof="search"/>
     </ChildContent>

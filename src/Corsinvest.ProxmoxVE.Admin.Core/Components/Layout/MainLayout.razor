@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits LayoutComponentBase
 @attribute [Authorize]
 
 <RadzenComponents />
@@ -16,7 +20,7 @@
             <RadzenColumn Size="4" Style="align-content:center">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0px">
                     <RadzenSidebarToggle Click="@(() => SidebarExpanded = !SidebarExpanded)" />
-                    <RadzenLink Text="@($"CV4PVE Admin 360 - {EditionName}")" Path="@AppSettings.AppUrl" Target="_blank" />
+                    <RadzenLink Text="@($"CV4PVE Admin - {Core.BuildInfo.EditionFull}")" Path="@AppSettings.AppUrl" Target="_blank" />
                 </RadzenStack>
             </RadzenColumn>
 
@@ -24,7 +28,7 @@
                 <RadzenCard Style="padding: 0.4rem 0.75rem; cursor: pointer; width: 100%;" @onclick="OpenCommandPalette">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
                         <RadzenIcon Icon="search" class="rz-color-primary" />
-                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="flex: 1;" Text="@L["Search..."]"/>                           
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="flex: 1;" Text="@L["Search..."]"/>
                         <RadzenBadge Text="Ctrl+K" Shade="Shade.Lighter" BadgeStyle="BadgeStyle.Base" Style="font-size: 0.65rem;" />
                     </RadzenStack>
                 </RadzenCard>
@@ -107,11 +111,6 @@
         @*DisplayStyle="@(SidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="SidebarExpanded"*@
         <RadzenStack Gap="0" Style="height: 100%;" JustifyContent="JustifyContent.SpaceBetween">
             <NavMenu Links="@NavBarLinks" />
-
-            @* <RadzenText TextStyle="TextStyle.Caption" class="rz-mb-4 rz-ms-2 rz-text-tertiary-color" Path="@AppSettings.AppUrl" Target="_blank">
-                @AppSettings.AppName
-                @BuildInfo.Version
-            </RadzenText> *@
         </RadzenStack>
     </RadzenSidebar>
 
