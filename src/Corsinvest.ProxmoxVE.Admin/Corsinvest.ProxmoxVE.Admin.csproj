@@ -67,6 +67,6 @@
   </ItemGroup>
 
   <Target Name="DownloadFiles" BeforeTargets="Build" Condition="'$(InDocker)' != 'true'">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(ProjectDir)DownloadFiles.ps1&quot;" />
+    <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)DownloadFiles.ps1&quot;" />
   </Target>
 </Project>
