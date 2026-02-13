@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using ZiggyCreatures.Caching.Fusion;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;

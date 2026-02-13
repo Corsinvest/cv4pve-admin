@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using Corsinvest.ProxmoxVE.Admin.Core.Components.Widgets;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components.Widgets;
 
-public partial class VmsLocked(IAdminService adminService, ISettingsService settingsService) : WidgetThumbDetailsBase<object>(adminService, settingsService)
+public partial class VmsLocked(IAdminService adminService, ISettingsService settingsService)
+    : WidgetThumbDetailsBase<object>(adminService, settingsService)
 {
     protected override async Task RefreshDataAsyncInt()
     {

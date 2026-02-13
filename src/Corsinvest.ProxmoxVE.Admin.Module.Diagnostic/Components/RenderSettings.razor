@@ -1,4 +1,8 @@
-﻿@using Corsinvest.ProxmoxVE.Api.Shared.Utils
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Utils
 @using Corsinvest.ProxmoxVE.Diagnostic.Api
 @using SettingsTimeSeriesType = Corsinvest.ProxmoxVE.Diagnostic.Api.SettingsTimeSeriesType
 @using SettingsThresholdDouble = Corsinvest.ProxmoxVE.Diagnostic.Api.SettingsThreshold<double>
@@ -6,13 +10,9 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Diagnostic.Settings>
 
-<SubscriptionGate Size="SubscriptionGateSize.Banner">
-    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
-</SubscriptionGate>
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
 
-<SubscriptionGate Size="SubscriptionGateSize.Banner">
-    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
-</SubscriptionGate>
+<CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
 <RadzenFormField Text="@L["Number which should will keep"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>
@@ -26,7 +26,8 @@
     </Helper>
 </RadzenFormField>
 
-<Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Diagnostic.Settings" Settings="Model" />
+<Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Diagnostic.Settings"
+                                                                                   Settings="Model" />
 
 <RadzenPanel Text="@L["Threshold"]" Icon="data_thresholding">
     <RadzenAccordion>
@@ -45,14 +46,14 @@
 
             <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
                 @{
-                    var timeSeriesPropertyName = $"{Model.ApiSettings.Storage}.{nameof(Model.ApiSettings.Storage.TimeSeries)}";
+                    var timeSeriesPropertyName =
+                $"{Model.ApiSettings.Storage}.{nameof(Model.ApiSettings.Storage.TimeSeries)}";
                 }
 
                 <RadzenStack Orientation="Orientation.Vertical">
                     <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
                         <ChildContent>
-                            <RadzenDropDown TValue="SettingsTimeSeriesType"
-                                            Name="@timeSeriesPropertyName"
+                            <RadzenDropDown TValue="SettingsTimeSeriesType"                                            Name="@timeSeriesPropertyName"
                                             @bind-Value="@Model.ApiSettings.Storage.TimeSeries"
                                             Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
                         </ChildContent>
@@ -70,7 +71,8 @@
 
                     <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
                         <RadzenColumn Size="4">
-                            @RenderThreshold("Usage", "Model.Settings.Storage.Threshold", Model.ApiSettings.Storage.Threshold)
+                            @RenderThreshold("Usage", "Model.Settings.Storage.Threshold",
+                            Model.ApiSettings.Storage.Threshold)
                         </RadzenColumn>
                     </RadzenRow>
                 </RadzenStack>
@@ -79,7 +81,8 @@
             <RadzenAccordionItem Text="@L["SSD"]" Icon="@PveAdminUIHelper.Icons.Storage">
                 <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenColumn Size="4">
-                        @RenderThreshold("Wearout", "Model.Settings.SsdWearoutThreshold", Model.ApiSettings.SsdWearoutThreshold)
+                        @RenderThreshold("Wearout", "Model.Settings.SsdWearoutThreshold",
+                        Model.ApiSettings.SsdWearoutThreshold)
                     </RadzenColumn>
                 </RadzenRow>
             </RadzenAccordionItem>
@@ -92,7 +95,8 @@
     [Parameter] public Diagnostic.Settings Model { get; set; } = default!;
 
     private static string GetIconType(int index)
-        => PveAdminUIHelper.Icons.GetResourceType(new[] { PveConstants.KeyApiNode, PveConstants.KeyApiQemu, PveConstants.KeyApiLxc }[index]);
+        => PveAdminUIHelper.Icons.GetResourceType(new[] { PveConstants.KeyApiNode, PveConstants.KeyApiQemu,
+PveConstants.KeyApiLxc }[index]);
 
     private RenderFragment RenderHost(SettingsThresholdHost host, string propertyName) => __builder =>
     {
@@ -103,10 +107,8 @@
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
                 <ChildContent>
-                    <RadzenDropDown TValue="SettingsTimeSeriesType"
-                                    Name="@timeSeriesPropertyName"
-                                    @bind-Value="@host.TimeSeries"
-                                    Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
+                    <RadzenDropDown TValue="SettingsTimeSeriesType" Name="@timeSeriesPropertyName"
+                                    @bind-Value="@host.TimeSeries" Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
                 </ChildContent>
                 <End>
                     <InfoIcon>
@@ -136,7 +138,8 @@
         </RadzenStack>
     };
 
-    private RenderFragment RenderThreshold(string title, string pathBaseProperty, SettingsThresholdDouble threshold) => __builder =>
+    private RenderFragment RenderThreshold(string title, string pathBaseProperty, SettingsThresholdDouble threshold) =>
+__builder =>
     {
         <RadzenText Text="@L[title]" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle2" />
 

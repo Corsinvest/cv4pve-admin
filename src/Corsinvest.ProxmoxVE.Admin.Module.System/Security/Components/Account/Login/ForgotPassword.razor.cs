@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.WebUtilities;

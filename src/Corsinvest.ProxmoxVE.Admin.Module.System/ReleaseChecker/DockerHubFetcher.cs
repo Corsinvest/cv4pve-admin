@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using Semver;
@@ -13,15 +17,17 @@ internal static class DockerHubFetcher
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(ApplicationHelper.RepoDockerHub) ||
-            ApplicationHelper.RepoDockerHub.Contains("..") ||
-            ApplicationHelper.RepoDockerHub.Contains("://"))
+        var repoDockerHub = Core.BuildInfo.RepoDockerHub;
+
+        if (string.IsNullOrWhiteSpace(repoDockerHub)
+            || repoDockerHub.Contains("..")
+            || repoDockerHub.Contains("://"))
         {
             throw new InvalidOperationException("Invalid DockerHub repository configuration");
         }
 
         var client = httpClientFactory.CreateClient("DockerHubReleaseChecker");
-        var url = $"https://registry.hub.docker.com/v2/repositories/{ApplicationHelper.RepoDockerHub}/tags";
+        var url = $"https://registry.hub.docker.com/v2/repositories/{repoDockerHub}/tags";
 
         using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
@@ -51,7 +57,7 @@ internal static class DockerHubFetcher
                        return new ReleaseInfo
                        {
                            Prerelease = isPrerelease,
-                           Url = $"https://hub.docker.com/r/{ApplicationHelper.RepoDockerHub}/tags",
+                           Url = $"https://hub.docker.com/r/{repoDockerHub}/tags",
                            PublishedAt = tag.TagLastPushed,
                            Version = tag.Name ?? string.Empty
                        };

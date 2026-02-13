@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
     <PackageReference Include="Wangkanai.Detection" />
-    <PackageReference Include="Otp.NET" />
   </ItemGroup>
 
   <ItemGroup>

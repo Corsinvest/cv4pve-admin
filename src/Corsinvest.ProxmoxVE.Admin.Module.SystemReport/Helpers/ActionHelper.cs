@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using System.Text.RegularExpressions;
 using ClosedXML.Excel;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;

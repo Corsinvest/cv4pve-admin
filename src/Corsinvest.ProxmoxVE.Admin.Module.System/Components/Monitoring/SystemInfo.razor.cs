@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
@@ -38,7 +42,7 @@ public partial class SystemInfo(IReleaseService releaseService)
             // App Info
             ["-- App Info --"] = string.Empty,
             ["App Version"] = Core.BuildInfo.Version,
-            ["Edition"] = ApplicationHelper.IsEnterpriseEdition ? "Enterprise Edition" : "Community Edition",
+            ["Edition"] = Core.BuildInfo.EditionFull,
             ["Installation Type"] = isInContainer ? "Container (Docker)" : "Executable",
             ["Latest Available Version"] = latestRelease?.Version ?? "Up to date",
             ["Auto-Update Supported"] = releaseService.IsAutoUpdateSupported ? "Yes" : "No",

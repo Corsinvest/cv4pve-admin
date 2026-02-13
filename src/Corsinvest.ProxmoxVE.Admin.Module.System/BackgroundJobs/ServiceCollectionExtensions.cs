@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using Corsinvest.ProxmoxVE.Admin.Module.System.BackgroundJobs.Filters;
 using Corsinvest.ProxmoxVE.Admin.Module.System.BackgroundJobs.Services;
 using Hangfire;

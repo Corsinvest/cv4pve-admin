@@ -1,13 +1,13 @@
-﻿@inherits AdminComponentBase
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
-<SubscriptionGate Size="SubscriptionGateSize.Banner">
-    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
-</SubscriptionGate>
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
 
-<SubscriptionGate Size="SubscriptionGateSize.Banner">
-    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
-</SubscriptionGate>
+<CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
 <RadzenFormField Text="@L["Max days logs"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>

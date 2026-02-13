@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using Radzen.Blazor;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.Components;

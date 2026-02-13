@@ -1,4 +1,8 @@
-﻿@inherits AdminComponentBase
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
 
 <div class="rz-p-4">
     <RadzenAccordion Multiple="true" @key="@string.Join(",", Sections.Select(s => s.Title))">

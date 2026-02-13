@@ -1,13 +1,13 @@
-﻿@inherits AdminComponentBase
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
-<SubscriptionGate Size="SubscriptionGateSize.Banner">
-    <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
-</SubscriptionGate>
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
 
-<SubscriptionGate Size="SubscriptionGateSize.Banner">
-    <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
-</SubscriptionGate>
+<CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
 <Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Settings" Settings="Model" />
 
@@ -18,7 +18,8 @@
                       title="@L["Restore default script"]" />
     </Start>
     <ChildContent>
-        <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptWindowsSearchUpdate)" @bind-Value="@Model.ScriptWindowsSearchUpdate" />
+        <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptWindowsSearchUpdate)"
+                        @bind-Value="@Model.ScriptWindowsSearchUpdate" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.ScriptWindowsSearchUpdate)" />
@@ -48,7 +49,8 @@
                       title="@L["Restore default script"]" />
     </Start>
     <ChildContent>
-        <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptLinuxSearchUpdate)" @bind-Value="@Model.ScriptLinuxSearchUpdate" />
+        <RadzenTextArea Rows="10" Name="@nameof(Model.ScriptLinuxSearchUpdate)"
+                        @bind-Value="@Model.ScriptLinuxSearchUpdate" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.ScriptLinuxSearchUpdate)" />

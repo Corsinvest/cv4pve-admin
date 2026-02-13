@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using BlazorDownloadFile;
 using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Persistence;

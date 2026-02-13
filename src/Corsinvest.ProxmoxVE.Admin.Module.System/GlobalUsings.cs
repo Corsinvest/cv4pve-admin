@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 global using Corsinvest.ProxmoxVE.Admin.Core.Common;
 global using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 global using Corsinvest.ProxmoxVE.Admin.Core.Extensions;

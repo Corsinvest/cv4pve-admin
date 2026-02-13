@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 using System.Reflection;
 using System.Text.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid;
