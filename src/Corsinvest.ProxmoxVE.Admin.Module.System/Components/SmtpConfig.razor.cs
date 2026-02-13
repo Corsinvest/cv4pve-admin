@@ -6,7 +6,7 @@ using MimeKit;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components;
 
-public partial class SmtpConfig(IEmailSender emailSender, NotificationService notificationService)
+public partial class SmtpConfig(IEmailSender emailSender, NotificationService notificationService) : ISettingsParameter<AppSettings>
 {
     [Parameter] public AppSettings Settings { get; set; } = default!;
     [Parameter] public EventCallback<AppSettings> SettingsChanged { get; set; } = default!;
