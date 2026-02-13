@@ -1,0 +1,16 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem" Style="height: calc(100vh - 90px);">
+    <RadzenText TextStyle="TextStyle.H6">@L["Version"] @BuildInfo.Version</RadzenText>
+
+    <RadzenLink Text="@L["View Full Changelog"]"
+                Icon="open_in_new"
+                Target="_blank"
+                Path="https://github.com/Corsinvest/cv4pve-admin/blob/master/CHANGELOG.md" />
+
+    <RadzenMarkdown Text="@ChangelogContent" />
+</RadzenStack>

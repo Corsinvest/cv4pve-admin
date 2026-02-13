@@ -11,6 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="Corsinvest.ProxmoxVE.Admin.Core.EditionAttribute">
+      <_Parameter1>CE</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\CHANGELOG.md" Link="CHANGELOG.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="libman.json">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>

@@ -1,38 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- Generate BuildInfo class -->
-  <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile">
-    <PropertyGroup>
-      <_VersionPreRelease>$([System.Text.RegularExpressions.Regex]::Match($(Version), '-(.+)$').Groups[1].Value)</_VersionPreRelease>
-      <_IsTesting Condition="'$(_VersionPreRelease)' != ''">true</_IsTesting>
-      <_IsTesting Condition="'$(_VersionPreRelease)' == ''">false</_IsTesting>
-      <_TestingExpirationMonths>3</_TestingExpirationMonths>
-    </PropertyGroup>
-
-    <WriteLinesToFile
-      File="$(IntermediateOutputPath)BuildInfo.g.cs"
-      Lines="// &lt;auto-generated/&gt;
-using System.Reflection%3B
-
-namespace Corsinvest.ProxmoxVE.Admin.Core%3B
-
-public static class BuildInfo
-{
-    public const string Version = &quot;$(Version)&quot;%3B
-    public const string PreRelease = &quot;$(_VersionPreRelease)&quot;%3B
-    public const bool IsTesting = $(_IsTesting)%3B
-    public const int TestingExpirationMonths = $(_TestingExpirationMonths)%3B
-
-    private static DateTime? _buildDate%3B
-    public static DateTime BuildDate =&gt; _buildDate ??= File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().Location)%3B
-    public static bool IsTestingExpired =&gt; IsTesting %26%26 DateTime.UtcNow &gt; BuildDate.AddMonths(TestingExpirationMonths)%3B
-}"
-      Overwrite="true" />
-
-    <ItemGroup>
-      <Compile Include="$(IntermediateOutputPath)BuildInfo.g.cs" />
-    </ItemGroup>
-  </Target>
+  <PropertyGroup>
+    <!-- Set AssemblyInformationalVersion for BuildInfo to read -->
+    <InformationalVersion>$(Version)</InformationalVersion>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" />
