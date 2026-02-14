@@ -4,7 +4,7 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [ValidateSet("build", "run")]
+    [ValidateSet("build", "publish", "run")]
     [string]$Command = "build",
 
     [Parameter(Mandatory=$false)]
@@ -51,6 +51,17 @@ switch ($Command) {
                 Write-Host "Output: ./publish" -ForegroundColor Yellow
             }
         }
+    }
+
+    "publish" {
+        Write-Host "Publishing Docker image to registry.hub.docker.com..." -ForegroundColor Cyan
+        Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
+
+        dotnet publish $projectPath /t:PublishContainer -c Release /p:ContainerRegistry=registry.hub.docker.com
+        if ($LASTEXITCODE -ne 0) { Write-Host "Publish failed!" -ForegroundColor Red; exit $LASTEXITCODE }
+
+        Write-Host "`n✓ Docker publish completed!" -ForegroundColor Green
+        Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
     }
 
     "run" {
