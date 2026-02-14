@@ -10,8 +10,9 @@ use_directory_urls: true
 copyright: Copyright &copy; 2024 Corsinvest Srl
 
 nav:
-    - Home: index.md
-    - Editions: editions.md
+    - Home:
+        - index.md
+        - Editions: editions.md
     - Getting Started: getting-started.md
     - Configuration:
         - configuration/index.md
@@ -19,6 +20,9 @@ nav:
         - Admin Area: configuration/admin-area.md
         - User Profile: configuration/profile.md
     - Modules: modules/index.md
+    - Troubleshooting:
+        - troubleshooting.md
+        - CLI Reference: cli.md
 
 theme:
   name: material

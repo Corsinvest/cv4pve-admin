@@ -11,9 +11,14 @@ hide:
 </div>
 
 <div style="text-align: center; margin: 2rem 0 3rem 0;">
-  <a href="getting-started/" style="display: inline-block; background: #2196F3; color: white; padding: 0.8rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem;">Get Started</a>
-  <a href="https://github.com/Corsinvest/cv4pve-admin" target="_blank" style="display: inline-block; background: #424242; color: white; padding: 0.8rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem;">View on GitHub</a>
-  <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" target="_blank" style="display: inline-block; background: #1488C6; color: white; padding: 0.8rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem;">Docker Hub</a>
+  <a href="getting-started/" style="display: inline-block; background: #2196F3; color: white; padding: 0.8rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem;">🚀 Get Started</a>
+  <a href="editions/" style="display: inline-block; background: #7B1FA2; color: white; padding: 0.8rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem;">📋 Editions</a>
+  <a href="https://github.com/Corsinvest/cv4pve-admin" target="_blank" style="display: inline-block; background: #424242; color: white; padding: 0.8rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem;">🐙 View on GitHub</a>
+  <span style="display: inline-flex; align-items: center; background: #333; border-radius: 4px; overflow: hidden; margin: 0.5rem; font-weight: 600;">
+    <span style="padding: 0.8rem 1rem; color: white;">🐳 Docker Hub</span>
+    <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin" target="_blank" style="display: inline-block; background: #1488C6; color: white; padding: 0.8rem 1.2rem; text-decoration: none; font-weight: 600;">CE</a>
+    <a href="https://hub.docker.com/r/corsinvest/cv4pve-admin-ee" target="_blank" style="display: inline-block; background: #ff9800; color: white; padding: 0.8rem 1.2rem; text-decoration: none; font-weight: 600;">EE</a>
+  </span>
 </div>
 
 <div style="text-align: center; margin: 3rem 0;">
