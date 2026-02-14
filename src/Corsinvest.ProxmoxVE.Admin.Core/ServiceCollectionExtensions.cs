@@ -149,7 +149,10 @@ public static class ServiceCollectionExtensions
 
     private static async Task TryExecuteCliCommandAsync(this IHost host, string[] args)
     {
-        if (args.Length == 0 || args[0].StartsWith("--")) { return; }
+        if (args.Length == 0
+            || (args[0].StartsWith("--")
+                && args[0] != "--help"
+                && args[0] != "--version")) { return; }
 
         var rootCommand = new System.CommandLine.RootCommand("cv4pve-admin - Corsinvest Proxmox VE Admin")
         {
