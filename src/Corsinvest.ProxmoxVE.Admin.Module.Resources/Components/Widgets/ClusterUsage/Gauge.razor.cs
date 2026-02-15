@@ -44,7 +44,12 @@ public partial class Gauge(IAdminService adminService) : IModuleWidget<object>, 
         {
             items.AddRange(await clusterClient.CachedData.GetResourcesAsync(false));
         }
-        Items = ResourceUsage.Get(items, L);
+        var usages = ResourceUsage.Get(items, L);
+        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        {
+            usages.Add(await ResourceUsage.GetSnapshots(items, L, clusterClient));
+        }
+        Items = usages;
     }
 
     public void Dispose()

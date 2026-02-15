@@ -8,7 +8,7 @@
     @foreach (var item in Data)
     {
         <RadzenColumn Size="@(12 / Data.Count())">
-            <div>
+            <div style="width:100%;">
                 @if (item.Group == "Snapshot")
                 {
                     <SubscriptionGate Size="SubscriptionGateSize.Compact">
@@ -27,7 +27,7 @@
 @code
 {
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
-    [Parameter] public string Style { get; set; } = "width:auto";
+    [Parameter] public string Style { get; set; } = "width:100%;";
     [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
 
     private RenderFragment RenderGauge(ResourceUsage item) => __builder =>
