@@ -75,7 +75,7 @@ New-Item -ItemType Directory -Path $DirName | Out-Null
 Set-Location $DirName
 
 # Base URL for raw files
-$BaseUrl = "https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/src/docker"
+$BaseUrl = "https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/docker"
 
 # Files to download
 $Files = @(

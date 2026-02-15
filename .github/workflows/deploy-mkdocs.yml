@@ -6,8 +6,7 @@ name: Deploy MkDocs Documentation
 on:
   push:
     branches:
-      - master
-      - dev-v2
+      - main
     paths:
       - 'docs/user/**'
       - '.github/workflows/deploy-mkdocs.yml'

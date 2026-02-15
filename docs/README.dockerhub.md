@@ -11,12 +11,12 @@ Centralized dashboard for all your Proxmox VE clusters. Multi-cluster visibility
 
 **Linux/macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.sh | bash
 ```
 
 **Windows:**
 ```powershell
-irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/install.ps1 | iex
+irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
 ```
 
 Access at `http://localhost:8080` — default: `admin@local` / `Password123!`

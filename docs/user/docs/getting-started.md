@@ -1,5 +1,9 @@
 # Installation Guide
 
+!!! warning "v2 is not compatible with v1"
+    cv4pve-admin v2 is a **complete rewrite** and is not compatible with v1.
+    There is currently no migration path from v1 to v2 — a fresh installation is required.
+
 Get cv4pve-admin up and running in minutes with Docker.
 
 ---
@@ -21,13 +25,13 @@ The installer will ask which edition (CE or EE) and which version to install. Th
 === "Linux / macOS"
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.sh | bash
     ```
 
 === "Windows PowerShell"
 
     ```powershell
-    irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/install.ps1 | iex
+    irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
     ```
 
 !!! success "Installation Complete"
@@ -59,7 +63,7 @@ docker compose down && docker compose up -d
 
 For detailed Docker deployment information, see the complete Docker documentation:
 
-📖 **[Docker Deployment Guide](https://github.com/Corsinvest/cv4pve-admin/blob/dev-v2/src/docker/README.md)**
+📖 **[Docker Deployment Guide](https://github.com/Corsinvest/cv4pve-admin/blob/main/src/docker/README.md)**
 
 The installer also creates an `adminctl` script in the installation directory for convenient management (logs, start, stop, restart, backup, status).
 

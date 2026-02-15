@@ -76,7 +76,7 @@ mkdir "$DIR_NAME"
 cd "$DIR_NAME"
 
 # Base URL for raw files
-BASE_URL="https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/src/docker"
+BASE_URL="https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/docker"
 
 # Files to download
 FILES=(

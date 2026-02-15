@@ -4,7 +4,7 @@ site_description: Professional administration interface for Proxmox VE with adva
 site_author: Corsinvest Srl
 repo_url: https://github.com/Corsinvest/cv4pve-admin
 repo_name: Corsinvest/cv4pve-admin
-edit_uri: edit/master/docs/user/new/docs/
+edit_uri: edit/main/docs/user/new/docs/
 docs_dir: docs
 use_directory_urls: true
 copyright: Copyright &copy; 2024 Corsinvest Srl
