@@ -67,6 +67,8 @@ Access the web interface at `http://localhost:8080` with default credentials: `a
 
 **→ [Complete Installation Guide](https://corsinvest.github.io/cv4pve-admin/getting-started/)**
 
+> **Looking for v1?** The previous version is available at the [v1.3.1 tag](https://github.com/Corsinvest/cv4pve-admin/tree/v1.3.1). Note: v2 is a complete rewrite and is not compatible with v1.
+
 ---
 
 ## Features & Modules
