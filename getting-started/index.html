@@ -967,6 +967,11 @@
 
 
 <h1 id="installation-guide">Installation Guide<a class="headerlink" href="#installation-guide" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">v2 is not compatible with v1</p>
+<p>cv4pve-admin v2 is a <strong>complete rewrite</strong> and is not compatible with v1.
+There is currently no migration path from v1 to v2 — a fresh installation is required.</p>
+</div>
 <p>Get cv4pve-admin up and running in minutes with Docker.</p>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
@@ -982,11 +987,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux / macOS</label><label for="__tabbed_1_2">Windows PowerShell</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/master/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">irm </span><span class="n">https</span><span class="p">://</span><span class="n">raw</span><span class="p">.</span><span class="n">githubusercontent</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">Corsinvest</span><span class="p">/</span><span class="n">cv4pve-admin</span><span class="p">/</span><span class="n">master</span><span class="p">/</span><span class="n">install</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">iex</span>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">irm </span><span class="n">https</span><span class="p">://</span><span class="n">raw</span><span class="p">.</span><span class="n">githubusercontent</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">Corsinvest</span><span class="p">/</span><span class="n">cv4pve-admin</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="n">install</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">iex</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -1014,7 +1019,7 @@
 <hr />
 <h2 id="advanced-docker-setup">Advanced Docker Setup<a class="headerlink" href="#advanced-docker-setup" title="Permanent link">&para;</a></h2>
 <p>For detailed Docker deployment information, see the complete Docker documentation:</p>
-<p>📖 <strong><a href="https://github.com/Corsinvest/cv4pve-admin/blob/dev-v2/src/docker/README.md">Docker Deployment Guide</a></strong></p>
+<p>📖 <strong><a href="https://github.com/Corsinvest/cv4pve-admin/blob/main/src/docker/README.md">Docker Deployment Guide</a></strong></p>
 <p>The installer also creates an <code>adminctl</code> script in the installation directory for convenient management (logs, start, stop, restart, backup, status).</p>
 <p>Includes:
 - Docker Compose commands reference
