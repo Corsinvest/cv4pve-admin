@@ -1,0 +1,16 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+@if (Initalized)
+{
+    <div style="height:100%; width:100%;">
+        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster.ResourceUsageGaugeStacked Data="@Items" />
+    </div>
+}
+else
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}

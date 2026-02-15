@@ -1,0 +1,77 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits ComponentBase
+
+@if (Items.Any())
+{
+    <div style="display:flex; flex-direction:column; height:100%; width:100%;">
+        <RadzenArcGauge Style="flex:1; min-height:0; width:100%; height:100%;">
+            @for (var i = 0; i < Items.Count; i++)
+            {
+                var item = Items[i];
+                var color = Colors[i % Colors.Length];
+                var colorLight = ColorsLight[i % ColorsLight.Length];
+                var radius = Math.Round(1.0 - i * RadiusStep, 2);
+                <RadzenArcGaugeScale Min="0" Max="100" StartAngle="@StartAngle" EndAngle="@EndAngle"
+                                     Radius="@radius" Fill="@colorLight" Margin="0">
+                    <RadzenArcGaugeScaleValue Value="@item.Usage" Fill="@color" ShowValue="false" />
+                </RadzenArcGaugeScale>
+            }
+        </RadzenArcGauge>
+
+        <RadzenStack Orientation="Orientation.Vertical" Gap="2px" Style="padding: 4px 8px;">
+            @for (var i = 0; i < Items.Count; i++)
+            {
+                var item = Items[i];
+                var color = Colors[i % Colors.Length];
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="4px">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                        <div style="@($"width:10px; height:10px; border-radius:50%; background:{color}; flex-shrink:0;")"></div>
+                        <RadzenText TextStyle="TextStyle.Caption" Style="margin:0;">@item.Name</RadzenText>
+                    </RadzenStack>
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                        <RadzenText TextStyle="TextStyle.Caption" Style="margin:0; font-weight:600;">@(Math.Round(item.Usage))%</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Caption" Style="margin:0; color: var(--rz-text-subtitle-color);">@item.Info</RadzenText>
+                    </RadzenStack>
+                </RadzenStack>
+            }
+        </RadzenStack>
+    </div>
+}
+
+@code
+{
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public double StartAngle { get; set; } = 0;
+    [Parameter] public double EndAngle { get; set; } = 360;
+    [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
+
+    private static readonly string[] Colors =
+    [
+        "var(--rz-danger)",
+        "var(--rz-warning)",
+        "var(--rz-success)",
+        "var(--rz-info)",
+        "var(--rz-secondary)"
+    ];
+
+    private static readonly string[] ColorsLight =
+    [
+        "var(--rz-danger-lighter)",
+        "var(--rz-warning-lighter)",
+        "var(--rz-success-lighter)",
+        "var(--rz-info-lighter)",
+        "var(--rz-secondary-lighter)"
+    ];
+
+    private List<ResourceUsage> Items { get; set; } = [];
+    private double RadiusStep { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Items = Data.ToList();
+        RadiusStep = Items.Count > 1 ? 0.22 : 0.0;
+    }
+}

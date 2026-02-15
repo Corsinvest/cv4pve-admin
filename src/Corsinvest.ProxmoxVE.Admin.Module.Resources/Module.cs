@@ -85,6 +85,13 @@ public class Module : ModuleBase
                Height = 4,
                Width = 4,
            },
+           new(this,"Cluster Usage Gauge Stacked")
+           {
+               Description = "Show cluster usage as stacked rings",
+               RenderInfo = new(typeof(Components.Widgets.ClusterUsage.GaugeStacked)),
+               Height = 4,
+               Width = 4,
+           },
            new(this,"Cluster Usage Grid")
            {
                Description = "Show cluster usage",
