@@ -103,6 +103,15 @@ foreach ($file in $Files) {
 Copy-Item $ComposeFile docker-compose.yaml
 Write-Host "Configured: $ComposeFile -> docker-compose.yaml"
 
+# Pre-create appsettings.extra.json as file (Windows: Docker creates it as directory if missing)
+$dataDir = (Get-Content .env | Where-Object { $_ -match '^DATA_DIR=' }) -replace '^DATA_DIR=', ''
+$dataDir = $dataDir.Trim()
+New-Item -ItemType Directory -Force -Path "$dataDir\cv4pve-admin\config" | Out-Null
+if (-not (Test-Path "$dataDir\cv4pve-admin\config\appsettings.extra.json")) {
+    New-Item -ItemType File -Force -Path "$dataDir\cv4pve-admin\config\appsettings.extra.json" | Out-Null
+    Write-Host "Created: $dataDir\cv4pve-admin\config\appsettings.extra.json"
+}
+
 # Update .env file
 $envContent = Get-Content .env
 if ($Tag -ne "latest") {
