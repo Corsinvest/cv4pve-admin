@@ -101,6 +101,8 @@ public class Module : ModuleBase
         ];
     }
 
+    public virtual Type? WebHookTabComponentType => null;
+
     protected override string PermissionBaseKey => Permissions.BaseName;
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)

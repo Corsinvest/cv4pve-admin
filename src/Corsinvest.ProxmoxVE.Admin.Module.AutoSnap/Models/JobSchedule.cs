@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Models;
 
@@ -39,6 +41,14 @@ public class JobSchedule : JobScheduleBase, IClusterName, IId, IDescription
 
     public long TimeoutSnapshot { get; set; } = 30;
     public ICollection<JobResult> Results { get; set; } = [];
-    public ICollection<JobWebHook> WebHooks { get; set; } = [];
     public DateTimeOffset? LastRunTime => Results?.LastOrDefault()?.Start;
+
+    [NotMapped]
+    public ExtendedData ExtendedData { get; set; } = [];
+
+    public string ExtendedDataJson
+    {
+        get => JsonSerializer.Serialize(ExtendedData);
+        set => ExtendedData = JsonSerializer.Deserialize<ExtendedData>(value) ?? [];
+    }
 }

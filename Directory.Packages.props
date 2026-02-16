@@ -59,7 +59,7 @@
     <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.4" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="1.7.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.19.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.20.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.9.1" />
   </ItemGroup>
   <!-- Development and Code Quality -->
