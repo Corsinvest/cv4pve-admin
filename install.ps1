@@ -42,6 +42,23 @@ switch ($EditionChoice) {
 }
 
 Write-Host ""
+# Show available tags from Docker Hub
+Write-Host "Fetching available tags from Docker Hub..."
+$DockerRepo = "corsinvest/cv4pve-admin"
+if ($ComposeFile -eq "docker-compose-ee.yaml") { $DockerRepo = "corsinvest/cv4pve-admin-ee" }
+try {
+    $TagsJson = Invoke-RestMethod -Uri "https://hub.docker.com/v2/repositories/$DockerRepo/tags/?page_size=5" -UseBasicParsing
+    $RecentTags = ($TagsJson.results | Where-Object { $_.name -ne "latest" } | Select-Object -First 3 | ForEach-Object { $_.name }) -join "  "
+    if ($RecentTags) {
+        Write-Host "  Recent tags: latest  $RecentTags"
+    } else {
+        Write-Host "  Recent tags: latest"
+    }
+} catch {
+    Write-Host "  Recent tags: latest"
+}
+Write-Host "  All tags: https://hub.docker.com/r/$DockerRepo/tags"
+Write-Host ""
 # Ask for version tag
 $Tag = Read-Host "Docker image tag (default: latest)"
 $Tag = $Tag.Trim()

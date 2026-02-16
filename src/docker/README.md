@@ -138,29 +138,29 @@ To test Release Candidate (RC) or specific versions before they become stable:
 
 ### 1. Edit `.env` file
 
-Change the version tag:
+Edit `.env` and change `CV4PVE_ADMIN_TAG` to the desired tag:
 ```bash
-CV4PVE_ADMIN_TAG=rc2
+CV4PVE_ADMIN_TAG=2.0.0-rc1
 ```
 
-Available tags:
+Available tags (check [Docker Hub](https://hub.docker.com/r/corsinvest/cv4pve-admin/tags) for the full list):
 - `latest` - Stable release (default)
-- `rc2`, `rc3`, etc. - Release Candidates
-- `1.0.0`, `1.1.0` - Specific versions
+- `2.0.0-rc1`, `2.0.0-rc2`, etc. - Release Candidates
+- `2.0.0`, `2.1.0` - Specific versions
 
 **Quick commands to change version:**
 
 Linux/Mac (bash):
 ```bash
-# Replace VERSION with your desired tag (rc2, rc3, 1.0.0, latest, etc.)
-VERSION=rc2
+# Replace VERSION with your desired tag (e.g. 2.0.0-rc1, 2.0.0, latest)
+VERSION=2.0.0-rc1
 sed -i "s/^CV4PVE_ADMIN_TAG=.*/CV4PVE_ADMIN_TAG=$VERSION/" .env
 ```
 
 Windows (PowerShell):
 ```powershell
-# Replace VERSION with your desired tag (rc2, rc3, 1.0.0, latest, etc.)
-$VERSION = "rc2"
+# Replace VERSION with your desired tag (e.g. 2.0.0-rc1, 2.0.0, latest)
+$VERSION = "2.0.0-rc1"
 (Get-Content .env) -replace '^CV4PVE_ADMIN_TAG=.*', "CV4PVE_ADMIN_TAG=$VERSION" | Set-Content .env
 ```
 
