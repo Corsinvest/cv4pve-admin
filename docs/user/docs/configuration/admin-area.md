@@ -83,8 +83,10 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
     Configure notification channels and alert routing.
 
-    - <span class="ce"></span> Email notifications via SMTP
-    - <span class="ee"></span> 119+ notification services (Telegram, Discord, Slack, Teams, webhooks, Apprise)
+    - <span class="ce"></span> 2 channels: SMTP and WebHook
+    - <span class="ee"></span> 119+ channels: Telegram, Discord, Slack, Teams, Apprise and more
+
+    [:octicons-arrow-right-24: Configure notifications](notifier.md)
 
 </div>
 
