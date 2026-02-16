@@ -20,7 +20,7 @@ Before installing cv4pve-admin, ensure you have:
 
 ## Quick Installation
 
-The installer will ask which edition (CE or EE) and which version to install. The default is `latest` (stable release) — just press Enter to accept. If you need a specific version (e.g. `rc1`, `v2.0.0`), enter it when prompted. The version can also be changed later by editing `CV4PVE_ADMIN_TAG` in `.env`.
+The installer will ask which edition (CE or EE) and which version to install. The default is `latest` (stable release) — just press Enter to accept. If you need a specific version (e.g. `2.0.0-rc1`, `2.0.0`), enter it when prompted. The version can also be changed later by editing `CV4PVE_ADMIN_TAG` in `.env`.
 
 === "Linux / macOS"
 

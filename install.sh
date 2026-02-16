@@ -24,7 +24,7 @@ echo "Choose edition:"
 echo "  1) Community Edition (CE)"
 echo "  2) Enterprise Edition (EE)"
 echo ""
-read -p "Select [1-2] (default: 1): " EDITION_CHOICE
+read -p "Select [1-2] (default: 1): " EDITION_CHOICE </dev/tty
 EDITION_CHOICE=${EDITION_CHOICE:-1}
 
 case $EDITION_CHOICE in
@@ -43,8 +43,23 @@ case $EDITION_CHOICE in
 esac
 
 echo ""
+# Show available tags from Docker Hub
+echo "Fetching available tags from Docker Hub..."
+DOCKER_REPO="corsinvest/cv4pve-admin"
+if [ "$COMPOSE_FILE" = "docker-compose-ee.yaml" ]; then
+    DOCKER_REPO="corsinvest/cv4pve-admin-ee"
+fi
+TAGS=$(curl -s "https://hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/?page_size=5" \
+    | grep -o '"name":"[^"]*"' | grep -v '"name":"latest"' | head -3 | sed 's/"name":"//;s/"//' | tr '\n' '  ')
+if [ -n "$TAGS" ]; then
+    echo "  Recent tags: latest  $TAGS"
+else
+    echo "  Recent tags: latest"
+fi
+echo "  All tags: https://hub.docker.com/r/${DOCKER_REPO}/tags"
+echo ""
 # Ask for version tag
-read -p "Docker image tag (default: latest): " TAG
+read -p "Docker image tag (default: latest): " TAG </dev/tty
 TAG=$(echo "$TAG" | xargs)  # Trim whitespace
 if [ -z "$TAG" ]; then
     TAG="latest"
@@ -54,7 +69,7 @@ echo "Using tag: $TAG"
 echo ""
 # Ask for PostgreSQL password
 while true; do
-    read -sp "PostgreSQL password (press ENTER for default): " POSTGRES_PASSWORD
+    read -sp "PostgreSQL password (press ENTER for default): " POSTGRES_PASSWORD </dev/tty
     echo ""
     POSTGRES_PASSWORD=$(echo "$POSTGRES_PASSWORD" | xargs)  # Trim whitespace
 

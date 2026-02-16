@@ -1,0 +1,19 @@
+# Default: normalize line endings to LF on commit
+* text=auto eol=lf
+
+# Windows scripts: keep CRLF
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts and config: always LF
+*.sh text eol=lf
+*.env text eol=lf
+adminctl text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
