@@ -6,6 +6,7 @@ using BlazorDownloadFile;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
+using Corsinvest.ProxmoxVE.Admin.Core.Hooks;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Common.Middleware;
 using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE;
@@ -69,13 +70,16 @@ public static class ServiceCollectionExtensions
         services.AddMemoryCache();
         services.AddSingleton<ApplicationStateService>();
 
+        // Hook Executor
+        services.AddHookExecutor();
+
         // PVE Client Factory and HttpClients
         services.AddSingleton<IPveClientFactory, PveClientFactory>();
 
-        services.AddHttpClient("ProxmoxStrict")
+        services.AddHttpClient("HttpStrict")
             .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
 
-        services.AddHttpClient("ProxmoxIgnoreCert")
+        services.AddHttpClient("HttpIgnoreCert")
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator

@@ -9,8 +9,8 @@ public class PveClientFactory(IHttpClientFactory httpClientFactory, ILoggerFacto
     public async Task<PveClient> CreateClientAsync(ClusterSettings settings, CancellationToken cancellationToken = default)
     {
         var httpClient = httpClientFactory.CreateClient(settings.ValidateCertificate
-                                                            ? "ProxmoxStrict"
-                                                            : "ProxmoxIgnoreCert");
+                                                            ? "HttpStrict"
+                                                            : "HttpIgnoreCert");
 
         var useApiToken = settings.AccessType == ClusterAccessType.ApiToken;
 
