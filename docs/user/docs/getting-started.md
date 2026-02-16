@@ -76,17 +76,7 @@ For detailed Docker deployment information, see the complete Docker documentatio
 
 📖 **[Docker Deployment Guide](https://github.com/Corsinvest/cv4pve-admin/blob/main/src/docker/README.md)**
 
-The installer also creates an `adminctl` script in the installation directory for convenient management (logs, start, stop, restart, backup, status).
-
-Includes:
-- Docker Compose commands reference
-- Backup and restore procedures
-- Update management (automatic and manual)
-- Testing pre-release versions (RC)
-- Custom configuration with `appsettings.extra.json`
-- Troubleshooting and common issues
-- Running multiple instances
-- Security best practices
+The installer also creates an `adminctl` script in the installation directory — run `./adminctl help` to see all available commands.
 
 ## Next Steps
 
