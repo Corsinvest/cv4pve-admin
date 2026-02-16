@@ -22,6 +22,8 @@ public static class BuildInfo
 
     static BuildInfo()
     {
+        if (Helpers.ApplicationHelper.IsRunningInEfTool) { return; }
+
         var assembly = Assembly.GetEntryAssembly()!;
 
         Version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion.Split('+')[0];
