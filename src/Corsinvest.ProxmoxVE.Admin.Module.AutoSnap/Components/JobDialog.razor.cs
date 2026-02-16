@@ -2,13 +2,18 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
+
 namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Components;
 
-public partial class JobDialog(IAdminService adminService) : IModelParameter<JobSchedule>
+public partial class JobDialog(IAdminService adminService,
+                               IModuleService moduleService) : IModelParameter<JobSchedule>
 {
     [Parameter] public JobSchedule Model { get; set; } = default!;
 
     private ICollection<string> VmIds { get; set; } = [];
+    private Type? WebHookTabComponentType { get; set; } = default!;
+
     private IEnumerable<string> _vmIdsBase = [];
 
     protected override async Task OnInitializedAsync()
@@ -23,6 +28,8 @@ public partial class JobDialog(IAdminService adminService) : IModelParameter<Job
                                                     true)];
 
         MakeVmIds();
+
+        WebHookTabComponentType = moduleService.Get<Module>()!.WebHookTabComponentType;
     }
 
     private void MakeVmIds()

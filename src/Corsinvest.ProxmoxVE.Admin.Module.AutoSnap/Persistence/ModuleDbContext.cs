@@ -10,7 +10,6 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options) : Module
 {
     public DbSet<JobSchedule> Jobs { get; set; } = default!;
     public DbSet<JobResult> Results { get; set; } = default!;
-    public DbSet<JobWebHook> WebHooks { get; set; } = default!;
 
     protected override string SchemaName => "autosnap";
 

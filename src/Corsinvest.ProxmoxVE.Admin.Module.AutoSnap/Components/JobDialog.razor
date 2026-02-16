@@ -16,7 +16,8 @@
 
                 <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
                 <SwitchField @bind-Value="@Model.VmStatus" Label="@L["Include RAM"]" Name="@nameof(Model.VmStatus)" />
-                <SwitchField @bind-Value="@Model.OnlyRuns" Label="@L["While VM/CT Running"]" Name="@nameof(Model.OnlyRuns)" />
+                <SwitchField @bind-Value="@Model.OnlyRuns" Label="@L["While VM/CT Running"]"
+                             Name="@nameof(Model.OnlyRuns)" />
 
                 <RadzenFormField Text="@L["Label"]" AllowFloatingLabel="false">
                     <ChildContent>
@@ -49,27 +50,30 @@
 
                 <RadzenFormField Text="@L["Vm Ids"]" AllowFloatingLabel="false">
                     <ChildContent>
-                        <RadzenDropDown @bind-Value="@Model.VmIdsList"
-                                        Data="VmIds"
-                                        Name="@nameof(Model.VmIdsList)"
-                                        Multiple="true"
-                                        AllowClear="true"
-                                        AllowFiltering="true"
-                                        MaxSelectedLabels="99"
-                                        SearchTextChanged="SearchTextChanged"
-                                        Chips="true" />
+                        <RadzenDropDown @bind-Value="@Model.VmIdsList" Data="VmIds" Name="@nameof(Model.VmIdsList)"
+                                        Multiple="true" AllowClear="true" AllowFiltering="true" MaxSelectedLabels="99"
+                                        SearchTextChanged="SearchTextChanged" Chips="true" />
                     </ChildContent>
                     <Helper>
                         <RadzenCustomValidator Component="@nameof(Model.VmIdsList)"
-                                               Validator="@(() => (Model.VmIdsList?.Count() ?? 0) > 0)"
-                                               Text="@L["Select VM/CT id!"]" />
+                                               Validator="@(() => (Model.VmIdsList?.Count() ?? 0) > 0)" Text="@L["Select VM/CT id!"]" />
                     </Helper>
                 </RadzenFormField>
             </RadzenStack>
         </RadzenTabsItem>
 
-        @*   <RadzenTabsItem Text="@L["Web API Hook"]">
-            <Hooks />
-        </RadzenTabsItem> *@
+        <RadzenTabsItem Text="@L["Web API Hook"]" Icon="webhook">
+            @if (WebHookTabComponentType == null)
+            {
+                <SubscriptionGate>
+                    <div style="height:400px;width:100%"></div>
+                </SubscriptionGate>
+            }
+            else
+            {
+                <DynamicComponent Type="WebHookTabComponentType"
+                                  Parameters="@(new Dictionary<string, object> { ["Model"] = Model })" />
+            }
+        </RadzenTabsItem>
     </Tabs>
 </RadzenTabs>

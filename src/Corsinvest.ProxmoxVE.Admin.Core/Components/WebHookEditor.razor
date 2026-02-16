@@ -1,0 +1,96 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@using Corsinvest.ProxmoxVE.Admin.Core.Hooks
+
+<RadzenFormField Text="@L["URL"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="link" /></Start>
+    <ChildContent>
+        <RadzenTextBox Name="@($"{Prefix}.Url")" @bind-Value="@Value.Url" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@($"{Prefix}.Url")" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Method"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="http" /></Start>
+    <ChildContent>
+        <RadzenDropDown Name="@($"{Prefix}.Method")" @bind-Value="@Value.Method"
+                        Data="Enum.GetValues<WebHookHttpMethod>()" />
+    </ChildContent>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Body Type"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="data_object" /></Start>
+    <ChildContent>
+        <RadzenDropDown Name="@($"{Prefix}.BodyType")" @bind-Value="@Value.BodyType"
+                        Data="Enum.GetValues<WebHookBodyType>()" />
+    </ChildContent>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Body"]" AllowFloatingLabel="false" Helper="@BodyHelper">
+    <Start><RadzenIcon Icon="notes" /></Start>
+    <ChildContent>
+        <RadzenTextArea Name="@($"{Prefix}.Body")" @bind-Value="@Value.Body" Rows="5" />
+    </ChildContent>
+</RadzenFormField>
+
+<RadzenPanel Text="@L["Auth"]">
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenFormField Text="@L["Type"]" AllowFloatingLabel="false">
+            <Start><RadzenIcon Icon="security" /></Start>
+            <ChildContent>
+                <RadzenDropDown Name="@($"{Prefix}.AuthType")" @bind-Value="@Value.Auth.Type"
+                                Data="Enum.GetValues<WebHookAuthType>()" />
+            </ChildContent>
+        </RadzenFormField>
+
+        @if (Value.Auth.Type == WebHookAuthType.Basic)
+        {
+            <RadzenFormField Text="@L["Username"]" AllowFloatingLabel="false">
+                <Start><RadzenIcon Icon="account_circle" /></Start>
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="@Value.Auth.Username" />
+                </ChildContent>
+            </RadzenFormField>
+            <PasswordField Label="@L["Password"]" @bind-Value="@Value.Auth.Password" />
+        }
+        else if (Value.Auth.Type == WebHookAuthType.Bearer)
+        {
+            <PasswordField Label="@L["Token"]" @bind-Value="@Value.Auth.Token" />
+        }
+        else if (Value.Auth.Type == WebHookAuthType.ApiKey)
+        {
+            <RadzenFormField Text="@L["Header Name"]" AllowFloatingLabel="false">
+                <Start><RadzenIcon Icon="label" /></Start>
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="@Value.Auth.ApiKeyHeader" />
+                </ChildContent>
+            </RadzenFormField>
+            <PasswordField Label="@L["Header Value"]" @bind-Value="@Value.Auth.ApiKeyValue" />
+        }
+    </RadzenStack>
+</RadzenPanel>
+
+<RadzenFormField Text="@L["Timeout (seconds)"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="timer" /></Start>
+    <ChildContent>
+        <RadzenNumeric Name="@($"{Prefix}.TimeoutSeconds")" @bind-Value="@Value.TimeoutSeconds" Min="1" Max="300" />
+    </ChildContent>
+</RadzenFormField>
+
+<SwitchField @bind-Value="@Value.IgnoreSslCertificate"
+             Label="@L["Ignore SSL Certificate"]"
+             Name="@($"{Prefix}.IgnoreSslCertificate")"
+             class="rz-w-100" />
+
+@code {
+    [Parameter] public WebHook Value { get; set; } = default!;
+    [Parameter] public EventCallback<WebHook> ValueChanged { get; set; }
+    [Parameter] public RenderFragment? BodyHelper { get; set; }
+
+    private string Prefix { get; set; } = $"WebHook_{Guid.NewGuid():N}";
+}

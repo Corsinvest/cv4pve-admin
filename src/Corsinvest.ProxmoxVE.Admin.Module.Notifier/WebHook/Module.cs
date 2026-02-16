@@ -6,5 +6,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Notifier.WebHook;
 
 public class Module : NotifierModuleBase<Settings, Components.Render>
 {
-    public Module() : base("WebHook") { }
+    public Module() : base("WebHook")
+    {
+        Icon = "webhook";
+    }
 }

@@ -1,4 +1,4 @@
-﻿@*
+@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -6,110 +6,17 @@
 
 <NotifierSettingsDataGrid TSettings="Settings">
     <GridColumns>
-        <RadzenDataGridColumn TItem="Settings" Property="@nameof(Settings.Method)" Sortable="true" Title="@L["Method"]" />
-        <RadzenDataGridColumn TItem="Settings" Property="@nameof(Settings.BodyType)" Sortable="true" Title="@L["Body Type"]" />
+        <RadzenDataGridColumn TItem="Settings" Property="@($"{nameof(Settings.WebHook)}.{nameof(Core.Hooks.WebHook.Method)}")" Sortable="true" Title="@L["Method"]" />
+        <RadzenDataGridColumn TItem="Settings" Property="@($"{nameof(Settings.WebHook)}.{nameof(Core.Hooks.WebHook.BodyType)}")" Sortable="true" Title="@L["Body Type"]" />
     </GridColumns>
 
     <EditContent>
-        <RadzenFormField Text="@L["URL"]" AllowFloatingLabel="false">
-            <Start>
-                <RadzenIcon Icon="link" />
-            </Start>
-            <ChildContent>
-                <RadzenTextBox Name="@nameof(context.Url)" @bind-Value="@context.Url" />
-            </ChildContent>
-            <Helper>
-                <RadzenDataAnnotationValidator Component="@nameof(context.Url)" />
-            </Helper>
-        </RadzenFormField>
-
-        <RadzenFormField Text="@L["Method"]" AllowFloatingLabel="false">
-            <Start>
-                <RadzenIcon Icon="http" />
-            </Start>
-            <ChildContent>
-                <RadzenDropDown Name="@nameof(context.Method)" @bind-Value="@context.Method"
-                                Data="Enum.GetValues<WebHookHttpMethod>()" />
-            </ChildContent>
-        </RadzenFormField>
-
-        <RadzenFormField Text="@L["Body Type"]" AllowFloatingLabel="false">
-            <Start>
-                <RadzenIcon Icon="data_object" />
-            </Start>
-            <ChildContent>
-                <RadzenDropDown Name="@nameof(context.BodyType)" @bind-Value="@context.BodyType"
-                                Data="Enum.GetValues<WebHookBodyType>()" />
-            </ChildContent>
-        </RadzenFormField>
-
-        <RadzenFormField Text="@L["Body"]" AllowFloatingLabel="false">
-            <Start>
-                <RadzenIcon Icon="notes" />
-            </Start>
-            <ChildContent>
-                <RadzenTextArea Name="@nameof(context.Body)" @bind-Value="@context.Body" Rows="5" />
-            </ChildContent>
-            <Helper>
+        <WebHookEditor @bind-Value="@context.WebHook">
+            <BodyHelper>
                 <RadzenText TextStyle="TextStyle.Caption">
                     @L["Use"] <strong>%subject%</strong> @L["and"] <strong>%body%</strong> @L["as placeholders. Leave empty for default JSON payload."]
                 </RadzenText>
-            </Helper>
-        </RadzenFormField>
-
-        <RadzenPanel Text="@L["Auth"]">
-            <RadzenStack Orientation="Orientation.Vertical">
-                <RadzenFormField Text="@L["Type"]" AllowFloatingLabel="false">
-                    <Start>
-                        <RadzenIcon Icon="security" />
-                    </Start>
-                    <ChildContent>
-                        <RadzenDropDown Name="AuthType" @bind-Value="@context.Auth.Type" Data="Enum.GetValues<WebHookAuthType>()" />
-                    </ChildContent>
-                </RadzenFormField>
-
-                @if (context.Auth.Type == WebHookAuthType.Basic)
-                {
-                    <RadzenFormField Text="@L["Username"]" AllowFloatingLabel="false">
-                        <Start>
-                            <RadzenIcon Icon="account_circle" />
-                        </Start>
-                        <ChildContent>
-                            <RadzenTextBox @bind-Value="@context.Auth.Username" />
-                        </ChildContent>
-                    </RadzenFormField>
-
-                    <PasswordField Label="@L["Password"]" @bind-Value="@context.Auth.Password" />
-                }
-                else if (context.Auth.Type == WebHookAuthType.Bearer)
-                {
-                    <PasswordField Label="@L["Token"]" @bind-Value="@context.Auth.Token" />
-                }
-                else if (context.Auth.Type == WebHookAuthType.ApiKey)
-                {
-                    <RadzenFormField Text="@L["Header Name"]" AllowFloatingLabel="false">
-                        <Start>
-                            <RadzenIcon Icon="label" />
-                        </Start>
-                        <ChildContent>
-                            <RadzenTextBox @bind-Value="@context.Auth.ApiKeyHeader" />
-                        </ChildContent>
-                    </RadzenFormField>
-
-                    <PasswordField Label="@L["Header Value"]" @bind-Value="@context.Auth.ApiKeyValue" />
-                }
-            </RadzenStack>
-        </RadzenPanel>
-
-        <RadzenFormField Text="@L["Timeout (seconds)"]" AllowFloatingLabel="false">
-            <Start>
-                <RadzenIcon Icon="timer" />
-            </Start>
-            <ChildContent>
-                <RadzenNumeric Name="@nameof(context.TimeoutSeconds)" @bind-Value="@context.TimeoutSeconds" Min="1" Max="300" />
-            </ChildContent>
-        </RadzenFormField>
-
-        <SwitchField @bind-Value="@context.IgnoreSslCertificate" Label="@L["Ignore SSL Certificate"]" Name="@nameof(context.IgnoreSslCertificate)" class="rz-w-100" />
+            </BodyHelper>
+        </WebHookEditor>
     </EditContent>
 </NotifierSettingsDataGrid>

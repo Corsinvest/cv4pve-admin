@@ -6,7 +6,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Hooks;
 
 public class WebHook
 {
-    public string Url { get; set; } = string.Empty;
+    [Required, Url] public string Url { get; set; } = string.Empty;
     public WebHookHttpMethod Method { get; set; } = WebHookHttpMethod.Post;
     public Dictionary<string, string> Headers { get; set; } = [];
     public string Body { get; set; } = string.Empty;

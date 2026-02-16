@@ -2,9 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.ComponentModel;
-using System.Text.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
+using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Services;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
 using Microsoft.Extensions.Localization;
@@ -122,39 +121,23 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             var app = GetApp(client, scope.GetLoggerFactory(), log);
 
             var statusEventOk = true;
-
-            //event
-            app.PhaseEvent += (_, e) =>
+            var hookService = scope.GetService<IAutoSnapHookService>();
+            if (hookService != null)
             {
-                var hooks = job.WebHooks.Where(a => a.Enabled && e.Phase == a.Phase).OrderBy(a => a.OrderIndex);
-                if (hooks.Any())
+                app.PhaseEvent += async (e) =>
                 {
-                    using (logger.LogTimeOperation(LogLevel.Information, true, "Hook HTTP Phase '{Phase}'", e.Phase))
+                    try
                     {
-                        //call hook
-                        foreach (var item in hooks)
-                        {
-                            using (logger.LogTimeOperation(LogLevel.Debug, true, "Execute HTTP Phase '{Phase}' Command '{Description}'", item.Phase, item.Description))
-                            {
-                                log.WriteLine($"Execute Hook HTTP '{item.Phase}' Command '{item.Description}'");
-                                try
-                                {
-                                    var ret = ExecuteWebHook(item, e.Environments);
-                                    log.WriteLine($"  Status Code '{ret.StatusCode}'");
-                                    log.WriteLine($"  Reason Phrase '{ret.ReasonPhrase}'");
-                                }
-                                catch (Exception ex)
-                                {
-                                    statusEventOk = false;
-                                    logger.LogError(ex, ex.Message);
-                                    log.WriteLine($"  Error '{ex.Message}'");
-                                }
-                            }
-                        }
+                        await hookService.ExecuteAsync(job, e, log);
                     }
-                }
-            };
-
+                    catch (Exception ex)
+                    {
+                        statusEventOk = false;
+                        logger.LogError(ex, ex.Message);
+                        log.WriteLine($"  Error '{ex.Message}'");
+                    }
+                };
+            }
             var settings = GetModuleClusterSettings(scope, job.ClusterName);
 
             using (logger.LogTimeOperation(LogLevel.Debug, true, "Execution physical Snap"))
@@ -236,42 +219,6 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             }));
         }
         return ret.OrderBy(a => a.Label);
-    }
-
-    private static HttpResponseMessage ExecuteWebHook(JobWebHook webHook, IReadOnlyDictionary<string, string> environments)
-    {
-        using var handler = new HttpClientHandler();
-        if (webHook.IgnoreSslCertificate) { handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true; }
-
-        using var client = new HttpClient(handler);
-
-        var body = webHook.Body;
-        var header = webHook.Header;
-        var endpoint = webHook.Url;
-
-        //replace value environments
-        foreach (var item in environments.Select(a => new { Key = $"%{a.Key}%", a.Value }))
-        {
-            endpoint = endpoint.Replace(item.Key, item.Value);
-            body = body.Replace(item.Key, item.Value);
-            header = header.Replace(item.Key, item.Value);
-        }
-
-        var content = new StringContent(body);
-        var request = webHook.Method switch
-        {
-            AutoSnapJobHookHttpMethod.Get => new HttpRequestMessage(HttpMethod.Get, endpoint),
-            AutoSnapJobHookHttpMethod.Post => new HttpRequestMessage(HttpMethod.Post, endpoint) { Content = content },
-            AutoSnapJobHookHttpMethod.Put => new HttpRequestMessage(HttpMethod.Put, endpoint) { Content = content },
-            _ => throw new InvalidEnumArgumentException()
-        };
-
-        foreach (var item in JsonSerializer.Deserialize<Dictionary<string, string>>(header)!)
-        {
-            request.Headers.Add(item.Key, item.Value);
-        }
-
-        return client.Send(request);
     }
 
     public static async Task DeleteAsync(IServiceScope scope, IEnumerable<AutoSnapInfo> snapshots, string clusterName)
