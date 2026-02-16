@@ -43,6 +43,7 @@ var moduleTypes = new[]
     typeof(Corsinvest.ProxmoxVE.Admin.Module.System.Module),
     typeof(Corsinvest.ProxmoxVE.Admin.Module.Profile.Module),
     typeof(Corsinvest.ProxmoxVE.Admin.Module.Notifier.Smtp.Module),
+    typeof(Corsinvest.ProxmoxVE.Admin.Module.Notifier.WebHook.Module),
 
     //application
     typeof(Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Module),
