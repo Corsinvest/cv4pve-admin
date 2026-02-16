@@ -1,75 +1,8 @@
 # CV4PVE Admin - Docker Deployment
 
-Quick reference for Docker Compose deployment with support for both Community Edition (CE) and Enterprise Edition (EE).
+Quick reference for managing your cv4pve-admin Docker installation.
 
-## Quick Install
-
-**Linux/Mac:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.sh | bash
-```
-
-**Windows PowerShell:**
-```powershell
-irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
-```
-
-This creates a `cv4pve-admin-docker` directory with all required files. Continue with [Quick Start](#quick-start) below.
-
----
-
-## Quick Start
-
-### 1. Choose Edition
-
-Two docker-compose files are available:
-- **`docker-compose-ce.yaml`** - Community Edition
-- **`docker-compose-ee.yaml`** - Enterprise Edition
-
-**Copy or symlink the one you want to `docker-compose.yaml`:**
-
-```bash
-# Community Edition
-cp docker-compose-ce.yaml docker-compose.yaml
-
-# OR Enterprise Edition
-cp docker-compose-ee.yaml docker-compose.yaml
-
-# OR use symlink (Linux/Mac)
-ln -s docker-compose-ce.yaml docker-compose.yaml
-```
-
-### 2. Configure
-
-Edit `.env` and customize the following key settings:
-
-```bash
-# IMPORTANT: Change this before production!
-POSTGRES_PASSWORD=your-secure-password
-
-# Optional: adjust port
-CV4PVE_ADMIN_PORT=8080
-```
-
-The `.env` file includes all available configuration options with detailed comments:
-- PostgreSQL database settings
-- Network ports (application, PgWeb)
-- Data and backup directories
-- Docker image version/tag
-- Timezone configuration
-- Watchtower API token
-
-### 3. Start
-
-```bash
-docker compose up -d
-```
-
-### 4. Access
-
-**http://localhost:8080**
-
-Default credentials: `admin@local` / `Password123!` (change after first login)
+📖 **[Full Documentation](https://corsinvest.github.io/cv4pve-admin/)** | 🚀 **[Installation Guide](https://corsinvest.github.io/cv4pve-admin/getting-started/)**
 
 ---
 
@@ -194,68 +127,9 @@ Then repeat step 2.
 
 ## Custom Configuration
 
-For advanced configuration overrides without modifying environment variables, you can use `appsettings.extra.json`.
+For advanced configuration overrides using `appsettings.extra.json`, see the full documentation:
 
-### Location
-
-The file is automatically created at: `${DATA_DIR}/cv4pve-admin/config/appsettings.extra.json`
-
-### How to Use
-
-1. **Edit the file:**
-```bash
-nano ${DATA_DIR}/cv4pve-admin/config/appsettings.extra.json
-```
-
-2. **Add your overrides** (example):
-```json
-{
-  "Serilog": {
-    "MinimumLevel": {
-      "Default": "Debug"
-    }
-  }
-}
-```
-
-3. **Changes apply automatically** - No restart needed! (thanks to `reloadOnChange`)
-
-### Common Use Cases
-
-**Change log level:**
-```json
-{
-  "Serilog": {
-    "MinimumLevel": {
-      "Default": "Debug",
-      "Override": {
-        "Microsoft.EntityFrameworkCore.Database.Command": "Information"
-      }
-    }
-  }
-}
-```
-
-**Configure reverse proxy:**
-```json
-{
-  "PathBase": "/admin",
-  "ForwardedHeaders": {
-    "Enabled": true
-  }
-}
-```
-
-**Adjust timeouts:**
-```json
-{
-  "HttpClient": {
-    "Timeout": 300000
-  }
-}
-```
-
-**Note:** This file only contains your customizations. The main `appsettings.json` remains managed by the application.
+📖 **[Configuration Guide](https://corsinvest.github.io/cv4pve-admin/configuration/)**
 
 ---
 
