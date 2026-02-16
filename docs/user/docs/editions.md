@@ -66,7 +66,7 @@ This section outlines the current development status of upcoming and evolving mo
 | **Admin Area** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
 | **AI Assistant** | ❌ | 🚧 | Utilities | Chat-based AI for cluster automation and diagnostics | |
 | **AI Server (MCP)** | 🚀 | 🚀 | Utilities | Model Context Protocol server | <ul><li>QueryTools</li><li>Historical metrics</li><li>Replications</li><li>Backup jobs</li><li>and more...</li></ul> |
-| **AutoSnap** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | |
+| **AutoSnap** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
 | **Backup Analytics** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
 | **Bots** | ✅ | ✅ | Control | Remote cluster management via Telegram | |
 | **Command Palette** | ✅ | ✅ | Application | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |

@@ -18,18 +18,24 @@ Automated snapshot creation, rotation, and retention management for Proxmox VE i
 
     ---
 
-    Define retention rules to manage snapshot lifecycle and automatic cleanup.
+    Define how many snapshots to keep per VM, with automatic cleanup of expired ones.
 
 -   :material-briefcase-check:{ .lg .middle } **Job Management**
 
     ---
 
-    Configure snapshot jobs with execution history and status monitoring.
+    Configure snapshot jobs with cron schedule, VM selection, execution history and status monitoring.
 
--   :material-database-check:{ .lg .middle } **Storage Management**
+-   :material-database-check:{ .lg .middle } **Multi-VM Support**
 
     ---
 
-    Automatically clean up old snapshots based on retention policies.
+    Apply a single job to multiple VMs and containers using filters or explicit selection.
+
+-   :material-webhook:{ .lg .middle } **Web API Hook** <span class="ee"></span>
+
+    ---
+
+    Trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete). Configure per-job HTTP endpoints with custom headers and body templates.
 
 </div>

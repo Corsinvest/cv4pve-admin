@@ -5,7 +5,7 @@ hide:
 ---
 
 <div style="text-align: center; margin: 3rem 0;">
-  <img src="icon.png" alt="cv4pve-admin" style="width: 120px; height: 120px; margin-bottom: 1rem;">
+  <img src="images/logo.png" alt="cv4pve-admin" style="width: 120px; height: 120px; margin-bottom: 1rem;">
   <h1 style="font-size: 3rem; font-weight: 700; margin: 0;">cv4pve-admin</h1>
   <p style="font-size: 1.5rem; color: #666; margin-top: 0.5rem;">Professional Administration for Proxmox VE</p>
 </div>
@@ -117,7 +117,7 @@ Access at `http://localhost:8080` with credentials: `admin@local` / `Password123
 cv4pve-admin is available in two editions:
 
 - **Community Edition** - Free and open source (AGPL-3.0) with core features
-- **Enterprise Edition** - Commercial license with AI, VM Performance, Node Protection, and priority support
+- **Enterprise Edition** - Commercial license with advanced modules (AI, VM Performance, Apprise notifications, AutoSnap webhooks, Portal, Workflow, and more) plus priority support
 
 [**Compare Editions →**](editions.md){ .md-button .md-button--primary }
 
@@ -129,7 +129,16 @@ cv4pve-admin is available in two editions:
 
 ![Login Screen](images/login.png){ loading=lazy }
 
-![Dashboard Overview](images/screenshot-backup-analytics2.png){ loading=lazy }
+![Dashboard Overview](images/screenshot-backup-analytics.png){ loading=lazy }
+
+![Resources Nodes](images/screenshot-resources-nodes.png){ loading=lazy }
+
+![Resources Vms](images/screenshot-resources-vms.png){ loading=lazy }
+
+![Resources Storages](images/screenshot-resources-storages.png){ loading=lazy }
+
+![Resources Storages](images/screenshot-resources-storages2.png){ loading=lazy }
+
 
 </div>
 
