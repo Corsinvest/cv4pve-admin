@@ -12,9 +12,13 @@
         <meta name="author" content="Corsinvest Srl">
       
       
-        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/modules/dashboard/">
+        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/configuration/notifier/">
       
       
+        <link rel="prev" href="../admin-area/">
+      
+      
+        <link rel="next" href="../profile/">
       
       
         
@@ -25,7 +29,7 @@
     
     
       
-        <title>Dashboard - cv4pve-admin</title>
+        <title>Notification Hub - cv4pve-admin</title>
       
     
     
@@ -80,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dashboard" class="md-skip">
+        <a href="#notification-hub" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Dashboard
+              Notification Hub
             
           </span>
         </div>
@@ -267,11 +271,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../configuration/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -291,7 +297,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../" class="md-tabs__link">
+      <a href="../../modules/" class="md-tabs__link">
         
   
   
@@ -509,6 +515,8 @@
       
   
   
+    
+  
   
   
     
@@ -530,22 +538,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../configuration/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -563,13 +572,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -589,7 +598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/appsettings-extra/" class="md-nav__link">
+      <a href="../appsettings-extra/" class="md-nav__link">
         
   
   
@@ -617,7 +626,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/admin-area/" class="md-nav__link">
+      <a href="../admin-area/" class="md-nav__link">
         
   
   
@@ -642,10 +651,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../configuration/notifier/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notification Hub
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -661,6 +697,115 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMTP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SMTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebHook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="WebHook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Placeholders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-payload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default payload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webhook-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebHook Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -673,7 +818,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/profile/" class="md-nav__link">
+      <a href="../profile/" class="md-nav__link">
         
   
   
@@ -708,7 +853,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../modules/" class="md-nav__link">
         
   
   
@@ -901,10 +1046,286 @@
   
 
 
-<h1 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h1>
-<p>Multi-cluster overview dashboard for centralized Proxmox VE infrastructure management.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>View Proxmox VE infrastructure across multiple clusters with resource usage, status, and key metrics.</p>
+<h1 id="notification-hub">Notification Hub<a class="headerlink" href="#notification-hub" title="Permanent link">&para;</a></h1>
+<p>Configure notification channels to receive alerts from cv4pve-admin modules (job completion, errors, scheduled reports).</p>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg></span> <strong>SMTP</strong> <span class="ce"></span></p>
+<hr />
+<p>Send notifications via email using any SMTP server.</p>
+<p><a href="#smtp"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Configure SMTP</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.46 19C9 21.07 6.15 21.59 4.09 20.15c-2.05-1.44-2.53-4.31-1.09-6.4a4.59 4.59 0 0 1 3.58-1.98l.05 1.43c-.91.07-1.79.54-2.36 1.36-1 1.44-.69 3.38.68 4.35 1.38.96 3.31.59 4.31-.84.31-.45.49-.94.56-1.44v-1.01l5.58-.04.07-.11c.53-.92 1.68-1.24 2.58-.72a1.9 1.9 0 0 1 .68 2.6c-.53.91-1.69 1.23-2.59.71-.41-.23-.7-.6-.83-1.02l-4.07.02a5 5 0 0 1-.78 1.94m7.28-7.14c2.53.31 4.33 2.58 4.02 5.07-.31 2.5-2.61 4.27-5.14 3.96a4.63 4.63 0 0 1-3.43-2.21l1.24-.72a3.22 3.22 0 0 0 2.32 1.45c1.75.21 3.3-.98 3.51-2.65s-1.03-3.2-2.76-3.41c-.54-.06-1.06.01-1.53.18l-.85.44-2.58-4.77h-.22a1.906 1.906 0 0 1-1.85-1.95c.03-1.04.93-1.85 1.98-1.81 1.05.06 1.88.91 1.85 1.95-.02.44-.19.84-.46 1.15l1.9 3.51c.62-.2 1.3-.27 2-.19M8.25 9.14c-1-2.35.06-5.04 2.37-6.02 2.32-.98 5 .13 6 2.48.59 1.37.47 2.87-.2 4.07l-1.24-.72c.42-.81.49-1.8.09-2.73-.68-1.6-2.49-2.37-4.04-1.72-1.56.66-2.26 2.5-1.58 4.1.28.66.75 1.17 1.32 1.51l.39.21-3.07 4.99c.03.05.07.11.1.19.49.91.15 2.06-.77 2.55-.91.49-2.06.13-2.56-.81-.49-.93-.15-2.08.77-2.57.39-.21.82-.26 1.23-.17l2.31-3.77c-.47-.43-.87-.97-1.12-1.59"/></svg></span> <strong>WebHook</strong> <span class="ce"></span></p>
+<hr />
+<p>Send HTTP requests to any URL with customizable method, body and authentication.</p>
+<p><a href="#webhook"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Configure WebHook</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 14v3h-3v2h3v3h2v-3h3v-2h-3v-3M12 2a2 2 0 0 0-2 2 2 2 0 0 0 0 .29C7.12 5.14 5 7.82 5 11v6l-2 2v1h9.35a6 6 0 0 1-.35-2 6 6 0 0 1 6-6 6 6 0 0 1 1 .09V11c0-3.18-2.12-5.86-5-6.71A2 2 0 0 0 14 4a2 2 0 0 0-2-2m-2 19a2 2 0 0 0 2 2 2 2 0 0 0 1.65-.87 6 6 0 0 1-.84-1.13Z"/></svg></span> <strong>119+ Channels</strong> <span class="ee"></span></p>
+<hr />
+<p>Telegram, Discord, Slack, Microsoft Teams, Apprise and many more notification services.</p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="smtp">SMTP<a class="headerlink" href="#smtp" title="Permanent link">&para;</a></h2>
+<p>Send notifications via email using any SMTP server.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Host</strong></td>
+<td>SMTP server hostname or IP</td>
+</tr>
+<tr>
+<td><strong>Port</strong></td>
+<td>SMTP port (typically <code>25</code>, <code>465</code> or <code>587</code>)</td>
+</tr>
+<tr>
+<td><strong>From Address</strong></td>
+<td>Sender email address</td>
+</tr>
+<tr>
+<td><strong>Username</strong></td>
+<td>SMTP authentication username (if required)</td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td>SMTP authentication password (if required)</td>
+</tr>
+<tr>
+<td><strong>Enable SSL</strong></td>
+<td>Use SSL/TLS for the connection</td>
+</tr>
+<tr>
+<td><strong>To Addresses</strong></td>
+<td>Recipient addresses, separated by <code>,</code> <code>;</code> or <code>+</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="webhook">WebHook<a class="headerlink" href="#webhook" title="Permanent link">&para;</a></h2>
+<p>Send an HTTP request to any URL when a notification is triggered.</p>
+<h3 id="configuration_1">Configuration<a class="headerlink" href="#configuration_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>URL</strong></td>
+<td>Endpoint to call</td>
+</tr>
+<tr>
+<td><strong>Method</strong></td>
+<td>HTTP method: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></td>
+</tr>
+<tr>
+<td><strong>Body Type</strong></td>
+<td>Format: <code>JSON</code>, <code>XML</code>, <code>Text</code>, or <code>None</code></td>
+</tr>
+<tr>
+<td><strong>Body</strong></td>
+<td>Request body. Use <code>%subject%</code> and <code>%body%</code> as placeholders. Leave empty for default JSON payload.</td>
+</tr>
+<tr>
+<td><strong>Auth Type</strong></td>
+<td><code>None</code>, <code>Basic</code>, <code>Bearer</code>, <code>ApiKey</code></td>
+</tr>
+<tr>
+<td><strong>Timeout</strong></td>
+<td>Request timeout in seconds (1–300)</td>
+</tr>
+<tr>
+<td><strong>Ignore SSL Certificate</strong></td>
+<td>Skip SSL validation (useful for self-signed certificates)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="placeholders">Placeholders<a class="headerlink" href="#placeholders" title="Permanent link">&para;</a></h3>
+<p>Placeholders are replaced at runtime in the URL, headers and body:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>%subject%</code></td>
+<td>Notification subject / title</td>
+</tr>
+<tr>
+<td><code>%body%</code></td>
+<td>Notification message content</td>
+</tr>
+</tbody>
+</table>
+<h3 id="default-payload">Default payload<a class="headerlink" href="#default-payload" title="Permanent link">&para;</a></h3>
+<p>If <strong>Body</strong> is left empty, the following JSON is sent automatically:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%subject%&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%body%&quot;</span><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="webhook-examples">WebHook Examples<a class="headerlink" href="#webhook-examples" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Telegram</label><label for="__tabbed_1_2">Microsoft Teams</label><label for="__tabbed_1_3">Slack</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Send messages to a Telegram chat via Bot API.</p>
+<p><strong>Prerequisites:</strong></p>
+<ol>
+<li>Open Telegram and search for <strong>@BotFather</strong></li>
+<li>Send <code>/newbot</code> and follow the instructions to get your <strong>bot token</strong></li>
+<li>Send any message to your bot, then open in a browser:
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates
+</span></code></pre></div></li>
+<li>Find <code>"chat":{"id": 123456789}</code> — that number is your <strong>chat_id</strong></li>
+</ol>
+<p><strong>Configuration:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td><code>https://api.telegram.org/bot&lt;YOUR_BOT_TOKEN&gt;/sendMessage</code></td>
+</tr>
+<tr>
+<td>Method</td>
+<td><code>POST</code></td>
+</tr>
+<tr>
+<td>Body Type</td>
+<td><code>JSON</code></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Body:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;chat_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;YOUR_CHAT_ID&quot;</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;b&gt;%subject%&lt;/b&gt;\n\n%body%&quot;</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;parse_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HTML&quot;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use <code>parse_mode: "HTML"</code> to render <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code> and <code>&lt;code&gt;</code> tags in the message.</p>
+</div>
+</div>
+<div class="tabbed-block">
+<p>Send messages to a Teams channel via Incoming Webhook.</p>
+<p><strong>Prerequisites:</strong></p>
+<ol>
+<li>In Teams open the channel → <strong>...</strong> → <strong>Connectors</strong></li>
+<li>Add <strong>Incoming Webhook</strong>, set a name and copy the generated URL</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Microsoft is migrating Teams connectors to <strong>Power Automate workflows</strong>. If the classic connector is unavailable, create a workflow in Teams with an HTTP trigger and use that URL instead.</p>
+</div>
+<p><strong>Configuration:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td><code>https://outlook.office.com/webhook/&lt;YOUR_WEBHOOK_URL&gt;</code></td>
+</tr>
+<tr>
+<td>Method</td>
+<td><code>POST</code></td>
+</tr>
+<tr>
+<td>Body Type</td>
+<td><code>JSON</code></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Body:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MessageCard&quot;</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;@context&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://schema.org/extensions&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%subject%&quot;</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">&quot;themeColor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0076D7&quot;</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">&quot;sections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">      </span><span class="nt">&quot;activityTitle&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%subject%&quot;</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">      </span><span class="nt">&quot;activityText&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%body%&quot;</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">}</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>Send messages to a Slack channel via Incoming Webhook.</p>
+<p><strong>Prerequisites:</strong></p>
+<ol>
+<li>Go to <a href="https://api.slack.com/apps">api.slack.com/apps</a> → <strong>Create App</strong> → <strong>Incoming Webhooks</strong></li>
+<li>Activate and copy the Webhook URL</li>
+</ol>
+<p><strong>Configuration:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td><code>https://hooks.slack.com/services/YOUR/WEBHOOK/URL</code></td>
+</tr>
+<tr>
+<td>Method</td>
+<td><code>POST</code></td>
+</tr>
+<tr>
+<td>Body Type</td>
+<td><code>JSON</code></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Body:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*%subject%*\n%body%&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
 
 
 
@@ -989,6 +1410,44 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../admin-area/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Admin Area">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Admin Area
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../profile/" class="md-footer__link md-footer__link--next" aria-label="Next: User Profile">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                User Profile
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
