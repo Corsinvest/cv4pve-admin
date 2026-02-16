@@ -23,6 +23,7 @@ nav:
     - Troubleshooting:
         - troubleshooting.md
         - CLI Reference: cli.md
+        - HTTPS Setup: https.md
 
 theme:
   name: material
