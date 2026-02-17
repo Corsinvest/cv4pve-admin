@@ -19,12 +19,10 @@ public class Widget : IId
     public int Width { get; set; }
     public int Height { get; set; }
     public string? SettingsJson { get; set; }
-    [Required] public string ModuleType { get; set; } = default!;
     [Required] public string ModuleWidgetType { get; set; } = default!;
 
     public ModuleWidget? GetModuleWidget(IModuleService moduleService)
-    {
-        var module = moduleService.Get(ModuleType);
-        return module?.Widgets.FirstOrDefault(a => a.RenderInfo.Type.FullName == ModuleWidgetType);
-    }
+        => moduleService.Modules
+                        .SelectMany(a => a.Widgets)
+                        .FirstOrDefault(a => a.RenderInfo.Type.FullName == ModuleWidgetType);
 }
