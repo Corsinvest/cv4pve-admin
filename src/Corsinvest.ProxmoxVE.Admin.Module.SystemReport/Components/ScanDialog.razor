@@ -12,6 +12,7 @@
 
                 <RadzenStack Orientation="Orientation.Horizontal">
                     <RadzenFormField Text="@L["Vm Ids"]" AllowFloatingLabel="false">
+                        <Start><RadzenIcon Icon="computer" /></Start>
                         <ChildContent>
                             <RadzenTextBox Name="@nameof(Model.VmIds)" @bind-Value="@Model.VmIds" />
                         </ChildContent>
@@ -32,6 +33,7 @@
 
                 <RadzenStack Orientation="Orientation.Horizontal">
                     <RadzenFormField Text="@L["Node Names"]" AllowFloatingLabel="false">
+                        <Start><RadzenIcon Icon="dns" /></Start>
                         <ChildContent>
                             <RadzenTextBox Name="@nameof(Model.NodeNames)" @bind-Value="@Model.NodeNames" />
                         </ChildContent>
@@ -52,6 +54,7 @@
 
                 <RadzenStack Orientation="Orientation.Horizontal">
                     <RadzenFormField Text="@L["Storage Names"]" AllowFloatingLabel="false">
+                        <Start><RadzenIcon Icon="storage" /></Start>
                         <ChildContent>
                             <RadzenTextBox Name="@nameof(Model.StorageNames)" @bind-Value="@Model.StorageNames" />
                         </ChildContent>

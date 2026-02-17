@@ -26,20 +26,30 @@
 {
     case ContentType.Link:
         <RadzenFormField Text="@L["Url"]" AllowFloatingLabel="false" class="rz-w-100">
-            <RadzenTextBox Name="@nameof(Settings.Url)" @bind-Value="@Settings.Url" />
+            <Start><RadzenIcon Icon="link" /></Start>
+            <ChildContent>
+                <RadzenTextBox Name="@nameof(Settings.Url)" @bind-Value="@Settings.Url" />
+            </ChildContent>
         </RadzenFormField>
 
         <RadzenFormField Text="@L["Text"]" AllowFloatingLabel="false" class="rz-w-100">
-            <RadzenTextBox Name="@nameof(Settings.Text)" @bind-Value="@Settings.Text" />
+            <Start><RadzenIcon Icon="text_fields" /></Start>
+            <ChildContent>
+                <RadzenTextBox Name="@nameof(Settings.Text)" @bind-Value="@Settings.Text" />
+            </ChildContent>
         </RadzenFormField>
 
         <RadzenFormField Text="@L["Icon"]" AllowFloatingLabel="false" class="rz-w-100">
-            <RadzenTextBox Name="@nameof(Settings.Icon)" @bind-Value="@Settings.Icon" />
+            <Start><RadzenIcon Icon="interests" /></Start>
+            <ChildContent>
+                <RadzenTextBox Name="@nameof(Settings.Icon)" @bind-Value="@Settings.Icon" />
+            </ChildContent>
         </RadzenFormField>
         break;
 
     case ContentType.Iframe:
         <RadzenFormField Text="@L["Url"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start><RadzenIcon Icon="link" /></Start>
             <ChildContent>
                 <RadzenTextBox Name="@nameof(Settings.Url)"
                                Value="@Settings.Url"
@@ -53,10 +63,13 @@
 
     case ContentType.Html:
         <RadzenFormField Text="@L["HTML Content"]" AllowFloatingLabel="false" class="rz-w-100">
-            <RadzenTextArea Name="@nameof(Settings.Html)"
-                            @bind-Value="@Settings.Html"
-                            Rows="10"
-                            Style="width: 100%; font-family: monospace;" />
+            <Start><RadzenIcon Icon="code" /></Start>
+            <ChildContent>
+                <RadzenTextArea Name="@nameof(Settings.Html)"
+                                @bind-Value="@Settings.Html"
+                                Rows="10"
+                                Style="width: 100%; font-family: monospace;" />
+            </ChildContent>
         </RadzenFormField>
         break;
 }

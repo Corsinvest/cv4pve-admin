@@ -27,6 +27,7 @@
             </PasswordField>
 
             <RadzenFormField Text="@L["Chats Id"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start><RadzenIcon Icon="chat" /></Start>
                 <ChildContent>
                     <RadzenTextBox Name="@nameof(Model.Telegram.ChatsId)" @bind-Value="@Model.Telegram.ChatsId" />
                 </ChildContent>

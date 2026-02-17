@@ -8,6 +8,7 @@
 @implements IModelParameter<IgnoredIssue>
 
 <RadzenFormField Text="@L["Id Resource"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="tag" /></Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.IdResource)" @bind-Value="@Model.IdResource" />
     </ChildContent>
@@ -55,6 +56,7 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Sub Context"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="subdirectory_arrow_right" /></Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.SubContext)" @bind-Value="@Model.SubContext" />
     </ChildContent>
@@ -64,6 +66,7 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="notes" /></Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
     </ChildContent>
