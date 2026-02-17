@@ -17,6 +17,7 @@ public partial class GaugeStacked(IAdminService adminService) : IModuleWidget<ob
     private bool Initalized { get; set; }
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,6 +27,7 @@ public partial class GaugeStacked(IAdminService adminService) : IModuleWidget<ob
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -33,7 +35,7 @@ public partial class GaugeStacked(IAdminService adminService) : IModuleWidget<ob
         }
         finally
         {
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -54,6 +56,7 @@ public partial class GaugeStacked(IAdminService adminService) : IModuleWidget<ob
 
     public void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }

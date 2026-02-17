@@ -17,6 +17,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
     private IList<Data> Items { get; set; } = [];
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
 
     private class Data : IClusterName, IDescription
     {
@@ -38,6 +39,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -45,7 +47,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
         }
         finally
         {
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -82,6 +84,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
 
     public void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }

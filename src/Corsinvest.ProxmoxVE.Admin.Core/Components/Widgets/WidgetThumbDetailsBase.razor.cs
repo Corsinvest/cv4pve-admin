@@ -14,6 +14,7 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
 
     protected IEnumerable<Data> Items { get; set; } = [];
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
     protected bool ShowIcon { get; set; } = true;
 
     protected string Message { get; set; } = default!;
@@ -37,6 +38,7 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -44,7 +46,7 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
         }
         finally
         {
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -52,6 +54,7 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
 
     public void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }
