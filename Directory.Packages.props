@@ -25,7 +25,7 @@
   <ItemGroup>
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
-    <PackageVersion Include="Radzen.Blazor" Version="9.0.4" />
+    <PackageVersion Include="Radzen.Blazor" Version="9.0.5" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.4.1" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -43,7 +43,7 @@
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
-    <PackageVersion Include="MailKit" Version="4.14.1" />
+    <PackageVersion Include="MailKit" Version="4.15.0" />
     <PackageVersion Include="System.CommandLine" Version="2.0.3" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->

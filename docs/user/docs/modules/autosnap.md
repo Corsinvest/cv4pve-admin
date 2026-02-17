@@ -38,4 +38,6 @@ Automated snapshot creation, rotation, and retention management for Proxmox VE i
 
     Trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete). Configure per-job HTTP endpoints with custom headers and body templates.
 
+    [Learn more](autosnap-webhook.md)
+
 </div>

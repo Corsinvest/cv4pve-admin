@@ -1,9 +1,10 @@
 /* Base font size to match official docs */
-/* html {
-  font-size: 137.5%;
-} */
 
 /* EE/CE Badges */
+.ee, .ce {
+  vertical-align: middle;
+}
+
 .ee:before {
   content: "EE";
   background-color: #ff9800;
