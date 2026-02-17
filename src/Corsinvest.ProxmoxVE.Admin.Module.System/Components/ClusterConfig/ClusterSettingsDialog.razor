@@ -58,6 +58,9 @@
     <RadzenStack Orientation="Orientation.Vertical">
         <RadzenStack Orientation="Orientation.Horizontal">
             <RadzenFormField Text="@L["Access Type"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start>
+                    <RadzenIcon Icon="vpn_key" />
+                </Start>
                 <ChildContent>
                     <RadzenDropDown TValue="ClusterAccessType"
                                     Name="@nameof(Model.AccessType)"
