@@ -19,5 +19,6 @@
 - **[Bots](bots.md)** - Remote cluster management via Telegram chatbot
 
 ### Utilities
+- **[Dashboard](dashboard.md)** - Customizable dashboards with widgets and metrics
 - **[AI Server](ai-server.md)** - Model Context Protocol server for AI integration
 - **[System Report](system-report.md)** - Comprehensive cluster, VM, node and storage reports
