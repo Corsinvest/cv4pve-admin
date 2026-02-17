@@ -23,6 +23,7 @@ public partial class Render(IAdminService adminService,
     private ICollection<ResourceUsage> DataUsages { get; set; } = [];
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
 
     private record Data(string ClusterName, Coordinate Coordinate, PinColor PinColor);
 
@@ -85,6 +86,7 @@ public partial class Render(IAdminService adminService,
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -92,7 +94,7 @@ public partial class Render(IAdminService adminService,
         }
         finally
         {
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -117,6 +119,7 @@ public partial class Render(IAdminService adminService,
 
     public void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }

@@ -16,10 +16,12 @@ public partial class Disks(IAdminService adminService) : IRefreshableData, INode
     private IEnumerable<NodeDiskList> Items { get; set; } = default!;
     private bool IsLoading { get; set; }
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
 
     protected override async Task OnInitializedAsync() => await RefreshDataAsync();
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -30,7 +32,7 @@ public partial class Disks(IAdminService adminService) : IRefreshableData, INode
         finally
         {
             IsLoading = false;
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -50,6 +52,7 @@ public partial class Disks(IAdminService adminService) : IRefreshableData, INode
 
     public void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }

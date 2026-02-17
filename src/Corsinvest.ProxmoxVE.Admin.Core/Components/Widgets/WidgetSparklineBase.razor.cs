@@ -30,11 +30,13 @@ public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWid
         };
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
 
     protected override async Task OnInitializedAsync() => await RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -42,7 +44,7 @@ public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWid
         }
         finally
         {
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -50,6 +52,7 @@ public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWid
 
     public virtual void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }

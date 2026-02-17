@@ -65,6 +65,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     private bool HasColumnForStorage => ResourceType.HasFlag(ClusterResourceType.Storage) || ResourceType.HasFlag(ClusterResourceType.All);
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
     private bool _inGetGroupHeader;
     private Timer? _timer;
 
@@ -73,6 +74,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         IsLoading = true;
 
@@ -83,7 +85,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         finally
         {
             IsLoading = false;
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -134,7 +136,6 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
             items = allowedItems;
 
             #region Sync data
-            // Use Dictionary for O(n) performance instead of O(n²)
             var existingItemsDict = Items.ToDictionary(a => (a.Id, a.ClusterName));
 
             // Add or update items
@@ -277,6 +278,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
     public void Dispose()
     {
+        _disposed = true;
         StopTimer();
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);

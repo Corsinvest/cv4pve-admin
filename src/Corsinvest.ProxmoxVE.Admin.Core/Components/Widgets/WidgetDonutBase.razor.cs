@@ -35,6 +35,7 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
     }
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
 
     protected void SetOk(int count) => Set("Ok", count, Colors.Success);
     protected void SetKo(int count) => Set("Ko", count, Colors.Danger);
@@ -60,6 +61,7 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed) { return; }
         if (!await _refreshLock.WaitAsync(0)) { return; }
         try
         {
@@ -67,7 +69,7 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
         }
         finally
         {
-            try { _refreshLock?.Release(); } catch (ObjectDisposedException) { }
+            if (!_disposed) { _refreshLock?.Release(); }
         }
     }
 
@@ -75,6 +77,7 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
 
     public virtual void Dispose()
     {
+        _disposed = true;
         _refreshLock?.Dispose();
         GC.SuppressFinalize(this);
     }
