@@ -11,11 +11,16 @@
             @for (var i = 0; i < Items.Count; i++)
             {
                 var item = Items[i];
-                var color = Colors[i % Colors.Length];
-                var colorLight = ColorsLight[i % ColorsLight.Length];
+                var color = Colors[i];
+                var colorLight = ColorsLight[i];
                 var radius = Math.Round(1.0 - i * RadiusStep, 2);
-                <RadzenArcGaugeScale Min="0" Max="100" StartAngle="@StartAngle" EndAngle="@EndAngle"
-                                     Radius="@radius" Fill="@colorLight" Margin="0">
+                <RadzenArcGaugeScale Min="0"
+                                     Max="100"
+                                     StartAngle="@StartAngle"
+                                     EndAngle="@EndAngle"
+                                     Radius="@radius"
+                                     Fill="@colorLight"
+                                     Margin="0">
                     <RadzenArcGaugeScaleValue Value="@item.Usage" Fill="@color" ShowValue="false" />
                 </RadzenArcGaugeScale>
             }
@@ -39,39 +44,4 @@
             }
         </RadzenStack>
     </div>
-}
-
-@code
-{
-    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
-    [Parameter] public double StartAngle { get; set; } = 0;
-    [Parameter] public double EndAngle { get; set; } = 360;
-    [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
-
-    private static readonly string[] Colors =
-    [
-        "var(--rz-danger)",
-        "var(--rz-warning)",
-        "var(--rz-success)",
-        "var(--rz-info)",
-        "var(--rz-secondary)"
-    ];
-
-    private static readonly string[] ColorsLight =
-    [
-        "var(--rz-danger-lighter)",
-        "var(--rz-warning-lighter)",
-        "var(--rz-success-lighter)",
-        "var(--rz-info-lighter)",
-        "var(--rz-secondary-lighter)"
-    ];
-
-    private List<ResourceUsage> Items { get; set; } = [];
-    private double RadiusStep { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        Items = Data.ToList();
-        RadiusStep = Items.Count > 1 ? 0.22 : 0.0;
-    }
 }

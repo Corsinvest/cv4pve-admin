@@ -17,9 +17,14 @@
                 <RadzenText TextStyle="TextStyle.H6">@L["Test SMTP Configuration"]</RadzenText>
 
                 <RadzenFormField Text="@L["Test Email Address"]" AllowFloatingLabel="false" class="rz-w-100">
-                    <RadzenTextBox @bind-Value="TestEmailAddress"
-                                   Placeholder="user@example.com"
-                                   class="rz-w-100" />
+                    <Start>
+                        <RadzenIcon Icon="email" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenTextBox @bind-Value="TestEmailAddress"
+                                       Placeholder="user@example.com"
+                                       class="rz-w-100" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenButton Icon="send"

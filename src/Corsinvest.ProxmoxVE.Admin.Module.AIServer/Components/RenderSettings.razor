@@ -5,7 +5,11 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
-<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
+<SwitchField @bind-Value="@Model.Enabled"
+             Label="@L["Enabled"]"
+             Name="@nameof(Model.Enabled)"
+             IconOn="play_circle"
+             IconOff="pause_circle" />
 
 <PasswordField @bind-Value="@Model.ApiToken" Label="@L["X-API-Key Token"]" Name="@nameof(Model.ApiToken)" class="rz-w-100">
     <End>

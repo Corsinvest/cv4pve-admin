@@ -11,10 +11,18 @@
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
         <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
             <RadzenFormField Text="@L["Title"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
-                <RadzenTextBox @bind-Value="@Model.Title" Style="width: 100%;" />
+                <Start>
+                    <RadzenIcon Icon="title" />
+                </Start>
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="@Model.Title" Style="width: 100%;" />
+                </ChildContent>
             </RadzenFormField>
 
             <RadzenFormField Text="@L["Message"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
+                <Start>
+                    <RadzenIcon Icon="message" />
+                </Start>
                 <ChildContent>
                     <RadzenTextArea Name="Message" @bind-Value="@Model.Message" Rows="4" Style="width: 100%;" />
                 </ChildContent>
@@ -24,6 +32,9 @@
             </RadzenFormField>
 
             <RadzenFormField Text="@L["Severity"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
+                <Start>
+                    <RadzenIcon Icon="notifications" />
+                </Start>
                 <ChildContent>
                     <RadzenDropDown TValue="MessageSeverity"
                                     @bind-Value="@Model.Severity"

@@ -85,6 +85,8 @@
 <SwitchField @bind-Value="@Value.IgnoreSslCertificate"
              Label="@L["Ignore SSL Certificate"]"
              Name="@($"{Prefix}.IgnoreSslCertificate")"
+             IconOn="no_encryption"
+             IconOff="lock"
              class="rz-w-100" />
 
 @code {

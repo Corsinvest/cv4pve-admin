@@ -10,52 +10,72 @@
         {
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenFormField Text="@L["From"]">
-                    <RadzenDatePicker @bind-Value="Start"
-                                      @bind-Value:after="LoadStoragesAsync"
-                                      ShowTime="false"
-                                      AllowClear="true"
-                                      Min="MinDate.Value.AddDays(-1)"
-                                      Max="MaxDate.Value"
-                                      ShowCalendarWeek="true"
-                                      Disabled="MinDate is null"
-                                      DateFormat="d" />
+                    <Start>
+                        <RadzenIcon Icon="calendar_today" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDatePicker @bind-Value="Start"
+                                          @bind-Value:after="LoadStoragesAsync"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          Min="MinDate.Value.AddDays(-1)"
+                                          Max="MaxDate.Value"
+                                          ShowCalendarWeek="true"
+                                          Disabled="MinDate is null"
+                                          DateFormat="d" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["To"]">
-                    <RadzenDatePicker @bind-Value="End"
-                                      @bind-Value:after="LoadStoragesAsync"
-                                      ShowTime="false"
-                                      AllowClear="true"
-                                      Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
-                                      Max="MaxDate.Value.AddDays(1)"
-                                      ShowCalendarWeek="true"
-                                      Disabled="Start is null"
-                                      DateFormat="d" />
+                    <Start>
+                        <RadzenIcon Icon="event" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDatePicker @bind-Value="End"
+                                          @bind-Value:after="LoadStoragesAsync"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
+                                          Max="MaxDate.Value.AddDays(1)"
+                                          ShowCalendarWeek="true"
+                                          Disabled="Start is null"
+                                          DateFormat="d" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["Storages"]">
-                    <RadzenDropDown @bind-Value="@SelectedStorages"
-                                    @bind-Value:after="LoadVmIdsAsync"
-                                    Data="@Storages"
-                                    TextProperty="@nameof(StorageBackup.FullName)"
-                                    Multiple="true"
-                                    AllowClear="true"
-                                    AllowFiltering="true"
-                                    MaxSelectedLabels="99"
-                                    Chips="true"
-                                    Disabled="!End.HasValue" />
+                    <Start>
+                        <RadzenIcon Icon="storage" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDropDown @bind-Value="@SelectedStorages"
+                                        @bind-Value:after="LoadVmIdsAsync"
+                                        Data="@Storages"
+                                        TextProperty="@nameof(StorageBackup.FullName)"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        AllowFiltering="true"
+                                        MaxSelectedLabels="99"
+                                        Chips="true"
+                                        Disabled="!End.HasValue" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["VM / CT"]">
-                    <RadzenDropDown @bind-Value="@SelectedVmIds"
-                                    @bind-Value:after="LoadDataAsync"
-                                    Data="@VmIds"
-                                    Multiple="true"
-                                    AllowClear="true"
-                                    AllowFiltering="true"
-                                    MaxSelectedLabels="99"
-                                    Chips="true"
-                                    Disabled="SelectedStorages == null || !SelectedStorages.Any()" />
+                    <Start>
+                        <RadzenIcon Icon="computer" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDropDown @bind-Value="@SelectedVmIds"
+                                        @bind-Value:after="LoadDataAsync"
+                                        Data="@VmIds"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        AllowFiltering="true"
+                                        MaxSelectedLabels="99"
+                                        Chips="true"
+                                        Disabled="SelectedStorages == null || !SelectedStorages.Any()" />
+                    </ChildContent>
                 </RadzenFormField>
             </RadzenStack>
 

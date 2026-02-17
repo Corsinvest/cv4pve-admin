@@ -1,4 +1,4 @@
-﻿@*
+@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -8,7 +8,7 @@
     @foreach (var item in Data)
     {
         <RadzenColumn Size="@(12 / Data.Count())">
-            <div style="width:100%;">
+            <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
                 @if (item.Group == "Snapshot")
                 {
                     <SubscriptionGate Size="SubscriptionGateSize.Compact">
@@ -27,14 +27,13 @@
 @code
 {
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
-    [Parameter] public string Style { get; set; } = "width:100%;";
     [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
 
     private RenderFragment RenderGauge(ResourceUsage item) => __builder =>
     {
-        <RadzenText TextStyle="TextStyle.H6" Text="@item.Name" TextAlign="TextAlign.Center" />
-        <RadzenArcGauge @attributes="AdditionalAttributes" Style="@Style">
-            <RadzenArcGaugeScale Margin="0" Min="0" Max="260" Radius="1" Y="0.5">
+        <RadzenText TextStyle="TextStyle.H6" Text="@item.Name" TextAlign="TextAlign.Center" Style="width:100%;" />
+        <RadzenArcGauge @attributes="AdditionalAttributes" Style="width:200px;">
+            <RadzenArcGaugeScale Margin="0" Min="0" Max="260" Radius="1" X="0.5" Y="0.5">
                 <RadzenArcGaugeScaleValue Value="@Math.Round(item.Usage, item.Usage < 10 ? 1 : 0)" Fill="@item.Color">
                     <Template Context="pointer">
                         @*                             <RadzenText TextStyle="TextStyle.H3">@pointer.Value%</RadzenText> *@

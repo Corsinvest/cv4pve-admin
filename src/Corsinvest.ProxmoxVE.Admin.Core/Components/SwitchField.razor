@@ -5,7 +5,13 @@
 @inherits AdminComponentBase
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Style="@Style" @attributes="AdditionalAttributes">
-    <RadzenLabel Text="@Label" Component="@Name" />
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="6px">
+        @if (!string.IsNullOrEmpty(Value ? IconOn : IconOff))
+        {
+            <RadzenIcon Icon="@(Value ? IconOn : IconOff)" />
+        }
+        <RadzenLabel Text="@Label" Component="@Name" />
+    </RadzenStack>
     <RadzenSwitch Name="@Name"
                   Value="@Value"
                   ValueChanged="@((bool value) => ValueChanged.InvokeAsync(value))"
@@ -24,5 +30,7 @@
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public string? Name { get; set; }
     [Parameter] public string? Style { get; set; }
+    [Parameter] public string? IconOn { get; set; }
+    [Parameter] public string? IconOff { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 }

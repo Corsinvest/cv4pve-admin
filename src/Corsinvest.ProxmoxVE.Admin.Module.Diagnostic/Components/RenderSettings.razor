@@ -10,7 +10,11 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Diagnostic.Settings>
 
-<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
+<SwitchField @bind-Value="@Model.Enabled"
+             Label="@L["Enabled schedulation"]"
+             Name="@nameof(Model.Enabled)"
+             IconOn="play_circle"
+             IconOff="pause_circle" />
 
 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
@@ -47,13 +51,13 @@
             <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
                 @{
                     var timeSeriesPropertyName =
-                $"{Model.ApiSettings.Storage}.{nameof(Model.ApiSettings.Storage.TimeSeries)}";
+                    $"{Model.ApiSettings.Storage}.{nameof(Model.ApiSettings.Storage.TimeSeries)}";
                 }
 
                 <RadzenStack Orientation="Orientation.Vertical">
                     <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
                         <ChildContent>
-                            <RadzenDropDown TValue="SettingsTimeSeriesType"                                            Name="@timeSeriesPropertyName"
+                            <RadzenDropDown TValue="SettingsTimeSeriesType" Name="@timeSeriesPropertyName"
                                             @bind-Value="@Model.ApiSettings.Storage.TimeSeries"
                                             Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
                         </ChildContent>
@@ -82,7 +86,7 @@
                 <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenColumn Size="4">
                         @RenderThreshold("Wearout", "Model.Settings.SsdWearoutThreshold",
-                        Model.ApiSettings.SsdWearoutThreshold)
+                                                Model.ApiSettings.SsdWearoutThreshold)
                     </RadzenColumn>
                 </RadzenRow>
             </RadzenAccordionItem>
