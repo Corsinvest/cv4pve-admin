@@ -373,7 +373,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
             Y = y,
             Width = widget.Width,
             Height = widget.Height,
-            ModuleType = widget.Module.Type,
             ModuleWidgetType = widget.RenderInfo.Type.FullName!,
             Id = _widgetId--
         };
