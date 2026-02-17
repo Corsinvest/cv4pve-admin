@@ -15,6 +15,7 @@
                          IconOff="pause_circle" />
 
             <RadzenFormField Text="@L["Prefix"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start><RadzenIcon Icon="label" /></Start>
                 <ChildContent>
                     <RadzenTextBox Name="@nameof(Model.Prometheus.ExporterPrefix)" @bind-Value="@Model.Prometheus.ExporterPrefix" />
                 </ChildContent>

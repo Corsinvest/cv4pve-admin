@@ -5,6 +5,9 @@
 @inherits AdminComponentBase
 
 <RadzenFormField Text="@L["Title (text or html)"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="title" />
+    </Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.Widget.Title)" @bind-Value="@Model.Widget.Title" />
     </ChildContent>
@@ -18,6 +21,9 @@
         <RadzenAccordionItem Text="Style" Icon="style">
             <RadzenStack Orientation="Orientation.Vertical">
                 <RadzenFormField Text="@L["Title CSS"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="style" />
+                    </Start>
                     <ChildContent>
                         <RadzenTextArea Name="@nameof(Model.Widget.TitleCss)" @bind-Value="@Model.Widget.TitleCss" />
                     </ChildContent>
@@ -27,6 +33,9 @@
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["Body CSS"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="style" />
+                    </Start>
                     <ChildContent>
                         <RadzenTextArea Name="@nameof(Model.Widget.BodyCss)" @bind-Value="@Model.Widget.BodyCss" />
                     </ChildContent>

@@ -6,7 +6,10 @@
 @implements ISettingsParameter<CheckSettings>
 
 <RadzenFormField Text="@L["Days to analyze"]" AllowFloatingLabel="false" class="rz-w-100">
-    <RadzenNumeric @bind-Value="@Settings.Day" Min="1" />
+    <Start><RadzenIcon Icon="calendar_today" /></Start>
+    <ChildContent>
+        <RadzenNumeric @bind-Value="@Settings.Day" Min="1" />
+    </ChildContent>
 </RadzenFormField>
 
 @code

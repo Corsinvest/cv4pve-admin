@@ -16,6 +16,7 @@
         <SmtpEmailConfigEdit @bind-Config="context.SmtpConfig" />
 
         <RadzenFormField Text="@L["To Addresses"]" AllowFloatingLabel="false">
+            <Start><RadzenIcon Icon="email" /></Start>
             <ChildContent>
                 <RadzenTextArea Name="@nameof(context.ToAddresses)" @bind-Value="@context.ToAddresses" Rows="3" />
             </ChildContent>

@@ -20,21 +20,27 @@
 
 
         <RadzenFormField Text="@L["Users"]" AllowFloatingLabel="false" Visible="Chats.Count() > 1">
-            <RadzenDropDown TValue="long"
-                            TextProperty="@nameof(Data.User)"
-                            ValueProperty="@nameof(Data.ChatId)"
-                            AllowClear="true"
-                            @bind-Value="@ChatId"
-                            title="@L["ChatId: {0}", ChatId]"
-                            Data="@Chats" />
+            <Start><RadzenIcon Icon="person" /></Start>
+            <ChildContent>
+                <RadzenDropDown TValue="long"
+                                TextProperty="@nameof(Data.User)"
+                                ValueProperty="@nameof(Data.ChatId)"
+                                AllowClear="true"
+                                @bind-Value="@ChatId"
+                                title="@L["ChatId: {0}", ChatId]"
+                                Data="@Chats" />
+            </ChildContent>
         </RadzenFormField>
 
         <RadzenFormField Text="@L["Message"]" AllowFloatingLabel="false" class="rz-w-100" Visible="Chats.Count() > 1">
-            <RadzenTextBox @bind-Value="@Message"
-                           @onkeyup="KeyUpAsync"
-                           class="rz-w-100"
-                           type="search"
-                           Placeholder="@L["Enter your message..."]" />
+            <Start><RadzenIcon Icon="chat" /></Start>
+            <ChildContent>
+                <RadzenTextBox @bind-Value="@Message"
+                               @onkeyup="KeyUpAsync"
+                               class="rz-w-100"
+                               type="search"
+                               Placeholder="@L["Enter your message..."]" />
+            </ChildContent>
         </RadzenFormField>
     </RadzenStack>
 </RadzenStack>
