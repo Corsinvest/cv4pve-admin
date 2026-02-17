@@ -9,7 +9,7 @@
         <Items>
             @foreach (var item in Sections)
             {
-                <RadzenAccordionItem Text="@item.Title" Icon="@item.Icon" >
+                <RadzenAccordionItem Text="@item.Title" Icon="@item.Icon">
                     <Template>
                         <div><strong>@item.Title</strong></div>
                         @if (!string.IsNullOrEmpty(item.Description))
@@ -21,7 +21,10 @@
                         <DynamicComponent Type="@item.ComponentType" Parameters="@GetParameters()" />
 
                         <div class="rz-mt-4">
-                            <RadzenButton Text="@L["Save changes"]" ButtonStyle="ButtonStyle.Primary" Click="@(() => SaveSectionAsync(item))" />
+                            <RadzenButton Text="@L["Save changes"]"
+                                          ButtonStyle="ButtonStyle.Primary"
+                                          Icon="save"                                         
+                                          Click="@(() => SaveSectionAsync(item))" />
                         </div>
                     </ChildContent>
                 </RadzenAccordionItem>
