@@ -1,5 +1,9 @@
 # Installation Guide
 
+!!! tip "Pre-release versions (RC, Beta, ...)"
+    Pre-release versions such as `rc`, `beta`, or `alpha` (e.g. `2.0.0-rc1`) **do not require a subscription** — all EE features are unlocked for testing purposes.
+    Once you upgrade to a stable release, a valid subscription will be required to use EE features.
+
 !!! warning "v2 is not compatible with v1"
     cv4pve-admin v2 is a **complete rewrite** and is not compatible with v1.
     There is currently no migration path from v1 to v2 — a fresh installation is required.
@@ -44,6 +48,10 @@ The installer will ask which edition (CE or EE) and which version to install. Th
         New-Item -ItemType Directory -Force -Path "$dataDir\cv4pve-admin\config" | Out-Null
         New-Item -ItemType File -Force -Path "$dataDir\cv4pve-admin\config\appsettings.extra.json" | Out-Null
         ```
+
+!!! tip "Pre-release versions (RC, Beta, ...)"
+    Pre-release versions such as `rc`, `beta`, or `alpha` (e.g. `2.0.0-rc1`) **do not require a subscription** — all EE features are unlocked for testing purposes.
+    Once you upgrade to a stable release, a valid subscription will be required to use EE features.
 
 !!! success "Installation Complete"
     After installation completes, open your browser to **http://localhost:8080**
