@@ -1,0 +1,34 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["Write"]" Icon="edit">
+            <RadzenTextArea Value="@Value"
+                            ValueChanged="@((string value) => ValueChanged.InvokeAsync(value))"
+                            Rows="@Rows"
+                            class="rz-w-100" />
+        </RadzenTabsItem>
+
+        <RadzenTabsItem Text="@L["Preview"]" Icon="preview">
+            @if (string.IsNullOrEmpty(Value))
+            {
+                <RadzenText Text="@L["Nothing to preview."]" TextStyle="TextStyle.Body2" Style="color: var(--rz-text-secondary-color);" />
+            }
+            else
+            {
+                <RadzenMarkdown Text="@Value" />
+            }
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
+@code
+{
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public int Rows { get; set; } = 10;
+}
