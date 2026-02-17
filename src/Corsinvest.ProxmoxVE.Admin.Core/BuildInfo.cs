@@ -8,15 +8,15 @@ namespace Corsinvest.ProxmoxVE.Admin.Core;
 
 public static class BuildInfo
 {
-    public static readonly string Version;
-    public static readonly string PreRelease;
+    public static readonly string Version = string.Empty;
+    public static readonly string PreRelease = string.Empty;
     public static readonly bool IsTesting;
     public const int TestingExpirationMonths = 3;
 
-    public static readonly string Edition;
+    public static readonly string Edition = string.Empty;
     public static readonly bool IsEnterpriseEdition;
-    public static readonly string EditionFull;
-    public static readonly string RepoDockerHub;
+    public static readonly string EditionFull = string.Empty;
+    public static readonly string RepoDockerHub = string.Empty;
     public static readonly DateTime BuildDate;
     public static readonly bool IsTestingExpired;
 
