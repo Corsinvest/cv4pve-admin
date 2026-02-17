@@ -4,9 +4,16 @@
 *@
 @inherits AdminComponentBase
 
-<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
+<SwitchField @bind-Value="@Model.Enabled"
+             Label="@L["Enabled"]"
+             Name="@nameof(Model.Enabled)"
+             IconOn="play_circle"
+             IconOff="pause_circle" />
 
 <RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="label" />
+    </Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" />
     </ChildContent>
@@ -16,6 +23,9 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="notes" />
+    </Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
     </ChildContent>
@@ -26,11 +36,21 @@
 
 <RadzenStack Orientation="Orientation.Horizontal">
     <RadzenFormField Text="@L["Latitude"]" AllowFloatingLabel="false" class="rz-w-100">
-        <RadzenNumeric Name="@nameof(Model.Latitude)" @bind-Value="@Model.Latitude" />
+        <Start>
+            <RadzenIcon Icon="location_on" />
+        </Start>
+        <ChildContent>
+            <RadzenNumeric Name="@nameof(Model.Latitude)" @bind-Value="@Model.Latitude" />
+        </ChildContent>
     </RadzenFormField>
 
     <RadzenFormField Text="@L["Longitude"]" AllowFloatingLabel="false" class="rz-w-100">
-        <RadzenNumeric Name="@nameof(Model.Longitude)" @bind-Value="@Model.Longitude" />
+        <Start>
+            <RadzenIcon Icon="location_on" />
+        </Start>
+        <ChildContent>
+            <RadzenNumeric Name="@nameof(Model.Longitude)" @bind-Value="@Model.Longitude" />
+        </ChildContent>
     </RadzenFormField>
 </RadzenStack>
 
@@ -54,6 +74,9 @@
             </RadzenFormField>
 
             <RadzenFormField Text="@L["Timeout (msec)"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start>
+                    <RadzenIcon Icon="timer" />
+                </Start>
                 <ChildContent>
                     <RadzenNumeric Name="@nameof(Model.Timeout)" @bind-Value="@Model.Timeout" />
                 </ChildContent>
@@ -101,7 +124,12 @@
             </PasswordField>
         }
 
-        <SwitchField @bind-Value="@Model.ValidateCertificate" Label="@L["Validate SSL Certificate"]" Name="@nameof(Model.ValidateCertificate)" class="rz-w-100" />
+        <SwitchField @bind-Value="@Model.ValidateCertificate"
+                     Label="@L["Validate SSL Certificate"]"
+                     Name="@nameof(Model.ValidateCertificate)"
+                     IconOn="lock"
+                     IconOff="no_encryption"
+                     class="rz-w-100" />
     </RadzenStack>
 </RadzenPanel>
 
@@ -132,6 +160,8 @@
         <SwitchField @bind-Value="@Model.AllowCalculateSnapshotSize"
                      Label="@L[$"Calculating the snapshot size may take some time. {Messages.WebShellPamUserRequired})."]"
                      Name="@nameof(Model.AllowCalculateSnapshotSize)"
+                     IconOn="photo_camera"
+                     IconOff="no_photography"
                      class="rz-w-100" />
     </SubscriptionGate>
 </RadzenPanel>

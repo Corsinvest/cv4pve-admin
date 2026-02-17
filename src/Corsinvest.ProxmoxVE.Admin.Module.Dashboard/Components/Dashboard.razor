@@ -32,7 +32,9 @@
 
             <SwitchField @bind-Value="@CurrentDashboard.AllowClustersSelect"
                          Label="@L["Allow clusters select"]"
-                         Name="@nameof(CurrentDashboard.AllowClustersSelect)" />
+                         Name="@nameof(CurrentDashboard.AllowClustersSelect)"
+                         IconOn="device_hub"
+                         IconOff="device_hub" />
 
             <RadzenButton Size="ButtonSize.Small"
                           Text="@L["Add widget"]"

@@ -20,13 +20,11 @@ public partial class Render(IAdminService adminService,
     private OpenStreetMap RefMap { get; set; } = default!;
     private bool Initalized { get; set; }
     private IEnumerable<Data> Items { get; set; } = [];
-    private IEnumerable<Detail> Details { get; set; } = [];
     private ICollection<ResourceUsage> DataUsages { get; set; } = [];
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
 
     private record Data(string ClusterName, Coordinate Coordinate, PinColor PinColor);
-    private record Detail(string Type, string Status, int Count);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -84,18 +82,6 @@ public partial class Render(IAdminService adminService,
     //                                                  FormatValue(a.Key.Status),
     //                                                  a.Count()))];
     //}
-
-    private static string FormatValue(string value)
-        => value switch
-        {
-            "running" or "online" or "available" => "🟢 ",
-            "stopped" => "🔴 ",
-            "unknown" => "❓ ",
-            "node" => "🖧 ",
-            "qemu" => "🖥️ ",
-            "lxc" => "📦 ",
-            _ => string.Empty
-        } + value;
 
     public async Task RefreshDataAsync()
     {

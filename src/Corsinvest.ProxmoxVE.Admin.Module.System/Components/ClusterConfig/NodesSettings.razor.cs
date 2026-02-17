@@ -67,8 +67,8 @@ public partial class NodesSettings(IAdminService adminService,
         args.Attributes.Add("title", "Drag row to reorder");
         args.Attributes.Add("style", "cursor:grab");
         args.Attributes.Add("draggable", "true");
-        args.Attributes.Add("ondragover", "event.preventDefault();event.target.closest('.rz-data-row').classList.add('my-class')");
-        args.Attributes.Add("ondragleave", "event.target.closest('.rz-data-row').classList.remove('my-class')");
+        args.Attributes.Add("ondragover", "event.preventDefault();event.target.closest('.rz-data-row').classList.add('drop-target')");
+        args.Attributes.Add("ondragleave", "event.target.closest('.rz-data-row').classList.remove('drop-target')");
         args.Attributes.Add("ondragstart", EventCallback.Factory.Create<DragEventArgs>(this, () => _draggedItem = args.Data!));
         args.Attributes.Add("ondrop", EventCallback.Factory.Create<DragEventArgs>(this, async () =>
         {
@@ -77,7 +77,7 @@ public partial class NodesSettings(IAdminService adminService,
             Model.Nodes.Remove(_draggedItem);
             Model.Nodes.Insert(draggedIndex <= droppedIndex ? droppedIndex++ : droppedIndex, _draggedItem);
 
-            await jSRuntime.InvokeVoidAsync("eval", "document.querySelector('.my-class').classList.remove('my-class')");
+            await jSRuntime.InvokeVoidAsync("eval", "document.querySelector('.drop-target').classList.remove('drop-target')");
             await DataGridRef.Reload();
         }));
     }

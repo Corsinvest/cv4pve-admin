@@ -31,8 +31,8 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
                             : adminService.Select(a => a.Settings.Name);
 
         return [.. clusterNames.Select(settingsService.GetForModule<TModule, TSettings>)
-                             .Where(a => a.Enabled)
-                             .Select(a => a.ClusterName)];
+                               .Where(a => a.Enabled)
+                               .Select(a => a.ClusterName)];
     }
 
     public async Task RefreshDataAsync()
