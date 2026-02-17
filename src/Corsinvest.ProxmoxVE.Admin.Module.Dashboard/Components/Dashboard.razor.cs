@@ -319,6 +319,9 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         InEditing = false;
         ShowGrid = false;
 
+        //reset resolution
+        SelectedScreenResolution = ScreenResolutions[0];
+
         await RefreshDataAsync();
     }
     #endregion

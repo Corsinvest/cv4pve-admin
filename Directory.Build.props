@@ -26,7 +26,6 @@
     <VersionPreRelease>$([System.Text.RegularExpressions.Regex]::Match($(Version), '-(.+)$').Groups[1].Value)</VersionPreRelease>
     <IsTesting Condition="'$(VersionPreRelease)' != ''">true</IsTesting>
     <IsTesting Condition="'$(VersionPreRelease)' == ''">false</IsTesting>
-    <TestingExpirationMonths>3</TestingExpirationMonths>
 
     <!-- TESTING constant when pre-release version -->
     <DefineConstants Condition="'$(IsTesting)' == 'true'">$(DefineConstants);TESTING</DefineConstants>
