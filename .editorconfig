@@ -56,6 +56,10 @@ dotnet_diagnostic.CS0168.severity = warning
 dotnet_diagnostic.CS0219.severity = warning
 dotnet_diagnostic.RCS1090.severity = warning
 dotnet_diagnostic.RCS1118.severity = none
+dotnet_diagnostic.RCS1213.severity = warning
+dotnet_diagnostic.IDE0051.severity = warning
+dotnet_diagnostic.CA1822.severity = suggestion
+dotnet_diagnostic.CA1854.severity = warning
 
 #### .NET Coding Conventions ####
 
