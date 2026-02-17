@@ -65,23 +65,23 @@ This section outlines the current development status of upcoming and evolving mo
 |--------|:--:|:--:|----------|-------------|-----------------|
 | **Admin Area** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
 | **AI Assistant** | ❌ | 🚧 | Utilities | Chat-based AI for cluster automation and diagnostics | |
-| **AI Server (MCP)** | 🚀 | 🚀 | Utilities | Model Context Protocol server | <ul><li>QueryTools</li><li>Historical metrics</li><li>Replications</li><li>Backup jobs</li><li>and more...</li></ul> |
-| **AutoSnap** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
-| **Backup Analytics** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
-| **Bots** | ✅ | ✅ | Control | Remote cluster management via Telegram | |
+| **[AI Server (MCP)](modules/ai-server.md)** | 🚀 | 🚀 | Utilities | Model Context Protocol server | <ul><li>QueryTools</li><li>Historical metrics</li><li>Replications</li><li>Backup jobs</li><li>and more...</li></ul> |
+| **[AutoSnap](modules/autosnap.md)** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
+| **[Backup Analytics](modules/backup-analytics.md)** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
+| **[Bots](modules/bots.md)** | ✅ | ✅ | Control | Remote cluster management via Telegram | |
 | **Command Palette** | ✅ | ✅ | Application | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |
-| **Dashboard** | ✅ | ✅ | Application | Customizable dashboards with 15+ widgets | <ul><li>Additional widgets from Enterprise modules</li></ul> |
-| **Diagnostic** | ✅ | ✅ | Health | Infrastructure diagnostics and health checks | <ul><li>Help links to Proxmox documentation for each issue</li><li>PDF export of diagnostic report</li></ul> |
-| **Metrics Exporter** | ✅ | ✅ | Health | Prometheus metrics exporter for monitoring integration | |
-| **Node Protect** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
+| **[Dashboard](modules/dashboard.md)** | ✅ | ✅ | Utilities | Customizable dashboards with widgets and metrics | <ul><li>Additional widgets from Enterprise modules</li></ul> |
+| **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics and health checks | <ul><li>Help links to Proxmox documentation for each issue</li><li>PDF export of diagnostic report</li></ul> |
+| **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Prometheus metrics exporter for monitoring integration | |
+| **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
 | **Notifier** | ✅ | ✅ | Notification | Notification system (CE: Email only) | <ul><li>119 services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
 | **Profile** | ✅ | ✅ | Application | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |
-| **Replication Analytics** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
-| **Resources** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |
-| **System Report** | ✅ | ✅ | Utilities | Comprehensive cluster/VM/node/storage reports | |
-| **Update Manager** | ✅ | ✅ | Health | System update management | <ul><li>PDF export of update report</li></ul> |
+| **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
+| **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |
+| **[System Report](modules/system-report.md)** | ✅ | ✅ | Utilities | Comprehensive cluster/VM/node/storage reports | |
+| **[Update Manager](modules/update-manager.md)** | ✅ | ✅ | Health | System update management | <ul><li>PDF export of update report</li></ul> |
 | **UPS Monitor** | ❌ | 🚧 | Protection | Network UPS monitoring via SNMP | |
-| **VM Performance** | ❌ | ✅ | Health | Real-time VM performance tracking with IOPS, latency, bandwidth metrics | |
+| **[VM Performance](modules/vm-performance.md)** | ❌ | ✅ | Health | Real-time VM performance tracking with IOPS, latency, bandwidth metrics | |
 
 ### Addon Modules (Enterprise Only)
 
