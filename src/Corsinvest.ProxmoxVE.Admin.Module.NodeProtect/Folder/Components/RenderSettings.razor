@@ -5,7 +5,11 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
-<SwitchField @bind-Value="@Model.Folder.Enabled" Label="@L["Enabled"]" Name="Model.Folder.Enabled" />
+<SwitchField @bind-Value="@Model.Folder.Enabled"
+             Label="@L["Enabled"]"
+             Name="Model.Folder.Enabled"
+             IconOn="play_circle"
+             IconOff="pause_circle" />
 
 <RadzenFormField Text="@L["Number which should will keep"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>

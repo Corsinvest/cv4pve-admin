@@ -4,19 +4,6 @@
 *@
 @inherits AdminComponentBase
 
-@*
-//TODO
-<style>
-    .rz-custom-header {
-        width: 100%;
-    }
-
-    .my-class td {
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-    }
-</style> *@
-
 <RadzenDataGrid @ref="@DataGridRef"
                 TItem="ClusterNodeSettings"
                 Data="@Model.Nodes"
@@ -32,29 +19,26 @@
                 RowRender="RowRender"
                 RowCreate="@OnCreateRow">
     <HeaderTemplate>
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+        <CrudToolbar OnAdd="InsertRowAsync" AddDisabled="@InEdit" Disabled="@Disabled">
             <RadzenButton Variant="Variant.Text"
                           Size="ButtonSize.Small"
-                          Text="@L["New"]"
-                          Icon="add"
-                          Click="InsertRowAsync"
-                          Disabled="Disabled || InEdit"
-                          ButtonStyle="ButtonStyle.Primary"
-                          title="@L["New"]"
-                          aria-label="@L["New"]" />
-
-            <RadzenButton Size="ButtonSize.Small"
                           Text="@L["Discover Nodes"]"
-                          Disabled="Disabled || !Model.Nodes.Any() || InEdit"
+                          Disabled="@(Disabled || !Model.Nodes.Any() || InEdit)"
                           Click="DiscoverAsync"
                           ButtonStyle="ButtonStyle.Success"
                           Icon="travel_explore"
                           title="@L["Discover Nodes"]"
                           aria-label="@L["Discover Nodes"]" />
-        </RadzenStack>
+        </CrudToolbar>
     </HeaderTemplate>
 
     <Columns>
+        <RadzenDataGridColumn TItem="ClusterNodeSettings" Sortable="false" Filterable="false" Width="40px" Title="" TextAlign="TextAlign.Center">
+            <Template>
+                <RadzenIcon Icon="drag_indicator" style="cursor:grab; color: var(--rz-text-disabled-color);" />
+            </Template>
+        </RadzenDataGridColumn>
+
         <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.IPAddress)" Sortable="true" Title="@L["IP Address/Host"]" Width="200px">
             <EditTemplate Context="ctx">
                 <RadzenTextBox Name="@nameof(ctx.IPAddress)" @bind-Value="@ctx.IPAddress" class="rz-w-100" />

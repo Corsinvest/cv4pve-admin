@@ -92,7 +92,7 @@ public static class RadzenUIExtensions
         options.CssClass ??= "rz-dialog-side";
         options.Style = "right: 0;";
         options.Width ??= "600px";
-        return await dialogService.OpenAsync<T>(title, parameters, options);
+        return await dialogService.OpenAsync<T>(title, parameters!, options);
     }
 
     public static async Task<dynamic> OpenSideEditAsync<TDialog>(this DialogService dialogService,

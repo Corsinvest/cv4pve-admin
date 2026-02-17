@@ -10,10 +10,15 @@
              Label="@L["Include RAM"]"
              Name="@nameof(Model.VmStatus)"
              ReadOnly="!IsNew"
+             IconOn="memory"
+             IconOff="memory"
              class="rz-w-100"
              Style="@(Model.HasVmStatus ? "" : "display: none;")" />
 
 <RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="label" />
+    </Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" ReadOnly="!IsNew" />
     </ChildContent>
@@ -23,7 +28,12 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
-    <RadzenTextBox @bind-Value="@Model.Description" />
+    <Start>
+        <RadzenIcon Icon="notes" />
+    </Start>
+    <ChildContent>
+        <RadzenTextBox @bind-Value="@Model.Description" />
+    </ChildContent>
 </RadzenFormField>
 
 @code

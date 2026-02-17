@@ -41,43 +41,54 @@ else
             DataUsages = ResourceUsage.Get(resources, L);
             DataUsages.Add(await ResourceUsage.GetSnapshots(resources, L, adminService[clusterName]));
 
-            Details = [.. resources.Where(a => a.ResourceType is ClusterResourceType.Vm or ClusterResourceType.Node)
-                               .OrderBy(a => a.ResourceType)
-                               .ThenBy(a => a.Type)
-                               .GroupBy(a => new { a.Type, a.Status })
-                               .Select(a=> new Detail(FormatValue(a.Key.Type),
-                                                      FormatValue(a.Key.Status),
-                                                      a.Count()))];
+            var details = resources.Where(a => a.ResourceType is ClusterResourceType.Vm or ClusterResourceType.Node or ClusterResourceType.Storage)
+                                   .OrderBy(a => a.ResourceType)
+                                   .ThenBy(a => a.Type)
+                                   .GroupBy(a => new { a.Type, a.Status })
+                                   .Select(a => new
+                                   {
+                                       Type = a.Key.Type,
+                                       Status = a.Key.Status,
+                                       // Icon = PveAdminUIHelper.Icons.GetResourceType(a.Key.Type),
+                                       // Color = PveAdminUIHelper.GetResourcesColorStatus(a.Key.Status, false),
+                                       Count = a.Count()
+                                   })
+                                   .ToList();
 
             DialogService.Close();
 
             await DialogService.OpenAsync(L["Cluster {0}", clusterName], ds =>
-                @<RadzenStack Orientation="Orientation.Vertical">
-                <ResourceUsageGauge Data="@DataUsages" Class="rz-h-100" />
+                @<RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                        <div style="height:100px; overflow:hidden;">
+                            <ResourceUsageGauge Data="@DataUsages" class="rz-w-100 rz-h-100" />
+                        </div>
 
-                <RadzenTable AllowAlternatingRows="true">
-                    <RadzenTableHeader>
-                        <RadzenTableHeaderRow>
-                            <RadzenTableHeaderCell>@L["Type"]</RadzenTableHeaderCell>
-                            <RadzenTableHeaderCell>@L["Status"]</RadzenTableHeaderCell>
-                            <RadzenTableHeaderCell>@L["Count"]</RadzenTableHeaderCell>
-                        </RadzenTableHeaderRow>
-                    </RadzenTableHeader>
+                        <RadzenTable AllowAlternatingRows="true">
+                            <RadzenTableHeader>
+                                <RadzenTableHeaderRow>
+                                    <RadzenTableHeaderCell>@L["Type"]</RadzenTableHeaderCell>
+                                    <RadzenTableHeaderCell>@L["Status"]</RadzenTableHeaderCell>
+                                    <RadzenTableHeaderCell>@L["Count"]</RadzenTableHeaderCell>
+                                </RadzenTableHeaderRow>
+                            </RadzenTableHeader>
 
-                    <RadzenTableBody>
-                        @foreach (var item in Details)
-                        {
-                            <RadzenTableRow>
-                                <RadzenTableCell>@item.Type</RadzenTableCell>
-                                <RadzenTableCell>@item.Status</RadzenTableCell>
-                                <RadzenTableCell>@item.Count</RadzenTableCell>
-                            </RadzenTableRow>
-                        }
-                    </RadzenTableBody>
-                </RadzenTable>
-            </RadzenStack>);
-        });
+                            <RadzenTableBody>
+                                @foreach (var item in details)
+                                {
+                                    <RadzenTableRow>
+                                        <RadzenTableCell>
+                                            <IconStatusResource Type="@item.Type" Status="@item.Status" Locked="false" />
+                                        </RadzenTableCell>
 
-        await DialogService.BusyAsync(L["Collect info..."]);
-    }
+                                        <RadzenTableCell>@item.Type</RadzenTableCell>
+                                        <RadzenTableCell>@item.Count</RadzenTableCell>
+                                    </RadzenTableRow>
+                                }
+                            </RadzenTableBody>
+                        </RadzenTable>
+                    </RadzenStack>);
+                });
+
+            await DialogService.BusyAsync(L["Collect info..."]);
+        }
 }

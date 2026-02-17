@@ -14,12 +14,28 @@
                     <RadzenLabel Text="@Model.Id.ToString()" />
                 </RadzenStack> *@
 
-                <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
-                <SwitchField @bind-Value="@Model.VmStatus" Label="@L["Include RAM"]" Name="@nameof(Model.VmStatus)" />
-                <SwitchField @bind-Value="@Model.OnlyRuns" Label="@L["While VM/CT Running"]"
-                             Name="@nameof(Model.OnlyRuns)" />
+                <SwitchField @bind-Value="@Model.Enabled"
+                             Label="@L["Enabled"]"
+                             Name="@nameof(Model.Enabled)"
+                             IconOn="play_circle"
+                             IconOff="pause_circle" />
+
+                <SwitchField @bind-Value="@Model.VmStatus"
+                             Label="@L["Include RAM"]"
+                             Name="@nameof(Model.VmStatus)"
+                             IconOn="memory"
+                             IconOff="memory" />
+
+                <SwitchField @bind-Value="@Model.OnlyRuns"
+                             Label="@L["While VM/CT Running"]"
+                             Name="@nameof(Model.OnlyRuns)"
+                             IconOn="play_circle"
+                             IconOff="stop_circle" />
 
                 <RadzenFormField Text="@L["Label"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="label" />
+                    </Start>
                     <ChildContent>
                         <RadzenTextBox Name="@nameof(Model.Label)" @bind-Value="@Model.Label" />
                     </ChildContent>
@@ -29,6 +45,9 @@
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["Retention"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="history" />
+                    </Start>
                     <ChildContent>
                         <RadzenNumeric Name="@nameof(Model.Keep)" @bind-Value="@Model.Keep" />
                     </ChildContent>
@@ -38,6 +57,9 @@
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="notes" />
+                    </Start>
                     <ChildContent>
                         <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
                     </ChildContent>
@@ -49,6 +71,9 @@
                 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
                 <RadzenFormField Text="@L["Vm Ids"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="checklist" />
+                    </Start>
                     <ChildContent>
                         <RadzenDropDown @bind-Value="@Model.VmIdsList" Data="VmIds" Name="@nameof(Model.VmIdsList)"
                                         Multiple="true" AllowClear="true" AllowFiltering="true" MaxSelectedLabels="99"

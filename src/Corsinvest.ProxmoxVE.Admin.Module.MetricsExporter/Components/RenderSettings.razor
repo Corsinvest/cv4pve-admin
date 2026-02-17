@@ -8,7 +8,11 @@
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="@L["Prometheus"]" Icon="monitoring">
-            <SwitchField @bind-Value="@Model.Prometheus.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Prometheus.Enabled)" />
+            <SwitchField @bind-Value="@Model.Prometheus.Enabled"
+                         Label="@L["Enabled"]"
+                         Name="@nameof(Model.Prometheus.Enabled)"
+                         IconOn="play_circle"
+                         IconOff="pause_circle" />
 
             <RadzenFormField Text="@L["Prefix"]" AllowFloatingLabel="false" class="rz-w-100">
                 <ChildContent>

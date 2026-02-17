@@ -8,6 +8,9 @@
     <RadzenRow>
         <RadzenColumn Size="6">
             <RadzenFormField Text="@L["Time frame"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start>
+                    <RadzenIcon Icon="schedule" />
+                </Start>
                 <ChildContent>
                     <RadzenDropDown TValue="RrdDataTimeFrame"
                                     Name="@nameof(RrdDataTimeFrame)"
@@ -33,6 +36,9 @@
 
         <RadzenColumn Size="6">
             <RadzenFormField Text="@L["Consolidation data"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start>
+                    <RadzenIcon Icon="functions" />
+                </Start>
                 <ChildContent>
                     <RadzenDropDown TValue="RrdDataConsolidation"
                                     Name="@nameof(RrdDataConsolidation)"

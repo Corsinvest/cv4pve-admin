@@ -74,6 +74,13 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
 
             navigationManager.NavigateTo(new Uri(navigationManager.Uri).LocalPath, forceLoad: true);
         }
+        else
+        {
+            await adminService[item.Name].CachedData.ClearCacheAsync();
+            await settingsService.ClearCacheAsync();
+            ClustersSettings = settingsService.GetClustersSettings();
+            await DataGridRef.Reload();
+        }
     }
 
     private async Task<bool> OnSubmitingDialog(object model, bool isNew)

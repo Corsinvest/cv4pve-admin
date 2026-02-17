@@ -18,7 +18,11 @@
              DescriptionAsLink="true">
 
     <TemplateToolbar>
-        <SwitchField Label="@L["Show OS Info"]" @bind-Value="@ShowOsInfo" @bind-Value:after="ShowOsInfoAfter" />
+        <SwitchField Label="@L["Show OS Info"]"
+                     @bind-Value="@ShowOsInfo"
+                     @bind-Value:after="ShowOsInfoAfter"
+                     IconOn="computer"
+                     IconOff="computer" />
     </TemplateToolbar>
 
     <Template>

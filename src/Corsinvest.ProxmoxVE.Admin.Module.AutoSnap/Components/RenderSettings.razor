@@ -5,7 +5,11 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
-<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" k Name="@nameof(Model.Enabled)" />
+<SwitchField @bind-Value="@Model.Enabled"
+             Label="@L["Enabled"]"
+             Name="@nameof(Model.Enabled)"
+             IconOn="play_circle"
+             IconOff="pause_circle" />
 
 <RadzenFormField Text="@L["Search Mode"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>
@@ -27,6 +31,9 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Timestamp Format"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="schedule" />
+    </Start>
     <ChildContent>
         <RadzenTextBox Name="@nameof(Model.TimestampFormat)" @bind-Value="@Model.TimestampFormat" Placeholder="yyMMddHHmmss" />
     </ChildContent>
@@ -61,7 +68,9 @@
 
 <SwitchField @bind-Value="@Model.OnRemoveJobRemoveSnapshots"
              Label="@L["On remove job remove snapshots in Proxmox VE"]"
-             Name="@nameof(Model.OnRemoveJobRemoveSnapshots)" />
+             Name="@nameof(Model.OnRemoveJobRemoveSnapshots)"
+             IconOn="delete_sweep"
+             IconOff="delete_sweep" />
 
 <RadzenFormField Text="@L["Notify"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>

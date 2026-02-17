@@ -5,8 +5,16 @@
 @inherits AdminComponentBase
 @implements ISettingsParameter<Settings>
 
-<SwitchField @bind-Value="@Settings.UseProgressBarPercentage" Label="@L["Use ProgressBar for percentage value"]" Name="@nameof(Settings.UseProgressBarPercentage)" />
-<SwitchField @bind-Value="@Settings.DescriptionAsLink" Label="@L["Description as link"]" Name="@nameof(Settings.DescriptionAsLink)" />
+<SwitchField @bind-Value="@Settings.UseProgressBarPercentage"
+             Label="@L["Use ProgressBar for percentage value"]"
+             Name="@nameof(Settings.UseProgressBarPercentage)"
+             IconOn="percent"
+             IconOff="percent" />
+
+<SwitchField @bind-Value="@Settings.DescriptionAsLink"
+             Label="@L["Description as link"]"
+             Name="@nameof(Settings.DescriptionAsLink)"
+             IconOn="link" IconOff="link_off" />
 
 <RadzenFormField Text="@L["Property Icon Status"]" AllowFloatingLabel="false">
     <ChildContent>

@@ -11,48 +11,68 @@
         {
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenFormField Text="@L["From"]">
-                    <RadzenDatePicker @bind-Value="Start"
-                                      @bind-Value:after="LoadSourcesAsync"
-                                      ShowTime="false"
-                                      AllowClear="true"
-                                      Min="MinDate.Value.AddDays(-1)"
-                                      Max="MaxDate.Value"
-                                      ShowCalendarWeek="true"
-                                      Disabled="MinDate is null"
-                                      DateFormat="d" />
+                    <Start>
+                        <RadzenIcon Icon="calendar_today" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDatePicker @bind-Value="Start"
+                                          @bind-Value:after="LoadSourcesAsync"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          Min="MinDate.Value.AddDays(-1)"
+                                          Max="MaxDate.Value"
+                                          ShowCalendarWeek="true"
+                                          Disabled="MinDate is null"
+                                          DateFormat="d" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["To"]">
-                    <RadzenDatePicker @bind-Value="End"
-                                      @bind-Value:after="LoadSourcesAsync"
-                                      ShowTime="false"
-                                      AllowClear="true"
-                                      Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
-                                      Max="MaxDate.Value.AddDays(1)"
-                                      ShowCalendarWeek="true"
-                                      Disabled="Start is null"
-                                      DateFormat="d" />
+                    <Start>
+                        <RadzenIcon Icon="event" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDatePicker @bind-Value="End"
+                                          @bind-Value:after="LoadSourcesAsync"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
+                                          Max="MaxDate.Value.AddDays(1)"
+                                          ShowCalendarWeek="true"
+                                          Disabled="Start is null"
+                                          DateFormat="d" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["Source"]">
-                    <RadzenDropDown @bind-Value="@SelectedSource"
-                                    @bind-Value:after="LoadVmIdsAsync"
-                                    Data="@Sources"
-                                    AllowClear="true"
-                                    AllowFiltering="true"
-                                    Disabled="!End.HasValue" />
+                    <Start>
+                        <RadzenIcon Icon="source" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDropDown @bind-Value="@SelectedSource"
+                                        @bind-Value:after="LoadVmIdsAsync"
+                                        Data="@Sources"
+                                        AllowClear="true"
+                                        AllowFiltering="true"
+                                        Disabled="!End.HasValue" />
+                    </ChildContent>
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["VM / CT"]">
-                    <RadzenDropDown @bind-Value="@SelectedVmIds"
-                                    @bind-Value:after="LoadDataAsync"
-                                    Data="@VmIds"
-                                    Multiple="true"
-                                    AllowClear="true"
-                                    AllowFiltering="true"
-                                    MaxSelectedLabels="99"
-                                    Chips="true"
-                                    Disabled="SelectedSource == null || !SelectedSource.Any()" />
+                    <Start>
+                        <RadzenIcon Icon="computer" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenDropDown @bind-Value="@SelectedVmIds"
+                                        @bind-Value:after="LoadDataAsync"
+                                        Data="@VmIds"
+                                        Multiple="true"
+                                        AllowClear="true"
+                                        AllowFiltering="true"
+                                        MaxSelectedLabels="99"
+                                        Chips="true"
+                                        Disabled="SelectedSource == null || !SelectedSource.Any()" />
+                    </ChildContent>
                 </RadzenFormField>
             </RadzenStack>
 

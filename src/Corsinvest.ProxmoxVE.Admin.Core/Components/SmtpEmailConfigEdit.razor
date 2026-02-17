@@ -7,6 +7,9 @@
 <RadzenRow>
     <RadzenColumn Size="8">
         <RadzenFormField Text="@L["Host"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="dns" />
+            </Start>
             <ChildContent>
                 <RadzenTextBox Name="@($"{Prefix}.Host")" @bind-Value="@Config.Host" class="rz-w-100" />
             </ChildContent>
@@ -17,6 +20,9 @@
     </RadzenColumn>
     <RadzenColumn Size="4">
         <RadzenFormField Text="@L["Port"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="electrical_services" />
+            </Start>
             <ChildContent>
                 <RadzenNumeric TValue="int" Name="@($"{Prefix}.Port")" @bind-Value="@Config.Port" class="rz-w-100" />
             </ChildContent>
@@ -30,6 +36,9 @@
 <RadzenRow>
     <RadzenColumn Size="12">
         <RadzenFormField Text="@L["SSL/TLS Options"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="security" />
+            </Start>
             <ChildContent>
                 <RadzenDropDown TValue="MailKit.Security.SecureSocketOptions"
                                 Name="@($"{Prefix}.SecureSocketOption")"
@@ -83,6 +92,9 @@
 <RadzenRow>
     <RadzenColumn Size="6">
         <RadzenFormField Text="@L["From Address"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="email" />
+            </Start>
             <ChildContent>
                 <RadzenTextBox Name="@($"{Prefix}.FromAddress")" @bind-Value="@Config.FromAddress" class="rz-w-100" />
             </ChildContent>
@@ -93,6 +105,9 @@
     </RadzenColumn>
     <RadzenColumn Size="6">
         <RadzenFormField Text="@L["From Display Name"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="label" />
+            </Start>
             <ChildContent>
                 <RadzenTextBox Name="@($"{Prefix}.FromDisplayName")" @bind-Value="@Config.FromDisplayName" class="rz-w-100" />
             </ChildContent>
