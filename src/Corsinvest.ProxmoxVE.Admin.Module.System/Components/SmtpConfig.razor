@@ -16,23 +16,24 @@
             <RadzenStack Gap="1rem">
                 <RadzenText TextStyle="TextStyle.H6">@L["Test SMTP Configuration"]</RadzenText>
 
-                <RadzenFormField Text="@L["Test Email Address"]" AllowFloatingLabel="false" class="rz-w-100">
-                    <Start>
-                        <RadzenIcon Icon="email" />
-                    </Start>
-                    <ChildContent>
-                        <RadzenTextBox @bind-Value="TestEmailAddress"
-                                       Placeholder="user@example.com"
-                                       class="rz-w-100" />
-                    </ChildContent>
-                </RadzenFormField>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.End">
+                    <RadzenFormField Text="@L["Test Email Address"]" AllowFloatingLabel="false" style="flex: 1">
+                        <Start>
+                            <RadzenIcon Icon="email" />
+                        </Start>
+                        <ChildContent>
+                            <RadzenTextBox @bind-Value="TestEmailAddress"
+                                           Placeholder="user@example.com"
+                                           class="rz-w-100" />
+                        </ChildContent>
+                    </RadzenFormField>
 
-                <RadzenButton Icon="send"
-                              Text="@L["Send Test Email"]"
-                              ButtonStyle="ButtonStyle.Success"
-                              Click="SendTestEmailAsync"
-                              Disabled="IsSendingTest"
-                              class="rz-w-100" />
+                    <RadzenButton Icon="send"
+                                  Text="@L["Send"]"
+                                  ButtonStyle="ButtonStyle.Success"
+                                  Click="SendTestEmailAsync"
+                                  Disabled="IsSendingTest" />
+                </RadzenStack>
             </RadzenStack>
         </RadzenCard>
     </RadzenColumn>
