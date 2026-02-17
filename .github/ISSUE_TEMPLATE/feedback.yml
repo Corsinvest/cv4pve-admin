@@ -1,5 +1,5 @@
 name: 💬 Feedback
-description: Share your feedback, suggestions, or feature requests
+description: Share your feedback or suggestions about cv4pve-admin
 title: "[Feedback]: "
 labels: ["feedback"]
 body:
@@ -34,7 +34,6 @@ body:
       label: Feedback Type
       description: What type of feedback is this?
       options:
-        - Feature Request
         - Improvement Suggestion
         - User Experience
         - General Feedback
