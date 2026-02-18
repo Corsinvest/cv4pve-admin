@@ -24,7 +24,7 @@ public partial class HelpMenu(ISettingsService settingsService,
     protected override async Task OnInitializedAsync()
     {
         AppSettings = settingsService.GetAppSettings();
-        NewRelease = await releaseService.NewReleaseIsAvailableAsync(false);
+        NewRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: BuildInfo.IsTesting);
         await BuildUrlsAsync();
     }
 
