@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-var (_, extraSettingsWarning) = builder.Configuration.AddJsonFileSafe("appsettings.extra.json");
+var (_, extraSettingsWarning) = builder.Configuration.AddJsonFileSafe(Path.Combine(AppContext.BaseDirectory, "config", "appsettings.extra.json"));
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceAspireDefaults();
