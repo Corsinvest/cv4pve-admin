@@ -6,7 +6,7 @@ using Radzen.Blazor.Rendering;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 
-public partial class CronEditor
+public partial class CronEditor(TooltipService TooltipService)
 {
     [Parameter] public string Expression { get; set; } = default!;
     [Parameter] public EventCallback<string> ExpressionChanged { get; set; } = default!;
@@ -21,11 +21,20 @@ public partial class CronEditor
 
     private string Id { get; set; } = UniqueID!;
     private Popup PopupRef { get; set; } = default!;
-    private RadzenButton ButtonRef { get; set; } = default!;
+    private bool PopupIsVisible { get; set; } 
+    private RadzenTextBox TextBoxRef { get; set; } = default!;
 
     protected override void OnInitialized()
     {
         if (string.IsNullOrEmpty(Label)) { Label = L[" Cron Schedule"]; }
+    }
+
+    private async Task ToggleAsync()
+    {
+        if (AllowEditor)
+        {
+            await PopupRef.ToggleAsync(TextBoxRef.Element);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
