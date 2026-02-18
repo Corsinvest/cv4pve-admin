@@ -9,42 +9,28 @@
 <RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
     <RadzenFormField Text="@Label" AllowFloatingLabel="false" class="rz-w-100">
         <Start>
-            @if (AllowEditor)
-            {
-                <RadzenButton @ref="ButtonRef"
-                              Icon="expand_more"
-                              Click="@(args => PopupRef.ToggleAsync(ButtonRef.Element))"
-                              Size="ButtonSize.ExtraSmall"
-                              Variant="Variant.Text" />
-            }
+            <RadzenIcon Icon="schedule" />
         </Start>
         <ChildContent>
-            <RadzenTextBox Name="@Id"
+            <RadzenTextBox @ref="TextBoxRef"
+                           Name="@Id"
                            Value="@Expression"
-                           ValueChanged="@(async (string value) => { Expression = value; await UpdateAsync(); })" />
+                           ValueChanged="@(async (string value) => { Expression = value; await UpdateAsync(); })"
+                           @onclick="@ToggleAsync"
+                           MouseEnter="ShowTooltip" />
         </ChildContent>
-        <End>
-            <InfoIcon>
-                @L["Descriptor:"] - @Descriptor
-                <br />
-                @L["Next Occurrence"] - @NextOccurrence
-            </InfoIcon>
-        </End>
         <Helper>
             <RadzenCustomValidator Component="@Id" Validator="@(() => IsValid)" Text="@L["Cron syntax not valid!"]" />
         </Helper>
     </RadzenFormField>
 </RadzenStack>
 
-<Popup @ref="PopupRef" Lazy="true" Style="display: none;
-        position: absolute;
-        overflow: hidden;
-        padding: 15px;
-        border: var(--rz-panel-border);
-        background-color: var(--rz-panel-background-color);
-        box-shadow: var(--rz-panel-shadow);
-        border-radius: var(--rz-border-radius)">
-
+<Popup @ref="PopupRef"
+       Lazy="true"
+       Style="display: none; position: absolute; width: min-content;" class="rz-panel"
+       AutoFocusFirstElement="false"
+       Open="@(() => PopupIsVisible = true)"
+       Close="@(() => PopupIsVisible = false)">
     <SchedulerEditor CronExpression="@Expression"
                      CronExpressionChanged="@(async (string value) => { Expression = value; await UpdateAsync(); })" />
 
@@ -53,3 +39,17 @@
     <RadzenText TextStyle="TextStyle.Subtitle2"><strong>@L["Schedule:"]</strong> @Descriptor </RadzenText>
     <RadzenText TextStyle="TextStyle.Subtitle2"><strong>@L["Next occurrence:"]</strong> @NextOccurrence</RadzenText>
 </Popup>
+
+@code {
+    private void ShowTooltip(ElementReference elementReference)
+    {
+        if (PopupIsVisible) { return; }
+
+        TooltipService.Open(elementReference, _ =>
+            @<div>
+                    <div><strong>@L["Schedule:"]</strong> @Descriptor</div>
+                    <div><strong>@L["Next occurrence:"]</strong> @NextOccurrence</div>
+                </div>);
+
+            }
+}

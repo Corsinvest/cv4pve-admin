@@ -10,8 +10,13 @@
 {
     @if (JobSchedule.CronExpressionIsValid)
     {
-        <div>
-            <RadzenText Text="@($"{L["Next Execution"]} : {JobSchedule.CronNextExecution:g} - {JobSchedule.CronExpressionDescriptor}")" TextStyle="TextStyle.Caption" />
+        <div style="align-content: end">
+            <InfoIcon>
+                @* <RadzenText TextStyle="TextStyle.Caption"> *@
+                @L["Next Execution"] : @($"{JobSchedule.CronNextExecution:g}") <br />
+                @JobSchedule.CronExpressionDescriptor
+                @* </RadzenText> *@
+            </InfoIcon>
         </div>
     }
 }
