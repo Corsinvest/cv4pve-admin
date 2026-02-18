@@ -9,7 +9,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Dashboard.Models;
 public class Widget : IId
 {
     [JsonIgnore] public int Id { get; set; }
-    [Required] public string Title { get; set; } = default!;
+    [Required(AllowEmptyStrings = true)] public string Title { get; set; } = string.Empty;
     [JsonIgnore, Required] public Dashboard Dashboard { get; set; } = default!;
     public string? TitleCss { get; set; }
     public string? BodyCss { get; set; }

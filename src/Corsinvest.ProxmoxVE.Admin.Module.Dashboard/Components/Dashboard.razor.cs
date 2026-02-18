@@ -410,6 +410,8 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
             await AddWidgetAsync(moduleWidget);
             var newWidget = CurrentDashboard.Widgets.Last();
             newWidget.Title = $"Copy of {dashItem.Widget.Title}";
+            newWidget.TitleCss = dashItem.Widget.TitleCss;
+            newWidget.BodyCss = dashItem.Widget.BodyCss;
             newWidget.SettingsJson = dashItem.Widget.SettingsJson;
 
             WidgetItems[^1] = CreateWidgetItem(newWidget);
