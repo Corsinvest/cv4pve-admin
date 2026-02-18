@@ -31,6 +31,7 @@
     <PackageReference Include="System.Linq.Dynamic.Core" />
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="MailKit" />
+    <PackageReference Include="Wangkanai.Detection" />
   </ItemGroup>
 
   <ItemGroup>

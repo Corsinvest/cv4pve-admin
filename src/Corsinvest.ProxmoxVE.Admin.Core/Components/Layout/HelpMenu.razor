@@ -35,6 +35,11 @@
 
         <RadzenProfileMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Value="@("shortcuts")" />
         <RadzenProfileMenuItem Text="@L["Release notes"]" Icon="celebration" Value="@("release-notes")" />
-        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@($"https://github.com/Corsinvest/cv4pve-admin/issues/new?template=feedback.yml&edition={BuildInfo.Edition}&version={BuildInfo.Version}")" Target="_blank" />
+
+        <hr class="solid">
+
+        <RadzenProfileMenuItem Text="@L["Report a Bug"]" Icon="bug_report" Path="@BugReportUrl" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Request a Feature"]" Icon="auto_awesome" Path="@FeatureRequestUrl" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@FeedbackUrl" Target="_blank" />
     </ChildContent>
 </RadzenProfileMenu>
