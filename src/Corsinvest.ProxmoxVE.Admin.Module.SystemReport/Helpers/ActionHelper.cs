@@ -35,8 +35,6 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
             var reportGenerator = new ReportGenerator(client, clusterClient, job, logger);
 
-            var aa = await reportGenerator.GenerateAsync("k:");
-
             var _disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
 
             using var workbook = new XLWorkbook();
@@ -361,7 +359,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                .Select(a => new
                                {
                                    a.Content,
-                                   a.ContentDescription,
+                                   //a.ContentDescription,
                                    a.CreationDate,
                                    a.Encrypted,
                                    a.FileName,
