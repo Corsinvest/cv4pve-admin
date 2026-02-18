@@ -6,19 +6,17 @@
 
 <RadzenProfileMenu ShowIcon="false" Click="OnMenuClick">
     <Template>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+        <div style="position: relative; display: inline-flex;">
             <RadzenIcon Icon="help_outline" Style="font-size: 1.5rem;" />
-        </RadzenStack>
-    </Template>
-    <ChildContent>
-        <RadzenStack Style="width:300px; padding: 10px;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
-            <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;">@L["Your"] @AppSettings.AppName @L["version"] 🚀</RadzenText>
             @if (NewRelease != null)
             {
-                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@L["Update ASAP"]" IsPill="true" />
+                <span style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #ff1744; border-radius: 50%;"></span>
             }
-        </RadzenStack>
-        <RadzenStack Style="width:300px; padding: 0 10px 10px 10px;" Orientation="Orientation.Horizontal">
+        </div>
+    </Template>
+    <ChildContent>
+        <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;padding: 0 10px 0 10px;">@L["Your"] @AppSettings.AppName @L["version"] 🚀</RadzenText>
+        <RadzenStack Style="padding: 0 0 5px 10px;" Orientation="Orientation.Horizontal">
             <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">
                 @BuildInfo.Version
 
@@ -26,15 +24,23 @@
             </RadzenText>
         </RadzenStack>
 
+        @if (NewRelease != null)
+        {
+            <RadzenLink Style="padding: 0 0 0 10px;" Path="@NewRelease.Url" Target="_blank">
+                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@L["Update available {0}", NewRelease.Version]" />
+                <RadzenIcon Icon="open_in_new" IconColor="@Colors.Primary" Style="font-size: 0.9rem; margin-left: 2px; vertical-align: middle;" />
+            </RadzenLink>
+        }
+
         <hr class="solid">
 
-        <RadzenProfileMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
         <RadzenProfileMenuItem Text="@L["Documentation"]" Icon="menu_book" Path="https://corsinvest.github.io/cv4pve-admin/" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Release notes"]" Icon="celebration" Value="@("release-notes")" />
+        <RadzenProfileMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
 
         <hr class="solid">
 
         <RadzenProfileMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Value="@("shortcuts")" />
-        <RadzenProfileMenuItem Text="@L["Release notes"]" Icon="celebration" Value="@("release-notes")" />
 
         <hr class="solid">
 

@@ -21,8 +21,8 @@ public partial class SystemInfo(IReleaseService releaseService)
         var process = Process.GetCurrentProcess();
         var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 
-        var latestRelease = await releaseService.NewReleaseIsAvailableAsync();
-        var isInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        var latestRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: Core.BuildInfo.IsTesting);
+        var isInContainer = ApplicationHelper.IsInContainer;
 
         // Get network info
         var hostName = Dns.GetHostName();

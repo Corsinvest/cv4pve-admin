@@ -55,7 +55,7 @@ public class ReleaseCheckHostedService(ILogger<ReleaseCheckHostedService> logger
         {
             logger.LogDebug("Checking for new releases");
 
-            var newRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: false, force: false, cancellationToken);
+            var newRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: Core.BuildInfo.IsTesting, force: false, cancellationToken);
 
             if (newRelease != null)
             {

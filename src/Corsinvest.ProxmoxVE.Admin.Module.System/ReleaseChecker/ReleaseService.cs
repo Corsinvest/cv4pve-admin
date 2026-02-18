@@ -28,7 +28,9 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
             ? await DockerHubFetcher.GetReleasesAsync(httpClientFactory, logger, cancellationToken)
             : await GitHubFetcher.GetReleasesAsync(httpClientFactory, logger, cancellationToken);
 
-    public async Task<ReleaseInfo?> NewReleaseIsAvailableAsync(bool includePrerelease = false, bool force = false, CancellationToken cancellationToken = default)
+    public async Task<ReleaseInfo?> NewReleaseIsAvailableAsync(bool includePrerelease = false,
+                                                               bool force = false,
+                                                               CancellationToken cancellationToken = default)
     {
         var cacheKey = $"{CacheKey}:{includePrerelease}";
 
