@@ -75,7 +75,7 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
 
     private async Task RemoveAllDataAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Remove all data"], true))
+        if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete all data"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.JobResults.DeleteAsync(ClusterName);
