@@ -2,31 +2,30 @@
 
 #nullable disable
 
-namespace Corsinvest.ProxmoxVE.Admin.Module.Dashboard.Migrations
+namespace Corsinvest.ProxmoxVE.Admin.Module.Dashboard.Migrations;
+
+/// <inheritdoc />
+public partial class RemoveWidgetModuleType : Migration
 {
     /// <inheritdoc />
-    public partial class RemoveWidgetModuleType : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "ModuleType",
-                schema: "dashboard",
-                table: "Widgets");
-        }
+        migrationBuilder.DropColumn(
+            name: "ModuleType",
+            schema: "dashboard",
+            table: "Widgets");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "ModuleType",
-                schema: "dashboard",
-                table: "Widgets",
-                type: "text",
-                nullable: false,
-                defaultValue: "",
-                collation: "case_insensitive");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AddColumn<string>(
+            name: "ModuleType",
+            schema: "dashboard",
+            table: "Widgets",
+            type: "text",
+            nullable: false,
+            defaultValue: "",
+            collation: "case_insensitive");
     }
 }

@@ -216,7 +216,7 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
             = _ => Task.FromResult(new DataSourceContext(values) { ClusterName = clusterName });
 
         var result = await dialogService.OpenAsync<ParameterDialog>(command.Label,
-                                                                    new Dictionary<string, object>
+                                                                    new Dictionary<string, object?>
                                                                     {
                                                                         { nameof(ParameterDialog.Icon), command.Icon },
                                                                         { nameof(ParameterDialog.Title), command.Label },

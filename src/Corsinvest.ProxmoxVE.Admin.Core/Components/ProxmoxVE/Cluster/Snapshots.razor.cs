@@ -9,8 +9,6 @@ public partial class Snapshots(IAdminService adminService) : IClusterName
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
 
     private bool IsLoading { get; set; }
-    private bool AllowCalculateSnapshotSize { get; set; }
-
     private IEnumerable<VmDiskInfo> _disks = [];
 
     private sealed record Data(string Type,

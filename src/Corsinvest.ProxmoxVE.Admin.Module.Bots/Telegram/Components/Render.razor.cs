@@ -8,8 +8,7 @@ using Radzen;
 namespace Corsinvest.ProxmoxVE.Admin.Module.Bots.Telegram.Components;
 
 public partial class Render(IServiceScopeFactory serviceScopeFactory,
-                            IBrowserService browserService,
-                            DialogService dialogService) : IClusterName, IDisposable
+                            IBrowserService browserService) : IClusterName, IDisposable
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
