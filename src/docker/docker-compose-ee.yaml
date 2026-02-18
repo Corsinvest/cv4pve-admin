@@ -46,7 +46,7 @@ services:
     command: >
       sh -c "
         mkdir -p /app/data /app/config &&
-        touch /app/config/appsettings.extra.json &&
+        [ -f /app/config/appsettings.extra.json ] || echo '{}' > /app/config/appsettings.extra.json &&
         chown -R 1654:1654 /app/data /app/config
       "
     volumes:
