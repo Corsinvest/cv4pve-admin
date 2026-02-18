@@ -26,7 +26,6 @@ public partial class Scans(IAdminService adminService,
     private IList<ClusterResourceUpdateScanInfo> SelectedItems { get; set; } = [];
     private Settings Settings { get; set; } = new();
     private bool IsLoading { get; set; }
-    private bool IsUpgrade { get; set; }
     private bool InDownload { get; set; }
 
     protected override async Task OnInitializedAsync()
