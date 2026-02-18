@@ -32,7 +32,6 @@ services:
     command: >
       sh -c "
         mkdir -p /app/data /app/config &&
-        [ -f /app/config/appsettings.extra.json ] || echo '{}' > /app/config/appsettings.extra.json &&
         chown -R 1654:1654 /app/data /app/config
       "
     volumes:
@@ -55,7 +54,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${DATA_DIR}/cv4pve-admin/data:/app/data
-      - ${DATA_DIR}/cv4pve-admin/config/appsettings.extra.json:/app/appsettings.extra.json:ro
+      - ${DATA_DIR}/cv4pve-admin/config:/app/config
     networks:
       - appnet
       - publicnet

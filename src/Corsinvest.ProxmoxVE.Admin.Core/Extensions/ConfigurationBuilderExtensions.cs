@@ -24,6 +24,19 @@ public static class ConfigurationBuilderExtensions
                 return (builder, warning);
             }
         }
+        else
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                File.WriteAllText(path, "{}");
+                Console.WriteLine($"INFO: Created '{path}' with empty configuration.");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"WARNING: Could not create '{path}': {ex.Message}");
+            }
+        }
 
         return (builder.AddJsonFile(path, optional: true, reloadOnChange: reloadOnChange), null);
     }

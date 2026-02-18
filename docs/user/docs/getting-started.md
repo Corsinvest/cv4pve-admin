@@ -38,16 +38,6 @@ The installer will ask which edition (CE or EE) and which version to install. Th
     irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
     ```
 
-    !!! info "Windows note"
-        The installer automatically creates `appsettings.extra.json` as a file before starting Docker.
-        This is required because Docker Desktop on Windows creates it as a directory if it doesn't already exist.
-
-        If you installed **manually** (without the installer), run this once in the installation directory before `docker compose up -d`:
-        ```powershell
-        $dataDir = (Get-Content .env | Where-Object { $_ -match '^DATA_DIR=' }) -replace '^DATA_DIR=', ''
-        New-Item -ItemType Directory -Force -Path "$dataDir\cv4pve-admin\config" | Out-Null
-        New-Item -ItemType File -Force -Path "$dataDir\cv4pve-admin\config\appsettings.extra.json" | Out-Null
-        ```
 
 !!! tip "Pre-release versions (RC, Beta, ...)"
     Pre-release versions such as `rc`, `beta`, or `alpha` (e.g. `2.0.0-rc1`) **do not require a subscription** — all EE features are unlocked for testing purposes.

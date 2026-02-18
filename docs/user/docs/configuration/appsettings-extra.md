@@ -3,7 +3,7 @@
 This document describes all configurable settings available in `appsettings.extra.json`.
 
 !!! info "Configuration File Location"
-    The `appsettings.extra.json` file is automatically loaded by cv4pve-admin if present in the application directory. This optional configuration file allows you to override default settings without modifying the main `appsettings.json` file.
+    The `appsettings.extra.json` file is automatically loaded by cv4pve-admin if present in the `config/` directory (mounted as `/app/config/` in Docker). This optional configuration file allows you to override default settings without modifying the main `appsettings.json` file. If the file does not exist, the application starts normally with default settings.
 
 ## Connection Strings
 
