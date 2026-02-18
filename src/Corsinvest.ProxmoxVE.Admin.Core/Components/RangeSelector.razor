@@ -1,0 +1,58 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+
+<div class="cv4pve-range-selector">
+    @* Labels badges above the body, positioned by JS *@
+    <div class="cv4pve-range-selector-labels">
+        <div class="cv4pve-range-selector-label-start"></div>
+        <div class="cv4pve-range-selector-label-end"></div>
+    </div>
+
+    @* Overlay container: wraps ChildContent with masked areas, full-height handles and the track bar *@
+    <div class="cv4pve-range-selector-body">
+        @if (ChildContent != null)
+        {
+            <div class="cv4pve-range-selector-content">
+                @ChildContent
+            </div>
+        }
+
+        @* Left/right dimmed overlay areas — width driven by CSS vars set by JS *@
+        <div class="cv4pve-range-selector-mask-left"></div>
+        <div class="cv4pve-range-selector-mask-right"></div>
+
+        @* Full-height handles positioned over the body *@
+        <div class="cv4pve-range-selector-handle-start" tabindex="0" aria-label="Start handle">
+            <div class="cv4pve-range-selector-grip-line"></div>
+            <div class="cv4pve-range-selector-grip-line"></div>
+            <div class="cv4pve-range-selector-grip-line"></div>
+        </div>
+        <div class="cv4pve-range-selector-handle-end" tabindex="0" aria-label="End handle">
+            <div class="cv4pve-range-selector-grip-line"></div>
+            <div class="cv4pve-range-selector-grip-line"></div>
+            <div class="cv4pve-range-selector-grip-line"></div>
+        </div>
+
+        @* Track bar sits at the bottom of the body *@
+        <div class="cv4pve-range-selector-track-wrapper">
+            <div id="@_id" class="cv4pve-range-selector-track">
+                <div class="cv4pve-range-selector-selection"></div>
+            </div>
+        </div>
+    </div>
+
+    @if (Ticks != null && Ticks.Any())
+    {
+        <div class="cv4pve-range-selector-ticks">
+            @foreach (var tick in Ticks)
+            {
+                <div class="cv4pve-range-selector-tick" style="@TickStyle(tick.Percent)">
+                    <div class="cv4pve-range-selector-tick-line"></div>
+                    <div class="cv4pve-range-selector-tick-label">@tick.Label</div>
+                </div>
+            }
+        </div>
+    }
+</div>
