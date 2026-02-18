@@ -17,37 +17,40 @@
                  data-cs="@item.ColSpan"
                  data-rs="@item.RowSpan">
 
-                <div class="cv4pve-widgetgrid-header" style="@item.TitleCss">
-                    @if (EditMode)
-                    {
-                        <RadzenIcon Icon="drag_indicator" Style="cursor: move; color: var(--rz-text-tertiary-color);" />
-                    }
-
-                    @if (HeaderTemplate != null)
-                    {
-                        @HeaderTemplate(item)
-                    }
-                    else
-                    {
-                        @if (!string.IsNullOrEmpty(item.Icon))
+                @if (EditMode || !string.IsNullOrEmpty(item.Title))
+                {
+                    <div class="cv4pve-widgetgrid-header" style="@item.TitleCss">
+                        @if (EditMode)
                         {
-                            <RadzenIcon Icon="@item.Icon" Style="margin: 0 0.5rem; color: var(--rz-primary);" />
+                            <RadzenIcon Icon="drag_indicator" Style="cursor: move; color: var(--rz-text-tertiary-color);" />
                         }
-                        <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-0" Style="flex: 1;">@item.Title</RadzenText>
-                    }
 
-                    @if (EditMode)
-                    {
-                        <span style="font-size: 0.75rem; color: var(--rz-text-tertiary-color); margin-right: 0.5rem;">
-                            @item.ColSpan×@item.RowSpan
-                        </span>
-                    }
+                        @if (HeaderTemplate != null)
+                        {
+                            @HeaderTemplate(item)
+                        }
+                        else
+                        {
+                            @if (!string.IsNullOrEmpty(item.Icon))
+                            {
+                                <RadzenIcon Icon="@item.Icon" Style="margin: 0 0.5rem; color: var(--rz-primary);" />
+                            }
+                            <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-0" Style="flex: 1;">@item.Title</RadzenText>
+                        }
 
-                    @if (EditMode && MenuTemplate != null)
-                    {
-                        @MenuTemplate(item)
-                    }
-                </div>
+                        @if (EditMode)
+                        {
+                            <span style="font-size: 0.75rem; color: var(--rz-text-tertiary-color); margin-right: 0.5rem;">
+                                @item.ColSpan×@item.RowSpan
+                            </span>
+                        }
+
+                        @if (EditMode && MenuTemplate != null)
+                        {
+                            @MenuTemplate(item)
+                        }
+                    </div>
+                }
 
                 <div class="cv4pve-widgetgrid-content" style="@item.BodyCss">
                     <ErrorBoundary>
