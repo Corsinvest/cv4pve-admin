@@ -1,6 +1,6 @@
-/**
- * CV4PVE Admin - Component Styles
- * Corsinvest Srl - https://corsinvest.it
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* ========================================
@@ -85,3 +85,158 @@
     border: 2px dashed var(--rz-primary-light) !important;
     border-radius: var(--rz-border-radius);
 }
+
+/* ========================================
+   RangeSelector - Dual-handle range slider
+   ======================================== */
+
+.cv4pve-range-selector {
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+
+.cv4pve-range-selector-body {
+    position: relative;
+    --rs-start: 0%;
+    --rs-end: 0%;
+}
+
+.cv4pve-range-selector-content {
+    position: relative;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cv4pve-range-selector-mask-left,
+.cv4pve-range-selector-mask-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cv4pve-range-selector-mask-left  { left: 0;   width: var(--rs-start); }
+.cv4pve-range-selector-mask-right { right: 0;  width: var(--rs-end);   }
+
+.cv4pve-range-selector-track-wrapper {
+    position: relative;
+    height: 6px;
+    margin: 8px 8px 8px;
+    z-index: 2;
+}
+
+/* Hide track bar when there is child content (overlay mode) */
+.cv4pve-range-selector-content ~ .cv4pve-range-selector-track-wrapper {
+    display: none;
+}
+
+.cv4pve-range-selector-track {
+    position: absolute;
+    inset: 0;
+    background: var(--rz-border-color);
+    border-radius: 3px;
+}
+
+.cv4pve-range-selector-selection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: var(--rz-primary);
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+/* Full-height handles anchored to the body */
+.cv4pve-range-selector-handle-start,
+.cv4pve-range-selector-handle-end {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 10px;
+    background: var(--rz-primary);
+    opacity: 0.85;
+    cursor: grab;
+    z-index: 3;
+    transition: opacity 0.15s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.cv4pve-range-selector-handle-start:hover,
+.cv4pve-range-selector-handle-end:hover {
+    opacity: 1;
+}
+
+.cv4pve-range-selector-handle-start:active,
+.cv4pve-range-selector-handle-end:active {
+    cursor: grabbing;
+    opacity: 1;
+}
+
+/* Vertical grip lines inside the handle */
+.cv4pve-range-selector-grip-line {
+    width: 1.5px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 1px;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+/* Label container above the body — labels positioned by JS via left% */
+.cv4pve-range-selector-labels {
+    position: relative;
+    height: 22px;
+}
+
+/* Value badge shown above the body, anchored at the handle position */
+.cv4pve-range-selector-label-start,
+.cv4pve-range-selector-label-end {
+    position: absolute;
+    bottom: 2px;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--rz-primary);
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    line-height: 16px;
+}
+
+.cv4pve-range-selector-ticks {
+    position: relative;
+    height: 16px;
+    margin: 0 8px;
+}
+
+.cv4pve-range-selector-tick {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cv4pve-range-selector-tick-line {
+    width: 1px;
+    height: 6px;
+    background: var(--rz-border-color);
+}
+
+.cv4pve-range-selector-tick-label {
+    font-size: 10px;
+    color: var(--rz-text-secondary-color);
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
