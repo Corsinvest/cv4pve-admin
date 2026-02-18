@@ -7,10 +7,7 @@ using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 
 public partial class ProfileMenu(ThemeService themeService,
-                                 ICurrentUserService currentUserService,
-#pragma warning disable CS9113 
-                                 CookieThemeService cookieThemeService) : IDisposable
-#pragma warning restore CS9113 
+                                 ICurrentUserService currentUserService) : IDisposable
 {
     [Parameter] public IEnumerable<ModuleLinkBase> Links { get; set; } = [];
 
@@ -37,6 +34,7 @@ public partial class ProfileMenu(ThemeService themeService,
         if (item.Value == "Theme")
         {
             themeService.SetTheme(ApplicationHelper.ThemeName + (!IsDark ? "-dark" : string.Empty));
+            themeService.SetWcag(true);
         }
     }
 

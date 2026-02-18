@@ -8,8 +8,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core;
 
 public static class BuildInfo
 {
-    private const int TestingExpirationMonths = 1;
-
+    public const int TestingExpirationMonths = 1;
     public static readonly string Version = string.Empty;
     public static readonly string PreRelease = string.Empty;
     public static readonly bool IsTesting;
