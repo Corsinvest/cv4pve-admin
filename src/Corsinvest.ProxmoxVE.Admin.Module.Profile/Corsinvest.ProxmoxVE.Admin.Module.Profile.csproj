@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
-    <PackageReference Include="Wangkanai.Detection" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
   </ItemGroup>
 </Project>

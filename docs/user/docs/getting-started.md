@@ -91,5 +91,6 @@ The installer also creates an `adminctl` script in the installation directory â€
 After installation, you can:
 
 - **[Configuration](configuration/index.md)** - Customize application settings, security, and logging
+- **[HTTPS with Reverse Proxy](https.md)** - Enable HTTPS in production
 - **[Modules](modules/index.md)** - Explore available modules and features
 - **[Troubleshooting](troubleshooting.md)** - Common issues and solutions
