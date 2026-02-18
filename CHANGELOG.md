@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.0.0-rc2] - 2026-02-18
+
+### Added
+
+- **WebHook notifier module** — send notifications to any HTTP endpoint on Proxmox VE events
+- **MarkdownEditor component** — Write/Preview tabs for markdown fields across the UI
+- **ResourceUsageGaugeStacked widget** — concentric arc gauges for CPU, memory and storage usage
+- **Help menu** — separate items for Report a Bug, Request a Feature and Provide Feedback, with bug report pre-filled with version, cluster, Proxmox VE version, browser and platform
+- **Help menu** — red dot badge on help icon and "Update available" notification when a new release is available
+- **Icons** added to form fields across the UI for better visual clarity
+- **HTTPS reverse proxy guide** in documentation
+
+### Changed
+
+- AutoSnap webhooks refactored to use ExtendedData for cleaner configuration
+- Dashboard reset logic improved, save icon added
+- Send test email button placed inline with the email field
+- Telegram bot info dialog replaced with link to documentation
+
+### Fixed
+
+- Installer interactive prompts fixed
+- `appsettings.extra.json` pre-created on Windows to prevent Docker creating it as a directory
+
 ## [2.0.0-rc1] - 2026-02-12
 
 ### Initial Release
@@ -34,17 +58,13 @@ Starting from this release, all notable changes will be tracked in this file.
 #### Modules (Enterprise Edition)
 
 - **Portal** — Self-service portal for VM management by end users
-- **DDR** — Disaster Recovery with automated failover and replication management
-- **DRS** — Dynamic Resource Scheduling for automatic VM balancing
 - **Workflow** — Visual workflow automation for Proxmox VE operations (powered by Elsa)
-- **AI** — Artificial Intelligence assistant for cluster management
 - **VM Performance** — Advanced VM performance analytics and trending
 - **Diagnostic Enterprise** — Extended diagnostics with enterprise checks
 - **Node Protect Enterprise** — Extended node protection with additional providers
 - **Notifier Enterprise** — Extended notification channels (Apprise, webhooks, etc.)
 - **AI Server Enterprise** — Extended MCP tools for enterprise operations
 - **System Enterprise** — Extended system management and configuration
-- **Updater Enterprise** — Enterprise update management with rollback support
 - **Profile Enterprise** — Extended user profile and SSO integration
 
 #### Core Features
