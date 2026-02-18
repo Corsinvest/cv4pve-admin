@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
     
     
       
@@ -1105,7 +1105,7 @@
 <p>This document describes all configurable settings available in <code>appsettings.extra.json</code>.</p>
 <div class="admonition info">
 <p class="admonition-title">Configuration File Location</p>
-<p>The <code>appsettings.extra.json</code> file is automatically loaded by cv4pve-admin if present in the application directory. This optional configuration file allows you to override default settings without modifying the main <code>appsettings.json</code> file.</p>
+<p>The <code>appsettings.extra.json</code> file is automatically loaded by cv4pve-admin if present in the <code>config/</code> directory (mounted as <code>/app/config/</code> in Docker). This optional configuration file allows you to override default settings without modifying the main <code>appsettings.json</code> file. If the file does not exist, the application starts normally with default settings.</p>
 </div>
 <h2 id="connection-strings">Connection Strings<a class="headerlink" href="#connection-strings" title="Permanent link">&para;</a></h2>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>

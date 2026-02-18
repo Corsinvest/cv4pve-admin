@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
     
     
       
@@ -1058,16 +1058,6 @@ There is currently no migration path from v1 to v2 — a fresh installation is r
 <div class="tabbed-block">
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">irm </span><span class="n">https</span><span class="p">://</span><span class="n">raw</span><span class="p">.</span><span class="n">githubusercontent</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">Corsinvest</span><span class="p">/</span><span class="n">cv4pve-admin</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="n">install</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">iex</span>
 </span></code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Windows note</p>
-<p>The installer automatically creates <code>appsettings.extra.json</code> as a file before starting Docker.
-This is required because Docker Desktop on Windows creates it as a directory if it doesn't already exist.</p>
-<p>If you installed <strong>manually</strong> (without the installer), run this once in the installation directory before <code>docker compose up -d</code>:
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">$dataDir</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="p">.</span><span class="n">env</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-match</span> <span class="s1">&#39;^DATA_DIR=&#39;</span> <span class="p">})</span> <span class="o">-replace</span> <span class="s1">&#39;^DATA_DIR=&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">&quot;$dataDir\cv4pve-admin\config&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">File</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">&quot;$dataDir\cv4pve-admin\config\appsettings.extra.json&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
-</span></code></pre></div></p>
-</div>
 </div>
 </div>
 </div>
@@ -1082,7 +1072,7 @@ Once you upgrade to a stable release, a valid subscription will be required to u
 </div>
 <h3 id="change-version-after-installation">Change version after installation<a class="headerlink" href="#change-version-after-installation" title="Permanent link">&para;</a></h3>
 <p>Edit <code>CV4PVE_ADMIN_TAG</code> in <code>.env</code> (e.g. <code>nano .env</code> or <code>notepad .env</code>), then restart:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </span></code></pre></div>
 <hr />
 <h2 id="first-time-setup">First Time Setup<a class="headerlink" href="#first-time-setup" title="Permanent link">&para;</a></h2>
