@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddJsonFile("appsettings.extra.json", optional: true, reloadOnChange: true);
+var (_, extraSettingsWarning) = builder.Configuration.AddJsonFileSafe("appsettings.extra.json");
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceAspireDefaults();
@@ -23,6 +23,7 @@ builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Con
 
 Log.Logger.Information("Start cv4pve-admin....");
 Log.Logger.Information("Version: {Version}", BuildInfo.Version);
+if (extraSettingsWarning != null) { Log.Logger.Warning(extraSettingsWarning); }
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
