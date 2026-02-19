@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-var (_, extraSettingsWarning) = builder.Configuration.AddJsonFileSafe(Path.Combine(AppContext.BaseDirectory, "config", "appsettings.extra.json"));
+var (_, extraSettingsWarning) = builder.Configuration.AddJsonFileSafe(Path.Combine(ApplicationHelper.ConfigPath, "appsettings.extra.json"));
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceAspireDefaults();
@@ -114,7 +114,7 @@ app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode()
    .AddAdditionalAssemblies([.. app.Services.GetRequiredService<IModuleService>().Assemblies]);
 
-app.UseStatusCodePagesWithRedirects("/NotFound");
+app.UseStatusCodePagesWithReExecute("/NotFound");
 
 await app.RunAdminCoreAsync(args);
 

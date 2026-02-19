@@ -4,7 +4,7 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [ValidateSet("build", "publish", "run")]
+    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets")]
     [string]$Command = "build",
 
     [Parameter(Mandatory=$false)]
@@ -14,7 +14,20 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$projectPath = "src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj"
+$projectPath  = "src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj"
+$assetsPath   = "src/Corsinvest.ProxmoxVE.Admin/wwwroot"
+$markerFile   = "$assetsPath/.radzen-version"
+$radzenAssets = @(
+    "css/fluent-base.css",
+    "css/fluent-dark-base.css",
+    "css/fluent-dark-wcag.css",
+    "css/fluent-wcag.css",
+    "fonts/MaterialSymbolsOutlined.woff2",
+    "fonts/MaterialSymbolsRounded.woff2",
+    "fonts/RobotoFlex.woff2",
+    "fonts/SourceSans3VF-Italic.ttf.woff2",
+    "fonts/SourceSans3VF-Upright.ttf.woff2"
+)
 
 # Get properties using MSBuild evaluation (handles Directory.Build.props inheritance automatically)
 $currentVersion = (dotnet msbuild $projectPath -getProperty:Version -nologo).Trim()
@@ -62,6 +75,61 @@ switch ($Command) {
 
         Write-Host "`n✓ Docker publish completed!" -ForegroundColor Green
         Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
+    }
+
+    "download-assets" {
+        $packagesProps = [xml](Get-Content "Directory.Packages.props")
+        $radzenVersion = ($packagesProps.Project.ItemGroup.PackageVersion | Where-Object { $_.Include -eq "Radzen.Blazor" }).Version
+        if (-not $radzenVersion) {
+            Write-Error "Could not find Radzen.Blazor version in Directory.Packages.props"
+            exit 1
+        }
+
+        if (Test-Path $markerFile) {
+            $installedVersion = (Get-Content $markerFile).Trim()
+            if ($installedVersion -eq $radzenVersion) {
+                Write-Host "Assets already at Radzen.Blazor v$radzenVersion, skipping download." -ForegroundColor DarkGray
+                break
+            }
+            Write-Host "Assets version mismatch (installed: $installedVersion, required: $radzenVersion), re-downloading..." -ForegroundColor Yellow
+        }
+
+        Write-Host "Downloading assets (Radzen.Blazor v$radzenVersion)..." -ForegroundColor Cyan
+
+        $baseUrl = "https://raw.githubusercontent.com/radzenhq/radzen-blazor/refs/tags/v$radzenVersion/RadzenBlazorDemos/wwwroot"
+
+        $success = $true
+        foreach ($asset in $radzenAssets) {
+            $dest = "$assetsPath/$asset"
+            $fileName = [System.IO.Path]::GetFileName($dest)
+            $url = "$baseUrl/$asset"
+            Write-Host "  Downloading $fileName..." -ForegroundColor Yellow
+            $dir = [System.IO.Path]::GetDirectoryName($dest)
+            if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+            try {
+                Invoke-WebRequest -Uri $url -OutFile $dest -ErrorAction Stop
+            }
+            catch {
+                Write-Warning "Failed to download $fileName. Error: $_"
+                $success = $false
+            }
+        }
+
+        if ($success) {
+            Set-Content -Path $markerFile -Value $radzenVersion -NoNewline
+            Write-Host "Assets downloaded successfully (v$radzenVersion)." -ForegroundColor Green
+        }
+    }
+
+    "clean-assets" {
+        Write-Host "Cleaning downloaded assets..." -ForegroundColor Cyan
+
+        @($markerFile) + ($radzenAssets | ForEach-Object { "$assetsPath/$_" }) | ForEach-Object {
+            if (Test-Path $_) {
+                Remove-Item $_
+                Write-Host "  Removed: $_" -ForegroundColor Yellow
+            }
+        }
     }
 
     "run" {
