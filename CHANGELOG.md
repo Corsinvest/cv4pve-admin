@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.0.0-rc4] - 2026-02-19
+
+### Fixed
+
+- CSS static assets returning 500 in Release/production builds due to `[Authorize]` on NotFound page
+- Docker build now uses `-c Release` flag to match production environment
+
 ## [2.0.0-rc3] - 2026-02-19
 
 ### Added
