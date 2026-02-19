@@ -47,7 +47,7 @@ switch ($Command) {
                 Write-Host "Building Docker image..." -ForegroundColor Cyan
                 Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
 
-                dotnet publish $projectPath /t:PublishContainer -v:detailed
+                dotnet publish $projectPath /t:PublishContainer -c Release -v:detailed
                 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed!" -ForegroundColor Red; exit $LASTEXITCODE }
 
                 Write-Host "`n✓ Docker build completed!" -ForegroundColor Green

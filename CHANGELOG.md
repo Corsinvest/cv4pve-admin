@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.0.0-rc4] - 2026-02-19
+
+### Fixed
+
+- CSS assets returning 500 error in production (Release build)
+- Docker build aligned to production configuration
+
 ## [2.0.0-rc3] - 2026-02-19
 
 ### Added
