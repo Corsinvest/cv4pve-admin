@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.0.0-rc3] - 2026-02-19
+
+### Added
+
+- **RangeSelector component** — date/time range selection with drag handles
+- **"Add cluster" button** — pulsing button in header when no clusters are configured
+- **Memo widget** — content editing moved to settings panel
+- **Subscription page** *(EE)* — alert shown when running in testing/pre-release mode
+
+### Changed
+
+- Dashboard widget title bar hidden when title is empty
+- Dashboard clone now copies widget size
+- ResourceUsageGaugeStacked default size adjusted
+
+### Fixed
+
+- Cluster deletion now refreshes header and navigation immediately
+- Various Docker startup and CSS asset fixes
+
 ## [2.0.0-rc2] - 2026-02-18
 
 ### Added
