@@ -103,6 +103,8 @@ else
 
 app.UseWebSockets();
 
+app.UseStatusCodePagesWithReExecute("/NotFound");
+
 app.UseHttpsRedirection();
 //app.MapControllers();
 app.MapStaticAssets();
@@ -113,8 +115,6 @@ app.UseAdminCore();
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode()
    .AddAdditionalAssemblies([.. app.Services.GetRequiredService<IModuleService>().Assemblies]);
-
-app.UseStatusCodePagesWithReExecute("/NotFound");
 
 await app.RunAdminCoreAsync(args);
 

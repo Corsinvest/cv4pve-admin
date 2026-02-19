@@ -20,7 +20,7 @@
 
   <!-- Version and Package Info -->
   <PropertyGroup>
-  <Version>2.0.0-rc4</Version>
+  <Version>2.0.0-rc5</Version>
 
     <!-- Pre-release/Testing detection -->
     <VersionPreRelease>$([System.Text.RegularExpressions.Regex]::Match($(Version), '-(.+)$').Groups[1].Value)</VersionPreRelease>

@@ -69,6 +69,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Download assets
+        run: pwsh -ExecutionPolicy Bypass -File admin.ps1 -Command download-assets
+
       - name: Build and push Docker image
         run: |
           dotnet publish src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj \
