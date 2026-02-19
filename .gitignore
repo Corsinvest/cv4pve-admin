@@ -86,7 +86,14 @@ src/Corsinvest.ProxmoxVE.Admin/data
 # Testing docker
 src/docker/data/
 
+# Radzen downloaded assets
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/.radzen-version
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-base.css
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-wcag.css
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-dark-base.css
 /src/Corsinvest.ProxmoxVE.Admin/wwwroot/css/fluent-dark-wcag.css
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/fonts/MaterialSymbolsOutlined.woff2
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/fonts/MaterialSymbolsRounded.woff2
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/fonts/RobotoFlex.woff2
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/fonts/SourceSans3VF-Italic.ttf.woff2
+/src/Corsinvest.ProxmoxVE.Admin/wwwroot/fonts/SourceSans3VF-Upright.ttf.woff2
