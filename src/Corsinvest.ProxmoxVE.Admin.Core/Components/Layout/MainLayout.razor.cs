@@ -43,6 +43,7 @@ public partial class MainLayout(IModuleService moduleService,
         if (await currentUserService.GetUserAsync() == null)
         {
             navigationManager.NavigateTo("/Logout", true);
+            return;
         }
 
         // Subscribe to new release notifications
@@ -67,12 +68,15 @@ public partial class MainLayout(IModuleService moduleService,
             await RefreshDataAsync();
             HasRendered = true;
             await InvokeAsync(StateHasChanged);
-
-            if (!settingsService.GetEnabledClustersSettings().Any())
-            {
-                navigationManager.NavigateTo(ApplicationHelper.UrlNewPveConfig);
-            }
         }
+    }
+
+    private bool HasNoClusters { get; set; }
+
+    private void CheckExistCluster()
+    {
+        HasNoClusters = !settingsService.GetEnabledClustersSettings().Any();
+        if (HasNoClusters) { navigationManager.NavigateTo(ApplicationHelper.UrlNewPveConfig); }
     }
 
     private async Task OpenCommandPalette()
@@ -89,6 +93,7 @@ public partial class MainLayout(IModuleService moduleService,
 
     private async Task RefreshDataAsync()
     {
+        CheckExistCluster();
         await RefreshLinksAsync();
         await InvokeAsync(StateHasChanged);
     }
@@ -107,12 +112,28 @@ public partial class MainLayout(IModuleService moduleService,
 
         foreach (var item in links.ToArray())
         {
-            if (!await item.HasPermissionAsync(permissionService, ClusterName)
-                || (selectedCluster && item.Module.Scope == ClusterScope.Single)
-                || !existsSettings)
+            if (!await item.HasPermissionAsync(permissionService, ClusterName))
             {
                 links.Remove(item);
             }
+            else if (selectedCluster && item.Module.Scope == ClusterScope.Single)
+            {
+                links.Remove(item);
+            }
+            //else if (item.Module.LinkPosition == ModuleLinkPosition.ProfileMenu)
+            //{
+            //}
+            //else if(!existsSettings)
+            //{
+            //    links.Remove(item);
+            //}
+
+            //if (!await item.HasPermissionAsync(permissionService, ClusterName)
+            //    || (selectedCluster && item.Module.Scope == ClusterScope.Single)
+            //    || !existsSettings)
+            //{
+            //    links.Remove(item);
+            //}
         }
 
         NavBarLinks = links.Where(a => a.Module.LinkPosition == ModuleLinkPosition.NavBar);

@@ -4,14 +4,4 @@
 *@
 @inherits AdminComponentBase
 
-@if (InEditing)
-{
-    <RadzenTextArea Value="@Settings.Content"
-                    Change="@OnContentChanged"
-                    Style="height: 100%; width: 100%; font-family: monospace; resize: none;"
-                    Placeholder="@L["Write markdown here..."]" />
-}
-else
-{
-    <RadzenMarkdown Text="@Settings.Content" AllowHtml="true" />
-}
+<RadzenMarkdown Text="@Settings.Content" AllowHtml="true" />

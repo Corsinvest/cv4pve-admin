@@ -51,6 +51,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
             ClustersSettings.Remove(SelectedItems[0]);
             await settingsService.SetAsync(ClustersSettings);
             await DataGridRef.Reload();
+            navigationManager.NavigateTo(new Uri(navigationManager.Uri).LocalPath, forceLoad: true);
         }
     }
 
@@ -76,10 +77,13 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
         }
         else
         {
-            await adminService[item.Name].CachedData.ClearCacheAsync();
-            await settingsService.ClearCacheAsync();
-            ClustersSettings = settingsService.GetClustersSettings();
-            await DataGridRef.Reload();
+            if (!string.IsNullOrEmpty(item.Name))
+            {
+                await adminService[item.Name].CachedData.ClearCacheAsync();
+                await settingsService.ClearCacheAsync();
+                ClustersSettings = settingsService.GetClustersSettings();
+                await DataGridRef.Reload();
+            }
         }
     }
 

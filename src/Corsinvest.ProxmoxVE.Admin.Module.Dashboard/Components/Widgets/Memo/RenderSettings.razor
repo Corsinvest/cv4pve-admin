@@ -1,0 +1,17 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@implements ISettingsParameter<Settings>
+
+<RadzenFormField Text="@L["Markdown Content"]" AllowFloatingLabel="false" class="rz-w-100">
+    <MarkdownEditor @bind-Value="@Settings.Content"
+                    Placeholder="@L["Write markdown here..."]" />
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public Settings Settings { get; set; } = default!;
+    [Parameter] public EventCallback<Settings> SettingsChanged { get; set; }
+}

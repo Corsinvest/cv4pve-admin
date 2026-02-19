@@ -67,6 +67,13 @@ public partial class WidgetGrid(IJSRuntime JS)
         }
     }
 
+    public static string? NormalizeCss(string? css)
+        => string.IsNullOrWhiteSpace(css)
+            ? css
+            : css.Replace("\r\n", " ")
+                 .Replace("\n", " ")
+                 .Replace("\r", " ");
+
     [JSInvokable]
     public async Task UpdateWidgetPosition(int id, int col, int row, int colSpan, int rowSpan)
     {

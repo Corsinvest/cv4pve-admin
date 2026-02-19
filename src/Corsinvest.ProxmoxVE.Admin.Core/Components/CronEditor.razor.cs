@@ -21,7 +21,7 @@ public partial class CronEditor(TooltipService TooltipService)
 
     private string Id { get; set; } = UniqueID!;
     private Popup PopupRef { get; set; } = default!;
-    private bool PopupIsVisible { get; set; } 
+    private bool PopupIsVisible { get; set; }
     private RadzenTextBox TextBoxRef { get; set; } = default!;
 
     protected override void OnInitialized()

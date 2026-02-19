@@ -68,7 +68,7 @@ public class SkipConcurrentExecutionFilter(ILogger<SkipConcurrentExecutionFilter
 
             connection.SetRangeInHash(job.GetFingerprintKey(), new Dictionary<string, string>
             {
-                { "Timestamp", DateTimeOffset.UtcNow.ToString("o", CultureInfo.InvariantCulture) }
+                ["Timestamp"] = DateTimeOffset.UtcNow.ToString("o", CultureInfo.InvariantCulture)
             });
 
             return true;

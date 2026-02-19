@@ -47,7 +47,7 @@ switch ($Command) {
                 Write-Host "Building Docker image..." -ForegroundColor Cyan
                 Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
 
-                dotnet publish $projectPath /t:PublishContainer
+                dotnet publish $projectPath /t:PublishContainer -v:detailed
                 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed!" -ForegroundColor Red; exit $LASTEXITCODE }
 
                 Write-Host "`n✓ Docker build completed!" -ForegroundColor Green
@@ -78,10 +78,10 @@ switch ($Command) {
     }
 
     "download-assets" {
-        $packagesProps = [xml](Get-Content "Directory.Packages.props")
-        $radzenVersion = ($packagesProps.Project.ItemGroup.PackageVersion | Where-Object { $_.Include -eq "Radzen.Blazor" }).Version
+        $json = dotnet msbuild $projectPath -getItem:PackageVersion -nologo | ConvertFrom-Json
+        $radzenVersion = ($json.Items.PackageVersion | Where-Object { $_.Identity -eq "Radzen.Blazor" }).Version
         if (-not $radzenVersion) {
-            Write-Error "Could not find Radzen.Blazor version in Directory.Packages.props"
+            Write-Error "Could not find Radzen.Blazor version in PackageVersion items"
             exit 1
         }
 
