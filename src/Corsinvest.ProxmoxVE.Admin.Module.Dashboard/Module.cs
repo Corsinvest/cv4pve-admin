@@ -39,7 +39,8 @@ public class Module : ModuleBase
             {
                 Description = "Markdown notes",
                 RenderInfo = new(typeof(Components.Widgets.Memo.Render)),
-                RenderSettingsInfo = new(typeof(Components.Widgets.Memo.Settings), null!),
+                RenderSettingsInfo = new(typeof(Components.Widgets.Memo.Settings),
+                                         typeof(Components.Widgets.Memo.RenderSettings)),
                 Width = 4,
                 Height = 4
             }

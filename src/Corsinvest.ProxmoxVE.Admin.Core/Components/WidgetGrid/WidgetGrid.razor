@@ -19,7 +19,7 @@
 
                 @if (EditMode || !string.IsNullOrEmpty(item.Title))
                 {
-                    <div class="cv4pve-widgetgrid-header" style="@item.TitleCss">
+                    <div class="cv4pve-widgetgrid-header" style="@NormalizeCss(item.TitleCss)">
                         @if (EditMode)
                         {
                             <RadzenIcon Icon="drag_indicator" Style="cursor: move; color: var(--rz-text-tertiary-color);" />
@@ -52,7 +52,7 @@
                     </div>
                 }
 
-                <div class="cv4pve-widgetgrid-content" style="@item.BodyCss">
+                <div class="cv4pve-widgetgrid-content" style="@NormalizeCss(item.BodyCss)">
                     <ErrorBoundary>
                         <ChildContent>
                             @if (item.Template != null)

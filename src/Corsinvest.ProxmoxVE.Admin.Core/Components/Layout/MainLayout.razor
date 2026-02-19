@@ -29,7 +29,7 @@
                 <RadzenCard Style="padding: 0.4rem 0.75rem; cursor: pointer; width: 100%;" @onclick="OpenCommandPalette">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
                         <RadzenIcon Icon="search" class="rz-color-primary" />
-                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="flex: 1;" Text="@L["Search..."]"/>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="flex: 1;" Text="@L["Search..."]" />
                         <RadzenBadge Text="Ctrl+K" Shade="Shade.Lighter" BadgeStyle="BadgeStyle.Base" Style="font-size: 0.65rem;" />
                     </RadzenStack>
                 </RadzenCard>
@@ -62,6 +62,18 @@
                                       Click="@(() => navigationManager.NavigateTo(item.RealUrl))"
                                       title="@L[item.Text]"
                                       aria-label="@L[item.Text]" />
+                    }
+
+                    @if (HasNoClusters)
+                    {
+                        <RadzenButton Icon="add_circle"
+                                      ButtonStyle="ButtonStyle.Warning"
+                                      Variant="Variant.Flat"
+                                      Size="ButtonSize.Small"
+                                      Click="@(() => navigationManager.NavigateTo(ApplicationHelper.UrlNewPveConfig))"
+                                      title="@L["Add cluster"]"
+                                      class="animate__animated animate__pulse animate__infinite"
+                                      Text="@L["Add cluster"]" />
                     }
 
                     <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"

@@ -41,7 +41,8 @@ public static class ApplicationHelper
 
     //public static string HelpUrl { get; } = "/doc/index.html";
 
-    public static string ExecutionPath => Directory.GetCurrentDirectory();
+    public static string ExecutionPath => AppContext.BaseDirectory;
+    public static string ConfigPath => Path.Combine(ExecutionPath, "config");
     public static string DataPath => Path.Combine(ExecutionPath, "data");
     public static string ImagesPath => Path.Combine(DataPath, "images");
     public static string UserProfileImagesPath => Path.Combine(ImagesPath, "user-profile");

@@ -46,6 +46,5 @@
 
     protected override void OnInitialized() => Providers = ModuleService.Get<Module>()!.GetProviders();
 
-    private IDictionary<string, object> Parameters => new Dictionary<string, object> { { nameof(IModelParameter<>.Model),
-Model } };
+    private IDictionary<string, object> Parameters => new Dictionary<string, object> { [nameof(IModelParameter<>.Model)] = Model };
 }

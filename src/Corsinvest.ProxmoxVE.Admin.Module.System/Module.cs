@@ -152,12 +152,7 @@ public class Module : ModuleBase
 
     protected static RenderComponentInfo CreateSettingsAccordion(IEnumerable<Components.SettingSection> sections)
         => new(typeof(Components.SettingsAccordion),
-                new Dictionary<string, object>
-                {
-                    {
-                        nameof(Components.SettingsAccordion.Sections), sections
-                    }
-                });
+               new Dictionary<string, object> { [nameof(Components.SettingsAccordion.Sections)] = sections });
 
     protected static Components.SettingSection GetSectionSMTPConfiguration()
         => new()

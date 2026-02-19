@@ -35,8 +35,8 @@ public partial class HelpMenu(ISettingsService settingsService,
         var envBuilder = new System.Text.StringBuilder();
 
         var clusterName = await adminService.GetCurrentClusterNameAsync();
-        foreach (var item in adminService.Where(a=> a.Settings.Enabled)
-                                         .Where(a=> a.Settings.Name == clusterName,!string.IsNullOrEmpty(clusterName)))
+        foreach (var item in adminService.Where(a => a.Settings.Enabled)
+                                         .Where(a => a.Settings.Name == clusterName, !string.IsNullOrEmpty(clusterName)))
         {
             try
             {

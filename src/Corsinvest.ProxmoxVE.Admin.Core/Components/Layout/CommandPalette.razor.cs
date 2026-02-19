@@ -216,14 +216,14 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
             = _ => Task.FromResult(new DataSourceContext(values) { ClusterName = clusterName });
 
         var result = await dialogService.OpenAsync<ParameterDialog>(command.Label,
-                                                                    new Dictionary<string, object?>
+                                                                    new()
                                                                     {
-                                                                        { nameof(ParameterDialog.Icon), command.Icon },
-                                                                        { nameof(ParameterDialog.Title), command.Label },
-                                                                        { nameof(ParameterDialog.Description), command.Description },
-                                                                        { nameof(ParameterDialog.Parameters), command.Parameters },
-                                                                        { nameof(ParameterDialog.Values), values },
-                                                                        { nameof(ParameterDialog.GetDataSourceContext), getDataSourceContext },
+                                                                        [nameof(ParameterDialog.Icon)] = command.Icon,
+                                                                        [nameof(ParameterDialog.Title)] = command.Label,
+                                                                        [nameof(ParameterDialog.Description)] = command.Description,
+                                                                        [nameof(ParameterDialog.Parameters)] = command.Parameters,
+                                                                        [nameof(ParameterDialog.Values)] = values,
+                                                                        [nameof(ParameterDialog.GetDataSourceContext)] = getDataSourceContext,
                                                                     },
                                                                     new DialogOptions
                                                                     {
