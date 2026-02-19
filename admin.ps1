@@ -9,7 +9,10 @@ param(
 
     [Parameter(Mandatory=$false)]
     [ValidateSet("docker", "binary")]
-    [string]$Type = "docker"
+    [string]$Type = "docker",
+
+    [Parameter(Mandatory=$false)]
+    [switch]$NoInfo
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,10 +38,12 @@ $containerImageTags = (dotnet msbuild $projectPath -getProperty:ContainerImageTa
 $editionName = (dotnet msbuild $projectPath -getProperty:Edition -nologo).Trim()
 $containerRepo = (dotnet msbuild $projectPath -getProperty:ContainerRepository -nologo).Trim()
 
-Write-Host "Edition : $editionName" -ForegroundColor Cyan
-Write-Host "Version : $currentVersion" -ForegroundColor Cyan
-Write-Host "Action: $Command" -ForegroundColor Cyan
-Write-Host "Container Repo: $containerRepo" -ForegroundColor Cyan
+if (-not $NoInfo) {
+    Write-Host "Edition : $editionName" -ForegroundColor Cyan
+    Write-Host "Version : $currentVersion" -ForegroundColor Cyan
+    Write-Host "Action: $Command" -ForegroundColor Cyan
+    Write-Host "Container Repo: $containerRepo" -ForegroundColor Cyan
+}
 
 switch ($Command) {
     "build" {
@@ -46,6 +51,19 @@ switch ($Command) {
             "docker" {
                 Write-Host "Building Docker image..." -ForegroundColor Cyan
                 Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
+
+                # Remove existing Docker image for current version
+                $imageRef = "$($containerRepo):$currentVersion"
+                if (docker image inspect $imageRef 2>$null) {
+                    Write-Host "  Removing existing image: $imageRef" -ForegroundColor Yellow
+                    docker rmi $imageRef --force | Out-Null
+                }
+
+                # Clean assets and build artifacts
+                & $PSCommandPath -Command clean-assets -NoInfo
+                & $PSCommandPath -Command download-assets -NoInfo
+                dotnet clean $projectPath -c Release --nologo
+                if ($LASTEXITCODE -ne 0) { Write-Host "Clean failed!" -ForegroundColor Red; exit $LASTEXITCODE }
 
                 dotnet publish $projectPath /t:PublishContainer -c Release -v:detailed
                 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed!" -ForegroundColor Red; exit $LASTEXITCODE }
