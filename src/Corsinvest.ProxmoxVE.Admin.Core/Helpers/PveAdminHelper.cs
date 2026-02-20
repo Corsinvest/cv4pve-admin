@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
@@ -14,7 +15,44 @@ public static class PveAdminHelper
     public static Version MinimalVersion { get; } = new Version(6, 4);
 
     public static string GetPveUrl(string baseAddress, string id) => $"{baseAddress}/#v1:0:={id}";
-    //    public static Dictionary<AdminModuleCategory, ModuleCategory> ModuleCategories { get; } = default!;
+
+    public static async Task<string> GenerateWhoUsingAsync(ClusterClient clusterClient)
+    {
+        var items = await clusterClient.CachedData.GetResourcesAsync(false);
+        var lxc = items.Count(a => a.ResourceType == ClusterResourceType.Vm && a.VmType == VmType.Lxc);
+        var qemu = items.Count(a => a.ResourceType == ClusterResourceType.Vm && a.VmType == VmType.Qemu);
+        var nodes = items.Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline);
+        var allStorage = items.Where(a => a.ResourceType == ClusterResourceType.Storage && a.IsAvailable);
+
+        var storages = allStorage.Where(a => !a.Shared).ToList();
+        storages.AddRange(allStorage.Where(a => a.Shared).DistinctBy(a => a.Storage));
+
+        var version = new List<string>();
+        var client = await clusterClient.GetPveClientAsync();
+        foreach (var item in await client.Nodes.GetAsync())
+        {
+            version.Add((await client.Nodes[item.Node].Version.GetAsync()).Version);
+        }
+
+        var cpus = 0;
+        var sockets = 0;
+        foreach (var item in nodes)
+        {
+            var status = await client.Nodes[item.Node].Status.GetAsync();
+            cpus += status.CpuInfo.Cpus;
+            sockets += status.CpuInfo.Sockets;
+        }
+
+        return @$"Cluster: {clusterClient.Settings.Name}
+Nodes: {nodes.Count()}
+Proxmox VE Version: {version.Distinct().Order().JoinAsString(" , ")}
+VM/CT Count: {qemu}/{lxc}
+CPU: {sockets} sockets / {cpus} cores
+RAM: {FormatHelper.FromBytes(nodes.Sum(a => a.MemorySize))}
+Storage: {FormatHelper.FromBytes(storages.Sum(a => a.DiskSize))}
+Company (optional):
+";
+    }
 
     //    private static readonly string[] headers = ["Server Id", "PVE Version", "Name", "IpAddress", "Subscription Id"];
 
