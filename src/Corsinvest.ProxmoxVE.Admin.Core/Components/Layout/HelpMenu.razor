@@ -44,8 +44,9 @@
 
         <hr class="solid">
 
-        <RadzenProfileMenuItem Text="@L["Report a Bug"]" Icon="bug_report" Path="@BugReportUrl" Target="_blank" />
-        <RadzenProfileMenuItem Text="@L["Request a Feature"]" Icon="auto_awesome" Path="@FeatureRequestUrl" Target="_blank" />
-        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@FeedbackUrl" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Report a Bug"]" Icon="bug_report" Value="@("report-bug")" />
+        <RadzenProfileMenuItem Text="@L["Request a Feature"]" Icon="auto_awesome" Path="@ApplicationHelper.FeatureRequestUrl" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@ApplicationHelper.FeedbackUrl" Target="_blank" />
+        <RadzenProfileMenuItem Text="@L["Who is using cv4pve-admin?"]" Icon="groups" Value="@("who-is-using")" />
     </ChildContent>
 </RadzenProfileMenu>

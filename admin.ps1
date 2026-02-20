@@ -45,6 +45,13 @@ if (-not $NoInfo) {
     Write-Host "Container Repo: $containerRepo" -ForegroundColor Cyan
 }
 
+function Invoke-DockerPrepare {
+    & $PSCommandPath -Command clean-assets -NoInfo
+    & $PSCommandPath -Command download-assets -NoInfo
+    dotnet clean $projectPath -c Release --nologo
+    if ($LASTEXITCODE -ne 0) { Write-Host "Clean failed!" -ForegroundColor Red; exit $LASTEXITCODE }
+}
+
 switch ($Command) {
     "build" {
         switch ($Type) {
@@ -59,11 +66,7 @@ switch ($Command) {
                     docker rmi $imageRef --force | Out-Null
                 }
 
-                # Clean assets and build artifacts
-                & $PSCommandPath -Command clean-assets -NoInfo
-                & $PSCommandPath -Command download-assets -NoInfo
-                dotnet clean $projectPath -c Release --nologo
-                if ($LASTEXITCODE -ne 0) { Write-Host "Clean failed!" -ForegroundColor Red; exit $LASTEXITCODE }
+                Invoke-DockerPrepare
 
                 dotnet publish $projectPath /t:PublishContainer -c Release -v:detailed
                 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed!" -ForegroundColor Red; exit $LASTEXITCODE }
@@ -87,6 +90,8 @@ switch ($Command) {
     "publish" {
         Write-Host "Publishing Docker image to registry.hub.docker.com..." -ForegroundColor Cyan
         Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
+
+        Invoke-DockerPrepare
 
         dotnet publish $projectPath /t:PublishContainer -c Release /p:ContainerRegistry=registry.hub.docker.com
         if ($LASTEXITCODE -ne 0) { Write-Host "Publish failed!" -ForegroundColor Red; exit $LASTEXITCODE }

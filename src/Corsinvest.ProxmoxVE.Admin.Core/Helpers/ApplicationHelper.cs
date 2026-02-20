@@ -29,11 +29,20 @@ public static class ApplicationHelper
 
     public static string GetBugReportUrl(string environment)
         => $"{GitHubIssueBaseUrl}?template=bug_report.yml" +
+           $"&edition={BuildInfo.EditionFull} ({BuildInfo.Edition})" +
            $"&version={BuildInfo.Version}" +
            $"&environment={Uri.EscapeDataString(environment)}";
 
     public static string FeatureRequestUrl => $"{GitHubIssueBaseUrl}?template=feature_request.yml";
-    public static string FeedbackUrl => $"{GitHubIssueBaseUrl}?template=feedback.yml&version={BuildInfo.Version}";
+
+    public static string FeedbackUrl
+        => $"{GitHubIssueBaseUrl}?template=feedback.yml" +
+           $"&edition={BuildInfo.EditionFull} ({BuildInfo.Edition})" +
+           $"&version={BuildInfo.Version}";
+
+    public static string GetWhoIsUsingUrl(string body)
+        => $"{GitHubIssueBaseUrl}?title={Uri.EscapeDataString("Who's using cv4pve-admin?")}" +
+           $"&body={Uri.EscapeDataString(body)}";
 
     public static string UrlShopSubscription { get; } = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
     public static string UrlNewPveConfig { get; set; } = default!;

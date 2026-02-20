@@ -10,6 +10,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 public partial class HelpMenu(ISettingsService settingsService,
                               IReleaseService releaseService,
                               DialogService dialogService,
+                              Services.IBrowserService browserService,
                               IAdminService adminService,
                               IDetectionService detectionService)
 {
@@ -17,32 +18,58 @@ public partial class HelpMenu(ISettingsService settingsService,
 
     private AppSettings AppSettings { get; set; } = default!;
     private ReleaseInfo? NewRelease { get; set; }
-    private string BugReportUrl { get; set; } = string.Empty;
-    private string FeatureRequestUrl => ApplicationHelper.FeatureRequestUrl;
-    private string FeedbackUrl => ApplicationHelper.FeedbackUrl;
 
     protected override async Task OnInitializedAsync()
     {
         AppSettings = settingsService.GetAppSettings();
         NewRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: BuildInfo.IsTesting);
-        await BuildUrlsAsync();
     }
 
-    protected override async Task OnParametersSetAsync() => await BuildUrlsAsync();
+    private async Task OnMenuClick(RadzenProfileMenuItem item)
+    {
+        switch (item.Value?.ToString())
+        {
+            case "shortcuts": await ShowKeyboardShortcutsAsync(); break;
+            case "release-notes": await ShowReleaseNotesAsync(); break;
+            case "report-bug": await OpenBugUrlAsync(); break;
+            case "who-is-using": await OpenWhoIsUsingUrlAsync(); break;
+            default: break;
+        }
+    }
 
-    private async Task BuildUrlsAsync()
+    private async Task<IEnumerable<ClusterClient>> GetClustersAsync()
+    {
+        var clusterName = await adminService.GetCurrentClusterNameAsync();
+        return adminService.Where(a => a.Settings.Enabled)
+                           .Where(a => a.Settings.Name == clusterName, !string.IsNullOrEmpty(clusterName));
+    }
+
+    private async Task OpenWhoIsUsingUrlAsync()
+    {
+        var whoBodyBuilder = new System.Text.StringBuilder();
+        foreach (var item in await GetClustersAsync())
+        {
+            try
+            {
+                if (whoBodyBuilder.Length > 0) { whoBodyBuilder.AppendLine("---"); }
+                whoBodyBuilder.AppendLine(await PveAdminHelper.GenerateWhoUsingAsync(item));
+            }
+            catch { }
+        }
+
+        var url = ApplicationHelper.GetWhoIsUsingUrl(whoBodyBuilder.ToString().TrimEnd());
+        await browserService.OpenInNewWindowAsync(url, string.Empty);
+    }
+
+    private async Task OpenBugUrlAsync()
     {
         var envBuilder = new System.Text.StringBuilder();
-
-        var clusterName = await adminService.GetCurrentClusterNameAsync();
-        foreach (var item in adminService.Where(a => a.Settings.Enabled)
-                                         .Where(a => a.Settings.Name == clusterName, !string.IsNullOrEmpty(clusterName)))
+        foreach (var item in await GetClustersAsync())
         {
             try
             {
                 var client = await item.GetPveClientAsync();
-                var pveVersion = client != null ? (await client.Version.GetAsync()).Version : "N/A";
-                envBuilder.AppendLine($"- Cluster: {item.Settings.Name} / Proxmox VE: {pveVersion}");
+                envBuilder.AppendLine($"- Cluster: {item.Settings.Name} / Proxmox VE: {(await client.Version.GetAsync()).Version}");
             }
             catch
             {
@@ -54,19 +81,8 @@ public partial class HelpMenu(ISettingsService settingsService,
         envBuilder.AppendLine($"- Browser: {detectionService.Browser.Name} {detectionService.Browser.Version}");
         envBuilder.AppendLine($"- Platform: {detectionService.Platform.Name} {detectionService.Platform.Version}");
 
-        BugReportUrl = ApplicationHelper.GetBugReportUrl(envBuilder.ToString().TrimEnd());
-    }
-
-    private async Task OnMenuClick(RadzenProfileMenuItem item)
-    {
-        if (item.Value?.ToString() == "shortcuts")
-        {
-            await ShowKeyboardShortcutsAsync();
-        }
-        else if (item.Value?.ToString() == "release-notes")
-        {
-            await ShowReleaseNotesAsync();
-        }
+        var url = ApplicationHelper.GetBugReportUrl(envBuilder.ToString().TrimEnd());
+        await browserService.OpenInNewWindowAsync(url, string.Empty);
     }
 
     private async Task ShowKeyboardShortcutsAsync()
