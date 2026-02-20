@@ -20,6 +20,7 @@ public class Module : ModuleBase
         Description = "Generate comprehensive cluster, VM, node and storage reports";
         Category = Categories.Utilities;
         Slug = "system-report";
+        HelpUrl = "modules/system-report";
 
         NavBar =
         [

@@ -16,6 +16,7 @@ public class Module : ModuleBase
         Name = "Dashboard";
         Description = "Customizable dashboards with widgets and metrics";
         Slug = "dashboard";
+        HelpUrl = "modules/dashboard";
         Icon = "dashboard";
         Scope = ClusterScope.All;
 

@@ -19,6 +19,7 @@ public class Module : ModuleBase
         Description = "Automated snapshot scheduling and management for VM/CT with retention policies";
         Category = Categories.Protection;
         Slug = "autosnap";
+        HelpUrl = "modules/autosnap";
 
         NavBar =
         [

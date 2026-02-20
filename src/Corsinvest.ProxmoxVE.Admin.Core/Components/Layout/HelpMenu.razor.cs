@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Microsoft.AspNetCore.Components.Routing;
 using Toolbelt.Blazor.HotKeys2;
 using Wangkanai.Detection.Services;
 
@@ -10,32 +11,40 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 public partial class HelpMenu(ISettingsService settingsService,
                               IReleaseService releaseService,
                               DialogService dialogService,
+                              ContextMenuService contextMenuService,
                               Services.IBrowserService browserService,
                               IAdminService adminService,
-                              IDetectionService detectionService)
+                              IDetectionService detectionService,
+                              NavigationManager navigationManager,
+                              IModuleService moduleService) : IDisposable
 {
     [Parameter] public HotKeysContext HotKeysContext { get; set; } = default!;
 
     private AppSettings AppSettings { get; set; } = default!;
     private ReleaseInfo? NewRelease { get; set; }
+    private ModuleBase? CurrentModule { get; set; }
+
+    private string DocumentationUrl
+        => CurrentModule?.HelpUrl is { Length: > 0 } helpUrl
+            ? $"{ApplicationHelper.DocumentationUrl}/{helpUrl}"
+            : ApplicationHelper.DocumentationUrl;
+
+    private string DocumentationText
+        => CurrentModule?.HelpUrl is { Length: > 0 }
+            ? $"{L["Documentation"]} - {CurrentModule.Name}"
+            : L["Documentation"];
 
     protected override async Task OnInitializedAsync()
     {
         AppSettings = settingsService.GetAppSettings();
         NewRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: BuildInfo.IsTesting);
+        navigationManager.LocationChanged += OnLocationChanged;
+        UpdateCurrentModule(navigationManager.Uri);
     }
 
-    private async Task OnMenuClick(RadzenProfileMenuItem item)
-    {
-        switch (item.Value?.ToString())
-        {
-            case "shortcuts": await ShowKeyboardShortcutsAsync(); break;
-            case "release-notes": await ShowReleaseNotesAsync(); break;
-            case "report-bug": await OpenBugUrlAsync(); break;
-            case "who-is-using": await OpenWhoIsUsingUrlAsync(); break;
-            default: break;
-        }
-    }
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => UpdateCurrentModule(e.Location);
+    private void UpdateCurrentModule(string path) => CurrentModule = moduleService.GetByUrl(path);
+    public void Dispose() => navigationManager.LocationChanged -= OnLocationChanged;
 
     private async Task<IEnumerable<ClusterClient>> GetClustersAsync()
     {

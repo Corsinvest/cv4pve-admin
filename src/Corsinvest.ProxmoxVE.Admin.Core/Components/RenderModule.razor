@@ -6,19 +6,20 @@
 @attribute [Authorize]
 @inherits AdminComponentBase
 
- @if (CurrentModule != null)
+@if (CurrentModule != null)
 {
     <RadzenLayout Style="height: calc(100vh - 90px);">
         <RadzenHeader Style="background-color: transparent;">
-
-            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
                 <RadzenText TextStyle="TextStyle.H4">@CurrentModule.Description</RadzenText>
 
-                <RadzenButton Icon="settings"
-                              Click="OpenSettingsAsync"
-                              Visible="ShowButtonSettings"
-                              title="@L["Settings"]"
-                              aria-label="@L["Settings"]" />
+                @if (ShowButtonSettings)
+                {
+                    <RadzenButton Icon="settings"
+                                  Click="OpenSettingsAsync"
+                                  title="@L["Settings"]"
+                                  aria-label="@L["Settings"]" />
+                }
             </RadzenStack>
         </RadzenHeader>
 

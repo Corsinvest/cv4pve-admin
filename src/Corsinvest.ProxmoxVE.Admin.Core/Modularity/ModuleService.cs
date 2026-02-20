@@ -25,7 +25,14 @@ internal class ModuleService : IModuleService
             : Modules.FirstOrDefault(a => a.GetType() == type);
 
     public ModuleBase? Get(string @class) => Modules.FirstOrDefault(a => a.Type == @class);
-    public ModuleBase? GetBySlug(string slug) => Modules.FirstOrDefault(a => a.Slug == slug);
+
+    public ModuleBase? GetByUrl(string url)
+    {
+        var absolutePath = new Uri(url).AbsolutePath;
+        return absolutePath.StartsWith(ApplicationHelper.ModuleComponentUrl)
+                ? Modules.FirstOrDefault(a => a.Slug == absolutePath[ApplicationHelper.ModuleComponentUrl.Length..].Split('/')[0])
+                : null;
+    }
 
     public IEnumerable<Assembly> Assemblies
     {

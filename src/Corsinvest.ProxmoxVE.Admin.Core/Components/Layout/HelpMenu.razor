@@ -4,49 +4,52 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenProfileMenu ShowIcon="false" Click="OnMenuClick">
-    <Template>
-        <div style="position: relative; display: inline-flex;">
-            <RadzenIcon Icon="help_outline" Style="font-size: 1.5rem;" />
+<RadzenButton Icon="help_outline"
+              Variant="Variant.Text"
+              ButtonStyle="ButtonStyle.Light"
+              Click="ShowHelpMenu"
+              title="@L["Help"]"
+              aria-label="@L["Help"]" />
+
+@code {
+    private void ShowHelpMenu(MouseEventArgs args)
+    {
+        args.ClientY += 24;
+
+        contextMenuService.Open(args, ds =>
+        @<RadzenMenu Click="@(() => ds.Close())">
+            <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;padding: 0 10px 0 10px;">@L["Your"] @AppSettings.AppName @L["version"] 🚀</RadzenText>
+            <RadzenStack Style="padding: 0 0 5px 10px;" Orientation="Orientation.Horizontal">
+                <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">
+                    @BuildInfo.Version
+
+                    <RadzenBadge Text="@BuildInfo.EditionFull" BadgeStyle="@(BuildInfo.IsEnterpriseEdition? BadgeStyle.Warning: BadgeStyle.Primary)" />
+                </RadzenText>
+            </RadzenStack>
+
             @if (NewRelease != null)
             {
-                <span style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #ff1744; border-radius: 50%;"></span>
+                <RadzenLink Style="padding: 0 0 0 10px;" Path="@NewRelease.Url" Target="_blank">
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@L["Update available {0}", NewRelease.Version]" />
+                    <RadzenIcon Icon="open_in_new" IconColor="@Colors.Primary" Style="font-size: 0.9rem; margin-left: 2px; vertical-align: middle;" />
+                </RadzenLink>
             }
-        </div>
-    </Template>
-    <ChildContent>
-        <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;padding: 0 10px 0 10px;">@L["Your"] @AppSettings.AppName @L["version"] 🚀</RadzenText>
-        <RadzenStack Style="padding: 0 0 5px 10px;" Orientation="Orientation.Horizontal">
-            <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">
-                @BuildInfo.Version
 
-                <RadzenBadge Text="@BuildInfo.EditionFull" BadgeStyle="@(BuildInfo.IsEnterpriseEdition? BadgeStyle.Warning: BadgeStyle.Primary)" />
-            </RadzenText>
-        </RadzenStack>
+            <hr />
 
-        @if (NewRelease != null)
-        {
-            <RadzenLink Style="padding: 0 0 0 10px;" Path="@NewRelease.Url" Target="_blank">
-                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@L["Update available {0}", NewRelease.Version]" />
-                <RadzenIcon Icon="open_in_new" IconColor="@Colors.Primary" Style="font-size: 0.9rem; margin-left: 2px; vertical-align: middle;" />
-            </RadzenLink>
-        }
+            <RadzenMenuItem Text="@DocumentationText" Icon="menu_book" Path="@DocumentationUrl" Target="_blank" />
+            <RadzenMenuItem Text="@L["Release notes"]" Icon="celebration" Click="@(async () => { ds.Close(); await ShowReleaseNotesAsync(); })" />
+            <RadzenMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
 
-        <hr class="solid">
+            <hr />
 
-        <RadzenProfileMenuItem Text="@L["Documentation"]" Icon="menu_book" Path="https://corsinvest.github.io/cv4pve-admin/" Target="_blank" />
-        <RadzenProfileMenuItem Text="@L["Release notes"]" Icon="celebration" Value="@("release-notes")" />
-        <RadzenProfileMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
+            <RadzenMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Click="@(async () => { ds.Close(); await ShowKeyboardShortcutsAsync(); })" />
 
-        <hr class="solid">
-
-        <RadzenProfileMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Value="@("shortcuts")" />
-
-        <hr class="solid">
-
-        <RadzenProfileMenuItem Text="@L["Report a Bug"]" Icon="bug_report" Value="@("report-bug")" />
-        <RadzenProfileMenuItem Text="@L["Request a Feature"]" Icon="auto_awesome" Path="@ApplicationHelper.FeatureRequestUrl" Target="_blank" />
-        <RadzenProfileMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@ApplicationHelper.FeedbackUrl" Target="_blank" />
-        <RadzenProfileMenuItem Text="@L["Who is using cv4pve-admin?"]" Icon="groups" Value="@("who-is-using")" />
-    </ChildContent>
-</RadzenProfileMenu>
+            <hr />
+            <RadzenMenuItem Text="@L["Report a Bug"]" Icon="bug_report" Click="@(async () => { ds.Close(); await OpenBugUrlAsync(); })" />
+            <RadzenMenuItem Text="@L["Request a Feature"]" Icon="auto_awesome" Path="@ApplicationHelper.FeatureRequestUrl" Target="_blank" />
+            <RadzenMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@ApplicationHelper.FeedbackUrl" Target="_blank" />
+            <RadzenMenuItem Text="@L["Who is using cv4pve-admin?"]" Icon="groups" Click="@(async () => { ds.Close(); await OpenWhoIsUsingUrlAsync(); })" />
+        </RadzenMenu>);
+    }
+}

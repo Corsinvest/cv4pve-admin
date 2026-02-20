@@ -18,6 +18,7 @@ public class Module : ModuleBase
         Description = "System updates scanning and management";
         Category = Categories.Health;
         Slug = "update-manager";
+        HelpUrl = "modules/update-manager";
 
         NavBar =
         [

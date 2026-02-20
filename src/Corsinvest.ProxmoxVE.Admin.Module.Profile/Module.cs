@@ -23,6 +23,7 @@ public class Module : ModuleBase
         Name = "Profile";
         Description = "User profile, password and security settings";
         Slug = "profile";
+        HelpUrl = "configuration/profile";
         Icon = "account_circle";
         LinkPosition = ModuleLinkPosition.ProfileMenu;
         Scope = ClusterScope.All;

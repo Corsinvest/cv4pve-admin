@@ -12,7 +12,7 @@ public interface IModuleService
     ModuleBase? Get(string @class);
     ModuleBase? Get(Type moduleType);
     T? Get<T>() where T : ModuleBase;
-    ModuleBase? GetBySlug(string slug);
+    ModuleBase? GetByUrl(string url);
     IEnumerable<Assembly> Assemblies { get; }
 
     private static IEnumerable<ModuleBase> _cachedModules = [];

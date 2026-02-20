@@ -25,6 +25,7 @@ public class Module : ModuleBase
         Category = Categories.Utilities;
         Scope = ClusterScope.Single;
         Slug = "ai-server";
+        HelpUrl = "modules/ai-server";
 
         NavBar = [
             new(this,"Overview",string.Empty)
