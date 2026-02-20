@@ -19,6 +19,7 @@ public class Module : ModuleBase
         Description = "Automated node configuration backup, versioning and restore";
         Category = Categories.Protection;
         Slug = "node-protect";
+        HelpUrl = "modules/node-protect";
 
         var navBar = new List<ModuleLinkBase>()
         {

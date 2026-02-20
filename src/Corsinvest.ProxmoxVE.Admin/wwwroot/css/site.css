@@ -65,6 +65,7 @@
         content: var(--blazor-load-percentage-text, "Loading");
     }
 
+
 /* Custom  */
 
 .font-fill {

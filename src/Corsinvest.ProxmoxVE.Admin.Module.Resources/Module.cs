@@ -17,6 +17,7 @@ public class Module : ModuleBase
         Description = "Monitor real-time cluster and resource status";
         Category = Categories.Health;
         Slug = "resources";
+        HelpUrl = "modules/resources";
 
         NavBar =
         [

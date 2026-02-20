@@ -19,6 +19,7 @@ public class Module : ModuleBase
         Description = "Replication job monitoring, analysis and synchronization insights";
         Category = Categories.Health;
         Slug = "replication-analytics";
+        HelpUrl = "modules/replication-analytics";
 
         NavBar =
         [

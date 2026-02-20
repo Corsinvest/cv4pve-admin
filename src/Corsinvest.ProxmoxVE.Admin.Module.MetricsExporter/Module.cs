@@ -29,6 +29,7 @@ public class Module : ModuleBase
         Description = "Prometheus metrics exporter for cluster monitoring and observability";
         Category = Categories.Health;
         Slug = "metrics-exporter";
+        HelpUrl = "modules/metrics-exporter";
 
         if (string.IsNullOrEmpty(ExporterUrl))
         {

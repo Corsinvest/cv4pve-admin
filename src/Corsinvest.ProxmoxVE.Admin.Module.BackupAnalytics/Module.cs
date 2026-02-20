@@ -19,6 +19,7 @@ public class Module : ModuleBase
         Description = "Comprehensive backup job analysis, monitoring and trend insights";
         Category = Categories.Health;
         Slug = "backup-analytics";
+        HelpUrl = "modules/backup-analytics";
 
         NavBar =
         [

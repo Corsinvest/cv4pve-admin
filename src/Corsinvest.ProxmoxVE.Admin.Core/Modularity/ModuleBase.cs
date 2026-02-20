@@ -33,7 +33,7 @@ public abstract class ModuleBase
     protected IEnumerable<Permission> NavBarPermissions => NavBar.Traverse(a => a.Child).Select(a => a.Permission);
     public IEnumerable<ModuleWidget> Widgets { get; set; } = [];
 
-    public string BaseUrl => $"{ApplicationHelper.ModuleComponentUrl}/{Slug}";
+    public string BaseUrl => ApplicationHelper.ModuleComponentUrl + Slug;
 
     private string? _icon;
     public string? Icon
@@ -58,6 +58,7 @@ public abstract class ModuleBase
     public ModuleType ModuleType { get; init; } = ModuleType.Application;
     public string FullInfo => $"{Type}@{Version}";
     public string Keywords { get; init; } = string.Empty;
+    public string? HelpUrl { get; set; }
     public string Authors { get; init; } = "Corsinvest Srl";
     public string Company { get; init; } = "Corsinvest Srl";
     public ClusterScope Scope { get; set; } = ClusterScope.Single;
@@ -162,22 +163,4 @@ public abstract class ModuleBase
 
     private readonly Dictionary<string, object> _attributes = [];
     public IReadOnlyDictionary<string, object> Attributes => _attributes.AsReadOnly();
-
-    //protected void InitializeJob<TJob>(IServiceScope scope, Func<TJob, string, Task> methodCall)
-    //{
-    //    var jobService = scope.GetJobService();
-    //    var settingsService = scope.GetSettingsService();
-
-    //    foreach (var item in settingsService.GetClustersSettings().Select(a => a.Name))
-    //    {
-    //        var settings = settingsService.GetForModule(GetType(), RenderSettingsInfo!.Type, item);
-    //        if (settings is JobScheduleBase job)
-    //        {
-    //            jobService.ScheduleOrRemove(methodCall(j, item),
-    //                                        job.CronExpression,
-    //                                        job.Enabled,
-    //                                        item);
-    //        }
-    //    }
-    //}
 }

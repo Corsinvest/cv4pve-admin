@@ -102,10 +102,7 @@ public partial class Status(IAdminService adminService,
 
     private static void OnGroupRowRender(GroupRowRenderEventArgs args)
     {
-        if (args.FirstRender)
-        {
-            args.Expanded = false;
-        }
+        if (args.FirstRender) { args.Expanded = false; }
     }
 
     private async Task KeyDownAsync(KeyboardEventArgs e)

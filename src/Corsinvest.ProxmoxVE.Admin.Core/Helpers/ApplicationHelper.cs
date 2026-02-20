@@ -24,7 +24,7 @@ public static class ApplicationHelper
     public static string ThemeName { get; } = "fluent";
     public static string CookieThemeName { get; } = "cv4pve-admin-theme";
     public static string RepoGitHub { get; } = "corsinvest/cv4pve-admin";
-
+    public static string DocumentationUrl { get; } = "https://corsinvest.github.io/cv4pve-admin";
     private static string GitHubIssueBaseUrl { get; } = $"https://github.com/{RepoGitHub}/issues/new";
 
     public static string GetBugReportUrl(string environment)
@@ -57,6 +57,5 @@ public static class ApplicationHelper
     public static string UserProfileImagesPath => Path.Combine(ImagesPath, "user-profile");
     public static string TempPath => Path.Combine(DataPath, "tmp");
     public static string ModulesPath => Path.Combine(DataPath, "modules");
-    public static string FileNameSettings { get; } = "appsettings.json";
-    public static string ModuleComponentUrl { get; } = "/module";
+    public static string ModuleComponentUrl { get; } = "/module/";
 }

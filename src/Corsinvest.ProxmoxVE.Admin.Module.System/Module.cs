@@ -25,6 +25,7 @@ public class Module : ModuleBase
         Name = "Admin Area";
         Description = "System administration, security, monitoring and Proxmox VE cluster configuration";
         Slug = "system";
+        HelpUrl = "configuration/admin-area";
         Icon = "build";
         Scope = ClusterScope.All;
         LinkPosition = ModuleLinkPosition.ProfileMenu;

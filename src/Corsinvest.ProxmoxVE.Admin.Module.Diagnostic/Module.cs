@@ -20,6 +20,7 @@ public class Module : ModuleBase
         Description = "Automated cluster health checks, diagnostics and issue detection";
         Category = Categories.Health;
         Slug = "diagnostic";
+        HelpUrl = "modules/diagnostics";
 
         NavBar =
         [

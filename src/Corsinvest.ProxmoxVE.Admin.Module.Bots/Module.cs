@@ -18,6 +18,7 @@ public class Module : ModuleBase
         Name = "Bots";
         Slug = "bots";
         Description = "Remote cluster management via Telegram chatbot";
+        HelpUrl = "modules/bots";
 
         NavBar =
         [

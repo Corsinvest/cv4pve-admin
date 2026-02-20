@@ -23,10 +23,7 @@ public partial class RenderModule(NavigationManager navigationManager,
 
     protected override async Task OnParametersSetAsync()
     {
-        //AppSettings = SettingsService.GetAppSettings();
-        var routes = (PageRoute ?? string.Empty).Split('/');
-
-        CurrentModule = moduleService.GetBySlug(routes[0])!;
+        CurrentModule = moduleService.GetByUrl(navigationManager.Uri)!;
         if (CurrentModule == null)
         {
             navigationManager.NavigateTo("/NotFound", false);
@@ -44,6 +41,7 @@ public partial class RenderModule(NavigationManager navigationManager,
                                 && await CurrentModule.HasPermissionEditorSettingsAsync(PermissionService, ClusterName);
 
         //parse link
+        var routes = (PageRoute ?? string.Empty).Split('/');
         var subItems = routes.Skip(1).ToList();
 
         if (CurrentModule.Scope == ClusterScope.Single)
