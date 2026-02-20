@@ -132,11 +132,17 @@ Not a replacement - a completion. Automation, visibility, compliance, and contro
 
 ## Screenshots
 
-![Multi-cluster dashboard overview](docs/user/docs/images/login.png)
-*Multi-cluster dashboard with resource summary and real-time metrics*
+![Login Screen](docs/user/docs/images/login.png)
 
-![Backup Analytics](docs/user/docs/images/screenshot-backup-analytics2.png)
-*Backup job success rate, trends, and unprotected VM detection*
+![Backup Analytics](docs/user/docs/images/screenshot-backup-analytics.png)
+
+![Resources Nodes](docs/user/docs/images/screenshot-resources-nodes.png)
+
+![Resources Vms](docs/user/docs/images/screenshot-resources-vms.png)
+
+![Resources Storages](docs/user/docs/images/screenshot-resources-storages.png)
+
+![Resources Storages](docs/user/docs/images/screenshot-resources-storages2.png)
 
 **→ See more screenshots in the [User Guide](https://corsinvest.github.io/cv4pve-admin/user_guide/)**
 
