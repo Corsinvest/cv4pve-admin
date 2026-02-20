@@ -939,6 +939,17 @@
 </li>
 </ul>
 </div>
+<h2 id="connecting-ai-clients">Connecting AI Clients<a class="headerlink" href="#connecting-ai-clients" title="Permanent link">&para;</a></h2>
+<p>The MCP endpoint is exposed at:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://&lt;your-server&gt;/mcp/&lt;api-key&gt;
+</span></code></pre></div>
+<p>Where <code>&lt;api-key&gt;</code> is configured in the AI Server module settings.</p>
+<h3 id="native-http-clients">Native HTTP clients<a class="headerlink" href="#native-http-clients" title="Permanent link">&para;</a></h3>
+<p>Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) can connect directly using the URL above — no additional software needed.</p>
+<h3 id="claude-desktop-and-stdio-only-clients">Claude Desktop and stdio-only clients<a class="headerlink" href="#claude-desktop-and-stdio-only-clients" title="Permanent link">&para;</a></h3>
+<p>Claude Desktop only supports stdio transport and cannot connect to HTTP MCP servers directly.
+Use the <strong>MCP Bridge</strong> included in the repository (<code>src/mcp-bridge/</code>) to proxy stdio ↔ HTTP.</p>
+<p>See the <a href="https://github.com/Corsinvest/cv4pve-admin/blob/main/src/mcp-bridge/README.md">MCP Bridge README</a> for setup instructions.</p>
 
 
 
