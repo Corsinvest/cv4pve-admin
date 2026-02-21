@@ -28,6 +28,9 @@ public partial class Scans(IAdminService adminService,
     private bool IsLoading { get; set; }
     private bool InDownload { get; set; }
 
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
+
     protected override async Task OnInitializedAsync()
     {
         eventNotificationService.Subscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
@@ -42,13 +45,22 @@ public partial class Scans(IAdminService adminService,
 
     public async Task RefreshDataAsync()
     {
-        Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
 
         IsLoading = true;
-        Items = await ActionHelper.GetAsync(adminService[ClusterName]);
-        IsLoading = false;
-
         await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
+            Items = await ActionHelper.GetAsync(adminService[ClusterName]);
+        }
+        finally
+        {
+            IsLoading = false;
+            if (!_disposed) { _refreshLock.Release(); }
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private static bool ShowWatingUpdate(ClusterResourceUpdateScanInfo item) => item.UpdateScanStatus == UpdateInfoStatus.InScan;
@@ -81,5 +93,10 @@ public partial class Scans(IAdminService adminService,
         notificationService.Info(L["Scan started!"]);
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        _disposed = true;
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _refreshLock.Dispose();
+    }
 }

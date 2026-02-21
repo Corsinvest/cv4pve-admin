@@ -9,7 +9,7 @@ using Mapster;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes;
 
 public partial class Replication(IAdminService adminService,
-                                 DialogService dialogService) : IRefreshableData, INode, IClusterName
+                                 DialogService dialogService) : IRefreshableData, INode, IClusterName, IDisposable
 {
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Node { get; set; } = default!;
@@ -22,6 +22,9 @@ public partial class Replication(IAdminService adminService,
     private IList<Data> SelectedItems { get; set; } = [];
     private Data SelectedItem => SelectedItems[0];
 
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
+
     private class Data : NodeReplication, INode
     {
         public string Node { get; set; } = default!;
@@ -31,37 +34,45 @@ public partial class Replication(IAdminService adminService,
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
+
         IsLoading = true;
 
-        var clusterClient = adminService[ClusterName];
-        async Task<List<Data>> GetData(string node)
+        try
         {
-            var data = (await clusterClient.CachedData.GetReplicationsAsync(node, VmId, false))
-                           .AsQueryable()
-                           .ProjectToType<Data>()
-                           .ToList();
-
-            data.ForEach(a => a.Node = node);
-
-            return data;
-        }
-
-        if (string.IsNullOrEmpty(Node))
-        {
-            var items = new List<Data>();
-            foreach (var item in (await clusterClient.CachedData.GetResourcesAsync(false)).Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline))
+            var clusterClient = adminService[ClusterName];
+            async Task<List<Data>> GetData(string node)
             {
-                items.AddRange(await GetData(item.Node));
+                var data = (await clusterClient.CachedData.GetReplicationsAsync(node, VmId, false))
+                               .AsQueryable()
+                               .ProjectToType<Data>()
+                               .ToList();
+
+                data.ForEach(a => a.Node = node);
+
+                return data;
             }
 
-            Items = items;
-        }
-        else
-        {
-            Items = await GetData(Node);
-        }
+            if (string.IsNullOrEmpty(Node))
+            {
+                var items = new List<Data>();
+                foreach (var item in (await clusterClient.CachedData.GetResourcesAsync(false)).Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline))
+                {
+                    items.AddRange(await GetData(item.Node));
+                }
 
-        IsLoading = false;
+                Items = items;
+            }
+            else
+            {
+                Items = await GetData(Node);
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+            if (!_disposed) { _refreshLock.Release(); }
+        }
     }
 
     private static void RowRender(RowRenderEventArgs<Data> args)
@@ -84,5 +95,11 @@ public partial class Replication(IAdminService adminService,
                     .Replication[SelectedItem.Id]
                     .ScheduleNow
                     .ScheduleNow();
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        _refreshLock.Dispose();
     }
 }

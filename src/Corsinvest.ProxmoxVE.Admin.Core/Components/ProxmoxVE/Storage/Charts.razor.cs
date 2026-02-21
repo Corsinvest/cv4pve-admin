@@ -7,7 +7,7 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Storage;
 
-public partial class Charts(IAdminService adminService) : IRefreshableData, INode, IClusterName
+public partial class Charts(IAdminService adminService) : IRefreshableData, INode, IClusterName, IDisposable
 {
     [EditorRequired, Parameter] public string Node { get; set; } = default!;
     [EditorRequired, Parameter] public string Storage { get; set; } = default!;
@@ -17,11 +17,30 @@ public partial class Charts(IAdminService adminService) : IRefreshableData, INod
     private RrdDataConsolidation RrdDataConsolidation { get; set; } = RrdDataConsolidation.Average;
     private IEnumerable<NodeStorageRrdData> Items { get; set; } = [];
 
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
+
     protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+
     public async Task RefreshDataAsync()
     {
-        Items = await adminService[ClusterName].CachedData.GetRrdDataAsync(Node, Storage, RrdDataTimeFrame, RrdDataConsolidation, false);
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
+
+        try
+        {
+            Items = await adminService[ClusterName].CachedData.GetRrdDataAsync(Node, Storage, RrdDataTimeFrame, RrdDataConsolidation, false);
+        }
+        finally
+        {
+            if (!_disposed) { _refreshLock.Release(); }
+        }
 
         if (!Items.Any()) { return; }
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        _refreshLock.Dispose();
     }
 }

@@ -7,7 +7,7 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 
 public partial class Tasks(DialogService dialogService,
-                           IAdminService adminService) : IRefreshableData, INode, IVmId, IClusterName
+                           IAdminService adminService) : IRefreshableData, INode, IVmId, IClusterName, IDisposable
 {
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Node { get; set; } = default!;
@@ -19,28 +19,39 @@ public partial class Tasks(DialogService dialogService,
     private bool ForVm => VmId > 0;
     private IEnumerable<NodeTask> Items { get; set; } = default!;
     private IList<NodeTask> SelectedItems { get; set; } = [];
+
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
     private bool _validColumnClick;
 
     protected override async Task OnInitializedAsync() => await RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
+
         IsLoading = true;
         SelectedItems.Clear();
 
-        var client = await adminService[ClusterName].GetPveClientAsync();
+        try
+        {
+            var client = await adminService[ClusterName].GetPveClientAsync();
 
-        Items = ForNode
-                    ? await client.Nodes[Node]
-                                  .Tasks.GetAsync(limit: 500,
-                                                  start: 0,
-                                                  vmid: ForVm
-                                                        ? Convert.ToInt32(VmId)
-                                                        : null)
-                    : await client.Cluster.Tasks.GetAsync();
-
-        IsLoading = false;
-        await InvokeAsync(StateHasChanged);
+            Items = ForNode
+                        ? await client.Nodes[Node]
+                                      .Tasks.GetAsync(limit: 500,
+                                                      start: 0,
+                                                      vmid: ForVm
+                                                            ? Convert.ToInt32(VmId)
+                                                            : null)
+                        : await client.Cluster.Tasks.GetAsync();
+        }
+        finally
+        {
+            IsLoading = false;
+            if (!_disposed) { _refreshLock.Release(); }
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task RowSelectAsync(NodeTask item)
@@ -64,5 +75,11 @@ public partial class Tasks(DialogService dialogService,
                                                                   .Tasks[item.UniqueTaskId]
                                                                   .Log.GetAsync(limit: 10000))
                                                      .JoinAsString(Environment.NewLine));
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        _refreshLock.Dispose();
     }
 }

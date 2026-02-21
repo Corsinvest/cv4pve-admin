@@ -19,6 +19,8 @@ public partial class Timeline(IAdminService adminService,
     private bool InRefresh { get; set; }
     private bool IsCalculateSnapshotSize { get; set; }
 
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
     private IEnumerable<VmDiskInfo> _disks = [];
 
     private record Data(DateTime Date, bool Status, int Count) : ISnapshotsSize
@@ -54,48 +56,55 @@ public partial class Timeline(IAdminService adminService,
 
     public async Task RefreshDataAsync()
     {
-        if (InRefresh) { return; }
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
+
         InRefresh = true;
 
-        var clusterClient = adminService[ClusterName];
-        AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
-
-        await using var db = await dbContextFactory.CreateDbContextAsync();
-
-        Items = [.. db.Results
-                      .Where(a => a.Job.ClusterName == ClusterName)
-                      .GroupBy(a => a.Start.Date)
-                      .OrderByDescending(a => a.Key)
-                      .Select(a => new Data(a.Key, a.Any(b => b.Status), a.Count()))
-                      .Take(10)];
-
-        await InvokeAsync(StateHasChanged);
-
-        if (AllowCalculateSnapshotSize)
+        try
         {
-            IsCalculateSnapshotSize = true;
+            var clusterClient = adminService[ClusterName];
+            AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
 
-            //snapshot size
-            _disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+            await using var db = await dbContextFactory.CreateDbContextAsync();
 
-            foreach (var item in Items)
+            Items = [.. db.Results
+                          .Where(a => a.Job.ClusterName == ClusterName)
+                          .GroupBy(a => a.Start.Date)
+                          .OrderByDescending(a => a.Key)
+                          .Select(a => new Data(a.Key, a.Any(b => b.Status), a.Count()))
+                          .Take(10)];
+
+            await InvokeAsync(StateHasChanged);
+
+            if (AllowCalculateSnapshotSize)
             {
-                var names = db.Results
-                              .Where(a => a.Job.ClusterName == ClusterName && a.Start.Date == item.Date)
-                              .Select(a => a.SnapName)
-                              .ToList();
+                IsCalculateSnapshotSize = true;
 
-                item.SnapshotsSize = names.Select(a => DiskInfoHelper.CalculateSnapshots(0, a, _disks))
-                                          .DefaultIfEmpty(0)
-                                          .Sum();
+                //snapshot size
+                _disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+
+                foreach (var item in Items)
+                {
+                    var names = db.Results
+                                  .Where(a => a.Job.ClusterName == ClusterName && a.Start.Date == item.Date)
+                                  .Select(a => a.SnapName)
+                                  .ToList();
+
+                    item.SnapshotsSize = names.Select(a => DiskInfoHelper.CalculateSnapshots(0, a, _disks))
+                                              .DefaultIfEmpty(0)
+                                              .Sum();
+                }
+
+                IsCalculateSnapshotSize = false;
             }
 
-            IsCalculateSnapshotSize = false;
+            await InvokeAsync(StateHasChanged);
         }
-
-        await InvokeAsync(StateHasChanged);
-
-        InRefresh = false;
+        finally
+        {
+            InRefresh = false;
+            if (!_disposed) { _refreshLock.Release(); }
+        }
     }
 
     private string GetTitle(Data item)
@@ -154,5 +163,10 @@ public partial class Timeline(IAdminService adminService,
         return items;
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        _disposed = true;
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _refreshLock.Dispose();
+    }
 }

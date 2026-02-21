@@ -74,8 +74,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
     public async Task RefreshDataAsync()
     {
-        if (_disposed) { return; }
-        if (!await _refreshLock.WaitAsync(0)) { return; }
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
         IsLoading = true;
 
         try
