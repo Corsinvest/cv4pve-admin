@@ -24,6 +24,9 @@ public partial class Status(IAdminService adminService,
     private bool AllowCalculateSnapshotSize { get; set; }
     private bool IsCalculateSnapshotSize { get; set; }
 
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
+
     protected override async Task OnInitializedAsync()
     {
         eventNotificationService.Subscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
@@ -34,50 +37,55 @@ public partial class Status(IAdminService adminService,
 
     public async Task RefreshDataAsync()
     {
-        if (IsLoading) { return; }
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
 
         IsLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        var settings = settingsService.GetForModule<Module, Settings>(ClusterName);
-
-        var vmIds = VmIds;
-        if (string.IsNullOrWhiteSpace(vmIds))
+        try
         {
-            await using var db = await dbContextFactory.CreateDbContextAsync();
-            vmIds = settings.SearchMode == SearchMode.Managed
-                        ? (await db.Jobs.FromClusterName(ClusterName)
-                                        .Select(a => a.VmIds)
-                                        .ToListAsync()).JoinAsString(",")
-                        : ActionHelper.AllVms;
-        }
+            var settings = settingsService.GetForModule<Module, Settings>(ClusterName);
 
-        var clusterClient = adminService[ClusterName];
-        AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
-
-        var data = await ActionHelper.GetInfoAsync(await clusterClient.GetPveClientAsync(), settings, loggerFactory, vmIds);
-
-        Items = [.. data];
-        SelectedItems.Clear();
-
-        IsLoading = false;
-
-        if (AllowCalculateSnapshotSize)
-        {
-            IsCalculateSnapshotSize = true;
-            await InvokeAsync(StateHasChanged);
-
-            //snapshot size
-            var disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
-            foreach (var item in Items)
+            var vmIds = VmIds;
+            if (string.IsNullOrWhiteSpace(vmIds))
             {
-                item.SnapshotsSize = DiskInfoHelper.CalculateSnapshots(item.VmId, item.Name, disks);
+                await using var db = await dbContextFactory.CreateDbContextAsync();
+                vmIds = settings.SearchMode == SearchMode.Managed
+                            ? (await db.Jobs.FromClusterName(ClusterName)
+                                            .Select(a => a.VmIds)
+                                            .ToListAsync()).JoinAsString(",")
+                            : ActionHelper.AllVms;
             }
 
-            IsCalculateSnapshotSize = false;
-        }
+            var clusterClient = adminService[ClusterName];
+            AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
 
-        await InvokeAsync(StateHasChanged);
+            var data = await ActionHelper.GetInfoAsync(await clusterClient.GetPveClientAsync(), settings, loggerFactory, vmIds);
+
+            Items = [.. data];
+            SelectedItems.Clear();
+
+            if (AllowCalculateSnapshotSize)
+            {
+                IsCalculateSnapshotSize = true;
+                await InvokeAsync(StateHasChanged);
+
+                //snapshot size
+                var disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+                foreach (var item in Items)
+                {
+                    item.SnapshotsSize = DiskInfoHelper.CalculateSnapshots(item.VmId, item.Name, disks);
+                }
+
+                IsCalculateSnapshotSize = false;
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+            if (!_disposed) { _refreshLock.Release(); }
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private void OnRender(DataGridRenderEventArgs<AutoSnapInfo> args)
@@ -124,5 +132,10 @@ public partial class Status(IAdminService adminService,
         }
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        _disposed = true;
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _refreshLock.Dispose();
+    }
 }

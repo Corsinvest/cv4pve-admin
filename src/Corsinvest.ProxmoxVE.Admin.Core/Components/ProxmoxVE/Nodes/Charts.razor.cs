@@ -22,8 +22,7 @@ public partial class Charts(IAdminService adminService) : IRefreshableData, INod
 
     public async Task RefreshDataAsync()
     {
-        if (_disposed) { return; }
-        if (!await _refreshLock.WaitAsync(0)) { return; }
+        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
         try
         {
             Items = await adminService[ClusterName].CachedData.GetRrdDataAsync(Node,
