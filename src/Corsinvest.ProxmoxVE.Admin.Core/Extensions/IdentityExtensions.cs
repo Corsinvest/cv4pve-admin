@@ -91,7 +91,7 @@ public static class IdentityExtensions
                 await roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, item.Key));
             }
 
-            await permissionService.AddForRoleAsync(role.Id, permissions.Select(a => (ApplicationHelper.AllClusterName, a.Key, "*", false, role.BuiltIn)));
+            await permissionService.AddForRoleAsync(role.Id, permissions.Select(a => new PermissionData(ApplicationHelper.AllClusterName, a.Key, "*", false, role.BuiltIn)));
         }
     }
 
@@ -125,7 +125,7 @@ public static class IdentityExtensions
         if (permissions.Count != 0)
         {
             await permissionService.RemoveForUserAsync(user.Id,
-                permissions.Select(a => (a.ClusterName, a.PermissionKey, a.Path)));
+                permissions.Select(a => new PermissionData(a.ClusterName, a.PermissionKey, a.Path)));
         }
 
         // Delete user
@@ -141,7 +141,7 @@ public static class IdentityExtensions
         if (permissions.Count != 0)
         {
             await permissionService.RemoveForRoleAsync(role.Id,
-                permissions.Select(a => (a.ClusterName, a.PermissionKey, a.Path)));
+                permissions.Select(a => new PermissionData(a.ClusterName, a.PermissionKey, a.Path)));
         }
 
         // Delete role

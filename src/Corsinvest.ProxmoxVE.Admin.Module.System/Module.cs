@@ -51,6 +51,8 @@ public class Module : ModuleBase
                              .CombineWith(Security.Permissions.Users.Permissions)
                              .CombineWith(Security.Permissions.Roles.Data)
                              .CombineWith(Security.Permissions.Roles.Permissions)
+                             .CombineWith(Security.Permissions.AppTokens.Data)
+                             .CombineWith(Security.Permissions.AppTokens.Permissions)
                              .CombineWith(BackgroundJobs.Permissions.Dashboard))];
     }
 
@@ -80,6 +82,11 @@ public class Module : ModuleBase
                     {
                         Render = new(typeof(Core.Components.SubscriptionRequired)),
                         Icon = "theater_comedy"
+                    },
+                    new(this,"App Tokens")
+                    {
+                        Render = new(typeof(Core.Components.SubscriptionRequired)),
+                        Icon = "vpn_key"
                     },
                     new(this,"Audit Logs")
                     {

@@ -20,6 +20,9 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
 {
     public DbSet<UserPermission> UserPermissions { get; set; } = default!;
     public DbSet<RolePermission> RolePermissions { get; set; } = default!;
+    public DbSet<AppToken> AppTokens { get; set; } = default!;
+    public DbSet<AppTokenRole> AppTokenRoles { get; set; } = default!;
+    public DbSet<AppTokenPermission> AppTokenPermissions { get; set; } = default!;
     public DbSet<SystemSettings> Settings { get; set; } = default!;
     public DbSet<AuditLog> AuditLogs { get; set; } = default!;
 
@@ -106,6 +109,43 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
                   .WithMany(a => a.Claims)
                   .HasForeignKey(a => a.RoleId)
                   .IsRequired()
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AppToken>(entity =>
+        {
+            entity.HasKey(a => a.Id);
+            entity.HasIndex(a => a.TokenHash).IsUnique();
+            entity.HasIndex(a => a.Name);
+
+            entity.HasOne(a => a.Owner)
+                  .WithMany()
+                  .HasForeignKey(a => a.OwnerId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<AppTokenRole>(entity =>
+        {
+            entity.HasKey(a => new { a.AppTokenId, a.RoleId });
+
+            entity.HasOne(a => a.AppToken)
+                  .WithMany(a => a.AppTokenRoles)
+                  .HasForeignKey(a => a.AppTokenId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(a => a.Role)
+                  .WithMany(a => a.AppTokenRoles)
+                  .HasForeignKey(a => a.RoleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AppTokenPermission>(entity =>
+        {
+            entity.HasIndex(a => new { a.AppTokenId, a.PermissionKey, a.Path, a.ClusterName }).IsUnique(false);
+
+            entity.HasOne(a => a.AppToken)
+                  .WithMany(a => a.AppTokenPermissions)
+                  .HasForeignKey(a => a.AppTokenId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
