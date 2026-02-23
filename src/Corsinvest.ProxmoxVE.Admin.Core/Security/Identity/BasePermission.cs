@@ -4,7 +4,7 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 
-public abstract class BasePermission : IId
+public abstract class BasePermission : IId, IClusterName
 {
     public int Id { get; set; }
     [Required] public string PermissionKey { get; set; } = default!;

@@ -22,4 +22,10 @@ public static class Permissions
         public static PermissionsCrud Data { get; } = new(BaseName, nameof(Roles), nameof(Data));
         public static PermissionsCrud Permissions { get; } = new(Data.Prefix, nameof(Permissions), "Permissions");
     }
+
+    public static class AppTokens
+    {
+        public static PermissionsCrud Data { get; } = new(BaseName, nameof(AppTokens), nameof(Data));
+        public static PermissionsCrud Permissions { get; } = new(Data.Prefix, nameof(Permissions), "Permissions");
+    }
 }

@@ -4,8 +4,8 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 
-public static class ApplicationClaimTypes
+public class AppTokenPermission : BasePermission
 {
-    public static string Permission { get; } = "Permission";
-    public static string AppTokenId { get; } = "AppTokenId";
+    public Guid AppTokenId { get; set; }
+    public virtual AppToken AppToken { get; set; } = default!;
 }

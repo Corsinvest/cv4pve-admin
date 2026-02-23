@@ -13,5 +13,6 @@ public class ApplicationRole : IdentityRole, IDescription, IBuiltIn
     public string Description { get; set; } = default!;
     public virtual ICollection<RolePermission> RolePermissions { get; set; } = [];
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = [];
+    public virtual ICollection<AppTokenRole> AppTokenRoles { get; set; } = [];
     public virtual ICollection<ApplicationRoleClaim> Claims { get; set; } = [];
 }

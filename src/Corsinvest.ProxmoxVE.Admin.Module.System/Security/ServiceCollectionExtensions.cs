@@ -4,6 +4,7 @@
  */
 using System.Threading.RateLimiting;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.AppTokens;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSecurityAdmin(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IEmailSender<ApplicationUser>, EmailSenderService>();
+        services.AddScoped<IAppTokenService, AppTokenService>();
 
         services.AddCascadingAuthenticationState();
         services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
@@ -31,6 +33,8 @@ public static class ServiceCollectionExtensions
             options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
         })
         .AddIdentityCookies();
+        //.AddScheme<AppTokenAuthenticationOptions, AppTokenAuthenticationHandler>(
+        //    AppTokenAuthenticationHandler.SchemeName, _ => { });
 
         services.ConfigureApplicationCookie(options =>
         {
@@ -156,7 +160,7 @@ public static class ServiceCollectionExtensions
             if (ClusterPermissions.RoleAdmin == item)
             {
                 await permissionService.AddForRoleAsync(role.Id,
-                                                        item.Permissions.Select(a => (ApplicationHelper.AllClusterName, a.Key, "*", true, true)));
+                                                        item.Permissions.Select(a => new PermissionData(ApplicationHelper.AllClusterName, a.Key, "*", true, true)));
             }
         }
 
