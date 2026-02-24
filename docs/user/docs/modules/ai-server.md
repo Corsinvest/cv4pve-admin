@@ -63,6 +63,38 @@ Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude C
 ### Claude Desktop and stdio-only clients
 
 Claude Desktop only supports stdio transport and cannot connect to HTTP MCP servers directly.
-Use the **MCP Bridge** included in the repository (`src/mcp-bridge/`) to proxy stdio ↔ HTTP.
+Use **cv4pve-mcp-bridge** to proxy stdio ↔ HTTP.
 
-See the [MCP Bridge README](https://github.com/Corsinvest/cv4pve-admin/blob/main/src/mcp-bridge/README.md) for setup instructions.
+#### cv4pve-mcp-bridge
+
+A lightweight bridge that reads JSON-RPC from stdin and forwards requests to the cv4pve-admin MCP endpoint via HTTP, returning SSE responses back to stdout.
+
+[Download from GitHub Releases :material-download:](https://github.com/Corsinvest/cv4pve-admin/releases){ .md-button .md-button--primary }
+[Documentation :material-book-open-variant:](https://github.com/Corsinvest/cv4pve-admin/blob/main/src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md){ .md-button }
+
+Pre-built binaries are available for Windows, Linux, and macOS. See the [Documentation :material-book-open-variant:](https://github.com/Corsinvest/cv4pve-admin/blob/main/src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md) for setup instructions.
+
+!!! tip
+    Use the **Bridge** tab in the AI Server module to download the binary for your platform and generate a ready-to-use `claude_desktop_config.json` pre-filled with your server URL.
+
+## Output Format
+
+The **Output Format** setting controls how tool responses are serialized before being sent to the AI model. Choosing the right format reduces token consumption and improves response quality.
+
+The table below shows the same request returned in each format, with approximate token counts as an example — actual values vary depending on dataset size.
+
+| Format | Description | Approx. tokens* |
+|--------|-------------|-----------------|
+| **JsonCompact** | JSON with `headers` + `rows` arrays | ~450 |
+| **JsonNormal** | Standard JSON array of objects | ~600 |
+| **Toon** | Token-Oriented Object Notation (`data[23]{...}`) | ~320 |
+| **Csv** | Plain CSV with header row | ~250 |
+
+*Approximate values for the same response payload — actual token count depends on dataset size.
+
+The default is **`JsonCompact`**, which offers a good balance between token efficiency and compatibility with all AI models.
+
+!!! tip "Choosing the right format"
+    - Use **Toon** or **Csv** to minimize token usage with large datasets.
+    - Use **JsonNormal** if your AI client has trouble parsing compact formats.
+    - Most AI models work well with the default **JsonCompact**.

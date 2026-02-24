@@ -63,6 +63,14 @@ docker compose down && docker compose up -d
 3. Configure your first Proxmox cluster — the setup dialog opens automatically
 4. **Change the default password** from Profile settings
 
+### Proxmox VE API Credentials
+
+When connecting a Proxmox cluster, assign the **`PVEAdmin`** role at path `/` to the Proxmox user or API token used by cv4pve-admin.
+
+!!! warning "Insufficient permissions"
+    Using a role with only a subset of privileges (e.g. `Sys.Audit` alone) will cause permission errors at runtime.
+    Always assign `PVEAdmin` at path `/` to ensure full functionality.
+
 !!! danger "Security Alert"
     Change the default `admin@local/Password123!` credentials immediately after setup!
 

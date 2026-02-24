@@ -79,6 +79,15 @@ jobs:
             -c Release \
             /p:ContainerRegistry=registry.hub.docker.com
 
+      - name: Build MCP Bridge binaries
+        run: |
+          MCP_PROJECT="src/Corsinvest.ProxmoxVE.Admin.McpBridge/Corsinvest.ProxmoxVE.Admin.McpBridge.csproj"
+          mkdir -p publish/mcp-bridge
+          for rid in win-x64 linux-x64 linux-arm64 osx-x64 osx-arm64; do
+            echo "➡ Building for $rid..."
+            dotnet publish "$MCP_PROJECT" -c Release -r "$rid" -o publish/mcp-bridge -p:AssemblyName="cv4pve-mcp-bridge-$rid"
+          done
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -87,3 +96,4 @@ jobs:
           body: ${{ steps.changelog.outputs.notes }}
           generate_release_notes: true
           prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          files: publish/mcp-bridge/cv4pve-mcp-bridge-*

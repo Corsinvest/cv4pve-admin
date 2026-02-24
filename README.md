@@ -106,7 +106,7 @@ For a complete feature comparison between **Community Edition (CE)** and **Enter
 
 ### Additional Resources
 - [Docker Compose Deployment](src/docker/README.md) - Complete Docker setup guide
-- [MCP Bridge for Claude Desktop](src/mcp-bridge/README.md) - AI assistant integration
+- [MCP Bridge for Claude Desktop](src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md) - AI assistant integration (pre-built binaries for Windows, Linux, macOS)
 
 ---
 
