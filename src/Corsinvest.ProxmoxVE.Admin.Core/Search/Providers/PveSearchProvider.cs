@@ -268,7 +268,7 @@ public class PveSearchProvider : ISearchProvider
         {
             DataSourceType.VmStopped => GetVms(a => !a.IsRunning && !a.IsUnknown),
             DataSourceType.VmRunning => GetVms(a => a.IsRunning),
-            DataSourceType.Vms => GetVms(_ => true == true),
+            DataSourceType.Vms => GetVms(_ => true),
 
             DataSourceType.Nodes => new DataSourceResult(
                 Data: resources.Where(r => r.ResourceType == ClusterResourceType.Node)

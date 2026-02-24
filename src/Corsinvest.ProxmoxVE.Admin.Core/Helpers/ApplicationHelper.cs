@@ -15,17 +15,19 @@ public static class ApplicationHelper
         Directory.CreateDirectory(UserProfileImagesPath);
     }
 
-    public static string AllClusterName { get; } = "*";
+    public const string AllClusterName = "*";
 
     public static bool IsRunningInEfTool
         => AppDomain.CurrentDomain.FriendlyName?.Contains("ef", StringComparison.OrdinalIgnoreCase) == true
             || Environment.CommandLine.Contains("ef", StringComparison.OrdinalIgnoreCase);
 
-    public static string ThemeName { get; } = "fluent";
-    public static string CookieThemeName { get; } = "cv4pve-admin-theme";
-    public static string RepoGitHub { get; } = "corsinvest/cv4pve-admin";
-    public static string DocumentationUrl { get; } = "https://corsinvest.github.io/cv4pve-admin";
-    private static string GitHubIssueBaseUrl { get; } = $"https://github.com/{RepoGitHub}/issues/new";
+    public const string ThemeName = "fluent";
+    public const string CookieThemeName = "cv4pve-admin-theme";
+    public const string RepoGitHub = "corsinvest/cv4pve-admin";
+    public const string GitHubRepoUrl = $"https://github.com/{RepoGitHub}";
+    public const string GitHubReleasesLatestDownloadUrl = $"{GitHubRepoUrl}/releases/latest/download";
+    public const string DocumentationUrl = "https://corsinvest.github.io/cv4pve-admin";
+    private const string GitHubIssueBaseUrl = $"{GitHubRepoUrl}/issues/new";
 
     public static string GetBugReportUrl(string environment)
         => $"{GitHubIssueBaseUrl}?template=bug_report.yml" +
@@ -44,18 +46,15 @@ public static class ApplicationHelper
         => $"{GitHubIssueBaseUrl}?title={Uri.EscapeDataString("Who's using cv4pve-admin?")}" +
            $"&body={Uri.EscapeDataString(body)}";
 
-    public static string UrlShopSubscription { get; } = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
+    public const string UrlShopSubscription = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
     public static string UrlNewPveConfig { get; set; } = default!;
-    public static bool IsInContainer => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
 
-    //public static string HelpUrl { get; } = "/doc/index.html";
-
-    public static string ExecutionPath => AppContext.BaseDirectory;
-    public static string ConfigPath => Path.Combine(ExecutionPath, "config");
-    public static string DataPath => Path.Combine(ExecutionPath, "data");
-    public static string ImagesPath => Path.Combine(DataPath, "images");
-    public static string UserProfileImagesPath => Path.Combine(ImagesPath, "user-profile");
-    public static string TempPath => Path.Combine(DataPath, "tmp");
-    public static string ModulesPath => Path.Combine(DataPath, "modules");
-    public static string ModuleComponentUrl { get; } = "/module/";
+    public static string ExecutionPath { get; } = AppContext.BaseDirectory;
+    public static string ConfigPath { get; } = Path.Combine(ExecutionPath, "config");
+    public static string DataPath { get; } = Path.Combine(ExecutionPath, "data");
+    public static string ImagesPath { get; } = Path.Combine(DataPath, "images");
+    public static string UserProfileImagesPath { get; } = Path.Combine(ImagesPath, "user-profile");
+    public static string TempPath { get; } = Path.Combine(DataPath, "tmp");
+    public static string ModulesPath { get; } = Path.Combine(DataPath, "modules");
+    public const string ModuleComponentUrl = "/module/";
 }

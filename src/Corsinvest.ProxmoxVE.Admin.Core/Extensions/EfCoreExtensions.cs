@@ -26,7 +26,7 @@ public static class EfCoreExtensions
     {
         if (!ApplicationHelper.IsRunningInEfTool)
         {
-            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+            var configuration = scope.GetRequiredService<IConfiguration>();
             var connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
             try
@@ -35,7 +35,7 @@ public static class EfCoreExtensions
             }
             catch (PostgresException ex)
             {
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<TContext>>();
+                var logger = scope.GetRequiredService<ILogger<TContext>>();
                 logger.LogWarning(ex, "Unable to initialize PostgreSQL extensions or collations. Some features may not be available.");
             }
 

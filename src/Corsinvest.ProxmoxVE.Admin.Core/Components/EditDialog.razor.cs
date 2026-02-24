@@ -18,23 +18,12 @@ public partial class EditDialog<TModelEditor>(DialogService dialogService) : IDi
     {
         ArgumentNullException.ThrowIfNull(Model);
 
-        if (EditContext != null)
-        {
-            EditContext.OnFieldChanged -= HandleFieldChanged;
-        }
-
+        EditContext?.OnFieldChanged -= HandleFieldChanged;
         EditContext = new(Model);
         EditContext.OnFieldChanged += HandleFieldChanged;
     }
 
-    public void Dispose()
-    {
-        if (EditContext != null)
-        {
-            EditContext.OnFieldChanged -= HandleFieldChanged;
-        }
-    }
-
+    public void Dispose() => EditContext?.OnFieldChanged -= HandleFieldChanged;
     private void HandleFieldChanged(object? sender, FieldChangedEventArgs e) => StateHasChanged();
 
     private async Task OnSubmitAsync(object model)

@@ -40,7 +40,7 @@ public partial class ResourceUsageGaugeStacked
 
     protected override void OnParametersSet()
     {
-        Items = Data.ToList();
+        Items = [.. Data];
         RadiusStep = Items.Count > 1 ? 0.22 : 0.0;
     }
 }
