@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -1106,6 +1106,14 @@
 <div class="admonition info">
 <p class="admonition-title">Configuration File Location</p>
 <p>The <code>appsettings.extra.json</code> file is automatically loaded by cv4pve-admin if present in the <code>config/</code> directory (mounted as <code>/app/config/</code> in Docker). This optional configuration file allows you to override default settings without modifying the main <code>appsettings.json</code> file. If the file does not exist, the application starts normally with default settings.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Merge behaviour</p>
+<ul>
+<li><strong>Scalar and object properties</strong> — merged: only the keys you specify are overridden, the rest keep their default values.</li>
+<li><strong>Duplicate scalar keys</strong> — the value in <code>appsettings.extra.json</code> wins (it is loaded last).</li>
+<li><strong>JSON arrays</strong> — <strong>fully replaced</strong>: if you override an array property (e.g. <code>Serilog.WriteTo</code>), the entire default array is discarded and only the values you provide are used. Make sure to include all entries you want to keep.</li>
+</ul>
 </div>
 <h2 id="connection-strings">Connection Strings<a class="headerlink" href="#connection-strings" title="Permanent link">&para;</a></h2>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>

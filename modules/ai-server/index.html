@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -948,8 +948,60 @@
 <p>Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) can connect directly using the URL above — no additional software needed.</p>
 <h3 id="claude-desktop-and-stdio-only-clients">Claude Desktop and stdio-only clients<a class="headerlink" href="#claude-desktop-and-stdio-only-clients" title="Permanent link">&para;</a></h3>
 <p>Claude Desktop only supports stdio transport and cannot connect to HTTP MCP servers directly.
-Use the <strong>MCP Bridge</strong> included in the repository (<code>src/mcp-bridge/</code>) to proxy stdio ↔ HTTP.</p>
-<p>See the <a href="https://github.com/Corsinvest/cv4pve-admin/blob/main/src/mcp-bridge/README.md">MCP Bridge README</a> for setup instructions.</p>
+Use <strong>cv4pve-mcp-bridge</strong> to proxy stdio ↔ HTTP.</p>
+<h4 id="cv4pve-mcp-bridge">cv4pve-mcp-bridge<a class="headerlink" href="#cv4pve-mcp-bridge" title="Permanent link">&para;</a></h4>
+<p>A lightweight bridge that reads JSON-RPC from stdin and forwards requests to the cv4pve-admin MCP endpoint via HTTP, returning SSE responses back to stdout.</p>
+<p><a class="md-button md-button--primary" href="https://github.com/Corsinvest/cv4pve-admin/releases">Download from GitHub Releases <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span></a>
+<a class="md-button" href="https://github.com/Corsinvest/cv4pve-admin/blob/main/src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md">Documentation <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg></span></a></p>
+<p>Pre-built binaries are available for Windows, Linux, and macOS. See the <a href="https://github.com/Corsinvest/cv4pve-admin/blob/main/src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md">Documentation <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg></span></a> for setup instructions.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use the <strong>Bridge</strong> tab in the AI Server module to download the binary for your platform and generate a ready-to-use <code>claude_desktop_config.json</code> pre-filled with your server URL.</p>
+</div>
+<h2 id="output-format">Output Format<a class="headerlink" href="#output-format" title="Permanent link">&para;</a></h2>
+<p>The <strong>Output Format</strong> setting controls how tool responses are serialized before being sent to the AI model. Choosing the right format reduces token consumption and improves response quality.</p>
+<p>The table below shows the same request returned in each format, with approximate token counts as an example — actual values vary depending on dataset size.</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Description</th>
+<th>Approx. tokens*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>JsonCompact</strong></td>
+<td>JSON with <code>headers</code> + <code>rows</code> arrays</td>
+<td>~450</td>
+</tr>
+<tr>
+<td><strong>JsonNormal</strong></td>
+<td>Standard JSON array of objects</td>
+<td>~600</td>
+</tr>
+<tr>
+<td><strong>Toon</strong></td>
+<td>Token-Oriented Object Notation (<code>data[23]{...}</code>)</td>
+<td>~320</td>
+</tr>
+<tr>
+<td><strong>Csv</strong></td>
+<td>Plain CSV with header row</td>
+<td>~250</td>
+</tr>
+</tbody>
+</table>
+<p>*Approximate values for the same response payload — actual token count depends on dataset size.</p>
+<p>The default is <strong><code>JsonCompact</code></strong>, which offers a good balance between token efficiency and compatibility with all AI models.</p>
+<div class="admonition tip">
+<p class="admonition-title">Choosing the right format</p>
+<ul>
+<li>Use <strong>Toon</strong> or <strong>Csv</strong> to minimize token usage with large datasets.</li>
+<li>Use <strong>JsonNormal</strong> if your AI client has trouble parsing compact formats.</li>
+<li>Most AI models work well with the default <strong>JsonCompact</strong>.</li>
+</ul>
+</div>
 
 
 

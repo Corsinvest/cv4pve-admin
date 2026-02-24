@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -598,6 +598,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="First Time Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proxmox-ve-api-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proxmox VE API Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1082,6 +1099,13 @@ Once you upgrade to a stable release, a valid subscription will be required to u
 <li>Configure your first Proxmox cluster — the setup dialog opens automatically</li>
 <li><strong>Change the default password</strong> from Profile settings</li>
 </ol>
+<h3 id="proxmox-ve-api-credentials">Proxmox VE API Credentials<a class="headerlink" href="#proxmox-ve-api-credentials" title="Permanent link">&para;</a></h3>
+<p>When connecting a Proxmox cluster, assign the <strong><code>PVEAdmin</code></strong> role at path <code>/</code> to the Proxmox user or API token used by cv4pve-admin.</p>
+<div class="admonition warning">
+<p class="admonition-title">Insufficient permissions</p>
+<p>Using a role with only a subset of privileges (e.g. <code>Sys.Audit</code> alone) will cause permission errors at runtime.
+Always assign <code>PVEAdmin</code> at path <code>/</code> to ensure full functionality.</p>
+</div>
 <div class="admonition danger">
 <p class="admonition-title">Security Alert</p>
 <p>Change the default <code>admin@local/Password123!</code> credentials immediately after setup!</p>

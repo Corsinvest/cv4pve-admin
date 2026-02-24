@@ -1,5 +1,9 @@
 /* Base font size to match official docs */
 
+/* Equal height admonitions in grid */
+.grid > div { display: flex; flex-direction: column; }
+.grid > div > .admonition { flex: 1; margin: 0; box-sizing: border-box; }
+
 /* EE/CE Badges */
 .ee, .ce {
   vertical-align: middle;
