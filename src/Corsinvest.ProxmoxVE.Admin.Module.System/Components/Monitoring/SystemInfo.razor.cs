@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Corsinvest.ProxmoxVE.Admin.Core;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 using SysFileInfo = System.IO.FileInfo;
 
@@ -22,7 +23,7 @@ public partial class SystemInfo(IReleaseService releaseService)
         var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 
         var latestRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: Core.BuildInfo.IsTesting);
-        var isInContainer = ApplicationHelper.IsInContainer;
+        var isInContainer = BuildInfo.IsInContainer;
 
         // Get network info
         var hostName = Dns.GetHostName();

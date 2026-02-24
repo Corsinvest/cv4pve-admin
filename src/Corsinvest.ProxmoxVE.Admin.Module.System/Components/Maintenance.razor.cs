@@ -97,9 +97,10 @@ public partial class Maintenance(IAdminService adminService,
     // Database Maintenance
     private async Task CleanupAuditLogsAsync()
     {
-        if (await dialogService.Confirm(
+        if (await dialogService.ConfirmAsync(
             L["Are you sure you want to delete audit logs older than {0} days?", AuditLogRetentionDays],
-            L["Confirm Cleanup Audit Logs"]) == true)
+            L["Confirm Cleanup Audit Logs"],
+            true))
         {
             IsCleanupAuditLogsBusy = true;
             try
@@ -126,9 +127,10 @@ public partial class Maintenance(IAdminService adminService,
 
     private async Task CleanupSystemLogsAsync()
     {
-        if (await dialogService.Confirm(
+        if (await dialogService.ConfirmAsync(
             L["Are you sure you want to delete system logs older than {0} days?", SystemLogsRetentionDays],
-            L["Confirm Cleanup System Logs"]) == true)
+            L["Confirm Cleanup System Logs"],
+            true))
         {
             IsCleanupSystemLogsBusy = true;
             try
@@ -152,7 +154,7 @@ public partial class Maintenance(IAdminService adminService,
 
     private async Task DbReindexAsync()
     {
-        if (await dialogService.Confirm(L["Are you sure you want to reindex the database?"], L["Confirm Database Reindex"]) == true)
+        if (await dialogService.ConfirmAsync(L["Are you sure you want to reindex the database?"], L["Confirm Database Reindex"], true))
         {
             using var scope = serviceScopeFactory.CreateScope();
             IsDbReindexBusy = true;
@@ -188,7 +190,7 @@ public partial class Maintenance(IAdminService adminService,
 
     private async Task DbOptimizeAsync()
     {
-        if (await dialogService.Confirm(L["Are you sure you want to optimize the database?"], L["Confirm Database Optimize"]) == true)
+        if (await dialogService.ConfirmAsync(L["Are you sure you want to optimize the database?"], L["Confirm Database Optimize"], true))
         {
             using var scope = serviceScopeFactory.CreateScope();
             IsOptimizeDDatabaseBusy = true;
@@ -225,7 +227,7 @@ public partial class Maintenance(IAdminService adminService,
     // Cache Management
     private async Task ClearMemoryCacheAsync()
     {
-        if (await dialogService.Confirm(L["Are you sure you want to clear the memory cache?"], L["Confirm Clear Memory Cache"]) == true)
+        if (await dialogService.ConfirmAsync(L["Are you sure you want to clear the memory cache?"], L["Confirm Clear Memory Cache"], true))
         {
             IsClearMemoryCacheBusy = true;
             try
@@ -251,7 +253,7 @@ public partial class Maintenance(IAdminService adminService,
     // Job Management
     private async Task CleanupFailedJobsAsync()
     {
-        if (await dialogService.Confirm(L["Are you sure you want to clean up the failed jobs?"], L["Confirm Cleanup Failed Jobs"]) == true)
+        if (await dialogService.ConfirmAsync(L["Are you sure you want to clean up the failed jobs?"], L["Confirm Cleanup Failed Jobs"], true))
         {
             IsCleanupFailedJobsBusy = true;
             try

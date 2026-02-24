@@ -86,7 +86,7 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
 
     private void Scan()
     {
-        backgroundJobService.Schedule<Job>(a => a.ScanFromResultAsync(ClusterName), TimeSpan.FromSeconds(5));
+        backgroundJobService.Schedule<Job>(a => a.ScanAsync(ClusterName), TimeSpan.FromSeconds(5));
         notificationService.Info(L["Scan started!"]);
     }
 
