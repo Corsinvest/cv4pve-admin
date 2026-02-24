@@ -372,19 +372,17 @@ public class PermissionService(ICurrentUserService currentUserService,
         var currentNonBuiltIn = current.Where(a => !a.BuiltIn).ToList();
         var newNonBuiltIn = newItems.Where(a => !a.BuiltIn).ToList();
 
-        var toRemove = currentNonBuiltIn
-            .Where(c => !newNonBuiltIn.Any(a => a.ClusterName == c.ClusterName
-                                                && a.PermissionKey == c.PermissionKey
-                                                && a.Path == c.Path))
-            .Select(a => new PermissionData(a.ClusterName, a.PermissionKey, a.Path))
-            .ToList();
+        var toRemove = currentNonBuiltIn.Where(c => !newNonBuiltIn.Any(a => a.ClusterName == c.ClusterName
+                                                                            && a.PermissionKey == c.PermissionKey
+                                                                            && a.Path == c.Path))
+                                        .Select(a => new PermissionData(a.ClusterName, a.PermissionKey, a.Path))
+                                        .ToList();
 
-        var toAdd = newNonBuiltIn
-            .Where(n => !currentNonBuiltIn.Any(a => a.ClusterName == n.ClusterName
-                                                    && a.PermissionKey == n.PermissionKey
-                                                    && a.Path == n.Path))
-            .Select(a => new PermissionData(a.ClusterName, a.PermissionKey, a.Path, a.Propagated, a.BuiltIn))
-            .ToList();
+        var toAdd = newNonBuiltIn.Where(n => !currentNonBuiltIn.Any(a => a.ClusterName == n.ClusterName
+                                                                            && a.PermissionKey == n.PermissionKey
+                                                                            && a.Path == n.Path))
+                                 .Select(a => new PermissionData(a.ClusterName, a.PermissionKey, a.Path, a.Propagated, a.BuiltIn))
+                                 .ToList();
 
         return (toRemove, toAdd);
     }

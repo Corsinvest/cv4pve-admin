@@ -1,0 +1,121 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *@
+@inherits AdminComponentBase
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["Flat"]" Icon="list">
+            <RadzenDataGrid TItem="ResolvedPermission"
+                            Data="@Items"
+                            AllowFiltering="true"
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="false"
+                            AllowSorting="true"
+                            AllowVirtualization="true"
+                            AllowColumnPicking="true"
+                            Style="height: calc(100vh - 160px);"
+                            FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                <Columns>
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.Source)" Title="" Width="48px" Filterable="false" Sortable="false">
+                        <Template Context="item">
+                            @if (item.Source == PermissionSource.Direct)
+                            {
+                                <RadzenIcon Icon="security" style="color: var(--rz-primary)" title="@L["Direct permission"]" />
+                            }
+                            else
+                            {
+                                <RadzenIcon Icon="badge" style="color: var(--rz-success)" title="@L["From role: {0}", item.RoleName]" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.SourceLabel)" Title="@L["Source"]" Width="180px" />
+
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.Description)" Title="@L["Permission"]">
+                        <Template Context="item">
+                            <span title="@item.PermissionKey">@item.Description</span>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.PermissionKey)" Title="@L["Key"]" Visible="false" />
+
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.ClusterName)" Title="@L["Cluster"]" />
+
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.Path)" Title="@L["Path"]" />
+
+                    <RadzenDataGridColumn TItem="ResolvedPermission" Property="@nameof(ResolvedPermission.RoleName)" Title="@L["Role"]" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+
+        <RadzenTabsItem Text="@L["Tree"]" Icon="account_tree">
+            <RadzenDataGrid TItem="TreeNode"
+                            Data="@RootNodes"
+                            AllowFiltering="false"
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="false"
+                            AllowSorting="false"
+                            AllowVirtualization="false"
+                            Style="height: calc(100vh - 160px);"
+                            RowRender="TreeRowRender"
+                            LoadChildData="TreeLoadChildData"
+                            HierarchyMode="HierarchyMode.Enabled">
+                <Columns>
+                    <RadzenDataGridColumn TItem="TreeNode" Property="@nameof(TreeNode.Label)" Title="@L["Permission"]">
+                        <Template Context="node">
+                            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.4rem">
+                                @if (node.IsLeaf)
+                                {
+                                    @if (node.Source == PermissionSource.Direct)
+                                    {
+                                        <RadzenIcon Icon="security" style="color: var(--rz-primary); font-size:1rem" title="@L["Direct permission"]" />
+                                    }
+                                    else if (node.Source == PermissionSource.Role)
+                                    {
+                                        <RadzenIcon Icon="badge" style="color: var(--rz-success); font-size:1rem" title="@L["From role: {0}", node.RoleName]" />
+                                    }
+                                    else
+                                    {
+                                        <RadzenIcon Icon="security badge" style="color: var(--rz-warning); font-size:1rem" title="@L["Direct and from role"]" />
+                                    }
+                                }
+                                else
+                                {
+                                    <RadzenIcon Icon="folder" style="font-size:1rem" />
+                                }
+                                <span>@node.Label</span>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="TreeNode" Property="@nameof(TreeNode.ClusterName)" Title="@L["Cluster"]" Width="160px">
+                        <Template Context="node">
+                            @if (node.IsLeaf) { @node.ClusterName }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="TreeNode" Property="@nameof(TreeNode.Path)" Title="@L["Path"]" Width="160px">
+                        <Template Context="node">
+                            @if (node.IsLeaf) { @node.Path }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="TreeNode" Property="@nameof(TreeNode.RoleName)" Title="@L["Role"]" Width="160px">
+                        <Template Context="node">
+                            @if (node.IsLeaf) { @node.RoleName }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="TreeNode" Property="@nameof(TreeNode.SourceLabel)" Title="@L["Source"]" Width="180px">
+                        <Template Context="node">
+                            @if (node.IsLeaf) { @node.SourceLabel }
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>

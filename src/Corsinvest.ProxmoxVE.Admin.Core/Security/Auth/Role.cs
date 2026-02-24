@@ -13,4 +13,7 @@ public record Role(string Key,
                    IEnumerable<Permission> Permissions)
 {
     public Role(IEnumerable<Permission> Permissions) : this(string.Empty, string.Empty, false, true, Permissions) { }
+
+    public static Role Extended(Role role, IEnumerable<Permission> additionalPermissions)
+        => new(role.Key, role.Description, role.Default, role.BuiltIn, role.Permissions.Concat(additionalPermissions).Distinct());
 }

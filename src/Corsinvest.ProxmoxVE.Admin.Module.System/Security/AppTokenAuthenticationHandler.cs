@@ -8,8 +8,6 @@ using Microsoft.Extensions.Options;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security;
 
-public class AppTokenAuthenticationOptions : AuthenticationSchemeOptions { }
-
 public class AppTokenAuthenticationHandler(
     IOptionsMonitor<AppTokenAuthenticationOptions> options,
     ILoggerFactory logger,
