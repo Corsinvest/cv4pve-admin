@@ -30,8 +30,8 @@ public partial class Login(NavigationManager navigationManager,
     protected override async Task OnInitializedAsync()
     {
 #if DEBUG
-        Input.Username = "admin@local";
-        Input.Password = "Password123!";
+        Input.Username = ApplicationHelper.DefaultAdminUsername;
+        Input.Password = ApplicationHelper.DefaultAdminPassword;
 #endif
 
         if (HttpContext != null && HttpMethods.IsGet(HttpContext.Request.Method))

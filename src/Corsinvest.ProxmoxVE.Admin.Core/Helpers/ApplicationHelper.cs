@@ -17,6 +17,9 @@ public static class ApplicationHelper
 
     public const string AllClusterName = "*";
 
+    public const string DefaultAdminUsername = "admin@local";
+    public const string DefaultAdminPassword = "Password123!";
+
     public static bool IsRunningInEfTool
         => AppDomain.CurrentDomain.FriendlyName?.Contains("ef", StringComparison.OrdinalIgnoreCase) == true
             || Environment.CommandLine.Contains("ef", StringComparison.OrdinalIgnoreCase);

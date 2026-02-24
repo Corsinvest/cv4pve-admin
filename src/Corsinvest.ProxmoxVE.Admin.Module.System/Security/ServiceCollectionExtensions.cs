@@ -120,22 +120,21 @@ public static class ServiceCollectionExtensions
         logger.LogDebug("Initialize Security db");
 
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        const string email = "admin@local";
-        var adminUser = await userManager.FindByEmailAsync(email);
+        var adminUser = await userManager.FindByEmailAsync(ApplicationHelper.DefaultAdminUsername);
         if (adminUser == null)
         {
             adminUser = new ApplicationUser
             {
-                UserName = email,
+                UserName = ApplicationHelper.DefaultAdminUsername,
                 IsActive = true,
                 DisplayName = "Admin",
-                Email = email,
+                Email = ApplicationHelper.DefaultAdminUsername,
                 EmailConfirmed = true,
                 BuiltIn = true
             };
 
             //default password
-            await userManager.CreateAsync(adminUser, "Password123!");
+            await userManager.CreateAsync(adminUser, ApplicationHelper.DefaultAdminPassword);
         }
 
         var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
