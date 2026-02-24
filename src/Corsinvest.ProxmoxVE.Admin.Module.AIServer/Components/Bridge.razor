@@ -1,0 +1,74 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem" class="rz-panel">
+    <RadzenText TextStyle="TextStyle.Body1">
+        @L["cv4pve-mcp-bridge is a lightweight bridge that connects stdio-only AI clients (e.g. Claude Desktop) to the cv4pve-admin MCP endpoint via HTTP."]
+    </RadzenText>
+
+    @* ── Downloads ── *@
+    <RadzenFieldset>
+        <RadzenStack Gap="0.5rem">
+            <RadzenText TextStyle="TextStyle.Body2">
+                @L["Download the pre-built binary for your platform. On Linux/macOS run"] <code>chmod +x</code> @L["after download."]
+            </RadzenText>
+            <RadzenDataGrid Data="@_platforms" TItem="PlatformInfo" AllowSorting="false" ShowPagingSummary="false"
+                            PagerHorizontalAlign="HorizontalAlign.Left" AllowPaging="false" Density="Density.Compact">
+                <Columns>
+                    <RadzenDataGridColumn TItem="PlatformInfo" Property="@nameof(PlatformInfo.Icon)" Width="48px" TextAlign="TextAlign.Center" Sortable="false" Filterable="false">
+                        <Template Context="p">
+                            <RadzenIcon Icon="@p.Icon" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="PlatformInfo" Property="@nameof(PlatformInfo.Platform)" Title="@L["Platform"]" Width="220px" />
+                    <RadzenDataGridColumn TItem="PlatformInfo" Property="@nameof(PlatformInfo.File)" Title="@L["File"]" />
+                    <RadzenDataGridColumn TItem="PlatformInfo" Width="120px" Title="@L["Download"]" TextAlign="TextAlign.Center">
+                        <Template Context="p">
+                            <RadzenButton Icon="download" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary"
+                                          Click="@(() => DownloadBinaryAsync(p))" title="@L["Download"]" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenStack>
+    </RadzenFieldset>
+
+    @* ── Claude Desktop Config ── *@
+    <RadzenFieldset Text="@L["Claude Desktop Configuration"]">
+        <RadzenStack Gap="0.75rem">
+            <RadzenText TextStyle="TextStyle.Body2">
+                @L["Generate a ready-to-use"] <code>claude_desktop_config.json</code> @L["for this server. Set the path to your downloaded binary before using it."]
+            </RadzenText>
+
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                <RadzenFormField Text="@L["App Token"]" Style="min-width:280px; flex:1">
+                    <RadzenPassword @bind-Value="@_apiToken" Placeholder="@L["Paste your App Token here"]" />
+                </RadzenFormField>
+                <RadzenFormField Text="@L["Binary path"]" Style="min-width:320px; flex:1">
+                    <RadzenTextBox @bind-Value="@_binaryPath" Placeholder="@L["/path/to/cv4pve-mcp-bridge"]" />
+                </RadzenFormField>
+                <RadzenButton Icon="download" ButtonStyle="ButtonStyle.Primary"
+                              Click="@DownloadClaudeConfigAsync"
+                              Text="@L["Download"]" />
+                <RadzenButton Icon="content_copy" ButtonStyle="ButtonStyle.Light"
+                              Click="@CopyClaudeConfigAsync"
+                              Text="@L["Copy to clipboard"]" />
+            </RadzenStack>
+
+            @if (_insecure)
+            {
+                <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false">
+                    @L["The server is using HTTP — the config will include --insecure to disable SSL validation. Do not use in production."]
+                </RadzenAlert>
+            }
+
+            <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color)">
+                @L["MCP endpoint:"] <code>@_mcpUrl</code>
+            </RadzenText>
+        </RadzenStack>
+    </RadzenFieldset>
+
+</RadzenStack>

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text;
-using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
-using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
+using Corsinvest.ProxmoxVE.Admin.Module.AIServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -16,6 +16,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.AIServer;
 
 public class Module : ModuleBase
 {
+    public const string AppTokenName = "AI Server";
+    public const string RoleName = "AI Server Tools";
+    private const string HeaderApiKey = "X-API-Key";
+
     public Module()
     {
         Keywords = "mcp,protocol,ai,integration,api,claude,assistant,tools,llm,context";
@@ -23,7 +27,7 @@ public class Module : ModuleBase
         Name = "AI Server";
         Description = "Model Context Protocol server for AI integration with Proxmox VE";
         Category = Categories.Utilities;
-        Scope = ClusterScope.Single;
+        Scope = ClusterScope.All;
         Slug = "ai-server";
         HelpUrl = "modules/ai-server";
 
@@ -33,10 +37,15 @@ public class Module : ModuleBase
                 Render = new(typeof(Components.Overview)),
                 Icon = PveAdminUIHelper.Icons.Overview
             },
-            new(this,"Status")
+            new(this,"API Access")
             {
-                Render = new(typeof(Components.Status)),
+                Render = new(typeof(Components.ApiAccess)),
                 Icon = PveAdminUIHelper.Icons.Status
+            },
+            new(this,"Bridge")
+            {
+                Render = new(typeof(Components.Bridge)),
+                Icon = "cable"
             }
         ];
 
@@ -45,81 +54,104 @@ public class Module : ModuleBase
             Icon = "hub",
             Render = NavBar.ToList()[0].Render
         };
+
+        Roles =
+        [
+            new(RoleName,
+                "AI Server Tools",
+                false,
+                true,
+                [Permissions.Tools.ListNodes,
+                 Permissions.Tools.ListVms,
+                 Permissions.Tools.ListSnapshots,
+                 Permissions.Tools.ListPools,
+                 Permissions.Tools.ListStorage])
+        ];
     }
 
-    protected override string PermissionBaseKey => "AiServer";
+    protected override string PermissionBaseKey => Permissions.BaseName;
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         AddSettings<Settings, Components.RenderSettings>(services);
+        services.AddScoped<IAiServerService, AiServerService>();
 
         services.AddMcpServer()
                 .WithHttpTransport()
                 .WithTools(GetTools());
     }
 
-    protected virtual IEnumerable<Type> GetTools() => [typeof(Tools.VmTools)];
+    public override Task FixAsync(IServiceScope scope) => RunAsync(scope);
+
+    protected override async Task RunAsync(IServiceScope scope)
+    {
+        // Create default app token with role
+        var appTokenService = scope.GetRequiredService<IAppTokenService>();
+        var token = await appTokenService.GetByName(AppTokenName);
+        if (token is null)
+        {
+            (_, token) = await appTokenService.GenerateAsync(AppTokenName, null, null);
+        }
+
+        await appTokenService.SyncRolesAsync(token.Id, [RoleName, ClusterPermissions.RoleAdmin.Key]);
+    }
+
+    protected virtual IEnumerable<Type> GetTools() => [typeof(Tools.ClusterTools), typeof(Tools.VmTools)];
 
     protected override void Map(WebApplication app) =>
-        app.MapMcp("/mcp/{clusterName}")
+        app.MapMcp("/mcp")
            .AddEndpointFilter(async (context, next) =>
            {
                var httpContext = context.HttpContext;
                using var scope = httpContext.RequestServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-               var settingsService = scope.ServiceProvider.GetRequiredService<ISettingsService>();
+               var settingsService = scope.GetRequiredService<ISettingsService>();
                var logger = httpContext.RequestServices.GetRequiredService<ILogger<Module>>();
 
-               // Get cluster name from route values
-               var clusterNameFromRoute = httpContext.GetRouteValue("clusterName")?.ToString();
-               if (string.IsNullOrWhiteSpace(clusterNameFromRoute))
+               // Get settings
+               var settings = settingsService.GetForModule<Module, Settings>(ApplicationHelper.AllClusterName);
+               if (!settings.Enabled)
                {
-                   return Results.Json(new { error = "Cluster name required" }, statusCode: 400);
+                   httpContext.Response.StatusCode = 503;
+                   await httpContext.Response.WriteAsJsonAsync(new { error = "MCP Server is disabled" });
+                   return Results.Empty;
                }
 
-               // Find the real cluster name with correct capitalization
-               var clusterName = settingsService.GetEnabledClustersSettings()
-                                                .FirstOrDefault(c => c.Name.Equals(clusterNameFromRoute, StringComparison.OrdinalIgnoreCase))?.Name;
-
-               if (string.IsNullOrWhiteSpace(clusterName))
+               if (!httpContext.Request.Headers.TryGetValue(HeaderApiKey, out var apiKey))
                {
-                   return Results.Json(new { error = $"Cluster '{clusterNameFromRoute}' not found or disabled" }, statusCode: 400);
+                   httpContext.Response.StatusCode = 401;
+                   await httpContext.Response.WriteAsJsonAsync(new { error = $"'{HeaderApiKey}' API Key required" });
+                   return Results.Empty;
                }
 
-               // Get settings for the specific cluster
-               var settings = settingsService.GetForModule<Module, Settings>(clusterName);
-               if (!settings.Enabled) { return Results.Json(new { error = "MCP Server is disabled for this cluster" }, statusCode: 503); }
-
-               if (!httpContext.Request.Headers.TryGetValue("X-API-Key", out var apiKey))
+               var appTokenService = scope.GetRequiredService<IAppTokenService>();
+               var token = await appTokenService.ValidateAsync(apiKey!);
+               if (token is null)
                {
-                   return Results.Json(new { error = "API Key required" }, statusCode: 401);
+                   await scope.GetRequiredService<IAuditService>().LogAsync("MCP.Auth", false, $"Invalid or expired token: {apiKey!.ToString()[..Math.Min(8, apiKey!.ToString().Length)]}...");
+                   await scope.GetEventNotificationService().PublishAsync(new McpAuthFailedNotification());
+                   httpContext.Response.StatusCode = 401;
+                   await httpContext.Response.WriteAsJsonAsync(new { error = "Invalid or expired token" });
+                   return Results.Empty;
                }
 
-               if (!string.Equals(apiKey, settings.ApiToken, StringComparison.Ordinal))
-               {
-                   return Results.Json(new { error = "Invalid API Key" }, statusCode: 401);
-               }
+               httpContext.User = new ClaimsPrincipal(new ClaimsIdentity([
+                   new Claim(ApplicationClaimTypes.AppTokenId, token.Id.ToString())
+               ], "AppToken"));
 
-               httpContext.Items["ClusterName"] = clusterName;
-               logger.LogInformation("MCP request for cluster {Cluster}", clusterName);
-
+#if DEBUG
                httpContext.Request.EnableBuffering();
 
-               using var reader = new StreamReader(
-                   httpContext.Request.Body,
-                   Encoding.UTF8,
-                   detectEncodingFromByteOrderMarks: false,
-                   leaveOpen: true
-               );
+               using var reader = new StreamReader(httpContext.Request.Body,
+                                                   Encoding.UTF8,
+                                                   detectEncodingFromByteOrderMarks: false,
+                                                   leaveOpen: true);
 
-               string body = await reader.ReadToEndAsync();
-
-               // Riporta lo stream all'inizio (fondamentale)
+               var body = await reader.ReadToEndAsync();
                httpContext.Request.Body.Position = 0;
 
-               // Stampa / log
                Debug.WriteLine("=============================");
                Debug.WriteLine(body);
-
+#endif
                return await next(context);
            });
 }

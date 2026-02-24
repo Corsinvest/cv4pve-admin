@@ -1,0 +1,19 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+@if (!McpEnabled)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" Text="@L["MCP Server is disabled"]" />
+}
+
+@if (McpAuthFailed)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="true" Close="@(() => McpAuthFailed = false)">
+        @L["Invalid API Key detected — an unauthorized access attempt was made to the MCP endpoint. Check the audit log for details."]
+    </RadzenAlert>
+}
+
+<AppTokenPermissionsGrid Permissions="@ToolPermissions" />

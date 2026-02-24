@@ -7,6 +7,8 @@
   <ItemGroup>
     <PackageReference Include="ModelContextProtocol" />
     <PackageReference Include="ModelContextProtocol.AspNetCore" />
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="ToonEncoder" />
   </ItemGroup>
 
 </Project>
