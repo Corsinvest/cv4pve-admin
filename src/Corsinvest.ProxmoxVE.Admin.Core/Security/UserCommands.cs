@@ -18,7 +18,7 @@ public static class UserCommands
         var usernameOption = new Option<string>(name: "--username", "-u")
         {
             Description = "Username to reset password for",
-            DefaultValueFactory = _ => "admin@local",
+            DefaultValueFactory = _ => ApplicationHelper.DefaultAdminUsername,
             Required = true
         };
 
