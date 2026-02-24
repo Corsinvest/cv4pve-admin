@@ -91,7 +91,11 @@ public static class IdentityExtensions
                 await roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, item.Key));
             }
 
-            await permissionService.AddForRoleAsync(role.Id, permissions.Select(a => new PermissionData(ApplicationHelper.AllClusterName, a.Key, "*", false, role.BuiltIn)));
+            await permissionService.AddForRoleAsync(role.Id, permissions.Select(a => new PermissionData(ApplicationHelper.AllClusterName,
+                                                                                                        a.Key,
+                                                                                                        "*",
+                                                                                                        false,
+                                                                                                        role.BuiltIn)));
         }
     }
 
@@ -114,6 +118,26 @@ public static class IdentityExtensions
     {
         var rolesIndDb = await userManager.GetRolesAsync(user);
         return await userManager.AddToRolesAsync(user, roles.Where(a => !rolesIndDb.Contains(a)));
+    }
+
+    public static async Task<IdentityResult> SyncRolesAsync(this UserManager<ApplicationUser> userManager,
+                                                             ApplicationUser user,
+                                                             IEnumerable<string> roles)
+    {
+        var rolesList = roles.ToList();
+        var rolesInDb = await userManager.GetRolesAsync(user);
+        var toRemove = rolesInDb.Except(rolesList).ToList();
+        var toAdd = rolesList.Except(rolesInDb).ToList();
+
+        if (toRemove.Count > 0)
+        {
+            var result = await userManager.RemoveFromRolesAsync(user, toRemove);
+            if (!result.Succeeded) { return result; }
+        }
+
+        return toAdd.Count > 0
+            ? await userManager.AddToRolesAsync(user, toAdd)
+            : IdentityResult.Success;
     }
 
     public static async Task<IdentityResult> DeleteExAsync(this UserManager<ApplicationUser> userManager,

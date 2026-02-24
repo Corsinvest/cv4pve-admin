@@ -30,14 +30,8 @@ public static class ServiceScopeExtensions
     public static EventNotificationService GetEventNotificationService(this IServiceScope scope) => scope.GetRequiredService<EventNotificationService>();
 
     public static async Task<TContext> GetDbContextAsync<TContext>(this IServiceScope scope) where TContext : DbContext
-    {
-        var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<TContext>>();
-        return await factory.CreateDbContextAsync();
-    }
+            => await scope.GetRequiredService<IDbContextFactory<TContext>>().CreateDbContextAsync();
 
     public static TContext GetDbContext<TContext>(this IServiceScope scope) where TContext : DbContext
-    {
-        var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<TContext>>();
-        return factory.CreateDbContext();
-    }
+        => scope.GetRequiredService<IDbContextFactory<TContext>>().CreateDbContext();
 }

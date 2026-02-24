@@ -86,7 +86,7 @@ public partial class HelpMenu(ISettingsService settingsService,
             }
         }
 
-        envBuilder.AppendLine($"- Deployment: {(ApplicationHelper.IsInContainer ? "Docker" : "Native")}");
+        envBuilder.AppendLine($"- Deployment: {(BuildInfo.IsInContainer ? "Docker" : "Native")}");
         envBuilder.AppendLine($"- Browser: {detectionService.Browser.Name} {detectionService.Browser.Version}");
         envBuilder.AppendLine($"- Platform: {detectionService.Platform.Name} {detectionService.Platform.Version}");
 

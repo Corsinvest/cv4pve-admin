@@ -19,6 +19,7 @@ public static class BuildInfo
     public static readonly string RepoDockerHub = string.Empty;
     public static readonly DateTime BuildDate;
     public static readonly bool IsTestingExpired;
+    public static bool IsInContainer { get; }
 
     static BuildInfo()
     {
@@ -52,5 +53,7 @@ public static class BuildInfo
 
         BuildDate = File.GetLastWriteTimeUtc(assembly.Location);
         IsTestingExpired = IsTesting && DateTime.UtcNow > BuildDate.AddMonths(TestingExpirationMonths);
+
+        IsInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
     }
 }
