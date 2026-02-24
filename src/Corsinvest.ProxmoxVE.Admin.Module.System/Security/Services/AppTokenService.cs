@@ -4,11 +4,13 @@
  */
 using System.Security.Cryptography;
 using System.Text;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.AppTokens;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
 
-public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory) : IAppTokenService
+public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory,
+                             IAuditService auditService) : IAppTokenService
 {
     public async Task<(string RawToken, AppToken Token)> GenerateAsync(string name, string? ownerId, DateTime? expiresAt)
     {
@@ -30,6 +32,8 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         db.AppTokens.Add(token);
         await db.SaveChangesAsync();
 
+        await auditService.LogAsync("AppTokens.Create", true, $"Token: {token.Name}");
+
         return (rawToken, token);
     }
 
@@ -38,11 +42,11 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         var hash = HashToken(rawToken);
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var token = await db.AppTokens
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(a => a.TokenHash == hash);
-
-        return token is { IsValid: true } ? token : null;
+        return await db.AppTokens
+                       .AsNoTracking()
+                       .FirstOrDefaultAsync(a => a.TokenHash == hash
+                                                    && a.IsActive
+                                                    && (a.ExpiresAt == null || a.ExpiresAt > DateTime.UtcNow));
     }
 
     public async Task RevokeAsync(Guid id)
@@ -53,12 +57,39 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
                 .ExecuteUpdateAsync(s => s.SetProperty(a => a.IsActive, false));
     }
 
+    public async Task<string> RegenerateAsync(Guid id)
+    {
+        var rawToken = GenerateRawToken();
+        var hash = HashToken(rawToken);
+
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+        var name = await db.AppTokens
+                           .Where(a => a.Id == id)
+                           .Select(a => a.Name)
+                           .FirstOrDefaultAsync();
+
+        await db.AppTokens
+                .Where(a => a.Id == id)
+                .ExecuteUpdateAsync(s => s.SetProperty(a => a.TokenHash, hash));
+
+        await auditService.LogAsync("AppTokens.Regenerate", true, $"Token: {name}");
+
+        return rawToken;
+    }
+
     public async Task DeleteAsync(Guid id)
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
+        var name = await db.AppTokens
+                           .Where(a => a.Id == id)
+                           .Select(a => a.Name)
+                           .FirstOrDefaultAsync();
+
         await db.AppTokens
                 .Where(a => a.Id == id)
                 .ExecuteDeleteAsync();
+
+        await auditService.LogAsync("AppTokens.Delete", true, $"Token: {name}");
     }
 
     public async Task<bool> UpdateAsync(Guid id, string name, string? ownerId, bool isActive, DateTime? expiresAt)
@@ -72,6 +103,9 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         token.IsActive = isActive;
         token.ExpiresAt = expiresAt;
         await db.SaveChangesAsync();
+
+        await auditService.LogAsync("AppTokens.Update", true, $"Token: {token.Name}");
+
         return true;
     }
 
@@ -84,6 +118,32 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
                        .Include(a => a.AppTokenRoles).ThenInclude(r => r.Role)
                        .OrderBy(a => a.Name)
                        .ToListAsync();
+    }
+
+    public async Task<List<AppToken>> GetByPermissionKeysAsync(IEnumerable<string> permissionKeys)
+    {
+        var keys = permissionKeys.ToList();
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+        return await db.AppTokens
+                       .AsNoTracking()
+                       .Include(a => a.Owner)
+                       .Include(a => a.AppTokenRoles).ThenInclude(r => r.Role).ThenInclude(r => r.RolePermissions)
+                       .Include(a => a.AppTokenPermissions)
+                       .Where(a => a.AppTokenPermissions.Any(p => keys.Contains(p.PermissionKey))
+                                || a.AppTokenRoles.Any(r => r.Role.RolePermissions.Any(p => keys.Contains(p.PermissionKey))))
+                       .OrderBy(a => a.Name)
+                       .ToListAsync();
+    }
+
+    public async Task<AppToken?> GetByName(string name)
+    {
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+        return await db.AppTokens
+                       .AsNoTracking()
+                       .Include(a => a.Owner)
+                       .Include(a => a.AppTokenRoles).ThenInclude(r => r.Role)
+                       .Include(a => a.AppTokenPermissions)
+                       .FirstOrDefaultAsync(a => a.Name == name);
     }
 
     public async Task<AppToken?> GetByIdAsync(Guid id)
@@ -105,4 +165,57 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
                           .Replace("+", "-")
                           .Replace("/", "_")
                           .TrimEnd('=')}";
+
+    public async Task SetRolesAsync(Guid id, IEnumerable<string> roles)
+    {
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+        var roleIds = await db.Roles
+                              .Where(a => roles.Contains(a.Name!))
+                              .Select(a => a.Id)
+                              .ToListAsync();
+
+        await db.AppTokenRoles.Where(a => a.AppTokenId == id).ExecuteDeleteAsync();
+        db.AppTokenRoles.AddRange(roleIds.Select(roleId => new AppTokenRole
+        {
+            AppTokenId = id,
+            RoleId = roleId
+        }));
+        await db.SaveChangesAsync();
+    }
+
+    public async Task SyncRolesAsync(Guid id, IEnumerable<string> roles)
+    {
+        var rolesList = roles.ToList();
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+
+        var desiredRoleIds = await db.Roles
+                                     .Where(a => rolesList.Contains(a.Name!))
+                                     .Select(a => a.Id)
+                                     .ToListAsync();
+
+        var existingRoleIds = await db.AppTokenRoles
+                                      .Where(a => a.AppTokenId == id)
+                                      .Select(a => a.RoleId)
+                                      .ToListAsync();
+
+        var toAdd = desiredRoleIds.Except(existingRoleIds).ToList();
+        var toRemove = existingRoleIds.Except(desiredRoleIds).ToList();
+
+        if (toRemove.Count > 0)
+        {
+            await db.AppTokenRoles
+                    .Where(a => a.AppTokenId == id && toRemove.Contains(a.RoleId))
+                    .ExecuteDeleteAsync();
+        }
+
+        if (toAdd.Count > 0)
+        {
+            db.AppTokenRoles.AddRange(toAdd.Select(roleId => new AppTokenRole
+            {
+                AppTokenId = id,
+                RoleId = roleId
+            }));
+            await db.SaveChangesAsync();
+        }
+    }
 }

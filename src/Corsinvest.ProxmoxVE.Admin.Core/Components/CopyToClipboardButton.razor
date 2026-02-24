@@ -1,0 +1,25 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@inject IBrowserService BrowserService
+@inject NotificationService NotificationService
+
+<RadzenButton Icon="content_copy"
+              Variant="Variant.Text"
+              Size="ButtonSize.Small"
+              Click="CopyAsync"
+              title="@L["Copy to clipboard"]"
+              aria-label="@L["Copy to clipboard"]" />
+
+@code {
+    [Parameter, EditorRequired] public string Text { get; set; } = default!;
+    [Parameter] public bool ShowNotification { get; set; } = true;
+
+    private async Task CopyAsync()
+    {
+        await BrowserService.CopyToClipboardAsync(Text);
+        if (ShowNotification) { NotificationService.Success(L["Copied!"]); }
+    }
+}
