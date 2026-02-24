@@ -42,49 +42,55 @@ Built from real-world experience to solve real problems: multi-cluster visibilit
 
 ## Why cv4pve-admin?
 
-<div class="grid cards" markdown>
+Proxmox VE is a great hypervisor — but it wasn't designed for multi-cluster operations, compliance, or enterprise automation.
+cv4pve-admin fills that gap: one interface, all clusters, all the tools your team needs to run infrastructure at scale.
 
--   :material-monitor-dashboard:{ .lg .middle } **Unified Dashboard**
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); align-items: stretch;" markdown>
 
-    ---
+<div style="height: 100%;" markdown>
+!!! tip "Unified Dashboard"
+    Monitor your entire infrastructure from one interface. Real-time metrics and resource tracking across all clusters.
+</div>
 
-    Monitor your entire Proxmox infrastructure from a single, intuitive interface. Real-time metrics, resource analytics, and performance tracking.
+<div style="height: 100%;" markdown>
+!!! warning "Secure VNC Proxy"
+    Access VM consoles without exposing Proxmox ports. Users connect to cv4pve-admin only.
+</div>
 
--   :material-robot-outline:{ .lg .middle } **AI-Powered Intelligence**
+<div style="height: 100%;" markdown>
+!!! warning "Security & RBAC"
+    Role-based access control, 2FA, App Tokens, and audit logs. Enterprise-grade access management.
+</div>
 
-    ---
+<div style="height: 100%;" markdown>
+!!! success "Smart Automation"
+    Automated snapshots with retention policies, node config backup with Git push, and webhook hooks.
+</div>
 
-    Enterprise Edition includes AI assistant for infrastructure insights, automated diagnostics, and intelligent recommendations.
-
--   :material-clock-check-outline:{ .lg .middle } **Smart Automation**
-
-    ---
-
-    Automated snapshots, backup management, and custom workflows. Set it and forget it with flexible retention policies.
-
--   :material-chart-line:{ .lg .middle } **Advanced Analytics**
-
-    ---
-
+<div style="height: 100%;" markdown>
+!!! info "Advanced Analytics"
     Deep insights into backups, replication, storage, and VM performance. Make data-driven decisions.
+</div>
 
--   :material-shield-check:{ .lg .middle } **Enterprise Ready**
+<div style="height: 100%;" markdown>
+!!! note "Notifications"
+    CE: email alerts. EE: 119+ services including Telegram, Slack, Discord, Teams, and more.
+</div>
 
-    ---
+<div style="height: 100%;" markdown>
+!!! info "Infrastructure Diagnostics"
+    Automated health checks across your entire cluster. Detect configuration issues before they become outages.
+</div>
 
-    Role-based access control, audit logging, multi-cluster support, and professional technical support.
+<div style="height: 100%;" markdown>
+!!! note "System Reports"
+    Comprehensive reports on clusters, nodes, VMs, and storage. Perfect for audits and capacity planning.
+</div>
 
--   :material-update:{ .lg .middle } **Modern Stack**
-
-    ---
-
-    Built with .NET 9, Blazor, PostgreSQL. Cloud-native architecture with Docker deployment.
-
--   :material-keyboard:{ .lg .middle } **Command Palette**
-
-    ---
-
-    Quick access to any feature with keyboard shortcuts. Press `Ctrl+K` (or `Cmd+K` on Mac) to navigate instantly.
+<div style="height: 100%;" markdown>
+!!! tip "Command Palette"
+    Press `Ctrl+K` to navigate anywhere instantly — no mouse needed.
+</div>
 
 </div>
 

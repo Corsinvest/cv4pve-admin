@@ -5,6 +5,11 @@ This document describes all configurable settings available in `appsettings.extr
 !!! info "Configuration File Location"
     The `appsettings.extra.json` file is automatically loaded by cv4pve-admin if present in the `config/` directory (mounted as `/app/config/` in Docker). This optional configuration file allows you to override default settings without modifying the main `appsettings.json` file. If the file does not exist, the application starts normally with default settings.
 
+!!! warning "Merge behaviour"
+    - **Scalar and object properties** — merged: only the keys you specify are overridden, the rest keep their default values.
+    - **Duplicate scalar keys** — the value in `appsettings.extra.json` wins (it is loaded last).
+    - **JSON arrays** — **fully replaced**: if you override an array property (e.g. `Serilog.WriteTo`), the entire default array is discarded and only the values you provide are used. Make sure to include all entries you want to keep.
+
 ## Connection Strings
 
 ```json

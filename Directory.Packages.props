@@ -7,6 +7,8 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.3.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.0" />
+    <PackageVersion Include="CsvHelper" Version="33.0.1" />
+    <PackageVersion Include="ToonEncoder" Version="2.0.0" />
   </ItemGroup>
   <!-- Logging and Monitoring -->
   <ItemGroup>

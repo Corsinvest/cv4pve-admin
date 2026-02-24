@@ -3,23 +3,23 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 param(
-    [Parameter(Mandatory=$false)]
-    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets")]
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge")]
     [string]$Command = "build",
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [ValidateSet("docker", "binary")]
     [string]$Type = "docker",
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [switch]$NoInfo
 )
 
 $ErrorActionPreference = "Stop"
 
-$projectPath  = "src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj"
-$assetsPath   = "src/Corsinvest.ProxmoxVE.Admin/wwwroot"
-$markerFile   = "$assetsPath/.radzen-version"
+$projectPath = "src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj"
+$assetsPath = "src/Corsinvest.ProxmoxVE.Admin/wwwroot"
+$markerFile = "$assetsPath/.radzen-version"
 $radzenAssets = @(
     "css/fluent-base.css",
     "css/fluent-dark-base.css",
@@ -98,6 +98,38 @@ switch ($Command) {
 
         Write-Host "`n✓ Docker publish completed!" -ForegroundColor Green
         Write-Host "Tags: $containerImageTags" -ForegroundColor Yellow
+    }
+
+    "build-mcp-bridge" {
+        Write-Host "Building MCP Bridge... " -ForegroundColor Cyan
+        $projectPathMcpBridge = "$PSScriptRoot/src/Corsinvest.ProxmoxVE.Admin.McpBridge/Corsinvest.ProxmoxVE.Admin.McpBridge.csproj"
+        Write-Host "Project: $projectPathMcpBridge" -ForegroundColor Yellow
+
+        $rids = "win-x64", "linux-x64", "linux-arm64", "osx-x64", "osx-arm64"
+
+        $outDir = "$PSScriptRoot/publish/mcp-bridge"
+        New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+
+        foreach ($rid in $rids) {
+            Write-Host "➡ Building for RID: $rid..." -ForegroundColor Yellow
+
+            $assemblyName = "cv4pve-mcp-bridge-$rid"
+            dotnet publish $projectPathMcpBridge `
+                -c Release `
+                -r $rid `
+                -o $outDir `
+                -p:AssemblyName=$assemblyName
+
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "❌ Build failed for RID: $rid!" -ForegroundColor Red
+                exit $LASTEXITCODE
+            }
+
+            Write-Host "✅ Build succeeded for RID: $rid" -ForegroundColor Green
+        }
+
+        Write-Host "`n✓ MCP Bridge build completed!" -ForegroundColor Green
+        Write-Host "Output: $outDir" -ForegroundColor Yellow
     }
 
     "download-assets" {
