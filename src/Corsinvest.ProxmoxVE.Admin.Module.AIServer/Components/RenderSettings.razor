@@ -11,18 +11,24 @@
              IconOn="play_circle"
              IconOff="pause_circle" />
 
-<PasswordField @bind-Value="@Model.ApiToken" Label="@L["X-API-Key Token"]" Name="@nameof(Model.ApiToken)" class="rz-w-100">
+<RadzenFormField Text="@L["Output Format"]" Style="width:100%">
+    <ChildContent>
+        <RadzenDropDown TValue="ToolOutputFormat"
+                        Name="@nameof(Model.OutputFormat)"
+                        @bind-Value="@Model.OutputFormat"
+                        Data="@(Enum.GetValues<ToolOutputFormat>())" />
+    </ChildContent>
     <End>
         <InfoIcon>
-            <ChildContent>
-                <strong>X-API-Key</strong>: token used to authenticate the MCP server, valid for all clusters
-            </ChildContent>
+            <ul style="margin:0; padding-left:1.2em;">
+                <li><strong>JsonCompact</strong> — @L["Compact JSON tabular (~40% fewer tokens than JsonNormal)"]</li>
+                <li><strong>JsonNormal</strong> — @L["Standard JSON array of objects"]</li>
+                <li><strong>Toon</strong> — @L["Token-Oriented Object Notation (~55% fewer tokens than JsonNormal)"]</li>
+                <li><strong>Csv</strong> — @L["CSV with header row (minimal tokens, best for tabular data)"]</li>
+            </ul>
         </InfoIcon>
     </End>
-    <Helper>
-        <RadzenRequiredValidator Component="@nameof(Model.ApiToken)" />
-    </Helper>
-</PasswordField>
+</RadzenFormField>
 
 @code
 {
