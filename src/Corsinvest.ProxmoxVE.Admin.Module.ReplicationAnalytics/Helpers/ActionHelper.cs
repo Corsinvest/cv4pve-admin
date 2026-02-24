@@ -119,7 +119,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         return (jobCount, successCount, failureCount);
     }
 
-    public static async Task ScanAsync(IServiceScope scope, string clusterName, bool automatic)
+    public static async Task ScanAsync(IServiceScope scope, string clusterName)
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();

@@ -13,12 +13,6 @@
                       title="@L["Open Telegram Web"]"
                       aria-label="@L["Open Telegram Web"]" />
 
-        <RadzenButton Click="@(() => browserService.OpenAsync("https://corsinvest.github.io/cv4pve-admin/modules/bots/#set-up-your-telegram-bot", "_blank"))"
-                      Icon="info"
-                      title="@L["Open documentation"]"
-                      aria-label="@L["Open documentation"]" />
-
-
         <RadzenFormField Text="@L["Users"]" AllowFloatingLabel="false" Visible="Chats.Count() > 1">
             <Start><RadzenIcon Icon="person" /></Start>
             <ChildContent>

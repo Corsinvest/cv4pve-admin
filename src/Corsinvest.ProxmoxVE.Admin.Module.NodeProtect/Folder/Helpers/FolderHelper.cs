@@ -40,7 +40,7 @@ internal static class FolderHelper
         {
             var loggerFactory = scope.GetLoggerFactory();
             var logger = loggerFactory.CreateLogger(typeof(FolderHelper));
-            var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
+            var auditService = scope.GetRequiredService<IAuditService>();
             await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
             using (logger.LogTimeOperation(LogLevel.Information, true, "NodeProtect: backup data to folder for cluster '{clusterName}'", clusterName))

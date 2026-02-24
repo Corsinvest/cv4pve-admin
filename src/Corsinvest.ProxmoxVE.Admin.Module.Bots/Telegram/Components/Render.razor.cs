@@ -36,7 +36,7 @@ public partial class Render(IServiceScopeFactory serviceScopeFactory,
     public void Dispose()
     {
         var log = BotgramService?.GetLog(ClusterName);
-        if (log != null) { log.WritedData -= Log_WritedData; }
+        log?.WritedData -= Log_WritedData;
     }
 
     protected override void OnInitialized()

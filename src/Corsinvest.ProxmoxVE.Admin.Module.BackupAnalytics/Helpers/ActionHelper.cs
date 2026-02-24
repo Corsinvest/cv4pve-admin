@@ -132,10 +132,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 }
             }
 
-            if (backup != null)
-            {
-                backup.Logs += row + Environment.NewLine;
-            }
+            backup?.Logs += row + Environment.NewLine;
         }
 
         return backups;
@@ -239,7 +236,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         return (taskCount, jobCount);
     }
 
-    public static async Task ScanAsync(IServiceScope scope, string clusterName, bool automatic)
+    public static async Task ScanAsync(IServiceScope scope, string clusterName)
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();

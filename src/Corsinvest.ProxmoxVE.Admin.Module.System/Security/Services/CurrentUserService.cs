@@ -12,7 +12,7 @@ internal class CurrentUserService(IHttpContextAccessor httpContextAccessor,
         if (!string.IsNullOrEmpty(UserId))
         {
             using var scope = scopeFactory.CreateScope();
-            return await scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>().FindByIdAsync(UserId);
+            return await scope.GetRequiredService<UserManager<ApplicationUser>>().FindByIdAsync(UserId);
         }
         else
         {

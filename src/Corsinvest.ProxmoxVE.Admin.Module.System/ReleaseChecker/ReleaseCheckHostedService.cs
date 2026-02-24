@@ -49,7 +49,7 @@ public class ReleaseCheckHostedService(ILogger<ReleaseCheckHostedService> logger
     private async Task CheckForUpdatesAsync(CancellationToken cancellationToken)
     {
         using var scope = scopeFactory.CreateScope();
-        var releaseService = scope.ServiceProvider.GetRequiredService<IReleaseService>();
+        var releaseService = scope.GetRequiredService<IReleaseService>();
 
         try
         {
