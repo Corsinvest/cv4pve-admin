@@ -28,7 +28,7 @@ public class ClusterSettings : IName, IDescription, IEnabled
     public bool ValidateCertificate { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public ClusterAccessType AccessType { get; set; } = ClusterAccessType.Credential;
+    public ClusterAccessType AccessType { get; set; } = ClusterAccessType.Credential; //TODO cambiare in ApiToken 
 
     [Encrypt]
     public string ApiToken { get; set; } = default!;
