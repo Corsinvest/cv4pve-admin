@@ -7,7 +7,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.3.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.0" />
-    <PackageVersion Include="CsvHelper" Version="33.0.1" />
+    <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="ToonEncoder" Version="2.0.0" />
   </ItemGroup>
   <!-- Logging and Monitoring -->
@@ -27,7 +27,7 @@
   <ItemGroup>
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
-    <PackageVersion Include="Radzen.Blazor" Version="9.0.5" />
+    <PackageVersion Include="Radzen.Blazor" Version="9.0.6" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.4.1" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -61,7 +61,7 @@
     <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.4" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="1.7.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.20.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.21.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.9.1" />
   </ItemGroup>
   <!-- Development and Code Quality -->
@@ -70,8 +70,8 @@
   </ItemGroup>
   <!-- MCP Server -->
   <ItemGroup>
-    <PackageVersion Include="ModelContextProtocol" Version="0.7.0-preview.1" />
-    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.7.0-preview.1" />
+    <PackageVersion Include="ModelContextProtocol" Version="1.0.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Wangkanai.Detection" Version="8.20.0" />
