@@ -16,6 +16,7 @@ public partial class NodesSettings(IAdminService adminService,
     [Parameter] public string Style { get; set; } = default!;
 
     private RadzenDataGrid<ClusterNodeSettings> DataGridRef { get; set; } = default!;
+    private RadzenTextBox IPAddressRef { get; set; } = default!;
     private bool InEdit { get; set; }
     private ClusterNodeSettings _draggedItem = default!;
 
@@ -48,6 +49,14 @@ public partial class NodesSettings(IAdminService adminService,
     {
         await DataGridRef.InsertRow(new ClusterNodeSettings());
         InEdit = true;
+        await Task.Yield();
+        await IPAddressRef.FocusAsync();
+    }
+
+    private async Task SaveRowOnEnterAsync(KeyboardEventArgs e, ClusterNodeSettings item)
+    {
+        if (e.Key == "Enter") { await SaveRowAsync(item); }
+        else if (e.Key == "Escape") { CancelEdit(item); }
     }
 
     private async Task DeleteRowAsync(ClusterNodeSettings item)

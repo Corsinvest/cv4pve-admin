@@ -41,7 +41,12 @@
 
         <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.IPAddress)" Sortable="true" Title="@L["IP Address/Host"]" Width="200px">
             <EditTemplate Context="ctx">
-                <RadzenTextBox Name="@nameof(ctx.IPAddress)" @bind-Value="@ctx.IPAddress" class="rz-w-100" />
+                <RadzenTextBox @ref="@IPAddressRef"
+                               Name="@nameof(ctx.IPAddress)"
+                               @bind-Value="@ctx.IPAddress"
+                               Immediate="true"
+                               @onkeydown="@(async (e) => await SaveRowOnEnterAsync(e, ctx))"
+                               class="rz-w-100" />
                 <RadzenDataAnnotationValidator Component="@nameof(ctx.IPAddress)" />
             </EditTemplate>
         </RadzenDataGridColumn>
@@ -52,15 +57,6 @@
                 <RadzenDataAnnotationValidator Component="@nameof(ctx.ApiPort)" />
             </EditTemplate>
         </RadzenDataGridColumn>
-
-        @*
-        <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.SshPort)" Sortable="true" Title="@L["SSH Port"]" Width="120px">
-        <EditTemplate Context="ctx">
-        <RadzenNumeric Name="@nameof(ctx.SshPort)" @bind-Value="@ctx.SshPort" />
-        <RadzenDataAnnotationValidator Component="@nameof(ctx.SshPort)" />
-        </EditTemplate>
-        </RadzenDataGridColumn>
-        *@
 
         <CommandEditInlineColumn TItem="ClusterNodeSettings"
                                  CancelEdit="@CancelEdit"
