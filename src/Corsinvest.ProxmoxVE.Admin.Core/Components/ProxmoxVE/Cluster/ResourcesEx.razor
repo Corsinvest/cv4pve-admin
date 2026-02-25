@@ -245,6 +245,20 @@
                                   Pickable="IsPickable(nameof(ClusterResource.Lock))" />
         }
 
+        <ResourceColumn Property="@nameof(ClusterResourceEx.HealthScore)"
+                        Title="@L["Score"]"
+                        Visible="false"
+                        HeaderTooltip="@L["Health Score"]"
+                        Pickable="IsPickable(nameof(ClusterResourceEx.HealthScore))"
+                        Width="100px">
+            <Template>
+                @if (context.HealthScore > 0)
+                {
+                    <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.HealthScoreBadge Score="@context.HealthScore" />
+                }
+            </Template>
+        </ResourceColumn>
+
         @if (HasColumnForVm && ShowOsInfo)
         {
             <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.HostName)"

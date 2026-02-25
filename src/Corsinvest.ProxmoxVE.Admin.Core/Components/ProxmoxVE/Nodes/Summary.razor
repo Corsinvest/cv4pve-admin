@@ -24,11 +24,11 @@ else
                     </RadzenTableCell>
                 </RadzenTableRow>
 
-                @RenderRow(string.Empty, "KSM sharing", FormatHelper.FromBytes(Status.Ksm.Shared))
+                @RenderRow("compress", "KSM sharing", FormatHelper.FromBytes(Status.Ksm.Shared))
 
                 <RadzenTableRow>
                     <RadzenTableCell Style="border:none;" colspan="2">
-                        @RenderTitle(PveAdminUIHelper.Icons.Storage, "SWAP", FormatHelper.UsageInfo((ulong)Status.Swap.Used, (ulong)Status.Swap.Total))
+                        @RenderTitle("swap_horiz", "SWAP", FormatHelper.UsageInfo((ulong)Status.Swap.Used, (ulong)Status.Swap.Total))
                         @RenderProgress(FormatHelper.CalculatePercentage((ulong)Status.Swap.Used, (ulong)Status.Swap.Total) * 100)
                     </RadzenTableCell>
                 </RadzenTableRow>
@@ -48,15 +48,18 @@ else
                     </RadzenTableCell>
 
                     <RadzenTableCell Style="border:none; text-align: end;">
-                        <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(Node.Status, false))"
-                                     Text="@L[Node.Status]"
-                                     Style="height: max-content;" />
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="4px" JustifyContent="JustifyContent.End" AlignItems="AlignItems.Center">
+                            <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(Node.Status, false))"
+                                         Text="@L[Node.Status]"
+                                         Style="height: max-content;" />
+                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.HealthScoreGauge Score="@Node.HealthScoreHost" />
+                        </RadzenStack>
                     </RadzenTableCell>
                 </RadzenTableRow>
 
                 <RadzenTableRow>
                     <RadzenTableCell Style="border:none;" colspan="2">
-                        @RenderTitleWithSparkline(string.Empty, "IO delay", $"{Status.Wait:P2}", nameof(HistoryPoint.IoDelay))
+                        @RenderTitleWithSparkline("speed", "IO delay", $"{Status.Wait:P2}", nameof(HistoryPoint.IoDelay))
                     </RadzenTableCell>
                 </RadzenTableRow>
 
@@ -125,7 +128,7 @@ else
         <RadzenProgressBar Value="@value"
                            ShowValue="false"
                            class="rz-w-100"
-                           Style="height: 10px;"
+                           Style="height: 10px; margin-top: 4px;"
                            ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(value))" />
     };
 

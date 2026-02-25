@@ -16,6 +16,15 @@ public static class PveAdminUIHelper
                 ? Colors.Warning
                 : Colors.Success;
 
+    public static string GetHealthScoreColor(double score)
+        => score == 0
+            ? Colors.Secondary
+            : score >= 80
+                ? Colors.Success
+                : score >= 60
+                    ? Colors.Warning
+                    : Colors.Danger;
+
     public static ProgressBarStyle ToProgressBarStyle(string color)
         => color switch
         {

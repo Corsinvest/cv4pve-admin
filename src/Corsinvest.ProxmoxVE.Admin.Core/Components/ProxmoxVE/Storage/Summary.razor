@@ -4,19 +4,27 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenTable Style="border:none;">
-    @* @RenderRow(string.Empty, "Enabled", Storage. ? "Yes" : "Mo") *@
-    @RenderRow(string.Empty, "Active", Storage.IsAvailable ? "Yes" : "Mo")
-    @RenderRow(string.Empty, "Content", Storage.Content)
-    @RenderRow(string.Empty, "Type", Storage.PluginType)
+<RadzenRow>
+    <RadzenColumn Size="10">
+        <RadzenTable Style="border:none;">
+            @* @RenderRow(string.Empty, "Enabled", Storage. ? "Yes" : "Mo") *@
+            @RenderRow(string.Empty, "Active", Storage.IsAvailable ? "Yes" : "Mo")
+            @RenderRow(string.Empty, "Content", Storage.Content)
+            @RenderRow(string.Empty, "Type", Storage.PluginType)
 
-    <RadzenTableRow>
-        <RadzenTableCell Style="border:none;" colspan="2">
-            @RenderTitle(string.Empty, "Usage", FormatHelper.UsageInfo(Storage.DiskUsage, Storage.DiskSize))
-            @RenderProgress(Storage.DiskUsagePercentage * 100)
-        </RadzenTableCell>
-    </RadzenTableRow>
-</RadzenTable>
+            <RadzenTableRow>
+                <RadzenTableCell Style="border:none;" colspan="2">
+                    @RenderTitle(string.Empty, "Usage", FormatHelper.UsageInfo(Storage.DiskUsage, Storage.DiskSize))
+                    @RenderProgress(Storage.DiskUsagePercentage * 100)
+                </RadzenTableCell>
+            </RadzenTableRow>
+        </RadzenTable>
+    </RadzenColumn>
+
+    <RadzenColumn Size="2" Style="display:flex; justify-content:center; align-items:center;">
+        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.HealthScoreGauge Score="@Storage.HealthScoreStorage" />
+    </RadzenColumn>
+</RadzenRow>
 
 @code
 {

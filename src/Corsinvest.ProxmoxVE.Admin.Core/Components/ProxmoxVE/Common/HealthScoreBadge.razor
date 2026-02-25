@@ -1,0 +1,14 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetHealthScoreColor(Score))"
+             Text="@($"{Score:F0}")"
+             Style="height: max-content;" />
+
+@code
+{
+    [EditorRequired, Parameter] public double Score { get; set; }
+}

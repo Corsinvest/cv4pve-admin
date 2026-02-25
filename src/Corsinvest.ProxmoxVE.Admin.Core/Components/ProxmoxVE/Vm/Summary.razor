@@ -26,7 +26,7 @@ else
                 {
                     <RadzenTableRow>
                         <RadzenTableCell Style="border:none;" colspan="2">
-                            @RenderTitle(PveAdminUIHelper.Icons.Storage, "SWAP", FormatHelper.UsageInfo(((VmLxcStatusCurrent)Status).SwapUsage, ((VmLxcStatusCurrent)Status).SwapSize))
+                            @RenderTitle("swap_horiz", "SWAP", FormatHelper.UsageInfo(((VmLxcStatusCurrent)Status).SwapUsage, ((VmLxcStatusCurrent)Status).SwapSize))
                             @RenderProgress(((VmLxcStatusCurrent)Status).SwapUsagePercentage * 100)
                         </RadzenTableCell>
                     </RadzenTableRow>
@@ -56,9 +56,12 @@ else
                     </RadzenTableCell>
 
                     <RadzenTableCell Style="border:none; text-align: end;">
-                        <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(Vm.Status, false))"
-                                     Text="@L[Vm.Status]"
-                                     Style="height: max-content;" />
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="4px" JustifyContent="JustifyContent.End" AlignItems="AlignItems.Center">
+                            <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(Vm.Status, false))"
+                                         Text="@L[Vm.Status]"
+                                         Style="height: max-content;" />
+                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.HealthScoreGauge Score="@Vm.HealthScoreHost" />
+                        </RadzenStack>
                     </RadzenTableCell>
                 </RadzenTableRow>
 
@@ -110,7 +113,7 @@ else
         <RadzenProgressBar Value="@value"
                            ShowValue="false"
                            class="rz-w-100"
-                           Style="height: 10px;"
+                           Style="height: 10px; margin-top: 4px;"
                            ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(value))" />
     };
 
