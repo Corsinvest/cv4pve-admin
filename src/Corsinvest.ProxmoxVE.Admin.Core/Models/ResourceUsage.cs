@@ -56,8 +56,8 @@ public class ResourceUsage
     }
 
     public static async Task<ResourceUsage> GetSnapshots(IEnumerable<ClusterResource> resources,
-                                                          IStringLocalizer L,
-                                                          ClusterClient clusterClient)
+                                                         IStringLocalizer L,
+                                                         ClusterClient clusterClient)
     {
         if (clusterClient.Settings.AllowCalculateSnapshotSize)
         {

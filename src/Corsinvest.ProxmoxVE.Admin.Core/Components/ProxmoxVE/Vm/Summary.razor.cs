@@ -9,6 +9,12 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm;
 
 public partial class Summary(IAdminService adminService) : IRefreshableData, IClusterName, IDisposable
 {
+    private record HistoryPoint(int X, double Cpu, double Ram);
+
+    private readonly Queue<HistoryPoint> History = new();
+    private int _historyIndex;
+    private const int MaxHistory = 20;
+
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
 
@@ -27,6 +33,13 @@ public partial class Summary(IAdminService adminService) : IRefreshableData, ICl
         {
             var client = await adminService[ClusterName].GetPveClientAsync();
             Status = await client.GetVmStatusAsync(Vm.Node, Vm.VmType, Vm.VmId);
+            if (Status != null)
+            {
+                if (History.Count >= MaxHistory) { History.Dequeue(); }
+                History.Enqueue(new HistoryPoint(_historyIndex++,
+                                                      Math.Round(Status.CpuUsagePercentage * 100,1),
+                                                      Math.Round(Status.MemoryUsagePercentage * 100,1)));
+            }
             await InvokeAsync(StateHasChanged);
         }
         finally
