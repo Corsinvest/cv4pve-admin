@@ -17,6 +17,7 @@
              IconOn="link" IconOff="link_off" />
 
 <RadzenFormField Text="@L["Property Icon Status"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="interests" /></Start>
     <ChildContent>
         <RadzenDropDown TValue="ResourcesExPropertyIconStatus"
                         Name="@nameof(Settings.PropertyIconStatus)"
@@ -46,6 +47,7 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Icon Status"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="radio_button_checked" /></Start>
     <ChildContent>
         <RadzenDropDown TValue="ResourceColumnIconStatus"
                         Name="@nameof(Settings.IconStatus)"

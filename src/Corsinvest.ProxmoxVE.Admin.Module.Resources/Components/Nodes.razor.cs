@@ -19,5 +19,6 @@ public partial class Nodes : IClusterName
                                               nameof(ClusterResourceEx.CpuUsagePercentage),
                                               nameof(ClusterResourceEx.MemoryUsagePercentage),
                                               nameof(ClusterResourceEx.DiskUsagePercentage),
+                                              nameof(ClusterResourceEx.HealthScore),
                                               nameof(ClusterResourceEx.Uptime)]);
 }

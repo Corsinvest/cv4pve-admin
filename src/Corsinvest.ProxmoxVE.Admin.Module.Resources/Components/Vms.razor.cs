@@ -26,6 +26,7 @@ public partial class Vms : IClusterName
                                               nameof(ClusterResourceEx.DiskUsagePercentage),
                                               nameof(ClusterResourceEx.HostCpuUsage),
                                               nameof(ClusterResourceEx.HostMemoryUsage),
+                                              nameof(ClusterResourceEx.HealthScore),
                                               nameof(ClusterResourceEx.Uptime)]);
 
     private async Task ShowOsInfoAfter()
