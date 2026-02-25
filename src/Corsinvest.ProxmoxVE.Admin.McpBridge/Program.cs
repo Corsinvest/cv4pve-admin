@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.CommandLine;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
+using ModelContextProtocol.Client;
+using ModelContextProtocol.Server;
 
 var urlOption = new Option<string>("--url", ["-u"])
 {
@@ -45,22 +44,10 @@ rootCommand.SetAction(async action =>
 
     if (string.IsNullOrWhiteSpace(mcpUrl) || string.IsNullOrWhiteSpace(apiKey))
     {
-        if (string.IsNullOrWhiteSpace(mcpUrl))
-        {
-            Console.Error.WriteLine("❌ Error: MCP_URL is not set via argument or environment variable.");
-        }
-
-        if (string.IsNullOrWhiteSpace(apiKey))
-        {
-            Console.Error.WriteLine("❌ Error: MCP_API_KEY is not set via argument or environment variable.");
-
-        }
+        if (string.IsNullOrWhiteSpace(mcpUrl)) { Console.Error.WriteLine("❌ Error: MCP_URL is not set via argument or environment variable."); }
+        if (string.IsNullOrWhiteSpace(apiKey)) { Console.Error.WriteLine("❌ Error: MCP_API_KEY is not set via argument or environment variable."); }
         Environment.Exit(1);
     }
-
-    // --------------------------------------------------
-    // SSL handling
-    // --------------------------------------------------
 
     if (insecure) { Console.Error.WriteLine("⚠️  WARNING: SSL validation is DISABLED (--insecure)"); }
 
@@ -68,129 +55,41 @@ rootCommand.SetAction(async action =>
         ? new HttpClientHandler { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator }
         : new HttpClientHandler();
 
-    // --------------------------------------------------
-    // HttpClient setup
-    // --------------------------------------------------
+    var httpTransport = new HttpClientTransport(
+        new HttpClientTransportOptions
+        {
+            Endpoint = new Uri(mcpUrl!),
+            AdditionalHeaders = new Dictionary<string, string> { ["X-API-Key"] = apiKey! },
+            TransportMode = HttpTransportMode.StreamableHttp
+        },
+        new HttpClient(handler));
 
-    using var httpClient = new HttpClient(handler)
+    Console.Error.WriteLine($"[Bridge] Connecting to {mcpUrl}");
+
+    await using var remoteTransport = await httpTransport.ConnectAsync();
+    await using var stdioTransport = new StdioServerTransport("cv4pve-mcp-bridge");
+
+    Console.Error.WriteLine("[Bridge] Connected");
+
+    // Proxy stdio → remote
+    var stdioToRemote = Task.Run(async () =>
     {
-        Timeout = TimeSpan.FromMinutes(5)
-    };
+        await foreach (var message in stdioTransport.MessageReader.ReadAllAsync())
+        {
+            await remoteTransport.SendMessageAsync(message);
+        }
+    });
 
-    httpClient.DefaultRequestHeaders.Add("X-API-Key", apiKey);
-    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
-
-    // --------------------------------------------------
-    // STDIN reader
-    // --------------------------------------------------
-    using var reader = new StreamReader(Console.OpenStandardInput(), Encoding.UTF8);
-    var buffer = new StringBuilder();
-    Console.Error.WriteLine($"[Bridge] Connected to {mcpUrl}");
-
-    while (await reader.ReadLineAsync() is { } line)
+    // Proxy remote → stdio
+    var remoteToStdio = Task.Run(async () =>
     {
-        buffer.Append(line);
-
-        string json;
-
-        // --------------------------------------------------
-        // Wait until JSON is complete
-        // --------------------------------------------------
-
-        try
+        await foreach (var message in remoteTransport.MessageReader.ReadAllAsync())
         {
-            JsonDocument.Parse(buffer.ToString());
-            json = buffer.ToString();
-            buffer.Clear();
+            await stdioTransport.SendMessageAsync(message);
         }
-        catch (JsonException)
-        {
-            continue;
-        }
+    });
 
-        Console.Error.WriteLine($"[Bridge] Sending: {json}");
-
-        try
-        {
-            // --------------------------------------------------
-            // Send request
-            // --------------------------------------------------
-
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            using var response = await httpClient.PostAsync(mcpUrl, content);
-
-            // --------------------------------------------------
-            // Check response
-            // --------------------------------------------------
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var statusCode = (int)response.StatusCode;
-                var errorBody = await response.Content.ReadAsStringAsync();
-                Console.Error.WriteLine($"[Bridge] HTTP {statusCode} {response.ReasonPhrase}: {errorBody}");
-
-                // Extract id from request to build a valid JSON-RPC error response
-                string? requestId = null;
-                try
-                {
-                    using var doc = JsonDocument.Parse(json);
-                    if (doc.RootElement.TryGetProperty("id", out var idEl))
-                    {
-                        requestId = idEl.ValueKind == JsonValueKind.String ? $"\"{idEl.GetString()}\"" : idEl.GetRawText();
-                    }
-                }
-                catch { }
-
-                // Extract error message from server response if possible
-                string errorMessage = $"HTTP {statusCode}: {response.ReasonPhrase}";
-                try
-                {
-                    using var doc = JsonDocument.Parse(errorBody);
-                    if (doc.RootElement.TryGetProperty("error", out var errEl))
-                    {
-                        errorMessage = errEl.GetString() ?? errorMessage;
-                    }
-                }
-                catch { }
-
-                var escapedMessage = errorMessage.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r");
-                var errorResponse = $"{{\"jsonrpc\":\"2.0\",\"id\":{requestId ?? "null"},\"error\":{{\"code\":{-statusCode},\"message\":\"{escapedMessage}\"}}}}";
-                await Console.Out.WriteLineAsync(errorResponse);
-                await Console.Out.FlushAsync();
-                continue;
-            }
-
-            // --------------------------------------------------
-            // Read SSE stream
-            // --------------------------------------------------
-
-            await using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var responseReader = new StreamReader(responseStream, Encoding.UTF8
-            );
-
-            while (await responseReader.ReadLineAsync() is { } chunk)
-            {
-                if (!chunk.StartsWith("data: ")) { continue; }
-                var jsonData = chunk["data: ".Length..].Trim();
-
-                try
-                {
-                    // Validate JSON
-                    JsonDocument.Parse(jsonData);
-
-                    // Forward to stdout
-                    await Console.Out.WriteLineAsync(jsonData);
-                    await Console.Out.FlushAsync();
-                }
-                catch (Exception ex)
-                {
-                    Console.Error.WriteLine($"[Bridge] SSE Parse Error: {ex.Message}");
-                }
-            }
-        }
-        catch (Exception ex) { Console.Error.WriteLine($"[Bridge] HTTP Error: {ex.Message}"); }
-    }
+    await Task.WhenAny(stdioToRemote, remoteToStdio);
 });
 
 return await rootCommand.Parse(args).InvokeAsync();
