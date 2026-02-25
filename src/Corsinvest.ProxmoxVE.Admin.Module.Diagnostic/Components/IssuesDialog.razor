@@ -18,6 +18,7 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Gravity"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start><RadzenIcon Icon="priority_high" /></Start>
     <ChildContent>
         <RadzenDropDown TValue="DiagnosticResultGravity"
                         Name="@nameof(Model.Gravity)"
@@ -36,6 +37,7 @@
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Context"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start><RadzenIcon Icon="category" /></Start>
     <ChildContent>
         <RadzenDropDown TValue="DiagnosticResultContext"
                         Name="@nameof(Model.Context)"
