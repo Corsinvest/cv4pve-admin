@@ -90,8 +90,6 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
     private async Task RefreshDataAsyncInt()
     {
-        AllowCalculateSnapshotSize = false;
-
         foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
         {
             var clusterName = clusterClient.Settings.Name;
