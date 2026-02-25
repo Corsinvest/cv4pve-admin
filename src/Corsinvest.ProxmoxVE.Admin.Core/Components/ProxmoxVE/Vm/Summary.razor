@@ -17,7 +17,7 @@ else
 
                 <RadzenTableRow>
                     <RadzenTableCell Style="border:none;" colspan="2">
-                        @RenderTitle(PveAdminUIHelper.Icons.Cpu, "CPU", Status.CpuInfo)
+                        @RenderTitleWithSparkline(PveAdminUIHelper.Icons.Cpu, "CPU", Status.CpuInfo, nameof(HistoryPoint.Cpu))
                         @RenderProgress(Status.CpuUsagePercentage * 100)
                     </RadzenTableCell>
                 </RadzenTableRow>
@@ -64,13 +64,15 @@ else
 
                 <RadzenTableRow>
                     <RadzenTableCell Style="border:none;" colspan="2">
-                        @RenderTitle(PveAdminUIHelper.Icons.Memory, "Memory Usage", Status.MemoryInfo)
+                        @RenderTitleWithSparkline(PveAdminUIHelper.Icons.Memory, "Memory Usage", Status.MemoryInfo, nameof(HistoryPoint.Ram))
                         @RenderProgress(Status.MemoryUsagePercentage * 100)
                     </RadzenTableCell>
                 </RadzenTableRow>
             </RadzenTable>
         </RadzenColumn>
     </RadzenRow>
+
+
 }
 
 @code
@@ -108,6 +110,29 @@ else
         <RadzenProgressBar Value="@value"
                            ShowValue="false"
                            class="rz-w-100"
+                           Style="height: 10px;"
                            ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(value))" />
+    };
+
+    private RenderFragment RenderTitleWithSparkline(string icon, string title, string value, string valueProperty) => __builder =>
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="5px" AlignItems="AlignItems.Center">
+            @if (!string.IsNullOrEmpty(icon))
+            {
+                <RadzenIcon Icon="@icon" />
+            }
+            <RadzenText TextStyle="TextStyle.Body2"><strong>@L[title]</strong></RadzenText>
+            <RadzenSparkline style="display:inline-block; width:100px; height:20px;">
+                <RadzenLineSeries Smooth="true" Data="@History" CategoryProperty="X" ValueProperty="@valueProperty">
+                    <TooltipTemplate>
+                        <div><strong>@L[title]</strong></div>
+                        <div>@(context.GetType().GetProperty(valueProperty)!.GetValue(context)) %</div>
+                    </TooltipTemplate>
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Visible="false" Padding="-20" />
+            </RadzenSparkline>
+            <span style="flex:1;" />
+            <RadzenText TextStyle="TextStyle.Body2" Text="@value" />
+        </RadzenStack>
     };
 }
