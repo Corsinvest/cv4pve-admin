@@ -1,0 +1,35 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenStack Gap="1rem">
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <RadzenText>@Message</RadzenText>
+    }
+
+    <RadzenFormField Text="@Label" AllowFloatingLabel="false" Style="width:100%">
+        <ChildContent>
+            <RadzenTextBox Value="@Value" Style="font-family:monospace; width:100%" ReadOnly="true" />
+        </ChildContent>
+        <End>
+            <CopyToClipboardButton Text="@Value" />
+        </End>
+    </RadzenFormField>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenButton Text="@L["Close"]"
+                      Click="@(() => DialogService.Close())"
+                      ButtonStyle="ButtonStyle.Primary" />
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [CascadingParameter] public DialogService DialogService { get; set; } = default!;
+
+    [Parameter] public string Value { get; set; } = default!;
+    [Parameter] public string Label { get; set; } = "Value";
+    [Parameter] public string? Message { get; set; }
+}
