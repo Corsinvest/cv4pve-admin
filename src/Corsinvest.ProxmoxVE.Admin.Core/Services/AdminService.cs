@@ -28,7 +28,7 @@ internal class AdminService(IPveClientFactory pveClientFactory,
         }
     }
 
-    private ClusterClient CreateClusterClient(ClusterSettings clusterSettings) => new(pveClientFactory, clusterSettings, fusionCache, serviceProvider);
+    public ClusterClient CreateClusterClient(ClusterSettings clusterSettings) => new(pveClientFactory, clusterSettings, fusionCache, serviceProvider);
 
     public IEnumerator<ClusterClient> GetEnumerator() => GetEnumeratorInt();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorInt();
