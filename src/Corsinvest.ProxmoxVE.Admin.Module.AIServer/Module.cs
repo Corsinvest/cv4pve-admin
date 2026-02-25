@@ -138,20 +138,22 @@ public class Module : ModuleBase
                    new Claim(ApplicationClaimTypes.AppTokenId, token.Id.ToString())
                ], "AppToken"));
 
-#if DEBUG
                httpContext.Request.EnableBuffering();
-
                using var reader = new StreamReader(httpContext.Request.Body,
                                                    Encoding.UTF8,
                                                    detectEncodingFromByteOrderMarks: false,
                                                    leaveOpen: true);
-
                var body = await reader.ReadToEndAsync();
                httpContext.Request.Body.Position = 0;
 
+#if DEBUG
                Debug.WriteLine("=============================");
                Debug.WriteLine(body);
 #endif
+
+               var auditService = scope.GetRequiredService<IAuditService>();
+               await auditService.LogAsync("MCP.Request", true, $"Token: {token.Name}\n{httpContext.Request.Method} {httpContext.Request.Path}\n{System.Text.RegularExpressions.Regex.Unescape(body)}");
+
                return await next(context);
            });
 }
