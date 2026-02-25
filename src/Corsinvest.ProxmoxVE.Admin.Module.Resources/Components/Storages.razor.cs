@@ -24,7 +24,8 @@ public partial class Storages : IClusterName
                                            nameof(ClusterResourceEx.MemoryUsagePercentage),
                                            nameof(ClusterResourceEx.DiskUsagePercentage),
                                            nameof(ClusterResourceEx.HostCpuUsage),
-                                           nameof(ClusterResourceEx.HostMemoryUsage)]);
+                                           nameof(ClusterResourceEx.HostMemoryUsage),
+                                           nameof(ClusterResourceEx.HealthScore)]);
 
         RadzenHelper.MakeDataGridSettings(DataGridSettingsStorage,
                                           [nameof(ClusterResourceEx.Status),
@@ -36,6 +37,7 @@ public partial class Storages : IClusterName
                                            nameof(ClusterResourceEx.DiskUsagePercentage),
                                            nameof(ClusterResourceEx.Shared),
                                            nameof(ClusterResourceEx.Content),
+                                           nameof(ClusterResourceEx.HealthScore),
                                            nameof(ClusterResourceEx.Pool)]);
     }
 }

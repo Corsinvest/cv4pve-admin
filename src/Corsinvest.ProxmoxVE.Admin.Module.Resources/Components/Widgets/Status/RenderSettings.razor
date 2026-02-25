@@ -6,6 +6,7 @@
 @implements ISettingsParameter<Settings>
 
 <RadzenFormField Text="@L["Resource Type"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start><RadzenIcon Icon="device_hub" /></Start>
     <ChildContent>
         <RadzenDropDown TValue="ClusterResourceType" @bind-Value="@Settings.ResourceType" Data="@EnumData" />
     </ChildContent>
@@ -25,6 +26,7 @@
 @if (Settings.ResourceType == ClusterResourceType.Vm)
 {
     <RadzenFormField Text="@L["VM Type"]" AllowFloatingLabel="false" class="rz-w-100">
+        <Start><RadzenIcon Icon="memory" /></Start>
         <ChildContent>
             <RadzenDropDown TValue="VmType" @bind-Value="@Settings.VmType" Data="@(Enum.GetValues<VmType>())" />
         </ChildContent>
