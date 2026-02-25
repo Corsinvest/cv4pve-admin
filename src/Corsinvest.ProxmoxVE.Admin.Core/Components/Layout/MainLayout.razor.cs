@@ -88,6 +88,8 @@ public partial class MainLayout(IModuleService moduleService,
     {
         await adminService.SetCurrentClusterNameAsync(ClusterName);
         currentClusterService.ClusterName = ClusterName;
+        navigationManager.ForceReload();
+
         await RefreshDataAsync();
     }
 

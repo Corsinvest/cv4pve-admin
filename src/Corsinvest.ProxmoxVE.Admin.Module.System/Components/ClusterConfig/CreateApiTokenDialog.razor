@@ -1,0 +1,57 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenTemplateForm TItem="CreateApiTokenModel" Data="@Model" Submit="@OnConfirm">
+    <RadzenStack Gap="1rem">
+        <RadzenFormField Text="@L["Username"]" AllowFloatingLabel="false">
+            <Start><RadzenIcon Icon="account_circle" /></Start>
+            <ChildContent>
+                <RadzenTextBox @bind-Value="@Model.Username" Name="Username" Placeholder="user@realm" aria-label="@L["Username"]" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="Username" />
+            </Helper>
+        </RadzenFormField>
+
+        <PasswordField @bind-Value="@Model.Password" Label="@L["Password"]" Name="Password">
+            <Helper>
+                <RadzenDataAnnotationValidator Component="Password" />
+            </Helper>
+        </PasswordField>
+
+        <RadzenFormField Text="@L["Token Name"]" AllowFloatingLabel="false">
+            <Start><RadzenIcon Icon="vpn_key" /></Start>
+            <ChildContent>
+                <RadzenTextBox @bind-Value="@Model.TokenName"
+                               Name="TokenName"
+                               Placeholder="cv4pve-admin"
+                               aria-label="@L["Token Name"]" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="TokenName" />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.End">
+            <RadzenButton Text="@L["Cancel"]"
+                          Click="@(() => DialogService.Close(null))"
+                          ButtonStyle="ButtonStyle.Light" />
+
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          Text="@L["Confirm"]"
+                          ButtonStyle="ButtonStyle.Primary" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code
+{
+    [Inject] public DialogService DialogService { get; set; } = default!;
+
+    private CreateApiTokenModel Model { get; set; } = new();
+
+    private void OnConfirm(CreateApiTokenModel model) => DialogService.Close(model);
+}

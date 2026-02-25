@@ -119,8 +119,20 @@
             <PasswordField @bind-Value="@Model.ApiToken"
                            Label="@L["API Token"]"
                            Name="@nameof(Model.ApiToken)"
-                           Placeholder="USER@REALM!TOKENID=UUID"
+                           Placeholder="user@realm!tokenid=secret"
                            class="rz-w-100">
+                <End>
+                    @*
+                                                          
+                                  Variant="Variant.Flat"
+
+                    *@
+                    <RadzenButton Icon="vpn_key"
+                                  Size="ButtonSize.ExtraSmall"
+                                  ButtonStyle="ButtonStyle.Warning"
+                                  title="@L["Create API Token automatically"]"
+                                  Click="@CreateApiTokenAsync" />
+                </End>
                 <Helper>
                     <RadzenRequiredValidator Component="@nameof(Model.ApiToken)" />
                 </Helper>
@@ -170,5 +182,7 @@
 </RadzenPanel>
 
 <RadzenPanel Text="@L["Nodes"]">
-    <NodesSettings Model="Model" Disabled="@NodesDisabled" />
+    <NodesSettings Model="Model" />
 </RadzenPanel>
+
+

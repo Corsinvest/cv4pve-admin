@@ -11,4 +11,5 @@ public interface IAdminService : IEnumerable<ClusterClient>
     Task<string> GetCurrentClusterNameAsync();
     Task SetCurrentClusterNameAsync(string clusterName);
     Task<FluentResults.Result<string>> PopulateInfoAsync(ClusterSettings clusterSettings);
+    ClusterClient CreateClusterClient(ClusterSettings clusterSettings) ;
 }

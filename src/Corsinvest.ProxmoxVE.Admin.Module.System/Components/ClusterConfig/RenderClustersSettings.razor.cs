@@ -9,7 +9,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components.ClusterConfig;
 public partial class RenderClustersSettings(ISettingsService settingsService,
                                             IAdminService adminService,
                                             DialogService dialogService,
-                                            DialogService sialogService,
                                             NotificationService notificationService,
                                             NavigationManager navigationManager)
 {
@@ -51,7 +50,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
             ClustersSettings.Remove(SelectedItems[0]);
             await settingsService.SetAsync(ClustersSettings);
             await DataGridRef.Reload();
-            navigationManager.NavigateTo(new Uri(navigationManager.Uri).LocalPath, forceLoad: true);
+            navigationManager.ForceReload();
         }
     }
 
@@ -63,7 +62,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
                         ? L["New Cluster Settings"]
                         : L["Edit {0}", item.Name];
 
-        if (await sialogService.OpenSideEditAsync<ClusterSettingsDialog>(title, isNew, item, OnSubmitingDialog) != null)
+        if (await dialogService.OpenSideEditAsync<ClusterSettingsDialog>(title, isNew, item, OnSubmitingDialog) != null)
         {
             if (isNew)
             {
@@ -73,7 +72,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
             await settingsService.SetAsync(ClustersSettings);
             await adminService[item.Name].CachedData.ClearCacheAsync();
 
-            navigationManager.NavigateTo(new Uri(navigationManager.Uri).LocalPath, forceLoad: true);
+            navigationManager.ForceReload();
         }
         else
         {
@@ -91,7 +90,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
     {
         var clusterSettings = (ClusterSettings)model;
         var valid = !clusterSettings.Enabled
-                    || await PveAdminUIHelper.PopulateClusterSettingsAsync(adminService, clusterSettings, sialogService, notificationService, L);
+                    || await PveAdminUIHelper.PopulateClusterSettingsAsync(adminService, clusterSettings, dialogService, notificationService, L);
 
         if (valid)
         {
