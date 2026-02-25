@@ -6,6 +6,7 @@
 @implements ISettingsParameter<Settings>
 
 <RadzenFormField Text="@L["Type"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start><RadzenIcon Icon="web" /></Start>
     <ChildContent>
         <RadzenDropDown TValue="ContentType"
                         @bind-Value="@Settings.Type"
@@ -74,39 +75,4 @@
         break;
 }
 
-@code
-{
-    [Parameter] public Settings Settings { get; set; } = default!;
-    [Parameter] public EventCallback<Settings> SettingsChanged { get; set; }
 
-    private void OnUrlChanged(string url)
-    {
-        Settings.Url = ConvertToEmbedUrl(url);
-    }
-
-    private static string ConvertToEmbedUrl(string url)
-    {
-        // YouTube: https://www.youtube.com/watch?v=VIDEO_ID
-        var youtubeMatch = System.Text.RegularExpressions.Regex.Match(url, @"youtube\.com/watch\?v=([^&]+)");
-        if (youtubeMatch.Success)
-        {
-            return $"https://www.youtube.com/embed/{youtubeMatch.Groups[1].Value}";
-        }
-
-        // YouTube short: https://youtu.be/VIDEO_ID
-        var youtubeShortMatch = System.Text.RegularExpressions.Regex.Match(url, @"youtu\.be/([^?]+)");
-        if (youtubeShortMatch.Success)
-        {
-            return $"https://www.youtube.com/embed/{youtubeShortMatch.Groups[1].Value}";
-        }
-
-        // Vimeo: https://vimeo.com/VIDEO_ID
-        var vimeoMatch = System.Text.RegularExpressions.Regex.Match(url, @"vimeo\.com/(\d+)");
-        if (vimeoMatch.Success)
-        {
-            return $"https://player.vimeo.com/video/{vimeoMatch.Groups[1].Value}";
-        }
-
-        return url;
-    }
-}
