@@ -67,6 +67,10 @@ docker compose down && docker compose up -d
 
 When connecting a Proxmox cluster, assign the **`PVEAdmin`** role at path `/` to the Proxmox user or API token used by cv4pve-admin.
 
+!!! tip "Automatic API Token Creation"
+    cv4pve-admin can create a dedicated Proxmox user and API token for you automatically.
+    [:octicons-arrow-right-24: Learn more](configuration/admin-area.md#automatic-api-token-creation)
+
 !!! warning "Insufficient permissions"
     Using a role with only a subset of privileges (e.g. `Sys.Audit` alone) will cause permission errors at runtime.
     Always assign `PVEAdmin` at path `/` to ensure full functionality.
