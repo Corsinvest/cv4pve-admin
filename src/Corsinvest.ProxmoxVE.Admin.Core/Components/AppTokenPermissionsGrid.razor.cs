@@ -55,6 +55,9 @@ public partial class AppTokenPermissionsGrid(IAppTokenService appTokenService,
         if (!await dialogService.ConfirmAsync(L["Regenerate token? The current token will be invalidated."], L["Regenerate"], true)) { return; }
 
         var rawToken = await appTokenService.RegenerateAsync(SelectedItems[0].Id);
-        await dialogService.OpenAsync(L["Token regenerated — save it now!"], ds => RawTokenDialog(ds, rawToken));
+        await dialogService.OpenCopyValueAsync(L["Token regenerated — save it now!"],
+                                               rawToken,
+                                               L["Token"],
+                                               L["This token will not be shown again. Copy it now:"]);
     }
 }
