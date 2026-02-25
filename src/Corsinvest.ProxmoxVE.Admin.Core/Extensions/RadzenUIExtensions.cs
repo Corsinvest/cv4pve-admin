@@ -125,6 +125,24 @@ public static class RadzenUIExtensions
        where TSource : class
         => await query.LoadDataAsync(args, grid, selector, lastFilter);
 
+    public static async Task OpenCopyValueAsync(this DialogService dialogService,
+                                                string title,
+                                                string value,
+                                                string label = "Value",
+                                                string? message = null)
+        => await dialogService.OpenAsync<CopyValueDialog>(title,
+                                                          new()
+                                                          {
+                                                              [nameof(CopyValueDialog.Value)] = value,
+                                                              [nameof(CopyValueDialog.Label)] = label,
+                                                              [nameof(CopyValueDialog.Message)] = message!
+                                                          },
+                                                          new DialogOptions
+                                                          {
+                                                              Width = "500px",
+                                                              CloseDialogOnOverlayClick = false
+                                                          });
+
     public static async Task<string?> PromptAsync(this DialogService dialogService,
                                                    string title,
                                                    string label,
