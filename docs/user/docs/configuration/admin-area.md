@@ -14,6 +14,10 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
     Configure cluster connections, API credentials, and access settings.
 
+    When adding a cluster, you can specify individual nodes and define their **display order** in the grid by setting a position for each node. This allows you to arrange nodes in a custom order rather than the default alphabetical order.
+
+    [:octicons-arrow-right-24: Automatic API Token Creation](#automatic-api-token-creation)
+
 -   :material-security:{ .lg .middle } **Security & Access Control** <span class="ee"></span>
 
     ---
@@ -89,6 +93,28 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
     [:octicons-arrow-right-24: Configure notifications](notifier.md)
 
 </div>
+
+## Automatic API Token Creation
+
+Instead of manually creating an API token in Proxmox, use the **🔑 button** next to the API Token field to generate one automatically.
+
+A dialog will ask for:
+
+- **Username** — a Proxmox user with sufficient privileges (e.g. `root@pam`)
+- **Password** — used only during this operation, never stored
+- **Token Name** — identifier for the token (default: `cv4pve-admin`)
+
+The following steps are performed automatically on the Proxmox cluster:
+
+1. Creates a dedicated Proxmox user `cv4pve-admin@pve`
+2. Assigns the `PVEAdmin` role on path `/` (with propagation)
+3. Creates the API token `cv4pve-admin@pve!{token-name}` with `privsep=0` (inherits PVEAdmin role)
+4. Populates the **API Token** field with the generated value (`cv4pve-admin@pve!{token-name}=secret`)
+5. Shows a one-time dialog to copy the token — **it will not be shown again**
+
+The username and password are used only during this wizard and are **never saved**.
+
+---
 
 ## Access
 
