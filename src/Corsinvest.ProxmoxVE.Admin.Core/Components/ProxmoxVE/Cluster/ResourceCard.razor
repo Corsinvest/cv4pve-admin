@@ -1,0 +1,119 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenCard class="rz-p-3" Style="min-width:200px; max-width:260px;">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+
+        @* Header: icon + name + status badge *@
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                <IconStatusResource Status="@Resource.Status" Type="@Resource.Type" Locked="@Resource.IsLocked" />
+                <RadzenText TextStyle="TextStyle.Subtitle2"
+                            Text="@Resource.Name"
+                            Style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:130px;" />
+            </RadzenStack>
+            @if (Resource.ResourceType == ClusterResourceType.Node || Resource.ResourceType == ClusterResourceType.Vm)
+            {
+                <RadzenBadge Text="@Resource.Status"
+                             BadgeStyle="@StatusBadgeStyle"
+                             Shade="Shade.Dark"
+                             IsPill="true" />
+            }
+        </RadzenStack>
+
+        @* Node: CPU + RAM gauges *@
+        @if (Resource.ResourceType == ClusterResourceType.Node)
+        {
+            <RadzenRow Gap="0" Style="margin-top:4px;">
+                <RadzenColumn Size="6">
+                    @GaugeFragment("CPU", Resource.CpuUsagePercentage, Resource.CpuInfo)
+                </RadzenColumn>
+                <RadzenColumn Size="6">
+                    @GaugeFragment("RAM", Resource.MemoryUsagePercentage, Resource.MemoryInfo)
+                </RadzenColumn>
+            </RadzenRow>
+            @SparklineFragment
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenText TextStyle="TextStyle.Caption" Text="@L["Uptime"]" />
+                <RadzenText TextStyle="TextStyle.Caption" Text="@FormatHelper.UptimeInfo(Resource.Uptime)" />
+            </RadzenStack>
+        }
+
+        @* VM / LXC: CPU + RAM + Disk *@
+        else if (Resource.ResourceType == ClusterResourceType.Vm)
+        {
+            <RadzenRow Gap="0" Style="margin-top:4px;">
+                <RadzenColumn Size="4">
+                    @GaugeFragment("CPU", Resource.CpuUsagePercentage, Resource.CpuInfo)
+                </RadzenColumn>
+                <RadzenColumn Size="4">
+                    @GaugeFragment("RAM", Resource.MemoryUsagePercentage, Resource.MemoryInfo)
+                </RadzenColumn>
+                <RadzenColumn Size="4">
+                    @GaugeFragment("Disk", Resource.DiskUsagePercentage, FormatHelper.UsageInfo(Resource.DiskUsage, Resource.DiskSize))
+                </RadzenColumn>
+            </RadzenRow>
+            @SparklineFragment
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenText TextStyle="TextStyle.Caption" Text="@Resource.Node" />
+                <RadzenText TextStyle="TextStyle.Caption" Text="@FormatHelper.UptimeInfo(Resource.Uptime)" />
+            </RadzenStack>
+        }
+
+        @* Storage *@
+        else if (Resource.ResourceType == ClusterResourceType.Storage)
+        {
+            <RadzenRow Gap="0" Style="margin-top:4px;">
+                <RadzenColumn Size="12" class="rz-text-align-center">
+                    @GaugeFragment("Disk", Resource.DiskUsagePercentage, FormatHelper.UsageInfo(Resource.DiskUsage, Resource.DiskSize))
+                </RadzenColumn>
+            </RadzenRow>
+        }
+
+    </RadzenStack>
+</RadzenCard>
+
+@code
+{
+    [Parameter] public ClusterResourceEx Resource { get; set; } = default!;
+
+    private RenderFragment SparklineFragment => __builder =>
+    {
+        <RadzenStack Gap="2px" Style="margin-top:4px;">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                <RadzenText TextStyle="TextStyle.Caption" Style="min-width:28px;">CPU</RadzenText>
+                <RadzenSparkline style="width:100%; height:24px;">
+                    <RadzenLineSeries Smooth="true" Data="@CpuHistory" CategoryProperty="X" ValueProperty="Y" />
+                    <RadzenCategoryAxis Visible="false" Padding="-20" />
+                </RadzenSparkline>
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                <RadzenText TextStyle="TextStyle.Caption" Style="min-width:28px;">RAM</RadzenText>
+                <RadzenSparkline style="width:100%; height:24px;">
+                    <RadzenLineSeries Smooth="true" Data="@RamHistory" CategoryProperty="X" ValueProperty="Y" />
+                    <RadzenCategoryAxis Visible="false" Padding="-20" />
+                </RadzenSparkline>
+            </RadzenStack>
+        </RadzenStack>
+    };
+
+    private RenderFragment GaugeFragment(string label, double pct, string info) => __builder =>
+    {
+        <RadzenStack AlignItems="AlignItems.Center" Gap="0">
+            <RadzenArcGauge Style="width:80px; height:60px;">
+                <RadzenArcGaugeScale Min="0" Max="100" Radius="1" X="0.5" Y="0.6" Margin="0.1">
+                    <RadzenArcGaugeScaleValue Value="@Math.Round(pct * 100, 1)" Fill="@PveAdminUIHelper.GetColorRange(pct)">
+                        <Template Context="p">
+                            <RadzenText TextStyle="TextStyle.Caption">@($"{p.Value}%")</RadzenText>
+                        </Template>
+                    </RadzenArcGaugeScaleValue>
+                </RadzenArcGaugeScale>
+            </RadzenArcGauge>
+            <RadzenText TextStyle="TextStyle.Caption" Text="@label" />
+        </RadzenStack>
+    };
+}
