@@ -51,6 +51,7 @@ public static class ApplicationHelper
 
     public const string UrlShopSubscription = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
     public static string UrlNewPveConfig { get; set; } = default!;
+    public static string UrlChangePassword { get; set; } = default!;
 
     public static string ExecutionPath { get; } = AppContext.BaseDirectory;
     public static string ConfigPath { get; } = Path.Combine(ExecutionPath, "config");

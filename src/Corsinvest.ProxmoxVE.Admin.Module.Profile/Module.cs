@@ -28,6 +28,14 @@ public class Module : ModuleBase
         LinkPosition = ModuleLinkPosition.ProfileMenu;
         Scope = ClusterScope.All;
 
+        var passwordLink = new ModuleLinkBase(this, "Password")
+        {
+            Render = new(typeof(Components.ChangePassword)),
+            Icon = "lock"
+        };
+
+        ApplicationHelper.UrlChangePassword = $"{BaseUrl}/{passwordLink.Url}";
+
         NavBar =
         [
             new(this,"Overview", string.Empty)
@@ -43,11 +51,7 @@ public class Module : ModuleBase
             //{
             //    Render = new(typeof(Components.Account)),
             //},
-            new(this,"Password")
-            {
-                Render = new(typeof(Components.ChangePassword)),
-                Icon = "lock"
-            },
+            passwordLink,
             new(this,"Two-factor authentication (2FA)","2fa")
             {
                 Render = new(GetTwoFactorAuthenticationType()),
