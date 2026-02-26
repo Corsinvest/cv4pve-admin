@@ -6,11 +6,11 @@ using Corsinvest.ProxmoxVE.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components.ClusterConfig;
 
-public partial class ClusterSettingsDialog(IAdminService adminService,
-                                           DialogService dialogService,
-                                           NotificationService notificationService)
+public partial class WebApiCredentialSettings(IAdminService adminService,
+                                       DialogService dialogService,
+                                       NotificationService notificationService)
 {
-    [Parameter] public ClusterSettings Model { get; set; } = default!;
+    [Parameter, EditorRequired] public ClusterSettings Model { get; set; } = default!;
 
     private async Task CreateApiTokenAsync()
     {
@@ -19,13 +19,13 @@ public partial class ClusterSettingsDialog(IAdminService adminService,
         {
             var clusterClient = adminService.CreateClusterClient(new ClusterSettings
             {
-                AccessType = ClusterAccessType.Credential,
-                ApiCredential = new Credential
+                WebApi = new WebApiCredential
                 {
+                    AccessType = ClusterAccessType.Credential,
                     Username = dialogResult.Username,
-                    Password = dialogResult.Password
+                    Password = dialogResult.Password,
+                    Timeout = Model.WebApi.Timeout
                 },
-                Timeout = Model.Timeout,
                 Nodes = Model.Nodes
             });
 
@@ -58,10 +58,10 @@ public partial class ClusterSettingsDialog(IAdminService adminService,
 
                     var fullTokenId = data["full-tokenid"].ToString()!;
                     var secret = data["value"].ToString()!;
-                    Model.ApiToken = $"{fullTokenId}={secret}";
-                    Model.AccessType = ClusterAccessType.ApiToken;
+                    Model.WebApi.ApiToken = $"{fullTokenId}={secret}";
+                    Model.WebApi.AccessType = ClusterAccessType.ApiToken;
                     await dialogService.OpenCopyValueAsync(L["API Token created — save it now!"],
-                                                           Model.ApiToken,
+                                                           Model.WebApi.ApiToken,
                                                            L["API Token"],
                                                            L["This token will not be shown again. Copy it now: {0}", fullTokenId]);
                 }

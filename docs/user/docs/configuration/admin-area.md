@@ -16,7 +16,9 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
     When adding a cluster, you can specify individual nodes and define their **display order** in the grid by setting a position for each node. This allows you to arrange nodes in a custom order rather than the default alphabetical order.
 
-    [:octicons-arrow-right-24: Automatic API Token Creation](#automatic-api-token-creation)
+    [:octicons-arrow-right-24: Web API Access](#web-api-access)
+
+    [:octicons-arrow-right-24: SSH Configuration](#ssh-configuration)
 
 -   :material-security:{ .lg .middle } **Security & Access Control** <span class="ee"></span>
 
@@ -94,7 +96,18 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
 </div>
 
-## Automatic API Token Creation
+## Web API Access
+
+Configure the Proxmox VE API credentials used to connect to each cluster.
+
+| Field | Description |
+|-------|-------------|
+| **Access Type** | `Credential` (username/password) or `API Token` |
+| **API Token** | Token in format `user@realm!tokenname=secret` |
+| **Timeout (msec)** | HTTP request timeout in milliseconds (default: 1000) |
+| **Validate Certificate** | Verify TLS certificate of Proxmox VE nodes |
+
+### Automatic API Token Creation
 
 Instead of manually creating an API token in Proxmox, use the **🔑 button** next to the API Token field to generate one automatically.
 
@@ -113,6 +126,31 @@ The following steps are performed automatically on the Proxmox cluster:
 5. Shows a one-time dialog to copy the token — **it will not be shown again**
 
 The username and password are used only during this wizard and are **never saved**.
+
+---
+
+## SSH Configuration
+
+Several features require SSH access to the Proxmox VE nodes, including snapshot size calculation.
+
+SSH is configured per-cluster under **Proxmox VE Clusters → SSH Credentials**.
+
+| Field | Description |
+|-------|-------------|
+| **Auth Method** | `Password` or `Private Key` |
+| **Username** | SSH user (typically `root`) |
+| **Password** | Used when Auth Method is Password |
+| **Private Key** | PEM/OpenSSH private key content |
+| **Passphrase** | Optional passphrase for private key |
+| **Timeout (msec)** | Connection timeout in milliseconds (default: 5000) |
+
+!!! tip
+    Use **Private Key** authentication for better security. You can upload the key file directly from the UI.
+
+!!! note
+    The SSH timeout applies only to the **connection phase** (handshake), not to command execution duration.
+
+Use the **Test SSH** button to verify connectivity to all nodes before saving.
 
 ---
 

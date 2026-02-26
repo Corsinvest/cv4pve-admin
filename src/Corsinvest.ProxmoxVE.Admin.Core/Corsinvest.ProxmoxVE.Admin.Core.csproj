@@ -26,6 +26,7 @@
 
     <PackageReference Include="CronExpressionDescriptor" />
     <PackageReference Include="cronos" />
+    <PackageReference Include="SSH.NET" />
     <PackageReference Include="Toolbelt.Blazor.HotKeys2" />
     <PackageReference Include="ZiggyCreatures.FusionCache" />
     <PackageReference Include="System.Linq.Dynamic.Core" />

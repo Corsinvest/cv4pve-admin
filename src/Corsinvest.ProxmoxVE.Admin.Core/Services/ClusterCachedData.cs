@@ -66,12 +66,13 @@ public class ClusterCachedData
                                60,
                                forceReload);
 
-    public async Task<IEnumerable<VmDiskInfo>> GetDisksInfoAsync(bool forceReload)
-        => await GetOrSetAsync(nameof(GetDisksInfoAsync),
+    public async Task<IEnumerable<VmDiskSnapshotInfo>> GetDiskSnapshotInfosAsync(bool forceReload)
+        => await GetOrSetAsync(nameof(GetDiskSnapshotInfosAsync),
                                async () =>
                                {
-                                   return _clusterSettings.AllowCalculateSnapshotSize
-                                             ? await _serviceProvider.GetRequiredService<ISnapshotSizeService>().GetAsync(await GetPveClientAsync())
+                                   var snapshotSizeService = _serviceProvider.GetService<ISnapshotSizeService>();
+                                   return _clusterSettings.AllowCalculateSnapshotSize && _clusterSettings.SshIsConfigured && snapshotSizeService != null
+                                             ? await snapshotSizeService.GetAsync(_clusterSettings.Name)
                                              : [];
                                },
                                5 * 60,

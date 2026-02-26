@@ -8,7 +8,6 @@ using Corsinvest.ProxmoxVE.Admin.Module.System.HealthMonitoring;
 using Corsinvest.ProxmoxVE.Admin.Module.System.ReleaseChecker;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Security;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Settings;
-using Corsinvest.ProxmoxVE.Admin.Module.System.SystemLogs.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
@@ -177,8 +176,7 @@ public class Module : ModuleBase
                    .AddSettingsAdmin()
                    .AddSecurityAdmin(configuration)
                    .AddBackgroundJobsAdmin(configuration)
-                   .AddReleaseServices(configuration)
-                   .AddScoped<ISystemLogService, SystemLogService>();
+                   .AddReleaseServices(configuration);
 
     public override Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation)
         => scope.GetRequiredService<ModuleDbContext>().ExecuteMaintenanceAsync(operation);

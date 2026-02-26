@@ -33,16 +33,16 @@ public partial class ClusterSelector(ISettingsService settingsService) : ICluste
 
     private IEnumerable<ClusterSettings> Data
         => settingsService.GetEnabledClustersSettings()
-                          .Where(a => a.FullName.Contains(SearchString), !string.IsNullOrWhiteSpace(SearchString));
+                          .Where(a => a.FullDisplayName.Contains(SearchString), !string.IsNullOrWhiteSpace(SearchString));
 
     private void RefreshData()
     {
         var clusterSetttings = settingsService.GetClusterSettings(ClusterName);
-        FullNamePart1 = clusterSetttings?.FullNamePart1 ?? L["Select Cluster..."];
+        FullNamePart1 = clusterSetttings?.DisplayName ?? L["Select Cluster..."];
         Description = clusterSetttings?.Description;
-        FullName = clusterSetttings?.FullName;
-        Icon = clusterSetttings?.Icon;
-        Type = clusterSetttings?.DecodeType;
+        FullName = clusterSetttings?.FullDisplayName;
+        Icon = clusterSetttings?.TypeIcon;
+        Type = clusterSetttings?.TypeLabel;
     }
 
     private async Task SelectAsync(string clusterName)

@@ -16,15 +16,14 @@ public abstract class ModuleBase
     public string Type => GetType().FullName!;
     public string PathData => Path.Combine(ApplicationHelper.ModulesPath, Type);
 
-    private string _slug = default!;
     public string Slug
     {
         //if not set use Class
-        get => string.IsNullOrWhiteSpace(_slug) || string.IsNullOrEmpty(_slug)
+        get => string.IsNullOrWhiteSpace(field)
                     ? Type.Replace(".", string.Empty)
-                    : _slug;
+                    : field;
 
-        set => _slug = value;
+        set;
     }
 
     public ModuleLinkBase? Link { get; set; }
@@ -35,23 +34,21 @@ public abstract class ModuleBase
 
     public string BaseUrl => ApplicationHelper.ModuleComponentUrl + Slug;
 
-    private string? _icon;
     public string? Icon
     {
-        get => string.IsNullOrWhiteSpace(_icon)
+        get => string.IsNullOrWhiteSpace(field)
                     ? Link?.Icon
-                    : _icon;
+                    : field;
 
-        set => _icon = value;
+        set;
     }
 
     public string Name { get; init; } = default!;
 
-    public string? _description;
     public string Description
     {
-        get => _description ?? Name;
-        set => _description = value;
+        get => field ?? Name;
+        set;
     }
 
     public Category? Category { get; init; }
@@ -115,19 +112,16 @@ public abstract class ModuleBase
 
     protected abstract string PermissionBaseKey { get; }
 
-    private string? _permissionLinkBaseKey;
-    public string PermissionLinkBaseKey => _permissionLinkBaseKey ??= $"{PermissionBaseKey}.Link";
+    public string PermissionLinkBaseKey => field ??= $"{PermissionBaseKey}.Link";
 
-    private string? _permissionWidgetBaseKey;
-    public string PermissionWidgetBaseKey => _permissionWidgetBaseKey ??= $"{PermissionBaseKey}.Widget";
+    public string PermissionWidgetBaseKey => field ??= $"{PermissionBaseKey}.Widget";
 
-    private Role? _roleAdmin;
     public Role RoleAdmin
-        => _roleAdmin ??= new($"{PermissionBaseKey}.{RoleConstants.AdministratorRole}",
-                              $"Admin for module {Name}",
-                              false,
-                              true,
-                              GetAllPermissions());
+        => field ??= new($"{PermissionBaseKey}.{RoleConstants.AdministratorRole}",
+                         $"Admin for module {Name}",
+                         false,
+                         true,
+                         GetAllPermissions());
 
     private List<Permission> GetAllPermissions()
     {
@@ -150,8 +144,7 @@ public abstract class ModuleBase
         return [.. permissions.DistinctBy(a => a.Key)];
     }
 
-    private Permission? _permissionEditSettings;
-    public Permission PermissionEditSettings => _permissionEditSettings ??= new(PermissionBaseKey, "EditOptions", "Edit Settings");
+    public Permission PermissionEditSettings => field ??= new(PermissionBaseKey, "EditOptions", "Edit Settings");
     public IEnumerable<Role> AllRoles => new[] { RoleAdmin }.Union(Roles).Where(a => !string.IsNullOrWhiteSpace(a.Key));
     #endregion
 

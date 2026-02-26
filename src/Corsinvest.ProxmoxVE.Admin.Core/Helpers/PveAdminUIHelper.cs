@@ -167,7 +167,7 @@ public static class PveAdminUIHelper
 
         _ = Task.Run(async () =>
         {
-            await Task.Delay(1000);
+            await Task.Delay(200);
 
             NotificationMessage message;
 
@@ -209,6 +209,46 @@ public static class PveAdminUIHelper
         });
 
         await dialogService.BusyAsync(stringLocalizer["Connecting to Proxmox VE"]);
+
+        return valid;
+    }
+
+    public static async Task<bool> TestSshAsync(IAdminService adminService,
+                                               ClusterSettings clusterSettings,
+                                               DialogService dialogService,
+                                               NotificationService notificationService,
+                                               IStringLocalizer stringLocalizer)
+    {
+        if (!clusterSettings.SshCredential.IsConfigured) { return true; }
+
+        var valid = false;
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(1000);
+
+            var ret = await adminService.TestSshAsync(clusterSettings);
+            valid = ret.IsSuccess;
+
+            dialogService.Close();
+
+            notificationService.Notify(ret.IsSuccess
+                ? new()
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = stringLocalizer["SSH"],
+                    Detail = stringLocalizer[ret.Value]
+                }
+                : new()
+                {
+                    Severity = NotificationSeverity.Warning,
+                    Summary = stringLocalizer["SSH Warning"],
+                    Detail = ret.Errors.Select(a => a.Message).JoinAsString("\n"),
+                    Duration = 20000
+                });
+        });
+
+        await dialogService.BusyAsync(stringLocalizer["Testing SSH connection"]);
 
         return valid;
     }

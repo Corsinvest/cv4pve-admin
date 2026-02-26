@@ -35,3 +35,16 @@
   gap: 3px;
 }
 
+.ssh:before {
+  content: "SSH";
+  background-color: #607d8b;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+

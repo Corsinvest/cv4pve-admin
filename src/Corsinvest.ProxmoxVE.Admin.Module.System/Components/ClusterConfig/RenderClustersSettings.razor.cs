@@ -92,6 +92,11 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
         var valid = !clusterSettings.Enabled
                     || await PveAdminUIHelper.PopulateClusterSettingsAsync(adminService, clusterSettings, dialogService, notificationService, L);
 
+        if (valid && clusterSettings.Enabled)
+        {
+            valid = await PveAdminUIHelper.TestSshAsync(adminService, clusterSettings, dialogService, notificationService, L);
+        }
+
         if (valid)
         {
             var detail = string.Empty;

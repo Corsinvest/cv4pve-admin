@@ -61,7 +61,7 @@ public class ResourceUsage
     {
         if (clusterClient.Settings.AllowCalculateSnapshotSize)
         {
-            var disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+            var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
             var snapshotSize = disks.SelectMany(a => a.Snapshots).Sum(a => a.Size);
 
             var allStorage = resources.Where(a => a.ResourceType == ClusterResourceType.Storage && a.IsAvailable);

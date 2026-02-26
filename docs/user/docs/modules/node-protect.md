@@ -7,6 +7,8 @@ Node configuration backup and restore for Proxmox VE clusters.
 Backs up configuration settings of Proxmox VE nodes for restoration in case of failures.
 
 !!! warning "Requirements"
+    <span class="ssh"></span> SSH access is required. Configure credentials under **Admin Area → Proxmox VE Clusters → SSH Credentials**.
+
     Web shell PAM user is required for node configuration backup functionality.
 
 <div class="grid cards" markdown>
