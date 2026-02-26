@@ -4,7 +4,6 @@
  */
 global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
-global using Corsinvest.ProxmoxVE.Admin.Core.Common;
 global using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 global using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 global using Corsinvest.ProxmoxVE.Admin.Core.Helpers;

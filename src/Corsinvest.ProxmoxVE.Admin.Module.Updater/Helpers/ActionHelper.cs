@@ -108,15 +108,13 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
         await eventNotificationService.PublishAsync(new DataChangedNotification());
 
-        var client = await clusterClient.GetPveClientAsync();
-
         foreach (var node in items.Select(a => a.Node).Distinct().Order())
         {
             foreach (var item in items.Where(a => a.Node == node && a.IsRunning).OrderBy(a => a.VmType).ThenBy(a => a.Name))
             {
                 logger.LogInformation("Scan {node}/{id} ", item.Node, item.Id);
 
-                var ret = await client.VmExecNativeAsync(item.Node, item.VmType, item.VmId, scriptLinux, scriptWindows);
+                var ret = await clusterClient.VmExecNativeAsync(item.Node, item.VmType, item.VmId, scriptLinux, scriptWindows);
                 if (ret.IsSuccess)
                 {
                     try

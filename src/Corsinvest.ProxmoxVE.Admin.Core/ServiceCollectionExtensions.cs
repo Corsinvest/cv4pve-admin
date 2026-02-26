@@ -40,7 +40,6 @@ public static class ServiceCollectionExtensions
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 
-        services.AddScoped<ISnapshotSizeService, SnapshotSizeService>();
         services.AddSingleton<ISessionHubService, SessionHubService>();
         services.AddScoped<IEmailSender, SmtpEmailSender>();
         services.AddTransient<INotifierService, NotifierService>();

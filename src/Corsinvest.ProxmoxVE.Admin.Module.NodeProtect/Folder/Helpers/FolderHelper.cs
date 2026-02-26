@@ -82,11 +82,11 @@ internal static class FolderHelper
         var status = false;
         var start = DateTime.Now;
 
-        IEnumerable<BackupHelper.InfoBackupFile> files = [];
+        IEnumerable<BackupHelper.NodeBackupFile> files = [];
 
         try
         {
-            files = await BackupHelper.CreateAsync(await clusterClient.GetPveClientAsync(),
+            files = await BackupHelper.CreateAsync(clusterClient,
                                                    settings.PathsToBackup.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
                                                    directoryWork,
                                                    logger);

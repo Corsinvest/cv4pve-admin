@@ -18,18 +18,19 @@ public class NodeMemoryCleanup(IAdminService adminService,
 
     public async Task ExecuteAsync(string clusterName, IClusterResourceNode item)
     {
-        await using var webTerm = new PveWebTermClient(await adminService[clusterName].GetPveClientAsync(), item.Node);
-        await webTerm.ConnectAsync();
-
         var command = "sync && echo 3 > /proc/sys/vm/drop_caches && echo 1 > /proc/sys/vm/compact_memory";
-        var (_, stdErr, exitCode) = await webTerm.ExecuteCommandAsync(command);
-        if (exitCode == 0)
+        var result = await adminService[clusterName].SshExecuteAsync(item.Node,true, [command]);
+        if (result[0].IsSuccess)
         {
             notificationService.Info(L["Node memory freed successfully!"]);
         }
+        else if (result[0].IsSshNotConfigured)
+        {
+            notificationService.Warning(result[0].StdErr);
+        }
         else
         {
-            notificationService.Error(stdErr);
+            notificationService.Error(result[0].StdErr);
         }
     }
 }
