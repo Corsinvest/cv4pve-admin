@@ -431,7 +431,7 @@ internal static class EndpointsExtensions
 
             wsPve.Options.Cookies = cookieContainer;
 
-            if (!clusterClient.Settings.ValidateCertificate)
+            if (!clusterClient.Settings.WebApi.ValidateCertificate)
             {
                 wsPve.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
             }

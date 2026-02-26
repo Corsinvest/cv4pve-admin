@@ -8,24 +8,25 @@ public class PveClientFactory(IHttpClientFactory httpClientFactory, ILoggerFacto
 {
     public async Task<PveClient> CreateClientAsync(ClusterSettings settings, CancellationToken cancellationToken = default)
     {
-        var httpClient = httpClientFactory.CreateClient(settings.ValidateCertificate
+        var webApi = settings.WebApi;
+        var httpClient = httpClientFactory.CreateClient(webApi.ValidateCertificate
                                                             ? "HttpStrict"
                                                             : "HttpIgnoreCert");
 
-        var useApiToken = settings.AccessType == ClusterAccessType.ApiToken;
+        var useApiToken = webApi.AccessType == ClusterAccessType.ApiToken;
 
         return await ClientHelper.GetClientAndTryLoginAsync(settings.ApiHostsAndPortHA,
                                                             (host, port) => new PveClientWithRetry(host, port, httpClient, loggerFactory.CreateLogger<PveClientWithRetry>())
                                                             {
-                                                                Username = useApiToken ? string.Empty : settings.ApiCredential.Username,
-                                                                Password = useApiToken ? string.Empty : settings.ApiCredential.Password
+                                                                Username = useApiToken ? string.Empty : webApi.Username,
+                                                                Password = useApiToken ? string.Empty : webApi.Password
                                                             },
-                                                            useApiToken ? string.Empty : settings.ApiCredential.Username,
-                                                            useApiToken ? string.Empty : settings.ApiCredential.Password,
-                                                            useApiToken ? settings.ApiToken : string.Empty,
-                                                            settings.ValidateCertificate,
+                                                            useApiToken ? string.Empty : webApi.Username,
+                                                            useApiToken ? string.Empty : webApi.Password,
+                                                            useApiToken ? webApi.ApiToken : string.Empty,
+                                                            webApi.ValidateCertificate,
                                                             loggerFactory,
-                                                            settings.Timeout,
+                                                            webApi.Timeout,
                                                             cancellationToken);
     }
 }
