@@ -11,7 +11,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components;
 public partial class Maintenance(IAdminService adminService,
                                  ISettingsService settingsService,
                                  IBackgroundJobService backgroundJobService,
-                                 ISystemLogService systemLogService,
+                                 IServiceProvider serviceProvider,
                                  ModuleDbContext moduleDbContext,
                                  DialogService dialogService,
                                  IServiceScopeFactory serviceScopeFactory,
@@ -135,7 +135,10 @@ public partial class Maintenance(IAdminService adminService,
             IsCleanupSystemLogsBusy = true;
             try
             {
-                var deleted = await systemLogService.CleanupAsync(SystemLogsRetentionDays);
+                var systemLogService = serviceProvider.GetService<ISystemLogService>();
+                var deleted = systemLogService != null
+                                ? await systemLogService.CleanupAsync(SystemLogsRetentionDays)
+                                : 0;
 
                 AddLog($"OK Cleanup System Logs: deleted {deleted} record(s) older than {SystemLogsRetentionDays} days");
                 await auditService.LogAsync("Maintenance.CleanupSystemLogs", true, $"Deleted {deleted} system logs older than {SystemLogsRetentionDays} days");

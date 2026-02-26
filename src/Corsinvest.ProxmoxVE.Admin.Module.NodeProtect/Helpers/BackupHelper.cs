@@ -4,38 +4,37 @@
  */
 using System.Diagnostics;
 using System.Text;
-using Corsinvest.ProxmoxVE.Api;
-using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Helpers;
 
 public static class BackupHelper
 {
-    public record InfoBackupFile(string Node, string Logs, string FileName);
+    public record NodeBackupFile(string Node, string Logs, string FileName);
 
-    public static async Task<IEnumerable<InfoBackupFile>> CreateAsync(PveClient client,
+    public static async Task<IEnumerable<NodeBackupFile>> CreateAsync(ClusterClient clusterClient,
                                                                       IEnumerable<string> paths,
                                                                       string directoryWork,
                                                                       ILogger logger)
     {
         var totalSw = Stopwatch.StartNew();
-        var files = new List<InfoBackupFile>();
+        var files = new List<NodeBackupFile>();
         var date = DateTime.Now;
         var fileNameTarGz = $"/tmp/{date:yyyy-MM-dd-HH-mm-ss}.tar.gz";
 
-        foreach (var item in (await client.Cluster.Resources.GetAsync(ClusterResourceType.Node)).Where(a => a.IsOnline))
-        {
-            await using var webTerm = new PveWebTermClient(client, item.Node);
-            await webTerm.ConnectAsync();
+        var nodes = (await clusterClient.CachedData.GetResourcesAsync(false))
+                        .Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline);
 
+        foreach (var item in nodes)
+        {
             var logs = new StringBuilder();
 
             // Create tar.gz
             var sw = Stopwatch.StartNew();
             logs.AppendLine($"[{item.Node}] Create file tar.gz: {fileNameTarGz}");
             var cmd = $"tar --one-file-system -cvzPf {fileNameTarGz} {paths.JoinAsString(" ")}";
-            var ret = await webTerm.ExecuteCommandAsync(cmd);
+            var result = await clusterClient.SshExecuteAsync(item.Node, true, [cmd]);
+            var ret = result[0];
             sw.Stop();
 
             logger.LogDebug("Create tar.gz: {cmd}", cmd);
@@ -49,8 +48,17 @@ public static class BackupHelper
             var fileToSave = Path.Combine(directoryWork, $"{item.Node}-config.tar.gz");
 
             logs.AppendLine($"[{item.Node}] Download file tar.gz: {fileNameTarGz} to {fileToSave}");
-            await using var stream = File.OpenWrite(fileToSave);
-            await webTerm.DownloadFileAsync(fileNameTarGz, stream);
+            using var sftpClient = await clusterClient.GetSftpClientAsync(item.Node, true);
+            await sftpClient.ConnectAsync(CancellationToken.None);
+            try
+            {
+                await using var stream = File.OpenWrite(fileToSave);
+                await sftpClient.DownloadFileAsync(fileNameTarGz, stream);
+            }
+            finally
+            {
+                sftpClient.Disconnect();
+            }
             sw.Stop();
 
             logger.LogDebug("Download tar.gz: {fileNameTarGz} to {fileToSave}, Time: {time}ms", fileNameTarGz, fileToSave, sw.ElapsedMilliseconds);
@@ -59,7 +67,8 @@ public static class BackupHelper
             // Delete tar.gz
             sw.Restart();
             cmd = $"rm {fileNameTarGz}";
-            ret = await webTerm.ExecuteCommandAsync(cmd);
+            result = await clusterClient.SshExecuteAsync(item.Node, true, [cmd]);
+            ret = result[0];
             sw.Stop();
 
             logger.LogDebug("Delete tar.gz: {cmd}, Result: {exitCode}, Time: {time}ms", cmd, ret.ExitCode, sw.ElapsedMilliseconds);
@@ -69,7 +78,7 @@ public static class BackupHelper
         }
 
         totalSw.Stop();
-        logger.LogInformation("Backup completed in {totalSeconds:F2} seconds", totalSw.Elapsed.TotalSeconds);
+        logger.LogDebug("Backup completed in {totalSeconds:F2} seconds", totalSw.Elapsed.TotalSeconds);
 
         return files;
     }
