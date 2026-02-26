@@ -158,3 +158,23 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private void NotifyDefaultPassword()
+    {
+        var message = new NotificationMessage
+        {
+            Severity = NotificationSeverity.Error,
+            Duration = -1,
+            Style = "position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999;",
+            SummaryContent = _ => @<div>
+                <RadzenText TextStyle="TextStyle.Subtitle1">@L["Security Warning!"]</RadzenText>
+                <RadzenText TextStyle="TextStyle.Subtitle2">@L["You are using the default password. Please change it immediately."]</RadzenText>
+            </div>
+        };
+        message.DetailContent = _ => @<RadzenLink Path="@ApplicationHelper.UrlChangePassword"
+                                                  Text="@L["Change password now"]"
+                                                  @onclick="@(() => notificationService.Messages.Remove(message))" />;
+        notificationService.Notify(message);
+    }
+}

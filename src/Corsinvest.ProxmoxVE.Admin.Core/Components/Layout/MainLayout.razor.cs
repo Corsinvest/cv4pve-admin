@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
+using Microsoft.AspNetCore.Identity;
 using Toolbelt.Blazor.HotKeys2;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
@@ -15,6 +16,8 @@ public partial class MainLayout(IModuleService moduleService,
                                 ICurrentClusterService currentClusterService,
                                 ISettingsService settingsService,
                                 ICurrentUserService currentUserService,
+                                UserManager<ApplicationUser> userManager,
+                                NotificationService notificationService,
                                 NavigationManager navigationManager,
                                 IReleaseService releaseService,
                                 DialogService dialogService,
@@ -65,6 +68,13 @@ public partial class MainLayout(IModuleService moduleService,
         {
             ClusterName = await adminService.GetCurrentClusterNameAsync();
             currentClusterService.ClusterName = ClusterName;
+
+            var user = await currentUserService.GetUserAsync();
+            if (user != null && await userManager.CheckPasswordAsync(user, ApplicationHelper.DefaultAdminPassword))
+            {
+                NotifyDefaultPassword();
+            }
+
             await RefreshDataAsync();
             HasRendered = true;
             await InvokeAsync(StateHasChanged);
