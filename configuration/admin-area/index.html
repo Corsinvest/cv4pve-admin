@@ -697,10 +697,38 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#web-api-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web API Access
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web API Access">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#automatic-api-token-creation" class="md-nav__link">
     <span class="md-ellipsis">
       
         Automatic API Token Creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssh-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSH Configuration
       
     </span>
   </a>
@@ -1001,7 +1029,8 @@
 <hr />
 <p>Configure cluster connections, API credentials, and access settings.</p>
 <p>When adding a cluster, you can specify individual nodes and define their <strong>display order</strong> in the grid by setting a position for each node. This allows you to arrange nodes in a custom order rather than the default alphabetical order.</p>
-<p><a href="#automatic-api-token-creation"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Automatic API Token Creation</a></p>
+<p><a href="#web-api-access"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Web API Access</a></p>
+<p><a href="#ssh-configuration"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> SSH Configuration</a></p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12h7c-.53 4.11-3.28 7.78-7 8.92zH5V6.3l7-3.11M12 1 3 5v6c0 5.55 3.84 10.73 9 12 5.16-1.27 9-6.45 9-12V5z"/></svg></span> <strong>Security &amp; Access Control</strong> <span class="ee"></span></p>
@@ -1069,7 +1098,35 @@
 </li>
 </ul>
 </div>
-<h2 id="automatic-api-token-creation">Automatic API Token Creation<a class="headerlink" href="#automatic-api-token-creation" title="Permanent link">&para;</a></h2>
+<h2 id="web-api-access">Web API Access<a class="headerlink" href="#web-api-access" title="Permanent link">&para;</a></h2>
+<p>Configure the Proxmox VE API credentials used to connect to each cluster.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Access Type</strong></td>
+<td><code>Credential</code> (username/password) or <code>API Token</code></td>
+</tr>
+<tr>
+<td><strong>API Token</strong></td>
+<td>Token in format <code>user@realm!tokenname=secret</code></td>
+</tr>
+<tr>
+<td><strong>Timeout (msec)</strong></td>
+<td>HTTP request timeout in milliseconds (default: 1000)</td>
+</tr>
+<tr>
+<td><strong>Validate Certificate</strong></td>
+<td>Verify TLS certificate of Proxmox VE nodes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="automatic-api-token-creation">Automatic API Token Creation<a class="headerlink" href="#automatic-api-token-creation" title="Permanent link">&para;</a></h3>
 <p>Instead of manually creating an API token in Proxmox, use the <strong>🔑 button</strong> next to the API Token field to generate one automatically.</p>
 <p>A dialog will ask for:</p>
 <ul>
@@ -1086,6 +1143,53 @@
 <li>Shows a one-time dialog to copy the token — <strong>it will not be shown again</strong></li>
 </ol>
 <p>The username and password are used only during this wizard and are <strong>never saved</strong>.</p>
+<hr />
+<h2 id="ssh-configuration">SSH Configuration<a class="headerlink" href="#ssh-configuration" title="Permanent link">&para;</a></h2>
+<p>Several features require SSH access to the Proxmox VE nodes, including snapshot size calculation.</p>
+<p>SSH is configured per-cluster under <strong>Proxmox VE Clusters → SSH Credentials</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Auth Method</strong></td>
+<td><code>Password</code> or <code>Private Key</code></td>
+</tr>
+<tr>
+<td><strong>Username</strong></td>
+<td>SSH user (typically <code>root</code>)</td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td>Used when Auth Method is Password</td>
+</tr>
+<tr>
+<td><strong>Private Key</strong></td>
+<td>PEM/OpenSSH private key content</td>
+</tr>
+<tr>
+<td><strong>Passphrase</strong></td>
+<td>Optional passphrase for private key</td>
+</tr>
+<tr>
+<td><strong>Timeout (msec)</strong></td>
+<td>Connection timeout in milliseconds (default: 5000)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use <strong>Private Key</strong> authentication for better security. You can upload the key file directly from the UI.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The SSH timeout applies only to the <strong>connection phase</strong> (handshake), not to command execution duration.</p>
+</div>
+<p>Use the <strong>Test SSH</strong> button to verify connectivity to all nodes before saving.</p>
 <hr />
 <h2 id="access">Access<a class="headerlink" href="#access" title="Permanent link">&para;</a></h2>
 <p>Access the Admin Area from the main menu or profile dropdown in the top navigation bar.</p>
