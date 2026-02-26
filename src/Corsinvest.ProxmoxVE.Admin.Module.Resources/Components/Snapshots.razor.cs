@@ -96,7 +96,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName, IRefr
         var clusterClient = adminService[ClusterName];
         if (AllowCalculateSnapshotSize)
         {
-            Items = (await clusterClient.CachedData.GetDisksInfoAsync(false))
+            Items = (await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false))
                         .SelectMany(a => a.Snapshots, (a, b) => new { Disk = a, Snapshot = b })
                         .Select(a => new Data(a.Disk.Host,
                                               a.Disk.Type,

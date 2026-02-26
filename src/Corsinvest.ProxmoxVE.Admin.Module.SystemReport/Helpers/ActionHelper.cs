@@ -35,7 +35,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
             var reportGenerator = new ReportGenerator(client, clusterClient, job, logger);
 
-            var _disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+            var _disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
 
             using var workbook = new XLWorkbook();
             workbook.Author = "cv4pve-admin";
@@ -121,7 +121,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     private static async Task AddClusterDataAsync(XLWorkbook workbook,
                                                   PveClient client,
                                                   JobResult job,
-                                                  IEnumerable<VmDiskInfo> disks)
+                                                  IEnumerable<VmDiskSnapshotInfo> disks)
     {
         var row = 1;
         var ws = workbook.Worksheets.Add("Cluster");
@@ -402,7 +402,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                 ClusterClient clusterClient,
                                                 PveClient client,
                                                 JobResult job,
-                                                IEnumerable<VmDiskInfo> disks)
+                                                IEnumerable<VmDiskSnapshotInfo> disks)
     {
         var ws = workbook.Worksheets.Add("Nodes");
         var resources = await clusterClient.CachedData.GetResourcesAsync(false);
@@ -789,7 +789,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                               ClusterClient clusterClient,
                                               PveClient client,
                                               JobResult job,
-                                              IEnumerable<VmDiskInfo> disks,
+                                              IEnumerable<VmDiskSnapshotInfo> disks,
                                               ILogger logger)
     {
         var ws = workbook.Worksheets.Add("Vms");
@@ -997,7 +997,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                              VmFeature vmFeatures,
                                              RrdDataTimeFrame rrdDataTimeFrame,
                                              RrdDataConsolidation rrdDataConsolidation,
-                                             IEnumerable<VmDiskInfo> disks,
+                                             IEnumerable<VmDiskSnapshotInfo> disks,
                                              ILogger logger)
     {
         var row = 1;

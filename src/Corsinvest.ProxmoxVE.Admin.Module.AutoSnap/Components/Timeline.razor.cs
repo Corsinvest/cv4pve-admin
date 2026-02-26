@@ -21,7 +21,7 @@ public partial class Timeline(IAdminService adminService,
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
-    private IEnumerable<VmDiskInfo> _disks = [];
+    private IEnumerable<VmDiskSnapshotInfo> _disks = [];
 
     private record Data(DateTime Date, bool Status, int Count) : ISnapshotsSize
     {
@@ -81,7 +81,7 @@ public partial class Timeline(IAdminService adminService,
                 IsCalculateSnapshotSize = true;
 
                 //snapshot size
-                _disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+                _disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
 
                 foreach (var item in Items)
                 {

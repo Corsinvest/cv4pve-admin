@@ -32,7 +32,7 @@ public partial class Status(ISettingsService settingsService,
                     countRequest = info.CountRequest;
                 }
 
-                yield return new Data(item.FullName,
+                yield return new Data(item.FullDisplayName,
                                       Module.GetUrl(item.Name) + $"?token={PrometheusToken}",
                                       lastRequest,
                                       countRequest);
