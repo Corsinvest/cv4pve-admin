@@ -168,12 +168,13 @@
             Duration = -1,
             Style = "position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999;",
             SummaryContent = _ => @<div>
-                <RadzenText TextStyle="TextStyle.Subtitle1">@L["Security Warning!"]</RadzenText>
-                <RadzenText TextStyle="TextStyle.Subtitle2">@L["You are using the default password. Please change it immediately."]</RadzenText>
+                <RadzenText TextStyle="TextStyle.H5" Style="font-weight:700; color:var(--rz-danger);">@L["Security Warning!"]</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">@L["You are using the default password. Please change it immediately."]</RadzenText>
             </div>
         };
         message.DetailContent = _ => @<RadzenLink Path="@ApplicationHelper.UrlChangePassword"
                                                   Text="@L["Change password now"]"
+                                                  Style="font-weight:700; font-size:1rem; metext-decoration:underline;"
                                                   @onclick="@(() => notificationService.Messages.Remove(message))" />;
         notificationService.Notify(message);
     }
