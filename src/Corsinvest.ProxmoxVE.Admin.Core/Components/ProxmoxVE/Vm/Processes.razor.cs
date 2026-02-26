@@ -75,8 +75,9 @@ public partial class Processes(IAdminService adminService) : IRefreshableData, I
         Items = [];
         await InvokeAsync(StateHasChanged);
 
-        var client = await adminService[ClusterName].GetPveClientAsync();
-        var ret = await client.VmExecNativeAsync(Vm.Node, Vm.VmType, Vm.VmId, scriptLinux, scriptWindows);
-        if (ret.IsSuccess) { Items = JsonSerializer.Deserialize<IEnumerable<Data>>(ret.Value)!; }
+        var ret = await adminService[ClusterName].VmExecNativeAsync(Vm.Node, Vm.VmType, Vm.VmId, scriptLinux, scriptWindows);
+        Items = ret.IsSuccess
+                ? JsonSerializer.Deserialize<IEnumerable<Data>>(ret.Value)!
+                : [new() { Name = ret.Errors.Select(a => a.Message).JoinAsString(", ") }];
     }
 }

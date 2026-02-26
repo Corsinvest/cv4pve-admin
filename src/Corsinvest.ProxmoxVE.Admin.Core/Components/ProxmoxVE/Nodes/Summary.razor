@@ -15,7 +15,11 @@ else
             <RadzenTable Style="border:none;">
                 @RenderRow("schedule", "Uptime", FormatHelper.UptimeInfo(Status.Uptime))
 
-                @RenderRow("avg_pace", "Load Average", $"{Status.LoadAvg.ToArray()[0]}, {Status.LoadAvg.ToArray()[1]}, {Status.LoadAvg.ToArray()[2]}")
+                <RadzenTableRow>
+                    <RadzenTableCell Style="border:none;" colspan="2">
+                        @RenderTitleWithSparkline("avg_pace", "Load Average", $"{Status.LoadAvg.ToArray()[0]}, {Status.LoadAvg.ToArray()[1]}, {Status.LoadAvg.ToArray()[2]}", nameof(HistoryPoint.LoadAvg))
+                    </RadzenTableCell>
+                </RadzenTableRow>
 
                 <RadzenTableRow>
                     <RadzenTableCell Style="border:none;" colspan="2">
@@ -140,14 +144,15 @@ else
                 <RadzenIcon Icon="@icon" />
             }
             <RadzenText TextStyle="TextStyle.Body2"><strong>@L[title]</strong></RadzenText>
-            <RadzenSparkline style="display:inline-block; width:100px; height:20px;">
+            <RadzenSparkline style="display:inline-block; width:100px; height:40px; overflow:visible;">
                 <RadzenLineSeries Smooth="true" Data="@History" CategoryProperty="X" ValueProperty="@valueProperty">
                     <TooltipTemplate>
                         <div><strong>@L[title]</strong></div>
                         <div>@(context.GetType().GetProperty(valueProperty)!.GetValue(context)) %</div>
                     </TooltipTemplate>
                 </RadzenLineSeries>
-                <RadzenCategoryAxis Visible="false" Padding="-20" />
+                <RadzenCategoryAxis Visible="false" />
+                <RadzenValueAxis Visible="false" />
             </RadzenSparkline>
             <span style="flex:1;" />
             <RadzenText TextStyle="TextStyle.Body2" Text="@value" />

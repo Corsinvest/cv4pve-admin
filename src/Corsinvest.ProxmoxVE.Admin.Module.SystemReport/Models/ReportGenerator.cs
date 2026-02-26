@@ -21,7 +21,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
 
     private readonly Dictionary<string, (string Sheet, int Row)> _tablePositions = [];
 
-    private IEnumerable<VmDiskInfo> _disks = [];
+    private IEnumerable<VmDiskSnapshotInfo> _disks = [];
 
     #region Helpers
 
@@ -37,7 +37,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
 
     public async Task<string> GenerateAsync(string outputPath)
     {
-        _disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+        _disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
         var fileName = Path.Combine(outputPath, $"Report_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
         await GenerateExcelAsync(fileName);
         return fileName;

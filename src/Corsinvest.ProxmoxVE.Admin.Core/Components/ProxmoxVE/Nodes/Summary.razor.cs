@@ -9,7 +9,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes;
 
 public partial class Summary(IAdminService adminService) : IRefreshableData, IClusterName, IDisposable
 {
-    private record HistoryPoint(int X, double Cpu, double Ram, double IoDelay);
+    private record HistoryPoint(int X, double Cpu, double Ram, double IoDelay, double LoadAvg);
 
     private readonly Queue<HistoryPoint> History = new();
     private int _historyIndex;
@@ -54,7 +54,8 @@ public partial class Summary(IAdminService adminService) : IRefreshableData, ICl
                 History.Enqueue(new HistoryPoint(_historyIndex++,
                                                       Math.Round(Status.Cpu * 100, 1),
                                                       Math.Round(FormatHelper.CalculatePercentage((ulong)Status.Memory.Used, (ulong)Status.Memory.Total) * 100, 1),
-                                                      Math.Round(Status.Wait * 100, 1)));
+                                                      Math.Round(Status.Wait * 100, 1),
+                                                      Math.Round(double.Parse(Status.LoadAvg.ToArray()[0], System.Globalization.CultureInfo.InvariantCulture), 2)));
             }
             await InvokeAsync(StateHasChanged);
         }

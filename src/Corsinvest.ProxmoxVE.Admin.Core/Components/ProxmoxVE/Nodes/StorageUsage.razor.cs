@@ -16,7 +16,7 @@ public partial class StorageUsage(IAdminService adminService) : IClusterName
 
     private IEnumerable<NodeStorageContentEx> Contents { get; set; } = [];
     private IEnumerable<ClusterResource> Storages { get; set; } = [];
-    private IEnumerable<VmDiskInfo> Disks { get; set; } = [];
+    private IEnumerable<VmDiskSnapshotInfo> Disks { get; set; } = [];
 
     private class NodeStorageContentEx : NodeStorageContent, ISnapshotsSize, ISnapshotsReplicationSize
     {
@@ -70,7 +70,7 @@ public partial class StorageUsage(IAdminService adminService) : IClusterName
         Storages = [.. (await clusterClient.CachedData.GetResourcesAsync(false)).Where(a => a.ResourceType == ClusterResourceType.Storage)];
 
         AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
-        if (AllowCalculateSnapshotSize) { Disks = await clusterClient.CachedData.GetDisksInfoAsync(false); }
+        if (AllowCalculateSnapshotSize) { Disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false); }
 
         Contents = (await GetContents())
                     .DistinctBy(a => a.Volume)

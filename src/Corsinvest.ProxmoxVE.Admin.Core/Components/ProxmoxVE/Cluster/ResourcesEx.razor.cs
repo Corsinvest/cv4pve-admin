@@ -175,7 +175,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
                 IsCalculateSnapshotSize = true;
                 await InvokeAsync(StateHasChanged);
 
-                var disks = await clusterClient.CachedData.GetDisksInfoAsync(false);
+                var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
 
                 foreach (var item in Items)
                 {

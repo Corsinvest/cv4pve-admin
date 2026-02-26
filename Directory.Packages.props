@@ -6,6 +6,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.3.0" />
+    <PackageVersion Include="SSH.NET" Version="2025.1.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.0" />
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="ToonEncoder" Version="2.0.0" />
@@ -39,7 +40,7 @@
     <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
     <PackageVersion Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageVersion Include="FluentResults" Version="4.0.0" />
-    <PackageVersion Include="CronExpressionDescriptor" Version="2.44.0" />
+    <PackageVersion Include="CronExpressionDescriptor" Version="2.45.0" />
     <PackageVersion Include="cronos" Version="0.11.1" />
     <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.5.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />

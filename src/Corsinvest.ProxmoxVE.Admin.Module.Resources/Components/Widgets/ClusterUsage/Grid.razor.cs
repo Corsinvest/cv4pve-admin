@@ -64,7 +64,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
                     ClusterName = clusterClient.Settings.Name,
                     PveName = clusterClient.Settings.PveName,
                     Type = clusterClient.Settings.Type,
-                    Icon = clusterClient.Settings.Icon,
+                    Icon = clusterClient.Settings.TypeIcon,
                     Description = clusterClient.Settings.Description
                 };
                 Items.Add(row);
