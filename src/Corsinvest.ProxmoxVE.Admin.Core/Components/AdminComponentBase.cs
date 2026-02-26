@@ -12,11 +12,9 @@ public abstract class AdminComponentBase : ComponentBase
     [Inject] private ILoggerFactory LoggerFactory { get; set; } = default!;
     [Inject] protected IPermissionService PermissionService { get; set; } = default!;
 
-    private ILogger _logger = default!;
-    protected ILogger Logger => _logger ??= LoggerFactory.CreateLogger(GetType());
+    protected ILogger Logger => field ??= LoggerFactory.CreateLogger(GetType());
 
-    private IStringLocalizer _l = default!;
-    protected IStringLocalizer L => _l ??= LocalizerFactory.Create(GetType());
+    protected IStringLocalizer L => field ??= LocalizerFactory.Create(GetType());
 
     protected static string UniqueID
         => Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Replace("/", "-")
