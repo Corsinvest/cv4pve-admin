@@ -13,7 +13,7 @@ public partial class Summary(IAdminService adminService) : IClusterName
     private bool CephInstalled { get; set; }
 
     //private List<ItemStatus<VmType>> VmsStatus { get; set; } = [];
-    private ICollection<ResourceUsage> DataUsages { get; set; } = [];
+    private IEnumerable<ResourceUsage> DataUsages { get; set; } = [];
     //private List<ItemStatus> NodeHealts { get; set; } = [];
     private ItemStatus StatusInfo { get; set; } = new();
     private IEnumerable<ClusterStatus> Nodes { get; set; } = [];
@@ -54,10 +54,7 @@ public partial class Summary(IAdminService adminService) : IClusterName
 
         var resources = await clusterClient.CachedData.GetResourcesAsync(false);
 
-        DataUsages = ResourceUsage.Get(resources, L);
-        await InvokeAsync(StateHasChanged);
-
-        DataUsages.Add(await ResourceUsage.GetSnapshots(resources, L, clusterClient));
+        DataUsages = await clusterClient.GetResourceUsage(L, true);
         await InvokeAsync(StateHasChanged);
 
         var status = (await client.Cluster.Status.GetAsync()).ToArray();

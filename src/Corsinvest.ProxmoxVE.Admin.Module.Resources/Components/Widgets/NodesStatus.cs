@@ -15,7 +15,7 @@ public partial class NodesStatus(IAdminService adminService, ISettingsService se
         var countOffline = 0;
         var allOfflineNodes = new List<ClusterResource>();
 
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        foreach (var clusterClient in adminService.GetFrom(ClusterNames))
         {
             var nodes = (await clusterClient.CachedData.GetResourcesAsync(false))
                                 .Where(a => a.ResourceType == ClusterResourceType.Node);

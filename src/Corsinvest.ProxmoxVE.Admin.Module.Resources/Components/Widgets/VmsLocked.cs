@@ -13,7 +13,7 @@ public partial class VmsLocked(IAdminService adminService, ISettingsService sett
     {
         var allLockedVms = new List<ClusterResource>();
 
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        foreach (var clusterClient in adminService.GetFrom(ClusterNames))
         {
             var lockedVms = (await clusterClient.CachedData.GetResourcesAsync(false))
                                 .Where(a => a.ResourceType == ClusterResourceType.Vm && a.IsLocked);

@@ -4,6 +4,7 @@
  */
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using OperationResult = FluentResults.Result;
 
@@ -11,6 +12,34 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
 public static class ClusterClientExtensions
 {
+    public static async Task<IEnumerable<ResourceUsage>> GetResourceUsage(this ClusterClient clusterClient,
+                                                                          IStringLocalizer L,
+                                                                          bool includeSnapshots)
+    {
+        var resources = await clusterClient.CachedData.GetResourcesAsync(false);
+        var result = resources.GetResourceUsage(L).ToList();
+
+        if (includeSnapshots)
+        {
+            var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+            var snapshotSize = disks.SelectMany(a => a.Snapshots).Sum(a => a.Size);
+
+            var allStorage = resources.Where(a => a.ResourceType == ClusterResourceType.Storage && a.IsAvailable);
+            var storages = allStorage.Where(a => !a.Shared).ToList();
+            storages.AddRange(allStorage.Where(a => a.Shared).DistinctBy(a => a.Storage));
+
+            result.Add(new()
+            {
+                Name = L["Snapshot"],
+                Group = "Snapshot",
+                Usage = Math.Round(snapshotSize / storages.Sum(a => a.DiskSize) * 100, 1),
+                Info = FormatHelper.FromBytes(snapshotSize)
+            });
+        }
+
+        return result;
+    }
+
     public static async Task<FluentResults.Result<string>> VmExecNativeAsync(this ClusterClient clusterClient,
                                                                              string node,
                                                                              VmType vmType,

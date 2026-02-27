@@ -35,7 +35,7 @@ public class Size(IAdminService adminService,
     {
         var items = new List<Data>();
 
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        foreach (var clusterClient in adminService.GetFrom(ClusterNames))
         {
             if (!clusterClient.Settings.AllowCalculateSnapshotSize) { continue; }
 

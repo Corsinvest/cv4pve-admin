@@ -29,7 +29,7 @@
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageVersion Include="Radzen.Blazor" Version="9.0.6" />
-    <PackageVersion Include="OpenLayers.Blazor" Version="2.4.1" />
+    <PackageVersion Include="OpenLayers.Blazor" Version="2.5.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
   <ItemGroup>
