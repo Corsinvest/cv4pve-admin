@@ -7,14 +7,14 @@
 @typeparam TModelEditor
 
 <RadzenTemplateForm TItem="object" Data="@Model" Submit="@OnSubmitAsync" EditContext="@EditContext">
-    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
-        <RadzenStack Orientation="Orientation.Vertical">
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
+        <RadzenStack Orientation="Orientation.Vertical" Style="overflow: auto; flex: 1;">
             <CascadingValue Value="@IsNew" Name="@nameof(IsNew)">
                 <DynamicComponent Type="typeof(TModelEditor)" Parameters="EditorParameters" />
             </CascadingValue>
         </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
             <RadzenButton ButtonType="ButtonType.Submit"
                           Text="@ButtonText"
                           Style="width: fit-content;"

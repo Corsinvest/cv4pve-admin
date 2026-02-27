@@ -57,33 +57,32 @@
     </RadzenStack>
 </RadzenPanel>
 
-<RadzenAccordion Multiple="true">
-    <Items>
-        <RadzenAccordionItem Text="@L["Nodes"]" Icon="dns" Selected="true">
-            <NodesSettings Model="Model" />
-        </RadzenAccordionItem>
+<RadzenPanel Text="@L["Nodes"]" Icon="@PveAdminUIHelper.Icons.Node" Selected="true">
+    <NodesSettings Model="Model" />
+</RadzenPanel>
 
-        <RadzenAccordionItem Text="@L["WEB API Access"]" Icon="api" Selected="true">
-            <WebApiCredentialSettings Model="@Model" />
-        </RadzenAccordionItem>
+<RadzenPanel Text="@L["WEB API Access"]" Icon="api" Selected="true">
+    <WebApiCredentialSettings Model="@Model" ModelChanged="@StateHasChanged" />
+</RadzenPanel>
 
-        <RadzenAccordionItem Text="@L["SSH"]" Icon="terminal">
-            <SshCredentialSettings Model="@Model.SshCredential" />
-        </RadzenAccordionItem>
+<RadzenPanel Text="@L["SSH"]" Icon="terminal">
+    <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+        @L["Some features require SSH: NodeProtect, Updater, snapshot size calculation."]
+    </RadzenText>
+    <SshCredentialSettings Model="@Model" />
+</RadzenPanel>
 
-        <RadzenAccordionItem Text="@L["Feature"]" Icon="tune">
-            <SubscriptionGate Size="SubscriptionGateSize.Compact">
-                <SwitchField @bind-Value="@Model.AllowCalculateSnapshotSize"
-                             Label="@L[$"Calculating the snapshot size may take some time. Require SSH)."]"
-                             Name="@nameof(Model.AllowCalculateSnapshotSize)"
-                             IconOn="photo_camera"
-                             IconOff="no_photography"
-                             Disabled="!Model.SshIsConfigured"
-                             class="rz-w-100" />
-            </SubscriptionGate>
-        </RadzenAccordionItem>
-    </Items>
-</RadzenAccordion>
+<RadzenPanel Text="@L["Feature"]" Icon="tune">
+    <SubscriptionGate Size="SubscriptionGateSize.Compact">
+        <SwitchField @bind-Value="@Model.AllowCalculateSnapshotSize"
+                     Label="@L["Calculating the snapshot size may take some time (requires SSH)."]"
+                     Name="@nameof(Model.AllowCalculateSnapshotSize)"
+                     IconOn="photo_camera"
+                     IconOff="no_photography"
+                     Disabled="!Model.SshIsConfigured"
+                     class="rz-w-100" />
+    </SubscriptionGate>
+</RadzenPanel>
 
 @code
 {

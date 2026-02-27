@@ -4,7 +4,7 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
+<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
     <RadzenDataGrid @ref="@DataGridRef"
                     TItem="NodeBackupFile"
                     Data="@Items"
