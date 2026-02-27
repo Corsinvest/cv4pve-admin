@@ -38,9 +38,16 @@ internal class PveClientWithRetry(string host,
                 if (result.IsSuccessStatusCode
                     || (result.StatusCode == HttpStatusCode.InternalServerError && result.ResponseToDictionary.Count > 0))
                 {
+                    if (result.ResponseInError
+                        && ((IDictionary<string, object>)result.Response.errors).ContainsKey("Authorization"))
+                    {
+                        logger?.LogWarning("Missing Proxmox permission on {Method} {Resource}: {Error}",
+                                           methodType, resource, result.GetError());
+                    }
+
                     if (attempt > 0)
                     {
-                        logger?.LogInformation("Request {Method} {Resource} succeeded on attempt {Attempt}", methodType, resource, attempt + 1);
+                        logger?.LogWarning("Request {Method} {Resource} succeeded on attempt {Attempt}", methodType, resource, attempt + 1);
                     }
                     return result;
                 }
