@@ -11,6 +11,7 @@ public partial class WebApiCredentialSettings(IAdminService adminService,
                                        NotificationService notificationService)
 {
     [Parameter, EditorRequired] public ClusterSettings Model { get; set; } = default!;
+    [Parameter] public EventCallback ModelChanged { get; set; }
 
     private async Task CreateApiTokenAsync()
     {

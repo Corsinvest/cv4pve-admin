@@ -24,7 +24,7 @@ public class ClusterSettings : IName, IDescription, IEnabled
     //Feature
     public bool AllowCalculateSnapshotSize
     {
-        get => SshCredential.IsConfigured && field;
+        get => SshIsConfigured && field;
         set;
     }
 
@@ -59,4 +59,54 @@ public class ClusterSettings : IName, IDescription, IEnabled
     //    => RuntimeData[key] = value;
 
     public ExtendedData ExtendedData { get; set; } = [];
+
+    [JsonIgnore]
+    public bool SshIsConfigured => SshCredential.IsConfigured;
+
+    [JsonIgnore]
+    public string TypeLabel
+        => Type switch
+        {
+            ClusterType.Cluster => "CLUSTER",
+            ClusterType.SingleNode => "NODE",
+            _ => "NODE"
+        };
+
+    [JsonIgnore]
+    public string TypeIcon
+        => Type switch
+        {
+            ClusterType.Cluster => PveAdminUIHelper.Icons.Cluster,
+            ClusterType.SingleNode => PveAdminUIHelper.Icons.Node,
+            _ => PveAdminUIHelper.Icons.Node
+        };
+
+    [JsonIgnore]
+    public string DisplayName
+    {
+        get
+        {
+            var ret = Name == PveName
+                    ? Name
+                    : $"{Name} ({PveName})";
+
+            return $"{TypeLabel}: {ret}";
+        }
+    }
+
+    [JsonIgnore]
+    public string FullDisplayName
+    {
+        get
+        {
+            var fullName = DisplayName;
+            if (!string.IsNullOrEmpty(Description)) { fullName = $"{fullName} - {Description}"; }
+
+            return fullName;
+        }
+    }
+
+    [JsonIgnore]
+    public string ApiHostsAndPortHA
+        => Nodes.Select(a => $"{a.IPAddress}:{a.ApiPort}").JoinAsString(",");
 }

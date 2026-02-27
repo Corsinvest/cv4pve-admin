@@ -60,8 +60,8 @@ docker compose down && docker compose up -d
 
 1. Open **http://localhost:8080**
 2. Login: `admin@local` / `Password123!`
-3. Configure your first Proxmox cluster — the setup dialog opens automatically
-4. **Change the default password** from Profile settings
+3. **You will be prompted to change the default password** — this is required before you can proceed
+4. Configure your first Proxmox cluster — the setup dialog opens automatically
 
 ### Proxmox VE API Credentials
 
@@ -75,8 +75,8 @@ When connecting a Proxmox cluster, assign the **`PVEAdmin`** role at path `/` to
     Using a role with only a subset of privileges (e.g. `Sys.Audit` alone) will cause permission errors at runtime.
     Always assign `PVEAdmin` at path `/` to ensure full functionality.
 
-!!! danger "Security Alert"
-    Change the default `admin@local/Password123!` credentials immediately after setup!
+!!! info "First Login Password Change"
+    On first login with the default `admin@local / Password123!` credentials, the application will automatically prompt you to set a new password before you can continue.
 
 ---
 

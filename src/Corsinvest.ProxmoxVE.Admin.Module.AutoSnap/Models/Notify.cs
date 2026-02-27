@@ -10,6 +10,6 @@ public enum Notify
 
     Allways = 1,
 
-    [Display(Description = "On Failure Only")]
+    [Display(Name = "On Failure Only")]
     OnFailureOnly = 2
 }

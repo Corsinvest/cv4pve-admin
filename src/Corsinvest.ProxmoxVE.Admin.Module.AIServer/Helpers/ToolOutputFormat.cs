@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.ComponentModel.DataAnnotations;
+
 namespace Corsinvest.ProxmoxVE.Admin.Module.AIServer.Helpers;
 
 /// <summary>
@@ -11,9 +13,9 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.AIServer.Helpers;
 public enum ToolOutputFormat
 {
     /// <summary>{"key":{"headers":[...],"rows":[[...],...]}} — compact JSON tabular, ~40% fewer tokens than JsonNormal</summary>
-    JsonCompact,
+    [Display(Name = "JSON Compact")] JsonCompact,
     /// <summary>{"key":[{"field":value,...},...]} — standard JSON array</summary>
-    JsonNormal,
+    [Display(Name = "JSON Normal")] JsonNormal,
     /// <summary>TOON (Token-Oriented Object Notation) — ~55% fewer tokens than JsonNormal</summary>
     Toon,
     /// <summary>CSV with header row — minimal tokens, best for purely tabular data</summary>

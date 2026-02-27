@@ -9,6 +9,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SshAuthMethod
 {
-    Password = 0,
-    PrivateKey = 1
+    [Display(Name = "None")] None = 0,
+    [Display(Name = "Password")] Password = 1,
+    [Display(Name = "Private Key")] PrivateKey = 2,
+    [Display(Name = "Same as WEB API")] SameAsWebApi = 3,
 }

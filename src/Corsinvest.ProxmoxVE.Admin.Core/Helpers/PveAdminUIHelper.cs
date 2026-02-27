@@ -219,8 +219,6 @@ public static class PveAdminUIHelper
                                                NotificationService notificationService,
                                                IStringLocalizer stringLocalizer)
     {
-        if (!clusterSettings.SshCredential.IsConfigured) { return true; }
-
         var valid = false;
 
         _ = Task.Run(async () =>

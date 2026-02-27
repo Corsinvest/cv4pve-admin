@@ -11,7 +11,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components.ClusterConfig;
 
 public partial class SshCredentialSettings(IJSRuntime jsRuntime, NotificationService notificationService)
 {
-    [Parameter, EditorRequired] public SshCredential Model { get; set; } = default!;
+    [Parameter, EditorRequired] public ClusterSettings Model { get; set; } = default!;
 
     private string FileInputId { get; } = Guid.NewGuid().ToString();
 
@@ -27,13 +27,13 @@ public partial class SshCredentialSettings(IJSRuntime jsRuntime, NotificationSer
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
 
-        if (!IsValidPrivateKey(content, Model.Passphrase))
+        if (!IsValidPrivateKey(content, Model.SshCredential.Passphrase))
         {
             notificationService.Error(L["Invalid private key"], L["The file does not contain a valid SSH private key."]);
             return;
         }
 
-        Model.PrivateKeyContent = content;
+        Model.SshCredential.PrivateKeyContent = content;
     }
 
     private static bool IsValidPrivateKey(string content, string? passphrase)

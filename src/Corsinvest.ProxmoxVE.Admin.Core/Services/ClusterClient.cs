@@ -96,11 +96,17 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
         var host = resolveHost
                     ? await GetNodeIpAsync(node)
                     : node;
-        return new(host, SshCredential.DefaultPort, Settings.SshCredential.Username, GetSshAuthMethod())
+        return new(host, SshCredential.DefaultPort, GetSshUsername(), GetSshAuthMethod())
         {
             Timeout = TimeSpan.FromMilliseconds(Settings.SshCredential.Timeout)
         };
     }
+
+    private string? GetSshUsername()
+        => Settings.SshCredential.AuthMethod == SshAuthMethod.SameAsWebApi
+            && Settings.WebApi.AccessType == ClusterAccessType.Credential
+                ? Settings.WebApi.UsernameWithoutRealm
+                : Settings.SshCredential.Username;
 
     private AuthenticationMethod GetSshAuthMethod()
     {
@@ -114,9 +120,24 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
                             : new PrivateKeyFile(keyStream, cred.Passphrase);
             return new PrivateKeyAuthenticationMethod(cred.Username, keyFile);
         }
-        else
+        else if (cred.AuthMethod == SshAuthMethod.Password)
         {
             return new PasswordAuthenticationMethod(cred.Username, cred.Password);
+        }
+        else if (cred.AuthMethod == SshAuthMethod.SameAsWebApi)
+        {
+            if (Settings.WebApi.AccessType != ClusterAccessType.Credential
+                || string.IsNullOrEmpty(Settings.WebApi.Username)
+                || string.IsNullOrEmpty(Settings.WebApi.Password))
+            {
+                throw new AdminException("SameAsWebApi requires WEB API configured with Credential (username + password).");
+            }
+            return new PasswordAuthenticationMethod(GetSshUsername(), Settings.WebApi.Password);
+        }
+        else
+        {
+            // SshAuthMethod.None or unknown — should not be reached if IsConfigured is checked before calling
+            throw new InvalidEnumArgumentException(nameof(cred.AuthMethod), (int)cred.AuthMethod, typeof(SshAuthMethod));
         }
     }
 

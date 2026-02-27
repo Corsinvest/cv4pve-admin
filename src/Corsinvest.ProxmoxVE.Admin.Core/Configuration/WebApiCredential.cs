@@ -17,4 +17,7 @@ public class WebApiCredential : Credential
     public int Timeout { get; set; } = 1000;
 
     public bool ValidateCertificate { get; set; }
+
+    [JsonIgnore]
+    public string? UsernameWithoutRealm => Username?.Split('@')[0];
 }
