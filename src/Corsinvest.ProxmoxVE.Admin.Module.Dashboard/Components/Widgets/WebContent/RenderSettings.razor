@@ -8,9 +8,7 @@
 <RadzenFormField Text="@L["Type"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start><RadzenIcon Icon="web" /></Start>
     <ChildContent>
-        <RadzenDropDown TValue="ContentType"
-                        @bind-Value="@Settings.Type"
-                        Data="@(Enum.GetValues<ContentType>())" />
+        <EnumDropDown @bind-Value="@Settings.Type" />
     </ChildContent>
     <End>
         <InfoIcon>

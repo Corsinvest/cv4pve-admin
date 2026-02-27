@@ -16,10 +16,7 @@
         <RadzenIcon Icon="manage_search" />
     </Start>
     <ChildContent>
-        <RadzenDropDown TValue="SearchMode"
-                        Name="@nameof(Model.SearchMode)"
-                        @bind-Value="@Model.SearchMode"
-                        Data="@(Enum.GetValues<SearchMode>())" />
+        <EnumDropDown @bind-Value="@Model.SearchMode" Name="@nameof(Model.SearchMode)" />
     </ChildContent>
     <End>
         <InfoIcon>
@@ -77,10 +74,8 @@
         <RadzenIcon Icon="@GetIconNotify()" />
     </Start>
     <ChildContent>
-        <RadzenDropDown TValue="Notify"
-                        Name="@nameof(Model.Notify)"
-                        @bind-Value="@Model.Notify"
-                        Data="@(Enum.GetValues<Notify>())" />
+        <EnumDropDown @bind-Value="@Model.Notify"
+                      Name="@nameof(Model.Notify)" />
     </ChildContent>
     <End>
         <InfoIcon>

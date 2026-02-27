@@ -28,7 +28,7 @@
     <RadzenFormField Text="@L["VM Type"]" AllowFloatingLabel="false" class="rz-w-100">
         <Start><RadzenIcon Icon="memory" /></Start>
         <ChildContent>
-            <RadzenDropDown TValue="VmType" @bind-Value="@Settings.VmType" Data="@(Enum.GetValues<VmType>())" />
+            <EnumDropDown @bind-Value="@Settings.VmType" />
         </ChildContent>
         <End>
             <InfoIcon>
