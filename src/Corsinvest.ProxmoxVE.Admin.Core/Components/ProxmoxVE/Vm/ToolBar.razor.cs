@@ -24,6 +24,7 @@ public partial class ToolBar(IBrowserService browserService,
     [Parameter] public bool OnlyIcon { get; set; }
     [Parameter] public EventCallback<VmStatus> ChangeStatus { get; set; }
 
+    private bool UseApiTokenAuth => adminService[ClusterName].Settings.WebApi.AccessType == ClusterAccessType.ApiToken;
     private WebConsoleType DefaultWebConsoleType { get; set; } = WebConsoleType.NoVnc;
     private bool SpiceEnabled { get; set; }
 

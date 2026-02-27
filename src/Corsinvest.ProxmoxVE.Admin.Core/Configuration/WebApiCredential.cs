@@ -20,4 +20,10 @@ public class WebApiCredential : Credential
 
     [JsonIgnore]
     public string? UsernameWithoutRealm => Username?.Split('@')[0];
+
+    [JsonIgnore]
+    public bool IsPam
+        => Username != null
+            && (!Username.Contains('@')
+                || Username.EndsWith("@pam", StringComparison.OrdinalIgnoreCase));
 }

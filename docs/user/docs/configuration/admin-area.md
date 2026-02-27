@@ -127,6 +127,25 @@ The following steps are performed automatically on the Proxmox cluster:
 
 The username and password are used only during this wizard and are **never saved**.
 
+### WEB API Access Type — Feature Limitations
+
+The choice of **Access Type** affects which features are available:
+
+| Feature | Credential (PAM user) | Credential (non-PAM) | API Token |
+|---------|:---------------------:|:--------------------:|:---------:|
+| **SSH — Same as WEB API** | ✅ | ❌ PAM only | ❌ |
+| **Node console** (NoVnc, Xterm.js) | ✅ | ❌ PAM only | ❌ |
+| **VM/LXC console** (NoVnc, Xterm.js, Spice) | ✅ | ✅ | ❌ |
+
+!!! info "Why PAM for node console and SSH Same as WEB API?"
+    Node consoles (NoVnc, Xterm.js) and SSH require OS-level credentials — i.e. a Linux system user.
+    Only PAM users (`@pam` realm, or username without realm) map to actual Linux users on the Proxmox nodes.
+    Users from other realms (PVE, LDAP, etc.) exist only in Proxmox's internal database and have no corresponding SSH/OS account.
+
+!!! info "Why not API Token for console?"
+    Proxmox VE requires an active **user session** (ticket) to open a VM or node console via NoVnc/Xterm.js/Spice.
+    API Tokens do not create a session ticket, so console access is not possible when using API Token authentication.
+
 ---
 
 ## SSH Configuration
@@ -137,12 +156,26 @@ SSH is configured per-cluster under **Proxmox VE Clusters → SSH Credentials**.
 
 | Field | Description |
 |-------|-------------|
-| **Auth Method** | `Password` or `Private Key` |
+| **Auth Method** | `None`, `Password`, `Private Key`, or `Same as WEB API` |
 | **Username** | SSH user (typically `root`) |
-| **Password** | Used when Auth Method is Password |
+| **Password** | Used when Auth Method is `Password` |
 | **Private Key** | PEM/OpenSSH private key content |
 | **Passphrase** | Optional passphrase for private key |
 | **Timeout (msec)** | Connection timeout in milliseconds (default: 5000) |
+
+### Auth Methods
+
+| Method | Description |
+|--------|-------------|
+| **None** | SSH disabled — features requiring SSH will be skipped |
+| **Password** | Authenticate with username and password |
+| **Private Key** | Authenticate with a private key (recommended) |
+| **Same as WEB API** | Reuse WEB API credentials (username without `@realm`, same password) |
+
+!!! warning "Same as WEB API — PAM users only"
+    The `Same as WEB API` method is only valid for **PAM users** (e.g. `root@pam`).
+    Users authenticated via other realms (PVE, LDAP, etc.) do not have corresponding SSH credentials.
+    If the WEB API user is not a PAM user, a warning will be shown and SSH will not work.
 
 !!! tip
     Use **Private Key** authentication for better security. You can upload the key file directly from the UI.

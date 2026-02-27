@@ -80,7 +80,7 @@ public static class RadzenUIExtensions
                                                           new()
                                                           {
                                                               CloseDialogOnOverlayClick = true,
-                                                              Width = "700px"
+                                                              Resizable = true,
                                                           });
 
     public static async Task<dynamic> OpenSideExAsync<T>(this DialogService dialogService,
@@ -90,8 +90,11 @@ public static class RadzenUIExtensions
     where T : ComponentBase
     {
         options.CssClass ??= "rz-dialog-side cv4pve-side-dialog";
-        if (options.Resizable) options.CssClass += " cv4pve-side-dialog-resizable";
-        options.Resizable = false;
+        if (options.Resizable)
+        {
+            options.CssClass += " cv4pve-side-dialog-resizable";
+            options.Resizable = false;
+        }
         options.Style = null;
         options.Width ??= "600px";
         return await dialogService.OpenAsync<T>(title, parameters!, options);
@@ -115,7 +118,6 @@ public static class RadzenUIExtensions
                                                       sideDialogOptions ?? new()
                                                       {
                                                           CloseDialogOnOverlayClick = true,
-                                                          Width = "600px"
                                                       });
 
     public static async Task<ResultLoadData<TResult>> LoadDataAsync<TSource, TResult>(this RadzenDataGrid<TResult> grid,
