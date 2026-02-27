@@ -80,7 +80,7 @@
                     <RadzenDropDown @bind-Value="@SelectedClusterNames"
                                     @bind-Value:after="@SetClusterNames"
                                     Data="@ClustersSettings"
-                                    TextProperty="FullDisplayName"
+                                    TextProperty="@nameof(ClusterSettings.FullDisplayName)"
                                     ValueProperty="@nameof(ClusterSettings.Name)"
                                     Multiple="true"
                                     Chips="true"

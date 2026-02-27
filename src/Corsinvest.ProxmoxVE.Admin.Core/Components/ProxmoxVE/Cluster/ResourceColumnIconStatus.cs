@@ -2,11 +2,13 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.ComponentModel.DataAnnotations;
+
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
 
 public enum ResourceColumnIconStatus
 {
     None,
     Icon,
-    IconAndText
+    [Display(Name = "Icon and Text")] IconAndText
 }

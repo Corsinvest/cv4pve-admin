@@ -11,7 +11,7 @@
                 <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Storage.Storages ClusterName="@ClusterName" />
             </RadzenTabsItem>
 
-            <RadzenTabsItem Text="@L["Storages"]" Icon="storage">
+            <RadzenTabsItem Text="@L["Storages"]" Icon="@PveAdminUIHelper.Icons.Storage">
                 <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
                              ClusterNames="@([ClusterName])"
                              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
@@ -36,7 +36,7 @@
 
                 <RadzenTabs>
                     <Tabs>
-                        <RadzenTabsItem Text="@L["By Storage"]" Icon="storage">
+                        <RadzenTabsItem Text="@L["By Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
                             <RadzenStack Orientation="Orientation.Vertical">
                                 <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
                                              ClusterNames="@([ClusterName])"
