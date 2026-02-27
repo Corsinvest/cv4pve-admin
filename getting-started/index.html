@@ -1096,8 +1096,8 @@ Once you upgrade to a stable release, a valid subscription will be required to u
 <ol>
 <li>Open <strong>http://localhost:8080</strong></li>
 <li>Login: <code>admin@local</code> / <code>Password123!</code></li>
+<li><strong>You will be prompted to change the default password</strong> — this is required before you can proceed</li>
 <li>Configure your first Proxmox cluster — the setup dialog opens automatically</li>
-<li><strong>Change the default password</strong> from Profile settings</li>
 </ol>
 <h3 id="proxmox-ve-api-credentials">Proxmox VE API Credentials<a class="headerlink" href="#proxmox-ve-api-credentials" title="Permanent link">&para;</a></h3>
 <p>When connecting a Proxmox cluster, assign the <strong><code>PVEAdmin</code></strong> role at path <code>/</code> to the Proxmox user or API token used by cv4pve-admin.</p>
@@ -1111,9 +1111,9 @@ Once you upgrade to a stable release, a valid subscription will be required to u
 <p>Using a role with only a subset of privileges (e.g. <code>Sys.Audit</code> alone) will cause permission errors at runtime.
 Always assign <code>PVEAdmin</code> at path <code>/</code> to ensure full functionality.</p>
 </div>
-<div class="admonition danger">
-<p class="admonition-title">Security Alert</p>
-<p>Change the default <code>admin@local/Password123!</code> credentials immediately after setup!</p>
+<div class="admonition info">
+<p class="admonition-title">First Login Password Change</p>
+<p>On first login with the default <code>admin@local / Password123!</code> credentials, the application will automatically prompt you to set a new password before you can continue.</p>
 </div>
 <hr />
 <h2 id="advanced-docker-setup">Advanced Docker Setup<a class="headerlink" href="#advanced-docker-setup" title="Permanent link">&para;</a></h2>
