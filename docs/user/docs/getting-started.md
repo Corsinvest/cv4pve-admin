@@ -74,6 +74,7 @@ When connecting a Proxmox cluster, assign the **`PVEAdmin`** role at path `/` to
 !!! warning "Insufficient permissions"
     Using a role with only a subset of privileges (e.g. `Sys.Audit` alone) will cause permission errors at runtime.
     Always assign `PVEAdmin` at path `/` to ensure full functionality.
+    For advanced least-privilege setups, see [:octicons-arrow-right-24: PVE Permissions](configuration/pve-permissions.md).
 
 !!! info "First Login Password Change"
     On first login with the default `admin@local / Password123!` credentials, the application will automatically prompt you to set a new password before you can continue.

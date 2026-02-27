@@ -19,6 +19,7 @@ nav:
         - configuration/index.md
         - appsettings.extra.json: configuration/appsettings-extra.md
         - Admin Area: configuration/admin-area.md
+        - PVE Permissions: configuration/pve-permissions.md
         - Notification Hub: configuration/notifier.md
         - User Profile: configuration/profile.md
     - Modules: modules/index.md
