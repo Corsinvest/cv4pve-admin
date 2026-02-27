@@ -59,7 +59,8 @@
                            Click="OnClickOpenConsole"
                            Variant="Variant.Text"
                            Size="ButtonSize.ExtraSmall"
-                           title="@L["Open console"]">
+                           Disabled="UseApiTokenAuth"
+                           title="@L["Open console" + (UseApiTokenAuth ? " (Require authentication with user)" : "")]">
             <ChildContent>
                 <RadzenSplitButtonItem Text="@L["NoVnc"]"
                                        Value="@WebConsoleType.NoVnc.ToString()"
@@ -80,7 +81,9 @@
                            Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(DefaultWebConsoleType)"
                            Click="OnClickOpenConsole"
                            Variant="Variant.Text"
-                           Size="ButtonSize.ExtraSmall">
+                           Size="ButtonSize.ExtraSmall"
+                           Disabled="UseApiTokenAuth"
+                           title="@L["Open console" + (UseApiTokenAuth ? " (Require authentication with user)" : "")]">
             <ChildContent>
                 <RadzenSplitButtonItem Text="@L["NoVnc"]"
                                        Value="@WebConsoleType.NoVnc.ToString()"
@@ -115,13 +118,13 @@
 {
     private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
         @<RadzenMenu Click="@(() => ds.Close())">
-@foreach (var item in Utility.Where(a=> a.IsVIsible(Vm)))
-    {
-    <RadzenMenuItem Text="@L[item.Text]"
-                    Style="--rz-icon-fill: 1;"
-                    Icon="@item.Icon"
-                    IconColor="@Colors.Warning"
-                    Click="@(() => OnClickUtilityMenu(item))" />
-    }
-</RadzenMenu>);
-}
+            @foreach (var item in Utility.Where(a => a.IsVIsible(Vm)))
+            {
+                    <RadzenMenuItem Text="@L[item.Text]"
+                                    Style="--rz-icon-fill: 1;"
+                                    Icon="@item.Icon"
+                                    IconColor="@Colors.Warning"
+                                    Click="@(() => OnClickUtilityMenu(item))" />
+            }
+            </RadzenMenu>);
+        }

@@ -23,6 +23,7 @@ public partial class ToolBar(IBrowserService browserService,
     private WebConsoleType DefaultWebConsoleType { get; set; } = WebConsoleType.NoVnc;
 
     private bool SpiceEnabled { get; set; }
+    private bool IsPam => adminService[ClusterName].Settings.WebApi.IsPam;
 
     protected override async Task OnInitializedAsync()
     {

@@ -26,16 +26,19 @@
                        Click="OnClickOpenConsole"
                        Variant="Variant.Text"
                        Size="ButtonSize.ExtraSmall"
-                       title="@L["Open console"]">
+                       Disabled="!IsPam"
+                       title="@L["Open console" + (IsPam ? "" : " (Require PAM realm user)")]">
         <ChildContent>
             <RadzenSplitButtonItem Text="@L["NoVnc"]"
                                    Value="@WebConsoleType.NoVnc.ToString()"
                                    Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.NoVnc)"
+                                   Disabled="!IsPam"
                                    title="@L["Open NoVnc console"]" />
 
             <RadzenSplitButtonItem Text="@L["Xterm.js"]"
                                    Value="@WebConsoleType.XtermJs.ToString()"
                                    Icon="@PveAdminUIHelper.Icons.GetWebConsoleType(WebConsoleType.XtermJs)"
+                                   Disabled="!IsPam"
                                    title="@L["Open Xterm console"]" />
 
             <RadzenSplitButtonItem Text="@L["Spice"]"
@@ -60,13 +63,13 @@
 {
     private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
     @<RadzenMenu Click="@(() => ds.Close())">
-@foreach (var item in Utility.Where(a=> a.IsVIsible(Node)))
-    {
-    <RadzenMenuItem Text="@L[item.Text]"
-                    Style="--rz-icon-fill: 1;"
-                    Icon="@item.Icon"
-                    IconColor="@Colors.Warning"
-                    Click="@(() => OnClickUtilityMenu(item))" />
+        @foreach (var item in Utility.Where(a => a.IsVIsible(Node)))
+        {
+                <RadzenMenuItem Text="@L[item.Text]"
+                                Style="--rz-icon-fill: 1;"
+                                Icon="@item.Icon"
+                                IconColor="@Colors.Warning"
+                                Click="@(() => OnClickUtilityMenu(item))" />
+        }
+        </RadzenMenu>);
     }
-</RadzenMenu>);
-}

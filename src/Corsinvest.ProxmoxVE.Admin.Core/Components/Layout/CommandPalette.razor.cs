@@ -169,12 +169,6 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
         StateHasChanged();
     }
 
-    //private void ClearSearch()
-    //{
-    //    SearchText = string.Empty;
-    //    SelectedItem = null;
-    //}
-
     private async Task SelectItem(SearchResultItem item)
     {
         // Handle based on result type
