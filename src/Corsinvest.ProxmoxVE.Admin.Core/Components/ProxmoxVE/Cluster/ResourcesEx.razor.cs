@@ -90,7 +90,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
     private async Task RefreshDataAsyncInt()
     {
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        foreach (var clusterClient in adminService.GetFrom(ClusterNames))
         {
             var clusterName = clusterClient.Settings.Name;
             PveClient? client = null;
@@ -150,7 +150,8 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
             // Remove old items
             var newItemsKeys = items.Select(a => (a.Id, a.ClusterName)).ToHashSet();
-            foreach (var item in Items.Where(a => !newItemsKeys.Contains((a.Id, a.ClusterName))).ToList())
+            foreach (var item in Items.Where(a => a.ClusterName == clusterName
+                                                    && !newItemsKeys.Contains((a.Id, a.ClusterName))).ToList())
             {
                 Items.Remove(item);
             }
@@ -233,8 +234,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         var sb = new List<string>();
 
         void GetUsages(IEnumerable<ClusterResource> items)
-            => sb.AddRange(ResourceUsage.Get(items, L)
-                 .Select(a => $"<strong>{a.Name}</strong>: {a.Usage}%"));
+            => sb.AddRange(items.GetResourceUsage(L).Select(a => $"<strong>{a.Name}</strong>: {a.Usage}%"));
 
         if (group.Data.Count > 0)
         {

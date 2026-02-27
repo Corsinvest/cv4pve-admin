@@ -52,10 +52,8 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
 
     private async Task RefreshDataAsyncInt()
     {
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        foreach (var clusterClient in adminService.GetFrom(ClusterNames))
         {
-            var usage = ResourceUsage.Get(await clusterClient.CachedData.GetResourcesAsync(false), L);
-
             var row = Items.FromClusterName(clusterClient.Settings.Name);
             if (row == null)
             {
@@ -69,6 +67,8 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
                 };
                 Items.Add(row);
             }
+
+            var usage = (await clusterClient.GetResourceUsage(L, false)).ToList();
             row.CpuUsage = usage[0].Usage / 100.0;
             row.CpuInfo = usage[0].Info;
             row.MemoryUsage = usage[1].Usage / 100.0;

@@ -20,7 +20,6 @@ public partial class Render(IAdminService adminService,
     private OpenStreetMap RefMap { get; set; } = default!;
     private bool Initalized { get; set; }
     private IEnumerable<Data> Items { get; set; } = [];
-    private ICollection<ResourceUsage> DataUsages { get; set; } = [];
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
@@ -68,21 +67,14 @@ public partial class Render(IAdminService adminService,
 
     private async Task OnLayerAdded(Layer layer) => await RefMap.CenterToCurrentGeoLocation();
 
-    //private async Task OnMarkerClickAsync(string clusterName)
-    //{
-    //    var resources = await adminService[clusterName].CachedData.GetResourcesAsync(false);
-
-    //    DataUsages = ResourceUsage.Get(resources, L);
-    //    DataUsages.Add(await ResourceUsage.GetSnapshots(resources, L, adminService[clusterName]));
-
-    //    Details = [.. resources.Where(a => a.ResourceType is ClusterResourceType.Vm or ClusterResourceType.Node)
-    //                           .OrderBy(a => a.ResourceType)
-    //                           .ThenBy(a => a.Type)
-    //                           .GroupBy(a => new { a.Type, a.Status })
-    //                           .Select(a=> new Detail(FormatValue(a.Key.Type),
-    //                                                  FormatValue(a.Key.Status),
-    //                                                  a.Count()))];
-    //}
+    private async Task OnMarkerClickAsync(string clusterName)
+        => await DialogService.OpenAsync<ClusterDetailDialog>(L["Cluster {0}", clusterName],
+                                                              new() { [nameof(ClusterDetailDialog.ClusterName)] = clusterName },
+                                                              new DialogOptions
+                                                              {
+                                                                  Draggable = true,
+                                                                  Resizable = true
+                                                              });
 
     public async Task RefreshDataAsync()
     {
@@ -103,9 +95,7 @@ public partial class Render(IAdminService adminService,
 
         foreach (var item in Items)
         {
-            var resources = await adminService[item.ClusterName].CachedData.GetResourcesAsync(false);
-            var dataUsages = ResourceUsage.Get(resources, L);
-
+            var dataUsages = await adminService[item.ClusterName].GetResourceUsage(L, false);
             items.Add(new Data(item.ClusterName,
                                     item.Coordinate,
                                     dataUsages.Any(a => a.Usage > 80)

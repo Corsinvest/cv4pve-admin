@@ -39,19 +39,7 @@ public partial class GaugeStacked(IAdminService adminService) : IModuleWidget<ob
     }
 
     private async Task RefreshDataAsyncInt()
-    {
-        var items = new List<ClusterResource>();
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
-        {
-            items.AddRange(await clusterClient.CachedData.GetResourcesAsync(false));
-        }
-        var usages = ResourceUsage.Get(items, L);
-        foreach (var clusterClient in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
-        {
-            usages.Add(await ResourceUsage.GetSnapshots(items, L, clusterClient));
-        }
-        Items = usages;
-    }
+        => Items = await adminService.GetFrom(ClusterNames).FirstOrDefault()!.GetResourceUsage(L, true);
 
     public void Dispose()
     {

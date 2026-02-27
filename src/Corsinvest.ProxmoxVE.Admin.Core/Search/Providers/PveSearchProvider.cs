@@ -20,38 +20,36 @@ public class PveSearchProvider : ISearchProvider
     private readonly IAdminService _adminService;
     private readonly IPermissionService _permissionService;
 
-    private readonly ParameterMetadata VmParamVmStopped;
-    private readonly ParameterMetadata VmParamVmRunning;
-    private readonly ParameterMetadata NameParam;
-    private readonly ParameterMetadata DescriptionParam;
-    private readonly ParameterMetadata VmStateParam;
+    private readonly ParameterMetadata _vmParamVmStopped;
+    private readonly ParameterMetadata _vmParamVmRunning;
+    private readonly ParameterMetadata _nameParam;
+    private readonly ParameterMetadata _descriptionParam;
+    private readonly ParameterMetadata _vmStateParam;
 
     public PveSearchProvider(IAdminService adminService, IPermissionService permissionService)
     {
         _adminService = adminService;
         _permissionService = permissionService;
 
-        VmParamVmStopped = new ParameterMetadata(
-            "vm",
-            "VM/CT",
-            "Select VM or Container",
-            ParameterType.Select,
-            true,
-            null,
-            new ParameterOptions(DataSource: ctx => GetDataSourceAsync(DataSourceType.VmStopped, ctx), Placeholder: "e.g. 100, debian12"));
+        _vmParamVmStopped = new ParameterMetadata("vm",
+                                                  "VM/CT",
+                                                  "Select VM or Container",
+                                                  ParameterType.Select,
+                                                  true,
+                                                  null,
+                                                  new ParameterOptions(DataSource: ctx => GetDataSourceAsync(DataSourceType.VmStopped, ctx), Placeholder: "e.g. 100, debian12"));
 
-        VmParamVmRunning = new ParameterMetadata(
-            "vm",
-            "VM/CT",
-            "Select VM or Container",
-            ParameterType.Select,
-            true,
-            null,
-            new ParameterOptions(DataSource: ctx => GetDataSourceAsync(DataSourceType.VmRunning, ctx), Placeholder: "e.g. 100, debian12"));
+        _vmParamVmRunning = new ParameterMetadata("vm",
+                                                  "VM/CT",
+                                                  "Select VM or Container",
+                                                  ParameterType.Select,
+                                                  true,
+                                                  null,
+                                                  new ParameterOptions(DataSource: ctx => GetDataSourceAsync(DataSourceType.VmRunning, ctx), Placeholder: "e.g. 100, debian12"));
 
-        NameParam = new ParameterMetadata("name", "Name", "Snapshot name", ParameterType.Text, true, null, new ParameterOptions(Placeholder: "e.g. snap-backup-01"));
-        DescriptionParam = new ParameterMetadata("description", "Description", "Optional description", ParameterType.Text, false, null, null);
-        VmStateParam = new ParameterMetadata("vmstate", "Include RAM", "Save memory state", ParameterType.Bool, false, false, null);
+        _nameParam = new ParameterMetadata("name", "Name", "Snapshot name", ParameterType.Text, true, null, new ParameterOptions(Placeholder: "e.g. snap-backup-01"));
+        _descriptionParam = new ParameterMetadata("description", "Description", "Optional description", ParameterType.Text, false, null, null);
+        _vmStateParam = new ParameterMetadata("vmstate", "Include RAM", "Save memory state", ParameterType.Bool, false, false, null);
     }
 
     // Filter definitions
@@ -65,18 +63,18 @@ public class PveSearchProvider : ISearchProvider
 
     public IEnumerable<SearchCommand> Commands =>
     [
-        new("start", "Start", "Start VM/Container", "play_arrow", [VmParamVmStopped], StartAsync),
-        new("stop", "Stop", "Stop VM/Container", "stop", [VmParamVmRunning], StopAsync),
-        new("restart", "Restart", "Restart VM/Container", "restart_alt", [VmParamVmRunning], RestartAsync),
-        new("console", "Console", "Open console", "terminal", [VmParamVmRunning], OpenConsoleAsync),
-        new("create snapshot", "Create Snapshot", "Create VM/CT snapshot", "add_a_photo", [VmParamVmRunning, NameParam, DescriptionParam, VmStateParam], SnapshotAsync),
+        new("start", "Start", "Start VM/Container", "play_arrow", [_vmParamVmStopped], StartAsync),
+        new("stop", "Stop", "Stop VM/Container", "stop", [_vmParamVmRunning], StopAsync),
+        new("restart", "Restart", "Restart VM/Container", "restart_alt", [_vmParamVmRunning], RestartAsync),
+        new("console", "Console", "Open console", "terminal", [_vmParamVmRunning], OpenConsoleAsync),
+        new("create snapshot", "Create Snapshot", "Create VM/CT snapshot", "add_a_photo", [_vmParamVmRunning, _nameParam, _descriptionParam, _vmStateParam], SnapshotAsync),
     ];
 
     #region Command Implementations
     private async Task ChangeStatusAsync(CommandExecutionContext context, VmStatus status)
         => await context.ServiceProvider.GetCommandExecutor()
                                         .ExecuteAsync(new VmChangeStateCommand(context.ClusterName,
-                                                                                      VmParamVmRunning.ToLong(context.Parameters),
+                                                                                      _vmParamVmRunning.ToLong(context.Parameters),
                                                                                       status));
 
     private Task StartAsync(CommandExecutionContext context) => ChangeStatusAsync(context, VmStatus.Start);
@@ -85,20 +83,34 @@ public class PveSearchProvider : ISearchProvider
 
     private async Task OpenConsoleAsync(CommandExecutionContext context)
     {
-        var client = await _adminService[context.ClusterName].GetPveClientAsync();
-        var vm = await client.GetVmAsync(VmParamVmRunning.ToLong(context.Parameters));
+        var clusterClient = _adminService[context.ClusterName];
+        switch (clusterClient.Settings.WebApi.AccessType)
+        {
+            case ClusterAccessType.Credential:
+                var client = await clusterClient.GetPveClientAsync();
+                var vm = await client.GetVmAsync(_vmParamVmRunning.ToLong(context.Parameters));
 
-        var browserService = context.ServiceProvider.GetRequiredService<IBrowserService>();
-        await browserService.OpenPveConsole(_adminService[context.ClusterName].GetUrlWebConsole(vm.Node, vm.VmType, vm.VmId, vm.Name, false));
+                var browserService = context.ServiceProvider.GetRequiredService<IBrowserService>();
+                await browserService.OpenPveConsole(clusterClient.GetUrlWebConsole(vm.Node, vm.VmType, vm.VmId, vm.Name, false));
+                break;
+
+            case ClusterAccessType.ApiToken:
+                var notificationService = context.ServiceProvider.GetRequiredService<NotificationService>();
+                var L = context.ServiceProvider.GetRequiredService<IStringLocalizer<PveSearchProvider>>();
+                notificationService.Info(L["Console not supported with API Token access. Please use Credential access type to enable this feature."]);
+                break;
+            default:
+                break;
+        }
     }
 
     private async Task SnapshotAsync(CommandExecutionContext context)
         => await context.ServiceProvider.GetCommandExecutor()
                                         .ExecuteAsync(new VmCreateSnapshotCommand(context.ClusterName,
-                                                                                         VmParamVmRunning.ToLong(context.Parameters),
-                                                                                         NameParam.ToString(context.Parameters),
-                                                                                         DescriptionParam.ToString(context.Parameters),
-                                                                                         VmStateParam.ToBoolean(context.Parameters)));
+                                                                                         _vmParamVmRunning.ToLong(context.Parameters),
+                                                                                         _nameParam.ToString(context.Parameters),
+                                                                                         _descriptionParam.ToString(context.Parameters),
+                                                                                         _vmStateParam.ToBoolean(context.Parameters)));
     #endregion
 
     public async Task<IEnumerable<SearchResultItem>> SearchAsync(SearchContext context)

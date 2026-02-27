@@ -33,7 +33,7 @@ public class Status(IAdminService adminService,
         var totalToUpdate = 0;
         var totalInError = 0;
 
-        foreach (var item in adminService.Where(a => ClusterNames.Contains(a.Settings.Name), ClusterNames.Any()))
+        foreach (var item in adminService.GetFrom(ClusterNames))
         {
             var vms = await ActionHelper.GetAsync(item);
 
