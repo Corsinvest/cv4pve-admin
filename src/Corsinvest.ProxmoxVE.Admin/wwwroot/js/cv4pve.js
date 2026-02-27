@@ -5,6 +5,76 @@
 
 window.cv4pve = window.cv4pve || {};
 
+cv4pve.SideDialog = (function () {
+    const _instances = new Map();
+
+    function positionBar(bar, dialog) {
+        const r = dialog.getBoundingClientRect();
+        bar.style.top = r.top + 'px';
+        bar.style.height = r.height + 'px';
+        bar.style.left = r.left + 'px';
+    }
+
+    function attach(dialog) {
+        console.log('[cv4pve.SideDialog] attach', dialog);
+        if (dialog.dataset.resizerAttached) return;
+        dialog.dataset.resizerAttached = 'true';
+
+        setTimeout(function () {
+            const bar = document.createElement('div');
+            bar.className = 'rz-dialog-resize-bar cv4pve-side-dialog-resizer';
+            bar.title = 'Drag to resize';
+            bar.setAttribute('aria-label', 'Resize side dialog');
+            const span = document.createElement('span');
+            span.className = 'rz-resize';
+            span.setAttribute('aria-hidden', 'true');
+            bar.appendChild(span);
+            document.body.appendChild(bar);
+
+            positionBar(bar, dialog);
+
+            const resizer = Radzen.createSideDialogResizer(bar, dialog, { position: 'right', minWidth: 300 });
+
+            // Keep bar aligned when dialog resizes or window resizes
+            const ro = new ResizeObserver(() => positionBar(bar, dialog));
+            ro.observe(dialog);
+            window.addEventListener('resize', () => positionBar(bar, dialog));
+
+            _instances.set(dialog, { resizer, bar, ro });
+        }, 200);
+    }
+
+    function detach(dialog) {
+        const inst = _instances.get(dialog);
+        if (inst) {
+            inst.resizer?.dispose();
+            inst.ro?.disconnect();
+            inst.bar?.remove();
+            _instances.delete(dialog);
+        }
+    }
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(m => {
+            m.addedNodes.forEach(node => {
+                if (node.nodeType === 1) {
+                    if (node.classList.contains('cv4pve-side-dialog-resizable')) attach(node);
+                    node.querySelectorAll?.('.cv4pve-side-dialog-resizable').forEach(attach);
+                }
+            });
+            m.removedNodes.forEach(node => {
+                if (node.nodeType === 1) {
+                    if (node.classList.contains('cv4pve-side-dialog-resizable')) detach(node);
+                    node.querySelectorAll?.('.cv4pve-side-dialog-resizable').forEach(detach);
+                }
+            });
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+    console.log('[cv4pve.SideDialog] observer started');
+})();
+
 /**
  * WidgetGrid Module - Generic widget grid component
  * Supports multiple instances identified by gridId
@@ -181,7 +251,6 @@ cv4pve.WidgetGrid = (function () {
         },
 
         updateConfig: function (rows, cols, margin, editMode, showGrid) {
-            console.log('[WidgetGrid] updateConfig', this.gridId, { rows, cols, margin, editMode, showGrid });
             this.cfg = { rows, cols, margin };
             this.editMode = editMode;
             this.showGrid = showGrid;
@@ -195,7 +264,6 @@ cv4pve.WidgetGrid = (function () {
 
     return {
         createInstance: function (gridId, rows, cols, margin, editMode, showGrid, dotNetRef) {
-            console.log('[WidgetGrid] createInstance', gridId, { rows, cols, margin, editMode, showGrid });
             if (_instances.has(gridId)) {
                 _instances.get(gridId).destroy();
             }
@@ -225,7 +293,6 @@ cv4pve.WidgetGrid = (function () {
         },
 
         refreshWidgets: function (gridId) {
-            console.log('[WidgetGrid] refreshWidgets', gridId);
             const instance = _instances.get(gridId);
             if (instance) {
                 instance._updateAllWidgets();

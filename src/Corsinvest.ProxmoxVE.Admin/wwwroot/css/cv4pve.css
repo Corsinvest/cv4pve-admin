@@ -240,3 +240,76 @@
     white-space: nowrap;
 }
 
+/* ========================================
+   RadzenPanel - icon/text spacing fix
+   ======================================== */
+
+.rz-panel-titlebar > div {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* ========================================
+   Side dialog layout — sticky action bar
+   ======================================== */
+
+/* Resize bar floated outside Blazor DOM to survive re-renders */
+.cv4pve-side-dialog-resizer {
+    position: fixed !important;
+    width: var(--rz-dialog-resize-bar-thickness, 12px) !important;
+    /* height set by JS via positionBar() */
+    z-index: 10000;
+    cursor: col-resize;
+    opacity: .4;
+    background-color: var(--rz-dialog-resize-bar-background-color, var(--rz-base-background-color)) !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--rz-border-radius) 0 0 var(--rz-border-radius);
+}
+
+.cv4pve-side-dialog-resizer:hover {
+    opacity: var(--rz-dialog-resize-bar-hover-opacity, 1);
+}
+
+.cv4pve-side-dialog-resizer > .rz-resize {
+    height: var(--rz-dialog-resize-bar-handle-size, 40px) !important;
+    border: 1px solid var(--rz-dialog-resize-bar-color, var(--rz-border-color)) !important;
+    border-radius: 1px;
+}
+
+.cv4pve-side-dialog {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    min-width: 300px;
+}
+
+.cv4pve-side-dialog .rz-dialog-content {
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.cv4pve-side-dialog .rz-dialog-content > form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cv4pve-side-dialog .rz-dialog-content > form > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================================
+   Confirm danger dialog — red confirm button
+   ======================================== */
+
+.cv4pve-confirm-danger-dialog .rz-primary {
+    background-color: var(--rz-danger) !important;
+    border-color: var(--rz-danger) !important;
+}
