@@ -271,6 +271,25 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../user_guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -515,6 +534,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -550,7 +596,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -572,14 +618,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -719,6 +765,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#web-api-access-type-feature-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WEB API Access Type — Feature Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -732,6 +789,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="SSH Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auth-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -875,10 +949,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -896,8 +970,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1143,6 +1217,49 @@
 <li>Shows a one-time dialog to copy the token — <strong>it will not be shown again</strong></li>
 </ol>
 <p>The username and password are used only during this wizard and are <strong>never saved</strong>.</p>
+<h3 id="web-api-access-type-feature-limitations">WEB API Access Type — Feature Limitations<a class="headerlink" href="#web-api-access-type-feature-limitations" title="Permanent link">&para;</a></h3>
+<p>The choice of <strong>Access Type</strong> affects which features are available:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Credential (PAM user)</th>
+<th style="text-align: center;">Credential (non-PAM)</th>
+<th style="text-align: center;">API Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SSH — Same as WEB API</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌ PAM only</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td><strong>Node console</strong> (NoVnc, Xterm.js)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌ PAM only</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td><strong>VM/LXC console</strong> (NoVnc, Xterm.js, Spice)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Why PAM for node console and SSH Same as WEB API?</p>
+<p>Node consoles (NoVnc, Xterm.js) and SSH require OS-level credentials — i.e. a Linux system user.
+Only PAM users (<code>@pam</code> realm, or username without realm) map to actual Linux users on the Proxmox nodes.
+Users from other realms (PVE, LDAP, etc.) exist only in Proxmox's internal database and have no corresponding SSH/OS account.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Why not API Token for console?</p>
+<p>Proxmox VE requires an active <strong>user session</strong> (ticket) to open a VM or node console via NoVnc/Xterm.js/Spice.
+API Tokens do not create a session ticket, so console access is not possible when using API Token authentication.</p>
+</div>
 <hr />
 <h2 id="ssh-configuration">SSH Configuration<a class="headerlink" href="#ssh-configuration" title="Permanent link">&para;</a></h2>
 <p>Several features require SSH access to the Proxmox VE nodes, including snapshot size calculation.</p>
@@ -1157,7 +1274,7 @@
 <tbody>
 <tr>
 <td><strong>Auth Method</strong></td>
-<td><code>Password</code> or <code>Private Key</code></td>
+<td><code>None</code>, <code>Password</code>, <code>Private Key</code>, or <code>Same as WEB API</code></td>
 </tr>
 <tr>
 <td><strong>Username</strong></td>
@@ -1165,7 +1282,7 @@
 </tr>
 <tr>
 <td><strong>Password</strong></td>
-<td>Used when Auth Method is Password</td>
+<td>Used when Auth Method is <code>Password</code></td>
 </tr>
 <tr>
 <td><strong>Private Key</strong></td>
@@ -1181,6 +1298,39 @@
 </tr>
 </tbody>
 </table>
+<h3 id="auth-methods">Auth Methods<a class="headerlink" href="#auth-methods" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>None</strong></td>
+<td>SSH disabled — features requiring SSH will be skipped</td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td>Authenticate with username and password</td>
+</tr>
+<tr>
+<td><strong>Private Key</strong></td>
+<td>Authenticate with a private key (recommended)</td>
+</tr>
+<tr>
+<td><strong>Same as WEB API</strong></td>
+<td>Reuse WEB API credentials (username without <code>@realm</code>, same password)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Same as WEB API — PAM users only</p>
+<p>The <code>Same as WEB API</code> method is only valid for <strong>PAM users</strong> (e.g. <code>root@pam</code>).
+Users authenticated via other realms (PVE, LDAP, etc.) do not have corresponding SSH credentials.
+If the WEB API user is not a PAM user, a warning will be shown and SSH will not work.</p>
+</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Use <strong>Private Key</strong> authentication for better security. You can upload the key file directly from the UI.</p>
