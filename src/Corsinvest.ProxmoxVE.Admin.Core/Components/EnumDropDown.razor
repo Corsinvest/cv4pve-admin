@@ -1,0 +1,28 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@typeparam TEnum where TEnum : struct, Enum
+
+<RadzenDropDown TValue="TEnum"
+                Value="@Value"
+                ValueChanged="@((TEnum value) => ValueChanged.InvokeAsync(value))"
+                Data="@(Enum.GetValues<TEnum>())"
+                Name="@Name"
+                Disabled="@Disabled"
+                @attributes="AdditionalAttributes">
+    <Template>
+        @L[GetDisplayName(context)]
+    </Template>
+</RadzenDropDown>
+
+@code {
+    [Parameter] public TEnum Value { get; set; }
+    [Parameter] public EventCallback<TEnum> ValueChanged { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetDisplayName(dynamic context) => ((Enum)context).GetDisplayName();
+}

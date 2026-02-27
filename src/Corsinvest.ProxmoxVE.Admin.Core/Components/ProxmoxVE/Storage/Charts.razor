@@ -12,11 +12,9 @@
                     <RadzenIcon Icon="schedule" />
                 </Start>
                 <ChildContent>
-                    <RadzenDropDown TValue="RrdDataTimeFrame"
-                                    Name="@nameof(RrdDataTimeFrame)"
-                                    @bind-Value="@RrdDataTimeFrame"
-                                    @bind-Value:after="@RefreshDataAsync"
-                                    Data="@(Enum.GetValues<RrdDataTimeFrame>())" />
+                    <EnumDropDown @bind-Value="@RrdDataTimeFrame"
+                                  @bind-Value:after="@RefreshDataAsync"
+                                  Name="@nameof(RrdDataTimeFrame)" />
                 </ChildContent>
                 <End>
                     <InfoIcon>
@@ -40,11 +38,9 @@
                     <RadzenIcon Icon="functions" />
                 </Start>
                 <ChildContent>
-                    <RadzenDropDown TValue="RrdDataConsolidation"
-                                    Name="@nameof(RrdDataConsolidation)"
-                                    @bind-Value="@RrdDataConsolidation"
-                                    @bind-Value:after="@RefreshDataAsync"
-                                    Data="@(Enum.GetValues<RrdDataConsolidation>())" />
+                    <EnumDropDown @bind-Value="@RrdDataConsolidation"
+                                  @bind-Value:after="@RefreshDataAsync"
+                                  Name="@nameof(RrdDataConsolidation)" />
                 </ChildContent>
                 <End>
                     <InfoIcon>

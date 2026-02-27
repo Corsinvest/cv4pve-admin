@@ -89,8 +89,10 @@ public static class RadzenUIExtensions
                                                          DialogOptions options)
     where T : ComponentBase
     {
-        options.CssClass ??= "rz-dialog-side";
-        options.Style = "right: 0;";
+        options.CssClass ??= "rz-dialog-side cv4pve-side-dialog";
+        if (options.Resizable) options.CssClass += " cv4pve-side-dialog-resizable";
+        options.Resizable = false;
+        options.Style = null;
         options.Width ??= "600px";
         return await dialogService.OpenAsync<T>(title, parameters!, options);
     }
@@ -169,7 +171,7 @@ public static class RadzenUIExtensions
                                        title,
                                        new ConfirmOptions
                                        {
-                                           CssClass = danger ? "cv-confirm-danger-dialog" : string.Empty,
+                                           CssClass = danger ? "cv4pve-confirm-danger-dialog" : string.Empty,
                                            OkButtonText = yesText,
                                            CancelButtonText = noText
                                        }) ?? false;

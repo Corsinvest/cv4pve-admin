@@ -16,10 +16,7 @@
         <RadzenIcon Icon="output" />
     </Start>
     <ChildContent>
-        <RadzenDropDown TValue="ToolOutputFormat"
-                        Name="@nameof(Model.OutputFormat)"
-                        @bind-Value="@Model.OutputFormat"
-                        Data="@(Enum.GetValues<ToolOutputFormat>())" />
+        <EnumDropDown @bind-Value="@Model.OutputFormat" Name="@nameof(Model.OutputFormat)" />
     </ChildContent>
     <End>
         <InfoIcon>

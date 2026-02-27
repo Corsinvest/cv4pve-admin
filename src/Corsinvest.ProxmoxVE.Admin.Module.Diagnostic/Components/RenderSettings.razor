@@ -57,9 +57,7 @@
                 <RadzenStack Orientation="Orientation.Vertical">
                     <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
                         <ChildContent>
-                            <RadzenDropDown TValue="SettingsTimeSeriesType" Name="@timeSeriesPropertyName"
-                                            @bind-Value="@Model.ApiSettings.Storage.TimeSeries"
-                                            Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
+                            <EnumDropDown @bind-Value="@Model.ApiSettings.Storage.TimeSeries" Name="@timeSeriesPropertyName" />
                         </ChildContent>
                         <End>
                             <InfoIcon>
@@ -111,8 +109,8 @@ PveConstants.KeyApiLxc }[index]);
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenFormField Text="@L["Time Series"]" AllowFloatingLabel="false" Style="width: 31%;">
                 <ChildContent>
-                    <RadzenDropDown TValue="SettingsTimeSeriesType" Name="@timeSeriesPropertyName"
-                                    @bind-Value="@host.TimeSeries" Data="@(Enum.GetValues<SettingsTimeSeriesType>())" />
+                    <EnumDropDown @bind-Value="@host.TimeSeries"
+                                  Name="@timeSeriesPropertyName" />
                 </ChildContent>
                 <End>
                     <InfoIcon>

@@ -18,17 +18,32 @@
 <RadzenFormField Text="@L["Method"]" AllowFloatingLabel="false">
     <Start><RadzenIcon Icon="http" /></Start>
     <ChildContent>
-        <RadzenDropDown Name="@($"{Prefix}.Method")" @bind-Value="@Value.Method"
-                        Data="Enum.GetValues<WebHookHttpMethod>()" />
+        <EnumDropDown Name="@($"{Prefix}.Method")" @bind-Value="@Value.Method" />
     </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Get"]:</strong> @L["Retrieve data without side effects"]<br />
+            <strong>@L["Post"]:</strong> @L["Send data to create a resource"]<br />
+            <strong>@L["Put"]:</strong> @L["Replace a resource entirely"]<br />
+            <strong>@L["Patch"]:</strong> @L["Partially update a resource"]<br />
+            <strong>@L["Delete"]:</strong> @L["Remove a resource"]
+        </InfoIcon>
+    </End>
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Body Type"]" AllowFloatingLabel="false">
     <Start><RadzenIcon Icon="data_object" /></Start>
     <ChildContent>
-        <RadzenDropDown Name="@($"{Prefix}.BodyType")" @bind-Value="@Value.BodyType"
-                        Data="Enum.GetValues<WebHookBodyType>()" />
+        <EnumDropDown Name="@($"{Prefix}.BodyType")" @bind-Value="@Value.BodyType" />
     </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["None"]:</strong> @L["No body"]<br />
+            <strong>@L["JSON"]:</strong> @L["application/json"]<br />
+            <strong>@L["XML"]:</strong> @L["application/xml"]<br />
+            <strong>@L["Text"]:</strong> @L["text/plain"]
+        </InfoIcon>
+    </End>
 </RadzenFormField>
 
 <RadzenFormField Text="@L["Body"]" AllowFloatingLabel="false" Helper="@BodyHelper">
@@ -43,9 +58,16 @@
         <RadzenFormField Text="@L["Type"]" AllowFloatingLabel="false">
             <Start><RadzenIcon Icon="security" /></Start>
             <ChildContent>
-                <RadzenDropDown Name="@($"{Prefix}.AuthType")" @bind-Value="@Value.Auth.Type"
-                                Data="Enum.GetValues<WebHookAuthType>()" />
+                <EnumDropDown Name="@($"{Prefix}.AuthType")" @bind-Value="@Value.Auth.Type" />
             </ChildContent>
+            <End>
+                <InfoIcon>
+                    <strong>@L["None"]:</strong> @L["No authentication"]<br />
+                    <strong>@L["Basic"]:</strong> @L["Username and password"]<br />
+                    <strong>@L["Bearer"]:</strong> @L["Bearer token in Authorization header"]<br />
+                    <strong>@L["API Key"]:</strong> @L["Custom header with API key"]
+                </InfoIcon>
+            </End>
         </RadzenFormField>
 
         @if (Value.Auth.Type == WebHookAuthType.Basic)

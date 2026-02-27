@@ -1,4 +1,4 @@
-@*
+﻿@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -27,7 +27,7 @@
 </RadzenStack>
 
 @code {
-    [CascadingParameter] public DialogService DialogService { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
 
     [Parameter] public string Value { get; set; } = default!;
     [Parameter] public string Label { get; set; } = "Value";

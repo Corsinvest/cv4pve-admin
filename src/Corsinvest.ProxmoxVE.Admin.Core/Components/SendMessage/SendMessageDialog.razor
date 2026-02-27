@@ -8,8 +8,8 @@
 @inherits AdminComponentBase
 
 <RadzenTemplateForm TItem="SendMessageModel" Data="@Model" Submit="@(() => DialogService.CloseSide(Model))">
-    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
-        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" Style="overflow: auto; flex: 1;">
             <RadzenFormField Text="@L["Title"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
                 <Start>
                     <RadzenIcon Icon="title" />
@@ -36,10 +36,7 @@
                     <RadzenIcon Icon="notifications" />
                 </Start>
                 <ChildContent>
-                    <RadzenDropDown TValue="MessageSeverity"
-                                    @bind-Value="@Model.Severity"
-                                    Data="@(Enum.GetValues<MessageSeverity>())"
-                                    Style="width: 100%;" />
+                    <EnumDropDown @bind-Value="@Model.Severity" Style="width: 100%;" />
                 </ChildContent>
                 <End>
                     <InfoIcon>
@@ -55,7 +52,7 @@
             </RadzenFormField>
         </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
             <RadzenButton ButtonType="ButtonType.Submit"
                           Text="@L["Send"]"
                           Icon="send"

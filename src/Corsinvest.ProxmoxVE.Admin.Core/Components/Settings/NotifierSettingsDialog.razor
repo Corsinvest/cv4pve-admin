@@ -6,8 +6,8 @@
 @typeparam TSettings
 
 <RadzenTemplateForm TItem="TSettings" Data="@Model" Submit="@OnSubmit" EditContext="@EditContext">
-    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: calc(100vh - 90px);">
-        <RadzenStack Orientation="Orientation.Vertical">
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
+        <RadzenStack Orientation="Orientation.Vertical" Style="overflow: auto; flex: 1;">
             <SwitchField @bind-Value="@Model.Enabled"
                          Label="@L["Enabled"]"
                          Name="@nameof(Model.Enabled)"
@@ -32,7 +32,7 @@
             }
         </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
             <RadzenButton ButtonType="ButtonType.Submit"
                           Text="@Text"
                           Style="width: fit-content;"
