@@ -18,7 +18,8 @@ public class SearchResultItem
     public string? Url { get; set; }
     public IEnumerable<SearchTag>? Tags { get; set; }
     public SearchCommand? Command { get; set; }
-    public Func<SearchExecutionContext, Task>? Execute { get; set; }
+    public Func<SearchExecutionContext, Task>? OnExecute { get; set; }
+    public object? Data { get; set; }
 
     public const string CommandColor = "var(--rz-base-600)";
     public const string ModuleColor = "var(--rz-primary)";

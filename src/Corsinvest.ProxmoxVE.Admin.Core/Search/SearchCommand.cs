@@ -12,7 +12,7 @@ public record SearchCommand(
     string Description,
     string Icon,
     ParameterMetadata[] Parameters,
-    Func<CommandExecutionContext, Task> Execute)
+    Func<CommandExecutionContext, Task> OnExecute)
 {
     public string Prefix => $">{Id}";
     public bool RequiresDialog => Parameters.Length > 0;
