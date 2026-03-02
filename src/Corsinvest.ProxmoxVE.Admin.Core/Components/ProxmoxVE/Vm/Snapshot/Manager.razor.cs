@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Mapster;
@@ -17,12 +18,11 @@ public partial class Manager(IAdminService adminService,
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
-    //[Parameter] public bool ShowDetailProxmoxVE { get; set; }
-    [Parameter] public bool CanCreate { get; set; }
-    [Parameter] public bool CanEdit { get; set; }
-    [Parameter] public bool CanDelete { get; set; }
-    [Parameter] public bool CanRollback { get; set; }
 
+    private bool CanCreate { get; set; }
+    private bool CanEdit { get; set; }
+    private bool CanDelete { get; set; }
+    private bool CanRollback { get; set; }
     private bool AllowCalculateSnapshotSize { get; set; }
     private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;
     private IEnumerable<Data> AllItems { get; set; } = default!;
@@ -40,7 +40,17 @@ public partial class Manager(IAdminService adminService,
         public double SnapshotSize { get; set; }
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        var hasSnapshot = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Snapshot, Vm.VmId);
+
+        CanCreate = hasSnapshot;
+        CanEdit = hasSnapshot;
+        CanDelete = hasSnapshot;
+        CanRollback = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.SnapshotRallback, Vm.VmId);
+
+        await RefreshDataAsync();
+    }
 
     public async Task RefreshDataAsync()
     {

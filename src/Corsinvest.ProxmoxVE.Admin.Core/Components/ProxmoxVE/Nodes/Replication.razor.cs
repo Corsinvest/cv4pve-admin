@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 using Mapster;
@@ -15,8 +16,8 @@ public partial class Replication(IAdminService adminService,
     [Parameter] public string Node { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
     [Parameter] public long? VmId { get; set; } = default!;
-    [Parameter] public bool CanScheduleNow { get; set; }
 
+    private bool CanScheduleNow { get; set; }
     private bool IsLoading { get; set; }
     private IEnumerable<Data> Items { get; set; } = default!;
     private IList<Data> SelectedItems { get; set; } = [];
@@ -30,7 +31,14 @@ public partial class Replication(IAdminService adminService,
         public string Node { get; set; } = default!;
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        CanScheduleNow = VmId.HasValue
+                            ? await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.ReplicationScheduleNow, VmId.Value)
+                            : await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.ReplicationScheduleNow, Node);
+
+        await RefreshDataAsync();
+    }
 
     public async Task RefreshDataAsync()
     {
