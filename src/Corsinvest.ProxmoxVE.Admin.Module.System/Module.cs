@@ -139,7 +139,7 @@ public class Module : ModuleBase
                     new(this,"General")
                     {
                         Icon = "settings_applications",
-                        Render = CreateSettingsAccordion([GetSectionSMTPConfiguration()])
+                        Render = SettingsHelper.CreateSettingsAccordion([GetSectionSMTPConfiguration()])
                     }
                 ]
             },
@@ -157,11 +157,11 @@ public class Module : ModuleBase
             },
         ];
 
-    protected static RenderComponentInfo CreateSettingsAccordion(IEnumerable<Components.SettingSection> sections)
-        => new(typeof(Components.SettingsAccordion),
-               new Dictionary<string, object> { [nameof(Components.SettingsAccordion.Sections)] = sections });
+    //protected static RenderComponentInfo CreateSettingsAccordion(IEnumerable<Core.Components.Settings.SettingSection<AppSettings>> sections)
+    //    => new(typeof(Core.Components.Settings.SettingsAccordion<AppSettings>),
+    //           new Dictionary<string, object> { [nameof(Core.Components.Settings.SettingsAccordion<>.Sections)] = sections });
 
-    protected static Components.SettingSection GetSectionSMTPConfiguration()
+    protected static Core.Components.Settings.SettingSection<AppSettings> GetSectionSMTPConfiguration()
         => new()
         {
             Title = "SMTP Configuration",
