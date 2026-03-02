@@ -50,8 +50,6 @@ public static class ApplicationHelper
            $"&body={Uri.EscapeDataString(body)}";
 
     public const string UrlShopSubscription = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
-    public static string UrlNewPveConfig { get; set; } = default!;
-    public static string UrlChangePassword { get; set; } = default!;
 
     public static string ExecutionPath { get; } = AppContext.BaseDirectory;
     public static string ConfigPath { get; } = Path.Combine(ExecutionPath, "config");
@@ -60,5 +58,4 @@ public static class ApplicationHelper
     public static string UserProfileImagesPath { get; } = Path.Combine(ImagesPath, "user-profile");
     public static string TempPath { get; } = Path.Combine(DataPath, "tmp");
     public static string ModulesPath { get; } = Path.Combine(DataPath, "modules");
-    public const string ModuleComponentUrl = "/module/";
 }

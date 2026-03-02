@@ -1,0 +1,47 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+@if (Data.Any())
+{
+    <RadzenProfileMenu title="@FullDisplayName" Click="OnMenuClick">
+        <Template>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-me-2">
+                <RadzenIcon Icon="@Icon" />
+                <span>@DisplayName</span>
+            </RadzenStack>
+        </Template>
+        <ChildContent>
+            <RadzenStack Style="width: 320px; padding: 0.5rem;" Orientation="Orientation.Vertical" Gap="0">
+                <RadzenStack Style="padding: 0.5rem;" Orientation="Orientation.Vertical">
+                    <RadzenTextBox @ref="@SearchBoxRef"
+                                   Placeholder="@L["Type to search..."]"
+                                   type="search"
+                                   @oninput="@(args => SearchString = args.Value + string.Empty)"
+                                   Value="@SearchString" />
+                </RadzenStack>
+
+                @foreach (var item in Data)
+                {
+                    <RadzenProfileMenuItem Icon="@item.TypeIcon"
+                                          Value="@item.Name"
+                                          title="@item.FullDisplayName">
+                        <Template>
+                            <span style="flex: 1;">@item.DisplayName</span>
+                            <RadzenBadge Text="@item.TypeLabel"
+                                         BadgeStyle="@(item.Type == ClusterType.Cluster ? BadgeStyle.Primary : BadgeStyle.Info)"
+                                         Style="font-size: 0.65rem; margin-left: auto;" />
+                        </Template>
+                    </RadzenProfileMenuItem>
+                }
+
+                @if (!Data.Any())
+                {
+                    <RadzenText TextStyle="TextStyle.Caption" Style="opacity: 0.6; text-align: center; padding: 0.5rem;">@L["No results found!"]</RadzenText>
+                }
+            </RadzenStack>
+        </ChildContent>
+    </RadzenProfileMenu>
+}

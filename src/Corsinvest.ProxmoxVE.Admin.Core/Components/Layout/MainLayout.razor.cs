@@ -86,7 +86,7 @@ public partial class MainLayout(IModuleService moduleService,
     private void CheckExistCluster()
     {
         HasNoClusters = !settingsService.GetEnabledClustersSettings().Any();
-        if (HasNoClusters) { navigationManager.NavigateTo(ApplicationHelper.UrlNewPveConfig); }
+        if (HasNoClusters) { navigationManager.NavigateTo(UrlHelper.UrlNewPveConfig); }
     }
 
     private async Task OpenCommandPalette()
