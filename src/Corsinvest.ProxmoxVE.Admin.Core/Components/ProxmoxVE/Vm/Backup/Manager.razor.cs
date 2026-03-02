@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 
@@ -13,12 +14,12 @@ public partial class Manager(DialogService dialogService,
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
-    [Parameter] public bool CanRestore { get; set; }
-    [Parameter] public bool CanRestoreFile { get; set; }
-    [Parameter] public bool CanDelete { get; set; }
-    [Parameter] public bool CanEdit { get; set; }
-    [Parameter] public bool CanBackup { get; set; }
 
+    private bool CanRestore { get; set; }
+    private bool CanRestoreFile { get; set; }
+    private bool CanDelete { get; set; }
+    private bool CanEdit { get; set; }
+    private bool CanBackup { get; set; }
     private bool IsLoading { get; set; }
     private RadzenDataGrid<NodeStorageContent> DataGridRef { get; set; } = default!;
     private IEnumerable<NodeStorageContent> Items { get; set; } = default!;
@@ -30,6 +31,12 @@ public partial class Manager(DialogService dialogService,
 
     protected override async Task OnInitializedAsync()
     {
+        CanBackup = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Backup, Vm.VmId);
+        CanDelete = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Backup, Vm.VmId);
+        CanEdit = CanDelete;
+        CanRestore = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.BackupRestore, Vm.VmId);
+        CanRestoreFile = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.BackupRestoreFile, Vm.VmId);
+
         var client = await adminService[ClusterName].GetPveClientAsync();
         Storages = [.. (await client.Nodes[Vm.Node].Storage.GetAsync(content: "backup", enabled: true))
                             .Where(a => a.Enabled && a.Active)

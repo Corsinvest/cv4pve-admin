@@ -423,20 +423,12 @@
                     @if (context.ResourceType == ClusterResourceType.Vm)
                     {
                         CommandsWidth = "130px";
-                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.ToolBar Vm="context"
-                                                                                         ClusterName="@context.ClusterName"
-                                                                                         OnlyIcon="true"
-                                                                                         CanChangeStatus="true"
-                                                                                         CanConsole="true" />
+                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.ToolBar Vm="context" ClusterName="@context.ClusterName" OnlyIcon="true" />
                     }
                     else if (context.ResourceType == ClusterResourceType.Node)
                     {
                         CommandsWidth = "130px";
-                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.ToolBar Node="context"
-                                                                                            ClusterName="@context.ClusterName"
-                                                                                            OnlyIcon="true"
-                                                                                            CanChangeStatus="true"
-                                                                                            CanConsole="true" />
+                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.ToolBar Node="context" ClusterName="@context.ClusterName" OnlyIcon="true" />
                     }
                 </Template>
             </RadzenDataGridColumn>

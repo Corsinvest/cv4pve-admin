@@ -20,9 +20,6 @@ public partial class Manager : IRefreshableData, IDisposable, IClusterName
     private TabContent CurrentTabContent => (TabContent)RadzenTabsRef.SelectedTab!.Attributes!["tab-content"];
     private bool CanAudit { get; set; }
     private bool CanReplication { get; set; }
-    private bool CanReplicationScheduleNow { get; set; }
-    private bool CanConsole { get; set; }
-    private bool CanPowerManagement { get; set; }
 
     private Timer? _timer;
     private CancellationTokenSource? _cts;
@@ -53,23 +50,8 @@ public partial class Manager : IRefreshableData, IDisposable, IClusterName
 
     protected override async Task OnInitializedAsync()
     {
-        CanConsole = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.Console, Node.Node);
-        CanPowerManagement = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.PowerManagement, Node.Node);
         CanAudit = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.Audit, Node.Node);
-    }
-
-    private async Task SelectedIndexChangedAsync()
-    {
-        switch (CurrentTabContent)
-        {
-            case TabContent.Summary: break;
-            case TabContent.Disks: break;
-            case TabContent.Charts: break;
-            case TabContent.Tasks: break;
-            case TabContent.Replication:
-                CanReplicationScheduleNow = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Vm.ReplicationScheduleNow, Node.Node);
-                break;
-        }
+        CanReplication = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.Replication, Node.Node);
     }
 
     public async Task RefreshDataAsync()

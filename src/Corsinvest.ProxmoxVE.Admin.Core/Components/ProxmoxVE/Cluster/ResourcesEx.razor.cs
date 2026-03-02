@@ -271,6 +271,11 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         _timer = null;
     }
 
+    public IReadOnlyList<ClusterResourceEx> GetItems() => Items;
+
+    public async Task ExpandRowsAsync(IEnumerable<ClusterResourceEx> items)
+        => await DataGridRef!.ExpandRows(items);
+
     private async Task OnDataGridSettingsChanged() => await DataGridSettingsChanged.InvokeAsync(DataGridSettings);
 
     public void Dispose()

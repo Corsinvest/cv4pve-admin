@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
@@ -19,11 +20,11 @@ public partial class ToolBar(IBrowserService browserService,
 {
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
-    [Parameter] public bool CanConsole { get; set; }
-    [Parameter] public bool CanChangeStatus { get; set; }
     [Parameter] public bool OnlyIcon { get; set; }
     [Parameter] public EventCallback<VmStatus> ChangeStatus { get; set; }
 
+    private bool CanConsole { get; set; }
+    private bool CanChangeStatus { get; set; }
     private bool UseApiTokenAuth => adminService[ClusterName].Settings.WebApi.AccessType == ClusterAccessType.ApiToken;
     private WebConsoleType DefaultWebConsoleType { get; set; } = WebConsoleType.NoVnc;
     private bool SpiceEnabled { get; set; }
@@ -32,6 +33,9 @@ public partial class ToolBar(IBrowserService browserService,
     {
         var client = await adminService[ClusterName].GetPveClientAsync();
         DefaultWebConsoleType = await client.GetDefaultWebConsoleAsync();
+
+        CanConsole = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Console, Vm.VmId);
+        CanChangeStatus = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.PowerManagement, Vm.VmId);
         await RefreshDataAsync();
     }
 

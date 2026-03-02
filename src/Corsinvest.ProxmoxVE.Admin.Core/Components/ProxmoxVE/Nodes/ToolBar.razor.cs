@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 
@@ -15,13 +16,13 @@ public partial class ToolBar(IBrowserService browserService,
 {
     [EditorRequired, Parameter] public IClusterResourceNode Node { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
-    [Parameter] public bool CanConsole { get; set; }
-    [Parameter] public bool CanChangeStatus { get; set; }
     [Parameter] public bool OnlyIcon { get; set; }
     [Parameter] public EventCallback<string> ChangeStatus { get; set; }
 
     private WebConsoleType DefaultWebConsoleType { get; set; } = WebConsoleType.NoVnc;
 
+    private bool CanConsole { get; set; }
+    private bool CanChangeStatus { get; set; }
     private bool SpiceEnabled { get; set; }
     private bool IsPam => adminService[ClusterName].Settings.WebApi.IsPam;
 
@@ -30,6 +31,8 @@ public partial class ToolBar(IBrowserService browserService,
         var client = await adminService[ClusterName].GetPveClientAsync();
         DefaultWebConsoleType = await client.GetDefaultWebConsoleAsync();
 
+        CanConsole = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.Console, Node.Node);
+        CanChangeStatus = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.PowerManagement, Node.Node);
         await RefreshDataAsync();
     }
 
