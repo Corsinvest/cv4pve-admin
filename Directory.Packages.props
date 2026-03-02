@@ -28,7 +28,7 @@
   <ItemGroup>
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
-    <PackageVersion Include="Radzen.Blazor" Version="9.0.6" />
+    <PackageVersion Include="Radzen.Blazor" Version="9.0.7" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.5.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -59,11 +59,11 @@
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.4.3" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.5" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="1.7.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.21.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.9.2" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.10.0" />
   </ItemGroup>
   <!-- Development and Code Quality -->
   <ItemGroup>
