@@ -53,4 +53,14 @@
   <ItemGroup>
     <EmbeddedResource Include="Fonts\*.ttf" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="translations\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="translations\*.json" Exclude="translations\source.json" />
+  </ItemGroup>
 </Project>
