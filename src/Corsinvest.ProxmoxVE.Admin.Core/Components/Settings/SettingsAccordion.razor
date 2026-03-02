@@ -4,6 +4,8 @@
 *@
 @inherits AdminComponentBase
 
+@typeparam TSettings
+
 <div class="rz-p-4">
     <RadzenAccordion Multiple="true" @key="@string.Join(",", Sections.Select(s => s.Title))">
         <Items>
