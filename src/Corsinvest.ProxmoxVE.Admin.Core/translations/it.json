@@ -1,1 +1,10 @@
-{}
+{
+    "2FA Disabled": "2FA Disabilitato",
+    "Add": "Aggiungi",
+    "Add cluster": "Aggiungi cluster",
+    "Access Type": "Tipo di Accesso",
+    "All": "Tutto",
+    "All clusters": "Tutti i cluster",
+    "Add widget": "Aggiungi widget",
+    "You are using the default password. Please change it immediately.": "Stai utilizzando la password predefinita. Cambiala immediatamente."
+}
