@@ -65,7 +65,9 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         job.Status = true;
         await db.SaveChangesAsync();
 
-        await auditService.LogAsync("SystemReport.Scan", true, $"Job ID: {id}, Cluster: {job.ClusterName}");
+        await auditService.LogAsync("SystemReport.Scan",
+                                    true,
+                                    $"Job ID: {id}, Cluster: {job.ClusterName}");
 
         await PublishDataChangedAsync(scope);
     }
@@ -175,7 +177,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                            users.Select(a => new
                            {
                                a.Id,
-                               Enable = a.Enable == 1,
+                               a.Enable,
                                a.Email,
                                Expire = DateTimeOffset.FromUnixTimeSeconds(a.Expire).DateTime
                            }));
@@ -558,7 +560,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                    Families = a.Families.JoinAsString(Environment.NewLine),
                                    a.BondMiimon,
                                    a.Slaves,
-                                   AutoStart = a.AutoStart == 1,
+                                   a.AutoStart ,
                                    a.BondPrimary,
                                    a.BridgeStp,
                                    a.BridgeVlanAware,

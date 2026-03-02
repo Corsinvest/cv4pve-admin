@@ -132,7 +132,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                                           db,
                                                                           logger);
 
-            await auditService.LogAsync("ReplicationAnalytics.Scan", true, $"Cluster: {clusterName}, Jobs: {jobCount}, Success: {successCount}, Failures: {failureCount}");
+            await auditService.LogAsync("ReplicationAnalytics.Scan",
+                                        true,
+                                        $"Cluster: {clusterName}, " +
+                                        $"Jobs: {jobCount}, " +
+                                        $"Success: {successCount}, " +
+                                        $"Failures: {failureCount}");
 
             await PublishDataChangedAsync(scope);
         }

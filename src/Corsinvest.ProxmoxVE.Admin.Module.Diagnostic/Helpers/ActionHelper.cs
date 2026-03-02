@@ -6,7 +6,6 @@ using System.Net.Mime;
 using System.Text.RegularExpressions;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
-using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.Diagnostic.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Helpers;
@@ -21,15 +20,6 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
         using (logger.LogTimeOperation(LogLevel.Information, true, "Execute diagnostic for cluster '{clusterName}'", clusterName))
         {
-            var tasksDays = 10;
-
-            InfoHelper.Info info;
-            using (logger.LogTimeOperation(LogLevel.Information, true, "Collect data from cluster"))
-            {
-                var client = await scope.GetClusterClient(clusterName).GetPveClientAsync();
-                info = await InfoHelper.CollectAsync(client, true, tasksDays, true, false);
-            }
-
             await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
             var ignoredIssues = db.IgnoredIssues
@@ -44,7 +34,10 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                   })
                                   .ToList();
 
-            var details = Application.Analyze(info, settings.ApiSettings, ignoredIssues)
+            var now = DateTime.UtcNow;
+
+            var client = await scope.GetClusterClient(clusterName).GetPveClientAsync();
+            var details = (await Application.AnalyzeAsync(client, settings.ApiSettings, ignoredIssues))
                                      .Select(a => new JobDetail
                                      {
                                          IdResource = a.Id,
@@ -61,7 +54,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             await db.JobResults.AddAsync(new JobResult
             {
                 ClusterName = clusterName,
-                Start = info.Date.ToUniversalTime(),
+                Start = now,
                 End = DateTime.UtcNow,
                 Details = details,
                 Critical = Count(DiagnosticResultGravity.Critical),
@@ -88,7 +81,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await using var ms = diagnosticService.GeneratePdf(new JobResult
                 {
                     ClusterName = clusterName,
-                    Start = info.Date,
+                    Start = now,
                     Details = details,
                     Critical = Count(DiagnosticResultGravity.Critical),
                     Info = Count(DiagnosticResultGravity.Info),
@@ -101,7 +94,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
                 {
                     Subject = L["{0} - Diagnostic result of cluster '{1}'", appSettings.AppName, clusterName],
-                    Body = L["Diagnostic result of {0}", info.Date],
+                    Body = L["Diagnostic result of {0}", now],
                     Attachments = [new(ms, "Diagnostic.pdf", MediaTypeNames.Application.Pdf)]
                 });
             }
@@ -112,7 +105,13 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                       .Select(g => $"{g.Key}: {g.Count()}")
                                       .JoinAsString(", ");
 
-            await auditService.LogAsync("Diagnostic.Scan", true, $"Cluster: {clusterName}, Issues: {totalIssues} ({contextCounts}), Critical: {Count(DiagnosticResultGravity.Critical)}, Warning: {Count(DiagnosticResultGravity.Warning)}, Info: {Count(DiagnosticResultGravity.Info)}");
+            await auditService.LogAsync("Diagnostic.Scan",
+                                        true,
+                                        $"Cluster: {clusterName}, " +
+                                        $"Issues: {totalIssues} ({contextCounts}), " +
+                                        $"Critical: {Count(DiagnosticResultGravity.Critical)}, " +
+                                        $"Warning: {Count(DiagnosticResultGravity.Warning)}, " +
+                                        $"Info: {Count(DiagnosticResultGravity.Info)}");
 
             await PublishDataChangedAsync(scope);
         }

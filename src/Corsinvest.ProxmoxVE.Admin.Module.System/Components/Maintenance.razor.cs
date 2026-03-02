@@ -111,7 +111,9 @@ public partial class Maintenance(IAdminService adminService,
                     .ExecuteDeleteAsync();
 
                 AddLog($"OK Cleanup Audit Logs: deleted {deleted} record(s) older than {AuditLogRetentionDays} days");
-                await auditService.LogAsync("Maintenance.CleanupAuditLogs", true, $"Deleted {deleted} audit logs older than {AuditLogRetentionDays} days");
+                await auditService.LogAsync("Maintenance.CleanupAuditLogs",
+                                            true,
+                                            $"Deleted {deleted} audit logs older than {AuditLogRetentionDays} days");
             }
             catch (Exception ex)
             {
@@ -141,7 +143,9 @@ public partial class Maintenance(IAdminService adminService,
                                 : 0;
 
                 AddLog($"OK Cleanup System Logs: deleted {deleted} record(s) older than {SystemLogsRetentionDays} days");
-                await auditService.LogAsync("Maintenance.CleanupSystemLogs", true, $"Deleted {deleted} system logs older than {SystemLogsRetentionDays} days");
+                await auditService.LogAsync("Maintenance.CleanupSystemLogs",
+                                            true,
+                                            $"Deleted {deleted} system logs older than {SystemLogsRetentionDays} days");
             }
             catch (Exception ex)
             {
@@ -325,7 +329,9 @@ public partial class Maintenance(IAdminService adminService,
             }
 
             AddLog($"Test Cluster Connections completed: {successCount}/{totalCount} successful");
-            await auditService.LogAsync("Maintenance.TestClusterConnections", successCount == totalCount, $"{successCount}/{totalCount} clusters connected");
+            await auditService.LogAsync("Maintenance.TestClusterConnections",
+                                        successCount == totalCount,
+                                        $"{successCount}/{totalCount} clusters connected");
         }
         catch (Exception ex)
         {
@@ -386,7 +392,9 @@ public partial class Maintenance(IAdminService adminService,
             }
 
             AddLog($"Test Internet Connectivity completed: {successCount}/{totalCount} successful");
-            await auditService.LogAsync("Maintenance.TestInternetConnectivity", successCount == totalCount, $"{successCount}/{totalCount} endpoints reachable");
+            await auditService.LogAsync("Maintenance.TestInternetConnectivity",
+                                        successCount == totalCount,
+                                        $"{successCount}/{totalCount} endpoints reachable");
         }
         catch (Exception ex)
         {

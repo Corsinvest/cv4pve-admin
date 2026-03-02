@@ -35,7 +35,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 var settings = GetModuleClusterSettings(scope, job.ClusterName);
                 if (settings.OnRemoveJobRemoveSnapshots) { await PurgeAsync(scope, id); }
 
-                await auditService.LogAsync("AutoSnap.DeleteJob", true, $"Job ID: {id}, Cluster: {job.ClusterName}, Label: {job.Label}, VMs: {job.VmIdsList.JoinAsString(",")}");
+                await auditService.LogAsync("AutoSnap.DeleteJob",
+                                            true,
+                                            $"Job ID: {id}" +
+                                            $", Cluster: {job.ClusterName}, " +
+                                            $"Label: {job.Label}, " +
+                                            $"VMs: {job.VmIdsList.JoinAsString(",")}");
             }
             await db.Jobs.DeleteAsync(id);
             await PublishDataChangedAsync(scope);
@@ -76,7 +81,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             }
             finally
             {
-                await auditService.LogAsync("AutoSnap.PurgeSnapshots", success, $"Job ID: {id}, Cluster: {job.ClusterName}, Label: {job.Label}, VMs: {job.VmIdsList.Count()}");
+                await auditService.LogAsync("AutoSnap.PurgeSnapshots",
+                                            success,
+                                            $"Job ID: {id}, " +
+                                            $"Cluster: {job.ClusterName}, " +
+                                            $"Label: {job.Label}, " +
+                                            $"VMs: {job.VmIdsList.Count()}");
             }
 
             await PublishDataChangedAsync(scope);
@@ -189,7 +199,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             }
 
             // Audit log
-            await auditService.LogAsync("AutoSnap.Snap", result.Status, $"Job ID: {id}, Cluster: {job.ClusterName}, Label: {job.Label}, VMs: {job.VmIdsList.Count()}, Snap: {result.SnapName}, Duration: {result.Duration:hh':'mm':'ss}");
+            await auditService.LogAsync("AutoSnap.Snap",
+                                        result.Status,
+                                        $"Job ID: {id}, " +
+                                        $"Cluster: {job.ClusterName}, " +
+                                        $"Label: {job.Label}, " +
+                                        $"VMs: {job.VmIdsList.Count()}, " +
+                                        $"Snap: {result.SnapName}, " +
+                                        $"Duration: {result.Duration:hh':'mm':'ss}");
 
             await PublishDataChangedAsync(scope);
         }
@@ -237,7 +254,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(clusterName, item.VmId, item.Name, Force: true));
             }
 
-            await auditService.LogAsync("AutoSnap.DeleteSnapshots", true, $"Cluster: {clusterName}, Count: {snapshotList.Count}, Snapshots: {snapshotList.Select(s => $"{s.VmId}:{s.Name}").JoinAsString(", ")}");
+            await auditService.LogAsync("AutoSnap.DeleteSnapshots",
+                                        true,
+                                        $"Cluster: {clusterName}, " +
+                                        $"Count: {snapshotList.Count}, " +
+                                        $"Snapshots: {snapshotList.Select(s => $"{s.VmId}:{s.Name}").JoinAsString(", ")}");
         }
 
         await PublishDataChangedAsync(scope);

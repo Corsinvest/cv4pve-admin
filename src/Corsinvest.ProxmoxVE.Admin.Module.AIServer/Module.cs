@@ -123,11 +123,14 @@ public class Module : ModuleBase
                    return Results.Empty;
                }
 
+               var auditService = scope.GetRequiredService<IAuditService>();
                var appTokenService = scope.GetRequiredService<IAppTokenService>();
                var token = await appTokenService.ValidateAsync(apiKey!);
                if (token is null)
                {
-                   await scope.GetRequiredService<IAuditService>().LogAsync("MCP.Auth", false, $"Invalid or expired token: {apiKey!.ToString()[..Math.Min(8, apiKey!.ToString().Length)]}...");
+                   await auditService.LogAsync("MCP.Auth",
+                                               false,
+                                               $"Invalid or expired token: {apiKey!.ToString()[..Math.Min(8, apiKey!.ToString().Length)]}...");
                    await scope.GetEventNotificationService().PublishAsync(new McpAuthFailedNotification());
                    httpContext.Response.StatusCode = 401;
                    await httpContext.Response.WriteAsJsonAsync(new { error = "Invalid or expired token" });
@@ -151,8 +154,11 @@ public class Module : ModuleBase
                Debug.WriteLine(body);
 #endif
 
-               var auditService = scope.GetRequiredService<IAuditService>();
-               await auditService.LogAsync("MCP.Request", true, $"Token: {token.Name}\n{httpContext.Request.Method} {httpContext.Request.Path}\n{System.Text.RegularExpressions.Regex.Unescape(body)}");
+               await auditService.LogAsync("MCP.Request",
+                                           true,
+                                           $"Token: {token.Name}\n" +
+                                           $"{httpContext.Request.Method} {httpContext.Request.Path}\n" +
+                                           $"{System.Text.RegularExpressions.Regex.Unescape(body)}");
 
                return await next(context);
            });

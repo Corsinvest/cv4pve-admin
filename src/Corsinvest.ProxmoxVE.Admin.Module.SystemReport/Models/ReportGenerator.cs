@@ -280,7 +280,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
                            users.Select(a => new
                            {
                                a.Id,
-                               Enable = a.Enable == 1,
+                               a.Enable,
                                a.Email,
                                Expire = DateTimeOffset.FromUnixTimeSeconds(a.Expire).DateTime
                            }));
@@ -625,7 +625,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
                                Families = a.Families.JoinAsString(Environment.NewLine),
                                a.BondMiimon,
                                a.Slaves,
-                               AutoStart = a.AutoStart == 1,
+                               a.AutoStart,
                                a.BondPrimary,
                                a.BridgeStp,
                                a.BridgeVlanAware,
@@ -1187,10 +1187,10 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
             if (tableLinks.Any())
             {
                 // Primo link disponibile
-                var firstLink = tableLinks.First();
+                var (Sheet, Row) = tableLinks.First();
                 ws.Cell(row, 3).Style.Font.SetUnderline(XLFontUnderlineValues.Single);
                 ws.Cell(row, 3).Style.Font.SetFontColor(XLColor.Blue);
-                ws.Cell(row, 3).SetHyperlink(new XLHyperlink($"'{firstLink.Sheet}'!A{firstLink.Row}"));
+                ws.Cell(row, 3).SetHyperlink(new XLHyperlink($"'{Sheet}'!A{Row}"));
             }
 
             row++;

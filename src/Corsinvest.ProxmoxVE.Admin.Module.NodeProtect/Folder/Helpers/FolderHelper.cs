@@ -61,7 +61,10 @@ internal static class FolderHelper
                 }
                 finally
                 {
-                    await auditService.LogAsync("NodeProtect.Folder.Backup", success, $"Cluster: {clusterName}, Paths: {settings.PathsToBackup.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length} items");
+                    await auditService.LogAsync("NodeProtect.Folder.Backup",
+                                                success,
+                                                $"Cluster: {clusterName}, " +
+                                                $"Paths: {settings.PathsToBackup.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length} items");
                 }
 
                 await scope.GetEventNotificationService().PublishAsync(new DataChangedNotification());

@@ -81,7 +81,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             var normalCount = itemsList.Count(a => a.UpdateNormalAvailable && !a.UpdateSecurityAvailable);
             var rebootCount = itemsList.Count(a => a.UpdateRequireReboot);
 
-            await auditService.LogAsync("Updater.Scan", true, $"Cluster: {clusterName}, VMs: {vmCount}, CTs: {ctCount}, Security: {securityCount}, Normal: {normalCount}, Reboot: {rebootCount}");
+            await auditService.LogAsync("Updater.Scan",
+                                        true,
+                                        $"Cluster: {clusterName}, " +
+                                        $"VMs: {vmCount}, " +
+                                        $"CTs: {ctCount}, " +
+                                        $"Security: {securityCount}, " +
+                                        $"Normal: {normalCount}, " +
+                                        $"Reboot: {rebootCount}");
 
             await PublishDataChangedAsync(scope);
         }
