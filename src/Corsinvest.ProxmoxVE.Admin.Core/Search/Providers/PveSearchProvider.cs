@@ -56,10 +56,10 @@ public class PveSearchProvider : ISearchProvider
     public static readonly SearchFilter VmFilter = new("vm", "Vm/Ct", PveAdminUIHelper.Icons.GetVmType(VmType.Qemu), BadgeStyle.Success);
     public static readonly SearchFilter IpFilter = new("ip", "Ip address", "lan", BadgeStyle.Success);
     public static readonly SearchFilter NodeFilter = new("node", "Node", PveAdminUIHelper.Icons.Node, BadgeStyle.Info);
-    public static readonly SearchFilter StorageFilter = new("storage", "Storage", PveAdminUIHelper.Icons.Storage, BadgeStyle.Dark);
-    public static readonly SearchFilter PoolFilter = new("pool", "Pool", PveAdminUIHelper.Icons.Pool, BadgeStyle.Light);
+    //public static readonly SearchFilter StorageFilter = new("storage", "Storage", PveAdminUIHelper.Icons.Storage, BadgeStyle.Dark);
+    //public static readonly SearchFilter PoolFilter = new("pool", "Pool", PveAdminUIHelper.Icons.Pool, BadgeStyle.Light);
 
-    public IEnumerable<SearchFilter> Filters => [VmFilter, NodeFilter, StorageFilter, PoolFilter, IpFilter];
+    public IEnumerable<SearchFilter> Filters => [VmFilter, NodeFilter, IpFilter /*,StorageFilter, PoolFilter*/];
 
     public IEnumerable<SearchCommand> Commands =>
     [
@@ -144,24 +144,26 @@ public class PveSearchProvider : ISearchProvider
                     Color = Colors.Info,
                     ResultType = SearchResultType.Item,
                     Category = "Node",
-                    //Url = $"/pve/node/{a.Node}",
-                    Tags = [new(a.Status, PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(a.Status, false)))]
+                    Url = UrlHelper.Resources.NodeUrl(a.Node),
+                    Tags = [new(a.Status, PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(a.Status, false)))],
+                    Data = a
                 }));
             }
-            else if (context.TryGetFilter(StorageFilter, out _))
-            {
-                result.AddRange((await GetDataAsync(ClusterResourceType.Storage)).Select(a => new SearchResultItem
-                {
-                    Title = a.Storage,
-                    Subtitle = $"{a.Node} - {a.PluginType}",
-                    Icon = PveAdminUIHelper.Icons.Storage,
-                    Color = Colors.InfoDark,
-                    ResultType = SearchResultType.Item,
-                    Category = "Storage",
-                    //Url = $"/pve/node/{a.Node}/storage/{a.Storage}",
-                    Tags = [new(a.Status, PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(a.Status, false)))]
-                }));
-            }
+            //else if (context.TryGetFilter(StorageFilter, out _))
+            //{
+            //    result.AddRange((await GetDataAsync(ClusterResourceType.Storage)).Select(a => new SearchResultItem
+            //    {
+            //        Title = a.Storage,
+            //        Subtitle = $"{a.Node} - {a.PluginType}",
+            //        Icon = PveAdminUIHelper.Icons.Storage,
+            //        Color = Colors.InfoDark,
+            //        ResultType = SearchResultType.Item,
+            //        Category = "Storage",
+            //        //Url = $"/pve/node/{a.Node}/storage/{a.Storage}",
+            //        Tags = [new(a.Status, PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(a.Status, false)))],
+            //        Data = a
+            //    }));
+            //}
             else if (context.TryGetFilter(VmFilter, out _) || context.TryGetFilter(IpFilter, out _))
             {
                 var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
@@ -216,28 +218,32 @@ public class PveSearchProvider : ISearchProvider
                         Icon = PveAdminUIHelper.Icons.GetVmType(a.VmType),
                         Color = Colors.Success,
                         ResultType = SearchResultType.Item,
-                        Category = a.VmType == VmType.Qemu ? "Virtual Machine" : "Container",
-                        //Url = $"/pve/vms/{a.VmId}",
+                        Category = a.VmType == VmType.Qemu
+                                    ? "Virtual Machine"
+                                    : "Container",
+                        Url = UrlHelper.Resources.VmUrl(a.VmId),
                         Tags = tags,
-                        ExtraInfo = extraInfo
+                        ExtraInfo = extraInfo,
+                        Data = a
                     };
                 }));
             }
-            else if (context.TryGetFilter(PoolFilter, out _))
-            {
-                result.AddRange((await GetDataAsync(ClusterResourceType.Pool)).Select(a => new SearchResultItem
-                {
-                    Title = a.Pool,
-                    Subtitle = a.Description,
-                    Icon = PveAdminUIHelper.Icons.Pool,
-                    Color = Colors.InfoLight,
-                    ResultType = SearchResultType.Item,
-                    Category = "Pool",
-                    //Url = $"/pve/pool/{a.Pool}"
-                }));
-            }
-
+            //else if (context.TryGetFilter(PoolFilter, out _))
+            //{
+            //    result.AddRange((await GetDataAsync(ClusterResourceType.Pool)).Select(a => new SearchResultItem
+            //    {
+            //        Title = a.Pool,
+            //        Subtitle = a.Description,
+            //        Icon = PveAdminUIHelper.Icons.Pool,
+            //        Color = Colors.InfoLight,
+            //        ResultType = SearchResultType.Item,
+            //        Category = "Pool",
+            //        //Url = $"/pve/pool/{a.Pool}"
+            //        Data = a
+            //    }));
+            //}
         }
+
         return result.Where(a => a.MatchesSearch(context.SearchText));
     }
 
@@ -304,10 +310,10 @@ public class PveSearchProvider : ISearchProvider
                 Columns:
                 [
                     new(nameof(ClusterResource.Storage), "Storage", "120px"),
-                new(nameof(ClusterResource.Description), "Node", "100px"),
-                new(nameof(ClusterResource.Node), "Node", "100px"),
-                new(nameof(ClusterResource.PluginType), "Type", "80px"),
-                new(nameof(ClusterResource.Status), "Status", "80px")
+                    new(nameof(ClusterResource.Description), "Node", "100px"),
+                    new(nameof(ClusterResource.Node), "Node", "100px"),
+                    new(nameof(ClusterResource.PluginType), "Type", "80px"),
+                    new(nameof(ClusterResource.Status), "Status", "80px")
                 ]
             ),
 

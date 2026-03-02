@@ -176,10 +176,10 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
         {
             await HandleCommandSelection(item.Command);
         }
-        else if (item.Execute != null)
+        else if (item.OnExecute != null)
         {
             Close();
-            await item.Execute(new SearchExecutionContext(item, ClusterName, navigationManager));
+            await item.OnExecute(new SearchExecutionContext(item, ClusterName, serviceProvider));
         }
         else if (!string.IsNullOrEmpty(item.Url))
         {
@@ -234,9 +234,9 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
 
     private async Task ExecuteCommand(SearchCommand command, Dictionary<string, object?> parameters)
     {
-        if (command.Execute != null)
+        if (command.OnExecute != null)
         {
-            await command.Execute.Invoke(new CommandExecutionContext(command, parameters, ClusterName, serviceProvider));
+            await command.OnExecute.Invoke(new CommandExecutionContext(command, parameters, ClusterName, serviceProvider));
         }
     }
 
