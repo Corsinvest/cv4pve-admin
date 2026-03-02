@@ -64,11 +64,35 @@ public static class PermissionExtensions
                                                 string clusterName,
                                                 Permission permission,
                                                 string node)
-        => await permissionService.HasAsync(clusterName, permission.Key, PermissionHelper.GetPathNode(node));
+    {
+        if (!await permissionService.HasAsync(clusterName, permission.Key, PermissionHelper.GetPathNode(node))) { return false; }
+        return !ClusterPermissionMap.All.TryGetValue(permission.Key, out var pvePermission)
+               || await permissionService.PveHasNodeAsync(clusterName, pvePermission, node);
+    }
 
     public static async Task<bool> HasVmAsync(this IPermissionService permissionService,
                                               string clusterName,
                                               Permission permission,
                                               long vmId)
-        => await permissionService.HasAsync(clusterName, permission.Key, PermissionHelper.GetPathVm(vmId));
+    {
+        if (!await permissionService.HasAsync(clusterName, permission.Key, PermissionHelper.GetPathVm(vmId))) { return false; }
+        return !ClusterPermissionMap.All.TryGetValue(permission.Key, out var pvePermission)
+               || await permissionService.PveHasVmAsync(clusterName, pvePermission, vmId);
+    }
+
+    public static async Task<bool> PveHasVmAsync(this IPermissionService permissionService,
+                                                 string clusterName,
+                                                 string pvePermission,
+                                                 long vmId)
+        => await permissionService.PveHasAsync(clusterName, pvePermission, PermissionHelper.GetPathVm(vmId))
+           || await permissionService.PveHasAsync(clusterName, pvePermission, "/vms")
+           || await permissionService.PveHasAsync(clusterName, pvePermission, "/");
+
+    public static async Task<bool> PveHasNodeAsync(this IPermissionService permissionService,
+                                                   string clusterName,
+                                                   string pvePermission,
+                                                   string node)
+        => await permissionService.PveHasAsync(clusterName, pvePermission, PermissionHelper.GetPathNode(node))
+           || await permissionService.PveHasAsync(clusterName, pvePermission, "/nodes")
+           || await permissionService.PveHasAsync(clusterName, pvePermission, "/");
 }
