@@ -23,21 +23,14 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private string GetHelpUrl(JobDetail item) => diagnosticService.GetHelpUrl(item);
     private string GetPveUrl(JobDetail item)
     {
-        var context = item.Context switch
+        var data = item.IdResource.Split("/");
+        return item.Context switch
         {
-            DiagnosticResultContext.Node => "node",
-            DiagnosticResultContext.Cluster => "",
-            DiagnosticResultContext.Storage => "storage",
-            DiagnosticResultContext.Qemu => "qemu",
-            DiagnosticResultContext.Lxc => "lxc",
-            _ => "",
+            DiagnosticResultContext.Node => UrlHelper.Resources.NodeUrl(data[1]),
+            DiagnosticResultContext.Cluster or DiagnosticResultContext.Storage => "#",
+            DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc => UrlHelper.Resources.VmUrl(long.Parse(data[3])),
+            _ => "#",
         };
-
-        var id = string.IsNullOrEmpty(context)
-                    ? string.Empty
-                    : $"{context}/{item.IdResource}";
-
-        return PveAdminHelper.GetPveUrl(_baseAddress, id);
     }
 
     protected override async Task OnInitializedAsync()

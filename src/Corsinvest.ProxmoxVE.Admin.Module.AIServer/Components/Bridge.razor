@@ -48,7 +48,7 @@
                     <RadzenPassword @bind-Value="@_apiToken" Placeholder="@L["Paste your App Token here"]" />
                 </RadzenFormField>
                 <RadzenFormField Text="@L["Binary path"]" Style="min-width:320px; flex:1">
-                    <RadzenTextBox @bind-Value="@_binaryPath" Placeholder="@L["/path/to/cv4pve-mcp-bridge"]" />
+                    <RadzenTextBox @bind-Value="@_binaryPath" Placeholder="/path/to/cv4pve-mcp-bridge" />
                 </RadzenFormField>
                 <RadzenButton Icon="download" ButtonStyle="ButtonStyle.Primary"
                               Click="@DownloadClaudeConfigAsync"
