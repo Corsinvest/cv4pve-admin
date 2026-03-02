@@ -32,7 +32,7 @@ public abstract class ModuleBase
     protected IEnumerable<Permission> NavBarPermissions => NavBar.Traverse(a => a.Child).Select(a => a.Permission);
     public IEnumerable<ModuleWidget> Widgets { get; set; } = [];
 
-    public string BaseUrl => ApplicationHelper.ModuleComponentUrl + Slug;
+    public string BaseUrl => UrlHelper.ModuleComponentUrl + Slug;
 
     public string? Icon
     {

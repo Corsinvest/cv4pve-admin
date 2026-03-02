@@ -250,7 +250,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                         false,
                                                         logger);
 
-            await auditService.LogAsync("BackupAnalytics.Scan", true, $"Cluster: {clusterName}, Tasks: {taskCount}, Jobs: {jobCount}");
+            await auditService.LogAsync("BackupAnalytics.Scan",
+                                        true,
+                                        $"Cluster: {clusterName}, " +
+                                        $"Tasks: {taskCount}, " +
+                                        $"Jobs: {jobCount}");
 
             await PublishDataChangedAsync(scope);
         }

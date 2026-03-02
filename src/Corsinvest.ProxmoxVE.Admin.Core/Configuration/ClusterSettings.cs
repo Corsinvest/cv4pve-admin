@@ -90,7 +90,7 @@ public class ClusterSettings : IName, IDescription, IEnabled
                     ? Name
                     : $"{Name} ({PveName})";
 
-            return $"{TypeLabel}: {ret}";
+            return ret;
         }
     }
 

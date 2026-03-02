@@ -35,7 +35,7 @@ public class Module : ModuleBase
             Render = new(typeof(Components.ClusterConfig.RenderClustersSettings))
         };
 
-        ApplicationHelper.UrlNewPveConfig = $"{BaseUrl}/{PveClusterLink.Url}?new=true";
+        UrlHelper.UrlNewPveConfig = $"{BaseUrl}/{PveClusterLink.Url}?new=true";
 
         CreateNavMenu();
 
