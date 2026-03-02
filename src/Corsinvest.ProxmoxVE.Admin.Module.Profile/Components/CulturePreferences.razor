@@ -1,0 +1,18 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenRow>
+    <RadzenColumn SizeXS="12" SizeSM="12" SizeMD="10" SizeLG="6" SizeXL="4" SizeXX="4">
+        <RadzenFormField Text="@L["Language"]" AllowFloatingLabel="false">
+            <RadzenDropDown TValue="Culture"
+                            @bind-Value="@SelectedCulture"
+                            @bind-Value:after="OnCultureChanged"
+                            Data="@AvailableCultures"
+                            TextProperty="@nameof(Culture.Name)"
+                            Style="width: 100%; margin-bottom: 10px;" />
+        </RadzenFormField>
+    </RadzenColumn>
+</RadzenRow>
