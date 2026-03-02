@@ -128,7 +128,9 @@ public static class EndpointRouteBuilderExtensions
 
         accountGroup.MapPost("/Login", async ([FromServices] SignInManager<ApplicationUser> signInManager,
                                                      [FromServices] IAuditService auditService,
+                                                     [FromServices] ISettingsService settingsService,
                                                      IFusionCache fusionCache,
+                                                     HttpContext httpContext,
                                                      [FromForm] InputLogin model,
                                                      [FromQuery] string? returnUrl) =>
         {
@@ -141,6 +143,10 @@ public static class EndpointRouteBuilderExtensions
             if (result.Succeeded)
             {
                 await auditService.LogAsync(model.UserName, "Login-Password", true);
+
+                var userSettings = settingsService.Get<UserSettings>(forCurrentUser: true);
+                httpContext.Response.AppendCultureCookie(userSettings.Culture);
+
                 url = tmpReturnUrl;
             }
             else if (result.RequiresTwoFactor)

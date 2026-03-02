@@ -35,11 +35,7 @@
 
         <RadzenDataGridColumn Property="@nameof(JobDetail.IdResource)" Title="@L["Id"]" Width="150px" OrderIndex="2" SortOrder="SortOrder.Ascending">
             <Template>
-                <RadzenLink class="rz-link link"
-                            Text="@context.IdResource"
-                            title="@L["Open Web UI Proxmox VE"]"
-                            Path="@GetPveUrl(context)"
-                            Target="_blank" />
+                <RadzenLink class="rz-link link" Text="@context.IdResource" Path="@GetPveUrl(context)" />
             </Template>
         </RadzenDataGridColumn>
 
