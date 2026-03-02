@@ -2,13 +2,17 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Module.Profile.Session;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +47,19 @@ public class Module : ModuleBase
                 Render = new(typeof(Components.Overview)),
                 Icon = PveAdminUIHelper.Icons.Overview
             },
+            new(this,"Preferences", "preferences")
+            {
+                Icon = "tune",
+                Render = SettingsHelper.CreateSettingsAccordion<UserSettings>([new()
+                {
+                    Title = "Language",
+                    Description = "Select your preferred language for the user interface",
+                    Icon = "translate",
+                    ComponentType = typeof(Components.CulturePreferences),
+                    OnSavedAsync = OnSavedPreferencesAsync
+                }],true),
+            },
+
             //new(this,"Profile")
             //{
             ////                Render = typeof(Components.AppSettings),
@@ -97,6 +114,12 @@ public class Module : ModuleBase
         ];
     }
 
+    private async Task OnSavedPreferencesAsync(IServiceScope scope, UserSettings settings)
+    {
+        var navigationManager = scope.GetRequiredService<NavigationManager>();
+        navigationManager.NavigateTo($"/set-culture?culture={settings.Culture}&redirectUri={navigationManager.Uri}", forceLoad: true);
+    }
+
     protected override string PermissionBaseKey { get; } = "Profile";
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
@@ -106,7 +129,16 @@ public class Module : ModuleBase
         services.AddSingleton<ISessionsInfoTracker>(sp => (SessionInfoCircuitHandler)sp.GetRequiredService<CircuitHandler>());
     }
 
-    protected override void Map(WebApplication app) => app.UseDetection();
+    protected override void Map(WebApplication app)
+    {
+        app.UseDetection();
+
+        app.MapGet("/set-culture", (string culture, string redirectUri, HttpContext context) =>
+        {
+            if (culture != null) { context.Response.AppendCultureCookie(culture); }
+            return Results.LocalRedirect(redirectUri ?? "/");
+        }).RequireAuthorization();
+    }
 
     protected virtual Type GetTwoFactorAuthenticationType() => typeof(Core.Components.SubscriptionRequired);
     protected virtual Type GetPasskeysAuthenticationType() => typeof(Core.Components.SubscriptionRequired);
