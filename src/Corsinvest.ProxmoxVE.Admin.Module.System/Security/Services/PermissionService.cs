@@ -9,7 +9,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
 
 public class PermissionService(ICurrentUserService currentUserService,
                                IFusionCache fusionCache,
-                               IDbContextFactory<ModuleDbContext> dbContextFactory) : IPermissionService
+                               IDbContextFactory<ModuleDbContext> dbContextFactory,
+                               IAdminService adminService) : IPermissionService
 {
     private const string CacheTag = "Permissions";
 
@@ -409,4 +410,10 @@ public class PermissionService(ICurrentUserService currentUserService,
     }
 
     public ValueTask ClearCacheAsync() => fusionCache.RemoveByTagAsync(CacheTag);
+
+    public async Task<bool> PveHasAsync(string clusterName, string pvePermission, string path)
+    {
+        var perms = await adminService[clusterName].CachedData.PveGetPermissionsAsync(false);
+        return perms.Has(pvePermission, path);
+    }
 }

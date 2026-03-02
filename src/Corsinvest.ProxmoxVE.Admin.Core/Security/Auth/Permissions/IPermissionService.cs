@@ -34,4 +34,6 @@ public interface IPermissionService
     Task SyncForAppTokenAsync(Guid appTokenId, IEnumerable<AppTokenPermission> newPermissions);
 
     ValueTask ClearCacheAsync();
+
+    Task<bool> PveHasAsync(string clusterName, string pvePermission, string path);
 }

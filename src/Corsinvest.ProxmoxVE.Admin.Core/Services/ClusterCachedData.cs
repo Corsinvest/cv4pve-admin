@@ -176,5 +176,11 @@ public class ClusterCachedData
                                30,
                                forceReload);
 
+    public async Task<PvePermissions> PveGetPermissionsAsync(bool forceReload)
+        => await GetOrSetAsync(nameof(PveGetPermissionsAsync),
+                               async () => new PvePermissions(await (await GetPveClientAsync()).Access.Permissions.GetPermissionsAsync()),
+                               5 * 60,
+                               forceReload);
+
     public ValueTask ClearCacheAsync() => _fusionCache.RemoveByTagAsync(GetKeyPrefix());
 }
