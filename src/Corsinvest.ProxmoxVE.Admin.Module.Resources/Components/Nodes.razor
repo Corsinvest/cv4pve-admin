@@ -5,6 +5,7 @@
 @inherits AdminComponentBase
 
 <ResourcesEx @ref="ResourcesExRef"
+             OnDataLoaded="OnDataLoadedAsync"
              Filter="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
              ClusterNames="[ClusterName]"
              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"

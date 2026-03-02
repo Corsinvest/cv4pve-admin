@@ -17,13 +17,14 @@ public partial class Vms : IClusterName
     private bool ShowOsInfo { get; set; }
     private DataGridSettings DataGridSettings { get; set; } = new();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private bool _expanded;
+    private async Task OnDataLoadedAsync()
     {
-        if (!firstRender) { return; }
-
+        if (_expanded) { return; }
         var query = QueryHelpers.ParseQuery(new Uri(NavigationManager.Uri).Query);
         if (query.TryGetValue("vmid", out var vmIdStr) && long.TryParse(vmIdStr, out var vmId))
         {
+            _expanded = true;
             await ResourcesExRef!.ExpandRowsAsync(ResourcesExRef.GetItems().Where(a => a.VmId == vmId));
         }
     }

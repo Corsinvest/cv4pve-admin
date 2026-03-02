@@ -16,13 +16,14 @@ public partial class Nodes : IClusterName
     private ResourcesEx? ResourcesExRef { get; set; }
     private DataGridSettings DataGridSettings { get; set; } = new();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private bool _expanded;
+    private async Task OnDataLoadedAsync()
     {
-        if (!firstRender) { return; }
-
+        if (_expanded) { return; }
         var query = QueryHelpers.ParseQuery(new Uri(NavigationManager.Uri).Query);
         if (query.TryGetValue("node", out var node) && !string.IsNullOrEmpty(node))
         {
+            _expanded = true;
             await ResourcesExRef!.ExpandRowsAsync(ResourcesExRef.GetItems().Where(a => a.Node == node));
         }
     }

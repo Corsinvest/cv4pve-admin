@@ -35,6 +35,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     [Parameter] public HashSet<string> PickableColumns { get; set; } = [];
     [Parameter] public bool AllowColumnPicking { get; set; } = true;
     [Parameter] public bool AllowSearch { get; set; } = true;
+    [Parameter] public EventCallback OnDataLoaded { get; set; }
 
     private int _refreshInterval;
     [Parameter]
@@ -207,6 +208,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         Items = [.. Items];
 
         await InvokeAsync(StateHasChanged);
+        if (OnDataLoaded.HasDelegate) { await InvokeAsync(OnDataLoaded.InvokeAsync); }
     }
 
     public async Task ReloadSettingsAsync() => await DataGridRef!.ReloadSettings(true);
