@@ -13,9 +13,12 @@ public static class ApplicationHelper
         Directory.CreateDirectory(TempPath);
         Directory.CreateDirectory(ImagesPath);
         Directory.CreateDirectory(UserProfileImagesPath);
+        Directory.CreateDirectory(TranslationsPath);
     }
 
     public const string AllClusterName = "*";
+    public const string DefaultCulture = "en";
+    public static string[] SupportedCultures => [DefaultCulture];
 
     public const string DefaultAdminUsername = "admin@local";
     public const string DefaultAdminPassword = "Password123!";
@@ -26,6 +29,7 @@ public static class ApplicationHelper
 
     public const string ThemeName = "fluent";
     public const string CookieThemeName = "cv4pve-admin-theme";
+    public const string CookieCultureName = "cv4pve-admin-culture";
     public const string RepoGitHub = "corsinvest/cv4pve-admin";
     public const string GitHubRepoUrl = $"https://github.com/{RepoGitHub}";
     public const string GitHubReleasesLatestDownloadUrl = $"{GitHubRepoUrl}/releases/latest/download";
@@ -57,5 +61,6 @@ public static class ApplicationHelper
     public static string ImagesPath { get; } = Path.Combine(DataPath, "images");
     public static string UserProfileImagesPath { get; } = Path.Combine(ImagesPath, "user-profile");
     public static string TempPath { get; } = Path.Combine(DataPath, "tmp");
+    public static string TranslationsPath { get; } = Path.Combine(DataPath, "translations");
     public static string ModulesPath { get; } = Path.Combine(DataPath, "modules");
 }

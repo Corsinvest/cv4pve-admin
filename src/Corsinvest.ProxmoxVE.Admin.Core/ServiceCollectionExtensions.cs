@@ -5,6 +5,7 @@
 using BlazorDownloadFile;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
+using Corsinvest.ProxmoxVE.Admin.Core.Localization;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Common.Middleware;
@@ -22,6 +23,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using PdfSharp.Fonts;
+using SixLabors.ImageSharp;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core;
@@ -30,6 +32,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAdminCore(this IServiceCollection services, IConfiguration configuration, IEnumerable<Type> moduleTypes)
     {
+        services.AddLocalization(configuration);
+
         services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(ApplicationHelper.DataPath, "data-protection-keys")))
                 .SetApplicationName("cv4pve-admin");
@@ -86,7 +90,7 @@ public static class ServiceCollectionExtensions
             .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
 
         return services;
-    }
+    }   
 
     private static IServiceCollection AddEventNotifyer(this IServiceCollection services)
     {
