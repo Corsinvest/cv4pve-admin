@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
+<ResourcesEx @ref="ResourcesExRef"
+             Filter="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
              ClusterNames="[ClusterName]"
              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
              IconStatus="ResourceColumnIconStatus.IconAndText"

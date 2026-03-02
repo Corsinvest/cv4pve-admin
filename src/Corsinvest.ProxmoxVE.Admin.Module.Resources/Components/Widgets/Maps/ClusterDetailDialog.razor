@@ -1,0 +1,41 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+@if (Initialized)
+{
+    <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+        <div style="height:100px; overflow:hidden;">
+            <ResourceUsageGauge Data="@DataUsages" class="rz-w-100 rz-h-100" />
+        </div>
+
+        <RadzenTable AllowAlternatingRows="true">
+            <RadzenTableHeader>
+                <RadzenTableHeaderRow>
+                    <RadzenTableHeaderCell>@L["Type"]</RadzenTableHeaderCell>
+                    <RadzenTableHeaderCell>@L["Status"]</RadzenTableHeaderCell>
+                    <RadzenTableHeaderCell>@L["Count"]</RadzenTableHeaderCell>
+                </RadzenTableHeaderRow>
+            </RadzenTableHeader>
+
+            <RadzenTableBody>
+                @foreach (var item in Details)
+                {
+                    <RadzenTableRow>
+                        <RadzenTableCell>
+                            <IconStatusResource Type="@item.Type" Status="@item.Status" Locked="false" />
+                        </RadzenTableCell>
+                        <RadzenTableCell>@item.Type</RadzenTableCell>
+                        <RadzenTableCell>@item.Count</RadzenTableCell>
+                    </RadzenTableRow>
+                }
+            </RadzenTableBody>
+        </RadzenTable>
+    </RadzenStack>
+}
+else
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+}
