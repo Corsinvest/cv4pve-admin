@@ -7,7 +7,13 @@
 @attribute [CascadingTypeParameter(nameof(TItem))]
 @typeparam TItem where TItem : notnull
 
-<RadzenDataGridColumn TItem="TItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+<RadzenDataGridColumn TItem="TItem"
+                      Filterable="false"
+                      Sortable="false"
+                      TextAlign="TextAlign.Right"
+                      Frozen="true"
+                      FrozenPosition="FrozenColumnPosition.Right"
+                      Width="80px">
     <Template Context="ctx">
         @if (!Disabled)
         {

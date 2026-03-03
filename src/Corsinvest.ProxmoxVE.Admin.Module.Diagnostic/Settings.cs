@@ -16,5 +16,5 @@ public class Settings : JobScheduleBase, IModuleSettings, INotifierConfiguration
 
     public int Keep { get; set; } = 30;
 
-    public IEnumerable<string> NotifierConfigurations { get; set; } = default!;
+    public IEnumerable<string> NotifierConfigurations { get; set; } = [];
 }

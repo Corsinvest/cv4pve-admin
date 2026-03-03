@@ -16,6 +16,13 @@ public static class PveAdminHelper
 
     public static string GetPveUrl(string baseAddress, string id) => $"{baseAddress}/#v1:0:={id}";
 
+    /// <summary>Returns the major version of PVE running on <paramref name="nodeName"/>, or -1 if unavailable.</summary>
+    public static async Task<int> GetNodeMajorVersionAsync(PveClient client, string nodeName)
+    {
+        var raw = (await client.Nodes[nodeName].Version.GetAsync()).Version;
+        return Version.TryParse(raw.Split('-')[0], out var ver) ? ver.Major : -1;
+    }
+
     public static async Task<string> GenerateWhoUsingAsync(ClusterClient clusterClient)
     {
         var items = await clusterClient.CachedData.GetResourcesAsync(false);
@@ -53,55 +60,6 @@ Storage: {FormatHelper.FromBytes(storages.Sum(a => a.DiskSize))}
 Company (optional):
 ";
     }
-
-    //    private static readonly string[] headers = ["Server Id", "PVE Version", "Name", "IpAddress", "Subscription Id"];
-
-    //    public static async Task<string> GetClusterInfoAsync(PveClient client, Configurations.ClusterSettings clusterSettings)
-    //    {
-    //        var rows = new List<IEnumerable<string>>();
-
-    //        var status = await client.Cluster.Status.GetAsync();
-
-    //        foreach (var item in status.Where(a => !string.IsNullOrWhiteSpace(a.IpAddress)).OrderBy(a => a.Name))
-    //        {
-    //            var nodeSettings = clusterSettings.GetNodeSettings(item.IpAddress, item.Name);
-
-    //            var version = item.IsOnline
-    //                            ? (await client.Nodes[item.Name].Version.GetAsync())?.Version
-    //                            : string.Empty;
-
-    //            rows.Add(
-    //            [
-    //                nodeSettings?.ServerId,
-    //                version,
-    //                item.Name,
-    //                item.IpAddress,
-    //                nodeSettings?.SubscriptionId
-    //            ]);
-    //        }
-
-    //        return TableGenerator.ToText(headers, rows);
-    //    }
-
-    //public static async Task<string> GetSupportInfoAsync(PveClient client)
-    //{
-    //    var rows = new List<string>();
-    //    foreach (var item in await client.Nodes.GetAsync())
-    //    {
-    //        var subscription = await client.Nodes[item.Node].Subscription.GetAsync();
-
-    //        var level = string.Empty;
-    //        if (!string.IsNullOrEmpty(subscription.Key))
-    //        {
-    //            var data = subscription.Key.Split("-");
-    //            level = NodeHelper.DecodeLevelSupport(data[0][^1] + string.Empty).ToString();
-    //        }
-
-    //        rows.Add($"{item.Node}: {subscription.Serverid} {level}");
-    //    }
-
-    //    return rows.JoinAsString(Environment.NewLine);
-    //}
 
     public static string GetUrlDowloadFileBackup(IFusionCache fusionCache,
                                                  string clusterName,

@@ -41,7 +41,7 @@ public partial class UnprotectedGuests(IAdminService adminService) : IClusterNam
         IsInitialized = true;
     }
 
-    private bool Filter(ClusterResourceEx item, string clusterName)
+    private bool FilterExpression(ClusterResourceEx item, string clusterName)
         => item.ResourceType == ClusterResourceType.Vm
             && !item.IsTemplate
             && _vmIdsInBackup.Count != 0

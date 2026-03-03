@@ -33,6 +33,12 @@ public static class SettingsServiceExtensions
         return ret;
     }
 
+    public static async Task SetAsync<TModule, TSetting>(this ISettingsService settingsService, string clusterName, TSetting value) where TModule : ModuleBase
+        => await settingsService.SetAsync(GetContextModule(typeof(TModule)),
+                                          GetKeyModule(typeof(TSetting), clusterName),
+                                          value!,
+                                          false);
+
     public static async Task SetAsync(this ISettingsService settingsService,
                                       ModuleBase module,
                                       string clusterName,
