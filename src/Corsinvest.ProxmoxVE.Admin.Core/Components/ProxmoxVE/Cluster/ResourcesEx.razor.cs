@@ -19,7 +19,8 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     [Parameter] public bool DescriptionAsLink { get; set; } = true;
     [Parameter] public DataGridSettings DataGridSettings { get; set; } = new();
     [Parameter] public EventCallback<DataGridSettings> DataGridSettingsChanged { get; set; } = default!;
-    [Parameter] public Func<ClusterResourceEx, string, bool>? Filter { get; set; }
+    [Parameter] public Func<ClusterResourceEx, string, bool>? FilterExpression { get; set; }
+    [Parameter] public Func<ClusterResourceEx, string, bool>? SelectedItemExpression { get; set; }
     [Parameter] public bool ShowSnapshotSize { get; set; }
     [Parameter] public bool ShowOsInfo { get; set; }
     [Parameter] public RenderFragment<ClusterResourceEx> Template { get; set; } = default!;
@@ -119,7 +120,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
                                     item.Link = PveAdminHelper.GetPveUrl(client.BaseAddress, item.Id);
                                     return item;
                                 })
-                                .Where(a => Filter!(a, clusterName), Filter != null)
+                                .Where(a => FilterExpression!(a, clusterName), FilterExpression != null)
                                 .ToList();
 
             //remove items that the user has not permission to see
@@ -206,6 +207,12 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         }
 
         Items = [.. Items];
+
+        if (SelectedItemExpression != null)
+        {
+            SelectedItems = [.. Items.Where(a => SelectedItemExpression(a, a.ClusterName))];
+            await SelectedItemsChanged.InvokeAsync(SelectedItems);
+        }
 
         await InvokeAsync(StateHasChanged);
         if (OnDataLoaded.HasDelegate) { await InvokeAsync(OnDataLoaded.InvokeAsync); }

@@ -6,7 +6,7 @@
 
 <ResourcesEx @ref="ResourcesExRef"
              OnDataLoaded="OnDataLoadedAsync"
-             Filter="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
+             FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
              ClusterNames="[ClusterName]"
              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
              IconStatus="ResourceColumnIconStatus.IconAndText"

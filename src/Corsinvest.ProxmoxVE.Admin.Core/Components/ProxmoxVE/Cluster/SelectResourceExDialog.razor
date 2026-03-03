@@ -4,12 +4,13 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="@DialogStyle">
+<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
     <ResourcesEx @bind-ClusterNames="@ClusterNames"
                  Style="@Style"
                  UseProgressBarPercentage="@UseProgressBarPercentage"
                  DescriptionAsLink="@DescriptionAsLink"
-                 Filter="@Filter"
+                 FilterExpression="@FilterExpression"
+                 SelectedItemExpression="@SelectedItemExpression"
                  ShowSnapshotSize="@ShowSnapshotSize"
                  ShowOsInfo="@ShowOsInfo"
                  Template="@Template"
@@ -27,10 +28,12 @@
                  RefreshInterval="@RefreshInterval"
                  AdditionalAttributes="@AdditionalAttributes" />
 
-    <RadzenButton Click="OnSelect"
-                  Text="@L["Select"]"
-                  Style="width: fit-content;"
-                  Size="ButtonSize.Small"
-                  title="@L["Select"]"
-                  aria-label="@L["Select"]" />
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
+        <RadzenButton Click="OnSelect"
+                      Text="@L["Select"]"
+                      Style="width: fit-content;"
+                      Size="ButtonSize.Small"
+                      title="@L["Select"]"
+                      aria-label="@L["Select"]" />
+    </RadzenStack>
 </RadzenStack>

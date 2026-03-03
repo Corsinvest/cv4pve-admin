@@ -46,17 +46,10 @@ public partial class HelpMenu(ISettingsService settingsService,
     private void UpdateCurrentModule(string path) => CurrentModule = moduleService.GetByUrl(path);
     public void Dispose() => navigationManager.LocationChanged -= OnLocationChanged;
 
-    private async Task<IEnumerable<ClusterClient>> GetClustersAsync()
-    {
-        var clusterName = await adminService.GetCurrentClusterNameAsync();
-        return adminService.Where(a => a.Settings.Enabled)
-                           .Where(a => a.Settings.Name == clusterName, !string.IsNullOrEmpty(clusterName));
-    }
-
     private async Task OpenWhoIsUsingUrlAsync()
     {
         var whoBodyBuilder = new System.Text.StringBuilder();
-        foreach (var item in await GetClustersAsync())
+        foreach (var item in adminService.Where(a => a.Settings.Enabled))
         {
             try
             {
@@ -73,7 +66,7 @@ public partial class HelpMenu(ISettingsService settingsService,
     private async Task OpenBugUrlAsync()
     {
         var envBuilder = new System.Text.StringBuilder();
-        foreach (var item in await GetClustersAsync())
+        foreach (var item in adminService.Where(a => a.Settings.Enabled))
         {
             try
             {

@@ -67,7 +67,7 @@ public abstract class ModuleBase
     public virtual Task FixAsync(IServiceScope scope) => Task.CompletedTask;
     public virtual Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation) => Task.CompletedTask;
 
-    internal async Task RefreshSettingsEventAsync(IServiceScope scope)
+    public async Task RefreshSettingsEventAsync(IServiceScope scope)
     {
         await RefreshSettingsAsync(scope);
         SettingsUpdated?.Invoke(this, EventArgs.Empty);

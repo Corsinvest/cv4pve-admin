@@ -12,7 +12,7 @@
             </RadzenTabsItem>
 
             <RadzenTabsItem Text="@L["Storages"]" Icon="@PveAdminUIHelper.Icons.Storage">
-                <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
+                <ResourcesEx FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
                              ClusterNames="@([ClusterName])"
                              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
                              IconStatus="ResourceColumnIconStatus.IconAndText"
@@ -38,7 +38,7 @@
                     <Tabs>
                         <RadzenTabsItem Text="@L["By Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
                             <RadzenStack Orientation="Orientation.Vertical">
-                                <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
+                                <ResourcesEx FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
                                              ClusterNames="@([ClusterName])"
                                              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
                                              IconStatus="ResourceColumnIconStatus.IconAndText"
@@ -58,7 +58,7 @@
 
                         <RadzenTabsItem Text="@L["By VMs"]" Icon="computer">
                             <RadzenStack Orientation="Orientation.Vertical">
-                                <ResourcesEx Filter="@((a, b) => a.ResourceType == ClusterResourceType.Vm)"
+                                <ResourcesEx FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Vm)"
                                              ClusterNames="@([ClusterName])"
                                              PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
                                              IconStatus="ResourceColumnIconStatus.IconAndText"

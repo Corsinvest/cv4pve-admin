@@ -2,12 +2,9 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-@using Corsinvest.ProxmoxVE.Admin.Core.Session
-@inject DialogService DialogService
-
 @inherits AdminComponentBase
 
-<RadzenTemplateForm TItem="SendMessageModel" Data="@Model" Submit="@(() => DialogService.CloseSide(Model))">
+<RadzenTemplateForm TItem="SendMessageModel" Data="@Model" Submit="@SendMessageAsync">
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
         <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" Style="overflow: auto; flex: 1;">
             <RadzenFormField Text="@L["Title"]" Variant="Variant.Outlined" AllowFloatingLabel="false">
@@ -64,7 +61,4 @@
     </RadzenStack>
 </RadzenTemplateForm>
 
-@code
-{
-    private SendMessageModel Model { get; set; } = new();
-}
+

@@ -15,7 +15,6 @@ using Corsinvest.ProxmoxVE.Admin.Core.Hooks;
 using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
 using Corsinvest.ProxmoxVE.Admin.Core.Search;
 using Corsinvest.ProxmoxVE.Admin.Core.Search.Providers;
-using Corsinvest.ProxmoxVE.Admin.Core.Session;
 using Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Microsoft.AspNetCore.Builder;
@@ -44,7 +43,6 @@ public static class ServiceCollectionExtensions
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 
-        services.AddSingleton<ISessionHubService, SessionHubService>();
         services.AddScoped<IEmailSender, SmtpEmailSender>();
         services.AddTransient<INotifierService, NotifierService>();
         services.AddScoped<IDialogServiceEx, DialogServiceEx>();
@@ -90,7 +88,7 @@ public static class ServiceCollectionExtensions
             .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
 
         return services;
-    }   
+    }
 
     private static IServiceCollection AddEventNotifyer(this IServiceCollection services)
     {

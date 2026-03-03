@@ -2,14 +2,11 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Components.SendMessage;
-using Corsinvest.ProxmoxVE.Admin.Core.Session;
-
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 
 public partial class ActiveSessions(ISessionsInfoTracker sessionsInfoTracker,
-                                    DialogService dialogService,
-                                    ISessionHubService sessionHubService) : IRefreshableData
+                                    IServiceProvider serviceProvider,
+                                    DialogService dialogService) : IRefreshableData
 {
     [Parameter] public string? UserName { get; set; }
 
@@ -19,12 +16,17 @@ public partial class ActiveSessions(ISessionsInfoTracker sessionsInfoTracker,
 
     protected override async Task OnInitializedAsync() => await RefreshDataAsync();
 
-    public async Task RefreshDataAsync()
-        => Items = sessionsInfoTracker.Sessions.Where(a => a.UserName == UserName, !string.IsNullOrEmpty(UserName));
+    public Task RefreshDataAsync()
+    {
+        Items = sessionsInfoTracker.Sessions.Where(a => a.UserName == UserName, !string.IsNullOrEmpty(UserName));
+        return Task.CompletedTask;
+    }
 
     private async Task LogoutAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Logout session"], true))
+        var sessionHubService = serviceProvider.GetService<ISessionHubService>();
+        if (sessionHubService != null
+            && await dialogService.ConfirmAsync(L["Are you sure?"], L["Logout session"], true))
         {
             foreach (var item in SelectedItems.Where(a => !string.IsNullOrEmpty(a.HubConnectionId)))
             {
@@ -37,17 +39,12 @@ public partial class ActiveSessions(ISessionsInfoTracker sessionsInfoTracker,
     }
 
     private async Task SendMessageAsync()
-    {
-        var result = await dialogService.OpenSideAsync<SendMessageDialog>(L["Send Message"]);
-        if (result is SendMessageModel messageModel)
-        {
-            foreach (var item in SelectedItems.Where(a => !string.IsNullOrEmpty(a.HubConnectionId)))
-            {
-                await sessionHubService.SendMessageAsync(item.HubConnectionId!, messageModel.Message, messageModel.Title, messageModel.Severity);
-            }
-
-            SelectedItems.Clear();
-            await DataGridRef.Reload();
-        }
-    }
+        => await dialogService.OpenSideExAsync<SendMessageDialog>(L["Send Message"],
+                                                                  new()
+                                                                  {
+                                                                      [nameof(SendMessageDialog.HubConnectionIds)] = SelectedItems.Where(a => !string.IsNullOrEmpty(a.HubConnectionId))
+                                                                                                                                .Select(a => a.HubConnectionId!)
+                                                                                                                                .ToList()
+                                                                  },
+                                                                  new());
 }

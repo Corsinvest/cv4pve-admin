@@ -13,12 +13,12 @@ public partial class SelectResourceExDialog(DialogService DialogService)
     [Parameter] public IEnumerable<string> ClusterNames { get; set; } = [];
     [Parameter] public EventCallback<IEnumerable<string>> ClusterNamesChanged { get; set; } = default!;
     [Parameter] public string? Style { get; set; }
-    [Parameter] public string DialogStyle { get; set; } = "height: calc(100vh - 90px);";
     [Parameter] public bool UseProgressBarPercentage { get; set; } = true;
     [Parameter] public bool DescriptionAsLink { get; set; } = true;
     [Parameter] public DataGridSettings DataGridSettings { get; set; } = new();
     [Parameter] public EventCallback<DataGridSettings> DataGridSettingsChanged { get; set; } = default!;
-    [Parameter] public Func<ClusterResourceEx, string, bool>? Filter { get; set; }
+    [Parameter] public Func<ClusterResourceEx, string, bool>? FilterExpression { get; set; }
+    [Parameter] public Func<ClusterResourceEx, string, bool>? SelectedItemExpression { get; set; }
     [Parameter] public bool ShowSnapshotSize { get; set; }
     [Parameter] public bool ShowOsInfo { get; set; }
     [Parameter] public RenderFragment<ClusterResourceEx> Template { get; set; } = default!;
