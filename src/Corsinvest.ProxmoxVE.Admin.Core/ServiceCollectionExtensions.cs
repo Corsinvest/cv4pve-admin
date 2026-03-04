@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using BlazorDownloadFile;
-using Blazored.LocalStorage;
-using Blazored.SessionStorage;
 using Corsinvest.ProxmoxVE.Admin.Core.Localization;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
@@ -37,8 +35,6 @@ public static class ServiceCollectionExtensions
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(ApplicationHelper.DataPath, "data-protection-keys")))
                 .SetApplicationName("cv4pve-admin");
         services.AddBlazorDownloadFile();
-        services.AddBlazoredLocalStorage();
-        services.AddBlazoredSessionStorage();
         services.AddHotKeys2();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
