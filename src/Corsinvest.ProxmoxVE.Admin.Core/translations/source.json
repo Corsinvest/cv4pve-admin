@@ -1242,5 +1242,8 @@
   "Testing SSH connection": "",
   "SSH connection successful on all nodes.": "",
   "Exception": "",
-  "All nodes have been inserted and updated!": ""
+  "All nodes have been inserted and updated!": "",
+  "Update available {0}": "",
+  "Quick action": "",
+  "Opens a dialog": ""
 }

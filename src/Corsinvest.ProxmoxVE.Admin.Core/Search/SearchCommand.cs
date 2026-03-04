@@ -12,7 +12,8 @@ public record SearchCommand(
     string Description,
     string Icon,
     ParameterMetadata[] Parameters,
-    Func<CommandExecutionContext, Task> OnExecute)
+    Func<CommandExecutionContext, Task> OnExecute,
+    string? PermissionKey = null)
 {
     public string Prefix => $">{Id}";
     public bool RequiresDialog => Parameters.Length > 0;

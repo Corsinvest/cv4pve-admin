@@ -2,8 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using System.Text.Json.Serialization;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 

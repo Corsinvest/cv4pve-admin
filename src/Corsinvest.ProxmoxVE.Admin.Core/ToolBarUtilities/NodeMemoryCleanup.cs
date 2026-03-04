@@ -19,7 +19,7 @@ public class NodeMemoryCleanup(IAdminService adminService,
     public async Task ExecuteAsync(string clusterName, IClusterResourceNode item)
     {
         var command = "sync && echo 3 > /proc/sys/vm/drop_caches && echo 1 > /proc/sys/vm/compact_memory";
-        var result = await adminService[clusterName].SshExecuteAsync(item.Node,true, [command]);
+        var result = await adminService[clusterName].SshExecuteAsync(item.Node, true, [command]);
         if (result[0].IsSuccess)
         {
             notificationService.Info(L["Node memory freed successfully!"]);

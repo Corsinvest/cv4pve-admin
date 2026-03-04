@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
 using Corsinvest.ProxmoxVE.Admin.Core.Models.Parameters;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
@@ -63,11 +64,11 @@ public class PveSearchProvider : ISearchProvider
 
     public IEnumerable<SearchCommand> Commands =>
     [
-        new("start", "Start", "Start VM/Container", "play_arrow", [_vmParamVmStopped], StartAsync),
-        new("stop", "Stop", "Stop VM/Container", "stop", [_vmParamVmRunning], StopAsync),
-        new("restart", "Restart", "Restart VM/Container", "restart_alt", [_vmParamVmRunning], RestartAsync),
-        new("console", "Console", "Open console", "terminal", [_vmParamVmRunning], OpenConsoleAsync),
-        new("create snapshot", "Create Snapshot", "Create VM/CT snapshot", "add_a_photo", [_vmParamVmRunning, _nameParam, _descriptionParam, _vmStateParam], SnapshotAsync),
+        new("start", "Start", "Start VM/Container", "play_arrow", [_vmParamVmStopped], StartAsync, ClusterPermissions.Vm.PowerManagement.Key),
+        new("stop", "Stop", "Stop VM/Container", "stop", [_vmParamVmRunning], StopAsync, ClusterPermissions.Vm.PowerManagement.Key),
+        new("restart", "Restart", "Restart VM/Container", "restart_alt", [_vmParamVmRunning], RestartAsync, ClusterPermissions.Vm.PowerManagement.Key),
+        new("console", "Console", "Open console", "terminal", [_vmParamVmRunning], OpenConsoleAsync, ClusterPermissions.Vm.Console.Key),
+        new("create snapshot", "Create Snapshot", "Create VM/CT snapshot", "add_a_photo", [_vmParamVmRunning, _nameParam, _descriptionParam, _vmStateParam], SnapshotAsync, ClusterPermissions.Vm.Snapshot.Key),
     ];
 
     #region Command Implementations

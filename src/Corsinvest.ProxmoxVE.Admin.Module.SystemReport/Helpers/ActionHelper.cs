@@ -560,7 +560,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                    Families = a.Families.JoinAsString(Environment.NewLine),
                                    a.BondMiimon,
                                    a.Slaves,
-                                   a.AutoStart ,
+                                   a.AutoStart,
                                    a.BondPrimary,
                                    a.BridgeStp,
                                    a.BridgeVlanAware,

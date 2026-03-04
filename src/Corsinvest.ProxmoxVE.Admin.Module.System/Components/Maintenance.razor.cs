@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Diagnostics;
+using Corsinvest.ProxmoxVE.Admin.Core.Localization;
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 
@@ -16,7 +17,8 @@ public partial class Maintenance(IAdminService adminService,
                                  DialogService dialogService,
                                  IServiceScopeFactory serviceScopeFactory,
                                  IModuleService moduleService,
-                                 IAuditService auditService)
+                                 IAuditService auditService,
+                                 JsonLocalizationService jsonLocalizationService)
 {
     private bool IsFixAllBusy { get; set; }
     private bool IsCleanupAuditLogsBusy { get; set; }
@@ -242,6 +244,7 @@ public partial class Maintenance(IAdminService adminService,
                 await Task.WhenAll(adminService.Select(item => item.CachedData.ClearCacheAsync().AsTask()));
                 await PermissionService.ClearCacheAsync();
                 await settingsService.ClearCacheAsync();
+                await jsonLocalizationService.ClearCacheAsync();
                 AddLog("OK Clear Memory Cache");
                 await auditService.LogAsync("Maintenance.ClearMemoryCache", true);
             }
