@@ -6,6 +6,82 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.0.0-rc6] - 2026-03-04
+
+### Community Edition
+
+#### Added
+
+- **AI Server / MCP** — refactored MCP infrastructure with ToolHelper, McpBridge, ApiAccess/Bridge tabs
+- **AI Server / MCP** — upgrade McpBridge to official MCP SDK 1.0.0; log MCP requests to audit log
+- **Automatic API token wizard** — guided creation of API tokens during cluster registration
+- **PvePermissions model** — cluster permission caching
+- **Health Score** — for nodes, VMs, and storages; added to Resources column picker and widget icons
+- **Sparklines** — CPU/RAM history sparklines in VM and Node summary components
+- **Cluster name in URL** — multi-tab isolation and shareable deep links (`/module/{cluster}/{slug}`)
+- **Query param deep-linking** — URL navigation in Resources, VM/Node managers, and search system
+- **Localization system** — JSON-based localization with culture support
+- **Culture preference** — language/culture selection in user profile
+- **CopyValueDialog / CredentialDialog** — shared copy and credential display components
+- **OpenCopyValueAsync** — dialog helper for token/value display
+- **Resizable side dialog** — drag-to-resize side panel; EnumDropDown component
+- **SshRequiredGate** — gate component in NodeProtect/Updater for SSH requirement enforcement
+- **Disable console/SSH** for non-PAM or API Token users
+- **Default password notification** — alert when default admin password is still in use
+- **Icons** — added to Diagnostic IssuesDialog fields and HealthScore widget
+- **Dynamic Documentation link** — help menu link adapts to current module
+- **"Who is using"** — HelpMenu entry with cluster info pre-fill
+
+#### Changed
+
+- Move ClusterSelector to Layout namespace; add UrlHelper
+- Move SettingSection/SettingsAccordion from Module.System to Core
+- Standardize audit logging format
+- Unify Job/ActionHelper scan signature across analytics modules
+- Core misc improvements — BuildInfo.IsInContainer, SyncRolesAsync, EditDialog cleanup
+- Extract default admin credentials into ApplicationHelper constants
+- Update default dashboard configuration
+- Simplify AI Server VmTools; add tags to minimal VM output
+- Remove redundant title/aria-label from buttons with visible Text
+- Upgrade Radzen to 9.0.8
+
+#### Fixed
+
+- Prevent concurrent RefreshDataAsync calls with SemaphoreSlim
+- Expand resource rows after data load instead of OnAfterRenderAsync
+- PasswordField Start/End slots reorder; use Variant.Text for toggle
+- Various minor UI and logic fixes
+
+### Enterprise Edition
+
+#### Added
+
+- **DRS** — unified Dashboard with Resource Distribution (CPU/RAM barchart + RRD sparklines), HA Groups support, full run history with migrations detail
+- **AI Server** — new MCP tools: `ListBackups`, `ListStorageContent`, `ListTasks`; PSI Pressure metrics in RRD data
+- **AppTokens** — authentication with bulk permission operations; AppTokenPermissionsGrid, PermissionsSummaryDialog
+- **PermissionsEditor** — AppTokens UI, built-in role protection, PermissionsSummaryDialog service
+- **AIServer EE permissions** — extended MCP tool permissions model
+
+#### Changed
+
+- Audit log — copy button in audit log details
+- Adapt EE to URL-based cluster routing (cluster name in URL)
+
+## [2.0.0-rc5] - 2026-02-28
+
+### Added
+
+- **AI Server** — McpBridge build support; PVEAdmin role docs and AI Server output formats
+- **Connecting AI Clients** — MCP Bridge section in AI Server documentation
+
+### Changed
+
+- Update NuGet packages
+
+### Fixed
+
+- CSS assets Docker build alignment
+
 ## [2.0.0-rc4] - 2026-02-19
 
 ### Fixed
