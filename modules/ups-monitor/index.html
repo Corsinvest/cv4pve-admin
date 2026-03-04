@@ -12,7 +12,7 @@
         <meta name="author" content="Corsinvest Srl">
       
       
-        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/modules/system-report/">
+        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/modules/ups-monitor/">
       
       
       
@@ -25,7 +25,7 @@
     
     
       
-        <title>System Report - cv4pve-admin</title>
+        <title>UPS Monitor - cv4pve-admin</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#system-report" class="md-skip">
+        <a href="#ups-monitor" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              System Report
+              UPS Monitor
             
           </span>
         </div>
@@ -977,44 +977,133 @@
   
 
 
-<h1 id="system-report">System Report<a class="headerlink" href="#system-report" title="Permanent link">&para;</a></h1>
-<p>Generate cluster, VM, node and storage reports.</p>
+<h1 id="ups-monitor">UPS Monitor<a class="headerlink" href="#ups-monitor" title="Permanent link">&para;</a></h1>
+<p><span class="ee"></span> Comprehensive monitoring of Uninterruptible Power Supply systems in Proxmox VE environments.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Generates reports on Proxmox VE infrastructure including clusters, nodes, virtual machines, and storage resources.</p>
-<div class="grid cards">
+<p><strong>UPS Monitor</strong> continuously tracks UPS battery levels, power status, load conditions, and runtime estimates during power outages.
+Administrators get real-time visibility into power infrastructure health to prevent unexpected system failures, with automated shutdown procedures to protect VMs and hosts during extended power outages.</p>
+<hr />
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <ul>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4zm11 3h5.5L15 1.5zM8 0h8l6 6v12c0 1.11-.89 2-2 2H8a2 2 0 0 1-2-2V2c0-1.11.89-2 2-2m9 16v-2H8v2zm3-4v-2H8v2z"/></svg></span> <strong>Infrastructure Reports</strong></p>
-<hr />
-<p>Generate reports for compliance audits and system documentation.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg></span> <strong>Resource Data</strong></p>
-<hr />
-<p>View resource utilization data for capacity planning.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2m-2 12c-.25 0-.46-.18-.5-.42l-.37-2.65c-.63-.25-1.17-.59-1.69-.99l-2.49 1.01c-.22.08-.49 0-.61-.22l-2-3.46a.493.493 0 0 1 .12-.64l2.11-1.66L4.5 12l.07-1-2.11-1.63a.493.493 0 0 1-.12-.64l2-3.46c.12-.22.39-.31.61-.22l2.49 1c.52-.39 1.06-.73 1.69-.98l.37-2.65c.04-.24.25-.42.5-.42h4c.25 0 .46.18.5.42l.37 2.65c.63.25 1.17.59 1.69.98l2.49-1c.22-.09.49 0 .61.22l2 3.46c.13.22.07.49-.12.64L19.43 11l.07 1-.07 1 2.11 1.63c.19.15.25.42.12.64l-2 3.46c-.12.22-.39.31-.61.22l-2.49-1c-.52.39-1.06.73-1.69.98l-.37 2.65c-.04.24-.25.42-.5.42zm1.25-18-.37 2.61c-1.2.25-2.26.89-3.03 1.78L5.44 7.35l-.75 1.3L6.8 10.2a5.55 5.55 0 0 0 0 3.6l-2.12 1.56.75 1.3 2.43-1.04c.77.88 1.82 1.52 3.01 1.76l.37 2.62h1.52l.37-2.61c1.19-.25 2.24-.89 3.01-1.77l2.43 1.04.75-1.3-2.12-1.55c.4-1.17.4-2.44 0-3.61l2.11-1.55-.75-1.3-2.41 1.04a5.42 5.42 0 0 0-3.03-1.77L12.75 4z"/></svg></span> <strong>Configuration Data</strong></p>
-<hr />
-<p>Document system configurations, VM specifications, and storage allocations.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6m-1 1.5L18.5 9H13m-4.07 3.22H16v7.07l-2.12-2.12L11.05 20l-2.83-2.83 2.83-2.82"/></svg></span> <strong>Report Generation</strong></p>
-<hr />
-<p>Generate reports in multiple formats with on-demand or scheduled execution using cron expression.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.4 7.5c.8.8.8 2.1 0 2.8l-2.8 2.8-7.8-7.8 2.8-2.8c.8-.8 2.1-.8 2.8 0l1.8 1.8 3-3 1.4 1.4-3 3zm-5.8 5.8-1.4-1.4-2.8 2.8-2.1-2.1 2.8-2.8-1.4-1.4-2.8 2.8-1.5-1.4-2.8 2.8c-.8.8-.8 2.1 0 2.8l1.8 1.8-4 4 1.4 1.4 4-4 1.8 1.8c.8.8 2.1.8 2.8 0l2.8-2.8-1.4-1.4z"/></svg></span> <strong>Proxmox VE Integration</strong></p>
-<hr />
-<p>Uses Proxmox VE API to collect system information.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8zm.5 16.9L12 17.5 9.5 19l.7-2.8L8 14.3l2.9-.2 1.1-2.7 1.1 2.6 2.9.2-2.2 1.9zM13 9V3.5L18.5 9z"/></svg></span> <strong>Report Formats</strong></p>
-<hr />
-<p>Export reports in structured formats for archival and sharing.</p>
-</li>
+<li><strong>Real-time Status Monitoring</strong> — Continuous tracking of voltage, frequency, load percentage, and battery levels</li>
+<li><strong>Critical Power Alerts</strong> — Immediate notifications for power failures, low battery, and UPS malfunctions</li>
+<li><strong>Runtime Estimation</strong> — Calculates remaining backup power time based on current load conditions</li>
+<li><strong>Proactive Warnings</strong> — Early alerts for UPS maintenance needs and battery degradation indicators</li>
+<li><strong>Automatic Shutdown</strong> — Graceful shutdown procedures for VMs and hosts during extended power outages</li>
+<li><strong>Failover Coordination</strong> — Coordinated shutdown sequences to preserve critical systems longest</li>
+<li><strong>SNMP-based Polling</strong> — Connects to UPS devices via SNMP with configurable scan schedule</li>
+<li><strong>Notifier Integration</strong> — Send alerts via any configured notification channel (Telegram, Slack, email, and more)</li>
 </ul>
-</div>
+<hr />
+<h2 id="pages">Pages<a class="headerlink" href="#pages" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Overview</strong></td>
+<td>Summary of UPS Monitor capabilities</td>
+</tr>
+<tr>
+<td><strong>Dashboard</strong></td>
+<td>Real-time status cards for all monitored UPS devices</td>
+</tr>
+<tr>
+<td><strong>Devices</strong></td>
+<td>Manage UPS device configurations</td>
+</tr>
+<tr>
+<td><strong>Trends</strong></td>
+<td>Historical charts of power metrics over time</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="devices">Devices<a class="headerlink" href="#devices" title="Permanent link">&para;</a></h2>
+<p>Each UPS device is configured with:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Friendly name for the UPS device</td>
+</tr>
+<tr>
+<td><strong>Host</strong></td>
+<td>SNMP hostname or IP address</td>
+</tr>
+<tr>
+<td><strong>Port</strong></td>
+<td>SNMP port (default: 161)</td>
+</tr>
+<tr>
+<td><strong>Profile</strong></td>
+<td>SNMP device profile (auto-detected brand)</td>
+</tr>
+<tr>
+<td><strong>Location</strong></td>
+<td>Physical location label</td>
+</tr>
+<tr>
+<td><strong>Managed Nodes</strong></td>
+<td>Proxmox nodes managed by this UPS (empty = all nodes)</td>
+</tr>
+</tbody>
+</table>
+<p>Actions available per device:</p>
+<ul>
+<li><strong>Scan Now</strong> — Immediately poll the UPS for current readings</li>
+<li><strong>Test Connection</strong> — Verify SNMP connectivity to the device</li>
+</ul>
+<hr />
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>Enable or disable automatic scanning</td>
+</tr>
+<tr>
+<td><strong>Schedule (Cron)</strong></td>
+<td>Configurable cron expression for automatic scans</td>
+</tr>
+<tr>
+<td><strong>Max Days Logs</strong></td>
+<td>Number of days to retain historical readings</td>
+</tr>
+<tr>
+<td><strong>Default Battery Low Threshold (%)</strong></td>
+<td>Alert threshold for low battery level</td>
+</tr>
+<tr>
+<td><strong>Default Shutdown Battery Threshold (%)</strong></td>
+<td>Initiate shutdown when battery falls below this level</td>
+</tr>
+<tr>
+<td><strong>Default Shutdown Time Threshold (minutes)</strong></td>
+<td>Initiate shutdown when estimated runtime falls below this value</td>
+</tr>
+<tr>
+<td><strong>Notifier</strong></td>
+<td>Notification channel for power alerts</td>
+</tr>
+</tbody>
+</table>
 
 
 

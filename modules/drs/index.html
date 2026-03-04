@@ -12,7 +12,7 @@
         <meta name="author" content="Corsinvest Srl">
       
       
-        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/modules/system-report/">
+        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/modules/drs/">
       
       
       
@@ -25,7 +25,7 @@
     
     
       
-        <title>System Report - cv4pve-admin</title>
+        <title>Resource Scheduler (DRS) - cv4pve-admin</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#system-report" class="md-skip">
+        <a href="#resource-scheduler-drs" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              System Report
+              Resource Scheduler (DRS)
             
           </span>
         </div>
@@ -977,44 +977,177 @@
   
 
 
-<h1 id="system-report">System Report<a class="headerlink" href="#system-report" title="Permanent link">&para;</a></h1>
-<p>Generate cluster, VM, node and storage reports.</p>
+<h1 id="resource-scheduler-drs">Resource Scheduler (DRS)<a class="headerlink" href="#resource-scheduler-drs" title="Permanent link">&para;</a></h1>
+<p><span class="ee"></span> Dynamic Resource Scheduler that automatically balances VM load across Proxmox VE nodes.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Generates reports on Proxmox VE infrastructure including clusters, nodes, virtual machines, and storage resources.</p>
-<div class="grid cards">
+<p><strong>DRS (Dynamic Resource Scheduler)</strong> continuously monitors resource usage across all Proxmox VE nodes and automatically migrates VMs to maintain an optimal load balance throughout the cluster.
+It runs on a configurable schedule and evaluates CPU, memory, disk, and PSI pressure metrics to determine whether migrations are necessary.</p>
+<hr />
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <ul>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4zm11 3h5.5L15 1.5zM8 0h8l6 6v12c0 1.11-.89 2-2 2H8a2 2 0 0 1-2-2V2c0-1.11.89-2 2-2m9 16v-2H8v2zm3-4v-2H8v2z"/></svg></span> <strong>Infrastructure Reports</strong></p>
-<hr />
-<p>Generate reports for compliance audits and system documentation.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg></span> <strong>Resource Data</strong></p>
-<hr />
-<p>View resource utilization data for capacity planning.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2m-2 12c-.25 0-.46-.18-.5-.42l-.37-2.65c-.63-.25-1.17-.59-1.69-.99l-2.49 1.01c-.22.08-.49 0-.61-.22l-2-3.46a.493.493 0 0 1 .12-.64l2.11-1.66L4.5 12l.07-1-2.11-1.63a.493.493 0 0 1-.12-.64l2-3.46c.12-.22.39-.31.61-.22l2.49 1c.52-.39 1.06-.73 1.69-.98l.37-2.65c.04-.24.25-.42.5-.42h4c.25 0 .46.18.5.42l.37 2.65c.63.25 1.17.59 1.69.98l2.49-1c.22-.09.49 0 .61.22l2 3.46c.13.22.07.49-.12.64L19.43 11l.07 1-.07 1 2.11 1.63c.19.15.25.42.12.64l-2 3.46c-.12.22-.39.31-.61.22l-2.49-1c-.52.39-1.06.73-1.69.98l-.37 2.65c-.04.24-.25.42-.5.42zm1.25-18-.37 2.61c-1.2.25-2.26.89-3.03 1.78L5.44 7.35l-.75 1.3L6.8 10.2a5.55 5.55 0 0 0 0 3.6l-2.12 1.56.75 1.3 2.43-1.04c.77.88 1.82 1.52 3.01 1.76l.37 2.62h1.52l.37-2.61c1.19-.25 2.24-.89 3.01-1.77l2.43 1.04.75-1.3-2.12-1.55c.4-1.17.4-2.44 0-3.61l2.11-1.55-.75-1.3-2.41 1.04a5.42 5.42 0 0 0-3.03-1.77L12.75 4z"/></svg></span> <strong>Configuration Data</strong></p>
-<hr />
-<p>Document system configurations, VM specifications, and storage allocations.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6m-1 1.5L18.5 9H13m-4.07 3.22H16v7.07l-2.12-2.12L11.05 20l-2.83-2.83 2.83-2.82"/></svg></span> <strong>Report Generation</strong></p>
-<hr />
-<p>Generate reports in multiple formats with on-demand or scheduled execution using cron expression.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.4 7.5c.8.8.8 2.1 0 2.8l-2.8 2.8-7.8-7.8 2.8-2.8c.8-.8 2.1-.8 2.8 0l1.8 1.8 3-3 1.4 1.4-3 3zm-5.8 5.8-1.4-1.4-2.8 2.8-2.1-2.1 2.8-2.8-1.4-1.4-2.8 2.8-1.5-1.4-2.8 2.8c-.8.8-.8 2.1 0 2.8l1.8 1.8-4 4 1.4 1.4 4-4 1.8 1.8c.8.8 2.1.8 2.8 0l2.8-2.8-1.4-1.4z"/></svg></span> <strong>Proxmox VE Integration</strong></p>
-<hr />
-<p>Uses Proxmox VE API to collect system information.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8zm.5 16.9L12 17.5 9.5 19l.7-2.8L8 14.3l2.9-.2 1.1-2.7 1.1 2.6 2.9.2-2.2 1.9zM13 9V3.5L18.5 9z"/></svg></span> <strong>Report Formats</strong></p>
-<hr />
-<p>Export reports in structured formats for archival and sharing.</p>
-</li>
+<li><strong>Automatic VM Migration</strong> — Balances load across nodes based on configurable metrics</li>
+<li><strong>Maintenance Mode</strong> — Automatically evacuates all VMs from nodes entering maintenance, ensuring zero downtime</li>
+<li><strong>Affinity Rules</strong> — Keep related VMs co-located on the same node for low-latency communication</li>
+<li><strong>Anti-Affinity Rules</strong> — Spread VMs across different nodes for fault isolation and high availability</li>
+<li><strong>Pinned VMs</strong> — Exclude specific VMs from migration to honour licensing or hardware constraints</li>
+<li><strong>Dry Run</strong> — Simulate the balancing cycle without performing actual migrations for safe testing</li>
+<li><strong>HA Integration</strong> — Respects Proxmox HA group restrictions; restricted groups constrain DRS migrations to the listed nodes only</li>
 </ul>
-</div>
+<hr />
+<h2 id="balancing-methods">Balancing Methods<a class="headerlink" href="#balancing-methods" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Memory</strong></td>
+<td>Current memory usage % (snapshot)</td>
+</tr>
+<tr>
+<td><strong>CPU</strong></td>
+<td>Current CPU usage % (snapshot)</td>
+</tr>
+<tr>
+<td><strong>MemoryRrd</strong></td>
+<td>Average memory usage % over the last hour (RRD). Avoids transient spikes.</td>
+</tr>
+<tr>
+<td><strong>CpuRrd</strong></td>
+<td>Average CPU usage % over the last hour (RRD). Avoids transient spikes.</td>
+</tr>
+<tr>
+<td><strong>MemoryAssigned</strong></td>
+<td>Allocated maxmem % per node. Production-safe, based on configured resources.</td>
+</tr>
+<tr>
+<td><strong>CpuAssigned</strong></td>
+<td>Allocated vCPU count % per node. Production-safe, based on configured resources.</td>
+</tr>
+<tr>
+<td><strong>Disk</strong></td>
+<td>Local (non-shared) storage utilisation % across nodes</td>
+</tr>
+<tr>
+<td><strong>PSI</strong></td>
+<td>Linux Pressure Stall Information — the most accurate real-world load indicator, detecting CPU, memory, and I/O pressure before performance degrades. Requires PVE 9+.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>Enable or disable automatic scheduling</td>
+</tr>
+<tr>
+<td><strong>Live Migration</strong></td>
+<td>Use live migration (online) when migrating VMs</td>
+</tr>
+<tr>
+<td><strong>Dry Run</strong></td>
+<td>Simulate without executing actual migrations</td>
+</tr>
+<tr>
+<td><strong>Schedule (Cron)</strong></td>
+<td>Configurable cron expression for automatic runs</td>
+</tr>
+<tr>
+<td><strong>Balancing Method</strong></td>
+<td>The metric used to evaluate and balance load</td>
+</tr>
+<tr>
+<td><strong>Balanciness Delta (%)</strong></td>
+<td>Minimum load difference between nodes required to trigger a migration</td>
+</tr>
+<tr>
+<td><strong>Max Parallel Migrations</strong></td>
+<td>Maximum number of concurrent VM migrations</td>
+</tr>
+<tr>
+<td><strong>Max Disk Usage (%)</strong></td>
+<td>Skip migration if destination node disk usage exceeds this threshold (0 = disabled)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="psi-thresholds-pve-9">PSI Thresholds (PVE 9+)<a class="headerlink" href="#psi-thresholds-pve-9" title="Permanent link">&para;</a></h3>
+<p>When using the PSI method, configure per-metric thresholds:</p>
+<table>
+<thead>
+<tr>
+<th>Threshold</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Full (%)</strong></td>
+<td>All tasks stalled — critical pressure</td>
+</tr>
+<tr>
+<td><strong>Some (%)</strong></td>
+<td>At least one task stalled — elevated pressure</td>
+</tr>
+<tr>
+<td><strong>Spike (%)</strong></td>
+<td>Instantaneous peak pressure</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="pages">Pages<a class="headerlink" href="#pages" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Overview</strong></td>
+<td>Summary of DRS capabilities and balancing methods</td>
+</tr>
+<tr>
+<td><strong>DRS</strong></td>
+<td>Configuration, node management, migration history, and manual run</td>
+</tr>
+</tbody>
+</table>
+<h3 id="drs-page-tabs">DRS Page — Tabs<a class="headerlink" href="#drs-page-tabs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Settings</strong></td>
+<td>Scheduler configuration, balancing method, VM constraints, enabled/disabled/maintenance nodes</td>
+</tr>
+<tr>
+<td><strong>HA Groups</strong></td>
+<td>Proxmox HA groups (read-only); restricted groups limit DRS migrations to specified nodes</td>
+</tr>
+<tr>
+<td><strong>Last Migrations</strong></td>
+<td>History of DRS runs with migration details (VM, source/destination node, load, result)</td>
+</tr>
+</tbody>
+</table>
 
 
 
