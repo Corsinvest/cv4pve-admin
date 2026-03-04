@@ -44,15 +44,16 @@
             </RadzenText>
 
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="0.5rem" Wrap="FlexWrap.Wrap">
-                <RadzenFormField Text="@L["App Token"]" Style="min-width:280px; flex:1">
-                    <RadzenPassword @bind-Value="@_apiToken" Placeholder="@L["Paste your App Token here"]" />
-                </RadzenFormField>
+                <PasswordField Label="@L["App Token"]" @bind-Value="@_apiToken" Placeholder="@L["Paste your App Token here"]" Style="min-width:280px; flex:1" />
+
                 <RadzenFormField Text="@L["Binary path"]" Style="min-width:320px; flex:1">
                     <RadzenTextBox @bind-Value="@_binaryPath" Placeholder="/path/to/cv4pve-mcp-bridge" />
                 </RadzenFormField>
+
                 <RadzenButton Icon="download" ButtonStyle="ButtonStyle.Primary"
                               Click="@DownloadClaudeConfigAsync"
                               Text="@L["Download"]" />
+
                 <RadzenButton Icon="content_copy" ButtonStyle="ButtonStyle.Light"
                               Click="@CopyClaudeConfigAsync"
                               Text="@L["Copy to clipboard"]" />

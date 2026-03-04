@@ -6,7 +6,7 @@
 
 @if (Data != null)
 {
-    @if (Data.Attributes != null)
+    @if (Data.Attributes != null && Data.Attributes.Any())
     {
         <RadzenDataGrid Data="@Data.Attributes"
                         AllowFiltering="true"
