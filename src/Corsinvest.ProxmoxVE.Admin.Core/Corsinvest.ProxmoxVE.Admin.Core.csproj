@@ -6,8 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" />
-    <PackageReference Include="Blazored.SessionStorage" />
     <PackageReference Include="ClosedXML" />
     <PackageReference Include="ClosedXML.Report" />
     <PackageReference Include="Humanizer" />

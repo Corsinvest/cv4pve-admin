@@ -31,8 +31,7 @@ public abstract class ModuleBase
     public IEnumerable<ModuleLinkBase> NavBar { get; set; } = [];
     protected IEnumerable<Permission> NavBarPermissions => NavBar.Traverse(a => a.Child).Select(a => a.Permission);
     public IEnumerable<ModuleWidget> Widgets { get; set; } = [];
-
-    public string BaseUrl => UrlHelper.ModuleComponentUrl + Slug;
+    public string GetBaseUrl(string clusterName) => UrlHelper.ModuleUrl(Slug, GetClusterNameForScope(clusterName));
 
     public string? Icon
     {

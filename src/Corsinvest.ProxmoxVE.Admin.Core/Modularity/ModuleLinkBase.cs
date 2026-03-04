@@ -19,12 +19,6 @@ public class ModuleLinkBase : IEnabled
         Url = url ?? HttpUtility.UrlEncode(text).ToLower();
         IsExternal = isExternal;
 
-        RealUrl = IsExternal
-                    ? Url
-                    : string.IsNullOrWhiteSpace(Url)
-                            ? Module.BaseUrl
-                            : $"{Module.BaseUrl}/{Url}";
-
         //add permission
         var permissionKey = Module.PermissionLinkBaseKey;
         if (!string.IsNullOrWhiteSpace(Url)) { permissionKey += $".{Url}"; }
@@ -36,7 +30,22 @@ public class ModuleLinkBase : IEnabled
     public string Icon { get; set; } = default!;
     public string IconColor { get; set; } = default!;
     public string Url { get; }
-    public string RealUrl { get; }
+
+    public string GetRealUrl(string clusterName)
+    {
+        if (IsExternal)
+        {
+            return Url;
+        }
+        else
+        {
+            var baseUrl = Module.GetBaseUrl(clusterName);
+            return string.IsNullOrWhiteSpace(Url)
+                    ? baseUrl
+                    : $"{baseUrl}/{Url}";
+        }
+    }
+
     public bool Enabled { get; set; } = true;
     public int OrderIndex { get; set; }
     public bool IsExternal { get; }

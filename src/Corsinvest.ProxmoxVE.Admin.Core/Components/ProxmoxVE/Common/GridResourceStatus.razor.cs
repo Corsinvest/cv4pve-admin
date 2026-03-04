@@ -57,7 +57,7 @@ public partial class GridResourceStatus(IAdminService adminService) : IRefreshab
     {
         var items = new List<ItemStatus>();
 
-        if (string.IsNullOrEmpty(ClusterName))
+        if (ApplicationHelper.IsAllCluster(ClusterName))
         {
             foreach (var item in adminService)
             {

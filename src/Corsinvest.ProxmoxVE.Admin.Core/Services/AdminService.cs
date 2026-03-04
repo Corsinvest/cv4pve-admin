@@ -3,23 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Collections;
-using Blazored.SessionStorage;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
-using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
 internal class AdminService(IPveClientFactory pveClientFactory,
                             ISettingsService settingsService,
-                            ISessionStorageService sessionStorageService,
                             IServiceProvider serviceProvider,
-                            ICurrentUserService currentUserService,
                             IFusionCache fusionCache) : IAdminService
 {
-    private string CurrentClusterNameKeyCookie => $"cv4pve-admin-current-cluster-{currentUserService.UserId.Replace("-", "")}";
-    public async Task<string> GetCurrentClusterNameAsync() => (await sessionStorageService.GetItemAsStringAsync(CurrentClusterNameKeyCookie))!;
-    public async Task SetCurrentClusterNameAsync(string clusterName) => await sessionStorageService.SetItemAsStringAsync(CurrentClusterNameKeyCookie, clusterName);
-
     private IEnumerator<ClusterClient> GetEnumeratorInt()
     {
         foreach (var item in settingsService.GetEnabledClustersSettings())

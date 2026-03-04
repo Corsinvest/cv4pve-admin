@@ -1210,5 +1210,12 @@
   "Shutdown Management": "",
   "UserName": "",
   "Release notes": "",
-  "Select or create...": ""
+  "Select or create...": "",
+  "Preferences": "",
+  "Old Password": "",
+  "Confirm Password": "",
+  "Email confirmed": "",
+  "Lockout enabled": "",
+  "Lockout end": "",
+  "Metrics Exporter": ""
 }

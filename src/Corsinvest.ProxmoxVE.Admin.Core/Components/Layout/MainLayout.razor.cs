@@ -12,7 +12,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 public partial class MainLayout(IModuleService moduleService,
                                 IPermissionService permissionService,
                                 IStringLocalizer<MainLayout> L,
-                                IAdminService adminService,
                                 ICurrentClusterService currentClusterService,
                                 ISettingsService settingsService,
                                 ICurrentUserService currentUserService,
@@ -66,7 +65,8 @@ public partial class MainLayout(IModuleService moduleService,
     {
         if (firstRender)
         {
-            ClusterName = await adminService.GetCurrentClusterNameAsync();
+            ClusterName = UrlHelper.GetClusterNameFromUrl(navigationManager.Uri)
+                          ?? ApplicationHelper.AllClusterName;
             currentClusterService.ClusterName = ClusterName;
 
             var user = await currentUserService.GetUserAsync();
@@ -96,9 +96,12 @@ public partial class MainLayout(IModuleService moduleService,
 
     private async Task SetClusterNameAsync()
     {
-        await adminService.SetCurrentClusterNameAsync(ClusterName);
         currentClusterService.ClusterName = ClusterName;
-        navigationManager.ForceReload();
+        var currentModule = moduleService.GetByUrl(navigationManager.Uri);
+        if (currentModule != null)
+        {
+            navigationManager.NavigateTo(currentModule.Link!.GetRealUrl(ClusterName));
+        }
 
         await RefreshDataAsync();
     }
@@ -120,7 +123,7 @@ public partial class MainLayout(IModuleService moduleService,
                                  .ToList();
 
         var existsSettings = settingsService.GetEnabledClustersSettings().Any();
-        var selectedCluster = string.IsNullOrEmpty(ClusterName);
+        var selectedCluster = ApplicationHelper.IsAllCluster(ClusterName);
 
         foreach (var item in links.ToArray())
         {

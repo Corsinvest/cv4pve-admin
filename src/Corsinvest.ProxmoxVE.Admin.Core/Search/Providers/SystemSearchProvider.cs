@@ -30,7 +30,4 @@ public class SystemSearchProvider : ISearchProvider
             ? SearchResultItem.CommandsToResult(this)
                               .Where(a => a.MatchesSearch(context.SearchText))
             : [];
-
-    public Task<DataSourceResult> GetDataSourceDialogAsync(string dataSource, DataSourceContext context)
-        => Task.FromResult(DataSourceResult.Empty);
 }

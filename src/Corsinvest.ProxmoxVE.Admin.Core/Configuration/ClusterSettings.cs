@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 
-public class ClusterSettings : IName, IDescription, IEnabled
+public class ClusterSettings : IName, IDescription, IEnabled, IValidatableObject
 {
     [Required] public string Name { get; set; } = default!;
     [Required] public string PveName { get; set; } = default!;
@@ -57,6 +57,14 @@ public class ClusterSettings : IName, IDescription, IEnabled
 
     //public void SetRuntimeData<T>(string key, T value) where T : class
     //    => RuntimeData[key] = value;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!ApplicationHelper.IsValidClusterName(Name))
+        {
+            yield return new ValidationResult($"'{Name}' is not a valid cluster name.", [nameof(Name)]);
+        }
+    }
 
     public ExtendedData ExtendedData { get; set; } = [];
 

@@ -33,7 +33,7 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
     }
 
     private IEnumerable<ISearchProvider> ValidProviders
-        => searchProviders.Where(a => !a.RequireClusterName || !string.IsNullOrEmpty(ClusterName));
+        => searchProviders.Where(a => !a.RequireClusterName || !ApplicationHelper.IsAllCluster(ClusterName));
 
     private async Task OnSearchInput(ChangeEventArgs e)
     {

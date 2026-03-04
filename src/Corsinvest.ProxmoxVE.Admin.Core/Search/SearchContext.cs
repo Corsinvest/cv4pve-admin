@@ -4,11 +4,10 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Search;
 
-public record SearchContext(
-    string RawQuery,
-    string SearchText,
-    Dictionary<SearchFilter, string> Filters,
-    string ClusterName)
+public record SearchContext(string RawQuery,
+                            string SearchText,
+                            Dictionary<SearchFilter, string> Filters,
+                            string ClusterName)
 {
     /// <summary>
     /// Check if this is a command search (starts with ">")

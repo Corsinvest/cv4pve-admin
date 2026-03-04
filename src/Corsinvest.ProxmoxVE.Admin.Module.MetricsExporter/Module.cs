@@ -31,10 +31,7 @@ public class Module : ModuleBase
         Slug = "metrics-exporter";
         HelpUrl = "modules/metrics-exporter";
 
-        if (string.IsNullOrEmpty(ExporterUrl))
-        {
-            ExporterUrl = $"{BaseUrl}/prometheus";
-        }
+        if (string.IsNullOrEmpty(ExporterUrl)) { ExporterUrl = $"{GetBaseUrl(ApplicationHelper.AllClusterName)}/prometheus"; }
 
         NavBar =
         [

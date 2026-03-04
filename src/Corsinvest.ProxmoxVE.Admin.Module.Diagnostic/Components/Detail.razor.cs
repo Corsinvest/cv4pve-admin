@@ -26,9 +26,10 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
         var data = item.IdResource.Split("/");
         return item.Context switch
         {
-            DiagnosticResultContext.Node => UrlHelper.Resources.NodeUrl(data[1]),
+            DiagnosticResultContext.Node => UrlHelper.Resources.NodeUrl(data[1], ClusterName),
+            //TODO implement 
             DiagnosticResultContext.Cluster or DiagnosticResultContext.Storage => "#",
-            DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc => UrlHelper.Resources.VmUrl(long.Parse(data[3])),
+            DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc => UrlHelper.Resources.VmUrl(long.Parse(data[3]), ClusterName),
             _ => "#",
         };
     }
