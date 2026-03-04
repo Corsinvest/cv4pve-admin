@@ -22,16 +22,14 @@
                           Icon="security"
                           ButtonStyle="ButtonStyle.Primary"
                           Click="@(() => permissionsSummaryDialogService.ShowForAppTokenAsync(SelectedItems[0].Id, SelectedItems[0].Name))"
-                          Disabled="!SelectedItems.Any()"
-                          title="@L["Effective Permissions"]" />
+                          Disabled="!SelectedItems.Any()" />
             <RadzenButton Variant="Variant.Text"
                           Size="ButtonSize.Small"
                           Text="@L["Regenerate"]"
                           Icon="key"
                           ButtonStyle="ButtonStyle.Danger"
                           Click="RegenerateAsync"
-                          Disabled="!SelectedItems.Any()"
-                          title="@L["Regenerate"]" />
+                          Disabled="!SelectedItems.Any()" />
         </CrudToolbar>
     </HeaderTemplate>
 

@@ -8,9 +8,7 @@
     <RadzenPanelMenuItem Text="@L["Home"]"
                          Icon="home"
                          Path="/"
-                         Match="NavLinkMatch.All"
-                         title="@L["Home"]"
-                         aria-label="@L["Home"]" />
+                         Match="NavLinkMatch.All" />
     @foreach (var item in Links.Where(a => a.Module.Category == null))
     {
         @RenderLink(item)
@@ -20,9 +18,7 @@
     {
         <RadzenPanelMenuItem Text="@category.Key!.Description"
                              Match="NavLinkMatch.Prefix"
-                             Icon="@category.Key!.Icon"
-                             title="@category.Key!.Description"
-                             aria-label="@category.Key!.Description">
+                             Icon="@category.Key!.Icon">
 
             @foreach (var item in category.OrderBy(a => a.OrderIndex).ThenBy(a => a.Text))
             {
@@ -37,9 +33,7 @@
         <RadzenPanelMenuItem Text="@L["Tools & Libraries"]"
                              Icon="handyman"
                              Path="/tools-libraries"
-                             Match="NavLinkMatch.All"
-                             title="@L["Tools & Libraries"]"
-                             aria-label="@L["Tools & Libraries"]" />
+                             Match="NavLinkMatch.All" />
     </PermissionView>
 </RadzenPanelMenu>
 

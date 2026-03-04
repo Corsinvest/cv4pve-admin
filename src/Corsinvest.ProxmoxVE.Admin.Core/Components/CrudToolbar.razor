@@ -27,9 +27,7 @@
                       Icon="add"
                       Click="OnAdd"
                       Disabled="AddDisabled || Disabled"
-                      ButtonStyle="ButtonStyle.Primary"
-                      title="@L["New"]"
-                      aria-label="@L["New"]" />
+                      ButtonStyle="ButtonStyle.Primary" />
     }
 
     @if (CanDelete && OnDelete.HasDelegate)
@@ -40,9 +38,7 @@
                       Icon="delete"
                       Click="OnDelete"
                       Disabled="DeleteDisabled || Disabled"
-                      ButtonStyle="ButtonStyle.Danger"
-                      title="@L["Delete"]"
-                      aria-label="@L["Delete"]" />
+                      ButtonStyle="ButtonStyle.Danger" />
     }
 
     @if (ChildContent != null)
@@ -58,9 +54,7 @@
                       Click="Refresh"
                       IsBusy="InRefresh"
                       Disabled="Disabled"
-                      Icon="refresh"
-                      title="@L["Refresh"]"
-                      aria-label="@L["Refresh"]" />
+                      Icon="refresh" />
     }
 
     @if (CanExport && OnExport.HasDelegate)
@@ -70,9 +64,7 @@
                       Text="@L["Export"]"
                       Click="OnExport"
                       Disabled="Disabled"
-                      Icon="download"
-                      title="@L["Export"]"
-                      aria-label="@L["Export"]" />
+                      Icon="download" />
     }
 
     @if (TemplateAfter != null)

@@ -25,18 +25,14 @@
                           Icon="play_arrow"
                           Style="--rz-icon-fill: 1;"
                           Disabled="!SelectedItems.Any() || !CanScheduleNow"
-                          ButtonStyle="ButtonStyle.Success"
-                          title="@L["Schedule now"]"
-                          aria-label="@L["Schedule now"]" />
+                          ButtonStyle="ButtonStyle.Success" />
 
             <RadzenButton Variant="Variant.Text"
                           Size="ButtonSize.Small"
                           Text="@L["Log"]"
                           Icon="description"
                           Click="LogAsync"
-                          Disabled="!SelectedItems.Any()"
-                          title="@L["Log"]"
-                          aria-label="@L["Log"]" />
+                          Disabled="!SelectedItems.Any()" />
         </CrudToolbar>
     </HeaderTemplate>
 
