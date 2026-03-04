@@ -6,5 +6,5 @@
 
 <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus @ref="@GridResourceStatusRef"
                                                                                 ResourceType="Settings.ResourceType"
-                                                                                ClusterName="@string.Empty"
+                                                                                ClusterName="@(ClusterNames?.FirstOrDefault() ?? ApplicationHelper.AllClusterName)"
                                                                                 VmType="@Settings.VmType" />

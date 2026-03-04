@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-@page "/module/{*PageRoute}"
+@page "/module/{ClusterName}/{*PageRoute}"
 @attribute [Authorize]
 @inherits AdminComponentBase
 
@@ -51,14 +51,14 @@
             string target = null!;
             if (item.IsExternal)
             {
-                path = item.RealUrl;
+                path = item.GetRealUrl(ClusterName);
                 target = "_blank";
             }
             else if (!item.Child.Any())
             {
                 path = string.IsNullOrEmpty(pathParent)
-                ? item.RealUrl
-                : $"{pathParent}/{item.RealUrl}";
+                ? item.GetRealUrl(ClusterName)
+                : $"{pathParent}/{item.GetRealUrl(ClusterName)}";
             }
 
             <RadzenPanelMenuItem Text="@L[item.Text]"

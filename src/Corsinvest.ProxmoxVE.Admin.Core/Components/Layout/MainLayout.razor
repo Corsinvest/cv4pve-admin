@@ -15,6 +15,7 @@
     <DynamicComponent Type="@componentType" />
 }
 
+<CascadingValue Value="@ClusterName" Name="@nameof(ClusterName)">
 <RadzenLayout>
     <RadzenHeader>
         <RadzenRow>
@@ -59,7 +60,7 @@
                         <RadzenButton Icon="@item.Icon"
                                       Variant="Variant.Text"
                                       ButtonStyle="ButtonStyle.Light"
-                                      Click="@(() => navigationManager.NavigateTo(item.RealUrl))"
+                                      Click="@(() => navigationManager.NavigateTo(item.GetRealUrl(ClusterName)))"
                                       title="@L[item.Text]"
                                       aria-label="@L[item.Text]" />
                     }
@@ -132,11 +133,9 @@
             <ChildContent>
                 @if (HasRendered)
                 {
-                    <CascadingValue Value="@ClusterName" Name="@nameof(ClusterName)">
-                        <div class="rz-p-0">
-                            @Body
-                        </div>
-                    </CascadingValue>
+                    <div class="rz-p-0">
+                        @Body
+                    </div>
                 }
             </ChildContent>
 
@@ -152,6 +151,7 @@
     </RadzenFooter>
     *@
 </RadzenLayout>
+</CascadingValue>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

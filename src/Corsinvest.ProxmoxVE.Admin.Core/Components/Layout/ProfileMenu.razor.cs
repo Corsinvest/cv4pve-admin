@@ -9,6 +9,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 public partial class ProfileMenu(ThemeService themeService,
                                  ICurrentUserService currentUserService) : IDisposable
 {
+    [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [Parameter] public IEnumerable<ModuleLinkBase> Links { get; set; } = [];
 
     private string DisplayName { get; set; } = default!;

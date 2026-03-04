@@ -9,7 +9,7 @@ public partial class RenderModule(NavigationManager navigationManager,
                                   IDialogServiceEx dialogServiceEx,
                                   ISettingsService settingsService) : IClusterName
 {
-    [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
+    [Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string? PageRoute { get; set; }
 
     public string BodyStyle => "padding-top: 0; padding-bottom: 0; padding-right:0;"
@@ -30,6 +30,9 @@ public partial class RenderModule(NavigationManager navigationManager,
             return;
         }
 
+        // ClusterName comes from Blazor route parameter: @page "/module/{ClusterName}/{*PageRoute}"
+        // PageRoute = "{slug}/{subpage}" or just "{slug}"
+
         //permission
         if (!await CurrentModule.HasPermissionLinkAsync(PermissionService, ClusterName))
         {
@@ -40,22 +43,8 @@ public partial class RenderModule(NavigationManager navigationManager,
         ShowButtonSettings = CurrentModule.RenderSettingsInfo != null
                                 && await CurrentModule.HasPermissionEditorSettingsAsync(PermissionService, ClusterName);
 
-        //parse link
-        var routes = (PageRoute ?? string.Empty).Split('/');
-        var subItems = routes.Skip(1).ToList();
-
         if (CurrentModule.Scope == ClusterScope.Single)
         {
-            ////specify clusterName in url
-            //ClusterName = subItems[0];
-
-            //not exists
-            if (string.IsNullOrEmpty(ClusterName))
-            {
-                navigationManager.NavigateTo("/NotFound", false);
-                return;
-            }
-
             //exists
             var clusterSettings = settingsService.GetClusterSettings(ClusterName);
             if (clusterSettings is null || !clusterSettings!.Enabled)
@@ -63,11 +52,11 @@ public partial class RenderModule(NavigationManager navigationManager,
                 navigationManager.NavigateTo("/NotFound", false);
                 return;
             }
-
-            // subItems = subItems.Skip(1).ToList();
         }
 
-        var url = subItems.JoinAsString("/");
+        // PageRoute = "{slug}/{subpage}" — skip slug, keep subpage
+        var routes = (PageRoute ?? string.Empty).Split('/');
+        var url = routes.Skip(1).JoinAsString("/");
 
         var link = CurrentModule.NavBar.Any()
                     ? CurrentModule.NavBar.Traverse(a => a.Child).FirstOrDefault(a => a.Url == url)
@@ -86,7 +75,6 @@ public partial class RenderModule(NavigationManager navigationManager,
         }
 
         Render = link?.Render;
-
         NavBar = await MakeNavBar(CurrentModule.NavBar);
     }
 

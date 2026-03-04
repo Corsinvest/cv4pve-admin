@@ -115,7 +115,7 @@ public class PveSearchProvider : ISearchProvider
 
     public async Task<IEnumerable<SearchResultItem>> SearchAsync(SearchContext context)
     {
-        if (string.IsNullOrEmpty(context.ClusterName)) { return []; }
+        if (ApplicationHelper.IsAllCluster(context.ClusterName)) { return []; }
 
         var result = new List<SearchResultItem>();
         if (context.IsCommandSearch)
@@ -144,7 +144,7 @@ public class PveSearchProvider : ISearchProvider
                     Color = Colors.Info,
                     ResultType = SearchResultType.Item,
                     Category = "Node",
-                    Url = UrlHelper.Resources.NodeUrl(a.Node),
+                    Url = UrlHelper.Resources.NodeUrl(a.Node, context.ClusterName),
                     Tags = [new(a.Status, PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(a.Status, false)))],
                     Data = a
                 }));
@@ -221,7 +221,7 @@ public class PveSearchProvider : ISearchProvider
                         Category = a.VmType == VmType.Qemu
                                     ? "Virtual Machine"
                                     : "Container",
-                        Url = UrlHelper.Resources.VmUrl(a.VmId),
+                        Url = UrlHelper.Resources.VmUrl(a.VmId, context.ClusterName),
                         Tags = tags,
                         ExtraInfo = extraInfo,
                         Data = a
@@ -260,7 +260,7 @@ public class PveSearchProvider : ISearchProvider
     private async Task<DataSourceResult> GetDataSourceAsync(DataSourceType type, DataSourceContext context)
     {
         var clusterName = context.ClusterName;
-        if (string.IsNullOrEmpty(clusterName)) { return DataSourceResult.Empty; }
+        if (ApplicationHelper.IsAllCluster(clusterName)) { return DataSourceResult.Empty; }
 
         var clusterClient = _adminService[clusterName];
         var resources = await clusterClient.CachedData.GetResourcesAsync(false);

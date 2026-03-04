@@ -17,6 +17,9 @@ public static class ApplicationHelper
     }
 
     public const string AllClusterName = "*";
+    public static bool IsAllCluster(string? clusterName) => clusterName == AllClusterName;
+    public static bool IsValidClusterName(string? name)
+        => !string.IsNullOrWhiteSpace(name) && name != AllClusterName;
     public const string DefaultCulture = "en";
     public static string[] SupportedCultures => [DefaultCulture];
 

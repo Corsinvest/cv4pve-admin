@@ -29,9 +29,18 @@ internal class ModuleService : IModuleService
     public ModuleBase? GetByUrl(string url)
     {
         var absolutePath = new Uri(url).AbsolutePath;
-        return absolutePath.StartsWith(UrlHelper.ModuleComponentUrl)
-                ? Modules.FirstOrDefault(a => a.Slug == absolutePath[UrlHelper.ModuleComponentUrl.Length..].Split('/')[0])
-                : null;
+        if (!absolutePath.StartsWith(UrlHelper.ModuleComponentUrl))
+        {
+            return null;
+        }
+        else
+        {
+            // URL format: /module/{clusterName}/{slug}/...
+            var segments = absolutePath[UrlHelper.ModuleComponentUrl.Length..].Split('/');
+            return segments.Length > 1
+                    ? Modules.FirstOrDefault(a => a.Slug == segments[1])
+                    : null;
+        }
     }
 
     public IEnumerable<Assembly> Assemblies

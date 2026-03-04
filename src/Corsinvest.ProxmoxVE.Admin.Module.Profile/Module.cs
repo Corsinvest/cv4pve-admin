@@ -37,7 +37,7 @@ public class Module : ModuleBase
             Icon = "lock"
         };
 
-        UrlHelper.UrlChangePassword = $"{BaseUrl}/{passwordLink.Url}";
+        UrlHelper.UrlChangePassword = $"{GetBaseUrl(ApplicationHelper.AllClusterName)}/{passwordLink.Url}";
 
         NavBar =
         [

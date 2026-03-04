@@ -60,7 +60,7 @@
 				<RadzenProfileMenuItem Text="@item.Text"
 									   Icon="@item.Icon"
 									   IconColor="@item.IconColor"
-									   Path="@item.RealUrl"
+									   Path="@item.GetRealUrl(ClusterName)"
 									   Target="@(item.IsExternal ? "_blank": string.Empty)"
 									   Match="NavLinkMatch.Prefix"
 									   title="@L[item.Module.Description]"

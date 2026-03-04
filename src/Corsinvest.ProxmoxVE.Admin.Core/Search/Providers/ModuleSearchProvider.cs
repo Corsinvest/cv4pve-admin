@@ -21,7 +21,7 @@ public class ModuleSearchProvider(IModuleService moduleService,
     public async Task<IEnumerable<SearchResultItem>> SearchAsync(SearchContext context)
         => context.IsCommandSearch
             ? []
-            : (await GetAvailableLinksAsync(context.ClusterName ?? string.Empty)).Select(link => new SearchResultItem
+            : (await GetAvailableLinksAsync(context.ClusterName)).Select(link => new SearchResultItem
             {
                 Title = link.Text,
                 Subtitle = link.Module.Description,
@@ -29,7 +29,7 @@ public class ModuleSearchProvider(IModuleService moduleService,
                 Color = link.IconColor,
                 ResultType = SearchResultType.Module,
                 Category = nameof(SearchResultType.Module),
-                Url = link.RealUrl
+                Url = link.GetRealUrl(context.ClusterName)
             }).Where(a => a.MatchesSearch(context.SearchText));
 
     private async Task<IEnumerable<ModuleLinkBase>> GetAvailableLinksAsync(string clusterName)
@@ -42,7 +42,7 @@ public class ModuleSearchProvider(IModuleService moduleService,
                                  .ToList();
 
         var existsSettings = settingsService.GetEnabledClustersSettings().Any();
-        var selectedCluster = string.IsNullOrEmpty(clusterName);
+        var selectedCluster = ApplicationHelper.IsAllCluster(clusterName);
 
         foreach (var item in links.ToArray())
         {
@@ -56,7 +56,4 @@ public class ModuleSearchProvider(IModuleService moduleService,
 
         return links;
     }
-
-    public Task<DataSourceResult> GetDataSourceDialogAsync(string dataSource, DataSourceContext context)
-        => Task.FromResult(DataSourceResult.Empty);
 }
