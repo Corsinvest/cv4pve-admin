@@ -60,7 +60,7 @@
                             <RadzenButton Icon="@item.Icon"
                                           Variant="Variant.Text"
                                           ButtonStyle="ButtonStyle.Light"
-                                          Click="@(() => navigationManager.NavigateTo(item.GetRealUrl(ClusterName)))"
+                                          Click="@(() => NavigationManager.NavigateTo(item.GetRealUrl(ClusterName)))"
                                           title="@L[item.Text]"
                                           aria-label="@L[item.Text]" />
                         }
@@ -71,36 +71,11 @@
                                           ButtonStyle="ButtonStyle.Warning"
                                           Variant="Variant.Flat"
                                           Size="ButtonSize.Small"
-                                          Click="@(() => navigationManager.NavigateTo(UrlHelper.UrlNewPveConfig, true))"
+                                          Click="@(() => NavigationManager.NavigateTo(UrlHelper.UrlNewPveConfig, true))"
                                           class="animate__animated animate__pulse animate__infinite"
                                           Text="@L["Add cluster"]" />
                         }
 
-                        <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"
-                                        PermissionClusterName="@ApplicationHelper.AllClusterName"
-                                        Path="*">
-                            @if (NewRelease != null)
-                            {
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenLink Path="@NewRelease.Url" Target="_blank" Style="text-decoration: none;">
-                                        <RadzenBadge BadgeStyle="BadgeStyle.Success"
-                                                     Shade="Shade.Lighter"
-                                                     Text="@($"🆕 v{NewRelease.Version}")"
-                                                     IsPill="true"
-                                                     title="@L["New version available"]" />
-                                    </RadzenLink>
-
-                                    <RadzenButton Icon="upgrade"
-                                                  ButtonStyle="ButtonStyle.Success"
-                                                  Variant="Variant.Flat"
-                                                  Size="ButtonSize.ExtraSmall"
-                                                  Click="TriggerUpdateAsync"
-                                                  title="@(releaseService.IsAutoUpdateSupported? L["Trigger automatic update"] : L["Automatic update not available"])"
-                                                  Disabled="@(!releaseService.IsAutoUpdateSupported)"
-                                                  IsBusy="@IsUpdating" />
-                                </RadzenStack>
-                            }
-                        </PermissionView>
 
                         <PermissionView PermissionKey="@ClusterPermissions.Cluster.SelectCluster.Key"
                                         PermissionClusterName="@ApplicationHelper.AllClusterName"
@@ -174,7 +149,7 @@
             message.DetailContent = _ => @<RadzenLink Path="@UrlHelper.UrlChangePassword"
                             Text="@L["Change password now"]"
                             Style="font-weight:700; font-size:1rem;"
-                @onclick="@(() => notificationService.Messages.Remove(message))" />;
-            notificationService.Notify(message);
+                @onclick="@(() => NotificationService.Messages.Remove(message))" />;
+            NotificationService.Notify(message);
         }
     }

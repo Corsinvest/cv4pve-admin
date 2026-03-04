@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using BlazorDownloadFile;
-using Corsinvest.ProxmoxVE.Admin.Core.Localization;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Common.Middleware;
 using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE;
 using Corsinvest.ProxmoxVE.Admin.Core.Fonts;
 using Corsinvest.ProxmoxVE.Admin.Core.Hooks;
+using Corsinvest.ProxmoxVE.Admin.Core.Localization;
 using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
 using Corsinvest.ProxmoxVE.Admin.Core.Search;
 using Corsinvest.ProxmoxVE.Admin.Core.Search.Providers;
@@ -46,6 +46,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICurrentClusterService, CurrentClusterService>();
         services.AddScoped<IBrowserService, BrowserService>();
         services.AddScoped<IReportService, ReportService>();
+        services.AddScoped<NavigationTrackerService>();
 
         // Search Providers
         services.AddScoped<ISearchProvider, PveSearchProvider>();

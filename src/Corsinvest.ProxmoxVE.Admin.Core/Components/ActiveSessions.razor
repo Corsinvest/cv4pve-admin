@@ -50,13 +50,7 @@
         <RadzenDataGridColumn Property="@nameof(SessionInfo.Browser)" Sortable="true" Title="@L["Browser"]" />
         <RadzenDataGridColumn Property="@nameof(SessionInfo.BrowserVersion)" Sortable="true" Title="@L["Browser Version"]" Visible="false" />
         <RadzenDataGridColumn Property="@nameof(SessionInfo.UserAgent)" Sortable="true" Title="@L["User Agent"]" Visible="false" />
-        <RadzenDataGridColumn Property="@nameof(SessionInfo.CurrentPage)" Sortable="true" Title="@L["Current Page"]">
-            <Template>
-                <SubscriptionGate Size="SubscriptionGateSize.Compact">
-                    @context.CurrentPage
-                </SubscriptionGate>
-            </Template>
-        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Property="@nameof(SessionInfo.CurrentPage)" Sortable="true" Title="@L["Current Page"]" />
         <RadzenDataGridColumn Property="@nameof(SessionInfo.LastActivity)" Sortable="true" Title="@L["Last Activity"]" />
     </Columns>
 </RadzenDataGrid>
