@@ -41,42 +41,40 @@ internal static class VmTools
 
         vms = [.. await aiServerService.HasAsync(cluster_name, vms)];
 
-        if (detail_level == DetailLevel.Full)
-        {
-            return aiServerService.SerializeTable(vms.OrderBy(a => a.VmId).Select(a => new
-            {
-                vmid = a.VmId,
-                name = a.Name,
-                node = a.Node,
-                status = a.Status,
-                type = a.Type,
-                description = a.Description,
-                is_template = a.IsTemplate,
-                tags = a.Tags ?? string.Empty,
-                uptime = a.Uptime,
-                @lock = a.Lock,
-                host_cpu_usage = a.HostCpuUsage,
-                host_memory_usage = a.HostMemoryUsage,
-                cpu_usage = a.CpuUsagePercentage,
-                memory_usage = a.MemoryUsage,
-                memory_max = a.MemorySize,
-                disk_usage = a.DiskUsage,
-                disk_max = a.DiskSize,
-                network_in = a.NetIn,
-                network_out = a.NetOut
-            }));
-        }
-        else
-        {
-            return aiServerService.SerializeTable(vms.OrderBy(a => a.VmId).Select(a => new
-            {
-                vmid = a.VmId,
-                name = a.Name,
-                node = a.Node,
-                status = a.Status,
-                type = a.Type
-            }));
-        }
+        return detail_level == DetailLevel.Full
+            ? aiServerService.SerializeTable(vms.OrderBy(a => a.VmId)
+                                                .Select(a => new
+                                                {
+                                                    vmid = a.VmId,
+                                                    name = a.Name,
+                                                    node = a.Node,
+                                                    status = a.Status,
+                                                    type = a.Type,
+                                                    description = a.Description,
+                                                    is_template = a.IsTemplate,
+                                                    tags = a.Tags ?? string.Empty,
+                                                    uptime = a.Uptime,
+                                                    @lock = a.Lock,
+                                                    host_cpu_usage = a.HostCpuUsage,
+                                                    host_memory_usage = a.HostMemoryUsage,
+                                                    cpu_usage = a.CpuUsagePercentage,
+                                                    memory_usage = a.MemoryUsage,
+                                                    memory_max = a.MemorySize,
+                                                    disk_usage = a.DiskUsage,
+                                                    disk_max = a.DiskSize,
+                                                    network_in = a.NetIn,
+                                                    network_out = a.NetOut
+                                                }))
+            : aiServerService.SerializeTable(vms.OrderBy(a => a.VmId)
+                                                .Select(a => new
+                                                {
+                                                    vmid = a.VmId,
+                                                    name = a.Name,
+                                                    node = a.Node,
+                                                    status = a.Status,
+                                                    type = a.Type,
+                                                    tags = a.Tags ?? string.Empty,
+                                                }));
     }
 
     [McpServerTool, Description("List VM snapshots with creation dates and descriptions")]
@@ -109,7 +107,7 @@ internal static class VmTools
 
             if (detail_level == DetailLevel.Full)
             {
-                rows.AddRange(snapshots.Select(s => (object)new
+                rows.AddRange(snapshots.Select(s => new
                 {
                     vmid = vm.VmId,
                     vm_name = vm.Name,
@@ -121,7 +119,7 @@ internal static class VmTools
             }
             else
             {
-                rows.AddRange(snapshots.Select(s => (object)new
+                rows.AddRange(snapshots.Select(s => new
                 {
                     vmid = vm.VmId,
                     vm_name = vm.Name,
@@ -154,37 +152,34 @@ internal static class VmTools
 
         nodes = [.. await aiServerService.HasAsync(cluster_name, nodes)];
 
-        if (detail_level == DetailLevel.Full)
-        {
-            return aiServerService.SerializeTable(nodes.OrderBy(a => a.Node).Select(a => new
-            {
-                node = a.Node,
-                status = a.Status,
-                uptime = a.Uptime,
-                cpu_usage = a.CpuUsagePercentage,
-                cpu_total = a.CpuSize,
-                memory_usage = a.MemoryUsage,
-                memory_total = a.MemorySize,
-                memory_usage_percentage = a.MemoryUsagePercentage,
-                disk_usage = a.DiskUsage,
-                disk_total = a.DiskSize,
-                disk_usage_percentage = a.DiskUsagePercentage,
-                level = a.NodeLevel,
-                network_in = a.NetIn,
-                network_out = a.NetOut
-            }));
-        }
-        else
-        {
-            return aiServerService.SerializeTable(nodes.OrderBy(a => a.Node).Select(a => new
-            {
-                node = a.Node,
-                status = a.Status,
-                cpu_usage = a.CpuUsagePercentage,
-                memory_usage_percentage = a.MemoryUsagePercentage,
-                disk_usage_percentage = a.DiskUsagePercentage
-            }));
-        }
+        return detail_level == DetailLevel.Full
+            ? aiServerService.SerializeTable(nodes.OrderBy(a => a.Node)
+                                                  .Select(a => new
+                                                  {
+                                                      node = a.Node,
+                                                      status = a.Status,
+                                                      uptime = a.Uptime,
+                                                      cpu_usage = a.CpuUsagePercentage,
+                                                      cpu_total = a.CpuSize,
+                                                      memory_usage = a.MemoryUsage,
+                                                      memory_total = a.MemorySize,
+                                                      memory_usage_percentage = a.MemoryUsagePercentage,
+                                                      disk_usage = a.DiskUsage,
+                                                      disk_total = a.DiskSize,
+                                                      disk_usage_percentage = a.DiskUsagePercentage,
+                                                      level = a.NodeLevel,
+                                                      network_in = a.NetIn,
+                                                      network_out = a.NetOut
+                                                  }))
+            : aiServerService.SerializeTable(nodes.OrderBy(a => a.Node)
+                                                  .Select(a => new
+                                                  {
+                                                      node = a.Node,
+                                                      status = a.Status,
+                                                      cpu_usage = a.CpuUsagePercentage,
+                                                      memory_usage_percentage = a.MemoryUsagePercentage,
+                                                      disk_usage_percentage = a.DiskUsagePercentage
+                                                  }));
     }
 
     [McpServerTool, Description("List cluster storage with usage statistics and type")]
@@ -209,34 +204,31 @@ internal static class VmTools
 
         storages = [.. await aiServerService.HasAsync(cluster_name, storages)];
 
-        if (detail_level == DetailLevel.Full)
-        {
-            return aiServerService.SerializeTable(storages.OrderBy(a => a.Storage).Select(a => new
-            {
-                storage = a.Storage,
-                node = a.Node,
-                type = a.Type,
-                plugin_type = a.PluginType,
-                status = a.Status,
-                content = a.Content,
-                shared = a.Shared,
-                is_available = a.IsAvailable,
-                disk_usage = a.DiskUsage,
-                disk_total = a.DiskSize,
-                disk_usage_percentage = a.DiskUsagePercentage
-            }));
-        }
-        else
-        {
-            return aiServerService.SerializeTable(storages.OrderBy(a => a.Storage).Select(a => new
-            {
-                storage = a.Storage,
-                node = a.Node,
-                type = a.Type,
-                status = a.Status,
-                disk_usage_percentage = a.DiskUsagePercentage
-            }));
-        }
+        return detail_level == DetailLevel.Full
+            ? aiServerService.SerializeTable(storages.OrderBy(a => a.Storage)
+                                                     .Select(a => new
+                                                     {
+                                                         storage = a.Storage,
+                                                         node = a.Node,
+                                                         type = a.Type,
+                                                         plugin_type = a.PluginType,
+                                                         status = a.Status,
+                                                         content = a.Content,
+                                                         shared = a.Shared,
+                                                         is_available = a.IsAvailable,
+                                                         disk_usage = a.DiskUsage,
+                                                         disk_total = a.DiskSize,
+                                                         disk_usage_percentage = a.DiskUsagePercentage
+                                                     }))
+            : aiServerService.SerializeTable(storages.OrderBy(a => a.Storage)
+                                                     .Select(a => new
+                                                     {
+                                                         storage = a.Storage,
+                                                         node = a.Node,
+                                                         type = a.Type,
+                                                         status = a.Status,
+                                                         disk_usage_percentage = a.DiskUsagePercentage
+                                                     }));
     }
 
     [McpServerTool, Description("List cluster pools with descriptions")]
@@ -257,10 +249,11 @@ internal static class VmTools
 
         pools = [.. await aiServerService.HasAsync(cluster_name, pools)];
 
-        return aiServerService.SerializeTable(pools.OrderBy(a => a.Pool).Select(a => new
-        {
-            poolid = a.Pool,
-            description = a.Description
-        }));
+        return aiServerService.SerializeTable(pools.OrderBy(a => a.Pool)
+                                                   .Select(a => new
+                                                   {
+                                                       poolid = a.Pool,
+                                                       description = a.Description
+                                                   }));
     }
 }
