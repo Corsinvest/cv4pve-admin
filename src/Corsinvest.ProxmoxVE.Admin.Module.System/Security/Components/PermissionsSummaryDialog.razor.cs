@@ -16,7 +16,7 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
                                      string ClusterName,
                                      string Path,
                                      PermissionSource Source,
-                                     string? RoleName)
+                                     string RoleName)
     {
         public string SourceLabel => Source == PermissionSource.Direct
                                         ? "Direct"
@@ -46,7 +46,7 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
 
             var fromRoles = await db.UserRoles
                                     .Where(a => a.UserId == UserId)
-                                    .SelectMany(a => a.Role.RolePermissions.Select(p => new { RoleName = a.Role.Name, Permission = p }))
+                                    .SelectMany(a => a.Role.RolePermissions.Select(p => new { RoleName = a.Role.Name!, Permission = p }))
                                     .ToListAsync();
 
             Items = BuildItems(direct, fromRoles.Select(r => (r.RoleName, (BasePermission)r.Permission)), allPermissions);
@@ -59,7 +59,7 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
 
             var fromRoles = await db.AppTokenRoles
                                     .Where(a => a.AppTokenId == AppTokeId)
-                                    .SelectMany(a => a.Role.RolePermissions.Select(p => new { RoleName = a.Role.Name, Permission = p }))
+                                    .SelectMany(a => a.Role.RolePermissions.Select(p => new { RoleName = a.Role.Name!, Permission = p }))
                                     .ToListAsync();
 
             Items = BuildItems(direct, fromRoles.Select(r => (r.RoleName, (BasePermission)r.Permission)), allPermissions);
@@ -67,14 +67,14 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
     }
 
     private static IEnumerable<ResolvedPermission> BuildItems(IEnumerable<BasePermission> direct,
-                                                              IEnumerable<(string? RoleName, BasePermission Permission)> fromRoles,
+                                                              IEnumerable<(string RoleName, BasePermission Permission)> fromRoles,
                                                               Dictionary<string, string> allPermissions)
         => direct.Select(p => new ResolvedPermission(p.PermissionKey,
                                                      allPermissions.GetValueOrDefault(p.PermissionKey, p.PermissionKey),
                                                      p.ClusterName,
                                                      p.Path,
                                                      PermissionSource.Direct,
-                                                     null))
+                                                     string.Empty))
                  .Concat(fromRoles.Select(r => new ResolvedPermission(r.Permission.PermissionKey,
                                                                       allPermissions.GetValueOrDefault(r.Permission.PermissionKey, r.Permission.PermissionKey),
                                                                       r.Permission.ClusterName,
@@ -138,7 +138,7 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
                     else if (node.Source != item.Source)
                     {
                         node.Source = PermissionSource.Both;
-                        node.RoleName = null;
+                        node.RoleName = string.Empty;
                     }
                 }
             }
@@ -168,11 +168,11 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
         public string? PermissionKey { get; set; }
         public bool IsLeaf => PermissionKey != null;
         public PermissionSource? Source { get; set; }
-        public string? RoleName { get; set; }
-        public string? ClusterName { get; set; }
-        public string? Path { get; set; }
-        public string? SourceLabel => IsLeaf
+        public string RoleName { get; set; } = default!;
+        public string ClusterName { get; set; } = default!;
+        public string Path { get; set; } = default!;
+        public string SourceLabel => IsLeaf
             ? (Source == PermissionSource.Direct ? "Direct" : $"Role: {RoleName}")
-            : null;
+            : string.Empty;
     }
 }

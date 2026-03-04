@@ -26,7 +26,7 @@
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="9.0.7" />
+    <PackageVersion Include="Radzen.Blazor" Version="9.0.8" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.5.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->

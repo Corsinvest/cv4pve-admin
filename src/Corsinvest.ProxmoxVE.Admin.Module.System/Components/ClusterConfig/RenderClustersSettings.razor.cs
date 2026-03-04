@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.Web;
-
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components.ClusterConfig;
 
 public partial class RenderClustersSettings(ISettingsService settingsService,
@@ -21,15 +19,11 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender
+            && UrlHelper.UrlNewPveConfig == new Uri(navigationManager.Uri).PathAndQuery
+            && !settingsService.GetEnabledClustersSettings().Any())
         {
-            var keys = (HttpUtility.ParseQueryString(new Uri(navigationManager.Uri).Query).AllKeys ?? [])
-                                   .Where(a => !string.IsNullOrEmpty(a));
-
-            if (keys.Any(a => a!.Equals("new", StringComparison.CurrentCultureIgnoreCase)))
-            {
-                await AddAsync();
-            }
+            await AddAsync();
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -70,19 +64,10 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
                 await DataGridRef.Reload();
             }
             await settingsService.SetAsync(ClustersSettings);
-            await adminService[item.Name].CachedData.ClearCacheAsync();
+
+            if (item.Enabled) { await adminService[item.Name].CachedData.ClearCacheAsync(); }
 
             navigationManager.ForceReload();
-        }
-        else
-        {
-            if (!string.IsNullOrEmpty(item.Name))
-            {
-                await adminService[item.Name].CachedData.ClearCacheAsync();
-                await settingsService.ClearCacheAsync();
-                ClustersSettings = settingsService.GetClustersSettings();
-                await DataGridRef.Reload();
-            }
         }
     }
 

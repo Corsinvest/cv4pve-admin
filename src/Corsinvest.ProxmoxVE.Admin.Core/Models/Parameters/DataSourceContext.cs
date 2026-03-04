@@ -6,11 +6,11 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Models.Parameters;
 
 public record DataSourceContext(Dictionary<string, object?> Parameters)
 {
-    public string? ClusterName
+    public string ClusterName
     {
         get => Parameters.TryGetValue(nameof(IClusterName.ClusterName), out var value)
-            ? value as string
-            : null;
+                ? value as string ?? ApplicationHelper.AllClusterName
+                : ApplicationHelper.AllClusterName;
 
         set => Parameters[nameof(IClusterName.ClusterName)] = value;
     }

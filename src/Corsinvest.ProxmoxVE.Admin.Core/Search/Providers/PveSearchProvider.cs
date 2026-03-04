@@ -259,10 +259,9 @@ public class PveSearchProvider : ISearchProvider
 
     private async Task<DataSourceResult> GetDataSourceAsync(DataSourceType type, DataSourceContext context)
     {
-        var clusterName = context.ClusterName;
-        if (ApplicationHelper.IsAllCluster(clusterName)) { return DataSourceResult.Empty; }
+        if (ApplicationHelper.IsAllCluster(context.ClusterName)) { return DataSourceResult.Empty; }
 
-        var clusterClient = _adminService[clusterName];
+        var clusterClient = _adminService[context.ClusterName];
         var resources = await clusterClient.CachedData.GetResourcesAsync(false);
 
         DataSourceResult GetVms(Func<ClusterResource, bool> where)

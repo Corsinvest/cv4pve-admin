@@ -176,7 +176,8 @@ public class Module : ModuleBase
                    .AddSettingsAdmin()
                    .AddSecurityAdmin(configuration)
                    .AddBackgroundJobsAdmin(configuration)
-                   .AddReleaseServices(configuration);
+                   .AddReleaseServices(configuration)
+                   .AddScoped<IPermissionsSummaryDialogService, Security.Services.PermissionsSummaryDialogService>();
 
     public override Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation)
         => scope.GetRequiredService<ModuleDbContext>().ExecuteMaintenanceAsync(operation);

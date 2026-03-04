@@ -80,6 +80,7 @@ public class JsonLocalizationService(IFusionCache cache) : IStringLocalizer
         catch { }
     }
 
+#if DEBUG
     private static string FindSourceJsonPath()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
@@ -116,6 +117,7 @@ public class JsonLocalizationService(IFusionCache cache) : IStringLocalizer
         }
         finally { _fileLock.Release(); }
     }
+#endif
 
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => [];
 }
