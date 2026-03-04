@@ -9,19 +9,20 @@ using Toolbelt.Blazor.HotKeys2;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 
-public partial class MainLayout(IModuleService moduleService,
-                                IPermissionService permissionService,
-                                IStringLocalizer<MainLayout> L,
-                                ICurrentClusterService currentClusterService,
-                                ISettingsService settingsService,
-                                ICurrentUserService currentUserService,
-                                UserManager<ApplicationUser> userManager,
-                                NotificationService notificationService,
-                                NavigationManager navigationManager,
-                                IReleaseService releaseService,
-                                DialogService dialogService,
-                                HotKeys hotKeys) : IDisposable, IAsyncDisposable
+public partial class MainLayout : IDisposable, IAsyncDisposable
 {
+    [Inject] private IModuleService ModuleService { get; set; } = default!;
+    [Inject] private IPermissionService PermissionService { get; set; } = default!;
+    [Inject] private IStringLocalizer<MainLayout> L { get; set; } = default!;
+    [Inject] private ICurrentClusterService CurrentClusterService { get; set; } = default!;
+    [Inject] private ISettingsService SettingsService { get; set; } = default!;
+    [Inject] private ICurrentUserService CurrentUserService { get; set; } = default!;
+    [Inject] private UserManager<ApplicationUser> UserManager { get; set; } = default!;
+    [Inject] private NotificationService NotificationService { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private HotKeys HotKeys { get; set; } = default!;
+    [Inject] private NavigationTrackerService NavigationTrackerService { get; set; } = default!;
+
     private bool SidebarExpanded { get; set; } = true;
     private bool HasRendered { get; set; }
     private IEnumerable<ModuleLinkBase> NavBarLinks { get; set; } = [];
@@ -29,8 +30,6 @@ public partial class MainLayout(IModuleService moduleService,
     private IEnumerable<ModuleLinkBase> HeaderLinks { get; set; } = [];
     private string ClusterName { get; set; } = default!;
     private ErrorBoundary ErrorBoundaryRef { get; set; } = default!;
-    private ReleaseInfo? NewRelease { get; set; }
-    private bool IsUpdating { get; set; }
     protected virtual Type[] AdditionalLayoutComponents => [];
     private AppSettings AppSettings { get; set; } = default!;
     private CommandPalette? CommandPaletteRef { get; set; }
@@ -40,37 +39,28 @@ public partial class MainLayout(IModuleService moduleService,
 
     protected override async Task OnInitializedAsync()
     {
-        AppSettings = settingsService.GetAppSettings();
+        AppSettings = SettingsService.GetAppSettings();
 
-        if (await currentUserService.GetUserAsync() == null)
+        if (await CurrentUserService.GetUserAsync() == null)
         {
-            navigationManager.NavigateTo("/Logout", true);
+            NavigationManager.NavigateTo("/Logout", true);
             return;
         }
 
-        // Subscribe to new release notifications
-        releaseService.NewReleaseDiscovered += OnNewReleaseDiscovered;
-
-        HotKeysContext = hotKeys.CreateContext()
+        HotKeysContext = HotKeys.CreateContext()
             .Add(ModCode.Ctrl, Code.K, OpenCommandPalette, new HotKeyOptions { Description = "Open Command Palette" });
-    }
-
-    private void OnNewReleaseDiscovered(object? sender, ReleaseInfo releaseInfo)
-    {
-        NewRelease = releaseInfo;
-        InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            ClusterName = UrlHelper.GetClusterNameFromUrl(navigationManager.Uri)
+            ClusterName = UrlHelper.GetClusterNameFromUrl(NavigationManager.Uri)
                           ?? ApplicationHelper.AllClusterName;
-            currentClusterService.ClusterName = ClusterName;
+            CurrentClusterService.ClusterName = ClusterName;
 
-            var user = await currentUserService.GetUserAsync();
-            if (user != null && await userManager.CheckPasswordAsync(user, ApplicationHelper.DefaultAdminPassword))
+            var user = await CurrentUserService.GetUserAsync();
+            if (user != null && await UserManager.CheckPasswordAsync(user, ApplicationHelper.DefaultAdminPassword))
             {
                 NotifyDefaultPassword();
             }
@@ -85,9 +75,9 @@ public partial class MainLayout(IModuleService moduleService,
 
     private void CheckExistCluster()
     {
-        if (!settingsService.GetEnabledClustersSettings().Any())
+        if (!SettingsService.GetEnabledClustersSettings().Any())
         {
-            navigationManager.NavigateTo(UrlHelper.UrlNewPveConfig);
+            NavigationManager.NavigateTo(UrlHelper.UrlNewPveConfig);
         }
     }
 
@@ -98,11 +88,11 @@ public partial class MainLayout(IModuleService moduleService,
 
     private async Task SetClusterNameAsync()
     {
-        currentClusterService.ClusterName = ClusterName;
-        var currentModule = moduleService.GetByUrl(navigationManager.Uri);
+        CurrentClusterService.ClusterName = ClusterName;
+        var currentModule = ModuleService.GetByUrl(NavigationManager.Uri);
         if (currentModule != null)
         {
-            navigationManager.NavigateTo(currentModule.Link!.GetRealUrl(ClusterName));
+            NavigationManager.NavigateTo(currentModule.Link!.GetRealUrl(ClusterName));
         }
 
         await RefreshDataAsync();
@@ -117,19 +107,19 @@ public partial class MainLayout(IModuleService moduleService,
 
     private async Task RefreshLinksAsync()
     {
-        var links = moduleService.Modules
+        var links = ModuleService.Modules
                                  .Where(a => a.ModuleType == ModuleType.Application && a.Link?.Enabled == true)
                                  .Select(a => a.Link!)
                                  .OrderBy(a => a.OrderIndex)
                                  .ThenBy(a => a.Text)
                                  .ToList();
 
-        var existsSettings = settingsService.GetEnabledClustersSettings().Any();
+        var existsSettings = SettingsService.GetEnabledClustersSettings().Any();
         var selectedCluster = ApplicationHelper.IsAllCluster(ClusterName);
 
         foreach (var item in links.ToArray())
         {
-            if (!await item.HasPermissionAsync(permissionService, ClusterName))
+            if (!await item.HasPermissionAsync(PermissionService, ClusterName))
             {
                 links.Remove(item);
             }
@@ -158,68 +148,14 @@ public partial class MainLayout(IModuleService moduleService,
         ProfileMenuLinks = links.Where(a => a.Module.LinkPosition == ModuleLinkPosition.ProfileMenu);
     }
 
-    private async Task TriggerUpdateAsync()
-    {
-        var confirmed = await dialogService.ConfirmAsync(
-            L["Are you sure you want to trigger the automatic update? The application will be updated to version {0}.", NewRelease?.Version ?? ""],
-            L["Confirm Update"],
-            true,
-            L["Yes, Update"],
-            L["Cancel"]);
-
-        if (!confirmed) { return; }
-
-        try
-        {
-            IsUpdating = true;
-            await InvokeAsync(StateHasChanged);
-
-            var success = await releaseService.TriggerUpdateAsync();
-
-            if (success)
-            {
-                await dialogService.Alert(
-                    L["Update to version {0} has been triggered successfully. The application will be updated automatically in a few moments.", NewRelease?.Version ?? ""],
-                    L["Update Started"],
-                    new AlertOptions { OkButtonText = "OK" });
-            }
-            else
-            {
-                await dialogService.Alert(
-                    L["Failed to trigger update. Please try again or update manually."],
-                    L["Update Failed"],
-                    new AlertOptions { OkButtonText = "OK" });
-            }
-        }
-        catch (NotSupportedException)
-        {
-            await dialogService.Alert(
-                L["Automatic updates are not supported in this environment. Please download the latest version manually from {0}.", NewRelease?.Url ?? ""],
-                L["Update Not Supported"],
-                new AlertOptions { OkButtonText = "OK" });
-        }
-        catch (Exception ex)
-        {
-            await dialogService.Alert(
-                L["An error occurred while triggering the update: {0}", ex.Message],
-                L["Error"],
-                new AlertOptions { OkButtonText = "OK" });
-        }
-        finally
-        {
-            IsUpdating = false;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-
     public void Dispose()
     {
-        releaseService.NewReleaseDiscovered -= OnNewReleaseDiscovered;
         GC.SuppressFinalize(this);
     }
 
     public async ValueTask DisposeAsync()
     {
+        NavigationTrackerService.Dispose();
         Dispose();
         if (HotKeysContext != null) { await HotKeysContext.DisposeAsync(); }
     }
