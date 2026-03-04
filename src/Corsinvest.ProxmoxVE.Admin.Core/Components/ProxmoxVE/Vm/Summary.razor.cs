@@ -37,8 +37,8 @@ public partial class Summary(IAdminService adminService) : IRefreshableData, ICl
             {
                 if (History.Count >= MaxHistory) { History.Dequeue(); }
                 History.Enqueue(new HistoryPoint(_historyIndex++,
-                                                      Math.Round(Status.CpuUsagePercentage * 100,1),
-                                                      Math.Round(Status.MemoryUsagePercentage * 100,1)));
+                                                      Math.Round(Status.CpuUsagePercentage * 100, 1),
+                                                      Math.Round(Status.MemoryUsagePercentage * 100, 1)));
             }
             await InvokeAsync(StateHasChanged);
         }

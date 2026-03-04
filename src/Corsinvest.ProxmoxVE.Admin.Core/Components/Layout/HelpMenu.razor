@@ -29,10 +29,26 @@
 
             @if (NewRelease != null)
             {
-                <RadzenLink Style="padding: 0 0 0 10px;" Path="@NewRelease.Url" Target="_blank">
-                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@L["Update available {0}", NewRelease.Version]" />
-                    <RadzenIcon Icon="open_in_new" IconColor="@Colors.Primary" Style="font-size: 0.9rem; margin-left: 2px; vertical-align: middle;" />
-                </RadzenLink>
+                <RadzenStack Style="padding: 0 0 5px 10px;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenLink Path="@NewRelease.Url" Target="_blank" Style="text-decoration: none;">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@L["Update available {0}", NewRelease.Version]" />
+                        <RadzenIcon Icon="open_in_new" IconColor="@Colors.Primary" Style="font-size: 0.9rem; margin-left: 2px; vertical-align: middle;" />
+                    </RadzenLink>
+                        @if (releaseService.IsAutoUpdateSupported)
+                        {
+                            <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"
+                                            PermissionClusterName="@ApplicationHelper.AllClusterName"
+                                            Path="*">
+                                <RadzenButton Icon="upgrade"
+                                              ButtonStyle="ButtonStyle.Success"
+                                              Variant="Variant.Flat"
+                                              Size="ButtonSize.ExtraSmall"
+                                              Click="@(async () => { ds.Close(); await TriggerUpdateAsync(); })"
+                                              title="@(releaseService.IsAutoUpdateSupported ? L["Trigger automatic update"] : L["Automatic update not available"])"
+                                              IsBusy="@IsUpdating" />
+                            </PermissionView>
+                        }
+                    </RadzenStack>
             }
 
             <hr />

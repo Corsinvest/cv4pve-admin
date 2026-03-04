@@ -22,6 +22,7 @@ public partial class HelpMenu(ISettingsService settingsService,
 
     private AppSettings AppSettings { get; set; } = default!;
     private ReleaseInfo? NewRelease { get; set; }
+    private bool IsUpdating { get; set; }
     private ModuleBase? CurrentModule { get; set; }
 
     private string DocumentationUrl
@@ -31,20 +32,32 @@ public partial class HelpMenu(ISettingsService settingsService,
 
     private string DocumentationText
         => CurrentModule?.HelpUrl is { Length: > 0 }
-            ? $"{L["Documentation"]} - {CurrentModule.Name}"
+            ? L["Documentation - {0}", CurrentModule.Name]
             : L["Documentation"];
 
     protected override async Task OnInitializedAsync()
     {
         AppSettings = settingsService.GetAppSettings();
         NewRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: BuildInfo.IsTesting);
+        releaseService.NewReleaseDiscovered += OnNewReleaseDiscovered;
         navigationManager.LocationChanged += OnLocationChanged;
         UpdateCurrentModule(navigationManager.Uri);
     }
 
+    private void OnNewReleaseDiscovered(object? sender, ReleaseInfo releaseInfo)
+    {
+        NewRelease = releaseInfo;
+        InvokeAsync(StateHasChanged);
+    }
+
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => UpdateCurrentModule(e.Location);
     private void UpdateCurrentModule(string path) => CurrentModule = moduleService.GetByUrl(path);
-    public void Dispose() => navigationManager.LocationChanged -= OnLocationChanged;
+
+    public void Dispose()
+    {
+        releaseService.NewReleaseDiscovered -= OnNewReleaseDiscovered;
+        navigationManager.LocationChanged -= OnLocationChanged;
+    }
 
     private async Task OpenWhoIsUsingUrlAsync()
     {
@@ -100,12 +113,55 @@ public partial class HelpMenu(ISettingsService settingsService,
                                                                       ShowClose = true
                                                                   });
 
+    private async Task TriggerUpdateAsync()
+    {
+        var confirmed = await dialogService.ConfirmAsync(
+            L["Are you sure you want to trigger the automatic update? The application will be updated to version {0}.", NewRelease?.Version ?? ""],
+            L["Confirm Update"],
+            true,
+            L["Yes, Update"],
+            L["Cancel"]);
+
+        if (!confirmed) { return; }
+
+        try
+        {
+            IsUpdating = true;
+            await InvokeAsync(StateHasChanged);
+
+            var success = await releaseService.TriggerUpdateAsync();
+
+            if (success)
+            {
+                await dialogService.Alert(L["Update to version {0} has been triggered successfully. The application will be updated automatically in a few moments.", NewRelease?.Version ?? ""],
+                                          L["Update Started"],
+                                          new AlertOptions
+                                          {
+                                              OkButtonText = L["OK"]
+                                          });
+            }
+            else
+            {
+                await dialogService.Alert(L["Automatic updates are not supported in this environment. Please download the latest version manually from {0}.", NewRelease?.Url ?? ""],
+                                          L["Update Not Supported"],
+                                          new AlertOptions
+                                          {
+                                              OkButtonText = L["OK"]
+                                          });
+            }
+        }
+        finally
+        {
+            IsUpdating = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
     private async Task ShowReleaseNotesAsync()
         => await dialogService.OpenSideExAsync<ReleaseNotesDialog>(L["Release Notes"],
                                                                    [],
                                                                    new DialogOptions
                                                                    {
                                                                        CloseDialogOnOverlayClick = true,
-                                                                       ShowClose = true
                                                                    });
 }

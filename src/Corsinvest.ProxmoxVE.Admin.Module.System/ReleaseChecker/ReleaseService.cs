@@ -49,7 +49,26 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
         );
     }
 
-    private async Task<ReleaseInfo?> GetLatestReleaseAsync(bool includePrerelease, CancellationToken cancellationToken)
+    public async Task<ReleaseInfo?> GetLatestReleaseAsync(bool includePrerelease = false, CancellationToken cancellationToken = default)
+    {
+        IEnumerable<ReleaseInfo>? releases = null;
+        try
+        {
+            releases = await GetReleasesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching releases");
+            return null;
+        }
+
+        return (releases ?? [])
+            .Where(r => r.PublishedAt.HasValue && (!r.Prerelease || includePrerelease))
+            .OrderByDescending(r => r.PublishedAt!.Value)
+            .FirstOrDefault();
+    }
+
+    private async Task<ReleaseInfo?> GetNewerReleaseAsync(bool includePrerelease, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(Core.BuildInfo.Version))
         {

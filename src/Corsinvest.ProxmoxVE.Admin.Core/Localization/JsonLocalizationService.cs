@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Localization;
 
-public class JsonLocalizationService(IFusionCache cache) : IStringLocalizer
+public class JsonLocalizationService(IFusionCache fusionCache) : IStringLocalizer
 {
     private static readonly ConcurrentDictionary<string, byte> _discoveredKeys = new();
     private static readonly SemaphoreSlim _fileLock = new(1, 1);
@@ -20,7 +20,7 @@ public class JsonLocalizationService(IFusionCache cache) : IStringLocalizer
     {
         var culture = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
-        var translations = cache.GetOrSet($"loc:{culture}", _ => LoadAllTranslations(culture), TimeSpan.FromHours(24));
+        var translations = fusionCache.GetOrSet($"loc:{culture}", _ => LoadAllTranslations(culture), TimeSpan.FromHours(24), tags: [nameof(JsonLocalizationService)]);
 
         string? translatedValue = null;
         translations?.TryGetValue(key, out translatedValue);
@@ -120,4 +120,6 @@ public class JsonLocalizationService(IFusionCache cache) : IStringLocalizer
 #endif
 
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => [];
+
+    public ValueTask ClearCacheAsync() => fusionCache.RemoveByTagAsync([nameof(JsonLocalizationService)]);
 }

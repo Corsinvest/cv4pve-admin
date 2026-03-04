@@ -32,6 +32,14 @@ public interface IReleaseService
     Task<ReleaseInfo?> NewReleaseIsAvailableAsync(bool includePrerelease = false, bool force = false, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets the latest release available (regardless of current version)
+    /// </summary>
+    /// <param name="includePrerelease">Whether to include prerelease versions</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The latest release info, or null if none found</returns>
+    Task<ReleaseInfo?> GetLatestReleaseAsync(bool includePrerelease = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Triggers an update of the application
     /// </summary>
     /// <param name="cancellationToken">Cancellation token</param>

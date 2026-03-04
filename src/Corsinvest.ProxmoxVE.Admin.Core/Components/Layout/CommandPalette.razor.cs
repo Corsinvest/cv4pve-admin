@@ -5,12 +5,14 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Components.Parameters;
 using Corsinvest.ProxmoxVE.Admin.Core.Models.Parameters;
 using Corsinvest.ProxmoxVE.Admin.Core.Search;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 
 public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders,
                                     NavigationManager navigationManager,
                                     DialogService dialogService,
+                                    IPermissionService permissionService,
                                     IServiceProvider serviceProvider) : IClusterName
 {
     [Parameter] public string ClusterName { get; set; } = default!;
@@ -57,12 +59,25 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
             results.AddRange(await provider.SearchAsync(context));
         }
 
+        // Filter commands by permission
+        var filtered = new List<SearchResultItem>();
+        foreach (var item in results)
+        {
+            if (item.ResultType == SearchResultType.Command
+                && item.Command?.PermissionKey != null
+                && !await permissionService.HasAsync(ClusterName, item.Command.PermissionKey, "/"))
+            {
+                continue;
+            }
+            filtered.Add(item);
+        }
+
         IsSearch = false;
 
         // If empty query, show suggestions (modules + commands)
         return string.IsNullOrEmpty(query)
-                ? results.Where(x => x.ResultType is SearchResultType.Module or SearchResultType.Command) //.Take(10)
-                : results.Take(15);
+                ? filtered.Where(x => x.ResultType is SearchResultType.Module or SearchResultType.Command)
+                : filtered.Take(15);
     }
 
     private SearchContext BuildSearchContext(string query)
