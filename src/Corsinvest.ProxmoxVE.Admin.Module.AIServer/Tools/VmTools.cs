@@ -77,10 +77,11 @@ internal static class VmTools
                                                 }));
     }
 
-    [McpServerTool, Description("List VM snapshots with creation dates and descriptions")]
+    [McpServerTool, Description("List VM snapshots with creation dates. Full detail includes description and parent snapshot. include_size adds size on disk in bytes (slower).")]
     public static async Task<string> ListSnapshots([Description("Cluster name")] string cluster_name,
                                                    [Description("Array of VM IDs to get snapshots for")] int[] vmids,
                                                    [Description("Detail level: Minimal (default) or Full (optional)")] DetailLevel detail_level,
+                                                   [Description("Include size on disk in bytes — requires reading disk data, slower (optional, default false)")] bool include_size,
                                                    IAiServerService aiServerService)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListSnapshots))
@@ -98,6 +99,11 @@ internal static class VmTools
         allVms = [.. await aiServerService.HasAsync(cluster_name, allVms)];
 
         var rows = new List<object>();
+
+        var disks = include_size
+            ? await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false)
+            : null;
+
         foreach (var vmid in vmids)
         {
             var vm = allVms.FirstOrDefault(a => a.VmId == vmid);
@@ -114,7 +120,10 @@ internal static class VmTools
                     name = s.Name,
                     description = s.Description,
                     date = s.Date,
-                    parent = s.Parent
+                    parent = s.Parent,
+                    size = include_size
+                            ? DiskInfoHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
+                            : (double?)null
                 }));
             }
             else
@@ -124,7 +133,10 @@ internal static class VmTools
                     vmid = vm.VmId,
                     vm_name = vm.Name,
                     name = s.Name,
-                    date = s.Date
+                    date = s.Date,
+                    size = include_size
+                            ? DiskInfoHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
+                            : (double?)null
                 }));
             }
         }

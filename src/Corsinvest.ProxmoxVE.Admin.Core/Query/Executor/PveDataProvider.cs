@@ -75,12 +75,16 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
             .AsQueryable();
 
     private async Task<IQueryable<GuestSnapshotInfo>> GetSnapshotsAsync()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
-            .Where(r => r.ResourceType == ClusterResourceType.Vm)
-            .SelectMany(vm => AsyncHelper.RunSync(() =>
-                clusterClient.CachedData.GetSnapshotsAsync(vm.Node, vm.VmType, vm.VmId, false))
-                .Select(s => GuestSnapshotInfo.Map(s, vm.VmId, vm.Node, vm.Type)))
-            .AsQueryable();
+    {
+        var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+
+        return (await clusterClient.CachedData.GetResourcesAsync(false))
+                .Where(r => r.ResourceType == ClusterResourceType.Vm)
+                .SelectMany(vm => AsyncHelper.RunSync(() =>
+                    clusterClient.CachedData.GetSnapshotsAsync(vm.Node, vm.VmType, vm.VmId, false))
+                    .Select(s => GuestSnapshotInfo.Map(s, vm.VmId, vm.Node, vm.Type, DiskInfoHelper.CalculateSnapshots(vm.VmId, s.Name, disks))))
+                .AsQueryable();
+    }
 
     private async Task<IQueryable<StorageContentInfo>> GetStorageContentsAsync()
     {

@@ -109,9 +109,9 @@
                         Title="@L["Description"]"
                         Pickable="IsPickable(nameof(ClusterResource.Description))">
             <Template>
-                @if (DescriptionAsLink)
+                @if (DescriptionAsLink && !string.IsNullOrEmpty(context.Link))
                 {
-                    <RadzenLink class="rz-link link" Text="@context.Description" title="@L["Open Web UI Proxmox VE"]" Path="@context.Link" Target="_blank" />
+                    <RadzenLink class="rz-link link" Text="@context.Description" Path="@context.Link" Target="_blank" />
                 }
                 else
                 {
@@ -367,16 +367,16 @@
             </RadzenDataGridColumn>
         }
 
-        <RadzenDataGridColumn Title="@L["Link"]"
-                              Property="@nameof(ClusterResourceEx.Link)"
+        <RadzenDataGridColumn Title="@L["Link PVE"]"
+                              Property="@nameof(ClusterResourceEx.LinkPve)"
                               Sortable="false"
                               Filterable="false"
                               Groupable="false"
                               Width="50px"
                               Visible="false"
-                              Pickable="IsPickable(nameof(ClusterResourceEx.Link))">
+                              Pickable="IsPickable(nameof(ClusterResourceEx.LinkPve))">
             <Template>
-                <RadzenLink Icon="link" title="@L["Open link to Proxmox VE"]" Path="@context.Link" Target="_blank" />
+                <RadzenLink Icon="link" title="@L["Open link to Proxmox VE"]" Path="@context.LinkPve" Target="_blank" />
             </Template>
         </RadzenDataGridColumn>
 

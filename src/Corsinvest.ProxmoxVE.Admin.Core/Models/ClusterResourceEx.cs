@@ -14,6 +14,7 @@ public class ClusterResourceEx : ClusterResource, IClusterName, ISnapshotsSize, 
     public const string OsIcon = "OsIcon";
 
     public string ClusterName { get; set; } = default!;
+    public string LinkPve { get; set; } = default!;
     public string Link { get; set; } = default!;
     public double SnapshotsSize { get; set; }
     public double SnapshotsReplicationSize { get; set; }
