@@ -117,7 +117,8 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
                                 .Select(item =>
                                 {
                                     item.ClusterName = clusterName;
-                                    item.Link = PveAdminHelper.GetPveUrl(client.BaseAddress, item.Id);
+                                    item.LinkPve = UrlHelper.GetPveUrl(client.BaseAddress, item.Id);
+                                    item.Link = UrlHelper.Resources.GetUrl(item, clusterName);
                                     return item;
                                 })
                                 .Where(a => FilterExpression!(a, clusterName), FilterExpression != null)

@@ -26,12 +26,17 @@ public class GuestSnapshotInfo
     public string Name { get; set; } = default!;
 
     public string Description { get; set; } = default!;
+    public double Size { get; set; }
 
     public bool IncludeMemory { get; set; }
 
     public DateTime Timestamp { get; set; }
 
-    public static GuestSnapshotInfo Map(VmSnapshot snapshot, long guestId, string nodeName, string virtualizationType)
+    public static GuestSnapshotInfo Map(VmSnapshot snapshot,
+                                        long guestId,
+                                        string nodeName,
+                                        string virtualizationType,
+                                        double size)
         => new()
         {
             GuestId = guestId,
@@ -41,6 +46,7 @@ public class GuestSnapshotInfo
             IncludeMemory = snapshot.VmStatus,
             Name = snapshot.Name,
             Parent = snapshot.Parent,
-            Timestamp = snapshot.Date
+            Timestamp = snapshot.Date,
+            Size = size
         };
 }
