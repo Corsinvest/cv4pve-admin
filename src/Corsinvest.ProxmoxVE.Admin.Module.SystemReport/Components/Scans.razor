@@ -32,9 +32,7 @@
                               Click="DownloadAsync"
                               Icon="download"
                               Disabled="!SelectedItems.Any() || !SelectedItems[0].End.HasValue"
-                              IsBusy="InDownload"
-                              title="@L["Download XLSX"]"
-                              aria-label="@L["Download XLSX"]" />
+                              IsBusy="InDownload" />
             </TemplateAfter>
         </CrudToolbar>
     </HeaderTemplate>

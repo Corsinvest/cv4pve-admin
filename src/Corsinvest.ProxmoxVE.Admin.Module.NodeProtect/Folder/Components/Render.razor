@@ -30,9 +30,7 @@
                                   Icon="play_arrow"
                                   Style="--rz-icon-fill: 1;"
                                   ButtonStyle="ButtonStyle.Success"
-                                  Disabled="!Settings.Folder.Enabled"
-                                  title="@L["Backup"]"
-                                  aria-label="@L["Backup"]" />
+                                  Disabled="!Settings.Folder.Enabled" />
 
                     <RadzenButton Variant="Variant.Text"
                                   Size="ButtonSize.Small"
@@ -40,9 +38,7 @@
                                   Icon="delete"
                                   Click="DeleteAsync"
                                   Disabled="!SelectedItems.Any()"
-                                  ButtonStyle="ButtonStyle.Danger"
-                                  title="@L["Delete"]"
-                                  aria-label="@L["Delete"]" />
+                                  ButtonStyle="ButtonStyle.Danger" />
                 </TemplateBefore>
 
                 <TemplateAfter>

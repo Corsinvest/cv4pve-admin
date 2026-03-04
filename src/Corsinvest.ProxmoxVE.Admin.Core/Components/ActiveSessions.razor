@@ -25,9 +25,7 @@
                               Icon="message"
                               Click="SendMessageAsync"
                               Disabled="!SelectedItems.Any()"
-                              ButtonStyle="ButtonStyle.Info"
-                              title="@L["Send Message"]"
-                              aria-label="@L["Send Message"]" />
+                              ButtonStyle="ButtonStyle.Info" />
             </SubscriptionGate>
 
             <SubscriptionGate Size="SubscriptionGateSize.Compact" FullMode="false">
@@ -37,9 +35,7 @@
                               Icon="logout"
                               Click="LogoutAsync"
                               Disabled="!SelectedItems.Any()"
-                              ButtonStyle="ButtonStyle.Danger"
-                              title="@L["Force logout"]"
-                              aria-label="@L["Force logout"]" />
+                              ButtonStyle="ButtonStyle.Danger" />
             </SubscriptionGate>
         </CrudToolbar>
     </HeaderTemplate>

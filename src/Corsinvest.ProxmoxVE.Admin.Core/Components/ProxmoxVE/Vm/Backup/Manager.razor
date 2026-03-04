@@ -33,9 +33,7 @@
                           Icon="history"
                           Click="RestoreAsync"
                           Disabled="!CanRestoreFile || !SelectedItems.Any()"
-                          ButtonStyle="ButtonStyle.Danger"
-                          title="@L["Restore"]"
-                          aria-label="@L["Restore"]" />
+                          ButtonStyle="ButtonStyle.Danger" />
 
             <RadzenButton Variant="Variant.Text"
                           Size="ButtonSize.Small"
@@ -43,9 +41,7 @@
                           Icon="download"
                           Click="RestoreFileAsync"
                           Disabled="@(!CanRestoreFile || !SelectedItems.Any() || (SelectedItems.Any() && !SelectedItems[0].Format.StartsWith("pbs")))"
-                          ButtonStyle="ButtonStyle.Primary"
-                          title="@L["Restore File"]"
-                          aria-label="@L["Restore File"]" />
+                          ButtonStyle="ButtonStyle.Primary" />
 
             <RadzenButton Variant="Variant.Text"
                           Size="ButtonSize.Small"
@@ -53,9 +49,7 @@
                           Icon="visibility"
                           Click="ShowConfigurationAsync"
                           Disabled="!CanRestoreFile || !SelectedItems.Any()"
-                          ButtonStyle="ButtonStyle.Primary"
-                          title="@L["Show configuration"]"
-                          aria-label="@L["Show configuration"]" />
+                          ButtonStyle="ButtonStyle.Primary" />
 
             <RadzenDropDownDataGrid @bind-Value="@StorageName"
                                     @bind-Value:after="RefreshDataAsync"

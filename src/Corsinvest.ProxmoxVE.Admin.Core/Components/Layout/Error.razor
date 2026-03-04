@@ -146,21 +146,15 @@
     <div class="d-flex">
         <RadzenButton ButtonStyle="ButtonStyle.Danger"
                       Click="@(() => Showstacktrace = !Showstacktrace)"
-                      Text="@L["More"]"
-                      title="@L["More"]"
-                      aria-label="@L["More"]" />
+                      Text="@L["More"]" />
 
         <RadzenButton Click="@(() => NavigationManager.Refresh(true))"
                       Text="@L["Refresh"]"
-                      ButtonStyle="ButtonStyle.Success"
-                      title="@L["Refresh"]"
-                      aria-label="@L["Refresh"]" />
+                      ButtonStyle="ButtonStyle.Success" />
 
         <RadzenButton Click="@(() => NavigationManager.NavigateTo("/",true))"
                       Text="@L["Go to Home"]"
-                      ButtonStyle="ButtonStyle.Primary"
-                      title="@L["Go to Home"]"
-                      aria-label="@L["Go to Home"]" />
+                      ButtonStyle="ButtonStyle.Primary" />
     </div>
 
     @if (Showstacktrace)

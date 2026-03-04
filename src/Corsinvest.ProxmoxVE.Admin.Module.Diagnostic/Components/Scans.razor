@@ -28,9 +28,7 @@
                               Click="Scan"
                               Icon="play_arrow"
                               Style="--rz-icon-fill: 1;"
-                              ButtonStyle="ButtonStyle.Success"
-                              title="@L["Scan"]"
-                              aria-label="@L["Scan"]" />
+                              ButtonStyle="ButtonStyle.Success" />
             </TemplateBefore>
 
             <TemplateAfter>
@@ -40,9 +38,7 @@
                               Click="DownloadAsync"
                               Icon="download"
                               Disabled="!SelectedItems.Any()"
-                              IsBusy="InDownload"
-                              title="@L["Download PDF"]"
-                              aria-label="@L["Download PDF"]" />
+                              IsBusy="InDownload" />
 
                 <InfoScheduler TModule="Module" JobSchedule="@Settings" />
             </TemplateAfter>

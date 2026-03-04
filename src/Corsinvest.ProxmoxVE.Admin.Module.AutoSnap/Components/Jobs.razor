@@ -36,9 +36,7 @@
                               Icon="play_arrow"
                               Style="--rz-icon-fill: 1;"
                               Disabled="!SelectedItems.Any()"
-                              ButtonStyle="ButtonStyle.Success"
-                              title="@L["Snap"]"
-                              aria-label="@L["Snap"]" />
+                              ButtonStyle="ButtonStyle.Success" />
             </PermissionView>
 
             <PermissionView PermissionKey="@Module.Permissions.Job.Purge.Key" Path="*">
@@ -48,9 +46,7 @@
                               Click="PurgeAsync"
                               Icon="mop"
                               Disabled="!SelectedItems.Any()"
-                              ButtonStyle="ButtonStyle.Danger"
-                              title="@L["Purge Snapshots"]"
-                              aria-label="@L["Purge Snapshots"]" />
+                              ButtonStyle="ButtonStyle.Danger" />
             </PermissionView>
         </CrudToolbar>
     </HeaderTemplate>
