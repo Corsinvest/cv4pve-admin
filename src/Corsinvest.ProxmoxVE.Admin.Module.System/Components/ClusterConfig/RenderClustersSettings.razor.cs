@@ -10,6 +10,8 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
                                             NotificationService notificationService,
                                             NavigationManager navigationManager)
 {
+    [SupplyParameterFromQuery] public bool? Create { get; set; }
+
     private ClustersSettings ClustersSettings { get; set; } = [];
     private IList<ClusterSettings> SelectedItems { get; set; } = [];
     private RadzenDataGrid<ClusterSettings> DataGridRef { get; set; } = default!;
@@ -20,7 +22,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender
-            && UrlHelper.UrlNewPveConfig == new Uri(navigationManager.Uri).PathAndQuery
+            && Create == true
             && !settingsService.GetEnabledClustersSettings().Any())
         {
             await AddAsync();

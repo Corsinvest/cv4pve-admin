@@ -145,7 +145,7 @@ public class PveSearchProvider : ISearchProvider
                     Color = Colors.Info,
                     ResultType = SearchResultType.Item,
                     Category = "Node",
-                    Url = UrlHelper.Resources.NodeUrl(a.Node, context.ClusterName),
+                    Url = UrlHelper.Resources.GetUrl(a, context.ClusterName),
                     Tags = [new(a.Status, PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(a.Status, false)))],
                     Data = a
                 }));
@@ -222,7 +222,7 @@ public class PveSearchProvider : ISearchProvider
                         Category = a.VmType == VmType.Qemu
                                     ? "Virtual Machine"
                                     : "Container",
-                        Url = UrlHelper.Resources.VmUrl(a.VmId, context.ClusterName),
+                        Url = UrlHelper.Resources.GetUrl(a, context.ClusterName),
                         Tags = tags,
                         ExtraInfo = extraInfo,
                         Data = a

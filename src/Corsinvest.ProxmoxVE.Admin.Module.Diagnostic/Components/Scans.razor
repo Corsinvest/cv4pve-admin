@@ -18,6 +18,7 @@
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 KeyDown="KeyDownAsync"
                 LoadData="LoadDataAsync"
+                Render="OnGridRender"
                 @bind-Value="@SelectedItems">
     <HeaderTemplate>
         <CrudToolbar OnDelete="DeleteAsync" DeleteDisabled="!SelectedItems.Any()" OnRefresh="RefreshDataAsync">

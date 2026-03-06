@@ -4,14 +4,13 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
 public partial class Vms : IClusterName
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
-    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [SupplyParameterFromQuery] public int? VmId { get; set; }
 
     private ResourcesEx? ResourcesExRef { get; set; }
     private bool ShowOsInfo { get; set; }
@@ -21,11 +20,10 @@ public partial class Vms : IClusterName
     private async Task OnDataLoadedAsync()
     {
         if (_expanded) { return; }
-        var query = QueryHelpers.ParseQuery(new Uri(NavigationManager.Uri).Query);
-        if (query.TryGetValue("vmid", out var vmIdStr) && long.TryParse(vmIdStr, out var vmId))
+        if (VmId != null)
         {
             _expanded = true;
-            await ResourcesExRef!.ExpandRowsAsync(ResourcesExRef.GetItems().Where(a => a.VmId == vmId));
+            await ResourcesExRef!.ExpandRowsAsync(ResourcesExRef.GetItems().Where(a => a.VmId == VmId));
         }
     }
 
