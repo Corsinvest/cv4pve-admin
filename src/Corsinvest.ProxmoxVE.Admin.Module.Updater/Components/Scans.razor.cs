@@ -83,6 +83,7 @@ public partial class Scans(IAdminService adminService,
             case UpdateInfoStatus.InError: args.SetRowStyleError(); break;
             case UpdateInfoStatus.Ok: break;
             case UpdateInfoStatus.InScan: break;
+            case UpdateInfoStatus.Cancelled: break;
             default: break;
         }
     }

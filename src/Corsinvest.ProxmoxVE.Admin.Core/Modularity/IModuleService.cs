@@ -9,9 +9,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 public interface IModuleService
 {
     IEnumerable<ModuleBase> Modules { get; }
-    ModuleBase? Get(string @class);
-    ModuleBase? Get(Type moduleType);
+    ModuleBase? GetByClass(string @class);
+    ModuleBase? GetByType(Type moduleType);
     T? Get<T>() where T : ModuleBase;
+    ModuleBase? GetByName(string name);
     ModuleBase? GetByUrl(string url);
     IEnumerable<Assembly> Assemblies { get; }
 

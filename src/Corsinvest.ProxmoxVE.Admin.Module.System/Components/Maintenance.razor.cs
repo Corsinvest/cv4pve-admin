@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Corsinvest.ProxmoxVE.Admin.Core.Localization;
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Components;
 
@@ -29,10 +30,12 @@ public partial class Maintenance(IAdminService adminService,
     private bool IsTestClusterConnectionsBusy { get; set; }
     private bool IsTestInternetConnectivityBusy { get; set; }
     private bool IsCleanupSystemLogsBusy { get; set; }
+    private bool IsCleanupTaskHistoryBusy { get; set; }
 
     private List<string> LogMessages { get; set; } = [];
     private int AuditLogRetentionDays { get; set; } = 180; // Default 6 months
     private int SystemLogsRetentionDays { get; set; } = 30; // Default 1 month
+    private int TaskHistoryRetentionDays { get; set; } = 90; // Default 3 months
 
     private void AddLog(string message)
     {
@@ -157,6 +160,35 @@ public partial class Maintenance(IAdminService adminService,
             finally
             {
                 IsCleanupSystemLogsBusy = false;
+            }
+        }
+    }
+
+    private async Task CleanupTaskHistoryAsync()
+    {
+        if (await dialogService.ConfirmAsync(
+            L["Are you sure you want to delete task history older than {0} days?", TaskHistoryRetentionDays],
+            L["Confirm Cleanup Task History"],
+            true))
+        {
+            IsCleanupTaskHistoryBusy = true;
+            try
+            {
+                var taskTracker = serviceProvider.GetRequiredService<ITaskTrackerService>();
+                var deleted = await taskTracker.CleanupAsync(TaskHistoryRetentionDays);
+                AddLog($"OK Cleanup Task History: deleted {deleted} record(s) older than {TaskHistoryRetentionDays} days");
+                await auditService.LogAsync("Maintenance.CleanupTaskHistory",
+                                            true,
+                                            $"Deleted {deleted} task history records older than {TaskHistoryRetentionDays} days");
+            }
+            catch (Exception ex)
+            {
+                AddLog($"FAIL Cleanup Task History: {ex.Message}");
+                await auditService.LogAsync("Maintenance.CleanupTaskHistory", false, ex.Message);
+            }
+            finally
+            {
+                IsCleanupTaskHistoryBusy = false;
             }
         }
     }

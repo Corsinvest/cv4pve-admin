@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
+using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Services;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.AutoSnap.Api;
@@ -51,19 +52,23 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
+        var job = await db.Jobs.FromIdAsync(id);
+        if (job == null) { return; }
+
+        await using var taskScope = await taskTracker.StartAsync($"AutoSnap purge [{job.ClusterName}] Job {id}", job.ClusterName, GetModule(scope).Name, id.ToString());
         using (logger.LogTimeOperation(LogLevel.Information, true, "Purge snapshot from Job {Id}", id))
         {
-            var job = await db.Jobs.FromIdAsync(id);
-            if (job == null) { return; }
-
             var settings = GetModuleClusterSettings(scope, job.ClusterName);
             var client = await scope.GetClusterClient(job.ClusterName).GetPveClientAsync();
 
             var success = true;
             try
             {
+                taskScope.Item.Phase = "Purging snapshots";
+
                 await using var log = new StringWriterEvent();
                 var app = GetApp(client, scope.GetLoggerFactory(), log);
 
@@ -76,6 +81,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             catch (Exception ex)
             {
                 success = false;
+                taskScope.Item.Status = TaskItemStatus.Failed;
+                taskScope.Log(ex.ToString(), LogLevel.Error);
                 logger.LogError(ex, "Purge failed for Job ID {Id}", id);
                 throw;
             }
@@ -97,118 +104,137 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Execution AutoSnap from Job {id}", id))
+        var job = await db.Jobs.FromIdAsync(id);
+        if (job == null)
         {
-            var job = await db.Jobs.FromIdAsync(id);
-            if (job == null)
+            logger.LogWarning("Job Id = {Id} does not exist!", id);
+            await auditService.LogAsync("AutoSnap.Snap", false, $"Job ID: {id} not found");
+            return;
+        }
+
+        await using var taskScope = await taskTracker.StartAsync($"AutoSnap [{job.ClusterName}] Job {id} ({job.Label})", job.ClusterName, GetModule(scope).Name, id.ToString());
+        try
+        {
+            using (logger.LogTimeOperation(LogLevel.Information, true, "Execution AutoSnap from Job {id}", id))
             {
-                logger.LogWarning("Job Id = {Id} does not exist!", id);
-                await auditService.LogAsync("AutoSnap.Snap", false, $"Job ID: {id} not found");
-
-                //old job not recognized
-                //var backgroundJobService = scope.GetRequiredService<IJobService>();
-                //backgroundJobService.RemoveIfExists<Job>(job.ClusterName, id);
-                return;
-            }
-
-            var result = new JobResult
-            {
-                Job = job,
-                Logs = string.Empty
-            };
-
-            //log
-            await using var log = new StringWriterEvent();
-            log.WritedData += (_, _) => result.Logs = log.ToString();
-
-            result.Start = DateTime.UtcNow;
-
-            logger.LogInformation("Execution AutoSnap Job: {Id}", id);
-
-            var client = await scope.GetClusterClient(job.ClusterName).GetPveClientAsync();
-            var app = GetApp(client, scope.GetLoggerFactory(), log);
-
-            var statusEventOk = true;
-            var hookService = scope.GetService<IAutoSnapHookService>();
-            if (hookService != null)
-            {
-                app.PhaseEvent += async (e) =>
+                var result = new JobResult
                 {
-                    try
-                    {
-                        await hookService.ExecuteAsync(job, e, log);
-                    }
-                    catch (Exception ex)
-                    {
-                        statusEventOk = false;
-                        logger.LogError(ex, ex.Message);
-                        log.WriteLine($"  Error '{ex.Message}'");
-                    }
+                    Job = job,
+                    Logs = string.Empty
                 };
-            }
-            var settings = GetModuleClusterSettings(scope, job.ClusterName);
 
-            using (logger.LogTimeOperation(LogLevel.Debug, true, "Execution physical Snap"))
-            {
-                var retSnap = await app.SnapAsync(job.VmIdsList.JoinAsString(","),
-                                                  job.Label,
-                                                  job.Keep,
-                                                  job.VmStatus,
-                                                  job.TimeoutSnapshot * 1000,
-                                                  settings.TimestampFormat,
-                                                  settings.MaxPercentageStorage,
-                                                  job.OnlyRuns);
+                await using var log = new StringWriterEvent();
+                log.WritedData += (_, _) => result.Logs = log.ToString();
 
-                result.SnapName = retSnap.SnapName;
-                result.Status = retSnap.Status;
-            }
+                result.Start = DateTime.UtcNow;
+                logger.LogInformation("Execution AutoSnap Job: {Id}", id);
 
-            if (!statusEventOk) { result.Status = false; }
+                var client = await scope.GetClusterClient(job.ClusterName).GetPveClientAsync();
+                var app = GetApp(client, scope.GetLoggerFactory(), log);
 
-            result.End = DateTime.UtcNow;
-            result.Logs = log.ToString();
-
-            await db.Results.AddAsync(result);
-            await db.SaveChangesAsync();
-
-            //keep history
-            await db.Results.Where(a => a.Job.Id == id && a.Start < result.Start)
-                            .OrderByDescending(a => a.End)
-                            .Skip(settings.KeepHistory + job.Keep)
-                            .ExecuteDeleteAsync();
-
-            //send notification
-            if (settings.NotifierConfigurations?.Any() is true
-                && settings.Notify is Notify.Allways or Notify.OnFailureOnly
-                && !result.Status)
-            {
-                var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
-                var appSettings = scope.GetSettingsService().GetAppSettings();
-
-                await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
+                var statusEventOk = true;
+                var hookService = scope.GetService<IAutoSnapHookService>();
+                if (hookService != null)
                 {
-                    Subject = L["{0} - AutoSnap Id {1} [{2}] of cluster {3}",
-                                appSettings.AppName,
-                                id,
-                                result.Status ? L["OK"] : L["KO"],
-                                job.ClusterName],
-                    Body = result.Logs.ReplaceLineEndings("<br>")
-                });
+                    app.PhaseEvent += async (e) =>
+                    {
+                        try
+                        {
+                            await hookService.ExecuteAsync(job, e, log);
+                        }
+                        catch (Exception ex)
+                        {
+                            statusEventOk = false;
+                            logger.LogError(ex, ex.Message);
+                            log.WriteLine($"  Error '{ex.Message}'");
+                        }
+                    };
+                }
+
+                app.PhaseEvent += (e) =>
+                {
+                    taskScope.Item.Phase = e.Phase.ToString();
+                    return Task.CompletedTask;
+                };
+
+                var settings = GetModuleClusterSettings(scope, job.ClusterName);
+
+                taskScope.Item.Phase = "Taking snapshots";
+
+                using (logger.LogTimeOperation(LogLevel.Debug, true, "Execution physical Snap"))
+                {
+                    var retSnap = await app.SnapAsync(job.VmIdsList.JoinAsString(","),
+                                                      job.Label,
+                                                      job.Keep,
+                                                      job.VmStatus,
+                                                      job.TimeoutSnapshot * 1000,
+                                                      settings.TimestampFormat,
+                                                      settings.MaxPercentageStorage,
+                                                      job.OnlyRuns);
+
+                    result.SnapName = retSnap.SnapName;
+                    result.Status = retSnap.Status;
+                }
+
+                if (!statusEventOk) { result.Status = false; }
+
+                result.End = DateTime.UtcNow;
+                result.Logs = log.ToString();
+
+                taskScope.Item.Phase = "Saving results";
+
+                await db.Results.AddAsync(result);
+                await db.SaveChangesAsync();
+                taskScope.Item.ReferenceId = result.Id.ToString();
+                taskScope.Item.DetailUrl = GetModule(scope).LinkMain?.GetRealUrl(job.ClusterName);
+
+                await db.Results.Where(a => a.Job.Id == id && a.Start < result.Start)
+                                .OrderByDescending(a => a.End)
+                                .Skip(settings.KeepHistory + job.Keep)
+                                .ExecuteDeleteAsync();
+
+                //send notification
+                taskScope.Item.Phase = "Sending notifications";
+
+                if (settings.NotifierConfigurations?.Any() is true
+                    && settings.Notify is Notify.Allways or Notify.OnFailureOnly
+                    && !result.Status)
+                {
+                    var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
+                    var appSettings = scope.GetSettingsService().GetAppSettings();
+
+                    await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
+                    {
+                        Subject = L["{0} - AutoSnap Id {1} [{2}] of cluster {3}",
+                                    appSettings.AppName,
+                                    id,
+                                    result.Status ? L["OK"] : L["KO"],
+                                    job.ClusterName],
+                        Body = result.Logs.ReplaceLineEndings("<br>")
+                    });
+                }
+
+                await auditService.LogAsync("AutoSnap.Snap",
+                                            result.Status,
+                                            $"Job ID: {id}, " +
+                                            $"Cluster: {job.ClusterName}, " +
+                                            $"Label: {job.Label}, " +
+                                            $"VMs: {job.VmIdsList.Count()}, " +
+                                            $"Snap: {result.SnapName}, " +
+                                            $"Duration: {result.Duration:hh':'mm':'ss}");
+
+                taskScope.Log($"Job {id}, Cluster: {job.ClusterName}, Label: {job.Label}, Snap: {result.SnapName}, Status: {result.Status}");
+                await PublishDataChangedAsync(scope);
             }
-
-            // Audit log
-            await auditService.LogAsync("AutoSnap.Snap",
-                                        result.Status,
-                                        $"Job ID: {id}, " +
-                                        $"Cluster: {job.ClusterName}, " +
-                                        $"Label: {job.Label}, " +
-                                        $"VMs: {job.VmIdsList.Count()}, " +
-                                        $"Snap: {result.SnapName}, " +
-                                        $"Duration: {result.Duration:hh':'mm':'ss}");
-
-            await PublishDataChangedAsync(scope);
+        }
+        catch (Exception ex)
+        {
+            taskScope.Item.Status = TaskItemStatus.Failed;
+            taskScope.Log(ex.ToString(), LogLevel.Error);
+            throw;
         }
     }
 

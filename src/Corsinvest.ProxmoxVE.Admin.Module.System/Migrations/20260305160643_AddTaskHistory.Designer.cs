@@ -3,6 +3,7 @@ using System;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations
 {
     [DbContext(typeof(ModuleDbContext))]
-    partial class ModuleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305160643_AddTaskHistory")]
+    partial class AddTaskHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -531,9 +534,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations
 
                     b.Property<DateTime?>("EndedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsAcknowledged")
-                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsCancellable")
                         .HasColumnType("boolean");

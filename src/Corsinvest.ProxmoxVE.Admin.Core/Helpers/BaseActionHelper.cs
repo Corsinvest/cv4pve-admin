@@ -14,4 +14,6 @@ public abstract class BaseActionHelper<TModule, TSettings, TDataChangedNotificat
 
     protected static async Task PublishDataChangedAsync(IServiceScope scope)
         => await scope.GetEventNotificationService().PublishAsync(new TDataChangedNotification());
+
+    protected static TModule GetModule(IServiceScope scope) => scope.GetModuleService().Get<TModule>()!;
 }

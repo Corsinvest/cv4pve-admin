@@ -29,6 +29,11 @@ public abstract class ModuleBase
     public ModuleLinkBase? Link { get; set; }
     public ModuleLinkPosition LinkPosition { get; set; } = ModuleLinkPosition.NavBar;
     public IEnumerable<ModuleLinkBase> NavBar { get; set; } = [];
+    public virtual ModuleLinkBase? LinkMain
+        => NavBar.Count() > 1
+            ? NavBar.ElementAt(1)
+            : NavBar.FirstOrDefault();
+
     protected IEnumerable<Permission> NavBarPermissions => NavBar.Traverse(a => a.Child).Select(a => a.Permission);
     public IEnumerable<ModuleWidget> Widgets { get; set; } = [];
     public string GetBaseUrl(string clusterName) => UrlHelper.ModuleUrl(Slug, GetClusterNameForScope(clusterName));

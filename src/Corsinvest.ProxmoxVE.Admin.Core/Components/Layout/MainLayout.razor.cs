@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Identity;
 using Toolbelt.Blazor.HotKeys2;
 
@@ -55,6 +56,8 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
     {
         if (firstRender)
         {
+            NavigationManager.LocationChanged += OnLocationChanged;
+
             ClusterName = UrlHelper.GetClusterNameFromUrl(NavigationManager.Uri)
                           ?? ApplicationHelper.AllClusterName;
             CurrentClusterService.ClusterName = ClusterName;
@@ -72,6 +75,17 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
     }
 
     private bool HasNoClusters { get; set; }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        var clusterFromUrl = UrlHelper.GetClusterNameFromUrl(e.Location);
+        if (clusterFromUrl != null && !ApplicationHelper.IsAllCluster(clusterFromUrl) && clusterFromUrl != ClusterName)
+        {
+            ClusterName = clusterFromUrl;
+            CurrentClusterService.ClusterName = ClusterName;
+            _ = InvokeAsync(async () => await RefreshDataAsync());
+        }
+    }
 
     private void CheckExistCluster()
     {
@@ -150,6 +164,7 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
 
     public void Dispose()
     {
+        NavigationManager.LocationChanged -= OnLocationChanged;
         GC.SuppressFinalize(this);
     }
 

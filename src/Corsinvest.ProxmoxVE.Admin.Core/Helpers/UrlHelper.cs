@@ -9,7 +9,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 public static class UrlHelper
 {
     public const string ModuleComponentUrl = "/module/";
-
+    public static string SystemTasksUrl { get; set; } = default!;
     public static string UrlNewPveConfig { get; set; } = default!;
     public static string UrlChangePassword { get; set; } = default!;
 
@@ -38,7 +38,6 @@ public static class UrlHelper
 
                  _ => "",
              };
-
 
         public static string VmUrl(long vmId, string clusterName)
             => $"{ModuleUrl("resources", clusterName)}/vms?vmid={vmId}";

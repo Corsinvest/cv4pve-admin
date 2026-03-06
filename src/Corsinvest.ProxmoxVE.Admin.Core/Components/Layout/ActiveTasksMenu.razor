@@ -1,0 +1,68 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@using Corsinvest.ProxmoxVE.Admin.Core.Components.TaskTracking
+@using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking
+
+<RadzenButton Variant="Variant.Text"
+              ButtonStyle="ButtonStyle.Light"
+              Click="ShowTasksMenu"
+              title="@L["Active Tasks"]"
+              aria-label="@L["Active Tasks"]"
+              Style="position: relative;">
+    <RadzenIcon Icon="@(BadgeText is not null ? "notifications" : "notifications_none")" />
+    @if (BadgeText is not null)
+    {
+        <RadzenBadge BadgeStyle="@BadgeStyle"
+                     Text="@BadgeText"
+                     IsPill="true"
+                     Style="position: absolute; top: 2px; right: 2px; font-size: 0.6rem; min-width: 16px; height: 16px; padding: 0 4px;" />
+    }
+</RadzenButton>
+
+@code {
+    private RenderFragment RenderPanel(IReadOnlyList<TaskItemInfo> tasks) => __builder =>
+    {
+        <RadzenPanel style="min-width: 340px; max-width: 420px; padding: 8px 0;">
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween"
+                         Style="padding: 4px 12px 8px 12px;">
+                <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;">@L["Active Tasks"]</RadzenText>
+                <RadzenBadge Text="@($"{tasks.Count} {L["tasks"]}")" BadgeStyle="BadgeStyle.Light" />
+            </RadzenStack>
+
+            <hr style="margin: 0 0 4px 0;" />
+
+            @if (tasks.Count == 0)
+            {
+                <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Style="padding: 16px 0;">
+                    <RadzenImage Path="images/misc/empty-box.png" AlternateText="empty" Style="height:40px; opacity:0.5;" />
+                    <RadzenText TextStyle="TextStyle.Caption" Text="@L["No tasks"]" class="rz-text-secondary-color" />
+                </RadzenStack>
+            }
+            else
+            {
+                <RadzenListBox TValue="string"
+                               Data="@tasks"
+                               Style="max-height: 320px; width: 100%; border: none;"                               
+                               ValueProperty="Id">
+                    <Template Context="task">
+                        <TaskItemRow Item="task" OnAfterAction="OnAfterAction" />
+                    </Template>
+                </RadzenListBox>
+            }
+
+            <hr style="margin: 4px 0 0 0;" />
+            <RadzenStack Style="padding: 6px 12px 4px 12px;" @onclick="ViewAllTasks">
+                <RadzenLink Text="@L["View all tasks"]"
+                            Icon="open_in_new"
+                            Path="@UrlHelper.SystemTasksUrl"
+                            Style="font-size: 0.85rem;" />
+            </RadzenStack>
+
+        </RadzenPanel>
+    };
+}

@@ -4,6 +4,7 @@
  */
 using System.Globalization;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Api;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -240,23 +241,40 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Collect backup data for cluster '{clusterName}'", clusterName))
+        await using var taskScope = await taskTracker.StartAsync($"Backup Analytics scan [{clusterName}]", clusterName, GetModule(scope).Name, detailUrl: GetModule(scope).LinkMain?.GetRealUrl(clusterName));
+        try
         {
-            await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
-            var (taskCount, jobCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
-                                                        GetModuleSettings(scope, clusterName),
-                                                        db,
-                                                        false,
-                                                        logger);
+            using (logger.LogTimeOperation(LogLevel.Information, true, "Collect backup data for cluster '{clusterName}'", clusterName))
+            {
+                await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
-            await auditService.LogAsync("BackupAnalytics.Scan",
-                                        true,
-                                        $"Cluster: {clusterName}, " +
-                                        $"Tasks: {taskCount}, " +
-                                        $"Jobs: {jobCount}");
+                taskScope.Item.Phase = "Collecting backup data";
 
-            await PublishDataChangedAsync(scope);
+                var (taskCount, jobCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
+                                                            GetModuleSettings(scope, clusterName),
+                                                            db,
+                                                            false,
+                                                            logger);
+
+                taskScope.Item.Phase = "Saving results";
+
+                await auditService.LogAsync("BackupAnalytics.Scan",
+                                            true,
+                                            $"Cluster: {clusterName}, " +
+                                            $"Tasks: {taskCount}, " +
+                                            $"Jobs: {jobCount}");
+
+                taskScope.Log($"Tasks: {taskCount}, Jobs: {jobCount}");
+                await PublishDataChangedAsync(scope);
+            }
+        }
+        catch (Exception ex)
+        {
+            taskScope.Item.Status = TaskItemStatus.Failed;
+            taskScope.Log(ex.ToString(), LogLevel.Error);
+            throw;
         }
     }
 }
