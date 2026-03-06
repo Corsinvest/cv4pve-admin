@@ -1,0 +1,46 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking
+@using Corsinvest.ProxmoxVE.Admin.Core.Components.TaskTracking
+
+<RadzenDataGrid @ref="@DataGridRef"
+                TItem="TaskItemInfo"
+                Data="@ResultLoadData.Data"
+                Count="@ResultLoadData.TotalCount"
+                LoadData="@LoadDataAsync"
+                AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                AllowSorting="true"
+                AllowVirtualization="true"
+                AllowColumnPicking="true"
+                Style="height: calc(100vh - 140px)"
+                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <HeaderTemplate>
+        <CrudToolbar OnRefresh="RefreshAsync" />
+    </HeaderTemplate>
+
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Title)" Title="@L["Task"]">
+            <Template>
+                <TaskItemRow Item="context" OnAfterAction="RefreshAsync" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ClusterName)" Title="@L["Cluster"]"  Width="140px" FilterMode="FilterMode.CheckBoxList" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ModuleName)"  Title="@L["Module"]"   Width="140px" FilterMode="FilterMode.CheckBoxList" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Status)"      Title="@L["Status"]"   Width="110px" FilterMode="FilterMode.CheckBoxList" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.StartedAt)"   Title="@L["Started"]"  Width="150px" FormatString="{0:g}" SortOrder="SortOrder.Descending"/>
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Duration)"    Title="@L["Duration"]" Width="100px" FormatString="{0:hh':'mm':'ss}" Filterable="false" />
+
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.CreatedBy)" Title="@L["Created By"]" Width="130px" Visible="false" FilterMode="FilterMode.CheckBoxList" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Phase)"    Title="@L["Phase"]"    Width="120px" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Progress)" Title="@L["Progress"]" Width="90px"  Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.EndedAt)"  Title="@L["Ended"]"   Width="150px" FormatString="{0:g}" Visible="false" />
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.LastLog)"  Title="@L["Last Log"]" Visible="false" />
+    </Columns>
+</RadzenDataGrid>

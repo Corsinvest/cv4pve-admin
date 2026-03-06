@@ -8,5 +8,6 @@ public enum UpdateInfoStatus
 {
     InScan,
     Ok,
-    InError
+    InError,
+    Cancelled
 }

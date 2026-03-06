@@ -107,6 +107,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
+        services.AddScoped<IPermissionsSummaryDialogService, PermissionsSummaryDialogService>();
 
         return services;
     }

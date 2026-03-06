@@ -39,7 +39,7 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
         return await fusionCache.GetOrSetAsync(cacheKey,
                                                async ct =>
                                                {
-                                                   var newRelease = await GetLatestReleaseAsync(includePrerelease, ct);
+                                                   var newRelease = await GetNewerReleaseAsync(includePrerelease, ct);
                                                    if (newRelease != null) { NewReleaseDiscovered?.Invoke(this, newRelease!); }
 
                                                    return newRelease;

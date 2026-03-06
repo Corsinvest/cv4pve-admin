@@ -148,8 +148,8 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
     }
 
     private void TreeRowRender(RowRenderEventArgs<TreeNode> args)
-        => args.Expandable = NodeMap.Keys.Any(k => k.StartsWith(args.Data!.PathKey + '.') &&
-                                                    k.Count(c => c == '.') == args.Data.PathKey.Count(c => c == '.') + 1);
+        => args.Expandable = NodeMap.Keys.Any(k => k.StartsWith(args.Data!.PathKey + '.')
+                                                    && k.Count(c => c == '.') == args.Data.PathKey.Count(c => c == '.') + 1);
 
     private void TreeLoadChildData(DataGridLoadChildDataEventArgs<TreeNode> args)
     {

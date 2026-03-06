@@ -8,6 +8,9 @@ using Corsinvest.ProxmoxVE.Admin.Module.System.HealthMonitoring;
 using Corsinvest.ProxmoxVE.Admin.Module.System.ReleaseChecker;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Security;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Settings;
+using Corsinvest.ProxmoxVE.Admin.Module.System.TaskTracking;
+using Corsinvest.ProxmoxVE.Admin.Module.System.TaskTracking.Components;
+using Corsinvest.ProxmoxVE.Admin.Module.System.TaskTracking.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
@@ -16,6 +19,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System;
 public class Module : ModuleBase
 {
     protected ModuleLinkBase PveClusterLink { get; }
+    protected ModuleLinkBase TasksLink { get; }
 
     public Module()
     {
@@ -35,7 +39,15 @@ public class Module : ModuleBase
             Render = new(typeof(Components.ClusterConfig.RenderClustersSettings))
         };
 
-        UrlHelper.UrlNewPveConfig = $"{GetBaseUrl(ApplicationHelper.AllClusterName)}/{PveClusterLink.Url}?new=true";
+        TasksLink = new ModuleLinkBase(this, "Tasks")
+        {
+            Render = new(typeof(Tasks)),
+            Icon = "task"
+        };
+
+        var baseUrl = GetBaseUrl(ApplicationHelper.AllClusterName);
+        UrlHelper.UrlNewPveConfig = $"{baseUrl}/{PveClusterLink.Url}?{nameof(Components.ClusterConfig.RenderClustersSettings.Create)}=true";
+        UrlHelper.SystemTasksUrl = $"{baseUrl}/{TasksLink.Url}";
 
         CreateNavMenu();
 
@@ -52,7 +64,9 @@ public class Module : ModuleBase
                              .CombineWith(Security.Permissions.Roles.Permissions)
                              .CombineWith(Security.Permissions.AppTokens.Data)
                              .CombineWith(Security.Permissions.AppTokens.Permissions)
-                             .CombineWith(BackgroundJobs.Permissions.Dashboard))];
+                             .CombineWith(BackgroundJobs.Permissions.Dashboard)
+                             .CombineWith(Core.TaskTracking.Permissions.Read)
+                             .CombineWith(Core.TaskTracking.Permissions.Stop))];
     }
 
     protected override string PermissionBaseKey { get; } = "System";
@@ -117,6 +131,8 @@ public class Module : ModuleBase
                         Icon = "schedule"
                     },
 
+                    TasksLink,
+
                     new(this,"Logs")
                     {
                         Render = new (typeof(Core.Components.SubscriptionRequired)),
@@ -139,7 +155,8 @@ public class Module : ModuleBase
                     new(this,"General")
                     {
                         Icon = "settings_applications",
-                        Render = SettingsHelper.CreateSettingsAccordion([GetSectionSMTPConfiguration()])
+                        Render = SettingsHelper.CreateSettingsAccordion([GetSectionSMTPConfiguration(),
+                                                                         GetSectionTaskCleanup()])
                     }
                 ]
             },
@@ -161,6 +178,16 @@ public class Module : ModuleBase
     //    => new(typeof(Core.Components.Settings.SettingsAccordion<AppSettings>),
     //           new Dictionary<string, object> { [nameof(Core.Components.Settings.SettingsAccordion<>.Sections)] = sections });
 
+    protected static Core.Components.Settings.SettingSection<AppSettings> GetSectionTaskCleanup()
+        => new()
+        {
+            Title = "Task Cleanup",
+            Description = "Configure automatic cleanup of completed task history",
+            Icon = "auto_delete",
+            ComponentType = typeof(TaskTracking.Components.TaskCleanupConfig),
+            OnSavedAsync = (scope, _) => { scope.InitializeTaskCleanupJob(); return Task.CompletedTask; }
+        };
+
     protected static Core.Components.Settings.SettingSection<AppSettings> GetSectionSMTPConfiguration()
         => new()
         {
@@ -177,7 +204,7 @@ public class Module : ModuleBase
                    .AddSecurityAdmin(configuration)
                    .AddBackgroundJobsAdmin(configuration)
                    .AddReleaseServices(configuration)
-                   .AddScoped<IPermissionsSummaryDialogService, Security.Services.PermissionsSummaryDialogService>();
+                   .AddTaskTracker();
 
     public override Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation)
         => scope.GetRequiredService<ModuleDbContext>().ExecuteMaintenanceAsync(operation);
@@ -188,6 +215,8 @@ public class Module : ModuleBase
     {
         await scope.MigrateDbAsync<ModuleDbContext>();
         await scope.InitializeSecurityAsync();
+        await scope.AbandonStaleTasksAsync();
+        scope.InitializeTaskCleanupJob();
     }
 
     protected override void Map(WebApplication app)

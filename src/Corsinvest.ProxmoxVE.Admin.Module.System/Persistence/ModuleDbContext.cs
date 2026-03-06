@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Settings.Models;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Persistence;
@@ -25,6 +26,7 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
     public DbSet<AppTokenPermission> AppTokenPermissions { get; set; } = default!;
     public DbSet<SystemSettings> Settings { get; set; } = default!;
     public DbSet<AuditLog> AuditLogs { get; set; } = default!;
+    public DbSet<TaskItem> TaskItems { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -160,6 +162,13 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
                   .WithMany()
                   .HasForeignKey(a => a.UserId)
                   .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<TaskItem>(entity =>
+        {
+            entity.HasIndex(a => a.Status);
+            entity.HasIndex(a => a.StartedAt);
+            entity.Property(a => a.Logs).HasColumnType("jsonb");
         });
     }
 

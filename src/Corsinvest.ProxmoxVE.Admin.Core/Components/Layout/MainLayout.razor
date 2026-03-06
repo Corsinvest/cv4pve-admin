@@ -83,9 +83,7 @@
                             <ClusterSelector @bind-ClusterName="@ClusterName" @bind-ClusterName:after="SetClusterNameAsync" />
                         </PermissionView>
 
-                        @* <RadzenButton Icon="notifications" ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" class="rz-display-none rz-display-md-block" />
-	<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" class="rz-display-none rz-display-md-block" />
-	<RadzenAppearanceToggle class="rz-display-none rz-display-md-block"  /> *@
+                        <ActiveTasksMenu />
 
                         <HelpMenu HotKeysContext="@HotKeysContext" />
 

@@ -1,0 +1,83 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking
+
+<RadzenStack Orientation="Orientation.Horizontal"
+             AlignItems="AlignItems.Start"
+             Gap="8px"
+             Style="width: 100%; padding: 2px 0;">
+
+    <RadzenIcon Icon="@Icon" Style="@($"margin-top: 2px; font-size: 1.1rem;")" IconColor="@Color" />
+
+    <RadzenStack Gap="2px" Style="flex: 1; min-width: 0;">
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     AlignItems="AlignItems.Center"
+                     JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenText TextStyle="TextStyle.Body2"
+                        Style="font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                @Item.Title
+            </RadzenText>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                @if (Item.Status == TaskItemStatus.Running)
+                {
+                    @if (Item.Progress is null)
+                    {
+                        <RadzenProgressBarCircular Value="100"
+                                                   ShowValue="false"
+                                                   Mode="ProgressBarMode.Indeterminate"
+                                                   Size="ProgressBarCircularSize.ExtraSmall" />
+                    }
+                    else
+                    {
+                        <RadzenProgressBarCircular Value="@Item.Progress.Value"
+                                                   Max="100"
+                                                   ShowValue="true"
+                                                   Size="ProgressBarCircularSize.ExtraSmall"
+                                                   title="@($"{Item.Progress.Value}%")" />
+                    }
+                }
+                <RadzenText Text="@Elapsed"
+                            TextStyle="TextStyle.Caption"
+                            class="rz-text-secondary-color"
+                            Style="white-space: nowrap;" />
+            </RadzenStack>
+        </RadzenStack>
+
+        <RadzenText TextStyle="TextStyle.Caption"
+                    class="rz-text-secondary-color"
+                    Style="word-break: break-word;">
+            @{ var log = Item.Status == TaskItemStatus.Running && Item.Phase is not null ? Item.Phase : Item.LastLog?.Split('\n')[0]; }
+            @(log?.Length > 120 ? log[..120] + "…" : log)
+        </RadzenText>
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0px" AlignItems="AlignItems.Center">
+        <RadzenButton Icon="info"
+                      Variant="Variant.Text"
+                      Size="ButtonSize.ExtraSmall"
+                      title="@L["Details"]"
+                      Click="ShowDetailsAsync" />
+
+        @if (!string.IsNullOrEmpty(Item.DetailUrl))
+        {
+            <RadzenLink Icon="open_in_new"
+                        Path="@Item.DetailUrl"
+                        title="@L["Open"]"
+                        @onclick="@(() => { OnAfterAction.InvokeAsync(); })" />
+        }
+
+        @if (CanStop && Item.Status == TaskItemStatus.Running && Item.IsCancellable)
+        {
+            <RadzenButton Icon="stop_circle"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Variant="Variant.Text"
+                          Size="ButtonSize.ExtraSmall"
+                          title="@L["Cancel task"]"
+                          Click="CancelTaskAsync" />
+        }
+    </RadzenStack>
+
+</RadzenStack>

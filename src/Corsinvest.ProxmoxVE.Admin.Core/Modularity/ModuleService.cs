@@ -19,12 +19,15 @@ internal class ModuleService : IModuleService
     public T? Get<T>() where T : ModuleBase
         => IModuleService.GetCached<T>();
 
-    public ModuleBase? Get(Type type)
+    public ModuleBase? GetByType(Type type)
         => !typeof(ModuleBase).IsAssignableFrom(type)
             ? throw new ArgumentException("Type must derive from ModuleBase", nameof(type))
             : Modules.FirstOrDefault(a => a.GetType() == type);
 
-    public ModuleBase? Get(string @class) => Modules.FirstOrDefault(a => a.Type == @class);
+    public ModuleBase? GetByClass(string @class) => Modules.FirstOrDefault(a => a.Type == @class);
+
+    public ModuleBase? GetByName(string name)
+        => Modules.FirstOrDefault(a => string.Equals(a.Name, name, StringComparison.OrdinalIgnoreCase));
 
     public ModuleBase? GetByUrl(string url)
     {

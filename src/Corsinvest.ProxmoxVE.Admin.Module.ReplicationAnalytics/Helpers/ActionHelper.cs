@@ -4,6 +4,7 @@
  */
 using System.Globalization;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Api;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -123,23 +124,40 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
-        await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Collect replication data for cluster '{clusterName}'", clusterName))
+        await using var taskScope = await taskTracker.StartAsync($"Replication Analytics scan [{clusterName}]", clusterName, GetModule(scope).Name, detailUrl: GetModule(scope).LinkMain?.GetRealUrl(clusterName));
+        try
         {
-            var (jobCount, successCount, failureCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
-                                                                          GetModuleSettings(scope, clusterName),
-                                                                          db,
-                                                                          logger);
+            using (logger.LogTimeOperation(LogLevel.Information, true, "Collect replication data for cluster '{clusterName}'", clusterName))
+            {
+                await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
-            await auditService.LogAsync("ReplicationAnalytics.Scan",
-                                        true,
-                                        $"Cluster: {clusterName}, " +
-                                        $"Jobs: {jobCount}, " +
-                                        $"Success: {successCount}, " +
-                                        $"Failures: {failureCount}");
+                taskScope.Item.Phase = "Collecting replication data";
 
-            await PublishDataChangedAsync(scope);
+                var (jobCount, successCount, failureCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
+                                                                              GetModuleSettings(scope, clusterName),
+                                                                              db,
+                                                                              logger);
+
+                taskScope.Item.Phase = "Saving results";
+
+                await auditService.LogAsync("ReplicationAnalytics.Scan",
+                                            true,
+                                            $"Cluster: {clusterName}, " +
+                                            $"Jobs: {jobCount}, " +
+                                            $"Success: {successCount}, " +
+                                            $"Failures: {failureCount}");
+
+                taskScope.Log($"Jobs: {jobCount}, Success: {successCount}, Failures: {failureCount}");
+                await PublishDataChangedAsync(scope);
+            }
+        }
+        catch (Exception ex)
+        {
+            taskScope.Item.Status = TaskItemStatus.Failed;
+            taskScope.Log(ex.ToString(), LogLevel.Error);
+            throw;
         }
     }
 }

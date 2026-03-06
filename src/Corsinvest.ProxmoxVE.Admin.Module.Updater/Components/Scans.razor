@@ -92,7 +92,11 @@
 
             <ResourceColumn Property="@nameof(ClusterResourceUpdateScanInfo.Error)" Sortable="false" Width="100px">
                 <Template>
-                    @if (!string.IsNullOrEmpty(context.Error))
+                    @if (context.UpdateScanStatus == UpdateInfoStatus.Cancelled)
+                    {
+                        <RadzenIcon Icon="cancel" title="@L["Cancelled by task"]" />
+                    }
+                    else if (!string.IsNullOrEmpty(context.Error))
                     {
                         <RadzenIcon Icon="error" title="@context.Error" Style="cursor: pointer;" />
                     }

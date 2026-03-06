@@ -1,0 +1,29 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenRow>
+    <RadzenColumn SizeXS="12" SizeSM="12" SizeMD="10" SizeLG="6" SizeXL="4" SizeXX="4">
+        <RadzenStack Gap="1rem">
+            <RadzenFormField Text="@L["Retention Days"]" AllowFloatingLabel="false" class="rz-w-100">
+                <Start>
+                    <RadzenIcon Icon="event_available" />
+                </Start>
+                <ChildContent>
+                    <RadzenNumeric TValue="int"
+                                   @bind-Value="RetentionDays"
+                                   Min="1"
+                                   Max="3650"
+                                   class="rz-w-100" />
+                </ChildContent>
+                <Helper>
+                    <RadzenText TextStyle="TextStyle.Caption">@L["Completed tasks older than this number of days will be deleted."]</RadzenText>
+                </Helper>
+            </RadzenFormField>
+
+            <CronEditor @bind-Expression="CronSchedule" AllowEditor="true" />
+        </RadzenStack>
+    </RadzenColumn>
+</RadzenRow>
