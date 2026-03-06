@@ -20,12 +20,15 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
                                                                                   IDisposable
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
+    [SupplyParameterFromQuery] public int? Id { get; set; }
 
     private Settings Settings { get; set; } = new();
     private IList<Data> SelectedItems { get; set; } = [];
     private bool InDownload { get; set; }
     private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
+
+    private bool _expanded;
 
     private record Data(int Id,
                          int Warning,
@@ -55,7 +58,10 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
     private async Task LoadDataAsync(LoadDataArgs args)
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.JobResults.FromClusterName(ClusterName),
+        ResultLoadData = await DataGridRef.LoadDataAsync(db.JobResults
+                                                           .FromClusterName(ClusterName)
+                                                           .Where(a => a.Id == Id, !_expanded && Id != null)
+                                                      ,
                                                          args,
                                                          a => new Data(a.Id,
                                                                        a.Warning,
@@ -64,6 +70,17 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
                                                                        a.Start,
                                                                        a.End),
                                                          ResultLoadData.Filter);
+
+    }
+
+    private void OnGridRender(DataGridRenderEventArgs<Data> args)
+    {
+        if (!_expanded && Id != null && ResultLoadData.Data is { Count: > 0 })
+        {
+            _expanded = true;
+            var item = ResultLoadData.Data.FirstOrDefault(a => a.Id == Id);
+            if (item != null) { _ = DataGridRef.ExpandRow(item); }
+        }
     }
 
     public async Task RefreshDataAsync()

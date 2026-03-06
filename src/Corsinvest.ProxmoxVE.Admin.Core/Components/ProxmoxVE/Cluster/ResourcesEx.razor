@@ -265,25 +265,25 @@
             <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.HostName)"
                         Title="@L["HostName"]"
                         Visible="false"
-                        ShowWating="IsGetOsInfo"
+                        ShowWatingFunc="@(item => IsGetOsInfo && item.HostName == null)"
                         Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.HostName))" />
 
             <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.OsVersion)"
                         Title="@L["Os Version"]"
                         Visible="false"
-                        ShowWating="IsGetOsInfo"
+                        ShowWatingFunc="@(item => IsGetOsInfo && item.OsType == null)"
                         Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.OsVersion))" />
 
             <BaseColumn Property="@nameof(IClusterResourceVmOsInfo.OsType)"
                         Title="@L["Os Type"]"
                         Visible="false"
-                        ShowWating="IsGetOsInfo"
+                        ShowWatingFunc="@(item => IsGetOsInfo && item.OsType == null)"
                         Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.OsType))" />
 
             <BaseColumn Property="@ClusterResourceEx.OsIcon"
                         Title="@L["OS Icon"]"
                         Visible="false"
-                        ShowWating="IsGetOsInfo"
+                        ShowWatingFunc="@(item => IsGetOsInfo && item.OsType == null)"
                         Pickable="IsPickable(nameof(ClusterResourceEx.OsIcon))"
                         Filterable="false"
                         Groupable="false"

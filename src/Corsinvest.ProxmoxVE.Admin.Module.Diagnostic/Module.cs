@@ -29,7 +29,7 @@ public class Module : ModuleBase
                 Render = new(typeof(Components.Overview)),
                 Icon = PveAdminUIHelper.Icons.Overview
             },
-            new(this,"Scans")
+            new (this, "Scans")
             {
                 Render = new(typeof(Components.Scans)),
                 Icon = PveAdminUIHelper.Icons.Scans
