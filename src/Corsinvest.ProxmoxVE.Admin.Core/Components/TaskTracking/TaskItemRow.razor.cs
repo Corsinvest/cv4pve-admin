@@ -8,8 +8,7 @@ using Humanizer;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.TaskTracking;
 
 public partial class TaskItemRow(ITaskTrackerService TaskTracker,
-                                 DialogService DialogService,
-                                 NavigationManager NavigationManager)
+                                 DialogService DialogService)
 {
     [Parameter] public TaskItemInfo Item { get; set; } = default!;
     [Parameter] public EventCallback OnAfterAction { get; set; }
