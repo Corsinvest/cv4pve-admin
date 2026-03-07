@@ -77,6 +77,57 @@ Pre-built binaries are available for Windows, Linux, and macOS. See the [Documen
 !!! tip
     Use the **Bridge** tab in the AI Server module to download the binary for your platform and generate a ready-to-use `claude_desktop_config.json` pre-filled with your server URL.
 
+## Available Tools
+
+### Cluster
+
+| Tool | Description |
+|------|-------------|
+| `ListClusters` | List all configured clusters with name and description |
+| `GetClusterStatus` | Cluster health summary: node count (online/offline), VM count (running/stopped/paused) |
+
+### Virtual Machines
+
+| Tool | Description |
+|------|-------------|
+| `ListVms` | List VMs and containers with status, resource usage. Supports status/type filters and Minimal/Full detail |
+| `ListSnapshots` | List VM snapshots with dates. Full detail includes description and parent. Optional disk size |
+| `GetVmConfig` | Full VM/LXC configuration: CPU, memory, disks, network, agent, boot options |
+| `ChangeVmState` | Change VM power state: Start, Stop (force), Shutdown (graceful), Reset |
+| `CreateVmSnapshot` | Create a VM/LXC snapshot, with optional description and RAM state (QEMU only) |
+| `DeleteVmSnapshot` | Delete a VM/LXC snapshot |
+| `RollbackVmSnapshot` | Rollback a VM/LXC to a snapshot |
+| `MigrateVm` | Migrate VM/LXC to another node, with optional live migration and target storage |
+| `BackupVm` | Create a VM/LXC backup via vzdump with optional storage, mode, compression, bandwidth limit |
+| `ListVmRrdData` | Historical metrics (CPU, Memory, Disk, Network, Pressure PSI) for one or more VMs |
+
+### Nodes
+
+| Tool | Description |
+|------|-------------|
+| `ListNodes` | List cluster nodes with CPU, memory, disk usage. Minimal/Full detail level |
+| `GetNodeStatus` | Detailed node status: PVE version, kernel, CPU model, memory, swap, load average, root fs |
+| `ListReplications` | List cluster replications with schedule, sync status and error info |
+| `ListNodeRrdData` | Historical metrics (CPU, Load avg, Memory, Swap, Disk, Network, Pressure PSI) for nodes |
+| `ListTasks` | List cluster tasks (active and recent) with status, type, user and duration |
+
+### Storage & Backup
+
+| Tool | Description |
+|------|-------------|
+| `ListStorage` | List cluster storage with type, status, usage. Minimal/Full detail level |
+| `ListPools` | List cluster resource pools with descriptions |
+| `ListBackups` | List backups on a specific node and storage, with optional VM ID filter |
+| `ListStorageContent` | List storage content (ISO, templates, images, backups) on a specific node and storage. Optional content type filter |
+| `ListBackupJobs` | List cluster backup jobs with schedule, storage, compression and VM list |
+
+### Query <span class="ee"></span>
+
+| Tool | Description |
+|------|-------------|
+| `GetQuerySchema` | Get schema (fields and types) for all available query tables |
+| `ExecuteQuery` | Execute queries on Proxmox VE cluster data across guests, nodes, storages, snapshots and more |
+
 ## Output Format
 
 The **Output Format** setting controls how tool responses are serialized before being sent to the AI model. Choosing the right format reduces token consumption and improves response quality.

@@ -18,11 +18,11 @@ public partial class Bridge(NavigationManager navigationManager,
 
     private static readonly PlatformInfo[] _platforms =
     [
-        new("desktop_windows", "Windows x64",         "cv4pve-mcp-bridge-win-x64.exe"),
-        new("terminal",        "Linux x64",           "cv4pve-mcp-bridge-linux-x64"),
-        new("terminal",        "Linux ARM64",         "cv4pve-mcp-bridge-linux-arm64"),
-        new("laptop_mac",      "macOS Intel",         "cv4pve-mcp-bridge-osx-x64"),
-        new("laptop_mac",      "macOS Apple Silicon", "cv4pve-mcp-bridge-osx-arm64"),
+        new("desktop_windows", "Windows x64", "cv4pve-mcp-bridge-win-x64.exe"),
+        new("terminal", "Linux x64", "cv4pve-mcp-bridge-linux-x64"),
+        new("terminal", "Linux ARM64", "cv4pve-mcp-bridge-linux-arm64"),
+        new("laptop_mac", "macOS Intel", "cv4pve-mcp-bridge-osx-x64"),
+        new("laptop_mac", "macOS Apple Silicon", "cv4pve-mcp-bridge-osx-arm64"),
     ];
 
     private string _mcpUrl = string.Empty;
@@ -38,7 +38,7 @@ public partial class Bridge(NavigationManager navigationManager,
     }
 
     private Task DownloadBinaryAsync(PlatformInfo platform)
-        => browserService.OpenAsync($"{ApplicationHelper.GitHubReleasesLatestDownloadUrl}/{platform.File}", "_blank");
+        => browserService.OpenAsync($"{ApplicationHelper.GitHubReleasesVersionDownloadUrl}/{platform.File}", "_blank");
 
     private string BuildClaudeConfigJson()
     {

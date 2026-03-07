@@ -61,11 +61,31 @@ public class Module : ModuleBase
                 "AI Server Tools",
                 false,
                 true,
-                [Permissions.Tools.ListNodes,
+                [// VM tools
                  Permissions.Tools.ListVms,
                  Permissions.Tools.ListSnapshots,
+                 Permissions.Tools.GetVmConfig,
+                 Permissions.Tools.ChangeVmState,
+                 Permissions.Tools.CreateVmSnapshot,
+                 Permissions.Tools.DeleteVmSnapshot,
+                 Permissions.Tools.RollbackVmSnapshot,
+                 Permissions.Tools.MigrateVm,
+                 Permissions.Tools.BackupVm,
+                 Permissions.Tools.ListVmRrdData,
+                 // Node tools
+                 Permissions.Tools.ListNodes,
+                 Permissions.Tools.GetNodeStatus,
+                 Permissions.Tools.ListReplications,
+                 Permissions.Tools.ListNodeRrdData,
+                 Permissions.Tools.ListTasks,
+                 // Storage tools
+                 Permissions.Tools.ListStorage,
                  Permissions.Tools.ListPools,
-                 Permissions.Tools.ListStorage])
+                 Permissions.Tools.ListBackups,
+                 Permissions.Tools.ListStorageContent,
+                 Permissions.Tools.ListBackupJobs,
+                 // Cluster tools
+                 Permissions.Tools.GetClusterStatus])
         ];
     }
 
@@ -96,7 +116,11 @@ public class Module : ModuleBase
         await appTokenService.SyncRolesAsync(token.Id, [RoleName, ClusterPermissions.RoleAdmin.Key]);
     }
 
-    protected virtual IEnumerable<Type> GetTools() => [typeof(Tools.ClusterTools), typeof(Tools.VmTools)];
+    protected virtual IEnumerable<Type> GetTools()
+        => [typeof(Tools.ClusterTools),
+            typeof(Tools.NodeTools),
+            typeof(Tools.StorageTools),
+            typeof(Tools.VmTools)];
 
     protected override void Map(WebApplication app) =>
         app.MapMcp("/mcp")

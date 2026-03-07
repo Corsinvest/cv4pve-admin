@@ -30,7 +30,9 @@ public static class ClusterPermissions
                                                         //Backup
                                                         .CombineWith(Vm.Backup)
                                                         .CombineWith(Vm.BackupRestore)
-                                                        .CombineWith(Vm.BackupRestoreFile));
+                                                        .CombineWith(Vm.BackupRestoreFile)
+
+                                                        .CombineWith(Vm.Migrate));
 
     public static Role RoleStorageUser { get; } = new($"{BaseName}.StorageUser",
                                                       "Cluster Storage User",
@@ -100,5 +102,7 @@ public static class ClusterPermissions
 
         public static Permission Replication { get; } = new(Data.Prefix, nameof(Replication), "Replication manager");
         public static Permission ReplicationScheduleNow { get; } = new(Replication.Key, "ScheduleNow", "Replication Schedule Now");
+
+        public static Permission Migrate { get; } = new(Data.Prefix, nameof(Migrate), "Migrate");
     }
 }
