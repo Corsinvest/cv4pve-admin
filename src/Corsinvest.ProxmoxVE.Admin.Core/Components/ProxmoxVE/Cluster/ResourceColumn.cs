@@ -18,13 +18,13 @@ public class ResourceColumn<TItem> : BaseColumn<TItem> where TItem : notnull
         base.OnInitialized();
         var isStatus = Property == nameof(ClusterResource.Status);
 
-        FilterMode = Property switch
-        {
-            nameof(ClusterResource.Node)
-                or nameof(ClusterResource.Type)
-                or nameof(ClusterResource.Status) => Radzen.FilterMode.CheckBoxList,
-            _ => null
-        };
+        //FilterMode = Property switch
+        //{
+        //    nameof(ClusterResource.Node)
+        //        or nameof(ClusterResource.Type)
+        //        or nameof(ClusterResource.Status) => Radzen.FilterMode.CheckBoxList,
+        //    _ => null
+        //};
 
         if (Property is nameof(ClusterResource.Type) or nameof(ClusterResource.Status))
         {

@@ -44,7 +44,7 @@
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
-    <PackageVersion Include="MailKit" Version="4.15.0" />
+    <PackageVersion Include="MailKit" Version="4.15.1" />
     <PackageVersion Include="System.CommandLine" Version="2.0.3" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->
@@ -69,8 +69,8 @@
   </ItemGroup>
   <!-- MCP Server -->
   <ItemGroup>
-    <PackageVersion Include="ModelContextProtocol" Version="1.0.0" />
-    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.0.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Wangkanai.Detection" Version="8.20.0" />

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mkdocs:
     image: squidfunk/mkdocs-material:latest

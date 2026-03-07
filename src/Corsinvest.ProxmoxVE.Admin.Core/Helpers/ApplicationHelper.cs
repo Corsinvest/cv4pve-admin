@@ -35,7 +35,7 @@ public static class ApplicationHelper
     public const string CookieCultureName = "cv4pve-admin-culture";
     public const string RepoGitHub = "corsinvest/cv4pve-admin";
     public const string GitHubRepoUrl = $"https://github.com/{RepoGitHub}";
-    public const string GitHubReleasesLatestDownloadUrl = $"{GitHubRepoUrl}/releases/latest/download";
+    public static string GitHubReleasesVersionDownloadUrl => $"{GitHubRepoUrl}/releases/download/v{BuildInfo.Version}";
     public const string DocumentationUrl = "https://corsinvest.github.io/cv4pve-admin";
     private const string GitHubIssueBaseUrl = $"{GitHubRepoUrl}/issues/new";
 
@@ -58,7 +58,12 @@ public static class ApplicationHelper
 
     public const string UrlShopSubscription = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
 
-    public static string ExecutionPath { get; } = AppContext.BaseDirectory;
+    public static string ExecutionPath { get; } =
+#if DEBUG
+        Directory.GetCurrentDirectory();
+#else
+        AppContext.BaseDirectory;
+#endif
     public static string ConfigPath { get; } = Path.Combine(ExecutionPath, "config");
     public static string DataPath { get; } = Path.Combine(ExecutionPath, "data");
     public static string ImagesPath { get; } = Path.Combine(DataPath, "images");

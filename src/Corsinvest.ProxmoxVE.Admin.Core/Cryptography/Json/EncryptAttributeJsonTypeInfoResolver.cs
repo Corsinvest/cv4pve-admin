@@ -22,7 +22,8 @@ public class EncryptAttributeJsonTypeInfoResolver(IServiceProvider serviceProvid
                 {
                     var dataProtectionProvider = serviceProvider.GetRequiredService<IDataProtectionProvider>();
                     var protector = dataProtectionProvider.CreateProtector("EncryptPropertyConverter");
-                    property.CustomConverter = new EncryptJsonConverter(protector);
+                    var logger = serviceProvider.GetService<ILogger<EncryptJsonConverter>>();
+                    property.CustomConverter = new EncryptJsonConverter(protector, logger);
                 }
             }
         }

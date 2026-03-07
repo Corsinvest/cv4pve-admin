@@ -1,10 +1,10 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 # SPDX-FileCopyrightText: Copyright Corsinvest Srl
 # SPDX-License-Identifier: AGPL-3.0-only
 
 param(
     [Parameter(Mandatory = $false)]
-    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge")]
+    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge", "docs-start", "docs-stop")]
     [string]$Command = "build",
 
     [Parameter(Mandatory = $false)]
@@ -187,6 +187,22 @@ switch ($Command) {
         }
     }
 
+    "docs-start" {
+        $docsPath = "$PSScriptRoot/docs/user"
+        docker compose -f $docsPath\docker-compose.yml down
+        Write-Host "Starting MkDocs (http://localhost:8000)..." -ForegroundColor Cyan
+        docker compose -f $docsPath\docker-compose.yml up -d
+        if ($LASTEXITCODE -ne 0) { Write-Host "Failed to start MkDocs!" -ForegroundColor Red; exit $LASTEXITCODE }
+        Write-Host "MkDocs running at http://localhost:8000" -ForegroundColor Green
+    }
+
+    "docs-stop" {
+        $docsPath = "$PSScriptRoot/docs/user"
+        Write-Host "Stopping MkDocs..." -ForegroundColor Cyan
+        docker compose -f $docsPath\docker-compose.yml down
+        if ($LASTEXITCODE -ne 0) { Write-Host "Failed to stop MkDocs (maybe not running?)" -ForegroundColor Yellow }
+    }
+
     "run" {
         $composeFile = "docker-compose-$($editionName.ToLower()).yaml"
         $env:CV4PVE_ADMIN_TAG = $currentVersion
@@ -207,4 +223,4 @@ switch ($Command) {
     }
 }
 
-Write-Host "`n✓ Done!" -ForegroundColor Green
+Write-Host "`nDone!" -ForegroundColor Green
