@@ -78,13 +78,23 @@ public class ClusterCachedData
                                5 * 60,
                                forceReload);
 
+    private static int GetRrdCacheTtl(RrdDataTimeFrame timeFrame) => timeFrame switch
+    {
+        RrdDataTimeFrame.Hour  => 120,
+        RrdDataTimeFrame.Day   => 60 * 5,
+        RrdDataTimeFrame.Week  => 60 * 30,
+        RrdDataTimeFrame.Month => 60 * 60 * 2,
+        RrdDataTimeFrame.Year  => 60 * 60 * 12,
+        _                      => 120
+    };
+
     public async Task<IEnumerable<NodeRrdData>> GetRrdDataAsync(string node,
                                                                 RrdDataTimeFrame rrdDataTimeFrame,
                                                                 RrdDataConsolidation rrdDataConsolidation,
                                                                 bool forceReload)
         => await GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
                                async () => await (await GetPveClientAsync()).Nodes[node].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
-                               30,
+                               GetRrdCacheTtl(rrdDataTimeFrame),
                                forceReload);
 
     public async Task<IEnumerable<NodeStorageRrdData>> GetRrdDataAsync(string node,
@@ -94,7 +104,7 @@ public class ClusterCachedData
                                                                        bool forceReload)
     => await GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{storage}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
                            async () => await (await GetPveClientAsync()).Nodes[node].Storage[storage].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
-                           30,
+                           GetRrdCacheTtl(rrdDataTimeFrame),
                            forceReload);
 
     private class DummyClusterResourceVmOsInfo : IClusterResourceVmOsInfo
@@ -130,7 +140,7 @@ public class ClusterCachedData
                                                               bool forceReload)
         => await GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{vmType}:{vmId}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
                                async () => await (await GetPveClientAsync()).GetVmRrdDataAsync(node, vmType, vmId, rrdDataTimeFrame, rrdDataConsolidation),
-                               30,
+                               GetRrdCacheTtl(rrdDataTimeFrame),
                                forceReload);
 
     public async Task<IEnumerable<VmSnapshot>> GetSnapshotsAsync(string node,
