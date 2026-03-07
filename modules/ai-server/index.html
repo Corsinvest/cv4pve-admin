@@ -1034,6 +1034,158 @@ Use <strong>cv4pve-mcp-bridge</strong> to proxy stdio ↔ HTTP.</p>
 <p class="admonition-title">Tip</p>
 <p>Use the <strong>Bridge</strong> tab in the AI Server module to download the binary for your platform and generate a ready-to-use <code>claude_desktop_config.json</code> pre-filled with your server URL.</p>
 </div>
+<h2 id="available-tools">Available Tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
+<h3 id="cluster">Cluster<a class="headerlink" href="#cluster" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ListClusters</code></td>
+<td>List all configured clusters with name and description</td>
+</tr>
+<tr>
+<td><code>GetClusterStatus</code></td>
+<td>Cluster health summary: node count (online/offline), VM count (running/stopped/paused)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="virtual-machines">Virtual Machines<a class="headerlink" href="#virtual-machines" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ListVms</code></td>
+<td>List VMs and containers with status, resource usage. Supports status/type filters and Minimal/Full detail</td>
+</tr>
+<tr>
+<td><code>ListSnapshots</code></td>
+<td>List VM snapshots with dates. Full detail includes description and parent. Optional disk size</td>
+</tr>
+<tr>
+<td><code>GetVmConfig</code></td>
+<td>Full VM/LXC configuration: CPU, memory, disks, network, agent, boot options</td>
+</tr>
+<tr>
+<td><code>ChangeVmState</code></td>
+<td>Change VM power state: Start, Stop (force), Shutdown (graceful), Reset</td>
+</tr>
+<tr>
+<td><code>CreateVmSnapshot</code></td>
+<td>Create a VM/LXC snapshot, with optional description and RAM state (QEMU only)</td>
+</tr>
+<tr>
+<td><code>DeleteVmSnapshot</code></td>
+<td>Delete a VM/LXC snapshot</td>
+</tr>
+<tr>
+<td><code>RollbackVmSnapshot</code></td>
+<td>Rollback a VM/LXC to a snapshot</td>
+</tr>
+<tr>
+<td><code>MigrateVm</code></td>
+<td>Migrate VM/LXC to another node, with optional live migration and target storage</td>
+</tr>
+<tr>
+<td><code>BackupVm</code></td>
+<td>Create a VM/LXC backup via vzdump with optional storage, mode, compression, bandwidth limit</td>
+</tr>
+<tr>
+<td><code>ListVmRrdData</code></td>
+<td>Historical metrics (CPU, Memory, Disk, Network, Pressure PSI) for one or more VMs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="nodes">Nodes<a class="headerlink" href="#nodes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ListNodes</code></td>
+<td>List cluster nodes with CPU, memory, disk usage. Minimal/Full detail level</td>
+</tr>
+<tr>
+<td><code>GetNodeStatus</code></td>
+<td>Detailed node status: PVE version, kernel, CPU model, memory, swap, load average, root fs</td>
+</tr>
+<tr>
+<td><code>ListReplications</code></td>
+<td>List cluster replications with schedule, sync status and error info</td>
+</tr>
+<tr>
+<td><code>ListNodeRrdData</code></td>
+<td>Historical metrics (CPU, Load avg, Memory, Swap, Disk, Network, Pressure PSI) for nodes</td>
+</tr>
+<tr>
+<td><code>ListTasks</code></td>
+<td>List cluster tasks (active and recent) with status, type, user and duration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="storage-backup">Storage &amp; Backup<a class="headerlink" href="#storage-backup" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ListStorage</code></td>
+<td>List cluster storage with type, status, usage. Minimal/Full detail level</td>
+</tr>
+<tr>
+<td><code>ListPools</code></td>
+<td>List cluster resource pools with descriptions</td>
+</tr>
+<tr>
+<td><code>ListBackups</code></td>
+<td>List backups on a specific node and storage, with optional VM ID filter</td>
+</tr>
+<tr>
+<td><code>ListStorageContent</code></td>
+<td>List storage content (ISO, templates, images, backups) on a specific node and storage. Optional content type filter</td>
+</tr>
+<tr>
+<td><code>ListBackupJobs</code></td>
+<td>List cluster backup jobs with schedule, storage, compression and VM list</td>
+</tr>
+</tbody>
+</table>
+<h3 id="query">Query <span class="ee"></span><a class="headerlink" href="#query" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetQuerySchema</code></td>
+<td>Get schema (fields and types) for all available query tables</td>
+</tr>
+<tr>
+<td><code>ExecuteQuery</code></td>
+<td>Execute queries on Proxmox VE cluster data across guests, nodes, storages, snapshots and more</td>
+</tr>
+</tbody>
+</table>
 <h2 id="output-format">Output Format<a class="headerlink" href="#output-format" title="Permanent link">&para;</a></h2>
 <p>The <strong>Output Format</strong> setting controls how tool responses are serialized before being sent to the AI model. Choosing the right format reduces token consumption and improves response quality.</p>
 <p>The table below shows the same request returned in each format, with approximate token counts as an example — actual values vary depending on dataset size.</p>
