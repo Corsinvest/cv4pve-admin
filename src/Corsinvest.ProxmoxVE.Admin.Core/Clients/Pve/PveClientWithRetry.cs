@@ -133,8 +133,9 @@ internal class PveClientWithRetry(string host,
         }
 
         // Don't retry for client errors (4xx except auth)
-        var statusCodeInt = (int)result.StatusCode;
-        return statusCodeInt >= 400 && statusCodeInt < 500 && !IsAuthenticationError(result) ? false : false;
+        //var statusCodeInt = (int)result.StatusCode;
+        //return statusCodeInt >= 400 && statusCodeInt < 500 && !IsAuthenticationError(result) ? false : false;
+        return false;
     }
 
     private static bool IsAuthenticationError(Result result)
