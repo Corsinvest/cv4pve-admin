@@ -65,7 +65,7 @@ This section outlines the current development status of upcoming and evolving mo
 |--------|:--:|:--:|----------|-------------|-----------------|
 | **[Admin Area](configuration/admin-area.md)** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
 | **AI Assistant** | ❌ | 🚧 | Utilities | Chat-based AI for cluster automation and diagnostics | |
-| **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server | <ul><li>QueryTools</li><li>Historical metrics</li><li>Replications</li><li>Backup jobs</li><li>and more...</li></ul> |
+| **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server for AI integration with 20+ tools for VMs, nodes, storage, backups, replications and metrics | <ul><li>`GetQuerySchema` — schema of all query tables</li><li>`ExecuteQuery` — SQL-like queries on cluster data</li></ul> |
 | **[AutoSnap](modules/autosnap.md)** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
 | **[Backup Analytics](modules/backup-analytics.md)** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
 | **[Bots](modules/bots.md)** | ✅ | ✅ | Control | Remote cluster management via Telegram | |

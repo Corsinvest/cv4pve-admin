@@ -69,7 +69,8 @@ public class Module : ModuleBase
                                                              ILogger<Module> logger,
                                                              IServiceScopeFactory scopeFactory) =>
         {
-            var settingsService = scopeFactory.CreateScope().GetSettingsService();
+            using var outerScope = scopeFactory.CreateScope();
+            var settingsService = outerScope.GetSettingsService();
             if (settingsService.GetEnabledClustersSettings().Any(a => a.Name == clusterName))
             {
                 var settings = settingsService.GetForModule<Module, Settings>(ApplicationHelper.AllClusterName);
@@ -93,7 +94,7 @@ public class Module : ModuleBase
                     var registry = Prometheus.Metrics.NewCustomRegistry();
                     registry.AddBeforeCollectCallback(async () =>
                     {
-                        var scope = scopeFactory.CreateScope();
+                        using var scope = scopeFactory.CreateScope();
                         var settingsService = scope.GetSettingsService();
                         var adminService = scope.GetAdminService();
 
