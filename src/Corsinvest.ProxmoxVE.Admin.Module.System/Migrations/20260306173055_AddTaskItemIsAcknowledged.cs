@@ -1,31 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations
+namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations;
+
+/// <inheritdoc />
+public partial class AddTaskItemIsAcknowledged : Migration
 {
     /// <inheritdoc />
-    public partial class AddTaskItemIsAcknowledged : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsAcknowledged",
-                schema: "system",
-                table: "TaskItems",
-                type: "boolean",
-                nullable: false,
-                defaultValue: false);
-        }
+        migrationBuilder.AddColumn<bool>(
+            name: "IsAcknowledged",
+            schema: "system",
+            table: "TaskItems",
+            type: "boolean",
+            nullable: false,
+            defaultValue: false);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "IsAcknowledged",
-                schema: "system",
-                table: "TaskItems");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "IsAcknowledged",
+            schema: "system",
+            table: "TaskItems");
     }
 }

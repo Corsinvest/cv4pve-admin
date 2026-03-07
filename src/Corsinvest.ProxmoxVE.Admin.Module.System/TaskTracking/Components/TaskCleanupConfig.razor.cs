@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 using Corsinvest.ProxmoxVE.Admin.Module.System.TaskTracking.Extensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.TaskTracking.Components;

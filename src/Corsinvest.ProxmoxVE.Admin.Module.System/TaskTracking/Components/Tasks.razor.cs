@@ -28,25 +28,27 @@ public partial class Tasks(ITaskTrackerService taskTracker,
 
     private void OnTrackerChanged(object? sender, TaskItem e)
     {
-        var data = ResultLoadData.Data;
-        var idx = data?.FindIndex(a => a.Id == e.Id) ?? -1;
-        if (idx >= 0)
-        {
-            data![idx] = data[idx] with
-            {
-                Status = e.Status,
-                Phase = e.Phase,
-                Progress = e.Progress,
-                LastLog = e.LastLog,
-                EndedAt = e.EndedAt
-            };
-
-            _ = InvokeAsync(StateHasChanged);
-        }
-        else
-        {
-            _ = InvokeAsync(DataGridRef.Reload);
-        }
+        // var data = ResultLoadData.Data;
+        // var idx = data?.FindIndex(a => a.Id == e.Id) ?? -1;
+        // if (idx >= 0)
+        // {
+        //     data![idx] = data[idx] with
+        //     {
+        //         Status = e.Status,
+        //         Phase = e.Phase,
+        //         Progress = e.Progress,
+        //         LastLog = e.LastLog,
+        //         EndedAt = e.EndedAt
+        //     };
+        //     ResultLoadData = ResultLoadData with { Data = data };
+        //     _ = InvokeAsync(StateHasChanged);
+        // }
+        // else
+        // {
+        //     _ = InvokeAsync(DataGridRef.Reload);
+        // }
+//TODO optimize this by updating the item in the list if it's already loaded, otherwise reload the grid
+        _ = InvokeAsync(DataGridRef.Reload);
     }
 
     private async Task LoadDataAsync(LoadDataArgs args)
