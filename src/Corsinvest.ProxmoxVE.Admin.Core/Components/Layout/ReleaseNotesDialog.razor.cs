@@ -26,7 +26,7 @@ public partial class ReleaseNotesDialog
         string line;
         while ((line = reader.ReadLine()!) != null)
         {
-            if (line.StartsWith("## [") && line.Contains(version))
+            if (line.StartsWith($"## [{version}]"))
             {
                 inVersion = true;
                 continue;
