@@ -27,7 +27,7 @@ internal static class DockerHubFetcher
         }
 
         var client = httpClientFactory.CreateClient("DockerHubReleaseChecker");
-        var url = $"https://registry.hub.docker.com/v2/repositories/{repoDockerHub}/tags";
+        var url = $"https://registry.hub.docker.com/v2/repositories/{repoDockerHub}/tags?page_size=100&ordering=-last_updated";
 
         using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
@@ -45,21 +45,17 @@ internal static class DockerHubFetcher
         var data = await response.Content.ReadFromJsonAsync<DockerHubResponse>(cancellationToken: cancellationToken);
 
         return [.. (data?.Results ?? [])
+                   .Where(tag => !string.IsNullOrWhiteSpace(tag.Name)
+                              && SemVersion.TryParse(tag.Name, SemVersionStyles.Any, out _))
                    .Select(tag =>
                    {
-                       var isPrerelease = false;
-                       if (!string.IsNullOrWhiteSpace(tag.Name) &&
-                           SemVersion.TryParse(tag.Name, SemVersionStyles.Any, out var semVer))
-                       {
-                           isPrerelease = semVer.IsPrerelease;
-                       }
-
+                       SemVersion.TryParse(tag.Name, SemVersionStyles.Any, out var semVer);
                        return new ReleaseInfo
                        {
-                           Prerelease = isPrerelease,
+                           Prerelease = semVer!.IsPrerelease,
                            Url = $"https://hub.docker.com/r/{repoDockerHub}/tags",
                            PublishedAt = tag.TagLastPushed,
-                           Version = tag.Name ?? string.Empty
+                           Version = tag.Name!
                        };
                    })];
     }
