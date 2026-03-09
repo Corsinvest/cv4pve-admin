@@ -6,6 +6,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-03-09
+
+> 🎉 After over a year of complete rewrite, **cv4pve-admin 2.0.0** is here.
+> Rebuilt from scratch on .NET 10, Blazor, and Radzen — modern architecture,
+> modern stack, modern UX. Thank you to all testers and contributors. 🙏
+
+#### Platform
+
+- Multi-cluster management from a single interface
+- Health Score for nodes, VMs, and storages
+- Quick command search filtered by user permissions
+- Fine-grained user roles and permissions per module
+- Audit logging for security-relevant events
+- Localization with per-user language/culture selection
+- Bookmarkable URLs for every cluster and module
+- Real-time progress tracking for running operations
+- Dark/light theme, keyboard shortcuts
+- Docker, native, and .NET Aspire deployment support
+- Notification system with email and WebHook support *(extended channels available in Enterprise Edition)*
+
+### Community Edition
+
+#### Modules
+
+- **AutoSnap** — automated snapshot scheduling with retention policies, hooks, and timeline view
+- **Backup Analytics** — backup trend analysis with size, speed, and duration charts
+- **Replication Analytics** — replication job monitoring and failure tracking
+- **Diagnostic** — cluster health diagnostics with issue scanning and PDF export
+- **Dashboard** — customizable widget-based dashboard (gauges, charts, sparklines, heatmaps)
+- **Node Protect** — node configuration backup with multiple storage backends
+- **Metrics Exporter** — export cluster metrics to external monitoring systems
+- **AI Server** — connect Proxmox VE to AI assistants (Claude, ChatGPT, Cursor…) via Model Context Protocol
+- **Bots** — Telegram bot for remote cluster management
+- **UPS Monitor** — UPS status monitoring via NUT protocol
+- **System Report** — system information and configuration report generation
+- **Updater** — application self-update management
+- **Resources** — cluster resource overview with Health Score, usage charts, and bookmarkable URLs
+
+### Enterprise Edition
+
+#### Additional Modules
+
+- **Portal** — self-service portal for end-user VM management
+- **Workflow** — visual workflow automation powered by Elsa
+- **VM Performance** — advanced VM performance analytics and trending
+- **DRS** — dynamic resource scheduling with HA groups and migration history
+- **AI Server Enterprise** — AI Query Engine: ask questions about your infrastructure in natural language
+- **System Enterprise** — advanced user management with roles, AppTokens (machine-to-machine API authentication with granular permissions), full audit log, SSO integration, and appearance customization
+- **Diagnostic Enterprise** — extended diagnostics with enterprise-specific checks
+- **Node Protect Enterprise** — additional storage providers for node configuration backup
+- **Notifier Enterprise** — extended channels: Apprise, custom webhooks
+- **Profile Enterprise** — extended user profile and SSO integration
+
 ## [2.0.0-rc6] - 2026-03-04
 
 ### Community Edition
