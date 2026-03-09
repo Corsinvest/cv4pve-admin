@@ -1,6 +1,6 @@
 #!/bin/bash
-# CV4PVE Admin - Docker Installation Script
-# Copyright (c) Corsinvest Srl
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
 
 set -e
 
@@ -141,8 +141,7 @@ echo "                  Installation completed!"
 echo "==================================================================="
 echo ""
 echo "Next steps:"
-echo "  1. cd $DIR_NAME"
-echo "  2. docker compose up -d"
+echo "  1. docker compose up -d"
 echo ""
 echo "Access: http://localhost:8080"
 echo "Default credentials: admin@local / Password123!"
