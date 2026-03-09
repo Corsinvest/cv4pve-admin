@@ -15,10 +15,20 @@
             <RadzenText TextStyle="TextStyle.Body2">
                 @L["Download the pre-built binary for your platform. On Linux/macOS run"] <code>chmod +x</code> @L["after download."]
             </RadzenText>
-            <RadzenDataGrid Data="@_platforms" TItem="PlatformInfo" AllowSorting="false" ShowPagingSummary="false"
-                            PagerHorizontalAlign="HorizontalAlign.Left" AllowPaging="false" Density="Density.Compact">
+            <RadzenDataGrid Data="@Platforms"
+                            TItem="PlatformInfo"
+                            AllowSorting="false"
+                            ShowPagingSummary="false"
+                            PagerHorizontalAlign="HorizontalAlign.Left"
+                            AllowPaging="false"
+                            Density="Density.Compact">
                 <Columns>
-                    <RadzenDataGridColumn TItem="PlatformInfo" Property="@nameof(PlatformInfo.Icon)" Width="48px" TextAlign="TextAlign.Center" Sortable="false" Filterable="false">
+                    <RadzenDataGridColumn TItem="PlatformInfo"
+                                          Property="@nameof(PlatformInfo.Icon)"
+                                          Width="48px"
+                                          TextAlign="TextAlign.Center"
+                                          Sortable="false"
+                                          Filterable="false">
                         <Template Context="p">
                             <RadzenIcon Icon="@p.Icon" />
                         </Template>
@@ -27,8 +37,10 @@
                     <RadzenDataGridColumn TItem="PlatformInfo" Property="@nameof(PlatformInfo.File)" Title="@L["File"]" />
                     <RadzenDataGridColumn TItem="PlatformInfo" Width="120px" Title="@L["Download"]" TextAlign="TextAlign.Center">
                         <Template Context="p">
-                            <RadzenButton Icon="download" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary"
-                                          Click="@(() => DownloadBinaryAsync(p))" title="@L["Download"]" />
+                            <RadzenLink Icon="download"
+                                        Path="@($"{ApplicationHelper.GitHubReleasesVersionDownloadUrl}/{p.File}")"
+                                        Target="_blank"
+                                        title="@L["Download"]" />
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
@@ -43,11 +55,17 @@
                 @L["Generate a ready-to-use"] <code>claude_desktop_config.json</code> @L["for this server. Set the path to your downloaded binary before using it."]
             </RadzenText>
 
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="0.5rem" Wrap="FlexWrap.Wrap">
-                <PasswordField Label="@L["App Token"]" @bind-Value="@_apiToken" Placeholder="@L["Paste your App Token here"]" Style="min-width:280px; flex:1" />
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         AlignItems="AlignItems.End"
+                         Gap="0.5rem"
+                         Wrap="FlexWrap.Wrap">
+                <PasswordField Label="@L["App Token"]"
+                               @bind-Value="@ApiToken"
+                               Placeholder="@L["Paste your App Token here"]"
+                               Style="min-width:280px; flex:1" />
 
                 <RadzenFormField Text="@L["Binary path"]" Style="min-width:320px; flex:1">
-                    <RadzenTextBox @bind-Value="@_binaryPath" Placeholder="/path/to/cv4pve-mcp-bridge" />
+                    <RadzenTextBox @bind-Value="@BinaryPath" Placeholder="/path/to/cv4pve-mcp-bridge" />
                 </RadzenFormField>
 
                 <RadzenButton Icon="download" ButtonStyle="ButtonStyle.Primary"
@@ -59,7 +77,7 @@
                               Text="@L["Copy to clipboard"]" />
             </RadzenStack>
 
-            @if (_insecure)
+            @if (Insecure)
             {
                 <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false">
                     @L["The server is using HTTP — the config will include --insecure to disable SSL validation. Do not use in production."]
@@ -67,7 +85,7 @@
             }
 
             <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color)">
-                @L["MCP endpoint:"] <code>@_mcpUrl</code>
+                @L["MCP endpoint:"] <code>@McpUrl</code>
             </RadzenText>
         </RadzenStack>
     </RadzenFieldset>

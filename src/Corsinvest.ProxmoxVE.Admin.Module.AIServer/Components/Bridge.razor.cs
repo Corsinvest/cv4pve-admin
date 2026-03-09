@@ -16,7 +16,7 @@ public partial class Bridge(NavigationManager navigationManager,
     private static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true };
     private record PlatformInfo(string Icon, string Platform, string File);
 
-    private static readonly PlatformInfo[] _platforms =
+    private static readonly PlatformInfo[] Platforms =
     [
         new("desktop_windows", "Windows x64", "cv4pve-mcp-bridge-win-x64.exe"),
         new("terminal", "Linux x64", "cv4pve-mcp-bridge-linux-x64"),
@@ -25,34 +25,31 @@ public partial class Bridge(NavigationManager navigationManager,
         new("laptop_mac", "macOS Apple Silicon", "cv4pve-mcp-bridge-osx-arm64"),
     ];
 
-    private string _mcpUrl = string.Empty;
-    private bool _insecure;
-    private string _binaryPath = string.Empty;
-    private string _apiToken = string.Empty;
+    private string ApiToken { get; set; } = default!;
+    private string McpUrl { get; set; } = default!;
+    private bool Insecure { get; set; } = default!;
+    private string BinaryPath { get; set; } = default!;
 
     protected override void OnInitialized()
     {
         var baseUri = new Uri(navigationManager.BaseUri);
-        _mcpUrl = $"{baseUri.GetLeftPart(UriPartial.Authority)}/mcp";
-        _insecure = baseUri.Scheme == "http";
+        McpUrl = $"{baseUri.GetLeftPart(UriPartial.Authority)}/mcp";
+        Insecure = baseUri.Scheme == "http";
     }
-
-    private Task DownloadBinaryAsync(PlatformInfo platform)
-        => browserService.OpenAsync($"{ApplicationHelper.GitHubReleasesVersionDownloadUrl}/{platform.File}", "_blank");
 
     private string BuildClaudeConfigJson()
     {
         var args = new List<string>
         {
             "--url",
-            _mcpUrl,
+            McpUrl,
             "--api-key",
-            string.IsNullOrWhiteSpace(_apiToken)
+            string.IsNullOrWhiteSpace(ApiToken)
                 ? "YOUR-APP-TOKEN"
-                : _apiToken
+                : ApiToken
         };
 
-        if (_insecure) { args.Add("--insecure"); }
+        if (Insecure) { args.Add("--insecure"); }
 
         return JsonSerializer.Serialize(new
         {
@@ -60,9 +57,9 @@ public partial class Bridge(NavigationManager navigationManager,
             {
                 ["cv4pve-admin"] = new
                 {
-                    command = string.IsNullOrWhiteSpace(_binaryPath)
+                    command = string.IsNullOrWhiteSpace(BinaryPath)
                                 ? "/path/to/cv4pve-mcp-bridge"
-                                : _binaryPath,
+                                : BinaryPath,
                     args
                 }
             }
