@@ -1,5 +1,5 @@
-# CV4PVE Admin - Docker Installation Script
-# Copyright (c) Corsinvest Srl
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
 
 $ErrorActionPreference = "Stop"
 
@@ -135,11 +135,9 @@ Write-Host "                  Installation completed!"
 Write-Host "==================================================================="
 Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. cd $DirName"
-Write-Host "  2. docker compose up -d"
+Write-Host "  1. docker compose up -d"
 Write-Host ""
 Write-Host "Access: http://localhost:8080"
 Write-Host "Default credentials: admin@local / Password123!"
 Write-Host ""
-Write-Host "Tip: Use './adminctl' for easy Docker management"
 Write-Host ""
