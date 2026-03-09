@@ -981,6 +981,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#user-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -997,6 +1008,17 @@
     <span class="md-ellipsis">
       
         Reset a forgotten admin password
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unlock-a-locked-out-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unlock a locked out account
       
     </span>
   </a>
@@ -1082,6 +1104,34 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cv4pve-admin<span class="w"> </span>user<span class="w"> </span>--help
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>cv4pve-admin<span class="w"> </span>user<span class="w"> </span>reset-password<span class="w"> </span>--help
 </span></code></pre></div>
+<h2 id="user-commands">User commands<a class="headerlink" href="#user-commands" title="Permanent link">&para;</a></h2>
+<p>All user commands accept <code>-u &lt;username&gt;</code> (default: <code>admin@local</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user reset-password -u &lt;user&gt; -p &lt;password&gt;</code></td>
+<td>Reset user password</td>
+</tr>
+<tr>
+<td><code>user enable -u &lt;user&gt;</code></td>
+<td>Enable a disabled user account</td>
+</tr>
+<tr>
+<td><code>user disable -u &lt;user&gt;</code></td>
+<td>Disable a user account</td>
+</tr>
+<tr>
+<td><code>user unlock -u &lt;user&gt;</code></td>
+<td>Unlock a locked out user account</td>
+</tr>
+</tbody>
+</table>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="reset-a-forgotten-admin-password">Reset a forgotten admin password<a class="headerlink" href="#reset-a-forgotten-admin-password" title="Permanent link">&para;</a></h3>
 <p>If you are locked out of the web UI, you can reset the password directly via CLI.</p>
@@ -1095,6 +1145,14 @@
 <p class="admonition-title">Warning</p>
 <p>Use a strong password and change it again from the web UI after recovering access.</p>
 </div>
+<h3 id="unlock-a-locked-out-account">Unlock a locked out account<a class="headerlink" href="#unlock-a-locked-out-account" title="Permanent link">&para;</a></h3>
+<p>After too many failed login attempts, the account is locked. To unlock it:</p>
+<p><strong>Docker Compose:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>cv4pve-admin<span class="w"> </span>user<span class="w"> </span>unlock<span class="w"> </span>-u<span class="w"> </span>admin@local
+</span></code></pre></div>
+<p><strong>Binary:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cv4pve-admin<span class="w"> </span>user<span class="w"> </span>unlock<span class="w"> </span>-u<span class="w"> </span>admin@local
+</span></code></pre></div>
 
 
 
