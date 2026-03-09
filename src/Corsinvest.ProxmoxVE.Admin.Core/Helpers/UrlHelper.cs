@@ -10,8 +10,9 @@ public static class UrlHelper
 {
     public const string ModuleComponentUrl = "/module/";
     public static string SystemTasksUrl { get; set; } = default!;
-    public static string UrlNewPveConfig { get; set; } = default!;
-    public static string UrlChangePassword { get; set; } = default!;
+    public static string SystemUrl { get; set; } = default!;
+    public static string NewPveConfigUrl { get; set; } = default!;
+    public static string ChangePasswordUrl { get; set; } = default!;
 
     public static string GetPveUrl(string baseAddress, string id) => $"{baseAddress}/#v1:0:={id}";
 

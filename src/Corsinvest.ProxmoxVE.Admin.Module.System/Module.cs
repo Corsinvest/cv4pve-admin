@@ -46,8 +46,9 @@ public class Module : ModuleBase
         };
 
         var baseUrl = GetBaseUrl(ApplicationHelper.AllClusterName);
-        UrlHelper.UrlNewPveConfig = $"{baseUrl}/{PveClusterLink.Url}?{nameof(Components.ClusterConfig.RenderClustersSettings.Create)}=true";
+        UrlHelper.NewPveConfigUrl = $"{baseUrl}/{PveClusterLink.Url}?{nameof(Components.ClusterConfig.RenderClustersSettings.Create)}=true";
         UrlHelper.SystemTasksUrl = $"{baseUrl}/{TasksLink.Url}";
+        UrlHelper.SystemUrl = baseUrl;
 
         CreateNavMenu();
 

@@ -1269,5 +1269,7 @@
   "Failed": "",
   "Cancelled": "",
   "Abandoned": "",
-  "Are you sure you want to delete audit logs older than {0} days?": ""
+  "Are you sure you want to delete audit logs older than {0} days?": "",
+  "Pve Name": "",
+  "Subscription {0}": ""
 }

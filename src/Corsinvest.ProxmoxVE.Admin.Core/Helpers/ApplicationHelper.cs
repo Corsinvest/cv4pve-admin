@@ -56,7 +56,7 @@ public static class ApplicationHelper
         => $"{GitHubIssueBaseUrl}?title={Uri.EscapeDataString("Who's using cv4pve-admin?")}" +
            $"&body={Uri.EscapeDataString(body)}";
 
-    public const string UrlShopSubscription = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
+    public const string ShopSubscriptionUrl = "https://shop.corsinvest.it/store/cv4pve-admin-pve";
 
     public static string ExecutionPath { get; } =
 #if DEBUG
