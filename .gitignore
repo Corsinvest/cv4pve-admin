@@ -85,6 +85,7 @@ docs/user/site/
 
 # Application data
 src/Corsinvest.ProxmoxVE.Admin/data
+src/Corsinvest.ProxmoxVE.Admin/config
 
 # Testing docker
 src/docker/data/
