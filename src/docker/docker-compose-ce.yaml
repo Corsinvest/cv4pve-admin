@@ -1,6 +1,5 @@
-# CV4PVE Admin Docker Compose
-# Copyright (c) Corsinvest Srl
-# Website: https://corsinvest.it
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
 # Repository: https://gitlab.com/Corsinvest/cv4pve-admin
 
 services:
