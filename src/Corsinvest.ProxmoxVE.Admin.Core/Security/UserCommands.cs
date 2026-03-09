@@ -52,9 +52,17 @@ public static class UserCommands
         disableCommand.SetAction(async action
             => await SetUserEnabledAsync(services, action.GetRequiredValue(usernameOption), false));
 
+        var unlockCommand = new Command("unlock", "Unlock locked out user account")
+        {
+            usernameOption
+        };
+        unlockCommand.SetAction(async action
+            => await UnlockUserAsync(services, action.GetRequiredValue(usernameOption)));
+
         userCommand.Add(resetPasswordCommand);
         userCommand.Add(enableCommand);
         userCommand.Add(disableCommand);
+        userCommand.Add(unlockCommand);
 
         return userCommand;
     }
@@ -88,6 +96,37 @@ public static class UserCommands
                 Console.WriteLine($"  - {error.Description}");
             }
             return 1;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return 1;
+        }
+    }
+
+    private static async Task<int> UnlockUserAsync(IServiceProvider services, string username)
+    {
+        try
+        {
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                Console.WriteLine($"Error: User '{username}' not found");
+                return 1;
+            }
+
+            var result = await userManager.SetLockoutEndDateAsync(user, null);
+            if (!result.Succeeded)
+            {
+                Console.WriteLine("Error unlocking user:");
+                foreach (var error in result.Errors) { Console.WriteLine($"  - {error.Description}"); }
+                return 1;
+            }
+
+            await userManager.ResetAccessFailedCountAsync(user);
+            Console.WriteLine($"✓ User '{username}' has been unlocked successfully");
+            return 0;
         }
         catch (Exception ex)
         {
