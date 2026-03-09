@@ -48,6 +48,19 @@ Model Context Protocol (MCP) endpoint that enables AI assistants to interact wit
 
 ## Connecting AI Clients
 
+### First-time setup
+
+Before connecting any AI client, generate the API key:
+
+1. Open the **AI Server** module and go to the **API Access** tab
+2. Click **Regenerate** on the AI Server token
+3. Copy the key — it will be used in the connection URL below
+
+!!! warning
+    The API key is shown only once after generation. Copy it before closing the dialog.
+
+### MCP endpoint URL
+
 The MCP endpoint is exposed at:
 
 ```
