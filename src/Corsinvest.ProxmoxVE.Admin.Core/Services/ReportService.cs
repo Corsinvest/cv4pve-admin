@@ -47,7 +47,7 @@ internal class ReportService(IStringLocalizer<ReportService> L, ISettingsService
 
         // "Get Enterprise" link
         var linkParagraph = section.AddParagraph();
-        var hyperlinkSubscription = linkParagraph.AddHyperlink(ApplicationHelper.UrlShopSubscription, HyperlinkType.Web);
+        var hyperlinkSubscription = linkParagraph.AddHyperlink(ApplicationHelper.ShopSubscriptionUrl, HyperlinkType.Web);
         hyperlinkSubscription.AddFormattedText(L["Get Enterprise"], TextFormat.Bold);
         hyperlinkSubscription.Font.Underline = Underline.Single;
         hyperlinkSubscription.Font.Color = MigraDocColors.Blue;

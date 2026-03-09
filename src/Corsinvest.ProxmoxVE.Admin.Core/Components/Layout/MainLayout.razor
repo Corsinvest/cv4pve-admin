@@ -71,7 +71,7 @@
                                           ButtonStyle="ButtonStyle.Warning"
                                           Variant="Variant.Flat"
                                           Size="ButtonSize.Small"
-                                          Click="@(() => NavigationManager.NavigateTo(UrlHelper.UrlNewPveConfig, true))"
+                                          Click="@(() => NavigationManager.NavigateTo(UrlHelper.NewPveConfigUrl, true))"
                                           class="animate__animated animate__pulse animate__infinite"
                                           Text="@L["Add cluster"]" />
                         }
@@ -144,7 +144,7 @@
                     <RadzenText TextStyle="TextStyle.Body1">@L["You are using the default password. Please change it immediately."]</RadzenText>
                 </div>
             };
-            message.DetailContent = _ => @<RadzenLink Path="@UrlHelper.UrlChangePassword"
+            message.DetailContent = _ => @<RadzenLink Path="@UrlHelper.ChangePasswordUrl"
                             Text="@L["Change password now"]"
                             Style="font-weight:700; font-size:1rem;"
                 @onclick="@(() => NotificationService.Messages.Remove(message))" />;

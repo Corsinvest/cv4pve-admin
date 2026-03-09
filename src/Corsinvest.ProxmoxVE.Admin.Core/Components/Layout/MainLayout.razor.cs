@@ -91,7 +91,7 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
     {
         if (!SettingsService.GetEnabledClustersSettings().Any())
         {
-            NavigationManager.NavigateTo(UrlHelper.UrlNewPveConfig);
+            NavigationManager.NavigateTo(UrlHelper.NewPveConfigUrl);
         }
     }
 
