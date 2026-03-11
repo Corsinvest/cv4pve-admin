@@ -89,12 +89,12 @@
 
                                     @if (item.Tags != null)
                                     {
-                                        <RadzenStack Orientation="Orientation.Vertical">
+                                        <div style="display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; flex-shrink: 0; max-width: 50%; justify-content: flex-end;">
                                             @foreach (var tag in item.Tags)
                                             {
-                                                <RadzenBadge Shade="Shade.Lighter" BadgeStyle="@tag.Style" Text="@tag.Value" IsPill="true" Style="width: 150px; text-wrap:auto;" />
+                                                <RadzenBadge Shade="Shade.Lighter" BadgeStyle="@tag.Style" Text="@tag.Value" IsPill="false" Style="white-space: normal; word-break: break-word;" />
                                             }
-                                        </RadzenStack>
+                                        </div>
                                     }
 
                                     @if (item.ResultType == SearchResultType.Command && item.Command != null)

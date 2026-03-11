@@ -92,7 +92,7 @@ public class PveSearchProvider : ISearchProvider
                 var vm = await client.GetVmAsync(_vmParamVmRunning.ToLong(context.Parameters));
 
                 var browserService = context.ServiceProvider.GetRequiredService<IBrowserService>();
-                await browserService.OpenPveConsole(clusterClient.GetUrlWebConsole(vm.Node, vm.VmType, vm.VmId, vm.Name, false));
+                await browserService.OpenPveConsole(clusterClient.GetWebConsoleUrl(vm.Node, vm.VmType, vm.VmId, vm.Name, false));
                 break;
 
             case ClusterAccessType.ApiToken:
@@ -100,6 +100,7 @@ public class PveSearchProvider : ISearchProvider
                 var L = context.ServiceProvider.GetRequiredService<IStringLocalizer<PveSearchProvider>>();
                 notificationService.Info(L["Console not supported with API Token access. Please use Credential access type to enable this feature."]);
                 break;
+
             default:
                 break;
         }
@@ -173,19 +174,40 @@ public class PveSearchProvider : ISearchProvider
                 vms = await _permissionService.FilterAsync(context.ClusterName, vms);
 
                 var data = vms.AsQueryable()
-                                .ProjectToType<ClusterResourceEx>()
-                                .ToList()
-                                .ConvertAll(item =>
-                                {
-                                    item.ClusterName = context.ClusterName;
-                                    return item;
-                                });
+                              .ProjectToType<ClusterResourceEx>()
+                              .ToList()
+                              .ConvertAll(item =>
+                              {
+                                  item.ClusterName = context.ClusterName;
+                                  return item;
+                              });
 
                 if (context.TryGetFilter(IpFilter, out _))
                 {
                     foreach (var item in data)
                     {
                         item.Set(await clusterClient.CachedData.GetVmOsInfoAsync(item, false));
+
+                        if (item.VmType == VmType.Qemu)
+                        {
+                            var network = await clusterClient.CachedData.GetQemuNetworkAsync(item.Node, item.VmId, false);
+                            item.IpAddresses = network.Result
+                                                      .Where(a => !string.IsNullOrEmpty(a.HardwareAddress)
+                                                                    && a.HardwareAddress != "00:00:00:00:00:00"
+                                                                    && a.HardwareAddress != "0:0:0:0:0:0")
+                                                      .SelectMany(a => a.IpAddresses)
+                                                      .Where(a => !a.IpAddress.Contains(':'))
+                                                      .Select(a => $"{a.IpAddress}/{a.Prefix}")
+                                                      .JoinAsString(",");
+                        }
+                        else if (item.VmType == VmType.Lxc)
+                        {
+                            var config = await clusterClient.CachedData.GetVmConfigAsync(item.Node, item.VmType, item.VmId, false);
+                            item.IpAddresses = config.Networks
+                                                     .Select(a => a.IpAddress)
+                                                     .Where(ip => !ip.Contains(':') && ip != "127.0.0.1")
+                                                     .JoinAsString(",");
+                        }
                     }
                 }
 
@@ -210,6 +232,16 @@ public class PveSearchProvider : ISearchProvider
                     if (!string.IsNullOrEmpty(a.OsVersion))
                     {
                         tags.Add(new(a.OsVersion, PveAdminUIHelper.ToBadgeStyle(Colors.Info)));
+                    }
+
+                    if (context.TryGetFilter(IpFilter, out _) && !string.IsNullOrEmpty(a.IpAddresses))
+                    {
+                        var ips = a.IpAddresses.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var ip in ips)
+                        {
+                            tags.Add(new(ip, PveAdminUIHelper.ToBadgeStyle(Colors.Black)));
+                        }
+                        extraInfo.AddRange(ips);
                     }
 
                     return new SearchResultItem
