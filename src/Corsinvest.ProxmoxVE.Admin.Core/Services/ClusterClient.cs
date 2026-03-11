@@ -63,15 +63,15 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
         return ret;
     }
 
-    public string GetUrlWebConsole(string node, bool xTermJs)
+    public string GetWebConsoleUrl(string node, bool xTermJs)
     {
         var encode = true;
         return encode
-                    ? GetUrlWebConsole(node, VmType.Qemu, 0, string.Empty, xTermJs)
+                    ? GetWebConsoleUrl(node, VmType.Qemu, 0, string.Empty, xTermJs)
                     : PveAdminHelper.GetUrlWebConsole(clusterSettings.Name, node, xTermJs);
     }
 
-    public string GetUrlWebConsole(string node, VmType vmType, long vmId, string vmName, bool xTermJs)
+    public string GetWebConsoleUrl(string node, VmType vmType, long vmId, string vmName, bool xTermJs)
     {
         var encode = true;
         if (encode)

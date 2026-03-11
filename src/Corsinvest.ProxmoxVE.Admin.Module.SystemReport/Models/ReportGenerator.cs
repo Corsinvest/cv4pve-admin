@@ -155,7 +155,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
         ws.Column(2).Width = 60;
     }
 
-    private void ConfigureWorkbook(XLWorkbook workbook)
+    private static void ConfigureWorkbook(XLWorkbook workbook)
     {
         workbook.Author = "cv4pve-admin";
         workbook.Properties.Author = "cv4pve-admin Corsinvest Srl";
@@ -816,7 +816,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
         {
             if (!CheckNames(job.VmIds, item.VmId.ToString())) { continue; }
 
-            var config = await client.GetVmConfigAsync(item.Node, item.VmType, item.VmId);
+            var config = await clusterClient.CachedData.GetVmConfigAsync(item.Node, item.VmType, item.VmId, false);
             var cnfigQemu = config as VmConfigQemu;
             var configLxc = config as VmConfigLxc;
 
@@ -1130,7 +1130,7 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
 
     #region Compliance Mapping
 
-    private void AddComplianceMappingTables(XLWorkbook workbook)
+    private static void AddComplianceMappingTables(XLWorkbook workbook)
     {
         var ws = workbook.Worksheets.Add("Compliance");
         var row = 1;
@@ -1155,54 +1155,54 @@ public class ReportGenerator(PveClient client, ClusterClient clusterClient, JobR
         ws.Columns().AdjustToContents();
     }
 
-    private void AddComplianceMappingSection(IXLWorksheet ws,
-                                                    ref int row,
-                                                    string title,
-                                                    IEnumerable<ComplianceMapping> mappings)
-    {
-        ws.Cell(row, 1).Value = title;
-        ws.Cell(row, 1).Style.Font.SetBold(true);
-        row++;
+    //private void AddComplianceMappingSection(IXLWorksheet ws,
+    //                                                ref int row,
+    //                                                string title,
+    //                                                IEnumerable<ComplianceMapping> mappings)
+    //{
+    //    ws.Cell(row, 1).Value = title;
+    //    ws.Cell(row, 1).Style.Font.SetBold(true);
+    //    row++;
 
-        // Crea tabella manualmente per aggiungere link
-        var tableStartRow = row;
-        ws.Cell(row, 1).Value = "Code";
-        ws.Cell(row, 2).Value = "Name";
-        ws.Cell(row, 3).Value = "Section";
-        ws.Range(row, 1, row, 3).Style.Font.SetBold(true);
-        ws.Range(row, 1, row, 3).Style.Fill.SetBackgroundColor(XLColor.LightGray);
-        row++;
+    //    // Crea tabella manualmente per aggiungere link
+    //    var tableStartRow = row;
+    //    ws.Cell(row, 1).Value = "Code";
+    //    ws.Cell(row, 2).Value = "Name";
+    //    ws.Cell(row, 3).Value = "Section";
+    //    ws.Range(row, 1, row, 3).Style.Font.SetBold(true);
+    //    ws.Range(row, 1, row, 3).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+    //    row++;
 
-        foreach (var mapping in mappings)
-        {
-            ws.Cell(row, 1).Value = mapping.Code;
-            ws.Cell(row, 2).Value = mapping.Name;
+    //    foreach (var mapping in mappings)
+    //    {
+    //        ws.Cell(row, 1).Value = mapping.Code;
+    //        ws.Cell(row, 2).Value = mapping.Name;
 
-            // Estrae riferimenti alle tabelle dal testo Section (es. "See: Users, Roles, ACL tables")
-            var sectionText = mapping.Section;
-            ws.Cell(row, 3).Value = sectionText;
+    //        // Estrae riferimenti alle tabelle dal testo Section (es. "See: Users, Roles, ACL tables")
+    //        var sectionText = mapping.Section;
+    //        ws.Cell(row, 3).Value = sectionText;
 
-            // Cerca link alle tabelle note
-            var tableLinks = ExtractTableLinks(sectionText);
-            if (tableLinks.Any())
-            {
-                // Primo link disponibile
-                var (Sheet, Row) = tableLinks.First();
-                ws.Cell(row, 3).Style.Font.SetUnderline(XLFontUnderlineValues.Single);
-                ws.Cell(row, 3).Style.Font.SetFontColor(XLColor.Blue);
-                ws.Cell(row, 3).SetHyperlink(new XLHyperlink($"'{Sheet}'!A{Row}"));
-            }
+    //        // Cerca link alle tabelle note
+    //        var tableLinks = ExtractTableLinks(sectionText);
+    //        if (tableLinks.Any())
+    //        {
+    //            // Primo link disponibile
+    //            var (Sheet, Row) = tableLinks.First();
+    //            ws.Cell(row, 3).Style.Font.SetUnderline(XLFontUnderlineValues.Single);
+    //            ws.Cell(row, 3).Style.Font.SetFontColor(XLColor.Blue);
+    //            ws.Cell(row, 3).SetHyperlink(new XLHyperlink($"'{Sheet}'!A{Row}"));
+    //        }
 
-            row++;
-        }
+    //        row++;
+    //    }
 
-        // Formatta come tabella
-        var tableRange = ws.Range(tableStartRow, 1, row - 1, 3);
-        tableRange.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-        tableRange.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+    //    // Formatta come tabella
+    //    var tableRange = ws.Range(tableStartRow, 1, row - 1, 3);
+    //    tableRange.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+    //    tableRange.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
 
-        row += 2;
-    }
+    //    row += 2;
+    //}
 
     /// <summary>
     /// Estrae link alle tabelle dal testo della sezione compliance

@@ -80,12 +80,12 @@ public class ClusterCachedData
 
     private static int GetRrdCacheTtl(RrdDataTimeFrame timeFrame) => timeFrame switch
     {
-        RrdDataTimeFrame.Hour  => 120,
-        RrdDataTimeFrame.Day   => 60 * 5,
-        RrdDataTimeFrame.Week  => 60 * 30,
+        RrdDataTimeFrame.Hour => 120,
+        RrdDataTimeFrame.Day => 60 * 5,
+        RrdDataTimeFrame.Week => 60 * 30,
         RrdDataTimeFrame.Month => 60 * 60 * 2,
-        RrdDataTimeFrame.Year  => 60 * 60 * 12,
-        _                      => 120
+        RrdDataTimeFrame.Year => 60 * 60 * 12,
+        _ => 120
     };
 
     public async Task<IEnumerable<NodeRrdData>> GetRrdDataAsync(string node,
@@ -106,6 +106,26 @@ public class ClusterCachedData
                            async () => await (await GetPveClientAsync()).Nodes[node].Storage[storage].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
                            GetRrdCacheTtl(rrdDataTimeFrame),
                            forceReload);
+
+
+    public async Task<VmQemuAgentNetworkGetInterfaces> GetQemuNetworkAsync(string node, long vmId, bool forceReload)
+        => await GetOrSetAsync($"{nameof(GetQemuNetworkAsync)}:{node}:{vmId}",
+                               async () =>
+                               {
+                                   try
+                                   {
+                                       var client = await GetPveClientAsync();
+                                       return await client.Nodes[node].Qemu[vmId].Agent.NetworkGetInterfaces.GetAsync();
+                                   }
+                                   catch
+                                   {
+                                       //logger.LogWarning(ex, "Failed to get network interfaces from QEMU agent for VM {VmId} on node {Node}", Vm.VmId, Vm.Node);
+                                   }
+
+                                   return new VmQemuAgentNetworkGetInterfaces { };
+                               },
+                               60 * 30,
+                               forceReload);
 
     private class DummyClusterResourceVmOsInfo : IClusterResourceVmOsInfo
     {
@@ -168,11 +188,19 @@ public class ClusterCachedData
                                60,
                                forceReload);
 
+    public async Task<VmConfig> GetVmConfigAsync(string node, VmType vmType, long vmId, bool forceReload)
+        => vmType switch
+        {
+            VmType.Qemu => await GetQemuConfigAsync(node, vmId, forceReload),
+            VmType.Lxc => await GetLxcConfigAsync(node, vmId, forceReload),
+            _ => throw new InvalidEnumArgumentException(),
+        };
+
     public async Task<VmConfigQemu> GetQemuConfigAsync(string node, long vmId, bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetQemuConfigAsync)}:{node}:{vmId}",
-                               async () => await (await GetPveClientAsync()).Nodes[node].Qemu[vmId].Config.GetAsync(),
-                               60,
-                               forceReload);
+            => await GetOrSetAsync($"{nameof(GetQemuConfigAsync)}:{node}:{vmId}",
+                                   async () => await (await GetPveClientAsync()).Nodes[node].Qemu[vmId].Config.GetAsync(),
+                                   60,
+                                   forceReload);
 
     public async Task<VmConfigLxc> GetLxcConfigAsync(string node, long vmId, bool forceReload)
         => await GetOrSetAsync($"{nameof(GetLxcConfigAsync)}:{node}:{vmId}",

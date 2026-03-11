@@ -824,7 +824,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         {
             if (!CheckNames(job.StorageNames, item.VmId.ToString())) { continue; }
 
-            var config = await client.GetVmConfigAsync(item.Node, item.VmType, item.VmId);
+            var config = await clusterClient.CachedData.GetVmConfigAsync(item.Node, item.VmType, item.VmId, false);
             var cnfigQemu = config as VmConfigQemu;
             var configLxc = config as VmConfigLxc;
 
