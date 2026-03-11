@@ -1271,5 +1271,11 @@
   "Abandoned": "",
   "Are you sure you want to delete audit logs older than {0} days?": "",
   "Pve Name": "",
-  "Subscription {0}": ""
+  "Subscription {0}": "",
+  "Version": "",
+  "not running": "",
+  "Host Name": "",
+  "OS Info": "",
+  "Restore file {0}": "",
+  "Configuration {0}": ""
 }
