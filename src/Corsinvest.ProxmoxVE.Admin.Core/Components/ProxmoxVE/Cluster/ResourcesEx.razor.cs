@@ -248,7 +248,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
         if (group.Data.Count > 0 && group.Data.Items != null)
         {
-            var clusterName = group.Data.Items!.Cast<ClusterResourceEx>().FirstOrDefault()!.ClusterName;
+            var clusterName = group.Data.Items.Cast<ClusterResourceEx>().FirstOrDefault()!.ClusterName;
 
             if (group.GroupDescriptor!.Property == nameof(IClusterName.ClusterName))
             {
