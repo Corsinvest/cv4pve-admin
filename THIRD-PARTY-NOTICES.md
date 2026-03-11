@@ -16,27 +16,52 @@ This project incorporates components from the following third-party projects. Th
 
 ## 2. .NET NuGet Packages
 
-| Package / Group | License | Project Link |
+| Package | License | Project Link |
 | --- | --- | --- |
-| **Radzen.Blazor** | MIT | [Radzen.Blazor](https://github.com/radzenhq/radzen-blazor) |
-| **Entity Framework Core** | MIT | [EF Core](https://github.com/dotnet/efcore) |
-| **Npgsql (EF Core PostgreSQL)** | PostgreSQL | [Npgsql](https://github.com/npgsql/efcore.pg) |
-| **Serilog Ecosystem** | Apache-2.0 | [Serilog](https://github.com/serilog/serilog) |
-| **OpenTelemetry .NET** | Apache-2.0 | [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-dotnet) |
-| **Hangfire (Core & Storage)** | LGPL-3.0 | [Hangfire](https://github.com/HangfireIO/Hangfire) |
+| **BlazorDownloadFile** | MIT | [BlazorDownloadFile](https://github.com/arivera12/BlazorDownloadFile) |
 | **ClosedXML & Reports** | MIT | [ClosedXML](https://github.com/ClosedXML/ClosedXML) |
-| **PDFsharp & MigraDoc** | MIT | [PDFsharp](https://github.com/empira/PDFsharp) |
-| **Blazored (Storage & Session)** | MIT | [Blazored](https://github.com/Blazored) |
+| **cronos** | MIT | [cronos](https://github.com/HangfireIO/Cronos) |
+| **CronExpressionDescriptor** | MIT | [CronExpressionDescriptor](https://github.com/bradymholt/cron-expression-descriptor) |
+| **CsvHelper** | MS-PL / Apache-2.0 | [CsvHelper](https://github.com/JoshClose/CsvHelper) |
+| **Elsa Workflows** | MIT | [Elsa](https://github.com/elsa-workflows/elsa-core) |
+| **Entity Framework Core** | MIT | [EF Core](https://github.com/dotnet/efcore) |
 | **FluentResults** | MIT | [FluentResults](https://github.com/altmann/FluentResults) |
+| **Hangfire (Core & Storage)** | LGPL-3.0 | [Hangfire](https://github.com/HangfireIO/Hangfire) |
+| **HtmlAgilityPack** | MIT | [HtmlAgilityPack](https://github.com/zzzprojects/html-agility-pack) |
 | **Humanizer** | MIT | [Humanizer](https://github.com/Humanizr/Humanizer) |
+| **Lextm.SharpSnmpLib** | MIT | [SharpSnmpLib](https://github.com/lextm/sharpsnmplib) |
+| **LibGit2Sharp** | MIT | [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) |
 | **MailKit** | MIT | [MailKit](https://github.com/jstedfast/MailKit) |
 | **Mapster** | MIT | [Mapster](https://github.com/MapsterMapper/Mapster) |
+| **Microsoft.AspNetCore.SignalR.Client** | MIT | [SignalR](https://github.com/dotnet/aspnetcore) |
+| **Microsoft.Extensions.ServiceDiscovery** | MIT | [Aspire ServiceDiscovery](https://github.com/dotnet/aspire) |
 | **Model Context Protocol (MCP)** | Apache-2.0 | [MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk) |
+| **Npgsql (EF Core PostgreSQL)** | PostgreSQL | [Npgsql](https://github.com/npgsql/efcore.pg) |
+| **OpenLayers.Blazor** | MIT | [OpenLayers.Blazor](https://github.com/loiste-interactive/OpenLayers-Blazor) |
+| **OpenTelemetry .NET** | Apache-2.0 | [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-dotnet) |
+| **Otp.NET** | MIT | [Otp.NET](https://github.com/kspearrin/Otp.NET) |
+| **PDFsharp & MigraDoc** | MIT | [PDFsharp](https://github.com/empira/PDFsharp) |
+| **Radzen.Blazor** | MIT | [Radzen.Blazor](https://github.com/radzenhq/radzen-blazor) |
+| **Semver** | MIT | [Semver](https://github.com/maxhauser/semver) |
+| **Serilog Ecosystem** | Apache-2.0 | [Serilog](https://github.com/serilog/serilog) |
+| **Serilog.UI** | MIT | [Serilog.UI](https://github.com/followynne/serilog-ui) |
+| **Serilog.Sinks.Postgresql.Alternative** | MIT | [Serilog.Sinks.Postgresql](https://github.com/b00ted/serilog-sinks-postgresql) |
+| **SixLabors.ImageSharp** | Apache-2.0 | [ImageSharp](https://github.com/SixLabors/ImageSharp) |
+| **SSH.NET** | MIT | [SSH.NET](https://github.com/sshnet/SSH.NET) |
+| **System.CommandLine** | MIT | [System.CommandLine](https://github.com/dotnet/command-line-api) |
+| **System.Linq.Dynamic.Core** | MIT | [Dynamic LINQ](https://github.com/zzzprojects/System.Linq.Dynamic.Core) |
+| **Toolbelt.Blazor.HotKeys2** | MIT | [HotKeys2](https://github.com/jsakamoto/Toolbelt.Blazor.HotKeys2) |
+| **ToonEncoder** | MIT | [ToonEncoder](https://github.com/gfoidl/ToonEncoder) |
+| **Wangkanai.Detection** | Apache-2.0 | [Detection](https://github.com/wangkanai/wangkanai) |
+| **ZiggyCreatures.FusionCache** | MIT | [FusionCache](https://github.com/ZiggyCreatures/FusionCache) |
 
 ### Proxmox VE Integration (Corsinvest)
 
+*Licensed under **MIT**:*
+[cv4pve-api-dotnet](https://github.com/Corsinvest/cv4pve-api-dotnet)
+
 *Licensed under **GPL-3.0-only**:*
-[cv4pve-api-dotnet](https://github.com/Corsinvest/cv4pve-api-dotnet) | [cv4pve-autosnap](https://github.com/Corsinvest/cv4pve-autosnap) | [cv4pve-diag](https://github.com/Corsinvest/cv4pve-diag) | [cv4pve-metrics-exporter](https://github.com/Corsinvest/cv4pve-metrics-exporter) | [cv4pve-botgram](https://github.com/Corsinvest/cv4pve-botgram)
+[cv4pve-autosnap](https://github.com/Corsinvest/cv4pve-autosnap) | [cv4pve-diag](https://github.com/Corsinvest/cv4pve-diag) | [cv4pve-metrics-exporter](https://github.com/Corsinvest/cv4pve-metrics-exporter) | [cv4pve-botgram](https://github.com/Corsinvest/cv4pve-botgram)
 
 ---
 
@@ -55,9 +80,9 @@ This project incorporates components from the following third-party projects. Th
 
 CV4PVE Admin Community Edition is licensed under **AGPL-3.0-only**.
 
-* ✅ **Permissive (MIT, Apache-2.0, PostgreSQL):** Fully compatible.
+* ✅ **Permissive (MIT, Apache-2.0, PostgreSQL, MS-PL):** Fully compatible.
 * ✅ **Weak Copyleft (LGPL-3.0):** Compatible via dynamic linking as used.
-* ⚠️ **Strong Copyleft (GPL-3.0-only):** Compatible when used in accordance with Corsinvest’s specific architectural requirements.
+* ⚠️ **Strong Copyleft (GPL-3.0-only):** Compatible when used in accordance with Corsinvest's specific architectural requirements.
 
 ---
 
@@ -71,4 +96,4 @@ CV4PVE Admin Community Edition is licensed under **AGPL-3.0-only**.
 
 ---
 
-*Document updated: February 2026*
+*Document updated: March 2026*
