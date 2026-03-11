@@ -115,8 +115,8 @@ public partial class Manager(IAdminService adminService,
                                                true))
         {
             await commandExecutor.ExecuteAsync(new VmRollbackSnapshotCommand(ClusterName,
-                                                                             Vm.VmId,
-                                                                             SelectedItems[0].Name));
+                                                                                    Vm.VmId,
+                                                                                    SelectedItems[0].Name));
             SelectedItems.Clear();
             await DataGridRef.Reload();
         }
@@ -128,9 +128,9 @@ public partial class Manager(IAdminService adminService,
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected snapshot"], true))
         {
             await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(ClusterName,
-                                                                           Vm.VmId,
-                                                                           SelectedItems[0].Name,
-                                                                           Force: true));
+                                                                                  Vm.VmId,
+                                                                                  SelectedItems[0].Name,
+                                                                                  Force: true));
             SelectedItems.Clear();
             await DataGridRef.Reload();
         }
@@ -176,10 +176,10 @@ public partial class Manager(IAdminService adminService,
             if (isNew)
             {
                 await commandExecutor.ExecuteAsync(new VmCreateSnapshotCommand(ClusterName,
-                                                                               Vm.VmId,
-                                                                               item.Name,
-                                                                               item.Description,
-                                                                               item.VmStatus));
+                                                                                      Vm.VmId,
+                                                                                      item.Name,
+                                                                                      item.Description,
+                                                                                      item.VmStatus));
             }
             else
             {
