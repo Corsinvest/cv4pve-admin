@@ -40,7 +40,7 @@ public partial class ToolBar(IBrowserService browserService,
     }
 
     private async Task OpenWebConsole(bool xTermJs)
-        => await browserService.OpenPveConsole(adminService[ClusterName].GetUrlWebConsole(Vm.Node, Vm.VmType, Vm.VmId, Vm.Name, xTermJs));
+        => await browserService.OpenPveConsole(adminService[ClusterName].GetWebConsoleUrl(Vm.Node, Vm.VmType, Vm.VmId, Vm.Name, xTermJs));
 
     private static async Task OpenSpiceConsole() => await Task.CompletedTask;
 

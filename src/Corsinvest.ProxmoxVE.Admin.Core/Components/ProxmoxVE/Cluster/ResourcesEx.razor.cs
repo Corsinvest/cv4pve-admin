@@ -246,7 +246,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         void GetUsages(IEnumerable<ClusterResource> items)
             => sb.AddRange(items.GetResourceUsage(L).Select(a => $"<strong>{a.Name}</strong>: {a.Usage}%"));
 
-        if (group.Data.Count > 0)
+        if (group.Data.Count > 0 && group.Data.Items != null)
         {
             var clusterName = group.Data.Items!.Cast<ClusterResourceEx>().FirstOrDefault()!.ClusterName;
 
