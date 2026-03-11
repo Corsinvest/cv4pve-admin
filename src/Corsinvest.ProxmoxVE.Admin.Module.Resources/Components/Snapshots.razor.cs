@@ -143,9 +143,9 @@ public partial class Snapshots(IAdminService adminService) : IClusterName, IRefr
     private MarkupString GetGroupTitle(Group group)
     {
         var ret = $"<strong>{group.GroupDescriptor!.GetTitle()}</strong>: {group.Data.Key}({group.Data.Count})";
-        if (AllowCalculateSnapshotSize)
+        if (AllowCalculateSnapshotSize && group.Data.Items != null)
         {
-            ret += $"- <strong>{L["Size"]}</strong>: {FormatHelper.FromBytes(group.Data.Items!.Cast<Data>().Sum(a => a.SnapshotSize))}";
+            ret += $"- <strong>{L["Size"]}</strong>: {FormatHelper.FromBytes(group.Data.Items.Cast<Data>().Sum(a => a.SnapshotSize))}";
         }
 
         return (MarkupString)ret;
