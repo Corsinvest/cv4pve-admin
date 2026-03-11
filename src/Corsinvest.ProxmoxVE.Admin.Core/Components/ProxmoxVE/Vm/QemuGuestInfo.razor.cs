@@ -26,7 +26,8 @@ public partial class QemuGuestInfo(IAdminService adminService) : /*IRefreshableD
         IsLoading = true;
         if (Vm.VmType == VmType.Qemu && Vm.IsRunning)
         {
-            var client = await adminService[ClusterName].GetPveClientAsync();
+            var clusterClient = adminService[ClusterName];
+            var client = await clusterClient.GetPveClientAsync();
             var vm = client.Nodes[Vm.Node].Qemu[Vm.VmId];
             var ping = await vm.Agent.Ping.Ping();
             QemuAgentRunning = ping.IsSuccessStatusCode;
@@ -63,15 +64,7 @@ public partial class QemuGuestInfo(IAdminService adminService) : /*IRefreshableD
                         Vm.VmId, Vm.Node);
                 }
 
-                try
-                {
-                    NetworkGetInterfaces = await vm.Agent.NetworkGetInterfaces.GetAsync();
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogWarning(ex, "Failed to get network interfaces from QEMU agent for VM {VmId} on node {Node}",
-                        Vm.VmId, Vm.Node);
-                }
+                NetworkGetInterfaces = await clusterClient.CachedData.GetQemuNetworkAsync(Vm.Node, Vm.VmId, true);
             }
         }
 

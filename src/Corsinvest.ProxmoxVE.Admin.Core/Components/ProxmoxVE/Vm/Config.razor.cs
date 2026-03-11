@@ -18,8 +18,7 @@ public partial class Config(IAdminService adminService) : IRefreshableData, IClu
 
     public async Task RefreshDataAsync()
     {
-        var client = await adminService[ClusterName].GetPveClientAsync();
-        VmConfig = await client.GetVmConfigAsync(Vm.Node, Vm.VmType, Vm.VmId);
+        VmConfig = await adminService[ClusterName].CachedData.GetVmConfigAsync(Vm.Node, Vm.VmType, Vm.VmId, false);
         await InvokeAsync(StateHasChanged);
     }
 }
