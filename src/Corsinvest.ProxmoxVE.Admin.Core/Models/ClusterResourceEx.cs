@@ -19,6 +19,7 @@ public class ClusterResourceEx : ClusterResource, IClusterName, ISnapshotsSize, 
     public double SnapshotsSize { get; set; }
     public double SnapshotsReplicationSize { get; set; }
     public double HealthScore => this.HealthScoreCalculated;
+    public string IpAddresses { get; set; } = default!;
 
     #region VmInfo
     public VmQemuAgentOsInfo VmQemuAgentOsInfo { get; set; } = default!;
