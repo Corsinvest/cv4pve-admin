@@ -37,8 +37,15 @@ public static class Permissions
         public static Permission ListBackups { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.ListBackups), "List backups available on storage");
         public static Permission ListStorageContent { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.ListStorageContent), "List storage content (ISO, templates, images)");
         public static Permission ListBackupJobs { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.ListBackupJobs), "List cluster backup jobs");
+        public static Permission DeleteBackup { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.DeleteBackup), "Delete a backup from storage");
+        public static Permission DeleteStorageContent { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.DeleteStorageContent), "Delete content from storage (ISO, template, image)");
+        public static Permission ListIsos { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.ListIsos), "List ISO images available on storage");
+        public static Permission ListTemplates { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.ListTemplates), "List templates available on storage");
+        public static Permission DeleteIso { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.DeleteIso), "Delete an ISO image from storage");
+        public static Permission DownloadIso { get; } = new(BaseName, nameof(AIServer.Tools.StorageTools.DownloadIso), "Download an ISO image to storage");
 
         // Cluster tools
         public static Permission GetClusterStatus { get; } = new(BaseName, nameof(AIServer.Tools.ClusterTools.GetClusterStatus), "Get cluster health summary");
+        public static Permission GetClusterOptions { get; } = new(BaseName, nameof(AIServer.Tools.ClusterTools.GetClusterOptions), "Get cluster options (migration, bandwidth, HA)");
     }
 }

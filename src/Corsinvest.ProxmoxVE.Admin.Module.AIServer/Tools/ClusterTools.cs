@@ -63,4 +63,38 @@ internal static class ClusterTools
             }
         });
     }
+
+    [McpServerTool, Description("Get cluster options: migration type, network, bandwidth limit, HA settings, console type")]
+    public static async Task<string> GetClusterOptions([Description("Cluster name")] string cluster_name,
+                                                       IAiServerService aiServerService)
+    {
+        if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.GetClusterOptions))
+        {
+            return JsonSerializer.Serialize(new { error = "Permission denied" });
+        }
+
+        var (clusterClient, errorJson) = aiServerService.GetClusterClient(cluster_name);
+        if (clusterClient == null) { return errorJson!; }
+
+        var pveClient = await clusterClient.GetPveClientAsync();
+        var options = await pveClient.Cluster.Options.GetAsync();
+
+        return JsonSerializer.Serialize(new
+        {
+            migration_type = options.Migration?.Type,
+            migration_network = options.Migration?.Network,
+            bandwidth_limit = options.BandwidthLimit,
+            console = options.Console,
+            email_from = options.EmailFrom,
+            ha = new
+            {
+                shutdown_policy = options.Ha?.ShutdownPolicy
+            },
+            next_id = new
+            {
+                lower = options.NextId?.Lower,
+                upper = options.NextId?.Upper
+            }
+        });
+    }
 }
