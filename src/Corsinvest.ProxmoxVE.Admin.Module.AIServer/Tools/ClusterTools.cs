@@ -83,18 +83,10 @@ internal static class ClusterTools
         {
             migration_type = options.Migration?.Type,
             migration_network = options.Migration?.Network,
-            bandwidth_limit = options.BandwidthLimit,
             console = options.Console,
-            email_from = options.EmailFrom,
-            ha = new
-            {
-                shutdown_policy = options.Ha?.ShutdownPolicy
-            },
-            next_id = new
-            {
-                lower = options.NextId?.Lower,
-                upper = options.NextId?.Upper
-            }
+            keyboard = options.Keyboard,
+            mac_prefix = options.MacPrefix,
+            description = options.Description
         });
     }
 }
