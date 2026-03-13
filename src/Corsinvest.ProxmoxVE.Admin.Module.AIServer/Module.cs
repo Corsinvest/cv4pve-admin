@@ -84,8 +84,13 @@ public class Module : ModuleBase
                  Permissions.Tools.ListBackups,
                  Permissions.Tools.ListStorageContent,
                  Permissions.Tools.ListBackupJobs,
+                 Permissions.Tools.DeleteBackup,
+                 Permissions.Tools.DeleteStorageContent,
+                 Permissions.Tools.ListIsos,
+                 Permissions.Tools.ListTemplates,
                  // Cluster tools
-                 Permissions.Tools.GetClusterStatus])
+                 Permissions.Tools.GetClusterStatus,
+                 Permissions.Tools.GetClusterOptions])
         ];
     }
 
