@@ -88,12 +88,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
         {
             var detail = string.Empty;
 
-            if (string.IsNullOrEmpty(clusterSettings.Name) || string.IsNullOrWhiteSpace(clusterSettings.Name))
-            {
-                valid = false;
-                detail = "Name not valid!";
-            }
-            else if (ClustersSettings.Any(a => a.PveName != clusterSettings.PveName && a.Name == clusterSettings.Name))
+            if (ClustersSettings.Any(a => a.PveName != clusterSettings.PveName && a.Name == clusterSettings.Name))
             {
                 valid = false;
                 detail = "Name not unique!";
