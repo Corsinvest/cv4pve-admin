@@ -24,7 +24,9 @@ public static class UrlHelper
         if (!absolutePath.StartsWith(ModuleComponentUrl)) { return null; }
 
         var segments = absolutePath[ModuleComponentUrl.Length..].Split('/');
-        return segments.Length > 0 && !string.IsNullOrEmpty(segments[0]) ? segments[0] : null;
+        return segments.Length > 0 && !string.IsNullOrEmpty(segments[0])
+            ? Uri.UnescapeDataString(segments[0])
+            : null;
     }
 
     public static class Resources

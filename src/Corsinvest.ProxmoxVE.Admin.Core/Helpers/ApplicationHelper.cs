@@ -2,9 +2,11 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Text.RegularExpressions;
+
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
-public static class ApplicationHelper
+public static partial class ApplicationHelper
 {
     static ApplicationHelper()
     {
@@ -18,8 +20,15 @@ public static class ApplicationHelper
 
     public const string AllClusterName = "*";
     public static bool IsAllCluster(string? clusterName) => clusterName == AllClusterName;
+
+    [GeneratedRegex(@"^[a-zA-Z0-9_-]+$")]
+    private static partial Regex ClusterNameRegex();
+
     public static bool IsValidClusterName(string? name)
-        => !string.IsNullOrWhiteSpace(name) && name != AllClusterName;
+        => !string.IsNullOrWhiteSpace(name)
+           && name != AllClusterName
+           && ClusterNameRegex().IsMatch(name);
+
     public const string DefaultCulture = "en";
     public static string[] SupportedCultures => [DefaultCulture];
 
