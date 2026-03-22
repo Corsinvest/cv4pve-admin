@@ -15,7 +15,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 {
     public static string AllVms { get; } = "@all";
 
-    public static Application GetApp(PveClient client, ILoggerFactory loggerFactory, TextWriter log)
+    public static AutoSnapEngine GetApp(PveClient client, ILoggerFactory loggerFactory, TextWriter log)
         => new(client, loggerFactory, log, false);
 
     private static Settings GetModuleClusterSettings(IServiceScope scope, string clusterName)
@@ -246,7 +246,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         var ret = new List<AutoSnapInfo>();
         foreach (var item in await GetApp(client, loggerFactory, null!).StatusAsync(vmIdsOrNames, null!, moduleClusterSettings.TimestampFormat))
         {
-            var snaposhots = item.Value.Where(a => !string.IsNullOrWhiteSpace(Application.GetLabelFromName(a.Name, moduleClusterSettings.TimestampFormat)));
+            var snaposhots = item.Value.Where(a => !string.IsNullOrWhiteSpace(AutoSnapEngine.GetLabelFromName(a.Name, moduleClusterSettings.TimestampFormat)));
             ret.AddRange(snaposhots.Select(a => new AutoSnapInfo
             {
                 Description = a.Description,
@@ -258,7 +258,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 VmName = item.Key.Name,
                 VmType = item.Key.VmType,
                 VmStatus = a.VmStatus,
-                Label = Application.GetLabelFromName(a.Name, moduleClusterSettings.TimestampFormat)
+                Label = AutoSnapEngine.GetLabelFromName(a.Name, moduleClusterSettings.TimestampFormat)
             }));
         }
         return ret.OrderBy(a => a.Label);

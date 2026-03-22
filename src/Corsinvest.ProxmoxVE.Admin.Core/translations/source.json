@@ -1277,5 +1277,18 @@
   "Host Name": "",
   "OS Info": "",
   "Restore file {0}": "",
-  "Configuration {0}": ""
+  "Configuration {0}": "",
+  "Server ID": "",
+  "Activated": "",
+  "Not configured": "",
+  "Set License Key": "",
+  "Activate Nodes": "",
+  "License": "",
+  "Enter your license key to activate the subscription.": "",
+  "License Key": "",
+  "Get a subscription key": "",
+  "Set Subscription Key": "",
+  "Enter your subscription key to activate the subscription.": "",
+  "Task History Cleanup": "",
+  "Deleted {0} record(s) older than {1} days": ""
 }

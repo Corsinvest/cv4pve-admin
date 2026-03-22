@@ -88,6 +88,43 @@
                     </RadzenColumn>
                 </RadzenRow>
             </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["Snapshot"]" Icon="camera_alt">
+                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenColumn Size="4">
+                        @{
+                            var nameMaxCount = $"Model.ApiSettings.Snapshot.{nameof(Model.ApiSettings.Snapshot.MaxCount)}";
+                        }
+                        <RadzenFormField Text="@L["Max Count"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric Name="@nameMaxCount" @bind-Value="@Model.ApiSettings.Snapshot.MaxCount" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["Maximum number of snapshots per VM/LXC before raising a warning. Set to 0 to disable."]</InfoIcon>
+                            </End>
+                            <Helper>
+                                <RadzenDataAnnotationValidator Component="@nameMaxCount" />
+                            </Helper>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                    <RadzenColumn Size="4">
+                        @{
+                            var nameMaxAgeDays = $"Model.ApiSettings.Snapshot.{nameof(Model.ApiSettings.Snapshot.MaxAgeDays)}";
+                        }
+                        <RadzenFormField Text="@L["Max Age (days)"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric Name="@nameMaxAgeDays" @bind-Value="@Model.ApiSettings.Snapshot.MaxAgeDays" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["Maximum age in days for snapshots before raising a warning. Set to 0 to disable."]</InfoIcon>
+                            </End>
+                            <Helper>
+                                <RadzenDataAnnotationValidator Component="@nameMaxAgeDays" />
+                            </Helper>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenAccordionItem>
         </Items>
     </RadzenAccordion>
 </RadzenPanel>
@@ -135,6 +172,10 @@ PveConstants.KeyApiLxc }[index]);
 
                 <RadzenColumn Size="4">
                     @RenderThreshold(L["Network"], $"{basePropertyName}.{nameof(host.Network)}", host.Network)
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    @RenderThreshold(L["Health Score"], $"{basePropertyName}.{nameof(host.HealthScore)}", host.HealthScore)
                 </RadzenColumn>
             </RadzenRow>
         </RadzenStack>

@@ -1,10 +1,10 @@
 <Project>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.4" />
-    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.4.0" />
     <PackageVersion Include="SSH.NET" Version="2025.1.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.0" />
@@ -26,7 +26,7 @@
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="9.1.0" />
+    <PackageVersion Include="Radzen.Blazor" Version="10.0.5" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.5.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -34,18 +34,18 @@
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
     <PackageVersion Include="ClosedXML.Report" Version="0.2.12" />
     <PackageVersion Include="Humanizer" Version="3.0.10" />
-    <PackageVersion Include="Mapster" Version="7.4.0" />
+    <PackageVersion Include="Mapster" Version="10.0.3" />
     <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
     <PackageVersion Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageVersion Include="FluentResults" Version="4.0.0" />
     <PackageVersion Include="CronExpressionDescriptor" Version="2.45.0" />
     <PackageVersion Include="cronos" Version="0.11.1" />
-    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.5.0" />
+    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.6.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
     <PackageVersion Include="MailKit" Version="4.15.1" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.4" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.5" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->
   <ItemGroup>
@@ -57,11 +57,11 @@
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.6" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.8" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="1.7.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="1.21.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="1.10.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.0.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.0.1" />
   </ItemGroup>
   <!-- Development and Code Quality -->
   <ItemGroup>

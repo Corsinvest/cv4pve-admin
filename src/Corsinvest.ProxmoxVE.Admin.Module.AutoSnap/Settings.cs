@@ -5,6 +5,7 @@
 using System.Text.Json.Serialization;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
+using Corsinvest.ProxmoxVE.AutoSnap.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap;
 
@@ -22,7 +23,7 @@ public class Settings : IModuleSettings, INotifierConfigurationsSettings
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public SearchMode SearchMode { get; set; } = SearchMode.Managed;
 
-    public string TimestampFormat { get; set; } = ProxmoxVE.AutoSnap.Api.Application.DefaultTimestampFormat;
+    public string TimestampFormat { get; set; } = AutoSnapEngine.DefaultTimestampFormat;
 
     public bool OnRemoveJobRemoveSnapshots { get; set; } = true;
 
