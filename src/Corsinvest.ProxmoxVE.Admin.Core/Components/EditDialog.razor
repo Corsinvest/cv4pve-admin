@@ -10,7 +10,12 @@
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
         <RadzenStack Orientation="Orientation.Vertical" Style="overflow: auto; flex: 1;">
             <CascadingValue Value="@IsNew" Name="@nameof(IsNew)">
-                <DynamicComponent Type="typeof(TModelEditor)" Parameters="EditorParameters" />
+                <CascadingValue Value="@EditContext" IsFixed="true">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <DynamicComponent Type="typeof(TModelEditor)" Parameters="EditorParameters" />
+                </CascadingValue>
             </CascadingValue>
         </RadzenStack>
 
