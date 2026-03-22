@@ -47,7 +47,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 taskScope.Item.Phase = "Analyzing cluster";
 
                 var client = await scope.GetClusterClient(clusterName).GetPveClientAsync();
-                var details = (await Application.AnalyzeAsync(client, settings.ApiSettings, ignoredIssues))
+                var details = (await new DiagnosticEngine(client,settings.ApiSettings).AnalyzeAsync(ignoredIssues))
                                          .Select(a => new JobDetail
                                          {
                                              IdResource = a.Id,
