@@ -1290,5 +1290,6 @@
   "Set Subscription Key": "",
   "Enter your subscription key to activate the subscription.": "",
   "Task History Cleanup": "",
-  "Deleted {0} record(s) older than {1} days": ""
+  "Deleted {0} record(s) older than {1} days": "",
+  "Apprise": ""
 }
