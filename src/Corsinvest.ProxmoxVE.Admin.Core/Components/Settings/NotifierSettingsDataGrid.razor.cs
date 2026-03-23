@@ -14,13 +14,15 @@ public partial class NotifierSettingsDataGrid<TSettings>(INotifierService notifi
     where TSettings : NotifierConfiguration
 {
     [Parameter] public RenderFragment GridColumns { get; set; } = default!;
-    [Parameter] public RenderFragment<TSettings> EditContent { get; set; } = default!;
+    [Parameter] public RenderFragment<TSettings> EditTemplate { get; set; } = default!;
     [Parameter] public string? EditContentWidth { get; set; }
     [Parameter] public EventCallback<TSettings> OpenEdit { get; set; }
 
     private List<TSettings> Items { get; set; } = [];
     private IList<TSettings> SelectedItems { get; set; } = [];
     private RadzenDataGrid<TSettings> DataGridRef { get; set; } = default!;
+    private Action? _refreshDialog;
+    public void RefreshEditContent() => _refreshDialog?.Invoke();
 
     private bool _validColumnClick;
 
@@ -81,18 +83,20 @@ public partial class NotifierSettingsDataGrid<TSettings>(INotifierService notifi
     {
         if (OpenEdit.HasDelegate) { await OpenEdit.InvokeAsync(item); }
 
+        _refreshDialog = null;
         var ret = await dialogService.OpenSideExAsync<NotifierSettingsDialog<TSettings>>(L[isNew ? "New" : "Edit"],
-                                                                                             new()
-                                                                                             {
-                                                                                                 [nameof(NotifierSettingsDialog<>.Model)] = item,
-                                                                                                 [nameof(NotifierSettingsDialog<>.IsNew)] = isNew,
-                                                                                                 [nameof(NotifierSettingsDialog<>.EditContent)] = EditContent
-                                                                                             },
-                                                                                             new()
-                                                                                             {
-                                                                                                 CloseDialogOnOverlayClick = true,
-                                                                                                 Width = EditContentWidth
-                                                                                             }) != null;
+                                                                                         new()
+                                                                                         {
+                                                                                             [nameof(NotifierSettingsDialog<>.Model)] = item,
+                                                                                             [nameof(NotifierSettingsDialog<>.IsNew)] = isNew,
+                                                                                             [nameof(NotifierSettingsDialog<>.EditTemplate)] = EditTemplate,
+                                                                                             [nameof(NotifierSettingsDialog<>.RegisterRefresh)] = (Action<Action>)(cb => _refreshDialog = cb)
+                                                                                         },
+                                                                                         new()
+                                                                                         {
+                                                                                             CloseDialogOnOverlayClick = true,
+                                                                                             Width = EditContentWidth
+                                                                                         }) != null;
         if (ret == true)
         {
             if (isNew)

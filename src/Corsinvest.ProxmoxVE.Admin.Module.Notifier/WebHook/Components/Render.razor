@@ -10,7 +10,7 @@
         <RadzenDataGridColumn TItem="Settings" Property="@($"{nameof(Settings.WebHook)}.{nameof(Core.Hooks.WebHook.BodyType)}")" Sortable="true" Title="@L["Body Type"]" />
     </GridColumns>
 
-    <EditContent>
+    <EditTemplate>
         <WebHookEditor @bind-Value="@context.WebHook">
             <BodyHelper>
                 <RadzenText TextStyle="TextStyle.Caption">
@@ -18,5 +18,5 @@
                 </RadzenText>
             </BodyHelper>
         </WebHookEditor>
-    </EditContent>
+    </EditTemplate>
 </NotifierSettingsDataGrid>

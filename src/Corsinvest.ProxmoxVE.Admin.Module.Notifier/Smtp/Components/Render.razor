@@ -12,7 +12,7 @@
         <RadzenDataGridColumn TItem="Settings" Property="@nameof(Settings.ToAddresses)" Sortable="true" Title="@L["To"]" />
     </GridColumns>
 
-    <EditContent>
+    <EditTemplate>
         <SmtpEmailConfigEdit @bind-Config="context.SmtpConfig" />
 
         <RadzenFormField Text="@L["To Addresses"]" AllowFloatingLabel="false">
@@ -25,5 +25,5 @@
                 <RadzenText TextStyle="TextStyle.Caption" Text="@L["Separate multiple addresses with comma, semicolon or plus sign"]" />
             </Helper>
         </RadzenFormField>
-    </EditContent>
+    </EditTemplate>
 </NotifierSettingsDataGrid>
