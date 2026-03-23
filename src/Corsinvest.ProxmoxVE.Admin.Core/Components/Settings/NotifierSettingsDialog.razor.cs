@@ -11,7 +11,8 @@ public partial class NotifierSettingsDialog<TSettings>(DialogService dialogServi
 {
     [Parameter] public TSettings Model { get; set; } = default!;
     [Parameter] public bool IsNew { get; set; }
-    [Parameter] public RenderFragment<TSettings> EditContent { get; set; } = default!;
+    [Parameter] public RenderFragment<TSettings> EditTemplate { get; set; } = default!;
+    [Parameter] public Action<Action>? RegisterRefresh { get; set; }
 
     private EditContext EditContext { get; set; } = default!;
     private string Text => L[IsNew ? "Create" : "Save"];
@@ -20,6 +21,7 @@ public partial class NotifierSettingsDialog<TSettings>(DialogService dialogServi
     {
         EditContext = new(Model);
         EditContext.OnFieldChanged += HandleFieldChanged!;
+        RegisterRefresh?.Invoke(StateHasChanged);
     }
 
     public void Dispose() => EditContext.OnFieldChanged -= HandleFieldChanged!;
