@@ -1,0 +1,65 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@inject TooltipService TooltipService
+
+<span @ref="_ref" @onmouseover="ShowTooltip" style="display:inline-flex; cursor:default;">
+    @if (DisplayMode == HealthScoreDisplayMode.Badge)
+    {
+        <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetHealthScoreColor(Score))"
+                     Text="@($"{Score:F0}")"
+                     Style="height: max-content;" />
+    }
+    else
+    {
+        <RadzenArcGauge Style="width: 120px; height: 80px;">
+            <RadzenArcGaugeScale Margin="0" Min="0" Max="100"
+                                 StartAngle="-150" EndAngle="150"
+                                 Radius="1" X="0.5" Y="0.6">
+                <RadzenArcGaugeScaleValue Value="@Score" Fill="@PveAdminUIHelper.GetHealthScoreColor(Score)">
+                    <Template Context="pointer">
+                        <RadzenStack AlignItems="AlignItems.Center" Gap="0" Style="width: max-content;">
+                            <RadzenText TextStyle="TextStyle.H5"><strong>@($"{pointer.Value:F0}")</strong></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Caption">@L["Health"]</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Caption">@L["Score"]</RadzenText>
+                        </RadzenStack>
+                    </Template>
+                </RadzenArcGaugeScaleValue>
+            </RadzenArcGaugeScale>
+        </RadzenArcGauge>
+    }
+</span>
+
+@code
+{
+    [EditorRequired, Parameter] public double Score { get; set; }
+    [Parameter] public ClusterResourceType ResourceType { get; set; } = ClusterResourceType.All;
+    [Parameter] public HealthScoreDisplayMode DisplayMode { get; set; } = HealthScoreDisplayMode.Badge;
+
+    private ElementReference _ref;
+
+    private void ShowTooltip(MouseEventArgs args)
+    {
+        var (statusLabel, statusDetail) = (ResourceType == ClusterResourceType.Vm && Score == 0)
+                            ? ("", (string)L["VM stopped — score not available"])
+                            : Score switch
+                            {
+                                >= 80 => ((string)L["Good"], (string)L["resources within normal range"]),
+                                >= 60 => ((string)L["Warning"], (string)L["some resources under pressure"]),
+                                > 0 => ((string)L["Critical"], (string)L["high resource usage detected"]),
+                                _ => ("", (string)L["No data available"])
+                            };
+
+        TooltipService.Open(_ref, _ =>
+        @<div>
+            @if (!string.IsNullOrEmpty(statusLabel))
+            {
+                <b>@statusLabel</b>
+                <span> — </span>
+            }
+            @statusDetail
+        </div>);
+    }
+}

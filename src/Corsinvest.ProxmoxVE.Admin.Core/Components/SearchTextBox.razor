@@ -2,33 +2,23 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-<RadzenFormField Style="@Style" Text="@PlaceHoder" Variant="Variant.Outlined">
-    <ChildContent>
-        <RadzenTextBox @bind-Value="@Keyword" @oninput="HandleInput" @onkeydown="HandleKeyDown" typeof="search"/>
-    </ChildContent>
-    <End>
-        <RadzenIcon Icon="search" IconStyle="IconStyle.Secondary" />
-    </End>
-</RadzenFormField>
+@inherits AdminComponentBase
+@typeparam TItem
 
-@code {
-    [Parameter] public string Style { get; set; } = "width:100%";
-    [Parameter] public string PlaceHoder { get; set; } = string.Empty;
-    [Parameter] public EventCallback<string> KeywordChanged { get; set; }
-    [Parameter] public string? Keyword { get; set; }
-    [Parameter] public Func<Task>? SearchAsync { get; set; }
-
-    async Task HandleInput(ChangeEventArgs e)
-    {
-        Keyword = e.Value?.ToString();
-        await KeywordChanged.InvokeAsync(Keyword);
-    }
-
-    async Task HandleKeyDown(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter" && SearchAsync is not null)
+<div style="position:relative; display:inline-flex; align-items:center; @Style">
+    <RadzenTextBox Value="@_text"
+                   ValueChanged="OnValueChanged"
+                   Placeholder="@L["Search"]"
+                   Immediate="true"
+                   Style="width:100%; padding-right:28px;" />
+    <span style="position:absolute; right:6px; top:50%; transform:translateY(-50%); display:flex; align-items:center; color:var(--rz-text-secondary-color);">
+        @if (!string.IsNullOrEmpty(_text))
         {
-            await SearchAsync.Invoke();
+            <RadzenIcon Icon="close" style="cursor:pointer; font-size:1rem;" @onclick="ClearAsync" />
         }
-    }
-}
+        else
+        {
+            <RadzenIcon Icon="search" style="font-size:1rem;" />
+        }
+    </span>
+</div>

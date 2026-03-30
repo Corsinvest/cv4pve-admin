@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common
 @inherits AdminComponentBase
 
 <RadzenRow>
@@ -22,7 +23,7 @@
     </RadzenColumn>
 
     <RadzenColumn Size="2" Style="display:flex; justify-content:center; align-items:center;">
-        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.HealthScoreGauge Score="@Storage.HealthScoreStorage" />
+        <HealthScore Score="@Storage.HealthScoreStorage" ResourceType="ClusterResourceType.Storage" DisplayMode="HealthScoreDisplayMode.Gauge" />
     </RadzenColumn>
 </RadzenRow>
 

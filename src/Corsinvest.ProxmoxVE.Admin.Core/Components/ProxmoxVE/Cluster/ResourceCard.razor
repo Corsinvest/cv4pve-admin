@@ -1,0 +1,130 @@
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenCard class="rz-p-3" Style="@(_expanded ? "width:100%;" : "width:260px; flex-shrink:0;")">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="6px">
+
+        @* Header: icon + name | os icon + health score *@
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="4px">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" Style="min-width:0; flex:1;">
+                <IconStatusResource Status="@Resource.Status" Type="@Resource.Type" Locked="@Resource.IsLocked" />
+                <RadzenText TextStyle="TextStyle.Subtitle2"
+                            Text="@Resource.Description"
+                            title="@Resource.Description"
+                            Style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" />
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" Style="flex-shrink:0;">
+                @if (Resource.OsType.HasValue)
+                {
+                    <IconVmOs OsType="Resource.OsType">
+                        <TooltipContent Context="_">
+                            @if (!string.IsNullOrEmpty(Resource.HostName))
+                            {
+                                <div><b>@L["HostName"]:</b> @Resource.HostName</div>
+                            }
+                            <div><b>@L["Os Version"]:</b> @Resource.OsVersion</div>
+
+                            @* @if (!string.IsNullOrEmpty(Resource.IpAddresses)) { <div><b>@L["IP"]:</b> @Resource.IpAddresses</div> } *@
+                        </TooltipContent>
+                    </IconVmOs>
+                }
+
+                @if (Resource.HealthScore > 0)
+                {
+                    <HealthScore Score="@Resource.HealthScore" ResourceType="@Resource.ResourceType" />
+                }
+            </RadzenStack>
+        </RadzenStack>
+
+        @* Node: CPU + RAM *@
+        @if (Resource.ResourceType == ClusterResourceType.Node)
+        {
+            @BarFragment("CPU", Resource.CpuUsagePercentage, Resource.CpuInfo)
+            @BarFragment("RAM", Resource.MemoryUsagePercentage, Resource.MemoryInfo)
+            @BarFragment("Disk", Resource.DiskUsagePercentage, FormatHelper.UsageInfo(Resource.DiskUsage, Resource.DiskSize))
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenText TextStyle="TextStyle.Caption" Text="@L["Uptime"]" />
+                <RadzenText TextStyle="TextStyle.Caption" Text="@FormatHelper.UptimeInfo(Resource.Uptime)" />
+            </RadzenStack>
+        }
+
+        @* VM / LXC: CPU + RAM + Disk *@
+        else if (Resource.ResourceType == ClusterResourceType.Vm)
+        {
+            @BarFragment("CPU", Resource.CpuUsagePercentage, Resource.CpuInfo)
+            @BarFragment("RAM", Resource.MemoryUsagePercentage, Resource.MemoryInfo)
+            @BarFragment("Disk", Resource.DiskUsagePercentage, FormatHelper.UsageInfo(Resource.DiskUsage, Resource.DiskSize))
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenText TextStyle="TextStyle.Caption" Text="@Resource.Node" />
+                <RadzenText TextStyle="TextStyle.Caption" Text="@FormatHelper.UptimeInfo(Resource.Uptime)" />
+            </RadzenStack>
+        }
+
+        @* Storage *@
+        else if (Resource.ResourceType == ClusterResourceType.Storage)
+        {
+            @BarFragment("Disk", Resource.DiskUsagePercentage, FormatHelper.UsageInfo(Resource.DiskUsage, Resource.DiskSize))
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenText TextStyle="TextStyle.Caption" Text="@Resource.Node" />
+                <RadzenText TextStyle="TextStyle.Caption" Text="@Resource.Storage" />
+            </RadzenStack>
+        }
+
+        @* Tags *@
+        @if (!string.IsNullOrEmpty(Resource.Tags))
+        {
+            <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                @((MarkupString)PveAdminUIHelper.GetTagsStyle(Resource.Tags, TagStyleColorMap).JoinAsString(" "))
+            </div>
+        }
+
+        @* Expand button *@
+        @if (Template != null)
+        {
+            <RadzenIcon Icon="@(_expanded ? "expand_less" : "expand_more")"
+                        style="cursor:pointer; color:var(--rz-text-secondary-color);"
+                        @onclick="@(() => _expanded = !_expanded)" />
+
+            @* <div style="display:flex; justify-content:center; border-top:1px solid var(--rz-border-color); padding-top:4px; margin-top:2px;">
+                <RadzenIcon Icon="@(_expanded ? "expand_less" : "expand_more")"
+                            style="cursor:pointer; color:var(--rz-text-secondary-color);"
+                            @onclick="@(() => _expanded = !_expanded)" />
+            </div> *@
+
+            @if (_expanded)
+            {
+                <div style="border-top:1px solid var(--rz-border-color); padding-top:6px; margin-top:2px;">
+                    @Template(Resource)
+                </div>
+            }
+        }
+
+    </RadzenStack>
+</RadzenCard>
+
+@code
+{
+    [Parameter] public ClusterResourceEx Resource { get; set; } = default!;
+    [Parameter] public string TagStyleColorMap { get; set; } = string.Empty;
+    [Parameter] public RenderFragment<ClusterResourceEx>? Template { get; set; }
+
+    private bool _expanded;
+
+    private RenderFragment BarFragment(string label, double pct, string info) => __builder =>
+    {
+        var pctRounded = Math.Round(pct * 100, 1);
+        <div style="display:grid; grid-template-columns:32px 1fr 36px; align-items:center; gap:4px; margin-bottom:2px;"
+             title="@($"{label}: {info}")">
+            <span style="font-size:0.7rem; color:var(--rz-text-secondary-color);">@label</span>
+            <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(pct))"
+                               Value="@pctRounded"
+                               ShowValue="false"
+                               Style="height:6px; width:100%;" />
+            <span style="font-size:0.7rem; color:var(--rz-text-secondary-color); text-align:right;">@($"{pctRounded}%")</span>
+        </div>
+    };
+}

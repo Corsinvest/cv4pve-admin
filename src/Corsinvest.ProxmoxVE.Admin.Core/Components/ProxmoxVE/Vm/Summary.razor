@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common
 @inherits AdminComponentBase
 
 @if (Status == null)
@@ -60,7 +61,7 @@ else
                             <RadzenBadge BadgeStyle="@PveAdminUIHelper.ToBadgeStyle(PveAdminUIHelper.GetResourcesColorStatus(Vm.Status, false))"
                                          Text="@L[Vm.Status]"
                                          Style="height: max-content;" />
-                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.HealthScoreGauge Score="@Vm.HealthScoreHost" />
+                            <HealthScore Score="@Vm.HealthScoreHost" ResourceType="ClusterResourceType.Vm" DisplayMode="HealthScoreDisplayMode.Gauge" />
                         </RadzenStack>
                     </RadzenTableCell>
                 </RadzenTableRow>
