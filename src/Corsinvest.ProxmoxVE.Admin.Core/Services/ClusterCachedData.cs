@@ -107,7 +107,6 @@ public class ClusterCachedData
                            GetRrdCacheTtl(rrdDataTimeFrame),
                            forceReload);
 
-
     public async Task<VmQemuAgentNetworkGetInterfaces> GetQemuNetworkAsync(string node, long vmId, bool forceReload)
         => await GetOrSetAsync($"{nameof(GetQemuNetworkAsync)}:{node}:{vmId}",
                                async () =>
@@ -122,7 +121,7 @@ public class ClusterCachedData
                                        //logger.LogWarning(ex, "Failed to get network interfaces from QEMU agent for VM {VmId} on node {Node}", Vm.VmId, Vm.Node);
                                    }
 
-                                   return new VmQemuAgentNetworkGetInterfaces { };
+                                   return new VmQemuAgentNetworkGetInterfaces();
                                },
                                60 * 30,
                                forceReload);

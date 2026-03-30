@@ -2,71 +2,60 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.ComponentModel;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.BackupAnalytics.Components;
 
-public partial class UnprotectedDisks(IAdminService adminService) : IClusterName
+public partial class UnprotectedDisks(IAdminService adminService) : IClusterName, IRefreshableData
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
     private IEnumerable<Data> Items { get; set; } = [];
     private bool IsLoading { get; set; }
-    private IEnumerable<string> PropertiesName { get; } =
-    [
-        nameof(IClusterResourceVm.Status),
-        nameof(IClusterResourceVm.Type),
-        nameof(IClusterResourceVm.Node),
-        nameof(IClusterResourceVm.Description)
-        //nameof(IClusterResourceVm.DiskUsagePercentage),
-        //nameof(IClusterResourceVm.MemoryUsagePercentage),
-        //nameof(IClusterResourceVm.CpuUsagePercentage),
-        //nameof(IClusterResourceVm.Uptime),
-    ];
 
-    private class Data : ClusterResource
+    private class Data
     {
         public string Disks { get; set; } = default!;
+        public string Type { get; set; } = default!;
+        public string Node { get; set; } = default!;
+        public string Description { get; set; } = default!;
+        public string Status { get; set; } = default!;
+        public bool IsLocked { get; set; } = default!;
+        public long VmId { get; internal set; }
     }
 
-    protected override async Task OnInitializedAsync() => Items = await GetDisksNotBackupped();
+    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
 
-    private async Task<IEnumerable<Data>> GetDisksNotBackupped()
+    public async Task RefreshDataAsync()
     {
         IsLoading = true;
-        var client = await adminService[ClusterName].GetPveClientAsync();
 
         var ret = new List<Data>();
+        var clusterClient = adminService[ClusterName];
+        var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
+                    .Where(a => a.ResourceType == ClusterResourceType.Vm)
+                    .ToList();
 
-        foreach (var item in await client.GetVmsAsync())
+        foreach (var item in vms)
         {
-            VmConfig config = item.VmType switch
-            {
-                VmType.Qemu => await client.Nodes[item.Node].Qemu[item.VmId].Config.GetAsync(),
-                VmType.Lxc => await client.Nodes[item.Node].Lxc[item.VmId].Config.GetAsync(),
-                _ => throw new InvalidEnumArgumentException()
-            };
-
+            var config = await clusterClient.CachedData.GetVmConfigAsync(item.Node, item.VmType, item.VmId, false);
             var disks = config.Disks.Where(a => !a.Backup);
             if (disks.Any())
             {
-                ret.Add(new Data
+                ret.Add(new()
                 {
                     Type = item.Type,
+                    Status = item.Status,
+                    IsLocked = item.IsLocked,
                     Node = item.Node,
+                    VmId = item.VmId,
                     Description = item.Description,
-                    DiskUsagePercentage = item.DiskUsagePercentage,
-                    MemoryUsagePercentage = item.MemoryUsagePercentage,
-                    CpuUsagePercentage = item.CpuUsagePercentage,
-                    Uptime = item.Uptime,
                     Disks = disks.Select(a => $"{a.Storage}:{a.FileName}").JoinAsString("<br />")
                 });
             }
         }
 
         IsLoading = false;
-        return ret;
+        Items = ret;
     }
 }

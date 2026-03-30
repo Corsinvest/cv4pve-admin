@@ -5,7 +5,6 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Components.Widgets;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
-using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.BackupAnalytics.Components.Widgets;
 
@@ -97,21 +96,14 @@ public class Info(IAdminService adminService,
         foreach (var clusterName in clusterNames)
         {
             var clusterClient = adminService[clusterName];
-            var client = await clusterClient.GetPveClientAsync();
+            var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
+                        .Where(a => a.ResourceType == ClusterResourceType.Vm)
+                        .ToList();
 
-            foreach (var vm in await client.GetVmsAsync())
+            foreach (var vm in vms)
             {
-                VmConfig config = vm.VmType switch
-                {
-                    VmType.Qemu => await client.Nodes[vm.Node].Qemu[vm.VmId].Config.GetAsync(),
-                    VmType.Lxc => await client.Nodes[vm.Node].Lxc[vm.VmId].Config.GetAsync(),
-                    _ => null!
-                };
-
-                if (config?.Disks.Any(a => !a.Backup) == true)
-                {
-                    vmsWithUnprotectedDisks++;
-                }
+                var config = await clusterClient.CachedData.GetVmConfigAsync(vm.Node, vm.VmType, vm.VmId,false); 
+                if (config?.Disks.Any(a => !a.Backup) == true) { vmsWithUnprotectedDisks++; }
             }
         }
 

@@ -15,10 +15,21 @@
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <Columns>
-        @foreach (var item in PropertiesName)
-        {
-            <ResourceColumn Property="@item" Sortable="true" />
-        }
+        <RadzenDataGridColumn Title="@L["Status"]" Width="150px">
+            <Template>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0">
+                    <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.IconStatusResource Locked="@context.IsLocked"
+                                                                                                    Status="@context.Status"
+                                                                                                    Type="@context.Type" />
+                    @context.Status
+                </RadzenStack>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <ResourceColumn Property="@nameof(Data.Type)" Sortable="true" Width="100px" />
+        <ResourceColumn Property="@nameof(Data.Node)" Sortable="true" Width="150px" />
+
+        <ResourceColumn Property="@nameof(Data.Description)" Sortable="true" />
 
         <RadzenDataGridColumn Property="@nameof(Data.Disks)" Sortable="true" Title="@L["Disks"]">
             <Template>

@@ -10,41 +10,31 @@
         @if (MinDate.HasValue && MaxDate.HasValue)
         {
             <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenFormField Text="@L["From"]">
-                    <Start>
-                        <RadzenIcon Icon="calendar_today" />
-                    </Start>
-                    <ChildContent>
-                        <RadzenDatePicker @bind-Value="Start"
-                                          @bind-Value:after="LoadSourcesAsync"
-                                          ShowTime="false"
-                                          AllowClear="true"
-                                          Min="MinDate.Value.AddDays(-1)"
-                                          Max="MaxDate.Value"
-                                          ShowCalendarWeek="true"
-                                          Disabled="MinDate is null"
-                                          DateFormat="d" />
-                    </ChildContent>
+                <RadzenFormField Text="@L["From"]" AllowFloatingLabel="false">
+                    <RadzenDatePicker @bind-Value="Start"
+                                      @bind-Value:after="LoadSourcesAsync"
+                                      ShowTime="false"
+                                      AllowClear="true"
+                                      Min="MinDate.Value.AddDays(-1)"
+                                      Max="MaxDate.Value"
+                                      ShowCalendarWeek="true"
+                                      Disabled="MinDate is null"
+                                      DateFormat="d" />
                 </RadzenFormField>
 
-                <RadzenFormField Text="@L["To"]">
-                    <Start>
-                        <RadzenIcon Icon="event" />
-                    </Start>
-                    <ChildContent>
-                        <RadzenDatePicker @bind-Value="End"
-                                          @bind-Value:after="LoadSourcesAsync"
-                                          ShowTime="false"
-                                          AllowClear="true"
-                                          Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
-                                          Max="MaxDate.Value.AddDays(1)"
-                                          ShowCalendarWeek="true"
-                                          Disabled="Start is null"
-                                          DateFormat="d" />
-                    </ChildContent>
+                <RadzenFormField Text="@L["To"]" AllowFloatingLabel="false">
+                    <RadzenDatePicker @bind-Value="End"
+                                      @bind-Value:after="LoadSourcesAsync"
+                                      ShowTime="false"
+                                      AllowClear="true"
+                                      Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
+                                      Max="MaxDate.Value.AddDays(1)"
+                                      ShowCalendarWeek="true"
+                                      Disabled="Start is null"
+                                      DateFormat="d" />
                 </RadzenFormField>
 
-                <RadzenFormField Text="@L["Node"]">
+                <RadzenFormField Text="@L["Node"]" AllowFloatingLabel="false">
                     <Start>
                         <RadzenIcon Icon="@PveAdminUIHelper.Icons.Node" />
                     </Start>
@@ -58,7 +48,7 @@
                     </ChildContent>
                 </RadzenFormField>
 
-                <RadzenFormField Text="@L["VM / CT"]">
+                <RadzenFormField Text="@L["VM / CT"]" AllowFloatingLabel="false">
                     <Start>
                         <RadzenIcon Icon="computer" />
                     </Start>
