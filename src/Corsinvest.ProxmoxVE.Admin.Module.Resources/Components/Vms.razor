@@ -16,14 +16,16 @@
              RefreshInterval="10"
              @bind-DataGridSettings="DataGridSettings"
              ShowOsInfo="@ShowOsInfo"
+             ShowViewTypeSelector="true"
              DescriptionAsLink="true">
 
     <TemplateToolbar>
-        <SwitchField Label="@L["Show OS Info"]"
-                     @bind-Value="@ShowOsInfo"
-                     @bind-Value:after="ShowOsInfoAfter"
-                     IconOn="computer"
-                     IconOff="computer" />
+        <RadzenToggleButton @bind-Value="@ShowOsInfo"
+                            @bind-Value:after="ShowOsInfoAfter"
+                            Icon="computer"
+                            title="@L["Show OS Info"]"
+                            Size="ButtonSize.Small"
+                            ButtonStyle="ButtonStyle.Light" />
     </TemplateToolbar>
 
     <Template>

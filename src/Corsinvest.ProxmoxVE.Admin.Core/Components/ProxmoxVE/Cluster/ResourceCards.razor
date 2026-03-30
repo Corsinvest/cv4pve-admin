@@ -1,0 +1,110 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<div class="rz-data-grid rz-has-pager rz-datatable rz-datatable-scrollable rz-density-compact" style="@Style">
+    <div class="rz-group-header rz-w-100">
+        <div class="rz-custom-header rz-w-100">
+            <CrudToolbar OnRefresh="OnRefresh" Style="width:100%">
+                <TemplateAfter>
+                    @if (ShowSearchBox)
+                    {
+                        <SearchTextBox @ref="SearchTextBox"
+                                       TItem="ClusterResourceEx"
+                                       FiltersChanged="OnSearchFiltersChanged"
+                                       Style="width:200px;" />
+                    }
+
+                    @if (TemplateViewTypeSelector != null)
+                    {
+                        @TemplateViewTypeSelector
+                    }
+
+                    @if (TemplateToolbar != null)
+                    {
+                        @TemplateToolbar
+                    }
+
+                    <div style="flex:1;"></div>
+                    @if (ResourceTypes.Count > 1 || VmTypes.Count > 1 || StatusTypes.Count > 1)
+                    {
+                        <div style="display:flex; align-items:center; gap:3px; flex-wrap:wrap;">
+                            @if (ResourceTypes.Count > 1)
+                            {
+                                @foreach (var rt in ResourceTypes)
+                                {
+                                    <RadzenToggleButton Value="@(CardResourceTypeFilter == rt)"
+                                                        ValueChanged="@(_ => { CardResourceTypeFilter = CardResourceTypeFilter == rt ? null : rt; })"
+                                                        Icon="@PveAdminUIHelper.Icons.GetResourceType(rt)"
+                                                        title="@($"{L["Type"]}: {rt}")"
+                                                        Size="ButtonSize.Small"
+                                                        ButtonStyle="ButtonStyle.Light" />
+                                }
+                            }
+
+                            @if (VmTypes.Count > 1)
+                            {
+                                <span style="width:1px; height:16px; background:var(--rz-grid-cell-border-color, var(--rz-border-color)); margin:0 4px;"></span>
+                                @foreach (var vt in VmTypes)
+                                {
+                                    <RadzenToggleButton Value="@(CardVmTypeFilter == vt)"
+                                                        ValueChanged="@(_ => { CardVmTypeFilter = CardVmTypeFilter == vt ? null : vt; })"
+                                                        Icon="@PveAdminUIHelper.Icons.GetResourceType(vt)"
+                                                        title="@($"{L["Type"]}: {vt}")"
+                                                        Size="ButtonSize.Small"
+                                                        ButtonStyle="ButtonStyle.Light" />
+                                }
+                            }
+
+                            @if (StatusTypes.Count > 1)
+                            {
+                                <span style="width:1px; height:16px; background:var(--rz-grid-cell-border-color, var(--rz-border-color)); margin:0 4px;"></span>
+                                @foreach (var st in StatusTypes)
+                                {
+                                    <RadzenToggleButton Value="@(CardStatusFilter == st)"
+                                                        ValueChanged="@(_ => { CardStatusFilter = CardStatusFilter == st ? null : st; })"
+                                                        Icon="@PveAdminUIHelper.Icons.GetResourceStatus(st, false, true)"
+                                                        Style="--rz-icon-fill: 1;"
+                                                        title="@($"{L["Status"]}: {st}")"
+                                                        Size="ButtonSize.Small"
+                                                        ButtonStyle="ButtonStyle.Light" />
+                                }
+                            }
+                        </div>
+                    }
+
+                    @if (AvailableTags.Count > 1)
+                    {
+                        <span style="width:1px; height:16px; background:var(--rz-grid-cell-border-color, var(--rz-border-color)); margin:0 4px;"></span>
+                        <RadzenDropDown TValue="IList<string>"
+                                        Data="@AvailableTags"
+                                        @bind-Value="CardTagsFilter"
+                                        Multiple="true"
+                                        AllowSelectAll="true"
+                                        AllowClear="true"
+                                        MaxSelectedLabels="2"
+                                        Placeholder="@L["Tags"]"
+                                        Style="min-width:120px; max-width:200px;" />
+                    }
+                    <div style="flex:1;"></div>
+                </TemplateAfter>
+            </CrudToolbar>
+        </div>
+    </div>
+
+    <div class="rz-data-grid-data" tabindex="-1" style="@Style; overflow-anchor:none; padding:8px;">
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start;">
+            @foreach (var item in DataFilteredItems.Where(a => (CardResourceTypeFilter == null || a.ResourceType == CardResourceTypeFilter)
+                                                                && (CardStatusFilter == null || a.Status == CardStatusFilter)
+                                                                && (CardVmTypeFilter == null || a.Type == CardVmTypeFilter)
+                                                                && (CardTagsFilter == null || !CardTagsFilter.Any() || a.GetTagsArray().Any(t => CardTagsFilter.Contains(t)))))
+            {
+                <ResourceCard Resource="item"
+                              TagStyleColorMap="@(TagStyleColorMaps.GetValueOrDefault(item.ClusterName, string.Empty))"
+                              Template="@Template" />
+            }
+        </div>
+    </div>
+</div>

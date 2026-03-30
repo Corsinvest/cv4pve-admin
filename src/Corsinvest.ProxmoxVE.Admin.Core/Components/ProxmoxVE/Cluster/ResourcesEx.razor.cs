@@ -35,8 +35,11 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     [Parameter] public EventCallback<IList<ClusterResourceEx>> SelectedItemsChanged { get; set; }
     [Parameter] public HashSet<string> PickableColumns { get; set; } = [];
     [Parameter] public bool AllowColumnPicking { get; set; } = true;
-    [Parameter] public bool AllowSearch { get; set; } = true;
+    [Parameter] public bool ShowSearchBox { get; set; } = true;
     [Parameter] public EventCallback OnDataLoaded { get; set; }
+    [Parameter] public ResourcesExViewType ViewType { get; set; } = ResourcesExViewType.List;
+    [Parameter] public EventCallback<ResourcesExViewType> ViewTypeChanged { get; set; }
+    [Parameter] public bool ShowViewTypeSelector { get; set; } 
 
     private int _refreshInterval;
     [Parameter]
@@ -54,6 +57,35 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     }
 
     private RadzenDataGrid<ClusterResourceEx>? DataGridRef { get; set; }
+    private SearchTextBox<ClusterResourceEx>? SearchTextBox { get; set; }
+    private ResourceCards? ResourceCards { get; set; }
+
+    private IEnumerable<ClusterResourceEx> SearchFilteredItems
+        => _searchFilters.Any()
+            ? [.. Items.AsQueryable().Where(_searchFilters.ToList(), LogicalFilterOperator.Or, FilterCaseSensitivity.CaseInsensitive)]
+            : Items;
+
+    private void UpdateCardFilters()
+    {
+        if (IsLoading || ViewType != ResourcesExViewType.Card) { return; }
+
+        CardFilters = [ .. (DataGridRef?.ColumnsCollection ?? [])
+                                    .Where(c => c.Filterable && c.FilterPropertyType != null && c.GetFilterValue() != null)
+                                    .Select(c => new FilterDescriptor
+                                    {
+                                        Property = c.Property,
+                                        FilterProperty = c.FilterProperty,
+                                        FilterValue = c.GetFilterValue(),
+                                        FilterOperator = c.GetFilterOperator(),
+                                        SecondFilterValue = c.GetSecondFilterValue(),
+                                        SecondFilterOperator = c.GetSecondFilterOperator(),
+                                        LogicalFilterOperator = LogicalFilterOperator.And,
+                                        CollectionFilterMode = c.GetCollectionFilterMode(),
+                                        Type = c.FilterPropertyType
+                                    }),
+                        .. _searchFilters];
+    }
+
     private List<ClusterResourceEx> Items { get; set; } = [];
     private Dictionary<string, string> TagStyleColorMaps { get; set; } = [];
 
@@ -65,14 +97,37 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     private bool HasColumnForVm => ResourceType.HasFlag(ClusterResourceType.Vm) || ResourceType.HasFlag(ClusterResourceType.All);
     private bool HasColumnForNode => ResourceType.HasFlag(ClusterResourceType.Node) || ResourceType.HasFlag(ClusterResourceType.All);
     private bool HasColumnForStorage => ResourceType.HasFlag(ClusterResourceType.Storage) || ResourceType.HasFlag(ClusterResourceType.All);
+    private IEnumerable<FilterDescriptor> CardFilters { get; set; } = [];
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
     private bool _inGetGroupHeader;
     private Timer? _timer;
+    private IEnumerable<FilterDescriptor> _searchFilters = [];
 
     protected override void OnParametersSet() => StartTimer();
     protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+
+    private async Task OnSearchFiltersChanged(IEnumerable<FilterDescriptor> filters)
+    {
+        _searchFilters = filters;
+        UpdateCardFilters();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SetViewTypeAsync(ResourcesExViewType viewType)
+    {
+        ViewType = viewType;
+        await ViewTypeChanged.InvokeAsync(ViewType);
+        await ClearSearchAsync();
+    }
+
+    private async Task ClearSearchAsync()
+    {
+        _searchFilters = [];
+        if (SearchTextBox != null) { await SearchTextBox.ClearAsync(); }
+        if (ResourceCards != null) { await ResourceCards.ClearSearchAsync(); }
+    }
 
     public async Task RefreshDataAsync()
     {
@@ -215,6 +270,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
             await SelectedItemsChanged.InvokeAsync(SelectedItems);
         }
 
+        UpdateCardFilters();
         await InvokeAsync(StateHasChanged);
         if (OnDataLoaded.HasDelegate) { await InvokeAsync(OnDataLoaded.InvokeAsync); }
     }
@@ -286,7 +342,12 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     public async Task ExpandRowsAsync(IEnumerable<ClusterResourceEx> items)
         => await DataGridRef!.ExpandRows(items);
 
-    private async Task OnDataGridSettingsChanged() => await DataGridSettingsChanged.InvokeAsync(DataGridSettings);
+    private async Task OnDataGridSettingsChanged()
+    {
+        UpdateCardFilters();
+        await DataGridSettingsChanged.InvokeAsync(DataGridSettings);
+        await InvokeAsync(StateHasChanged);
+    }
 
     public void Dispose()
     {

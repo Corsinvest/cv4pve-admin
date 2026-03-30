@@ -34,6 +34,7 @@ public partial class SelectResourceExDialog(DialogService DialogService)
     [Parameter] public HashSet<string> PickableColumns { get; set; } = [];
     [Parameter] public bool AllowColumnPicking { get; set; } = true;
     [Parameter] public int RefreshInterval { get; set; }
+    [Parameter] public bool ShowSearchBox { get; set; } = true;
 
     private void OnSelect() => DialogService.Close(SelectedItems.ToArray());
 }

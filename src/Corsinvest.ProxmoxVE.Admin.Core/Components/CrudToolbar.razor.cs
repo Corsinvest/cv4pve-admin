@@ -28,6 +28,8 @@ public partial class CrudToolbar(ContextMenuService contextMenuService)
     [Parameter] public Permission? PermissionCreate { get; set; }
 
     [Parameter] public string? PermissionClusterName { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     private bool CanCreate { get; set; } = true;
     private bool CanDelete { get; set; } = true;

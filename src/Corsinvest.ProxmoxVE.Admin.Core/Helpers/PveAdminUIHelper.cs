@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
@@ -87,6 +88,7 @@ public static class PveAdminUIHelper
         public static string Backup { get; } = "backup";
         public static string Cluster { get; } = "dns";
         public static string Pool { get; } = "sell";
+        public static string Sdn { get; } = "transition_dissolve";
 
         // Common NavBar Icons
         public static string Overview { get; } = "home";
@@ -125,6 +127,17 @@ public static class PveAdminUIHelper
            };
 
         public static string GetVmType(VmType type) => GetResourceType(type.ToString().ToLower());
+
+        public static string GetResourceType(ClusterResourceType type)
+            => type switch
+            {
+                ClusterResourceType.Node => Node,
+                ClusterResourceType.Pool => Pool,
+                ClusterResourceType.Storage => Storage,
+                ClusterResourceType.Vm => Vm,
+                ClusterResourceType.Sdn => Sdn,
+                _ => string.Empty
+            };
 
         public static string GetResourceStatus(string status, bool locked, bool allIcons)
             => locked
@@ -256,7 +269,7 @@ public static class PveAdminUIHelper
         var ret = new List<string>();
         var styles = (tagStyleColorMap ?? string.Empty).Split(";");
 
-        foreach (var tag in Extensions.ClusterResourceExtensions.SplitTags(tags))
+        foreach (var tag in ClusterResourceExtensions.SplitTags(tags))
         {
             var found = false;
             foreach (var item in styles)
