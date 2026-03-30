@@ -23,7 +23,7 @@
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <GroupHeaderTemplate>
-        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>: @FormatHelper.FromBytes(context.Data.Items!.Cast<NodeStorageContent>().Sum(a => a.Size))
+        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>: @GetGroupHeader(context)
     </GroupHeaderTemplate>
 
     <Columns>

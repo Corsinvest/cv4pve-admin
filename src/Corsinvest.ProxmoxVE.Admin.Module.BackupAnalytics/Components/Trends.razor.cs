@@ -49,7 +49,11 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
         MaxDate = await query.SelectMany(a => a.Jobs).Select(a => a.End).MaxAsync();
     }
 
-    private DateTime StartUtc => DateTime.SpecifyKind(Start!.Value, DateTimeKind.Utc);
+    private DateTime StartUtc
+        => DateTime.SpecifyKind(Start.HasValue
+                                    ? Start!.Value
+                                    : DateTime.MinValue,
+                                DateTimeKind.Utc);
     private DateTime EndUtc => DateTime.SpecifyKind(End!.Value, DateTimeKind.Utc);
 
     private async Task LoadStoragesAsync()

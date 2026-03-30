@@ -38,11 +38,13 @@ public partial class StorageContents<TItem> where TItem : NodeStorageContent
 
     private static void OnGroupRowRender(GroupRowRenderEventArgs args)
     {
-        if (args.FirstRender)
-        {
-            args.Expanded = false;
-        }
+        if (args.FirstRender) { args.Expanded = false; }
     }
+
+    private string GetGroupHeader(Group group)
+        => group.Data.Items != null
+            ? FormatHelper.FromBytes(group.Data.Items!.Cast<NodeStorageContent>().Sum(a => a.Size))
+            : string.Empty;
 
     private static FilterMode? GetFilterMode(string propertyName)
         => propertyName switch
@@ -57,6 +59,8 @@ public partial class StorageContents<TItem> where TItem : NodeStorageContent
     private int? GetOrderIndex(string propertyName)
     {
         var index = OrderBy.ToArray().IndexOf(propertyName) + 1;
-        return index > 0 ? index : null;
+        return index > 0
+                ? index
+                : null;
     }
 }

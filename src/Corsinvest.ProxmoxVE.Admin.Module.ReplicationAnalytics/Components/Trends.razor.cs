@@ -37,7 +37,12 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
             MaxDate = await query.MaxAsync(a => a.End);
         }
     }
-    private DateTime StartUtc => DateTime.SpecifyKind(Start!.Value, DateTimeKind.Utc);
+    private DateTime StartUtc
+        => DateTime.SpecifyKind(Start.HasValue
+                                    ? Start!.Value
+                                    : DateTime.MinValue,
+                                DateTimeKind.Utc);
+
     private DateTime EndUtc => DateTime.SpecifyKind(End!.Value, DateTimeKind.Utc);
 
     private async Task LoadSourcesAsync()
