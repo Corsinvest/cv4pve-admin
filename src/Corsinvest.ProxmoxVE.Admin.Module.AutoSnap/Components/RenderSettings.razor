@@ -7,9 +7,7 @@
 
 <SwitchField @bind-Value="@Model.Enabled"
              Label="@L["Enabled"]"
-             Name="@nameof(Model.Enabled)"
-             IconOn="play_circle"
-             IconOff="pause_circle" />
+             Name="@nameof(Model.Enabled)" />
 
 <RadzenFormField Text="@L["Search Mode"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>
@@ -44,7 +42,7 @@
         <RadzenIcon Icon="layers" />
     </Start>
     <ChildContent>
-        <RadzenNumeric Name="@nameof(Model.KeepHistory)" @bind-Value="@Model.KeepHistory" />
+        <RadzenNumeric Name="@nameof(Model.KeepHistory)" @bind-Value="@Model.KeepHistory" Min="0" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.KeepHistory)" />
@@ -56,7 +54,7 @@
         <RadzenIcon Icon="percent" />
     </Start>
     <ChildContent>
-        <RadzenNumeric Name="@nameof(Model.MaxPercentageStorage)" @bind-Value="@Model.MaxPercentageStorage" />
+        <RadzenNumeric Name="@nameof(Model.MaxPercentageStorage)" @bind-Value="@Model.MaxPercentageStorage" Min="0" Max="100" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.MaxPercentageStorage)" />
@@ -65,9 +63,7 @@
 
 <SwitchField @bind-Value="@Model.OnRemoveJobRemoveSnapshots"
              Label="@L["On remove job remove snapshots in Proxmox VE"]"
-             Name="@nameof(Model.OnRemoveJobRemoveSnapshots)"
-             IconOn="delete_sweep"
-             IconOff="delete_sweep" />
+             Name="@nameof(Model.OnRemoveJobRemoveSnapshots)" />
 
 <RadzenFormField Text="@L["Notify"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>

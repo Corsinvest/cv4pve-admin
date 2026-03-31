@@ -47,7 +47,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                          {
                                                              Id = a.Id,
                                                              Enabled = a.Enabled,
-                                                             VmIdsList = a.VmIdsList,
+                                                             VmIds = a.VmIds,
                                                              Label = a.Label,
                                                              Description = a.Description,
                                                              Keep = a.Keep,

@@ -10,7 +10,6 @@ global using Corsinvest.ProxmoxVE.Admin.Core.Services;
 global using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Helpers;
 global using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Models;
 global using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Persistence;
-global using Corsinvest.ProxmoxVE.Api.Extension;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.EntityFrameworkCore;

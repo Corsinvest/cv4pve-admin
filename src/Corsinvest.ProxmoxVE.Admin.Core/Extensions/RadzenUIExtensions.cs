@@ -83,7 +83,7 @@ public static class RadzenUIExtensions
                                                               Resizable = true,
                                                           });
 
-    public static async Task<dynamic> OpenSideExAsync<T>(this DialogService dialogService,
+    public static async Task<dynamic?> OpenSideExAsync<T>(this DialogService dialogService,
                                                          string title,
                                                          Dictionary<string, object> parameters,
                                                          DialogOptions options)
@@ -100,7 +100,7 @@ public static class RadzenUIExtensions
         return await dialogService.OpenAsync<T>(title, parameters!, options);
     }
 
-    public static async Task<dynamic> OpenSideEditAsync<TDialog>(this DialogService dialogService,
+    public static async Task<dynamic?> OpenSideEditAsync<TDialog>(this DialogService dialogService,
                                                                  string title,
                                                                  bool isNew,
                                                                  object model,
