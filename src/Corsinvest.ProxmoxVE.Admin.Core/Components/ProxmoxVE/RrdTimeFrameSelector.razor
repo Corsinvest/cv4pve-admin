@@ -1,0 +1,31 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Common
+@inherits AdminComponentBase
+
+<RadzenFormField Text="@L["Time frame"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="schedule" />
+    </Start>
+    <ChildContent>
+        <EnumDropDown TValue="RrdDataTimeFrame"
+                      Value="@Value"
+                      ValueChanged="@ValueChanged"
+                      Name="@Name" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Day"]:</strong> @L["Analyze metrics from the last 24 hours"]
+            <br />
+            <strong>@L["Week"]:</strong> @L["Analyze metrics from the last 7 days"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+@code {
+    [Parameter] public RrdDataTimeFrame Value { get; set; }
+    [Parameter] public EventCallback<RrdDataTimeFrame> ValueChanged { get; set; }
+    [Parameter] public string? Name { get; set; }
+}

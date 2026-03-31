@@ -1,0 +1,31 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Common
+@inherits AdminComponentBase
+
+<RadzenFormField Text="@L["Consolidation"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="functions" />
+    </Start>
+    <ChildContent>
+        <EnumDropDown TValue="RrdDataConsolidation"
+                      Value="@Value"
+                      ValueChanged="@ValueChanged"
+                      Name="@Name" />
+    </ChildContent>
+    <End>
+        <InfoIcon>
+            <strong>@L["Average"]:</strong> @L["Smoothed trend over the period"]
+            <br />
+            <strong>@L["Max"]:</strong> @L["Peak detection — catches short spikes"]
+        </InfoIcon>
+    </End>
+</RadzenFormField>
+
+@code {
+    [Parameter] public RrdDataConsolidation Value { get; set; }
+    [Parameter] public EventCallback<RrdDataConsolidation> ValueChanged { get; set; }
+    [Parameter] public string? Name { get; set; }
+}
