@@ -7,8 +7,8 @@ using Humanizer;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.TaskTracking;
 
-public partial class TaskItemRow(ITaskTrackerService TaskTracker,
-                                 DialogService DialogService)
+public partial class TaskItemRow(ITaskTrackerService taskTracker,
+                                 DialogService dialogService)
 {
     [Parameter] public TaskItemInfo Item { get; set; } = default!;
     [Parameter] public EventCallback OnAfterAction { get; set; }
@@ -42,13 +42,13 @@ public partial class TaskItemRow(ITaskTrackerService TaskTracker,
 
     private async Task CancelTaskAsync()
     {
-        await TaskTracker.CancelAsync(Item.Id);
+        await taskTracker.CancelAsync(Item.Id);
         await OnAfterAction.InvokeAsync();
     }
 
     private async Task ShowDetailsAsync()
     {
-        var logs = await TaskTracker.GetLogsAsync(Item.Id);
-        await DialogService.OpenSideLogAsync(Item.Title, string.Join(Environment.NewLine, logs));
+        var logs = await taskTracker.GetLogsAsync(Item.Id);
+        await dialogService.OpenSideLogAsync(Item.Title, string.Join(Environment.NewLine, logs));
     }
 }

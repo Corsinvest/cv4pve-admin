@@ -28,27 +28,21 @@ public partial class Tasks(ITaskTrackerService taskTracker,
 
     private void OnTrackerChanged(object? sender, TaskItem e)
     {
-        // var data = ResultLoadData.Data;
-        // var idx = data?.FindIndex(a => a.Id == e.Id) ?? -1;
-        // if (idx >= 0)
-        // {
-        //     data![idx] = data[idx] with
-        //     {
-        //         Status = e.Status,
-        //         Phase = e.Phase,
-        //         Progress = e.Progress,
-        //         LastLog = e.LastLog,
-        //         EndedAt = e.EndedAt
-        //     };
-        //     ResultLoadData = ResultLoadData with { Data = data };
-        //     _ = InvokeAsync(StateHasChanged);
-        // }
-        // else
-        // {
-        //     _ = InvokeAsync(DataGridRef.Reload);
-        // }
-//TODO optimize this by updating the item in the list if it's already loaded, otherwise reload the grid
-        _ = InvokeAsync(DataGridRef.Reload);
+        var data = ResultLoadData.Data;
+        var idx = data?.FindIndex(a => a.Id == e.Id) ?? -1;
+        if (idx >= 0)
+        {
+            data![idx].Status = e.Status;
+            data[idx].Phase = e.Phase;
+            data[idx].Progress = e.Progress;
+            data[idx].LastLog = e.LastLog;
+            data[idx].EndedAt = e.EndedAt;
+            _ = InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            _ = InvokeAsync(DataGridRef.Reload);
+        }
     }
 
     private async Task LoadDataAsync(LoadDataArgs args)
@@ -59,20 +53,22 @@ public partial class Tasks(ITaskTrackerService taskTracker,
                                                            .Where(a => a.ModuleName == null || _allowedModules.Contains(a.ModuleName))
                                                            .Where(a => a.ClusterName == ClusterName, ClusterName is not null),
                                                          args,
-                                                         a => new TaskItemInfo(
-                                                             a.Id,
-                                                             a.Title,
-                                                             a.ClusterName,
-                                                             a.ModuleName,
-                                                             a.DetailUrl,
-                                                             a.IsCancellable,
-                                                             a.Status,
-                                                             a.Phase,
-                                                             a.StartedAt,
-                                                             a.EndedAt,
-                                                             a.CreatedBy,
-                                                             a.Progress,
-                                                             a.LastLog),
+                                                         a => new TaskItemInfo
+                                                         {
+                                                             Id = a.Id,
+                                                             Title = a.Title,
+                                                             ClusterName = a.ClusterName,
+                                                             ModuleName = a.ModuleName,
+                                                             DetailUrl = a.DetailUrl,
+                                                             IsCancellable = a.IsCancellable,
+                                                             Status = a.Status,
+                                                             Phase = a.Phase,
+                                                             StartedAt = a.StartedAt,
+                                                             EndedAt = a.EndedAt,
+                                                             CreatedBy = a.CreatedBy,
+                                                             Progress = a.Progress,
+                                                             LastLog = a.LastLog,
+                                                         },
                                                          ResultLoadData.Filter);
     }
 
