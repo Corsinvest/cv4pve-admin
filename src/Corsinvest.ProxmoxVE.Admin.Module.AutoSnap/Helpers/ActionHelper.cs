@@ -41,7 +41,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                             $"Job ID: {id}" +
                                             $", Cluster: {job.ClusterName}, " +
                                             $"Label: {job.Label}, " +
-                                            $"VMs: {job.VmIdsList.JoinAsString(",")}");
+                                            $"VMs: {job.VmIds}");
             }
             await db.Jobs.DeleteAsync(id);
             await PublishDataChangedAsync(scope);
@@ -72,7 +72,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await using var log = new StringWriterEvent();
                 var app = GetApp(client, scope.GetLoggerFactory(), log);
 
-                await app.CleanAsync(job.VmIdsList.JoinAsString(","),
+                await app.CleanAsync(job.VmIds,
                                      job.Label,
                                      0,
                                      job.TimeoutSnapshot * 1000,
@@ -93,7 +93,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                             $"Job ID: {id}, " +
                                             $"Cluster: {job.ClusterName}, " +
                                             $"Label: {job.Label}, " +
-                                            $"VMs: {job.VmIdsList.Count()}");
+                                            $"VMs: {job.VmIds.Split(',').Length}");
             }
 
             await PublishDataChangedAsync(scope);
@@ -166,7 +166,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 using (logger.LogTimeOperation(LogLevel.Debug, true, "Execution physical Snap"))
                 {
-                    var retSnap = await app.SnapAsync(job.VmIdsList.JoinAsString(","),
+                    var retSnap = await app.SnapAsync(job.VmIds,
                                                       job.Label,
                                                       job.Keep,
                                                       job.VmStatus,
@@ -222,7 +222,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                             $"Job ID: {id}, " +
                                             $"Cluster: {job.ClusterName}, " +
                                             $"Label: {job.Label}, " +
-                                            $"VMs: {job.VmIdsList.Count()}, " +
+                                            $"VMs: {job.VmIds.Split(',').Length}, " +
                                             $"Snap: {result.SnapName}, " +
                                             $"Duration: {result.Duration:hh':'mm':'ss}");
 
@@ -289,34 +289,4 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
         await PublishDataChangedAsync(scope);
     }
-
-    //public static async Task<(int scheduled, DateTime? last, int snapCount, int vmsScheduled, int inError)>
-    //    InfoAsync(IServiceScopeFactory ServiceScopeFactory, string clusterName)
-    //{
-    //    using var scope = ServiceScopeFactory.CreateScope();
-    //    var client = await scope.GetPveClientAsync(clusterName);
-    //    var jobRepo = scope.GetReadRepository<AutoSnapJob>();
-    //    var jobHistoryRepo = scope.GetReadRepository<AutoSnapJobHistory>();
-    //    var moduleClusterOptions = GetModuleClusterOptions(scope, clusterName);
-    //    var loggerFactory = scope.GetLoggerFactory();
-
-    //    var vmIdsOrNames = await GetVmIdsOrNamesAsync(jobRepo, clusterName, true);
-    //    var vmsCount = string.IsNullOrWhiteSpace(vmIdsOrNames) ?
-    //                    0 :
-    //                    (await client.GetVmsAsync(vmIdsOrNames)).Where(a => !a.IsUnknown).Count();
-
-    //    var snapCount = moduleClusterOptions.SearchMode == SearchMode.Managed
-    //                        ? vmsCount
-    //                        : (await GetApp(client, loggerFactory, null!)
-    //                                .StatusAsync(AllVms, null, moduleClusterOptions.TimestampFormat))
-    //                                .Count;
-
-    //    var specJob = new AutoSnapJobSpec(clusterName).Enabled();
-    //    var jobCount = await jobRepo.CountAsync(specJob);
-
-    //    var spec = new AutoSnapJobHistorySpec(clusterName);
-    //    var start = (await jobHistoryRepo.FirstOrDefaultAsync(spec))?.Start;
-    //    var inError = await jobHistoryRepo.CountAsync(spec.InError(7));
-    //    return (jobCount, start, snapCount, vmsCount, inError);
-    //}
 }

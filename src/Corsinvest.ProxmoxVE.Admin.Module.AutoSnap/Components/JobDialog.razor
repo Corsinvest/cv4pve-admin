@@ -16,21 +16,15 @@
 
                 <SwitchField @bind-Value="@Model.Enabled"
                              Label="@L["Enabled"]"
-                             Name="@nameof(Model.Enabled)"
-                             IconOn="play_circle"
-                             IconOff="pause_circle" />
+                             Name="@nameof(Model.Enabled)" />
 
                 <SwitchField @bind-Value="@Model.VmStatus"
                              Label="@L["Include RAM"]"
-                             Name="@nameof(Model.VmStatus)"
-                             IconOn="memory"
-                             IconOff="memory" />
+                             Name="@nameof(Model.VmStatus)" />
 
                 <SwitchField @bind-Value="@Model.OnlyRuns"
                              Label="@L["While VM/CT Running"]"
-                             Name="@nameof(Model.OnlyRuns)"
-                             IconOn="play_circle"
-                             IconOff="stop_circle" />
+                             Name="@nameof(Model.OnlyRuns)" />
 
                 <RadzenFormField Text="@L["Label"]" AllowFloatingLabel="false">
                     <Start>
@@ -49,7 +43,7 @@
                         <RadzenIcon Icon="history" />
                     </Start>
                     <ChildContent>
-                        <RadzenNumeric Name="@nameof(Model.Keep)" @bind-Value="@Model.Keep" />
+                        <RadzenNumeric Name="@nameof(Model.Keep)" @bind-Value="@Model.Keep" Min="1" />
                     </ChildContent>
                     <Helper>
                         <RadzenDataAnnotationValidator Component="@nameof(Model.Keep)" />
@@ -70,20 +64,14 @@
 
                 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
-                <RadzenFormField Text="@L["Vm Ids"]" AllowFloatingLabel="false">
-                    <Start>
-                        <RadzenIcon Icon="checklist" />
-                    </Start>
-                    <ChildContent>
-                        <RadzenDropDown @bind-Value="@Model.VmIdsList" Data="VmIds" Name="@nameof(Model.VmIdsList)"
-                                        Multiple="true" AllowClear="true" AllowFiltering="true" MaxSelectedLabels="99"
-                                        SearchTextChanged="SearchTextChanged" Chips="true" />
-                    </ChildContent>
-                    <Helper>
-                        <RadzenCustomValidator Component="@nameof(Model.VmIdsList)"
-                                               Validator="@(() => (Model.VmIdsList?.Count() ?? 0) > 0)" Text="@L["Select VM/CT id!"]" />
-                    </Helper>
-                </RadzenFormField>
+                <VmJollyField @bind-Value="@Model.VmIds"
+                              ClusterName="@Model.ClusterName"
+                              Label="@L["Vm Ids"]"
+                              Name="@nameof(Model.VmIds)">
+                    <HelperContent>
+                        <RadzenRequiredValidator Component="@nameof(Model.VmIds)" Text="@L["Select VM/CT id!"]" />
+                    </HelperContent>
+                </VmJollyField>
             </RadzenStack>
         </RadzenTabsItem>
 

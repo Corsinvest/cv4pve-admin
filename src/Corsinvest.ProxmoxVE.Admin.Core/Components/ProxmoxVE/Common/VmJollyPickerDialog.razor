@@ -1,0 +1,82 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster
+@using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster
+@inherits AdminComponentBase
+
+<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
+
+    @* Top — composer *@
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="8px" class="rz-mb-2">
+        <RadzenFormField Text="@L["Preset"]" AllowFloatingLabel="false" Style="flex: 1;">
+            <ChildContent>
+                <RadzenDropDown TValue="string"
+                                Data="@AvailableTokens"
+                                @bind-Value="@SelectedPreset"
+                                AllowFiltering="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Placeholder="@L["Select..."]" />
+            </ChildContent>
+        </RadzenFormField>
+        <RadzenButton Text="@L["Add"]" Icon="add" Size="ButtonSize.Small" Click="AddPreset" Disabled="@string.IsNullOrEmpty(SelectedPreset)" />
+
+        <RadzenFormField Text="@L["Custom"]" AllowFloatingLabel="false" Style="flex: 1;">
+            <ChildContent>
+                <RadzenTextBox @bind-Value="@CustomToken" Placeholder="@L["%name%, 100:104, -100..."]" />
+            </ChildContent>
+        </RadzenFormField>
+        <RadzenButton Text="@L["Add"]" Icon="add" Size="ButtonSize.Small" Click="AddCustom" Disabled="@string.IsNullOrEmpty(CustomToken)" />
+    </RadzenStack>
+
+    @* Middle — tokens list + preview *@
+    <RadzenRow Gap="8px" Style="flex: 1; overflow: hidden; min-height: 0;">
+        @* Left — token list *@
+        <RadzenColumn Size="3" Style="overflow-y: auto; height: 100%;">
+            <RadzenText Text="@L["Tokens"]" TextStyle="TextStyle.Subtitle2" class="rz-mb-1" />
+            @if (!Tokens.Any())
+            {
+                <RadzenText Text="@L["No tokens added"]" TextStyle="TextStyle.Caption" class="rz-color-secondary" />
+            }
+            else
+            {
+                @foreach (var token in Tokens.ToList())
+                {
+                    var t = token;
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" class="rz-mb-1">
+                        <RadzenText Text="@t" Style="flex: 1; font-family: monospace;" />
+                        <RadzenButton Icon="close"
+                                      Size="ButtonSize.ExtraSmall"
+                                      ButtonStyle="ButtonStyle.Danger"
+                                      Variant="Variant.Text"
+                                      Click="@(() => RemoveToken(t))" />
+                    </RadzenStack>
+                }
+            }
+        </RadzenColumn>
+
+        @* Right — preview *@
+        <RadzenColumn Size="9" Style="overflow: hidden; height: 100%;">
+            <RadzenText Text="@L["Preview"]" TextStyle="TextStyle.Subtitle2" class="rz-mb-1" />
+            <ResourcesEx @ref="ResourcesExRef"
+                         ClusterNames="@([ClusterName])"
+                         FilterExpression="@FilterPreview"
+                         ResourceType="ClusterResourceType.Vm"
+                         PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                         IconStatus="ResourceColumnIconStatus.IconAndText"
+                         UseProgressBarPercentage="false"
+                         DescriptionAsLink="false"
+                         AvailableCommands="false"
+                         ShowSnapshotSize="false"
+                         ShowSearchBox="false"
+                         ShowLoading="true"
+                         @bind-DataGridSettings="DataGridSettings" />
+        </RadzenColumn>
+    </RadzenRow>
+
+    @* Bottom — select button *@
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
+        <RadzenButton Text="@L["Select"]" Click="OnSelect" Style="width: fit-content;" Size="ButtonSize.Small" />
+    </RadzenStack>
+</RadzenStack>
