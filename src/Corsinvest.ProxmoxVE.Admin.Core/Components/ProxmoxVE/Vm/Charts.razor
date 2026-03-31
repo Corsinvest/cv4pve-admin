@@ -7,49 +7,11 @@
 <RadzenStack Orientation="Orientation.Vertical">
     <RadzenRow>
         <RadzenColumn Size="6">
-            <RadzenFormField Text="@L["Time frame"]" AllowFloatingLabel="false" class="rz-w-100">
-                <Start>
-                    <RadzenIcon Icon="schedule" />
-                </Start>
-                <ChildContent>
-                    <EnumDropDown @bind-Value="@RrdDataTimeFrame"
-                                  @bind-Value:after="@RefreshDataAsync"
-                                  Name="@nameof(RrdDataTimeFrame)" />
-                </ChildContent>
-                <End>
-                    <InfoIcon>
-                        <strong>@L["Hour"]:</strong> @L["Last hour data"]
-                        <br />
-                        <strong>@L["Day"]:</strong> @L["Last 24 hours data"]
-                        <br />
-                        <strong>@L["Week"]:</strong> @L["Last 7 days data"]
-                        <br />
-                        <strong>@L["Month"]:</strong> @L["Last 30 days data"]
-                        <br />
-                        <strong>@L["Year"]:</strong> @L["Last 12 months data"]
-                    </InfoIcon>
-                </End>
-            </RadzenFormField>
+            <RrdTimeFrameSelector @bind-Value="@RrdDataTimeFrame" @bind-Value:after="@RefreshDataAsync" />
         </RadzenColumn>
 
         <RadzenColumn Size="6">
-            <RadzenFormField Text="@L["Consolidation data"]" AllowFloatingLabel="false" class="rz-w-100">
-                <Start>
-                    <RadzenIcon Icon="functions" />
-                </Start>
-                <ChildContent>
-                    <EnumDropDown @bind-Value="@RrdDataConsolidation"
-                                  @bind-Value:after="@RefreshDataAsync"
-                                  Name="@nameof(RrdDataConsolidation)" />
-                </ChildContent>
-                <End>
-                    <InfoIcon>
-                        <strong>@L["Average"]:</strong> @L["Average values over time period"]
-                        <br />
-                        <strong>@L["Maximum"]:</strong> @L["Maximum peak values"]
-                    </InfoIcon>
-                </End>
-            </RadzenFormField>
+            <RrdConsolidationSelector @bind-Value="@RrdDataConsolidation" @bind-Value:after="@RefreshDataAsync" />
         </RadzenColumn>
     </RadzenRow>
 
