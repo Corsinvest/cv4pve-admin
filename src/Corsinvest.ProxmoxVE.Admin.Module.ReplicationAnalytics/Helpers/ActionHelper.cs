@@ -71,6 +71,31 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 {
                     try
                     {
+                        // TODO: when Corsinvest.ProxmoxVE.Api.Shared NuGet is updated, delete the block below and uncomment this:
+                        //var r = ReplicationHelper.ParseLog(
+                        //    jobId:    job.Id,
+                        //    vmId:     job.Guest,
+                        //    source:   job.Source,
+                        //    target:   job.Target,
+                        //    status:   string.IsNullOrWhiteSpace(job.Error),
+                        //    error:    job.Error,
+                        //    lastSync: lastSync,
+                        //    logRows:  rows!);
+                        //await db.JobResults.AddAsync(new()
+                        //{
+                        //    ClusterName = settings.ClusterName,
+                        //    JobId       = r.JobId,
+                        //    VmId        = r.VmId,
+                        //    Source      = r.Source,
+                        //    Target      = r.Target,
+                        //    Status      = r.Status,
+                        //    Error       = r.Error,
+                        //    LastSync    = r.LastSync,
+                        //    Start       = r.Start,
+                        //    End         = r.End,
+                        //    Size        = r.Size,
+                        //    Logs        = string.Join(Environment.NewLine, rows),
+                        //});
                         var status = string.IsNullOrWhiteSpace(job.Error);
                         await db.JobResults.AddAsync(new()
                         {

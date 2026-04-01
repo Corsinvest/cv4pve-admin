@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components.Widgets.Status;

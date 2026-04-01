@@ -7,7 +7,7 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Models;
 
-public class ClusterResourceEx : ClusterResource, IClusterName, ISnapshotsSize, ISnapshotsReplicationSize, IClusterResourceVmOsInfo
+public class ClusterResourceItem : ClusterResource, IClusterName, ISnapshotsSize, ISnapshotsReplicationSize, IClusterResourceVmOsInfo
 {
     public const string CommandsColumnName = "Cmds";
     public const string UsageCpuMemDiskPercColumnName = "UsageCpuMemDiskPercColumnName";

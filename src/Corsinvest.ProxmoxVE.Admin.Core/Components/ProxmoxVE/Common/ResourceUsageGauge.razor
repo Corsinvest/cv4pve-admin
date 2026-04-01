@@ -27,9 +27,9 @@
 @code
 {
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
-    [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
+    [Parameter] public IEnumerable<ResourceUsageItem> Data { get; set; } = [];
 
-    private RenderFragment RenderGauge(ResourceUsage item) => __builder =>
+    private RenderFragment RenderGauge(ResourceUsageItem item) => __builder =>
     {
         <RadzenText TextStyle="TextStyle.H6" Text="@item.Name" TextAlign="TextAlign.Center" Style="width:100%;" />
         <RadzenArcGauge @attributes="AdditionalAttributes" Style="width:200px;">

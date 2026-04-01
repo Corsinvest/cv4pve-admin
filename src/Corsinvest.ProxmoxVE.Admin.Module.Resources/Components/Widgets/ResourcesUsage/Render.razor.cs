@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components.Widgets.ResourcesUsage;
@@ -14,7 +13,7 @@ public partial class Render : IModuleWidget<Settings>
     [Parameter] public IEnumerable<string> ClusterNames { get; set; } = [];
     [Parameter] public bool InEditing { get; set; }
 
-    private ResourcesEx? ResourcesExRef { get; set; }
+    private ResourcesView? ResourcesExRef { get; set; }
     private bool ShowGrid { get; set; }
 
     private enum ResourcePreset { Guest, Node, Storage }
@@ -51,37 +50,37 @@ public partial class Render : IModuleWidget<Settings>
         // Configure based on preset
         string[] visibleColumns;
         string[] typeFilter;
-        List<GroupDescriptor> groups = [new() { Property = nameof(ClusterResourceEx.ClusterName), Title = "Cluster Name" }];
+        List<GroupDescriptor> groups = [new() { Property = nameof(ClusterResourceItem.ClusterName), Title = "Cluster Name" }];
 
         switch (_selectedPreset)
         {
             case ResourcePreset.Guest:
                 typeFilter = ["qemu", "lxc"];
-                visibleColumns = [nameof(ClusterResourceEx.Status),
-                                  nameof(ClusterResourceEx.Description),
-                                  nameof(ClusterResourceEx.CpuUsagePercentage),
-                                  nameof(ClusterResourceEx.MemoryUsagePercentage),
-                                  nameof(ClusterResourceEx.DiskUsagePercentage),
-                                  ClusterResourceEx.CommandsColumnName];
+                visibleColumns = [nameof(ClusterResourceItem.Status),
+                                  nameof(ClusterResourceItem.Description),
+                                  nameof(ClusterResourceItem.CpuUsagePercentage),
+                                  nameof(ClusterResourceItem.MemoryUsagePercentage),
+                                  nameof(ClusterResourceItem.DiskUsagePercentage),
+                                  ClusterResourceItem.CommandsColumnName];
                 break;
 
             case ResourcePreset.Node:
                 typeFilter = ["node"];
-                visibleColumns = [nameof(ClusterResourceEx.Status),
-                                  nameof(ClusterResourceEx.Description),
-                                  nameof(ClusterResourceEx.CpuUsagePercentage),
-                                  nameof(ClusterResourceEx.MemoryUsagePercentage),
-                                  nameof(ClusterResourceEx.DiskUsagePercentage),
-                                  ClusterResourceEx.CommandsColumnName];
+                visibleColumns = [nameof(ClusterResourceItem.Status),
+                                  nameof(ClusterResourceItem.Description),
+                                  nameof(ClusterResourceItem.CpuUsagePercentage),
+                                  nameof(ClusterResourceItem.MemoryUsagePercentage),
+                                  nameof(ClusterResourceItem.DiskUsagePercentage),
+                                  ClusterResourceItem.CommandsColumnName];
                 break;
 
             case ResourcePreset.Storage:
                 typeFilter = ["storage"];
-                visibleColumns = [nameof(ClusterResourceEx.Status),
-                                  nameof(ClusterResourceEx.Storage),
-                                  nameof(ClusterResourceEx.PluginType),
-                                  nameof(ClusterResourceEx.DiskUsagePercentage)];
-                groups.Add(new() { Property = nameof(ClusterResourceEx.Node), Title = "Node" });
+                visibleColumns = [nameof(ClusterResourceItem.Status),
+                                  nameof(ClusterResourceItem.Storage),
+                                  nameof(ClusterResourceItem.PluginType),
+                                  nameof(ClusterResourceItem.DiskUsagePercentage)];
+                groups.Add(new() { Property = nameof(ClusterResourceItem.Node), Title = "Node" });
                 break;
 
             default:
@@ -91,7 +90,7 @@ public partial class Render : IModuleWidget<Settings>
         // Apply groups
         settings.Groups = groups;
 
-        settings.Columns.FirstOrDefault(a => a.Property == nameof(ClusterResourceEx.Type))!.FilterValue = typeFilter;
+        settings.Columns.FirstOrDefault(a => a.Property == nameof(ClusterResourceItem.Type))!.FilterValue = typeFilter;
 
         foreach (var col in settings.Columns)
         {

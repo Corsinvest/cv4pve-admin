@@ -102,7 +102,7 @@ public class Info(IAdminService adminService,
 
             foreach (var vm in vms)
             {
-                var config = await clusterClient.CachedData.GetVmConfigAsync(vm.Node, vm.VmType, vm.VmId,false); 
+                var config = await clusterClient.CachedData.GetVmConfigAsync(vm.Node, vm.VmType, vm.VmId, false);
                 if (config?.Disks.Any(a => !a.Backup) == true) { vmsWithUnprotectedDisks++; }
             }
         }

@@ -12,9 +12,9 @@
             </RadzenTabsItem>
 
             <RadzenTabsItem Text="@L["Storages"]" Icon="@PveAdminUIHelper.Icons.Storage">
-                <ResourcesEx FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
+                <ResourcesView FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
                              ClusterNames="@([ClusterName])"
-                             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                             PropertyIconStatus="ResourcesViewPropertyIconStatus.Status"
                              IconStatus="ResourceColumnIconStatus.IconAndText"
                              ResourceType="ClusterResourceType.Storage"
                              ShowSnapshotSize="true"
@@ -27,7 +27,7 @@
                             <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Storage.Manager Storage="context" ClusterName="@ClusterName" />
                         </RadzenPanel>
                     </Template>
-                </ResourcesEx>
+                </ResourcesView>
             </RadzenTabsItem>
 
             <RadzenTabsItem Text="@L["Usage"]" Icon="trending_up">
@@ -39,9 +39,9 @@
                     <Tabs>
                         <RadzenTabsItem Text="@L["By Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
                             <RadzenStack Orientation="Orientation.Vertical">
-                                <ResourcesEx FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
+                                <ResourcesView FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Storage)"
                                              ClusterNames="@([ClusterName])"
-                                             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                                             PropertyIconStatus="ResourcesViewPropertyIconStatus.Status"
                                              IconStatus="ResourceColumnIconStatus.IconAndText"
                                              ResourceType="ClusterResourceType.Storage"
                                              ShowSnapshotSize="true"
@@ -53,15 +53,15 @@
                                             <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.StorageUsage Resource="context" ClusterName="@ClusterName" />
                                         </div>
                                     </Template>
-                                </ResourcesEx>
+                                </ResourcesView>
                             </RadzenStack>
                         </RadzenTabsItem>
 
                         <RadzenTabsItem Text="@L["By VMs"]" Icon="computer">
                             <RadzenStack Orientation="Orientation.Vertical">
-                                <ResourcesEx FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Vm)"
+                                <ResourcesView FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Vm)"
                                              ClusterNames="@([ClusterName])"
-                                             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+                                             PropertyIconStatus="ResourcesViewPropertyIconStatus.Status"
                                              IconStatus="ResourceColumnIconStatus.IconAndText"
                                              ResourceType="ClusterResourceType.Vm"
                                              ShowSnapshotSize="true"
@@ -73,7 +73,7 @@
                                             <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.StorageUsage Resource="context" ClusterName="@ClusterName" />
                                         </div>
                                     </Template>
-                                </ResourcesEx>
+                                </ResourcesView>
                             </RadzenStack>
                         </RadzenTabsItem>
                     </Tabs>

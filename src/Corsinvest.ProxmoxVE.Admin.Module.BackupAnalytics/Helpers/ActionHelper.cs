@@ -17,6 +17,23 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
     private static readonly string[] _sizes = ["KIB", "MIB", "GIB", "TIB"];
 
+    // TODO: when Corsinvest.ProxmoxVE.Api.Shared NuGet is updated, delete ParseLog and use ParseLogNew instead.
+    //public static List<JobResult> ParseLogNew(TaskResult job)
+    //    => BackupHelper.ParseVzdumpLog(job.Logs!)
+    //                   .Select(r => new JobResult
+    //                   {
+    //                       TaskResult   = job,
+    //                       VmId         = r.VmId,
+    //                       Start        = r.Start,
+    //                       End          = r.End,
+    //                       Size         = r.Size,
+    //                       TransferSize = r.TransferSize,
+    //                       Status       = r.Status,
+    //                       Error        = r.Error,
+    //                       Archive      = r.Archive,
+    //                   })
+    //                   .ToList();
+
     public static List<JobResult> ParseLog(TaskResult job)
     {
         const string KEY_STARTING = "INFO: Starting Backup of VM ";

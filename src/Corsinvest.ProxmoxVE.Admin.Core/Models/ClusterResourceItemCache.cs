@@ -6,15 +6,15 @@ using System.Reflection;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Models;
 
-public static class ClusterResourceExCache
+public static class ClusterResourceItemCache
 {
     private static readonly Lazy<string[]> _propertyNames = new(() =>
-        [.. typeof(ClusterResourceEx).GetProperties()
+        [.. typeof(ClusterResourceItem).GetProperties()
                                  .Where(p => p.CanRead && p.CanWrite)
                                  .Select(p => p.Name)]);
 
     private static readonly Lazy<PropertyInfo[]> _properties = new(() =>
-        [.. typeof(ClusterResourceEx).GetProperties().Where(p => p.CanRead && p.CanWrite)]);
+        [.. typeof(ClusterResourceItem).GetProperties().Where(p => p.CanRead && p.CanWrite)]);
 
     private static readonly Lazy<Dictionary<string, PropertyInfo>> _propertyLookup = new(() =>
         Properties.ToDictionary(p => p.Name, p => p));

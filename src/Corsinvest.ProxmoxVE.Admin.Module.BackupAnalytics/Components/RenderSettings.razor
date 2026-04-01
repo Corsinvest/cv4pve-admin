@@ -7,9 +7,7 @@
 
 <SwitchField @bind-Value="@Model.Enabled"
              Label="@L["Enabled schedulation"]"
-             Name="@nameof(Model.Enabled)"
-             IconOn="play_circle"
-             IconOff="pause_circle" />
+             Name="@nameof(Model.Enabled)" />
 
 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
@@ -18,7 +16,7 @@
         <RadzenIcon Icon="date_range" />
     </Start>
     <ChildContent>
-        <RadzenNumeric Name="@nameof(Model.MaxDaysLogs)" @bind-Value="@Model.MaxDaysLogs" />
+        <RadzenNumeric Name="@nameof(Model.MaxDaysLogs)" @bind-Value="@Model.MaxDaysLogs" Min="1" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.MaxDaysLogs)" />

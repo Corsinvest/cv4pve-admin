@@ -174,7 +174,7 @@ public class PveSearchProvider : ISearchProvider
                 vms = await _permissionService.FilterAsync(context.ClusterName, vms);
 
                 var data = vms.AsQueryable()
-                              .ProjectToType<ClusterResourceEx>()
+                              .ProjectToType<ClusterResourceItem>()
                               .ToList()
                               .ConvertAll(item =>
                               {

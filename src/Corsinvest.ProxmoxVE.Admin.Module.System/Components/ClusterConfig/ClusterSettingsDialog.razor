@@ -5,11 +5,7 @@
 @inherits AdminComponentBase
 @implements IModelParameter<ClusterSettings>
 
-<SwitchField @bind-Value="@Model.Enabled"
-             Label="@L["Enabled"]"
-             Name="@nameof(Model.Enabled)"
-             IconOn="play_circle"
-             IconOff="pause_circle" />
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
 
 <RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
     <Start>
@@ -42,7 +38,7 @@
                 <RadzenIcon Icon="location_on" />
             </Start>
             <ChildContent>
-                <RadzenNumeric Name="@nameof(Model.Latitude)" @bind-Value="@Model.Latitude" />
+                <RadzenNumeric Name="@nameof(Model.Latitude)" @bind-Value="@Model.Latitude" Min="-90" Max="90" />
             </ChildContent>
         </RadzenFormField>
 
@@ -51,7 +47,7 @@
                 <RadzenIcon Icon="location_on" />
             </Start>
             <ChildContent>
-                <RadzenNumeric Name="@nameof(Model.Longitude)" @bind-Value="@Model.Longitude" />
+                <RadzenNumeric Name="@nameof(Model.Longitude)" @bind-Value="@Model.Longitude" Min="-180" Max="180" />
             </ChildContent>
         </RadzenFormField>
     </RadzenStack>
@@ -77,8 +73,6 @@
         <SwitchField @bind-Value="@Model.AllowCalculateSnapshotSize"
                      Label="@L["Calculating the snapshot size may take some time (requires SSH)."]"
                      Name="@nameof(Model.AllowCalculateSnapshotSize)"
-                     IconOn="photo_camera"
-                     IconOff="no_photography"
                      Disabled="!Model.SshIsConfigured"
                      class="rz-w-100" />
     </SubscriptionGate>

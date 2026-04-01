@@ -7,14 +7,11 @@
 
 <SwitchField @bind-Value="@Settings.UseProgressBarPercentage"
              Label="@L["Use ProgressBar for percentage value"]"
-             Name="@nameof(Settings.UseProgressBarPercentage)"
-             IconOn="percent"
-             IconOff="percent" />
+             Name="@nameof(Settings.UseProgressBarPercentage)" />
 
 <SwitchField @bind-Value="@Settings.DescriptionAsLink"
              Label="@L["Description as link"]"
-             Name="@nameof(Settings.DescriptionAsLink)"
-             IconOn="link" IconOff="link_off" />
+             Name="@nameof(Settings.DescriptionAsLink)" />
 
 <RadzenFormField Text="@L["Property Icon Status"]" AllowFloatingLabel="false">
     <Start><RadzenIcon Icon="interests" /></Start>

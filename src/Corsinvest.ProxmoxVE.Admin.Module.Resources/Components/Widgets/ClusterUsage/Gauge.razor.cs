@@ -13,7 +13,7 @@ public partial class Gauge(IAdminService adminService) : IModuleWidget<object>, 
     [Parameter] public IEnumerable<string> ClusterNames { get; set; } = [];
     [Parameter] public bool InEditing { get; set; }
 
-    private IEnumerable<ResourceUsage> Items { get; set; } = [];
+    private IEnumerable<ResourceUsageItem> Items { get; set; } = [];
     private bool Initalized { get; set; }
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);

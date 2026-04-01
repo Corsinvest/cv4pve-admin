@@ -12,7 +12,7 @@
                     @if (ShowSearchBox)
                     {
                         <SearchTextBox @ref="SearchTextBox"
-                                       TItem="ClusterResourceEx"
+                                       TItem="ClusterResourceItem"
                                        FiltersChanged="OnSearchFiltersChanged"
                                        Style="width:200px;" />
                     }
@@ -75,9 +75,21 @@
                         </div>
                     }
 
+                    @if (AvailableNodes.Count > 1)
+                    {
+                        <RadzenDropDown TValue="IList<string>"
+                                        Data="@AvailableNodes"
+                                        @bind-Value="CardNodesFilter"
+                                        Multiple="true"
+                                        AllowSelectAll="true"
+                                        AllowClear="true"
+                                        MaxSelectedLabels="2"
+                                        Placeholder="@L["Nodes"]"
+                                        Style="min-width:120px; max-width:200px;" />
+                    }
+
                     @if (AvailableTags.Count > 1)
                     {
-                        <span style="width:1px; height:16px; background:var(--rz-grid-cell-border-color, var(--rz-border-color)); margin:0 4px;"></span>
                         <RadzenDropDown TValue="IList<string>"
                                         Data="@AvailableTags"
                                         @bind-Value="CardTagsFilter"
@@ -99,10 +111,12 @@
             @foreach (var item in DataFilteredItems.Where(a => (CardResourceTypeFilter == null || a.ResourceType == CardResourceTypeFilter)
                                                                 && (CardStatusFilter == null || a.Status == CardStatusFilter)
                                                                 && (CardVmTypeFilter == null || a.Type == CardVmTypeFilter)
+                                                                && (CardNodesFilter == null || !CardNodesFilter.Any() || CardNodesFilter.Contains(a.Node))
                                                                 && (CardTagsFilter == null || !CardTagsFilter.Any() || a.GetTagsArray().Any(t => CardTagsFilter.Contains(t)))))
             {
                 <ResourceCard Resource="item"
                               TagStyleColorMap="@(TagStyleColorMaps.GetValueOrDefault(item.ClusterName, string.Empty))"
+                              ShowOsInfo="@ShowOsInfo"
                               Template="@Template" />
             }
         </div>

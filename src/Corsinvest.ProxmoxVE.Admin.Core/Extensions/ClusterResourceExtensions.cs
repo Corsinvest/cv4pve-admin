@@ -16,7 +16,7 @@ public static class ClusterResourceExtensions
             ? []
             : tags.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-    public static IEnumerable<ResourceUsage> GetResourceUsage(this IEnumerable<ClusterResource> resources, IStringLocalizer L)
+    public static IEnumerable<ResourceUsageItem> GetResourceUsage(this IEnumerable<ClusterResource> resources, IStringLocalizer L)
     {
         var nodes = resources.Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline).ToList();
 

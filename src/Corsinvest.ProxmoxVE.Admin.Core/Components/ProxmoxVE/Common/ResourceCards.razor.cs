@@ -4,11 +4,11 @@
  */
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 
 public partial class ResourceCards
 {
-    [Parameter] public IList<ClusterResourceEx> Items { get; set; } = [];
+    [Parameter] public IList<ClusterResourceItem> Items { get; set; } = [];
     [Parameter] public Dictionary<string, string> TagStyleColorMaps { get; set; } = [];
     [Parameter] public string? Style { get; set; }
     [Parameter] public RenderFragment? TemplateViewTypeSelector { get; set; }
@@ -18,15 +18,17 @@ public partial class ResourceCards
     [Parameter] public LogicalFilterOperator LogicalFilterOperator { get; set; } = LogicalFilterOperator.And;
     [Parameter] public FilterCaseSensitivity FilterCaseSensitivity { get; set; } = FilterCaseSensitivity.Default;
     [Parameter] public bool ShowSearchBox { get; set; } = true;
-    [Parameter] public RenderFragment<ClusterResourceEx>? Template { get; set; }
+    [Parameter] public bool ShowOsInfo { get; set; }
+    [Parameter] public RenderFragment<ClusterResourceItem>? Template { get; set; }
 
     private ClusterResourceType? CardResourceTypeFilter { get; set; }
     private string? CardStatusFilter { get; set; }
     private string? CardVmTypeFilter { get; set; }
     private IList<string> CardTagsFilter { get; set; } = [];
-    private SearchTextBox<ClusterResourceEx>? SearchTextBox { get; set; }
+    private IList<string> CardNodesFilter { get; set; } = [];
+    private SearchTextBox<ClusterResourceItem>? SearchTextBox { get; set; }
 
-    private List<ClusterResourceEx> DataFilteredItems = [];
+    private List<ClusterResourceItem> DataFilteredItems = [];
     private IEnumerable<FilterDescriptor> _searchFilters = [];
 
     public async Task ClearSearchAsync()
@@ -43,7 +45,7 @@ public partial class ResourceCards
         await InvokeAsync(StateHasChanged);
     }
 
-    private List<ClusterResourceEx> ComputeDataFilteredItems()
+    private List<ClusterResourceItem> ComputeDataFilteredItems()
     {
         var filters = Filters.Concat(_searchFilters).ToList();
         if (filters.Count == 0) { return [.. Items]; }
@@ -57,6 +59,12 @@ public partial class ResourceCards
         => [.. DataFilteredItems.Where(a => a.ResourceType == ClusterResourceType.Vm
                                         && (CardResourceTypeFilter == null || CardResourceTypeFilter == ClusterResourceType.Vm))
                                 .Select(a => a.Type)
+                                .Distinct()
+                                .Order()];
+
+    private List<string> AvailableNodes
+        => [.. DataFilteredItems.Where(a => !string.IsNullOrEmpty(a.Node))
+                                .Select(a => a.Node)
                                 .Distinct()
                                 .Order()];
 

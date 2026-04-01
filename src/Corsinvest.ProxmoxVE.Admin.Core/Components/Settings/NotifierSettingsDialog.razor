@@ -8,11 +8,7 @@
 <RadzenTemplateForm TItem="TSettings" Data="@Model" Submit="@OnSubmit" EditContext="@EditContext">
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
         <RadzenStack Orientation="Orientation.Vertical" Style="overflow: auto; flex: 1;">
-            <SwitchField @bind-Value="@Model.Enabled"
-                         Label="@L["Enabled"]"
-                         Name="@nameof(Model.Enabled)"
-                         IconOn="play_circle"
-                         IconOff="pause_circle" />
+            <SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="@nameof(Model.Enabled)" />
 
             <RadzenFormField Text="@L["Name"]" AllowFloatingLabel="false">
                 <Start>

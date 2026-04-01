@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Report" Version="1.1.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
@@ -18,15 +19,15 @@
     <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="10.0.6" />
+    <PackageVersion Include="Radzen.Blazor" Version="10.1.0" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.5.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -34,7 +35,7 @@
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
     <PackageVersion Include="ClosedXML.Report" Version="0.2.12" />
     <PackageVersion Include="Humanizer" Version="3.0.10" />
-    <PackageVersion Include="Mapster" Version="10.0.4" />
+    <PackageVersion Include="Mapster" Version="10.0.6" />
     <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
     <PackageVersion Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageVersion Include="FluentResults" Version="4.0.0" />
@@ -57,7 +58,7 @@
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.8" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.1.9" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="1.7.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.0.0" />
@@ -69,8 +70,8 @@
   </ItemGroup>
   <!-- MCP Server -->
   <ItemGroup>
-    <PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
-    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Wangkanai.Detection" Version="8.20.0" />
