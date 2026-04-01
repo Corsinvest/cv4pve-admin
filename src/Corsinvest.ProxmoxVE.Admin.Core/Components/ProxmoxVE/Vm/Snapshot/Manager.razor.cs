@@ -167,11 +167,13 @@ public partial class Manager(IAdminService adminService,
     {
         item.HasVmStatus = Vm.VmType == VmType.Qemu;
 
-        var title = isNew
-                        ? L["New"]
-                        : L["Edit {0}", item.Name];
-
-        if (await dialogService.OpenSideEditAsync<EditDialog>(title, isNew, item) != null)
+        if (await dialogService.OpenSideEditAsync<EditDialog>(isNew
+                                                                ? L["New"]
+                                                                : L["Edit {0}", item.Name],
+                                                              isNew
+                                                                ? EditDialogMode.Create
+                                                                : EditDialogMode.Edit,
+                                                              item) != null)
         {
             if (isNew)
             {

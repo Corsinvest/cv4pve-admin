@@ -1,0 +1,239 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Report
+@inherits AdminComponentBase
+
+<style>
+    .dashed-box {
+        border: 2px dashed var(--rz-base-200);
+        border-radius: var(--rz-border-radius);
+        padding: 12px;
+    }
+</style>
+
+@if (!ReadOnly)
+{
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="4px" class="rz-mb-4">
+        <RadzenButton Text="@L["Fast"]" Icon="bolt" Size="ButtonSize.Small" Click="@(() => ApplyPreset(Report.Settings.Fast(), L["Fast"]))" />
+        <RadzenButton Text="@L["Standard"]" Icon="tune" Size="ButtonSize.Small" Click="@(() => ApplyPreset(Report.Settings.Standard(), L["Standard"]))" />
+        <RadzenButton Text="@L["Full"]" Icon="dataset" Size="ButtonSize.Small" Click="@(() => ApplyPreset(Report.Settings.Full(), L["Full"]))" />
+    </RadzenStack>
+}
+
+<RadzenAccordion>
+    <Items>
+        <RadzenAccordionItem Text="@L["Cluster"]" Icon="@PveAdminUIHelper.Icons.Cluster">
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeOptions" Label="@L["Options"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeSecurity" Label="@L["Security"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeFirewall" Label="@L["Firewall"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeBackupJobs" Label="@L["Backup Jobs"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeReplication" Label="@L["Replication"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeStorages" Label="@L["Storages"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeMetricServers" Label="@L["Metric Servers"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeSdn" Label="@L["SDN"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeMapping" Label="@L["Mapping"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludePools" Label="@L["Pools"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeHa" Label="@L["HA"]" ReadOnly="@ReadOnly" />
+        </RadzenAccordionItem>
+
+        <RadzenAccordionItem Text="@L["Node"]" Icon="@PveAdminUIHelper.Icons.Node">
+            <ResourceField @bind-Value="@S.Node.Names"
+                           ResourceType="ResourceFieldType.Node"
+                           ClusterName="@Model.ClusterName"
+                           Label="@L["Names"]"
+                           UseJolly="true"
+                           ReadOnly="@ReadOnly"
+                           class="rz-w-100 rz-mb-4" />
+
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeNetwork" Label="@L["Network"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeDisks" Label="@L["Disks"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeSmartData" Label="@L["Smart Data"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeServices" Label="@L["Services"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeSslCertificates" Label="@L["SSL Certificates"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeAptUpdates" Label="@L["APT Updates"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeAptVersions" Label="@L["APT Versions"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeReplication" Label="@L["Replication"]" ReadOnly="@ReadOnly" />
+
+            @RenderRrdData(S.Node.RrdData)
+            @RenderFirewall(S.Node.Firewall)
+            @RenderTasks(S.Node.Tasks)
+            @RenderSyslog(S.Node.Syslog)
+        </RadzenAccordionItem>
+
+        <RadzenAccordionItem Text="@L["Guest (VM / CT)"]" Icon="@PveAdminUIHelper.Icons.Vm">
+            <ResourceField @bind-Value="@S.Guest.Ids"
+                           ResourceType="ResourceFieldType.Guest"
+                           ClusterName="@Model.ClusterName"
+                           Label="@L["IDs"]"
+                           Name="@nameof(S.Guest.Ids)"
+                           ReadOnly="@ReadOnly"
+                           class="rz-mb-4 rz-w-100" />
+
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeBackups" Label="@L["Backups"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeSnapshots" Label="@L["Snapshots"]" ReadOnly="@ReadOnly" />
+            <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeQemuAgent" Label="@L["QEMU Agent"]" ReadOnly="@ReadOnly" />
+
+            @RenderRrdData(S.Guest.RrdData)
+            @RenderFirewall(S.Guest.Firewall)
+            @RenderTasks(S.Guest.Tasks)
+        </RadzenAccordionItem>
+
+        <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
+            <ResourceField @bind-Value="@S.Storage.Names"
+                           ResourceType="ResourceFieldType.Storage"
+                           ClusterName="@Model.ClusterName"
+                           Label="@L["Names"]"
+                           UseJolly="true"
+                           ReadOnly="@ReadOnly"
+                           class="rz-w-100 rz-mb-4" />
+
+            @RenderRrdData(S.Storage.RrdData)
+        </RadzenAccordionItem>
+    </Items>
+</RadzenAccordion>
+
+@code
+{
+    private RenderFragment RenderRrdData(SettingsRrdData rrd) => __builder =>
+    {
+        <SwitchField Style="margin-bottom: 8px;" @bind-Value="@rrd.Enabled" Label="@L["RRD Data"]" ReadOnly="@ReadOnly" />
+        @if (rrd.Enabled)
+        {
+            <RadzenRow Gap="8px" class="rz-mb-2 dashed-box">
+                <RadzenColumn Size="4">
+                    <RrdTimeFrameSelector @bind-Value="@rrd.TimeFrame" ReadOnly="@ReadOnly" />
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    <RrdConsolidationSelector @bind-Value="@rrd.Consolidation" ReadOnly="@ReadOnly" />
+                </RadzenColumn>
+            </RadzenRow>
+        }
+    };
+
+    private RenderFragment RenderFirewall(SettingsFirewall fw) => __builder =>
+    {
+        <SwitchField Style="margin-bottom: 8px;" @bind-Value="@fw.Enabled" Label="@L["Firewall"]" ReadOnly="@ReadOnly" />
+        @if (fw.Enabled)
+        {
+            <RadzenRow Gap="8px" class="rz-mb-2 dashed-box">
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Log Max Count"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenNumeric @bind-Value="@fw.LogMaxCount" Min="0" ReadOnly="@ReadOnly" />
+                        </ChildContent>
+                        <End>
+                            <InfoIcon>@L["0 = unlimited"]</InfoIcon>
+                        </End>
+                    </RadzenFormField>
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Log Since"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenDatePicker TValue="DateOnly?"
+                                              @bind-Value="@fw.LogSince"
+                                              ShowTime="false"
+                                              AllowClear="true"
+                                              DateFormat="d"
+                                              ReadOnly="@ReadOnly" />
+                        </ChildContent>
+                    </RadzenFormField>
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Log Until"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenDatePicker TValue="DateOnly?"
+                                              @bind-Value="@fw.LogUntil"
+                                              ShowTime="false"
+                                              AllowClear="true"
+                                              DateFormat="d"
+                                              ReadOnly="@ReadOnly" />
+                        </ChildContent>
+                    </RadzenFormField>
+                </RadzenColumn>
+            </RadzenRow>
+        }
+    };
+
+    private RenderFragment RenderTasks(SettingsTask tasks) => __builder =>
+    {
+        <SwitchField Style="margin-bottom: 8px;" @bind-Value="@tasks.Enabled" Label="@L["Tasks"]" ReadOnly="@ReadOnly" />
+        @if (tasks.Enabled)
+        {
+            <div class="dashed-box" style="margin-bottom: 8px;">
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@tasks.OnlyErrors" Label="@L["Only Errors"]" ReadOnly="@ReadOnly" />
+                <RadzenRow Gap="8px" class="rz-mb-2">
+                    <RadzenColumn Size="4">
+                        <RadzenFormField Text="@L["Max Count"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric @bind-Value="@tasks.MaxCount" Min="0" ReadOnly="@ReadOnly" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["0 = unlimited"]</InfoIcon>
+                            </End>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                </RadzenRow>
+            </div>
+        }
+    };
+
+    private RenderFragment RenderSyslog(SettingsSyslog syslog) => __builder =>
+    {
+        <SwitchField Style="margin-bottom: 8px;" @bind-Value="@syslog.Enabled" Label="@L["Syslog"]" ReadOnly="@ReadOnly" />
+        @if (syslog.Enabled)
+        {
+            <RadzenRow Gap="8px" class="rz-mb-2 dashed-box">
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Max Count"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenNumeric @bind-Value="@syslog.MaxCount" Min="0" ReadOnly="@ReadOnly" />
+                        </ChildContent>
+                        <End>
+                            <InfoIcon>@L["0 = unlimited"]</InfoIcon>
+                        </End>
+                    </RadzenFormField>
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Since"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenDatePicker TValue="DateOnly?"
+                                              @bind-Value="@syslog.Since"
+                                              ShowTime="false"
+                                              AllowClear="true"
+                                              DateFormat="d"
+                                              ReadOnly="@ReadOnly" />
+                        </ChildContent>
+                    </RadzenFormField>
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Until"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenDatePicker TValue="DateOnly?"
+                                              @bind-Value="@syslog.Until"
+                                              ShowTime="false"
+                                              AllowClear="true"
+                                              DateFormat="d"
+                                              ReadOnly="@ReadOnly" />
+                        </ChildContent>
+                    </RadzenFormField>
+                </RadzenColumn>
+
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="@L["Service"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <ChildContent>
+                            <RadzenTextBox @bind-Value="@syslog.Service" ReadOnly="@ReadOnly"/>
+                        </ChildContent>
+                        <Helper><small>@L["e.g. pvedaemon, pveproxy (leave empty for all)"]</small></Helper>
+                    </RadzenFormField>
+                </RadzenColumn>
+            </RadzenRow>
+        }
+    };
+}

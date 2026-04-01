@@ -118,11 +118,13 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task ShowEditorAsync(JobSchedule item)
     {
         var isNew = item.Id == 0;
-        var title = isNew
-                        ? L["New"]
-                        : L["Edit {0}", item.Id];
-
-        if (await dialogService.OpenSideEditAsync<JobDialog>(title, isNew, item) != null)
+        if (await dialogService.OpenSideEditAsync<JobDialog>(isNew
+                                                                ? L["New"]
+                                                                : L["Edit {0}", item.Id],
+                                                             isNew
+                                                                ? EditDialogMode.Create
+                                                                : EditDialogMode.Edit,
+                                                             item) != null)
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.AddOrUpdateAsync(item);

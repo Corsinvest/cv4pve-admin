@@ -1,4 +1,4 @@
-@*
+﻿@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -10,10 +10,11 @@
         <RadzenIcon Icon="schedule" />
     </Start>
     <ChildContent>
-        <EnumDropDown TValue="RrdDataTimeFrame"
+        <EnumDropDown TEnum="RrdDataTimeFrame"
                       Value="@Value"
                       ValueChanged="@ValueChanged"
-                      Name="@Name" />
+                      Name="@Name"
+                      ReadOnly="ReadOnly" />
     </ChildContent>
     <End>
         <InfoIcon>
@@ -28,4 +29,5 @@
     [Parameter] public RrdDataTimeFrame Value { get; set; }
     [Parameter] public EventCallback<RrdDataTimeFrame> ValueChanged { get; set; }
     [Parameter] public string? Name { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
 }

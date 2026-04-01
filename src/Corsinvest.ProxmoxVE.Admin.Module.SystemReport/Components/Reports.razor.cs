@@ -8,7 +8,7 @@ using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Persistence;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Components;
 
-public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
+public partial class Reports(IBlazorDownloadFileService blazorDownloadFileService,
                              IDbContextFactory<ModuleDbContext> dbContextFactory,
                              IBackgroundJobService backgroundJobService,
                              DialogService dialogService,
@@ -23,21 +23,14 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
     private bool InDownload { get; set; }
     private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
+    private bool _validColumnClick;
 
     private record Data(int Id,
-                        string NodeNames,
-                        NodeFeature NodeFeatures,
-                        string VmIds,
-                        VmFeature VmFeatures,
-                        string StorageNames,
-                        StorageFeature StorageFeatures,
+                        Report.Settings Settings,
                         DateTime Start,
                         DateTime? End)
     {
-        public TimeSpan Duration
-        => End.HasValue
-            ? (End - Start).Value
-            : TimeSpan.Zero;
+        public TimeSpan Duration => End.HasValue ? (End - Start).Value : TimeSpan.Zero;
     }
 
     protected override async Task OnInitializedAsync()
@@ -60,12 +53,7 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
         ResultLoadData = await DataGridRef.LoadDataAsync(db.JobResults.FromClusterName(ClusterName),
                                                          args,
                                                          a => new Data(a.Id,
-                                                                       a.NodeNames,
-                                                                       a.NodeFeatures,
-                                                                       a.VmIds,
-                                                                       a.VmFeatures,
-                                                                       a.StorageNames,
-                                                                       a.StorageFeatures,
+                                                                       a.Settings,
                                                                        a.Start,
                                                                        a.End),
                                                          ResultLoadData.Filter);
@@ -75,6 +63,25 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
     {
         if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
+
+    private void CellClick(DataGridCellMouseEventArgs<Data> e)
+        => _validColumnClick = e.Column!.Property == nameof(Data.Id);
+
+    private async Task RowSelectAsync(Data item)
+    {
+        if (_validColumnClick)
+        {
+            await using var db = await dbContextFactory.CreateDbContextAsync();
+            await ShowEditorAsync((await db.JobResults.FromIdAsync(item.Id))!, EditDialogMode.ReadOnly);
+        }
+    }
+
+    private async Task<dynamic?> ShowEditorAsync(JobResult item, EditDialogMode mode)
+        => await dialogService.OpenSideEditAsync<ReportDialog>(item.Id == 0
+                                                                ? L["New Report"]
+                                                                : L["Report {0}", item.Id],
+                                                               mode,
+                                                               item);
 
     private async Task DeleteAsync()
     {
@@ -119,14 +126,14 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
             Logs = string.Empty
         };
 
-        if (await dialogService.OpenSideEditAsync<ScanDialog>(L["New Scan"], true, item) != null)
+        if (await ShowEditorAsync(item, EditDialogMode.Create) != null)
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.JobResults.AddAsync(item);
             await db.SaveChangesAsync();
 
-            backgroundJobService.Schedule<Job>(a => a.ScanAsync(item.Id), TimeSpan.FromSeconds(5));
-            notificationService.Info(L["Scan started!"]);
+            backgroundJobService.Schedule<Job>(a => a.GenerateAsync(item.Id), TimeSpan.FromSeconds(5));
+            notificationService.Info(L["Report started!"]);
 
             await DataGridRef.Reload();
         }

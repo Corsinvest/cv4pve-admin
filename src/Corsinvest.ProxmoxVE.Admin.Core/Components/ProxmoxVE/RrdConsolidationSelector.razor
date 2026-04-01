@@ -10,10 +10,11 @@
         <RadzenIcon Icon="functions" />
     </Start>
     <ChildContent>
-        <EnumDropDown TValue="RrdDataConsolidation"
+        <EnumDropDown TEnum="RrdDataConsolidation"
                       Value="@Value"
                       ValueChanged="@ValueChanged"
-                      Name="@Name" />
+                      Name="@Name"
+                      ReadOnly="ReadOnly" />
     </ChildContent>
     <End>
         <InfoIcon>
@@ -28,4 +29,5 @@
     [Parameter] public RrdDataConsolidation Value { get; set; }
     [Parameter] public EventCallback<RrdDataConsolidation> ValueChanged { get; set; }
     [Parameter] public string? Name { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
 }

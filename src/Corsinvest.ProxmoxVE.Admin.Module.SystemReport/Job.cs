@@ -8,9 +8,9 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.SystemReport;
 
 internal class Job(IServiceScopeFactory scopeFactory)
 {
-    public async Task ScanAsync(int id)
+    public async Task GenerateAsync(int id)
     {
         using var scope = scopeFactory.CreateScope();
-        await ActionHelper.ScanAsync(scope, id);
+        await ActionHelper.GenerateAsync(scope, id);
     }
 }

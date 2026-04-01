@@ -29,9 +29,9 @@ public class Module : ModuleBase
                 Render = new(typeof(Components.Overview)),
                 Icon = PveAdminUIHelper.Icons.Overview
             },
-            new(this,"Scans")
+            new(this,"Reports")
             {
-                Render = new(typeof(Components.Scans)),
+                Render = new(typeof(Components.Reports)),
                 Icon = PveAdminUIHelper.Icons.Scans
             }
         ];
@@ -41,6 +41,8 @@ public class Module : ModuleBase
             Icon = "description",
             Render = NavBar.ToList()[0].Render
         };
+
+        Directory.CreateDirectory(PathData);
     }
 
     protected override string PermissionBaseKey { get; } = "SystemReport";

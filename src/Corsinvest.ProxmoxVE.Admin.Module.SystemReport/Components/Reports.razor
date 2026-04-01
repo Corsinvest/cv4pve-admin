@@ -19,6 +19,8 @@
                 KeyDown="KeyDownAsync"
                 LoadData="LoadDataAsync"
                 AllowColumnPicking="true"
+                CellClick="CellClick"
+                RowSelect="RowSelectAsync"
                 @bind-Value="@SelectedItems">
     <HeaderTemplate>
         <CrudToolbar OnAdd="AddAsync"
@@ -38,19 +40,18 @@
     </HeaderTemplate>
 
     <EmptyTemplate>
-        <EmptyExecuteAction Text="@L["Execute your first scan"]"
+        <EmptyExecuteAction Text="@L["Execute your first report"]"
                             Click="AddAsync"
                             Icon="play_arrow"
                             Style="--rz-icon-fill: 1;" />
     </EmptyTemplate>
 
     <Columns>
-        <BaseColumn TItem="Data" Property="@nameof(Data.VmIds)" Title="@L["Vm Ids"]" ShowWatingFunc="ShowWating" />
-        <RadzenDataGridColumn Property="@nameof(Data.VmFeatures)" Title="@L["Vm Features"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.NodeNames)" Title="@L["Nodes"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.NodeFeatures)" Title="@L["Node Features"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.StorageNames)" Title="@L["Storages"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.StorageFeatures)" Title="@L["Storage Features"]" />
+        <BaseColumn TItem="Data" Property="@nameof(Data.Id)" Title="@L["Id"]" ShowWatingFunc="ShowWating">
+            <Template>
+                <span class="rz-link link" style="text-decoration: underline;">@context.Id</span>
+            </Template>
+        </BaseColumn>
         <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" OrderIndex="0" />
         <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" Visible="false" />
         <RadzenDataGridColumn Property="@nameof(Data.Duration)" Title="@L["Duration"]" FormatString="{0:hh':'mm':'ss'.'fff}" />

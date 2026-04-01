@@ -7,12 +7,11 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 public partial class EditDialog<TModelEditor>(DialogService dialogService) : IDisposable, IModelParameter<object>
 {
     [EditorRequired, Parameter] public object Model { get; set; } = default!;
-    [Parameter] public bool IsNew { get; set; }
-    [Parameter] public Func<object, bool, Task<bool>> OnSubmiting { get; set; } = (_, _) => Task.FromResult(true);
+    [Parameter] public EditDialogMode Mode { get; set; }
+    [Parameter] public Func<object, bool, Task<bool>>? OnSubmiting { get; set; }
 
     private EditContext? EditContext { get; set; }
     private Dictionary<string, object> EditorParameters => new() { [nameof(IModelParameter<>.Model)] = Model };
-    private string ButtonText => L[IsNew ? "Create" : "Save"];
 
     protected override void OnInitialized()
     {
@@ -28,6 +27,9 @@ public partial class EditDialog<TModelEditor>(DialogService dialogService) : IDi
 
     private async Task OnSubmitAsync(object model)
     {
-        if (await OnSubmiting(model, IsNew)) { dialogService.Close(model); }
+        if (OnSubmiting == null || await OnSubmiting(model, Mode == EditDialogMode.Create))
+        {
+            dialogService.Close(model);
+        }
     }
 }

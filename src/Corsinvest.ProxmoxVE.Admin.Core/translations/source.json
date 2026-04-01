@@ -683,5 +683,21 @@
   "Commands": "",
   "{0} nodes online": "",
   "Spice NoVnc console": "",
-  "More": ""
+  "More": "",
+  "Reports": "",
+  "New Report": "",
+  "Report {0}": "",
+  "API Access": "",
+  "Claude Desktop Configuration": "",
+  "cv4pve-mcp-bridge is a lightweight bridge that connects stdio-only AI clients (e.g. Claude Desktop) to the cv4pve-admin MCP endpoint via HTTP.": "",
+  "Download the pre-built binary for your platform. On Linux/macOS run": "",
+  "after download.": "",
+  "Generate a ready-to-use": "",
+  "for this server. Set the path to your downloaded binary before using it.": "",
+  "App Token": "",
+  "Paste your App Token here": "",
+  "Binary path": "",
+  "Copy to clipboard": "",
+  "MCP endpoint:": "",
+  "File": ""
 }

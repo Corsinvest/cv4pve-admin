@@ -55,11 +55,13 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task ShowEditorAsync(IgnoredIssue item)
     {
         var isNew = item.Id == 0;
-        var title = isNew
-                        ? L["New"]
-                        : L["Edit {0}", item.IdResource!];
-
-        if (await dialogService.OpenSideEditAsync<IssuesDialog>(title, isNew, item) != null)
+        if (await dialogService.OpenSideEditAsync<IssuesDialog>(isNew
+                                                                    ? L["New"]
+                                                                    : L["Edit {0}", item.IdResource!],
+                                                                isNew
+                                                                    ? EditDialogMode.Create
+                                                                    : EditDialogMode.Edit,
+                                                                item) != null)
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.AddOrUpdateAsync(item);
