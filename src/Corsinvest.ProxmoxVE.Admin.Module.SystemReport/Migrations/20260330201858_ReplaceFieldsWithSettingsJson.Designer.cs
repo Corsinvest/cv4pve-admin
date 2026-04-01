@@ -3,6 +3,7 @@ using System;
 using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Migrations
 {
     [DbContext(typeof(ModuleDbContext))]
-    partial class ModuleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330201858_ReplaceFieldsWithSettingsJson")]
+    partial class ReplaceFieldsWithSettingsJson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,9 +48,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Migrations
                         .HasColumnType("text")
                         .UseCollation("case_insensitive");
 
-                    b.Property<string>("Settings")
+                    b.Property<string>("SettingsJson")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("Start")
                         .HasColumnType("timestamp with time zone");

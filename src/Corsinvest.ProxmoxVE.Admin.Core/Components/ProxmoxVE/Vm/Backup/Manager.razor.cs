@@ -109,7 +109,7 @@ public partial class Manager(DialogService dialogService,
 
     private async Task ShowEditorAsync(NodeStorageContent item)
     {
-        if (await dialogService.OpenSideEditAsync<EditDialog>(L["Edit"], false, item) != null)
+        if (await dialogService.OpenSideEditAsync<EditDialog>(L["Edit"], EditDialogMode.Edit, item) != null)
         {
             var client = await adminService[ClusterName].GetPveClientAsync();
 

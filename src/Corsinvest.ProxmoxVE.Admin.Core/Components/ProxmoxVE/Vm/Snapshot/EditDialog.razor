@@ -9,7 +9,7 @@
 <SwitchField @bind-Value="@Model.VmStatus"
              Label="@L["Include RAM"]"
              Name="@nameof(Model.VmStatus)"
-             Disabled="!IsNew"
+             ReadOnly="Mode != EditDialogMode.Create"
              class="rz-w-100"
              Style="@(Model.HasVmStatus ? "" : "display: none;")" />
 
@@ -18,7 +18,7 @@
         <RadzenIcon Icon="label" />
     </Start>
     <ChildContent>
-        <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" Disabled="!IsNew" />
+        <RadzenTextBox Name="@nameof(Model.Name)" @bind-Value="@Model.Name" Disabled="Mode != EditDialogMode.Create" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.Name)" />
@@ -36,6 +36,6 @@
 
 @code
 {
-    [CascadingParameter(Name = nameof(EditDialog<>.IsNew))] public bool IsNew { get; set; } 
+    [CascadingParameter(Name = nameof(EditDialog<>.Mode))] public EditDialogMode Mode { get; set; }
     [Parameter] public SnapshotModel Model { get; set; } = default!;
 }

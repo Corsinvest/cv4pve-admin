@@ -127,7 +127,7 @@ internal class DashboardWidgetItem : WidgetGridItem
         using var scope = _serviceScopeFactory.CreateScope();
         var localizer = scope.GetRequiredService<IStringLocalizer<DashboardWidgetItem>>();
 
-        if (await dialogService.OpenSideEditAsync<WidgetDialog>(localizer["Configure widget"], false, model) != null)
+        if (await dialogService.OpenSideEditAsync<WidgetDialog>(localizer["Configure widget"], EditDialogMode.Edit, model) != null)
         {
             Widget.Title = model.Widget.Title;
             Widget.TitleCss = model.Widget.TitleCss;

@@ -17,5 +17,10 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options) : Module
         modelBuilder.Entity<JobResult>().HasIndex(a => a.ClusterName);
         modelBuilder.Entity<JobResult>().HasIndex(a => a.Start);
         modelBuilder.Entity<JobResult>().HasIndex(a => a.End);
+        modelBuilder.Entity<JobResult>()
+                    .Property(e => e.Settings)
+                    .HasConversion(
+                        v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                        v => JsonSerializer.Deserialize<Report.Settings>(v, (JsonSerializerOptions?)null) ?? new());
     }
 }

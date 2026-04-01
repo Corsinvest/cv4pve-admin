@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Linq.Expressions;
-using Corsinvest.ProxmoxVE.Admin.Core.Components;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
@@ -101,19 +100,19 @@ public static class RadzenUIExtensions
     }
 
     public static async Task<dynamic?> OpenSideEditAsync<TDialog>(this DialogService dialogService,
-                                                                 string title,
-                                                                 bool isNew,
-                                                                 object model,
-                                                                 Func<object, bool, Task<bool>> onSubmiting = null!,
-                                                                 DialogOptions sideDialogOptions = null!)
+                                                                  string title,
+                                                                  EditDialogMode mode,
+                                                                  object model,
+                                                                  Func<object, bool, Task<bool>>? onSubmiting = null,
+                                                                  DialogOptions? sideDialogOptions = null)
         where TDialog : ComponentBase
         => await OpenSideExAsync<EditDialog<TDialog>>(dialogService,
                                                       title,
                                                       new()
                                                       {
                                                           [nameof(EditDialog<>.Model)] = model!,
-                                                          [nameof(EditDialog<>.IsNew)] = isNew,
-                                                          [nameof(EditDialog<>.OnSubmiting)] = onSubmiting ?? ((_, __) => Task.FromResult(true))
+                                                          [nameof(EditDialog<>.Mode)] = mode,
+                                                          [nameof(EditDialog<>.OnSubmiting)] = onSubmiting!
                                                       },
                                                       sideDialogOptions ?? new()
                                                       {

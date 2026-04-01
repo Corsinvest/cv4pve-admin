@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 global using System.ComponentModel.DataAnnotations;
+global using System.Text.Json;
+global using Corsinvest.ProxmoxVE.Admin.Core.Components;
 global using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 global using Corsinvest.ProxmoxVE.Admin.Core.Models;
 global using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Models;

@@ -54,11 +54,14 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
 
     private async Task ShowEditorAsync(ClusterSettings item, bool isNew)
     {
-        var title = isNew
-                        ? L["New Cluster Settings"]
-                        : L["Edit {0}", item.Name];
-
-        if (await dialogService.OpenSideEditAsync<ClusterSettingsDialog>(title, isNew, item, OnSubmitingDialog) != null)
+        if (await dialogService.OpenSideEditAsync<ClusterSettingsDialog>(isNew
+                                                                            ? L["New Cluster Settings"]
+                                                                            : L["Edit {0}", item.Name],
+                                                                         isNew
+                                                                            ? EditDialogMode.Create
+                                                                            : EditDialogMode.Edit,
+                                                                         item,
+                                                                         OnSubmitingDialog) != null)
         {
             if (isNew)
             {

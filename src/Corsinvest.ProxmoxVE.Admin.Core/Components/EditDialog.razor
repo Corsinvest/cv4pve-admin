@@ -9,7 +9,7 @@
 <RadzenTemplateForm TItem="object" Data="@Model" Submit="@OnSubmitAsync" EditContext="@EditContext">
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
         <RadzenStack Orientation="Orientation.Vertical" Style="overflow: auto; flex: 1;">
-            <CascadingValue Value="@IsNew" Name="@nameof(IsNew)">
+            <CascadingValue Value="@Mode" Name="@nameof(Mode)">
                 <CascadingValue Value="@EditContext" IsFixed="true">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
@@ -19,11 +19,14 @@
             </CascadingValue>
         </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
-            <RadzenButton ButtonType="ButtonType.Submit"
-                          Text="@ButtonText"
-                          Style="width: fit-content;"
-                          Size="ButtonSize.Small" />
-        </RadzenStack>
+        @if (Mode != EditDialogMode.ReadOnly)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="flex-shrink: 0;">
+                <RadzenButton ButtonType="ButtonType.Submit"
+                              Text="@(L[Mode == EditDialogMode.Create ? "Create" : "Save"])"
+                              Style="width: fit-content;"
+                              Size="ButtonSize.Small" />
+            </RadzenStack>
+        }
     </RadzenStack>
 </RadzenTemplateForm>
