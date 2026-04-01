@@ -9,7 +9,7 @@ public partial class ClusterDetailDialog(IAdminService adminService)
     [Parameter] public string ClusterName { get; set; } = default!;
 
     private bool Initialized { get; set; }
-    private IEnumerable<ResourceUsage> DataUsages { get; set; } = [];
+    private IEnumerable<ResourceUsageItem> DataUsages { get; set; } = [];
     private IReadOnlyList<Detail> Details { get; set; } = [];
 
     private record Detail(string Type, string Status, int Count);

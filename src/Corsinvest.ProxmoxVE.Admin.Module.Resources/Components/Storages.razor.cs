@@ -16,28 +16,28 @@ public partial class Storages : IClusterName
     protected override void OnInitialized()
     {
         RadzenHelper.MakeDataGridSettings(DataGridSettingsVm,
-                                          [nameof(ClusterResourceEx.Status),
-                                           nameof(ClusterResourceEx.Type),
-                                           nameof(ClusterResourceEx.Node),
-                                           nameof(ClusterResourceEx.Description),
-                                           nameof(ClusterResourceEx.CpuUsagePercentage),
-                                           nameof(ClusterResourceEx.MemoryUsagePercentage),
-                                           nameof(ClusterResourceEx.DiskUsagePercentage),
-                                           nameof(ClusterResourceEx.HostCpuUsage),
-                                           nameof(ClusterResourceEx.HostMemoryUsage),
-                                           nameof(ClusterResourceEx.HealthScore)]);
+                                          [nameof(ClusterResourceItem.Status),
+                                           nameof(ClusterResourceItem.Type),
+                                           nameof(ClusterResourceItem.Node),
+                                           nameof(ClusterResourceItem.Description),
+                                           nameof(ClusterResourceItem.CpuUsagePercentage),
+                                           nameof(ClusterResourceItem.MemoryUsagePercentage),
+                                           nameof(ClusterResourceItem.DiskUsagePercentage),
+                                           nameof(ClusterResourceItem.HostCpuUsage),
+                                           nameof(ClusterResourceItem.HostMemoryUsage),
+                                           nameof(ClusterResourceItem.HealthScore)]);
 
         RadzenHelper.MakeDataGridSettings(DataGridSettingsStorage,
-                                          [nameof(ClusterResourceEx.Status),
-                                           nameof(ClusterResourceEx.Description),
-                                           nameof(ClusterResourceEx.Node),
-                                           nameof(ClusterResourceEx.PluginType),
-                                           nameof(ClusterResourceEx.DiskSize),
-                                           nameof(ClusterResourceEx.DiskUsage),
-                                           nameof(ClusterResourceEx.DiskUsagePercentage),
-                                           nameof(ClusterResourceEx.Shared),
-                                           nameof(ClusterResourceEx.Content),
-                                           nameof(ClusterResourceEx.HealthScore),
-                                           nameof(ClusterResourceEx.Pool)]);
+                                          [nameof(ClusterResourceItem.Status),
+                                           nameof(ClusterResourceItem.Description),
+                                           nameof(ClusterResourceItem.Node),
+                                           nameof(ClusterResourceItem.PluginType),
+                                           nameof(ClusterResourceItem.DiskSize),
+                                           nameof(ClusterResourceItem.DiskUsage),
+                                           nameof(ClusterResourceItem.DiskUsagePercentage),
+                                           nameof(ClusterResourceItem.Shared),
+                                           nameof(ClusterResourceItem.Content),
+                                           nameof(ClusterResourceItem.HealthScore),
+                                           nameof(ClusterResourceItem.Pool)]);
     }
 }

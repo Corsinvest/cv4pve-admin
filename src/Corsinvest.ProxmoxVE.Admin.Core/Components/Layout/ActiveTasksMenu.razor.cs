@@ -9,7 +9,6 @@ using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 
 public partial class ActiveTasksMenu(ContextMenuService contextMenuService,
-                                     NavigationManager navigationManager,
                                      ITaskTrackerService taskTracker,
                                      ICurrentUserService currentUserService) : IDisposable
 {

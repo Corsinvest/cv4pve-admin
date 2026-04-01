@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Reflection;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
@@ -37,24 +38,25 @@ public partial class SearchTextBox<TItem> : IDisposable
     /// </summary>
     [Parameter] public int DebounceMs { get; set; } = 300;
 
-    private string _text = string.Empty;
+    private string Text { get; set; } = string.Empty;
+
     private CancellationTokenSource? _cts;
 
     private async Task OnValueChanged(string value)
     {
-        _text = value;
+        Text = value;
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
         var token = _cts.Token;
 
-        if (string.IsNullOrWhiteSpace(_text))
+        if (string.IsNullOrWhiteSpace(Text))
         {
             await FiltersChanged.InvokeAsync([]);
             return;
         }
 
-        var captured = _text;
+        var captured = Text;
         try
         {
             await Task.Delay(DebounceMs, token);
@@ -66,7 +68,7 @@ public partial class SearchTextBox<TItem> : IDisposable
     public async Task ClearAsync()
     {
         _cts?.Cancel();
-        _text = string.Empty;
+        Text = string.Empty;
         await InvokeAsync(StateHasChanged);
         await FiltersChanged.InvokeAsync([]);
     }
@@ -118,26 +120,28 @@ public partial class SearchTextBox<TItem> : IDisposable
 
     private IEnumerable<(string Name, Type Type)> GetSearchableProperties()
     {
-        var explicitProps = Properties.Select(GetPropertyName).Where(n => n != null).ToList();
+        var explicitProps = Properties.Select(GetPropertyName)
+                                      .Where(n => n != null)
+                                      .ToHashSet();
 
-        return typeof(TItem)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.CanRead && (explicitProps.Count == 0 || explicitProps.Contains(p.Name)))
-            .Select(p => (p.Name, Type: Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType))
-            .Where(x => x.Type == typeof(string) || IsNumeric(x.Type) || x.Type.IsEnum);
+        var hasFilter = explicitProps.Count > 0;
+
+        return typeof(TItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                            .Where(p => p.CanRead && (!hasFilter || explicitProps.Contains(p.Name)))
+                            .Select(p => (p.Name, Type: Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType))
+                            .Where(x => x.Type == typeof(string) || IsNumeric(x.Type) || x.Type.IsEnum);
     }
 
     private static string? GetPropertyName(Expression<Func<TItem, object?>> expression)
         => expression.Body switch
         {
-            MemberExpression m                                => m.Member.Name,
-            UnaryExpression { Operand: MemberExpression m }  => m.Member.Name,
-            _                                                 => null
+            MemberExpression m => m.Member.Name,
+            UnaryExpression { Operand: MemberExpression m } => m.Member.Name,
+            _ => null
         };
 
-    private static bool IsNumeric(Type t)
-        => t == typeof(int) || t == typeof(long) || t == typeof(double)
-        || t == typeof(float) || t == typeof(decimal) || t == typeof(short);
+    private static bool IsNumeric(Type type)
+        => type.GetInterfaces().Any(a => a.IsGenericType && a.GetGenericTypeDefinition() == typeof(INumber<>));
 
     private static bool TryParseNumeric(string text, Type type, out object? value)
     {

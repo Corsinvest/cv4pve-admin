@@ -64,14 +64,12 @@
 
                 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
-                <VmJollyField @bind-Value="@Model.VmIds"
-                              ClusterName="@Model.ClusterName"
-                              Label="@L["Vm Ids"]"
-                              Name="@nameof(Model.VmIds)">
-                    <HelperContent>
-                        <RadzenRequiredValidator Component="@nameof(Model.VmIds)" Text="@L["Select VM/CT id!"]" />
-                    </HelperContent>
-                </VmJollyField>
+                <ResourceField @bind-Value="@Model.VmIds"
+                               ClusterName="@Model.ClusterName"
+                               Label="@L["Vm Ids"]"
+                               ResourceType="ResourceFieldType.Guest"
+                               Name="@nameof(Model.VmIds)"
+                               class="rz-w-100"/>
             </RadzenStack>
         </RadzenTabsItem>
 

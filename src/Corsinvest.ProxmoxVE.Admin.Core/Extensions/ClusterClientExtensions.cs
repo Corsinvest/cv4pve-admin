@@ -12,7 +12,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
 public static class ClusterClientExtensions
 {
-    public static async Task<IEnumerable<ResourceUsage>> GetResourceUsage(this ClusterClient clusterClient,
+    public static async Task<IEnumerable<ResourceUsageItem>> GetResourceUsage(this ClusterClient clusterClient,
                                                                           IStringLocalizer L,
                                                                           bool includeSnapshots)
     {

@@ -6,16 +6,16 @@
 
 @if (IsInitialized)
 {
-    <ResourcesEx FilterExpression="FilterExpression"
-                 ClusterNames="@([ClusterName])"
-                 PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
-                 IconStatus="ResourceColumnIconStatus.IconAndText"
-                 ResourceType="ClusterResourceType.Vm"
-                 ShowSnapshotSize="true"
-                 UseProgressBarPercentage="false"
-                 RefreshInterval="10"
-                 @bind-DataGridSettings="DataGridSettings"
-                 DescriptionAsLink="true" />
+    <ResourcesView FilterExpression="FilterExpression"
+                   ClusterNames="@([ClusterName])"
+                   PropertyIconStatus="ResourcesViewPropertyIconStatus.Status"
+                   IconStatus="ResourceColumnIconStatus.IconAndText"
+                   ResourceType="ClusterResourceType.Vm"
+                   ShowSnapshotSize="true"
+                   UseProgressBarPercentage="false"
+                   RefreshInterval="10"
+                   @bind-DataGridSettings="DataGridSettings"
+                   DescriptionAsLink="true" />
 }
 else
 {

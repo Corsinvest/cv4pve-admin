@@ -13,7 +13,7 @@ public partial class Summary(IAdminService adminService) : IClusterName
     private bool CephInstalled { get; set; }
 
     //private List<ItemStatus<VmType>> VmsStatus { get; set; } = [];
-    private IEnumerable<ResourceUsage> DataUsages { get; set; } = [];
+    private IEnumerable<ResourceUsageItem> DataUsages { get; set; } = [];
     //private List<ItemStatus> NodeHealts { get; set; } = [];
     private ItemStatus StatusInfo { get; set; } = new();
     private IEnumerable<ClusterStatus> Nodes { get; set; } = [];

@@ -4,7 +4,7 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Models;
 
-public class ResourceUsage
+public class ResourceUsageItem
 {
     public string Name { get; set; } = default!;
     public double Usage { get; set; }

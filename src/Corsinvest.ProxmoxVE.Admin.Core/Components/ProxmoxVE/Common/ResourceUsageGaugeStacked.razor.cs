@@ -2,14 +2,14 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 
 public partial class ResourceUsageGaugeStacked
 {
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
     [Parameter] public double StartAngle { get; set; } = 0;
     [Parameter] public double EndAngle { get; set; } = 360;
-    [Parameter] public IEnumerable<ResourceUsage> Data { get; set; } = [];
+    [Parameter] public IEnumerable<ResourceUsageItem> Data { get; set; } = [];
 
     private static readonly string[] Colors =
     [
@@ -35,7 +35,7 @@ public partial class ResourceUsageGaugeStacked
         "color-mix(in srgb, var(--rz-series-8) 20%, transparent)",
     ];
 
-    private List<ResourceUsage> Items { get; set; } = [];
+    private List<ResourceUsageItem> Items { get; set; } = [];
     private double RadiusStep { get; set; }
 
     protected override void OnParametersSet()

@@ -1,13 +1,14 @@
-﻿@*
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster
+@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
 @inherits AdminComponentBase
 
-@if (ViewType == ResourcesExViewType.List)
+@if (ViewType == ResourcesViewType.List)
 {
     <RadzenDataGrid @ref="DataGridRef"
-                    TItem="ClusterResourceEx"
+                    TItem="ClusterResourceItem"
                     Data="@SearchFilteredItems"
                     Style="@Style"
                     GridLines="DataGridGridLines.None"
@@ -39,7 +40,7 @@
                     @if (ShowSearchBox)
                     {
                         <SearchTextBox @ref="SearchTextBox"
-                                       TItem="ClusterResourceEx"
+                                       TItem="ClusterResourceItem"
                                        FiltersChanged="OnSearchFiltersChanged"
                                        Style="width:200px;" />
                     }
@@ -183,6 +184,13 @@
                 <ResourceColumn Property="@nameof(ClusterResource.DiskUsage)"
                                 Visible="false"
                                 Pickable="IsPickable(nameof(ClusterResource.DiskUsage))" />
+
+                <ResourceColumn Title="@L["Disk %"]"
+                                UseProgressBarPercentage="UseProgressBarPercentage"
+                                Property="@nameof(ClusterResource.DiskUsagePercentage)"
+                                Visible="false"
+                                Width="@(UseProgressBarPercentage ? string.Empty : "120px")"
+                                Pickable="IsPickable(nameof(ClusterResource.DiskUsagePercentage))" />
             }
 
             @if (HasColumnForVm)
@@ -258,11 +266,11 @@
                                       Pickable="IsPickable(nameof(ClusterResource.Lock))" />
             }
 
-            <ResourceColumn Property="@nameof(ClusterResourceEx.HealthScore)"
+            <ResourceColumn Property="@nameof(ClusterResourceItem.HealthScore)"
                             Title="@L["Score"]"
                             Visible="false"
                             HeaderTooltip="@L["Health Score"]"
-                            Pickable="IsPickable(nameof(ClusterResourceEx.HealthScore))"
+                            Pickable="IsPickable(nameof(ClusterResourceItem.HealthScore))"
                             TextAlign="TextAlign.Center"
                             Width="100px">
                 <Template>
@@ -293,11 +301,11 @@
                             ShowWatingFunc="@(item => IsGetOsInfo && item.OsType == null)"
                             Pickable="IsPickable(nameof(IClusterResourceVmOsInfo.OsType))" />
 
-                <BaseColumn Property="@ClusterResourceEx.OsIcon"
+                <BaseColumn Property="@ClusterResourceItem.OsIcon"
                             Title="@L["OS Icon"]"
                             Visible="false"
                             ShowWatingFunc="@(item => IsGetOsInfo && item.OsType == null)"
-                            Pickable="IsPickable(nameof(ClusterResourceEx.OsIcon))"
+                            Pickable="IsPickable(nameof(ClusterResourceItem.OsIcon))"
                             Filterable="false"
                             Groupable="false"
                             TextAlign="TextAlign.Center"
@@ -336,18 +344,11 @@
                                 Width="@(UseProgressBarPercentage ? string.Empty : "120px")"
                                 Pickable="IsPickable(nameof(ClusterResource.MemoryUsagePercentage))" />
 
-                <ResourceColumn Title="@L["Disk %"]"
-                                UseProgressBarPercentage="UseProgressBarPercentage"
-                                Property="@nameof(ClusterResource.DiskUsagePercentage)"
-                                Visible="false"
-                                Width="@(UseProgressBarPercentage ? string.Empty : "120px")"
-                                Pickable="IsPickable(nameof(ClusterResource.DiskUsagePercentage))" />
-
                 <RadzenDataGridColumn Title="@L["Usage Cpu/Mem/Disk %"]"
                                       Visible="false"
-                                      Property="@ClusterResourceEx.UsageCpuMemDiskPercColumnName"
+                                      Property="@ClusterResourceItem.UsageCpuMemDiskPercColumnName"
                                       ColumnPickerTitle="@L["Usage Cpu/Mem/Disk %"]"
-                                      Pickable="IsPickable(nameof(ClusterResourceEx.UsageCpuMemDiskPercColumnName))">
+                                      Pickable="IsPickable(nameof(ClusterResourceItem.UsageCpuMemDiskPercColumnName))">
                     <Template>
                         <RadzenStack Orientation="Orientation.Horizontal">
                             <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(context.CpuUsagePercentage * 100))"
@@ -370,13 +371,13 @@
             }
 
             <RadzenDataGridColumn Title="@L["Link PVE"]"
-                                  Property="@nameof(ClusterResourceEx.LinkPve)"
+                                  Property="@nameof(ClusterResourceItem.LinkPve)"
                                   Sortable="false"
                                   Filterable="false"
                                   Groupable="false"
                                   Width="50px"
                                   Visible="false"
-                                  Pickable="IsPickable(nameof(ClusterResourceEx.LinkPve))">
+                                  Pickable="IsPickable(nameof(ClusterResourceItem.LinkPve))">
                 <Template>
                     <RadzenLink Icon="link" title="@L["Open link to Proxmox VE"]" Path="@context.LinkPve" Target="_blank" />
                 </Template>
@@ -398,19 +399,19 @@
 
             @if (HasColumnForVm || HasColumnForNode)
             {
-                <ResourceColumn Property="@nameof(ClusterResource.Uptime)" Visible="false" Pickable="IsPickable(nameof(ClusterResourceEx.Uptime))" />
+                <ResourceColumn Property="@nameof(ClusterResource.Uptime)" Visible="false" Pickable="IsPickable(nameof(ClusterResourceItem.Uptime))" />
             }
 
             @if (AvailableCommands)
             {
-                <RadzenDataGridColumn Property="@ClusterResourceEx.CommandsColumnName"
+                <RadzenDataGridColumn Property="@ClusterResourceItem.CommandsColumnName"
                                       ColumnPickerTitle="@L["Commands"]"
                                       Sortable="false"
                                       Filterable="false"
                                       Groupable="false"
                                       Width="@CommandsWidth"
                                       Visible="false"
-                                      Pickable="IsPickable(nameof(ClusterResourceEx.CommandsColumnName))">
+                                      Pickable="IsPickable(nameof(ClusterResourceItem.CommandsColumnName))">
                     <Template>
                         @if (context.ResourceType == ClusterResourceType.Vm)
                         {
@@ -428,7 +429,7 @@
         </Columns>
     </RadzenDataGrid>
 }
-else if (ViewType == ResourcesExViewType.Card)
+else if (ViewType == ResourcesViewType.Card)
 {
     <ResourceCards @ref="ResourceCards"
                    Items="@SearchFilteredItems.ToList()"
@@ -440,6 +441,7 @@ else if (ViewType == ResourcesExViewType.Card)
                    Filters="@CardFilters"
                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                    ShowSearchBox="@ShowSearchBox"
+                   ShowOsInfo="@ShowOsInfo"
                    Template="@Template" />
 }
 
@@ -447,15 +449,15 @@ else if (ViewType == ResourcesExViewType.Card)
 {
     private RenderFragment ViewTypeSelectorFragment => __builder =>
     {
-        <RadzenToggleButton Value="@(ViewType == ResourcesExViewType.List)"
-                            ValueChanged="@(_ => SetViewTypeAsync(ResourcesExViewType.List))"
+        <RadzenToggleButton Value="@(ViewType == ResourcesViewType.List)"
+                            ValueChanged="@(_ => SetViewTypeAsync(ResourcesViewType.List))"
                             Icon="list"
                             title="@L["List"]"
                             Size="ButtonSize.Small"
                             ButtonStyle="ButtonStyle.Light" />
 
-        <RadzenToggleButton Value="@(ViewType == ResourcesExViewType.Card)"
-                            ValueChanged="@(_ => SetViewTypeAsync(ResourcesExViewType.Card))"
+        <RadzenToggleButton Value="@(ViewType == ResourcesViewType.Card)"
+                            ValueChanged="@(_ => SetViewTypeAsync(ResourcesViewType.Card))"
                             Icon="grid_view"
                             title="@L["Card"]"
                             Size="ButtonSize.Small"

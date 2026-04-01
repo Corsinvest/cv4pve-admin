@@ -5,20 +5,12 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
-<SwitchField @bind-Value="@Model.Enabled"
-             Label="@L["Enabled"]"
-             Name="Model.Enabled"
-             IconOn="play_circle"
-             IconOff="pause_circle" />
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled"]" Name="Model.Enabled" />
 
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="@L["Telegram"]" Icon="send">
-            <SwitchField @bind-Value="@Model.Telegram.Enabled"
-                         Label="@L["Enabled"]"
-                         Name="Model.Telegram.Enabled"
-                         IconOn="play_circle"
-                         IconOff="pause_circle" />
+            <SwitchField @bind-Value="@Model.Telegram.Enabled" Label="@L["Enabled"]" Name="Model.Telegram.Enabled" />
 
             <PasswordField @bind-Value="@Model.Telegram.Token" Label="@L["Token"]" class="rz-w-100" Name="@nameof(Model.Telegram.Token)">
                 <Helper>

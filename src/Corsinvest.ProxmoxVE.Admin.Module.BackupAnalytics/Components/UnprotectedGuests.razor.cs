@@ -17,16 +17,16 @@ public partial class UnprotectedGuests(IAdminService adminService) : IClusterNam
 
     protected override void OnInitialized()
         => RadzenHelper.MakeDataGridSettings(DataGridSettings,
-                                             [nameof(ClusterResourceEx.Status),
-                                              nameof(ClusterResourceEx.Type),
-                                              nameof(ClusterResourceEx.Node),
-                                              nameof(ClusterResourceEx.Description),
-                                              nameof(ClusterResourceEx.CpuUsagePercentage),
-                                              nameof(ClusterResourceEx.MemoryUsagePercentage),
-                                              nameof(ClusterResourceEx.DiskUsagePercentage),
-                                              nameof(ClusterResourceEx.HostCpuUsage),
-                                              nameof(ClusterResourceEx.HostMemoryUsage),
-                                              nameof(ClusterResourceEx.Uptime)]);
+                                             [nameof(ClusterResourceItem.Status),
+                                              nameof(ClusterResourceItem.Type),
+                                              nameof(ClusterResourceItem.Node),
+                                              nameof(ClusterResourceItem.Description),
+                                              nameof(ClusterResourceItem.CpuUsagePercentage),
+                                              nameof(ClusterResourceItem.MemoryUsagePercentage),
+                                              nameof(ClusterResourceItem.DiskUsagePercentage),
+                                              nameof(ClusterResourceItem.HostCpuUsage),
+                                              nameof(ClusterResourceItem.HostMemoryUsage),
+                                              nameof(ClusterResourceItem.Uptime)]);
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,7 +41,7 @@ public partial class UnprotectedGuests(IAdminService adminService) : IClusterNam
         IsInitialized = true;
     }
 
-    private bool FilterExpression(ClusterResourceEx item, string clusterName)
+    private bool FilterExpression(ClusterResourceItem item, string clusterName)
         => item.ResourceType == ClusterResourceType.Vm
             && !item.IsTemplate
             && _vmIdsInBackup.Count != 0

@@ -4,7 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 
 public class ResourceTagStyleColumn<TItem> : ResourceColumn<TItem> where TItem : notnull
 {

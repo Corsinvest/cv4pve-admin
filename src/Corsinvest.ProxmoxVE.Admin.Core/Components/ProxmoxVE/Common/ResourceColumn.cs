@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
-using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 
 public class ResourceColumn<TItem> : BaseColumn<TItem> where TItem : notnull
 {

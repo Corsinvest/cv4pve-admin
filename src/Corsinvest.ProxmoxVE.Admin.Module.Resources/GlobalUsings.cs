@@ -9,3 +9,4 @@ global using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 global using Microsoft.AspNetCore.Components;
 global using Radzen;
 global using Radzen.Blazor;
+global using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;

@@ -18,7 +18,7 @@
                             Style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" />
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" Style="flex-shrink:0;">
-                @if (Resource.OsType.HasValue)
+                @if (ShowOsInfo && Resource.ResourceType == ClusterResourceType.Vm && Resource.OsType.HasValue)
                 {
                     <IconVmOs OsType="Resource.OsType">
                         <TooltipContent Context="_">
@@ -108,9 +108,10 @@
 
 @code
 {
-    [Parameter] public ClusterResourceEx Resource { get; set; } = default!;
+    [Parameter] public ClusterResourceItem Resource { get; set; } = default!;
     [Parameter] public string TagStyleColorMap { get; set; } = string.Empty;
-    [Parameter] public RenderFragment<ClusterResourceEx>? Template { get; set; }
+    [Parameter] public bool ShowOsInfo { get; set; }
+    [Parameter] public RenderFragment<ClusterResourceItem>? Template { get; set; }
 
     private bool _expanded;
 
@@ -120,7 +121,7 @@
         <div style="display:grid; grid-template-columns:32px 1fr 36px; align-items:center; gap:4px; margin-bottom:2px;"
              title="@($"{label}: {info}")">
             <span style="font-size:0.7rem; color:var(--rz-text-secondary-color);">@label</span>
-            <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(pct))"
+            <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(pctRounded))"
                                Value="@pctRounded"
                                ShowValue="false"
                                Style="height:6px; width:100%;" />

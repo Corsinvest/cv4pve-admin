@@ -4,11 +4,11 @@
 *@
 @inherits AdminComponentBase
 
-<ResourcesEx @ref="ResourcesExRef"
+<ResourcesView @ref="ResourcesExRef"
              OnDataLoaded="OnDataLoadedAsync"
              FilterExpression="@((a, b) => a.ResourceType == ClusterResourceType.Node)"
              ClusterNames="[ClusterName]"
-             PropertyIconStatus="ResourcesExPropertyIconStatus.Status"
+             PropertyIconStatus="ResourcesViewPropertyIconStatus.Status"
              IconStatus="ResourceColumnIconStatus.IconAndText"
              ResourceType="ClusterResourceType.Node"
              ShowSnapshotSize="true"
@@ -22,4 +22,4 @@
             <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes.Manager Node="@context" ClusterName="@ClusterName" />
         </RadzenPanel>
     </Template>
-</ResourcesEx>
+</ResourcesView>

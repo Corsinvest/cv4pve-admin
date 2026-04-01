@@ -24,7 +24,7 @@
                 <RadzenIcon Icon="electrical_services" />
             </Start>
             <ChildContent>
-                <RadzenNumeric TValue="int" Name="@($"{Prefix}.Port")" @bind-Value="@Config.Port" class="rz-w-100" />
+                <RadzenNumeric TValue="int" Name="@($"{Prefix}.Port")" @bind-Value="@Config.Port" Min="1" Max="65535" class="rz-w-100" />
             </ChildContent>
             <Helper>
                 <RadzenDataAnnotationValidator Component="@($"{Prefix}.Port")" />

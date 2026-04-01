@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
@@ -12,7 +11,7 @@ public partial class Vms : IClusterName
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [SupplyParameterFromQuery] public int? VmId { get; set; }
 
-    private ResourcesEx? ResourcesExRef { get; set; }
+    private ResourcesView? ResourcesExRef { get; set; }
     private bool ShowOsInfo { get; set; }
     private DataGridSettings DataGridSettings { get; set; } = new();
 
@@ -29,34 +28,34 @@ public partial class Vms : IClusterName
 
     protected override void OnInitialized()
         => RadzenHelper.MakeDataGridSettings(DataGridSettings,
-                                             [nameof(ClusterResourceEx.Status),
-                                              nameof(ClusterResourceEx.Type),
-                                              nameof(ClusterResourceEx.Node),
-                                              nameof(ClusterResourceEx.Description),
-                                              nameof(ClusterResourceEx.CpuUsagePercentage),
-                                              nameof(ClusterResourceEx.MemoryUsagePercentage),
-                                              nameof(ClusterResourceEx.DiskUsagePercentage),
-                                              nameof(ClusterResourceEx.HostCpuUsage),
-                                              nameof(ClusterResourceEx.HostMemoryUsage),
-                                              nameof(ClusterResourceEx.HealthScore),
-                                              nameof(ClusterResourceEx.Uptime)]);
+                                             [nameof(ClusterResourceItem.Status),
+                                              nameof(ClusterResourceItem.Type),
+                                              nameof(ClusterResourceItem.Node),
+                                              nameof(ClusterResourceItem.Description),
+                                              nameof(ClusterResourceItem.CpuUsagePercentage),
+                                              nameof(ClusterResourceItem.MemoryUsagePercentage),
+                                              nameof(ClusterResourceItem.DiskUsagePercentage),
+                                              nameof(ClusterResourceItem.HostCpuUsage),
+                                              nameof(ClusterResourceItem.HostMemoryUsage),
+                                              nameof(ClusterResourceItem.HealthScore),
+                                              nameof(ClusterResourceItem.Uptime)]);
 
     private async Task ShowOsInfoAfter()
     {
-        DataGridSettings = RadzenHelper.MakeDataGridSettings([nameof(ClusterResourceEx.Status),
-                                                              nameof(ClusterResourceEx.Type),
-                                                              nameof(ClusterResourceEx.Node),
-                                                              nameof(ClusterResourceEx.Description),
-                                                              nameof(ClusterResourceEx.CpuUsagePercentage),
-                                                              nameof(ClusterResourceEx.MemoryUsagePercentage),
-                                                              nameof(ClusterResourceEx.DiskUsagePercentage),
-                                                              nameof(ClusterResourceEx.HostCpuUsage),
-                                                              nameof(ClusterResourceEx.HostMemoryUsage),
-                                                              nameof(ClusterResourceEx.Uptime),
-                                                              nameof(ClusterResourceEx.OsIcon),
-                                                              nameof(ClusterResourceEx.HostName),
-                                                              nameof(ClusterResourceEx.OsVersion),
-                                                              nameof(ClusterResourceEx.OsType)]);
+        DataGridSettings = RadzenHelper.MakeDataGridSettings([nameof(ClusterResourceItem.Status),
+                                                              nameof(ClusterResourceItem.Type),
+                                                              nameof(ClusterResourceItem.Node),
+                                                              nameof(ClusterResourceItem.Description),
+                                                              nameof(ClusterResourceItem.CpuUsagePercentage),
+                                                              nameof(ClusterResourceItem.MemoryUsagePercentage),
+                                                              nameof(ClusterResourceItem.DiskUsagePercentage),
+                                                              nameof(ClusterResourceItem.HostCpuUsage),
+                                                              nameof(ClusterResourceItem.HostMemoryUsage),
+                                                              nameof(ClusterResourceItem.Uptime),
+                                                              nameof(ClusterResourceItem.OsIcon),
+                                                              nameof(ClusterResourceItem.HostName),
+                                                              nameof(ClusterResourceItem.OsVersion),
+                                                              nameof(ClusterResourceItem.OsType)]);
 
         await ResourcesExRef!.ReloadSettingsAsync();
         await ResourcesExRef!.RefreshDataAsync();

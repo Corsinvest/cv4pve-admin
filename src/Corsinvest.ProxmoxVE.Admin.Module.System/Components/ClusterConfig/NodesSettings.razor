@@ -51,7 +51,7 @@
 
         <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.ApiPort)" Sortable="true" Title="@L["API Port"]" Width="120px">
             <EditTemplate Context="ctx">
-                <RadzenNumeric Name="@nameof(ctx.ApiPort)" @bind-Value="@ctx.ApiPort" />
+                <RadzenNumeric Name="@nameof(ctx.ApiPort)" @bind-Value="@ctx.ApiPort" Min="1" Max="65535" />
                 <RadzenDataAnnotationValidator Component="@nameof(ctx.ApiPort)" />
             </EditTemplate>
         </RadzenDataGridColumn>

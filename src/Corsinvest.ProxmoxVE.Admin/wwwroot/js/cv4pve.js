@@ -16,7 +16,6 @@ cv4pve.SideDialog = (function () {
     }
 
     function attach(dialog) {
-        console.log('[cv4pve.SideDialog] attach', dialog);
         if (dialog.dataset.resizerAttached) return;
         dialog.dataset.resizerAttached = 'true';
 
@@ -72,7 +71,6 @@ cv4pve.SideDialog = (function () {
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    console.log('[cv4pve.SideDialog] observer started');
 })();
 
 /**

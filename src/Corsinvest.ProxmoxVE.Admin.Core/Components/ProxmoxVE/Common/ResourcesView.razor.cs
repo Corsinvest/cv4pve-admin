@@ -5,11 +5,11 @@
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Mapster;
 
-namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster;
+namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 
-public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
-                                                               IClusterNamesParameters,
-                                                               IDisposable
+public partial class ResourcesView(IAdminService adminService) : IRefreshableData,
+                                                                 IClusterNamesParameters,
+                                                                 IDisposable
 {
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
     [Parameter] public IEnumerable<string> ClusterNames { get; set; } = [];
@@ -19,27 +19,27 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     [Parameter] public bool DescriptionAsLink { get; set; } = true;
     [Parameter] public DataGridSettings DataGridSettings { get; set; } = new();
     [Parameter] public EventCallback<DataGridSettings> DataGridSettingsChanged { get; set; } = default!;
-    [Parameter] public Func<ClusterResourceEx, string, bool>? FilterExpression { get; set; }
-    [Parameter] public Func<ClusterResourceEx, string, bool>? SelectedItemExpression { get; set; }
+    [Parameter] public Func<ClusterResourceItem, string, bool>? FilterExpression { get; set; }
+    [Parameter] public Func<ClusterResourceItem, string, bool>? SelectedItemExpression { get; set; }
     [Parameter] public bool ShowSnapshotSize { get; set; }
     [Parameter] public bool ShowOsInfo { get; set; }
-    [Parameter] public RenderFragment<ClusterResourceEx> Template { get; set; } = default!;
+    [Parameter] public RenderFragment<ClusterResourceItem> Template { get; set; } = default!;
     [Parameter] public bool ShowLoading { get; set; }
     [Parameter] public bool AvailableCommands { get; set; }
-    [Parameter] public ResourcesExPropertyIconStatus PropertyIconStatus { get; set; } = ResourcesExPropertyIconStatus.None;
+    [Parameter] public ResourcesViewPropertyIconStatus PropertyIconStatus { get; set; } = ResourcesViewPropertyIconStatus.None;
     [Parameter] public ResourceColumnIconStatus IconStatus { get; set; } = ResourceColumnIconStatus.IconAndText;
     [Parameter] public ClusterResourceType ResourceType { get; set; } = ClusterResourceType.All;
     [Parameter] public RenderFragment? TemplateToolbar { get; set; }
     [Parameter] public DataGridSelectionMode SelectionMode { get; set; } = DataGridSelectionMode.Single;
-    [Parameter] public IList<ClusterResourceEx> SelectedItems { get; set; } = [];
-    [Parameter] public EventCallback<IList<ClusterResourceEx>> SelectedItemsChanged { get; set; }
+    [Parameter] public IList<ClusterResourceItem> SelectedItems { get; set; } = [];
+    [Parameter] public EventCallback<IList<ClusterResourceItem>> SelectedItemsChanged { get; set; }
     [Parameter] public HashSet<string> PickableColumns { get; set; } = [];
     [Parameter] public bool AllowColumnPicking { get; set; } = true;
     [Parameter] public bool ShowSearchBox { get; set; } = true;
     [Parameter] public EventCallback OnDataLoaded { get; set; }
-    [Parameter] public ResourcesExViewType ViewType { get; set; } = ResourcesExViewType.List;
-    [Parameter] public EventCallback<ResourcesExViewType> ViewTypeChanged { get; set; }
-    [Parameter] public bool ShowViewTypeSelector { get; set; } 
+    [Parameter] public ResourcesViewType ViewType { get; set; } = ResourcesViewType.List;
+    [Parameter] public EventCallback<ResourcesViewType> ViewTypeChanged { get; set; }
+    [Parameter] public bool ShowViewTypeSelector { get; set; }
 
     private int _refreshInterval;
     [Parameter]
@@ -56,18 +56,18 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         }
     }
 
-    private RadzenDataGrid<ClusterResourceEx>? DataGridRef { get; set; }
-    private SearchTextBox<ClusterResourceEx>? SearchTextBox { get; set; }
+    private RadzenDataGrid<ClusterResourceItem>? DataGridRef { get; set; }
+    private SearchTextBox<ClusterResourceItem>? SearchTextBox { get; set; }
     private ResourceCards? ResourceCards { get; set; }
 
-    private IEnumerable<ClusterResourceEx> SearchFilteredItems
+    private IEnumerable<ClusterResourceItem> SearchFilteredItems
         => _searchFilters.Any()
             ? [.. Items.AsQueryable().Where(_searchFilters.ToList(), LogicalFilterOperator.Or, FilterCaseSensitivity.CaseInsensitive)]
             : Items;
 
     private void UpdateCardFilters()
     {
-        if (IsLoading || ViewType != ResourcesExViewType.Card) { return; }
+        if (IsLoading || ViewType != ResourcesViewType.Card) { return; }
 
         CardFilters = [ .. (DataGridRef?.ColumnsCollection ?? [])
                                     .Where(c => c.Filterable && c.FilterPropertyType != null && c.GetFilterValue() != null)
@@ -86,7 +86,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
                         .. _searchFilters];
     }
 
-    private List<ClusterResourceEx> Items { get; set; } = [];
+    private List<ClusterResourceItem> Items { get; set; } = [];
     private Dictionary<string, string> TagStyleColorMaps { get; set; } = [];
 
     private bool IsLoading { get; set; }
@@ -115,7 +115,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task SetViewTypeAsync(ResourcesExViewType viewType)
+    private async Task SetViewTypeAsync(ResourcesViewType viewType)
     {
         ViewType = viewType;
         await ViewTypeChanged.InvokeAsync(ViewType);
@@ -167,7 +167,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
             var items = (await clusterClient.CachedData.GetResourcesAsync(false))
                                 .AsQueryable()
-                                .ProjectToType<ClusterResourceEx>()
+                                .ProjectToType<ClusterResourceItem>()
                                 .ToList()
                                 .Select(item =>
                                 {
@@ -180,7 +180,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
                                 .ToList();
 
             //remove items that the user has not permission to see
-            var allowedItems = new List<ClusterResourceEx>();
+            var allowedItems = new List<ClusterResourceItem>();
             foreach (var item in items)
             {
                 if (await PermissionService.HasAsync(clusterName, item))
@@ -283,12 +283,12 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
     private ResourceColumnIconStatus GetIconStatus(string propertyName)
         => (PropertyIconStatus, propertyName) switch
         {
-            (ResourcesExPropertyIconStatus.Type, nameof(ClusterResource.Type)) => IconStatus,
-            (ResourcesExPropertyIconStatus.Status, nameof(ClusterResource.Status)) => IconStatus,
-            (ResourcesExPropertyIconStatus.Description, nameof(ClusterResource.Description)) => IconStatus,
-            (ResourcesExPropertyIconStatus.VmId, nameof(ClusterResource.VmId)) => IconStatus,
-            (ResourcesExPropertyIconStatus.Node, nameof(ClusterResource.Node)) => IconStatus,
-            (ResourcesExPropertyIconStatus.Storage, nameof(ClusterResource.Storage)) => IconStatus,
+            (ResourcesViewPropertyIconStatus.Type, nameof(ClusterResource.Type)) => IconStatus,
+            (ResourcesViewPropertyIconStatus.Status, nameof(ClusterResource.Status)) => IconStatus,
+            (ResourcesViewPropertyIconStatus.Description, nameof(ClusterResource.Description)) => IconStatus,
+            (ResourcesViewPropertyIconStatus.VmId, nameof(ClusterResource.VmId)) => IconStatus,
+            (ResourcesViewPropertyIconStatus.Node, nameof(ClusterResource.Node)) => IconStatus,
+            (ResourcesViewPropertyIconStatus.Storage, nameof(ClusterResource.Storage)) => IconStatus,
             _ => ResourceColumnIconStatus.None
         };
 
@@ -304,7 +304,7 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
 
         if (group.Data.Count > 0 && group.Data.Items != null)
         {
-            var clusterName = group.Data.Items.Cast<ClusterResourceEx>().FirstOrDefault()!.ClusterName;
+            var clusterName = group.Data.Items.Cast<ClusterResourceItem>().FirstOrDefault()!.ClusterName;
 
             if (group.GroupDescriptor!.Property == nameof(IClusterName.ClusterName))
             {
@@ -337,9 +337,9 @@ public partial class ResourcesEx(IAdminService adminService) : IRefreshableData,
         _timer = null;
     }
 
-    public IReadOnlyList<ClusterResourceEx> GetItems() => Items;
+    public IReadOnlyList<ClusterResourceItem> GetItems() => Items;
 
-    public async Task ExpandRowsAsync(IEnumerable<ClusterResourceEx> items)
+    public async Task ExpandRowsAsync(IEnumerable<ClusterResourceItem> items)
         => await DataGridRef!.ExpandRows(items);
 
     private async Task OnDataGridSettingsChanged()

@@ -1,11 +1,12 @@
-﻿@*
+﻿@using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Cluster
+@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
 @inherits AdminComponentBase
 
 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%; overflow: hidden;">
-    <ResourcesEx @bind-ClusterNames="@ClusterNames"
+    <ResourcesView @bind-ClusterNames="@ClusterNames"
                  Style="@Style"
                  UseProgressBarPercentage="@UseProgressBarPercentage"
                  DescriptionAsLink="@DescriptionAsLink"
@@ -25,7 +26,7 @@
                  @bind-SelectedItems="@SelectedItems"
                  PickableColumns="@PickableColumns"
                  AllowColumnPicking="@AllowColumnPicking"
-                 ViewType="ResourcesExViewType.List"
+                 ViewType="ResourcesViewType.List"
                  ShowSearchBox="@ShowSearchBox"
                  RefreshInterval="@RefreshInterval"
                  AdditionalAttributes="@AdditionalAttributes" />

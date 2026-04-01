@@ -1,0 +1,38 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenFormField Text="@Label" AllowFloatingLabel="false" @attributes="AdditionalAttributes">
+    <ChildContent>
+        <RadzenChipList TValue="string"
+                        Data="@Chips"
+                        AllowDelete="@(!ReadOnly)"
+                        ChipRemoved="@OnChipRemoved"
+                        Name="@Name"
+                        Size="ChipSize.ExtraSmall"
+                        class="rz-w-100"
+                        style="padding: 10px 6px 6px 6px; min-height: 42px;" />
+    </ChildContent>
+    <End>
+        @if (!ReadOnly)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="2px">
+                @if (UseJolly)
+                {
+                    <RadzenButton Text="@("@all")"
+                                  Size="ButtonSize.Small"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  Click="@(() => ValueChanged.InvokeAsync("@all"))"
+                                  title="@L["Select all"]" />
+                }
+                <RadzenButton Icon="search"
+                              Size="ButtonSize.Small"
+                              ButtonStyle="ButtonStyle.Primary"
+                              Click="OpenPickerAsync"
+                              title="@L["Select"]" />
+            </RadzenStack>
+        }
+    </End>
+</RadzenFormField>

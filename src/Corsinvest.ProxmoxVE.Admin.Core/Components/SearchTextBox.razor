@@ -6,13 +6,13 @@
 @typeparam TItem
 
 <div style="position:relative; display:inline-flex; align-items:center; @Style">
-    <RadzenTextBox Value="@_text"
+    <RadzenTextBox Value="@Text"
                    ValueChanged="OnValueChanged"
                    Placeholder="@L["Search"]"
                    Immediate="true"
                    Style="width:100%; padding-right:28px;" />
     <span style="position:absolute; right:6px; top:50%; transform:translateY(-50%); display:flex; align-items:center; color:var(--rz-text-secondary-color);">
-        @if (!string.IsNullOrEmpty(_text))
+        @if (!string.IsNullOrEmpty(Text))
         {
             <RadzenIcon Icon="close" style="cursor:pointer; font-size:1rem;" @onclick="ClearAsync" />
         }
