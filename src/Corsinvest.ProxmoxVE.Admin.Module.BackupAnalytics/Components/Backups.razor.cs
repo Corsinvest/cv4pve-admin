@@ -88,7 +88,7 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
     private async Task ShowLogAsync(Data item, bool forJob)
     {
         var title = forJob
-                ? L["Full Task"] // oppure L["Full Task {0}", taskId]
+                ? L["Full Task"] // L["Full Task {0}", item.TaskId]
                 : L["Job Vm: {0}", item.VmId!];
 
         await using var db = await dbContextFactory.CreateDbContextAsync();

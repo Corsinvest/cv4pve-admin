@@ -202,7 +202,7 @@ public class PveSearchProvider : ISearchProvider
                         }
                         else if (item.VmType == VmType.Lxc)
                         {
-                            var config = await clusterClient.CachedData.GetVmConfigAsync(item.Node, item.VmType, item.VmId, false);
+                            var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
                             item.IpAddresses = config.Networks
                                                      .Select(a => a.IpAddress)
                                                      .Where(ip => !ip.Contains(':') && ip != "127.0.0.1")
