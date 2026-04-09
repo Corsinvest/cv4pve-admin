@@ -10,7 +10,7 @@ public class JobResult : JobResultBase, IId, IClusterName
 
     [Required] public string ClusterName { get; set; } = default!;
 
-    public Report.Settings Settings { get; set; } = new();
+    public Report.Settings Settings { get; set; } = Report.Settings.Fast();
 
     public string FileName => Path.Combine(new Module().PathData, $"{Id}.xlsx");
 }

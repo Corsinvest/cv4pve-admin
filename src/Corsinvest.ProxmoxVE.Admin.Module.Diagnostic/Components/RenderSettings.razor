@@ -6,11 +6,8 @@
 @using Corsinvest.ProxmoxVE.Diagnostic.Api
 
 @inherits AdminComponentBase
-@implements IModelParameter<Diagnostic.Settings>
 
-<SwitchField @bind-Value="@Model.Enabled"
-             Label="@L["Enabled schedulation"]"
-             Name="@nameof(Model.Enabled)" />
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
 
 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
@@ -34,44 +31,71 @@
         <Items>
             <RadzenAccordionItem Text="@L["Node"]" Icon="@GetIconType(0)">
                 @RenderHostThresholds(Model.ApiSettings.Node, nameof(Model.ApiSettings.Node))
-                <RadzenText Text="@L["S.M.A.R.T."]" TextStyle="TextStyle.Subtitle1" class="rz-mt-4" />
 
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" class="rz-mb-2">
-                    <SwitchField @bind-Value="@Model.ApiSettings.Node.Smart.Enabled"
-                                 Label="@L["Enable S.M.A.R.T. checks"]"
-                                 Name="@($"Model.ApiSettings.Node.Smart.{nameof(Model.ApiSettings.Node.Smart.Enabled)}")"
-                                 Style="flex:1" />
-                    <InfoIcon>@L["Requires one API call per disk per node. Disabled by default."]</InfoIcon>
-                </RadzenStack>
+                <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="cv4pve-dashed-box rz-mb-2">
+                    <RadzenColumn Size="4">
+                        <RadzenFormField Text="@L["Max vCPU Ratio"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric Name="Model.ApiSettings.Node.MaxVCpuRatio" @bind-Value="@Model.ApiSettings.Node.MaxVCpuRatio" Min="0" Step="0.5" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["Maximum vCPU overcommit ratio (total vCPUs / physical CPUs). Default 4.0."]</InfoIcon>
+                            </End>
+                            <Helper>
+                                <RadzenDataAnnotationValidator Component="Model.ApiSettings.Node.MaxVCpuRatio" />
+                            </Helper>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                    <RadzenColumn Size="4">
+                        <RadzenFormField Text="@L["Consolidation CPU (%)"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric Name="Model.ApiSettings.Node.ConsolidationCpuThreshold" @bind-Value="@Model.ApiSettings.Node.ConsolidationCpuThreshold" Min="0" Step="1" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["CPU utilization threshold below which a node is considered underutilized for consolidation."]</InfoIcon>
+                            </End>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                    <RadzenColumn Size="4">
+                        <RadzenFormField Text="@L["Consolidation Memory (%)"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric Name="Model.ApiSettings.Node.ConsolidationMemThreshold" @bind-Value="@Model.ApiSettings.Node.ConsolidationMemThreshold" Min="0" Step="1" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["Memory utilization threshold below which a node is considered underutilized for consolidation."]</InfoIcon>
+                            </End>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                </RadzenRow>
+
+                <RadzenText Text="@L["Storage"]" TextStyle="TextStyle.Subtitle1" class="rz-mt-4" Style="font-weight: bold;" />
+
+                <SwitchField @bind-Value="@Model.ApiSettings.Node.Smart.Enabled"
+                             Label="@L["S.M.A.R.T."]"
+                             Name="@($"Model.ApiSettings.Node.Smart.{nameof(Model.ApiSettings.Node.Smart.Enabled)}")"
+                             class="rz-mb-2" />
 
                 @if (Model.ApiSettings.Node.Smart.Enabled)
                 {
-                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="cv4pve-dashed-box rz-mb-2">
                         <RadzenColumn Size="4">
-                            @RenderThreshold(L["Temperature (°C)"], $"Model.ApiSettings.Node.Smart.Temperature", Model.ApiSettings.Node.Smart.Temperature)
+                            @RenderThreshold(L["Temperature (°C)"], "Model.ApiSettings.Node.Smart.Temperature", Model.ApiSettings.Node.Smart.Temperature)
                         </RadzenColumn>
                         <RadzenColumn Size="4">
-                            @RenderThreshold(L["SSD Wearout (%)"], $"Model.ApiSettings.Node.Smart.SsdWearout", Model.ApiSettings.Node.Smart.SsdWearout)
+                            @RenderThreshold(L["SSD Wearout (%)"], "Model.ApiSettings.Node.Smart.SsdWearout", Model.ApiSettings.Node.Smart.SsdWearout)
                         </RadzenColumn>
                     </RadzenRow>
                 }
 
-                <RadzenText Text="@L["Node Storage"]" TextStyle="TextStyle.Subtitle1" class="rz-mt-4" />
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" class="rz-mb-2">
-                    <SwitchField @bind-Value="@Model.ApiSettings.Node.NodeStorage.ZfsDetail"
-                                 Label="@L["ZFS detail checks"]"
-                                 Name="@($"Model.ApiSettings.Node.NodeStorage.{nameof(Model.ApiSettings.Node.NodeStorage.ZfsDetail)}")"
-                                 Style="flex:1" />
-                    <InfoIcon>@L["Enable detailed ZFS pool checks (vdev state, I/O errors). Requires one API call per ZFS pool per node."]</InfoIcon>
-                </RadzenStack>
+                <SwitchField @bind-Value="@Model.ApiSettings.Node.NodeStorage.ZfsDetail"
+                             Label="@L["ZFS detail checks"]"
+                             Name="Model.ApiSettings.Node.NodeStorage.ZfsDetail"
+                             class="rz-mb-2" />
 
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" class="rz-mb-2">
-                    <SwitchField @bind-Value="@Model.ApiSettings.Node.NodeStorage.LvmThinMetadata"
-                                 Label="@L["LVM-thin metadata check"]"
-                                 Name="@($"Model.ApiSettings.Node.NodeStorage.{nameof(Model.ApiSettings.Node.NodeStorage.LvmThinMetadata)}")"
-                                 Style="flex:1" />
-                    <InfoIcon>@L["Full metadata pool causes data corruption. One API call per node."]</InfoIcon>
-                </RadzenStack>
+                <SwitchField @bind-Value="@Model.ApiSettings.Node.NodeStorage.LvmThinMetadata"
+                             Label="@L["LVM-thin metadata check"]"
+                             Name="Model.ApiSettings.Node.NodeStorage.LvmThinMetadata"
+                             class="rz-mb-2" />
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Qemu"]" Icon="@GetIconType(1)">
@@ -83,56 +107,47 @@
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
-                @RenderRrd(Model.ApiSettings.Storage.Rrd, $"Model.ApiSettings.Storage.{nameof(Model.ApiSettings.Storage.Rrd)}")
+                @RenderRrd(Model.ApiSettings.Storage.Rrd, "Model.ApiSettings.Storage.Rrd")
                 <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenColumn Size="4">
-                        @RenderThreshold(L["Usage"], $"Model.ApiSettings.Storage.{nameof(Model.ApiSettings.Storage.Threshold)}", Model.ApiSettings.Storage.Threshold)
+                        @RenderThreshold(L["Usage"], "Model.ApiSettings.Storage.Threshold", Model.ApiSettings.Storage.Threshold)
                     </RadzenColumn>
                 </RadzenRow>
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Snapshot"]" Icon="camera_alt">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" class="rz-mb-2">
-                    <SwitchField @bind-Value="@Model.ApiSettings.Snapshot.Enabled"
-                                 Label="@L["Enable snapshot checks"]"
-                                 Name="@($"Model.ApiSettings.Snapshot.{nameof(Model.ApiSettings.Snapshot.Enabled)}")"
-                                 Style="flex:1" />
-                    <InfoIcon>@L["Disable to skip the API call per VM/CT."]</InfoIcon>
-                </RadzenStack>
+                <SwitchField @bind-Value="@Model.ApiSettings.Snapshot.Enabled"
+                             Label="@L["Enable"]"
+                             Name="Model.ApiSettings.Snapshot.Enabled"
+                             class="rz-mb-2" />
+
                 @if (Model.ApiSettings.Snapshot.Enabled)
                 {
-                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="cv4pve-dashed-box rz-mb-2">
                         <RadzenColumn Size="4">
-                            @{
-                                var nameMaxCount = $"Model.ApiSettings.Snapshot.{nameof(Model.ApiSettings.Snapshot.MaxCount)}";
-                            }
                             <RadzenFormField Text="@L["Max Count"]" AllowFloatingLabel="false" class="rz-w-100">
                                 <ChildContent>
-                                    <RadzenNumeric Name="@nameMaxCount" @bind-Value="@Model.ApiSettings.Snapshot.MaxCount"
-                                                   Min="0" />
+                                    <RadzenNumeric Name="Model.ApiSettings.Snapshot.MaxCount" @bind-Value="@Model.ApiSettings.Snapshot.MaxCount" Min="0" />
                                 </ChildContent>
                                 <End>
                                     <InfoIcon>@L["Maximum number of snapshots per VM/LXC before raising a warning. Set to 0 to disable."]</InfoIcon>
                                 </End>
                                 <Helper>
-                                    <RadzenDataAnnotationValidator Component="@nameMaxCount" />
+                                    <RadzenDataAnnotationValidator Component="Model.ApiSettings.Snapshot.MaxCount" />
                                 </Helper>
                             </RadzenFormField>
                         </RadzenColumn>
 
                         <RadzenColumn Size="4">
-                            @{
-                                var nameMaxAgeDays = $"Model.ApiSettings.Snapshot.{nameof(Model.ApiSettings.Snapshot.MaxAgeDays)}";
-                            }
                             <RadzenFormField Text="@L["Max Age (days)"]" AllowFloatingLabel="false" class="rz-w-100">
                                 <ChildContent>
-                                    <RadzenNumeric Name="@nameMaxAgeDays" @bind-Value="@Model.ApiSettings.Snapshot.MaxAgeDays" Min="0" />
+                                    <RadzenNumeric Name="Model.ApiSettings.Snapshot.MaxAgeDays" @bind-Value="@Model.ApiSettings.Snapshot.MaxAgeDays" Min="0" />
                                 </ChildContent>
                                 <End>
                                     <InfoIcon>@L["Maximum age in days for snapshots before raising a warning. Set to 0 to disable."]</InfoIcon>
                                 </End>
                                 <Helper>
-                                    <RadzenDataAnnotationValidator Component="@nameMaxAgeDays" />
+                                    <RadzenDataAnnotationValidator Component="Model.ApiSettings.Snapshot.MaxAgeDays" />
                                 </Helper>
                             </RadzenFormField>
                         </RadzenColumn>
@@ -141,46 +156,38 @@
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Backup"]" Icon="backup">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" class="rz-mb-2">
-                    <SwitchField @bind-Value="@Model.ApiSettings.Backup.Enabled"
-                                 Label="@L["Enable backup checks"]"
-                                 Name="@($"Model.ApiSettings.Backup.{nameof(Model.ApiSettings.Backup.Enabled)}")"
-                                 Style="flex:1" />
-                    <InfoIcon>@L["Disable to skip the API call per storage per VM/CT."]</InfoIcon>
-                </RadzenStack>
+                <SwitchField @bind-Value="@Model.ApiSettings.Backup.Enabled"
+                             Label="@L["Enable"]"
+                             Name="@($"Model.ApiSettings.Backup.{nameof(Model.ApiSettings.Backup.Enabled)}")"
+                             class="rz-mb-2" />
+
                 @if (Model.ApiSettings.Backup.Enabled)
                 {
-                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="cv4pve-dashed-box rz-mb-2">
                         <RadzenColumn Size="4">
-                            @{
-                                var backupMaxAge = $"Model.ApiSettings.Backup.{nameof(Model.ApiSettings.Backup.MaxAgeDays)}";
-                            }
                             <RadzenFormField Text="@L["Max Age (days)"]" AllowFloatingLabel="false" class="rz-w-100">
                                 <ChildContent>
-                                    <RadzenNumeric Name="@backupMaxAge" @bind-Value="@Model.ApiSettings.Backup.MaxAgeDays" Min="0" />
+                                    <RadzenNumeric Name="Model.ApiSettings.Backup.MaxAgeDays" @bind-Value="@Model.ApiSettings.Backup.MaxAgeDays" Min="0" />
                                 </ChildContent>
                                 <End>
                                     <InfoIcon>@L["Old backups still present on storage waste space. Set to 0 to disable."]</InfoIcon>
                                 </End>
                                 <Helper>
-                                    <RadzenDataAnnotationValidator Component="@backupMaxAge" />
+                                    <RadzenDataAnnotationValidator Component="Model.ApiSettings.Backup.MaxAgeDays" />
                                 </Helper>
                             </RadzenFormField>
                         </RadzenColumn>
 
                         <RadzenColumn Size="4">
-                            @{
-                                var backupRecent = $"Model.ApiSettings.Backup.{nameof(Model.ApiSettings.Backup.RecentDays)}";
-                            }
                             <RadzenFormField Text="@L["Recent Days"]" AllowFloatingLabel="false" class="rz-w-100">
                                 <ChildContent>
-                                    <RadzenNumeric Name="@backupRecent" @bind-Value="@Model.ApiSettings.Backup.RecentDays" Min="0" />
+                                    <RadzenNumeric Name="Model.ApiSettings.Backup.RecentDays" @bind-Value="@Model.ApiSettings.Backup.RecentDays" Min="0" />
                                 </ChildContent>
                                 <End>
                                     <InfoIcon>@L["If no backup exists within this window, a warning is raised (RPO violation). Set to 0 to disable."]</InfoIcon>
                                 </End>
                                 <Helper>
-                                    <RadzenDataAnnotationValidator Component="@backupRecent" />
+                                    <RadzenDataAnnotationValidator Component="Model.ApiSettings.Backup.RecentDays" />
                                 </Helper>
                             </RadzenFormField>
                         </RadzenColumn>
@@ -193,14 +200,10 @@
 
 @code
 {
-    [Parameter] public Diagnostic.Settings Model { get; set; } = default!;
-
-    private static string GetIconType(int index)
-        => PveAdminUIHelper.Icons.GetResourceType(new[] { PveConstants.KeyApiNode, PveConstants.KeyApiQemu, PveConstants.KeyApiLxc }[index]);
-
     private RenderFragment RenderRrd(SettingsRrd rrd, string baseProp) => __builder =>
     {
-        <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="rz-mb-2">
+        <RadzenText Text="@L["RRD Data"]" TextStyle="TextStyle.Subtitle2" class="rz-mt-2" Style="font-weight: bold;" />
+        <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="rz-mb-2 cv4pve-dashed-box">
             <RadzenColumn Size="4">
                 <RrdTimeFrameSelector @bind-Value="@rrd.TimeFrame" Name="@($"{baseProp}.{nameof(rrd.TimeFrame)}")" />
             </RadzenColumn>
@@ -213,16 +216,17 @@
 
     private RenderFragment RenderPsiPressure(SettingsRrd rrd, string baseProp) => __builder =>
     {
-        <RadzenText Text="@L["PSI Pressure (PVE 9.0+)"]" TextStyle="TextStyle.Subtitle2" class="rz-mt-2" />
-        <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+        var pressureProp = $"{baseProp}.{nameof(rrd.Pressure)}";
+        <RadzenText Text="@L["PSI Pressure (PVE 9.0+)"]" TextStyle="TextStyle.Subtitle2" class="rz-mt-2" Style="font-weight: bold;" />
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="cv4pve-dashed-box rz-mb-2">
             <RadzenColumn Size="4">
-                @RenderThreshold(L["CPU Pressure (some)"], $"{baseProp}.{nameof(rrd.PressureCpu)}", rrd.PressureCpu)
+                @RenderThreshold(L["CPU (some)"], $"{pressureProp}.{nameof(rrd.Pressure.Cpu)}", rrd.Pressure.Cpu)
             </RadzenColumn>
             <RadzenColumn Size="4">
-                @RenderThreshold(L["I/O Pressure (full)"], $"{baseProp}.{nameof(rrd.PressureIoFull)}", rrd.PressureIoFull)
+                @RenderThreshold(L["I/O (full)"], $"{pressureProp}.{nameof(rrd.Pressure.IoFull)}", rrd.Pressure.IoFull)
             </RadzenColumn>
             <RadzenColumn Size="4">
-                @RenderThreshold(L["Memory Pressure (full)"], $"{baseProp}.{nameof(rrd.PressureMemoryFull)}", rrd.PressureMemoryFull)
+                @RenderThreshold(L["Memory (full)"], $"{pressureProp}.{nameof(rrd.Pressure.MemoryFull)}", rrd.Pressure.MemoryFull)
             </RadzenColumn>
         </RadzenRow>
     };
@@ -234,17 +238,18 @@
 
         @RenderRrd(host.Rrd, rrdProp)
 
-        <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
-            <RadzenColumn Size="4">
+        <RadzenText Text="@L["Thresholds"]" TextStyle="TextStyle.Subtitle2" class="rz-mt-2" Style="font-weight: bold;" />
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="cv4pve-dashed-box rz-mb-2">
+            <RadzenColumn Size="3">
                 @RenderThreshold(L["CPU"], $"{basePropertyName}.{nameof(host.Cpu)}", host.Cpu)
             </RadzenColumn>
-            <RadzenColumn Size="4">
+            <RadzenColumn Size="3">
                 @RenderThreshold(L["Memory"], $"{basePropertyName}.{nameof(host.Memory)}", host.Memory)
             </RadzenColumn>
-            <RadzenColumn Size="4">
+            <RadzenColumn Size="3">
                 @RenderThreshold(L["Network"], $"{basePropertyName}.{nameof(host.Network)}", host.Network)
             </RadzenColumn>
-            <RadzenColumn Size="4">
+            <RadzenColumn Size="3">
                 @RenderThreshold(L["Health Score"], $"{basePropertyName}.{nameof(host.HealthScore)}", host.HealthScore)
             </RadzenColumn>
         </RadzenRow>
