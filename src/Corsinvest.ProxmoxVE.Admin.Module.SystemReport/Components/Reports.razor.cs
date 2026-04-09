@@ -123,7 +123,7 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         var item = new JobResult
         {
             ClusterName = ClusterName,
-            Logs = string.Empty
+            Logs = string.Empty,
         };
 
         if (await ShowEditorAsync(item, EditDialogMode.Create) != null)

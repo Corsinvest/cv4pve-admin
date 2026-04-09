@@ -313,3 +313,14 @@
     background-color: var(--rz-danger) !important;
     border-color: var(--rz-danger) !important;
 }
+
+/* ========================================
+   Dashed sub-section box (used in forms)
+   ======================================== */
+
+.cv4pve-dashed-box {
+    border: 2px dashed var(--rz-base-200);
+    border-radius: var(--rz-border-radius);
+    padding: 12px;
+}
+

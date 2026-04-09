@@ -2,7 +2,9 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Persistence;
 using Corsinvest.ProxmoxVE.Report;
@@ -17,6 +19,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         var logger = loggerFactory.CreateLogger(typeof(ActionHelper));
         var auditService = scope.GetAuditService();
         var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
+        var appSettings = scope.GetRequiredService<ISettingsService>().GetAppSettings();
+
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
         var job = (await db.JobResults.FromIdAsync(id))!;
         job.Start = DateTime.UtcNow;
@@ -29,7 +33,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 var clusterClient = scope.GetClusterClient(job.ClusterName);
                 var client = await clusterClient.GetPveClientAsync();
 
-                var engine = new ReportEngine(client, job.Settings);
+                var engine = new ReportEngine(client, job.Settings, new ReportInfo
+                {
+                    ApplicationName = appSettings.AppName,
+                    ApplicationVersion = BuildInfo.Version,
+                    ApplicationUrl = ApplicationHelper.GitHubRepoUrl,
+                });
 
                 var progress = new Progress<ReportProgress>(p =>
                 {
