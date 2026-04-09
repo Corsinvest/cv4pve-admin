@@ -123,7 +123,7 @@ public class ClusterCachedData
 
                                    return new VmQemuAgentNetworkGetInterfaces();
                                },
-                               60 * 30,
+                               60 * 15,
                                forceReload);
 
     private class DummyClusterResourceVmOsInfo : IClusterResourceVmOsInfo
@@ -187,7 +187,7 @@ public class ClusterCachedData
                                60,
                                forceReload);
 
-    public async Task<VmConfig> GetVmConfigAsync(string node, VmType vmType, long vmId, bool forceReload)
+    public async Task<VmConfig> GetGuestConfigAsync(string node, VmType vmType, long vmId, bool forceReload)
         => vmType switch
         {
             VmType.Qemu => await GetQemuConfigAsync(node, vmId, forceReload),

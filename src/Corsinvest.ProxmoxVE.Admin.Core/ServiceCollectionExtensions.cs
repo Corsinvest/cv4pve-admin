@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Net;
 using BlazorDownloadFile;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
@@ -75,14 +76,19 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPveClientFactory, PveClientFactory>();
 
         services.AddHttpClient("HttpStrict")
-            .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                })
+                .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
 
         services.AddHttpClient("HttpIgnoreCert")
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            })
-            .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                })
+                .ConfigureHttpClient(client => client.DefaultRequestHeaders.Add("User-Agent", "cv4pve-admin"));
 
         return services;
     }

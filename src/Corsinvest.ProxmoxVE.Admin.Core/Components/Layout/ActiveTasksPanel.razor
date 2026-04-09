@@ -22,7 +22,7 @@
     {
         <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Style="padding: 16px 0;">
             <RadzenImage Path="images/misc/empty-box.png" Style="height:40px; opacity:0.5;" />
-            <RadzenText Text="@L[" tasks"]" TextStyle="TextStyle.Caption" class="rz-text-secondary-color" />
+            <RadzenText Text="@L["no tasks found"]" TextStyle="TextStyle.Caption" class="rz-text-secondary-color" />
         </RadzenStack>
     }
     else
@@ -40,6 +40,6 @@
     <hr style="margin: 4px 0 0 0;" />
 
     <RadzenStack Style="padding: 6px 12px 4px 12px;" @onclick="ViewAll">
-        <RadzenLink Text="@L["View all tasks"]" Icon="open_in_new" Style="font-size: 0.85rem;" />
+        <RadzenLink Text="@L["View all tasks"]" Style="font-size: 0.85rem;" />
     </RadzenStack>
 </RadzenPanel>

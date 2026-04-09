@@ -81,6 +81,7 @@ public static class PveAdminUIHelper
         public static string Memory { get; } = "memory";
         public static string Storage { get; } = "storage";
         public static string Network { get; } = "lan";
+        public static string Disks { get; } = "database";
         public static string Node { get; } = "domain";
         public static string Vm { get; } = "desktop_windows";
         public static string Snapshot { get; } = "photo_camera";

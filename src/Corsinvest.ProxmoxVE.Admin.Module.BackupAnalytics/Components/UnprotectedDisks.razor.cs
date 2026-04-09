@@ -38,7 +38,7 @@ public partial class UnprotectedDisks(IAdminService adminService) : IClusterName
 
         foreach (var item in vms)
         {
-            var config = await clusterClient.CachedData.GetVmConfigAsync(item.Node, item.VmType, item.VmId, false);
+            var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
             var disks = config.Disks.Where(a => !a.Backup);
             if (disks.Any())
             {
