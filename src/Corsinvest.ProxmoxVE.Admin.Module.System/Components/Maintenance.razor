@@ -15,7 +15,7 @@
                       IsBusy="IsFixAllBusy" />
     </RadzenCard>
 
-    <RadzenFieldset Text="@L["Database Maintenance"]">
+    <RadzenFieldset Text="@L["Database Maintenance"]" class="rz-panel">
         <RadzenStack Gap="0.5rem">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.75rem">
                 <RadzenButton Icon="cleaning_services"
@@ -69,7 +69,7 @@
 
     <RadzenRow Gap="1rem">
         <RadzenColumn Size="12" SizeMD="4">
-            <RadzenFieldset Text="@L["Cache Management"]">
+            <RadzenFieldset Text="@L["Cache Management"]" class="rz-panel">
                 <RadzenStack AlignItems="AlignItems.Start">
                     <RadzenButton Icon="memory"
                                   Text="@L["Clear Memory Cache"]"
@@ -81,7 +81,7 @@
         </RadzenColumn>
 
         <RadzenColumn Size="12" SizeMD="4">
-            <RadzenFieldset Text="@L["Job Management"]">
+            <RadzenFieldset Text="@L["Job Management"]" class="rz-panel">
                 <RadzenStack AlignItems="AlignItems.Start">
                     <RadzenButton Icon="clear_all"
                                   Text="@L["Cleanup Failed Jobs"]"
@@ -93,7 +93,7 @@
         </RadzenColumn>
 
         <RadzenColumn Size="12" SizeMD="4">
-            <RadzenFieldset Text="@L["Connectivity Tests"]">
+            <RadzenFieldset Text="@L["Connectivity Tests"]" class="rz-panel">
                 <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Start">
                     <RadzenButton Icon="cloud_sync"
                                   Text="@L["Test Cluster Connections"]"
@@ -111,7 +111,7 @@
         </RadzenColumn>
     </RadzenRow>
 
-    <RadzenFieldset>
+    <RadzenFieldset class="rz-panel">
         <HeaderTemplate>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Style="width:100%">
                 <span>@L["Log"]</span>
