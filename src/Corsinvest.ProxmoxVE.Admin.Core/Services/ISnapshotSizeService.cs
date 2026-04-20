@@ -6,5 +6,5 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Services;
 
 public interface ISnapshotSizeService
 {
-    Task<IEnumerable<VmDiskSnapshotInfo>> GetAsync(string clusterName);
+    Task<IEnumerable<DiskSnapshotInfo>> GetAsync(string clusterName);
 }
