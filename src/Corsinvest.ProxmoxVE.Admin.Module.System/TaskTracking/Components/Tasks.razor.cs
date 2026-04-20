@@ -15,7 +15,9 @@ public partial class Tasks(ITaskTrackerService taskTracker,
 
     private RadzenDataGrid<TaskItemInfo> DataGridRef { get; set; } = default!;
     private ResultLoadData<TaskItemInfo> ResultLoadData { get; set; } = new(null!, -1, null);
+    private SearchTextBox<TaskItemInfo>? SearchTextBox { get; set; }
     private IReadOnlyList<string> _allowedModules = [];
+    private IEnumerable<FilterDescriptor> _searchFilters = [];
 
     protected override void OnInitialized()
     {
@@ -49,6 +51,18 @@ public partial class Tasks(ITaskTrackerService taskTracker,
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
 
+        // merge search-box filters with grid filters
+        var mergedFilters = (args.Filters ?? []).Concat(_searchFilters).ToList();
+        args = new LoadDataArgs
+        {
+            Skip = args.Skip,
+            Top = args.Top,
+            OrderBy = args.OrderBy,
+            Filter = args.Filter,
+            Filters = mergedFilters,
+            Sorts = args.Sorts
+        };
+
         ResultLoadData = await DataGridRef.LoadDataAsync(db.TaskItems
                                                            .Where(a => a.ModuleName == null || _allowedModules.Contains(a.ModuleName))
                                                            .Where(a => a.ClusterName == ClusterName, ClusterName is not null),
@@ -73,5 +87,12 @@ public partial class Tasks(ITaskTrackerService taskTracker,
     }
 
     private Task RefreshAsync() => DataGridRef.Reload();
+
+    private async Task OnSearchFiltersChanged(IEnumerable<FilterDescriptor> filters)
+    {
+        _searchFilters = filters;
+        await RefreshAsync();
+    }
+
     public void Dispose() => taskTracker.Changed -= OnTrackerChanged;
 }

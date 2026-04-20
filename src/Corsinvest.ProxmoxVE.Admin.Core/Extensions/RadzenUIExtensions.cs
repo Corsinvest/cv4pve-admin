@@ -46,8 +46,8 @@ public static class RadzenUIExtensions
             Detail = detail ?? string.Empty
         });
 
-    public static async Task BusyAsync(this DialogService dialogService, string message)
-        => await dialogService.OpenAsync(string.Empty, _ =>
+    public static Task BusyAsync(this DialogService dialogService, string message)
+        => dialogService.OpenAsync(string.Empty, _ =>
         {
             return a =>
             {
@@ -65,16 +65,16 @@ public static class RadzenUIExtensions
             CloseDialogOnEsc = false
         });
 
-    public static async Task BusyAsync(this DialogService dialogService, RenderFragment<DialogService> childContent)
-        => await dialogService.OpenAsync(string.Empty, childContent, new()
+    public static Task BusyAsync(this DialogService dialogService, RenderFragment<DialogService> childContent)
+        => dialogService.OpenAsync(string.Empty, childContent, new()
         {
             ShowTitle = false,
             Style = "min-height:auto;min-width:auto;width:auto",
             CloseDialogOnEsc = false
         });
 
-    public static async Task OpenSideLogAsync(this DialogService dialogService, string title, string logs)
-        => await dialogService.OpenSideExAsync<LogDialog>(title,
+    public static Task OpenSideLogAsync(this DialogService dialogService, string title, string logs)
+        => dialogService.OpenSideExAsync<LogDialog>(title,
                                                           new() { [nameof(LogDialog.Model)] = logs },
                                                           new()
                                                           {
@@ -82,7 +82,7 @@ public static class RadzenUIExtensions
                                                               Resizable = true,
                                                           });
 
-    public static async Task<dynamic?> OpenSideExAsync<T>(this DialogService dialogService,
+    public static Task<dynamic?> OpenSideExAsync<T>(this DialogService dialogService,
                                                          string title,
                                                          Dictionary<string, object> parameters,
                                                          DialogOptions options)
@@ -96,60 +96,60 @@ public static class RadzenUIExtensions
         }
         options.Style = null;
         options.Width ??= "600px";
-        return await dialogService.OpenAsync<T>(title, parameters!, options);
+        return dialogService.OpenAsync<T>(title, parameters!, options);
     }
 
-    public static async Task<dynamic?> OpenSideEditAsync<TDialog>(this DialogService dialogService,
-                                                                  string title,
-                                                                  EditDialogMode mode,
-                                                                  object model,
-                                                                  Func<object, bool, Task<bool>>? onSubmiting = null,
-                                                                  DialogOptions? sideDialogOptions = null)
+    public static Task<dynamic?> OpenSideEditAsync<TDialog>(this DialogService dialogService,
+                                                            string title,
+                                                            EditDialogMode mode,
+                                                            object model,
+                                                            Func<object, bool, Task<bool>>? onSubmiting = null,
+                                                            DialogOptions? sideDialogOptions = null)
         where TDialog : ComponentBase
-        => await OpenSideExAsync<EditDialog<TDialog>>(dialogService,
-                                                      title,
-                                                      new()
-                                                      {
-                                                          [nameof(EditDialog<>.Model)] = model!,
-                                                          [nameof(EditDialog<>.Mode)] = mode,
-                                                          [nameof(EditDialog<>.OnSubmiting)] = onSubmiting!
-                                                      },
-                                                      sideDialogOptions ?? new()
-                                                      {
-                                                          CloseDialogOnOverlayClick = true,
-                                                      });
+        => OpenSideExAsync<EditDialog<TDialog>>(dialogService,
+                                                title,
+                                                new()
+                                                {
+                                                    [nameof(EditDialog<>.Model)] = model!,
+                                                    [nameof(EditDialog<>.Mode)] = mode,
+                                                    [nameof(EditDialog<>.OnSubmiting)] = onSubmiting!
+                                                },
+                                                sideDialogOptions ?? new()
+                                                {
+                                                    CloseDialogOnOverlayClick = true,
+                                                });
 
-    public static async Task<ResultLoadData<TResult>> LoadDataAsync<TSource, TResult>(this RadzenDataGrid<TResult> grid,
-                                                                                      IQueryable<TSource> query,
-                                                                                      LoadDataArgs args,
-                                                                                      Expression<Func<TSource, TResult>> selector,
-                                                                                      string? lastFilter)
+    public static Task<ResultLoadData<TResult>> LoadDataAsync<TSource, TResult>(this RadzenDataGrid<TResult> grid,
+                                                                                IQueryable<TSource> query,
+                                                                                LoadDataArgs args,
+                                                                                Expression<Func<TSource, TResult>> selector,
+                                                                                string? lastFilter)
        where TResult : notnull
        where TSource : class
-        => await query.LoadDataAsync(args, grid, selector, lastFilter);
+        => query.LoadDataAsync(args, grid, selector, lastFilter);
 
-    public static async Task OpenCopyValueAsync(this DialogService dialogService,
-                                                string title,
-                                                string value,
-                                                string label = "Value",
-                                                string? message = null)
-        => await dialogService.OpenAsync<CopyValueDialog>(title,
-                                                          new()
-                                                          {
-                                                              [nameof(CopyValueDialog.Value)] = value,
-                                                              [nameof(CopyValueDialog.Label)] = label,
-                                                              [nameof(CopyValueDialog.Message)] = message!
-                                                          },
-                                                          new DialogOptions
-                                                          {
-                                                              Width = "500px",
-                                                              CloseDialogOnOverlayClick = false
-                                                          });
+    public static Task OpenCopyValueAsync(this DialogService dialogService,
+                                          string title,
+                                          string value,
+                                          string label = "Value",
+                                          string? message = null)
+        => dialogService.OpenAsync<CopyValueDialog>(title,
+                                                    new()
+                                                    {
+                                                        [nameof(CopyValueDialog.Value)] = value,
+                                                        [nameof(CopyValueDialog.Label)] = label,
+                                                        [nameof(CopyValueDialog.Message)] = message!
+                                                    },
+                                                    new DialogOptions
+                                                    {
+                                                        Width = "500px",
+                                                        CloseDialogOnOverlayClick = false
+                                                    });
 
     public static async Task<string?> PromptAsync(this DialogService dialogService,
-                                                   string title,
-                                                   string label,
-                                                   string defaultValue = "")
+                                                  string title,
+                                                  string label,
+                                                  string defaultValue = "")
     {
         var result = await dialogService.OpenAsync<PromptDialog>(title,
                                                                  new()

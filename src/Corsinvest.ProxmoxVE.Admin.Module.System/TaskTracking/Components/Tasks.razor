@@ -21,7 +21,15 @@
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshAsync" />
+        <CrudToolbar OnRefresh="RefreshAsync">
+            <TemplateAfter>
+                <SearchTextBox @ref="SearchTextBox"
+                               TItem="TaskItemInfo"
+                               Properties="@([x => x.Title, x => x.ClusterName, x => x.ModuleName, x => x.Phase, x => x.CreatedBy, x => x.LastLog])"
+                               FiltersChanged="OnSearchFiltersChanged"
+                               Style="width:260px;" />
+            </TemplateAfter>
+        </CrudToolbar>
     </HeaderTemplate>
 
     <Columns>
