@@ -91,7 +91,7 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
         }
     }
 
-    private async Task<ConnectionInfo> GetSshConnectionInfoAsync(string node, bool resolveHost)
+    public async Task<ConnectionInfo> GetSshConnectionInfoAsync(string node, bool resolveHost)
     {
         var host = resolveHost
                     ? await GetNodeIpAsync(node)
