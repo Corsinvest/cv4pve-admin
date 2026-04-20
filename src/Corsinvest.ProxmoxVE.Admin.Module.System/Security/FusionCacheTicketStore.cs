@@ -13,8 +13,8 @@ internal class FusionCacheTicketStore(IFusionCache fusionCache,
 {
     public async Task RemoveAsync(string key) => await fusionCache.RemoveAsync(key);
 
-    public async Task RenewAsync(string key, AuthenticationTicket ticket) =>
-        await fusionCache.SetAsync(key, ticket, cookieOptions.Value.ExpireTimeSpan);
+    public async Task RenewAsync(string key, AuthenticationTicket ticket)
+        => await fusionCache.SetAsync(key, ticket, cookieOptions.Value.ExpireTimeSpan);
 
     public async Task<AuthenticationTicket?> RetrieveAsync(string key)
     {

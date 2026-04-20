@@ -14,8 +14,8 @@ public class PermissionService(ICurrentUserService currentUserService,
 {
     private const string CacheTag = "Permissions";
 
-    public async Task<bool> HasAsync(string clusterName, Permission permission)
-        => await HasAsync(clusterName, permission, "*");
+    public Task<bool> HasAsync(string clusterName, Permission permission)
+        => HasAsync(clusterName, permission, "*");
 
     public async Task<bool> HasAsync(string clusterName, Permission permission, string path)
         => permission == null || await HasAsync(clusterName, permission.Key, path);
@@ -122,14 +122,22 @@ public class PermissionService(ICurrentUserService currentUserService,
     public async Task RemoveForUserAsync(string userId, IEnumerable<PermissionData> permissions)
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        await DeletePermissionsAsync(db.UserPermissions.Where(a => a.UserId == userId), permissions);
-        await InvalidateUserPermissionsAsync(userId);
+        await using (var transaction = await db.Database.BeginTransactionAsync())
+        {
+            await DeletePermissionsAsync(db.UserPermissions.Where(a => a.UserId == userId), permissions);
+            await transaction.CommitAsync();
+        }
+        await InvalidateUserAsync(userId);
     }
 
     public async Task RemoveForRoleAsync(string roleId, IEnumerable<PermissionData> permissions)
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        await DeletePermissionsAsync(db.RolePermissions.Where(a => a.RoleId == roleId), permissions);
+        await using (var transaction = await db.Database.BeginTransactionAsync())
+        {
+            await DeletePermissionsAsync(db.RolePermissions.Where(a => a.RoleId == roleId), permissions);
+            await transaction.CommitAsync();
+        }
         await InvalidateRolePermissionsAsync(roleId);
         await InvalidateUsersWithRoleAsync(roleId);
     }
@@ -212,11 +220,11 @@ public class PermissionService(ICurrentUserService currentUserService,
         {
             db.UserPermissions.AddRange(newPermissions);
             await db.SaveChangesAsync();
-            await InvalidateUserPermissionsAsync(userId);
+            await InvalidateUserAsync(userId);
         }
     }
 
-    private async Task InvalidateUserPermissionsAsync(string userId)
+    public async Task InvalidateUserAsync(string userId)
     {
         await fusionCache.RemoveAsync($"Permissions:UserId:{userId}");
         await fusionCache.RemoveAsync($"Permissions:UserRoles:{userId}");
@@ -237,6 +245,12 @@ public class PermissionService(ICurrentUserService currentUserService,
             fusionCache.RemoveAsync($"Permissions:UserId:{userId}").AsTask(),
             fusionCache.RemoveAsync($"Permissions:UserRoles:{userId}").AsTask()
         }));
+    }
+
+    public async Task InvalidateRoleAsync(string roleId)
+    {
+        await InvalidateRolePermissionsAsync(roleId);
+        await InvalidateUsersWithRoleAsync(roleId);
     }
 
     private async Task InvalidateRolePermissionsAsync(string roleId)
@@ -337,18 +351,22 @@ public class PermissionService(ICurrentUserService currentUserService,
         {
             db.AppTokenPermissions.AddRange(toAdd);
             await db.SaveChangesAsync();
-            await InvalidateAppTokenPermissionsAsync(appTokenId);
+            await InvalidateAppTokenAsync(appTokenId);
         }
     }
 
     public async Task RemoveForAppTokenAsync(Guid appTokenId, IEnumerable<PermissionData> permissions)
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        await DeletePermissionsAsync(db.AppTokenPermissions.Where(a => a.AppTokenId == appTokenId), permissions);
-        await InvalidateAppTokenPermissionsAsync(appTokenId);
+        await using (var transaction = await db.Database.BeginTransactionAsync())
+        {
+            await DeletePermissionsAsync(db.AppTokenPermissions.Where(a => a.AppTokenId == appTokenId), permissions);
+            await transaction.CommitAsync();
+        }
+        await InvalidateAppTokenAsync(appTokenId);
     }
 
-    private async Task InvalidateAppTokenPermissionsAsync(Guid appTokenId)
+    public async Task InvalidateAppTokenAsync(Guid appTokenId)
     {
         await fusionCache.RemoveAsync($"Permissions:AppToken:{appTokenId}");
         await fusionCache.RemoveAsync($"Permissions:AppTokenRoles:{appTokenId}");

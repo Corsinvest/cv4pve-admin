@@ -172,12 +172,12 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
         });
     }
 
-    public async Task ExecuteMaintenanceAsync(DatabaseMaintenanceOperation operation, CancellationToken cancellationToken = default)
-        => await Database.ExecuteSqlRawAsync(operation switch
+    public Task ExecuteMaintenanceAsync(DatabaseMaintenanceOperation operation, CancellationToken cancellationToken = default)
+        => Database.ExecuteSqlRawAsync(operation switch
         {
             // PostgreSQL specific commands (can be extended for other databases)
             DatabaseMaintenanceOperation.Optimize => "VACUUM ANALYZE",
-            DatabaseMaintenanceOperation.Reindex => $"REINDEX DATABASE \"{Database.GetDbConnection().Database}\"",
+            DatabaseMaintenanceOperation.Reindex => $"REINDEX DATABASE {PostgreSqlHelper.QuoteIdentifier(Database.GetDbConnection().Database)}",
             _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, "Unknown maintenance operation")
         }, cancellationToken);
 }

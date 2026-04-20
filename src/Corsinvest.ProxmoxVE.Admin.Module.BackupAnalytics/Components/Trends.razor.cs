@@ -122,6 +122,8 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
                         .ToList()
                     : [];
 
+        var vmsById = vms.ToDictionary(v => v.VmId);
+
         Items = SelectedVmIds.Any()
                 ? (await db.TaskResults.FromClusterName(ClusterName)
                                       .Where(a => nodes.Contains(a.Node!) && storages.Contains(a.Storage!)
@@ -138,14 +140,18 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                           End = a.End!.Value,
                                           a.TransferSpeed
                                       }).ToListAsync())
-                                      .ConvertAll(a => new Data(a.VmId,
-                                                                vms.Where(b => b.VmId == a.VmId).Select(a => a.Name).FirstOrDefault()!,
-                                                                vms.Where(b => b.VmId == a.VmId).Select(a => a.Description).FirstOrDefault()!,
-                                                                a.Size,
-                                                                a.TransferSize,
-                                                                a.Start,
-                                                                a.End,
-                                                                a.TransferSpeed))
+                                      .ConvertAll(a =>
+                                      {
+                                          var vm = vmsById.GetValueOrDefault(a.VmId);
+                                          return new Data(a.VmId,
+                                                          vm?.Name ?? a.VmId,
+                                                          vm?.Description ?? string.Empty,
+                                                          a.Size,
+                                                          a.TransferSize,
+                                                          a.Start,
+                                                          a.End,
+                                                          a.TransferSpeed);
+                                      })
 
                   : [];
     }

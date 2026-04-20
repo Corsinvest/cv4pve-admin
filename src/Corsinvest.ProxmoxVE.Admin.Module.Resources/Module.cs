@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources;
@@ -36,15 +35,30 @@ public class Module : ModuleBase
                 Render = new(typeof(Components.Nodes)),
                 Icon = PveAdminUIHelper.Icons.Node
             },
-            new(this,"VMs")
+            new(this,"Guests")
             {
-                Render = new(typeof(Components.Vms)),
+                Render = new(typeof(Components.Guests)),
                 Icon = PveAdminUIHelper.Icons.Vm
             },
             new(this,"Storages")
             {
                 Render = new(typeof(Components.Storages)),
                 Icon = PveAdminUIHelper.Icons.Storage
+            },
+            new(this,"Networks")
+            {
+                Render = new(typeof(Components.Networks)),
+                Icon = PveAdminUIHelper.Icons.Network
+            },
+            new(this,"Disks")
+            {
+                Render = new(typeof(Components.Disks)),
+                Icon = PveAdminUIHelper.Icons.Disks
+            },
+            new(this,"Partitions")
+            {
+                Render = new(typeof(Components.Partitions)),
+                Icon = PveAdminUIHelper.Icons.Partitions
             },
             new(this,"Snapshots")
             {

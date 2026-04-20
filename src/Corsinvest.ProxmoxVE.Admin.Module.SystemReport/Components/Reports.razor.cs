@@ -76,12 +76,12 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         }
     }
 
-    private async Task<dynamic?> ShowEditorAsync(JobResult item, EditDialogMode mode)
-        => await dialogService.OpenSideEditAsync<ReportDialog>(item.Id == 0
-                                                                ? L["New Report"]
-                                                                : L["Report {0}", item.Id],
-                                                               mode,
-                                                               item);
+    private Task<dynamic?> ShowEditorAsync(JobResult item, EditDialogMode mode)
+        => dialogService.OpenSideEditAsync<ReportDialog>(item.Id == 0
+                                                            ? L["New Report"]
+                                                            : L["Report {0}", item.Id],
+                                                         mode,
+                                                         item);
 
     private async Task DeleteAsync()
     {
@@ -89,7 +89,8 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             var job = (await db.JobResults.FromIdAsync(SelectedItems[0].Id))!;
-            if (File.Exists(job.FileName)) { File.Delete(job.FileName); }
+            if (File.Exists(job.FileNameXlsx)) { File.Delete(job.FileNameXlsx); }
+            if (File.Exists(job.FileNameSvg)) { File.Delete(job.FileNameSvg); }
 
             await db.JobResults.DeleteAsync(SelectedItems[0].Id);
             await eventNotificationService.PublishAsync(new DataChangedNotification());
@@ -105,17 +106,37 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         else if (e.IsForNew()) { }
     }
 
-    private async Task DownloadAsync()
+    private Task OnDownloadClickAsync(RadzenSplitButtonItem? item)=> DownloadAsync(item?.Value!);
+
+    private async Task DownloadAsync(string format)
     {
         InDownload = true;
+        try
+        {
+            await using var db = await dbContextFactory.CreateDbContextAsync();
+            var job = (await db.JobResults.FromIdAsync(SelectedItems[0].Id))!;
 
-        await using var db = await dbContextFactory.CreateDbContextAsync();
-        var job = (await db.JobResults.FromIdAsync(SelectedItems[0].Id))!;
-        await using var fileStream = new FileStream(job.FileName, FileMode.Open, FileAccess.Read);
-        await blazorDownloadFileService.DownloadFile($"SystemReport-{job.ClusterName}-{job.Start}.xlsx",
-                                                     fileStream,
-                                                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        InDownload = false;
+            var (path, contentType) = format switch
+            {
+                "svg" => (job.FileNameSvg, "image/svg+xml"),
+                _ => (job.FileNameXlsx, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            };
+
+            if (!File.Exists(path))
+            {
+                notificationService.Notify(NotificationSeverity.Warning, L["File not available for this report."]);
+                return;
+            }
+
+            await using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            await blazorDownloadFileService.DownloadFile($"SystemReport-{job.ClusterName}-{job.Start}.{format}",
+                                                         fileStream,
+                                                         contentType);
+        }
+        finally
+        {
+            InDownload = false;
+        }
     }
 
     private async Task AddAsync()

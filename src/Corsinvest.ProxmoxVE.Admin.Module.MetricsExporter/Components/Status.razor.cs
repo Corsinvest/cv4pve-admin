@@ -49,8 +49,8 @@ public partial class Status(ISettingsService settingsService,
     private void LoadSettings()
     {
         var settings = settingsService.GetForModule<Module, Settings>(ApplicationHelper.AllClusterName);
-        PrometheusToken = settings.Prometheus.Token;
-        PrometheusEnabled = settings.Prometheus.Enabled;
+        PrometheusToken = settings.Token;
+        //PrometheusEnabled = settings.Prometheus.Enabled;
         StateHasChanged();
     }
 

@@ -33,9 +33,10 @@ public class AppTokenAuthenticationHandler(
         var rawToken = header["Bearer ".Length..].Trim();
         if (string.IsNullOrEmpty(rawToken)) { return AuthenticateResult.NoResult(); }
 
-        var token = await appTokenService.ValidateAsync(rawToken);
-        if (token == null) { return AuthenticateResult.Fail("Invalid or expired token."); }
+        var validation = await appTokenService.ValidateAsync(rawToken);
+        if (!validation.IsValid) { return AuthenticateResult.Fail($"Invalid or expired token. {validation.Describe()}"); }
 
+        var token = validation.Token!;
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, token.Id.ToString()),

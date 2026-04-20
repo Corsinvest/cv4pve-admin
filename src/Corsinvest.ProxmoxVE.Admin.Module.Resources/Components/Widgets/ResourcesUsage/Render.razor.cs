@@ -34,7 +34,7 @@ public partial class Render : IModuleWidget<Settings>
         if (ResourcesExRef != null) { await ResourcesExRef.RefreshDataAsync(); }
     }
 
-    private async Task DataGridSettingsAfter() => await SettingsChanged.InvokeAsync(Settings);
+    private Task DataGridSettingsAfter() => SettingsChanged.InvokeAsync(Settings);
 
     private async Task OnPresetChanged()
     {

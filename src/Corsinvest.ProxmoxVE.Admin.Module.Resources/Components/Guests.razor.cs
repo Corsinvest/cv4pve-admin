@@ -2,11 +2,9 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
-
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
-public partial class Vms : IClusterName
+public partial class Guests : IClusterName
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [SupplyParameterFromQuery] public int? VmId { get; set; }

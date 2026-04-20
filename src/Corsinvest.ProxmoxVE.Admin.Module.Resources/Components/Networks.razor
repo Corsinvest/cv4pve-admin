@@ -1,0 +1,110 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<RadzenPanel>
+    <RadzenTabs @bind-SelectedIndex="SelectedTab" Change="OnTabChangeAsync">
+        <Tabs>
+            <RadzenTabsItem Text="@L["Nodes"]" Icon="@PveAdminUIHelper.Icons.Node">
+                <RadzenDataGrid Data="@NodeNetworks"
+                                AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="false"
+                                AllowSorting="false"
+                                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                AllowGrouping="true"
+                                AllGroupsExpanded="false"
+                                AllowMultiColumnSorting="true"
+                                IsLoading="IsLoadingNodes"
+                                AllowColumnPicking="true"
+                                ShowMultiColumnSortingIndex="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                    <HeaderTemplate>
+                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                    </HeaderTemplate>
+
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Node)" Title="@L["Node"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Interface)" Title="@L["Interface"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Type)" Title="@L["Type"]" />
+                        <BoolIconColumn TItem="NodeNetwork" Property="@nameof(NodeNetwork.Active)" Title="@L["Is Active"]" IconFalse="" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Method)" Title="@L["Method"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Address)" Title="@L["IP Address"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Cidr)" Title="@L["CIDR"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Gateway)" Title="@L["Gateway"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Method6)" Title="IPv6 Method" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Address6)" Title="IPv6 Address" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Gateway6)" Title="IPv6 Gateway" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.BridgePorts)" Title="@L["Bridge Ports"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.VlanId)" Title="@L["VLAN ID"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.OvsBridge)" Title="@L["OVS Bridge"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.BondMode)" Title="@L["Bond Mode"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Slaves)" Title="@L["Slaves"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Mtu)" Title="@L["MTU"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Priority)" Title="@L["Priority"]" />
+                        <RadzenDataGridColumn Property="@nameof(NodeNetwork.Comments)" Title="@L["Comments"]" />
+                    </Columns>
+                </RadzenDataGrid>
+
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Guests"]" Icon="@PveAdminUIHelper.Icons.Vm">
+                <RadzenDataGrid @ref="@DataGridRef"
+                                Data="@VmNetworks"
+                                AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="false"
+                                AllowSorting="false"
+                                IsLoading="IsLoadingGuests"
+                                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                AllowGrouping="true"
+                                AllGroupsExpanded="false"
+                                AllowMultiColumnSorting="true"
+                                AllowColumnPicking="true"
+                                ShowMultiColumnSortingIndex="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                    <HeaderTemplate>
+                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                    </HeaderTemplate>
+
+                    <GroupHeaderTemplate>
+                        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count)
+                    </GroupHeaderTemplate>
+
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Node)" Title="@L["Node"]" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.VmId)" Title="@L["Vm Id"]" Visible="false">
+                            <Template>
+                                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px" Style="min-width:0; flex:1;">
+                                    <IconStatusResource Status="@context.Status" Type="@context.Type" Locked="@context.IsLocked" />
+                                    <RadzenText TextStyle="TextStyle.Subtitle2" Text="@context.VmId.ToString()" />
+                                </RadzenStack>
+                            </Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Name)" Title="@L["Name"]" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Guest)" Title="@L["Guest"]" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Type)" Title="@L["Type"]" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Status)" Title="@L["Status"]" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Hostname)" Title="@L["Hostname"]" />
+                        <BoolIconColumn Property="@nameof(VmNetwork.IsInternal)" Title="@L["Is Internal"]" IconFalse="" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.NetId)" Title="@L["Net Id"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.MacAddress)" Title="@L["MacAddress"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Bridge)" Title="@L["Bridge"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Tag)" Title="@L["Tag"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Model)" Title="@L["Model"]" />
+                        <BoolIconColumn Property="@nameof(VmNetwork.Firewall)" Title="@L["Firewall"]" IconFalse="" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.IpAddress)" Title="@L["IpAddress"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.IpAddress6)" Title="@L["IpAddress6"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Gateway)" Title="@L["Gateway"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Gateway6)" Title="@L["Gateway6"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Mtu)" Title="@L["Mtu"]" />
+                        <RadzenDataGridColumn Property="@nameof(VmNetwork.Rate)" Title="@L["Rate"]" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenPanel>

@@ -14,8 +14,8 @@ internal class AiServerService(IPermissionService permissionService,
     public string SerializeTable<T>(IEnumerable<T> items)
         => ToolHelper.SerializeTable(items, settingsService.GetForModule<Module, Settings>(ApplicationHelper.AllClusterName).OutputFormat);
 
-    public async Task<bool> CanExecuteToolAsync(string clusterName, Permission permission)
-        => await permissionService.HasAsync(clusterName, permission);
+    public Task<bool> CanExecuteToolAsync(string clusterName, Permission permission)
+        => permissionService.HasAsync(clusterName, permission);
 
     public (ClusterClient? Client, string? ErrorJson) GetClusterClient(string clusterName)
     {
@@ -30,6 +30,6 @@ internal class AiServerService(IPermissionService permissionService,
                 : (client, null);
     }
 
-    public async Task<IEnumerable<ClusterResource>> HasAsync(string clusterName, IEnumerable<ClusterResource> items)
-        => await permissionService.FilterAsync(clusterName, items);
+    public Task<IEnumerable<ClusterResource>> HasAsync(string clusterName, IEnumerable<ClusterResource> items)
+        => permissionService.FilterAsync(clusterName, items);
 }

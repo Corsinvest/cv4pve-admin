@@ -2,11 +2,12 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Security.Cryptography;
+using System.Text;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
-using Corsinvest.ProxmoxVE.Metrics.Exporter.Api;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.MetricsExporter;
 public class Module : ModuleBase
 {
     internal static IDictionary<string, Info> Infos { get; } = new Dictionary<string, Info>();
-    private static string ExporterUrl { get; set; } = string.Empty;
+    private static string PrometheusExporterUrl { get; set; } = string.Empty;
 
     public Module()
     {
@@ -31,7 +32,10 @@ public class Module : ModuleBase
         Slug = "metrics-exporter";
         HelpUrl = "modules/metrics-exporter";
 
-        if (string.IsNullOrEmpty(ExporterUrl)) { ExporterUrl = $"{GetBaseUrl(ApplicationHelper.AllClusterName)}/prometheus"; }
+        if (string.IsNullOrEmpty(PrometheusExporterUrl))
+        {
+            PrometheusExporterUrl = $"{GetBaseUrl(ApplicationHelper.AllClusterName)}/prometheus";
+        }
 
         NavBar =
         [
@@ -56,7 +60,7 @@ public class Module : ModuleBase
 
     protected override string PermissionBaseKey { get; } = "MetricsExporter";
 
-    internal static string GetUrl(string clusterName) => $"{ExporterUrl}/{clusterName}";
+    internal static string GetUrl(string clusterName) => $"{PrometheusExporterUrl}/{clusterName}";
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services);
@@ -64,7 +68,7 @@ public class Module : ModuleBase
     protected override void Map(WebApplication app) => MapExporterPrometheusMetrics(app);
 
     private static void MapExporterPrometheusMetrics(WebApplication app)
-        => app.MapGet(ExporterUrl + "/{clusterName}", async (string clusterName,
+        => app.MapGet(PrometheusExporterUrl + "/{clusterName}", async (string clusterName,
                                                              HttpContext context,
                                                              ILogger<Module> logger,
                                                              IServiceScopeFactory scopeFactory) =>
@@ -74,19 +78,21 @@ public class Module : ModuleBase
             if (settingsService.GetEnabledClustersSettings().Any(a => a.Name == clusterName))
             {
                 var settings = settingsService.GetForModule<Module, Settings>(ApplicationHelper.AllClusterName);
-                if (!settings.Prometheus.Enabled)
+                if (!settings.ApiSettings.Prometheus.Enabled)
                 {
                     context.Response.StatusCode = 503;
                     return Results.Problem("Metrics Exporter is disabled");
                 }
 
-                if (string.IsNullOrWhiteSpace(settings.Prometheus.Token))
+                if (string.IsNullOrWhiteSpace(settings.Token))
                 {
                     return Results.BadRequest("Token in setting not configured!");
                 }
 
                 var token = context.Request.Query["token"].ToString();
-                if (!string.Equals(token, settings.Prometheus.Token, StringComparison.Ordinal)) { return Results.Unauthorized(); }
+                var tokenBytes = Encoding.UTF8.GetBytes(token);
+                var expectedBytes = Encoding.UTF8.GetBytes(settings.Token);
+                if (!CryptographicOperations.FixedTimeEquals(tokenBytes, expectedBytes)) { return Results.Unauthorized(); }
 
                 if (!Infos.TryGetValue(clusterName, out var info))
                 {
@@ -98,14 +104,16 @@ public class Module : ModuleBase
                         var settingsService = scope.GetSettingsService();
                         var adminService = scope.GetAdminService();
 
-                        var settings = settingsService.GetForModule<Module, Settings>(clusterName);
-                        var exporter = new PrometheusExporter(registry, settings.Prometheus.ExporterPrefix);
+                        //todo fix 
+                        //var settings = settingsService.GetForModule<Module, Settings>(clusterName);
+                        //var exporter = new Metrics.Exporter.Api.Prometheus.MetricsEngine(settings.ApiSettings.Prometheus, registry, null!)
+                        //                                                  .PrometheusExporter(registry, settings.Prometheus.ExporterPrefix);
 
-                        try
-                        {
-                            await exporter.CollectAsync(await adminService[clusterName].GetPveClientAsync());
-                        }
-                        catch (Exception ex) { logger.LogError(ex, ex.Message); }
+                        //try
+                        //{
+                        //    await exporter.CollectAsync(await adminService[clusterName].GetPveClientAsync());
+                        //}
+                        //catch (Exception ex) { logger.LogError(ex, ex.Message); }
                     });
 
                     //register info

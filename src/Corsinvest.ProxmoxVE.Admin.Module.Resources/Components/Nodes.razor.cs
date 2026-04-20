@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
-
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
 public partial class Nodes : IClusterName
