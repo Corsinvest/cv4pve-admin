@@ -5,28 +5,88 @@
 @inherits AdminComponentBase
 @implements IModelParameter<Settings>
 
+<SwitchField @bind-Value="@Model.Enabled"
+             Label="@L["Enabled"]"
+             Name="@nameof(Model.Enabled)"
+             class="rz-w-100 rz-mb-2" />
+
+<PasswordField @bind-Value="@Model.Token"
+               Label="@L["Token"]"
+               Name="@nameof(Model.Token)"
+               class="rz-w-100 rz-mb-2">
+    <Helper>
+        <RadzenRequiredValidator Component="@nameof(Model.Token)" />
+    </Helper>
+</PasswordField>
+
+
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="@L["Prometheus"]" Icon="monitoring">
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="8px" class="rz-mb-2" JustifyContent="JustifyContent.End">
+                <RadzenButton Text="@L["Fast"]" Icon="speed"
+                              ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                              Click="@ApplyFast" />
+                <RadzenButton Text="@L["Standard"]" Icon="tune"
+                              ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                              Click="@ApplyStandard" />
+                <RadzenButton Text="@L["Full"]" Icon="all_inclusive"
+                              ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                              Click="@ApplyFull" />
+            </RadzenStack>
+
             <SwitchField @bind-Value="@Model.ApiSettings.Prometheus.Enabled"
                          Label="@L["Enabled"]"
-                         Name="@nameof(Model.ApiSettings.Prometheus.Enabled)" />
+                         Name="@nameof(Model.ApiSettings.Prometheus.Enabled)"
+                         class="rz-w-100 rz-mb-2" />
 
-            @* <RadzenFormField Text="@L["Prefix"]" AllowFloatingLabel="false" class="rz-w-100">
-                <Start><RadzenIcon Icon="label" /></Start>
-                <ChildContent>
-                    <RadzenTextBox Name="@nameof(Model.Prometheus.ExporterPrefix)" @bind-Value="@Model.Prometheus.ExporterPrefix" />
-                </ChildContent>
-                <Helper>
-                    <RadzenRequiredValidator Component="@nameof(Model.Prometheus.ExporterPrefix)" />
-                </Helper>
-            </RadzenFormField> *@
+            <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="rz-mb-2">
+                <RadzenColumn Size="6">
+                    <RadzenFormField Text="@L["Max parallel requests"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <Start>
+                            <RadzenIcon Icon="bolt" />
+                        </Start>
+                        <ChildContent>
+                            <RadzenNumeric Name="Model.ApiSettings.Prometheus.MaxParallelRequests"
+                                           @bind-Value="@Model.ApiSettings.Prometheus.MaxParallelRequests"
+                                           Min="1" />
+                        </ChildContent>
+                        <End>
+                            <InfoIcon>@L["Max parallel requests when fetching per-node/per-guest data (1 = sequential)."]</InfoIcon>
+                        </End>
+                        <Helper>
+                            <RadzenDataAnnotationValidator Component="Model.ApiSettings.Prometheus.MaxParallelRequests" />
+                        </Helper>
+                    </RadzenFormField>
+                </RadzenColumn>
 
-            <PasswordField @bind-Value="@Model.Token" Label="@L["Token"]" Name="@nameof(Model.Token)" class="rz-w-100">
-                <Helper>
-                    <RadzenRequiredValidator Component="@nameof(Model.Token)" />
-                </Helper>
-            </PasswordField>
+                <RadzenColumn Size="6" class="rz-display-flex rz-align-items-center">
+                    <SwitchField @bind-Value="@Model.ApiSettings.Prometheus.ApiInstrumentation"
+                                 Label="@L["API instrumentation"]"
+                                 Name="@nameof(Model.ApiSettings.Prometheus.ApiInstrumentation)"
+                                 class="rz-w-100" />
+                </RadzenColumn>
+            </RadzenRow>
+
+            <RadzenAccordion>
+                <Items>
+                    <RadzenAccordionItem Text="@L["Cluster"]" Icon="hub">
+                        @RenderCollector(L["High Availability"], "Cluster.Ha", Model.ApiSettings.Prometheus.Cluster.Ha)
+                        @RenderCollector(L["Backup info"], "Cluster.BackupInfo", Model.ApiSettings.Prometheus.Cluster.BackupInfo)
+                    </RadzenAccordionItem>
+
+                    <RadzenAccordionItem Text="@L["Node"]" Icon="dns">
+                        @RenderCollector(L["Status (memory, swap, load, uptime)"], "Node.Status", Model.ApiSettings.Prometheus.Node.Status)
+                        @RenderCollector(L["Subscription"], "Node.Subscription", Model.ApiSettings.Prometheus.Node.Subscription)
+                        @RenderCollector(L["Replication"], "Node.Replication", Model.ApiSettings.Prometheus.Node.Replication)
+                        @RenderCollector(L["Disk S.M.A.R.T."], "Node.DiskSmart", Model.ApiSettings.Prometheus.Node.DiskSmart)
+                    </RadzenAccordionItem>
+
+                    <RadzenAccordionItem Text="@L["Guest"]" Icon="computer">
+                        @RenderCollector(L["QEMU balloon memory"], "Guest.Balloon", Model.ApiSettings.Prometheus.Guest.Balloon)
+                    </RadzenAccordionItem>
+                </Items>
+            </RadzenAccordion>
         </RadzenTabsItem>
     </Tabs>
 </RadzenTabs>
@@ -34,4 +94,43 @@
 @code
 {
     [Parameter] public Settings Model { get; set; } = default!;
+
+    private void ApplyFast() => Model.ApiSettings.Prometheus = Metrics.Exporter.Api.Prometheus.Settings.Fast();
+    private void ApplyStandard() => Model.ApiSettings.Prometheus = Metrics.Exporter.Api.Prometheus.Settings.Standard();
+    private void ApplyFull() => Model.ApiSettings.Prometheus = Metrics.Exporter.Api.Prometheus.Settings.Full();
+
+    private RenderFragment RenderCollector(string title, string baseName, Metrics.Exporter.Api.CollectorSettings collector) => __builder =>
+    {
+        var nameEnabled = $"Model.ApiSettings.Prometheus.{baseName}.Enabled";
+        var nameCache = $"Model.ApiSettings.Prometheus.{baseName}.CacheSeconds";
+
+        <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="cv4pve-dashed-box rz-mb-2">
+            <RadzenColumn Size="6" class="rz-display-flex rz-align-items-center">
+                <SwitchField @bind-Value="@collector.Enabled"
+                             Label="@title"
+                             Name="@nameEnabled"
+                             class="rz-w-100" />
+            </RadzenColumn>
+            <RadzenColumn Size="6">
+                <RadzenFormField Text="@L["Cache seconds"]" AllowFloatingLabel="false" class="rz-w-100">
+                    <Start>
+                        <RadzenIcon Icon="timer" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenNumeric TValue="int"
+                                       Name="@nameCache"
+                                       @bind-Value="@collector.CacheSeconds"
+                                       Min="0"
+                                       Disabled="@(!collector.Enabled)" />
+                    </ChildContent>
+                    <End>
+                        <InfoIcon>@L["Cache TTL in seconds. 0 = no cache (collect every scrape)."]</InfoIcon>
+                    </End>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameCache" />
+                    </Helper>
+                </RadzenFormField>
+            </RadzenColumn>
+        </RadzenRow>
+    };
 }

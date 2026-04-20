@@ -6,13 +6,13 @@ using System.Security.Cryptography;
 using System.Text;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
-using Corsinvest.ProxmoxVE.Admin.Core.Models;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PrometheusMetricsEngine = Corsinvest.ProxmoxVE.Metrics.Exporter.Api.Prometheus.MetricsEngine;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.MetricsExporter;
 
@@ -25,9 +25,8 @@ public class Module : ModuleBase
     {
         Keywords = "metrics,prometheus,exporter,monitoring,performance,statistics,observability";
         ModuleType = ModuleType.Application;
-        Scope = ClusterScope.All;
         Name = "Metrics Exporter";
-        Description = "Prometheus metrics exporter for cluster monitoring and observability";
+        Description = "Exposes Proxmox VE metrics for monitoring systems";
         Category = Categories.Health;
         Slug = "metrics-exporter";
         HelpUrl = "modules/metrics-exporter";
@@ -62,6 +61,13 @@ public class Module : ModuleBase
 
     internal static string GetUrl(string clusterName) => $"{PrometheusExporterUrl}/{clusterName}";
 
+    protected override Task RefreshSettingsAsync(IServiceScope scope)
+    {
+        // Drop cached engines/registries so the next scrape rebuilds them with the new settings.
+        Infos.Clear();
+        return Task.CompletedTask;
+    }
+
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services);
 
@@ -77,8 +83,8 @@ public class Module : ModuleBase
             var settingsService = outerScope.GetSettingsService();
             if (settingsService.GetEnabledClustersSettings().Any(a => a.Name == clusterName))
             {
-                var settings = settingsService.GetForModule<Module, Settings>(ApplicationHelper.AllClusterName);
-                if (!settings.ApiSettings.Prometheus.Enabled)
+                var settings = settingsService.GetForModule<Module, Settings>(clusterName);
+                if (!settings.Enabled || !settings.ApiSettings.Prometheus.Enabled)
                 {
                     context.Response.StatusCode = 503;
                     return Results.Problem("Metrics Exporter is disabled");
@@ -96,27 +102,22 @@ public class Module : ModuleBase
 
                 if (!Infos.TryGetValue(clusterName, out var info))
                 {
-                    //create register
                     var registry = Prometheus.Metrics.NewCustomRegistry();
+                    var engine = new PrometheusMetricsEngine(settings.ApiSettings.Prometheus,
+                                                             registry,
+                                                             scopeFactory.CreateScope().ServiceProvider.GetRequiredService<ILogger<PrometheusMetricsEngine>>());
+
                     registry.AddBeforeCollectCallback(async () =>
                     {
                         using var scope = scopeFactory.CreateScope();
-                        var settingsService = scope.GetSettingsService();
-                        var adminService = scope.GetAdminService();
-
-                        //todo fix 
-                        //var settings = settingsService.GetForModule<Module, Settings>(clusterName);
-                        //var exporter = new Metrics.Exporter.Api.Prometheus.MetricsEngine(settings.ApiSettings.Prometheus, registry, null!)
-                        //                                                  .PrometheusExporter(registry, settings.Prometheus.ExporterPrefix);
-
-                        //try
-                        //{
-                        //    await exporter.CollectAsync(await adminService[clusterName].GetPveClientAsync());
-                        //}
-                        //catch (Exception ex) { logger.LogError(ex, ex.Message); }
+                        try
+                        {
+                            var client = await scope.GetAdminService()[clusterName].GetPveClientAsync();
+                            await engine.CollectAsync(client);
+                        }
+                        catch (Exception ex) { logger.LogError(ex, ex.Message); }
                     });
 
-                    //register info
                     info = new() { Registry = registry };
                     Infos.Add(clusterName, info);
                 }

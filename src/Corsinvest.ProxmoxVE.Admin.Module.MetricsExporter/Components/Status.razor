@@ -4,24 +4,24 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenPanel>
-    <RadzenText>
-        @L["Prometheus Exporter"]
-    </RadzenText>
-
-    @if (!PrometheusEnabled)
-    {
-        <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" Text="@L["Metrics Exporter is disabled"]" />
-    }
-    else
-    {
-        <RadzenDataList AllowVirtualization="true" Style="height:400px;overflow:auto;" Data="@Items">
-            <Template>
-                <RadzenLink Path="@context.Url" Target="_blank">@context.FullName</RadzenLink>
-                <RadzenText><strong>@L["Request:"]</strong> @context.CountRequest</RadzenText>
-                <RadzenText><strong>@L["Last:"]</strong> @context.LastRequest</RadzenText>
-            </Template>
-        </RadzenDataList>
-    }
-
-</RadzenPanel>
+@if (!Enabled)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" Text="@L["Metrics Exporter is disabled"]" />
+}
+else
+{
+    <RadzenPanel Text="@L["Prometheus"]" Icon="monitoring" class="rz-mb-2">
+        @if (!PrometheusEnabled)
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Info" AllowClose="false" Text="@L["Prometheus exporter is disabled"]" />
+        }
+        else
+        {
+            <RadzenStack Gap="4px">
+                <RadzenLink Path="@Url" Target="_blank" Text="@L["Open metrics"]" Icon="open_in_new" />
+                <RadzenText><strong>@L["Request:"]</strong> @CountRequest</RadzenText>
+                <RadzenText><strong>@L["Last:"]</strong> @LastRequest</RadzenText>
+            </RadzenStack>
+        }
+    </RadzenPanel>
+}
