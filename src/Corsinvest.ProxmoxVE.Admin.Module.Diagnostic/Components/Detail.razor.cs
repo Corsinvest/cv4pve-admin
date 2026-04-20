@@ -17,7 +17,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
     [Parameter] public int ResultId { get; set; } = default!;
 
     private RadzenDataGrid<JobDetail> DataGridRef { get; set; } = default!;
-    private string _baseAddress { get; set; } = default!;
+    //private string _baseAddress { get; set; } = default!;
     private IEnumerable<JobDetail> Items { get; set; } = [];
 
     private string GetHelpUrl(JobDetail item) => diagnosticService.GetHelpUrl(item);
@@ -27,7 +27,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
         return item.Context switch
         {
             DiagnosticResultContext.Node => UrlHelper.Resources.NodeUrl(data[1], ClusterName),
-            //TODO implement 
+            //TODO implement
             DiagnosticResultContext.Cluster or DiagnosticResultContext.Storage => "#",
             DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc => UrlHelper.Resources.VmUrl(long.Parse(data[3]), ClusterName),
             _ => "#",
@@ -38,7 +38,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
 
-        _baseAddress = (await adminService[ClusterName].GetPveClientAsync()).BaseAddress;
+        //_baseAddress = (await adminService[ClusterName].GetPveClientAsync()).BaseAddress;
 
         Items = await db.JobDetails.Where(a => a.JobResult.Id == ResultId && !a.IsIgnoredIssue).ToListAsync();
     }

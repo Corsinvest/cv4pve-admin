@@ -43,7 +43,8 @@ public static class UrlHelper
              };
 
         public static string VmUrl(long vmId, string clusterName)
-            => $"{ModuleUrl("resources", clusterName)}/vms?vmid={vmId}";
+            => $"{ModuleUrl("resources", clusterName)}/guests?vmid={vmId}";
+
         public static string NodeUrl(string node, string clusterName)
             => $"{ModuleUrl("resources", clusterName)}/nodes?node={node}";
     }

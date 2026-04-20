@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Diagnostics;
 using System.Net;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
@@ -27,6 +28,8 @@ internal class PveClientWithRetry(string host,
         if (_inLogin) { return await base.ExecuteRequestAsync(resource, methodType, parameters); }
 
         Result lastResult = null!;
+
+        var sw = Stopwatch.StartNew();
         for (var attempt = 0; attempt <= MaxRetries; attempt++)
         {
             try
@@ -84,6 +87,7 @@ internal class PveClientWithRetry(string host,
                 await Task.Delay(delay);
             }
         }
+        sw.Stop();
 
         return lastResult ?? new Result(new { errors = "Max retries exceeded" },
                                         HttpStatusCode.InternalServerError,
@@ -92,7 +96,8 @@ internal class PveClientWithRetry(string host,
                                         resource,
                                         parameters ?? new Dictionary<string, object>(),
                                         methodType,
-                                        ResponseType);
+                                        ResponseType,
+                                        sw.Elapsed);
     }
 
     private TimeSpan CalculateDelay(int attempt)
@@ -141,8 +146,8 @@ internal class PveClientWithRetry(string host,
     private static bool IsAuthenticationError(Result result)
         => result?.StatusCode == HttpStatusCode.Unauthorized ||
            result?.StatusCode == HttpStatusCode.Forbidden ||
-           result?.ReasonPhrase?.Contains("authentication", StringComparison.OrdinalIgnoreCase) == true ||
-           result?.ReasonPhrase?.Contains("token", StringComparison.OrdinalIgnoreCase) == true;
+           result?.ReasonPhrase?.Contains("authentication", StringComparison.OrdinalIgnoreCase) is true ||
+           result?.ReasonPhrase?.Contains("token", StringComparison.OrdinalIgnoreCase) is true;
 
     private async Task<bool> TryReLoginAsync()
     {

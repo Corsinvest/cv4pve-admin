@@ -125,7 +125,7 @@ internal static class StorageTools
         var client = await clusterClient.GetPveClientAsync();
         var contents = await client.Nodes[node].Storage[storage].Content.GetAsync("backup", vmid);
 
-        var results = contents.Where(c => c.VmId == 0 || allowedVmIds.Contains(c.VmId))
+        var results = contents.Where(c => allowedVmIds.Contains(c.VmId))
                               .OrderByDescending(c => c.CreationDate)
                               .Select(c => new
                               {
@@ -182,7 +182,11 @@ internal static class StorageTools
         try
         {
             var contents = await client.Nodes[targetStorage.Node].Storage[storage].Content.GetAsync(content_type);
-            var results = contents.Where(c => c.VmId == 0 || allowedVmIds.Contains(c.VmId))
+            // Backup are always associated to a VM: enforce VmId check.
+            // ISO/vztmpl/images are not VM-specific: VmId == 0 is legitimate.
+            var results = contents.Where(c => c.Content == "backup"
+                                                    ? allowedVmIds.Contains(c.VmId)
+                                                    : c.VmId == 0 || allowedVmIds.Contains(c.VmId))
                                   .OrderBy(c => c.Content).ThenBy(c => c.Volume)
                                   .Select(c => (object)new
                                   {
@@ -240,83 +244,22 @@ internal static class StorageTools
     }
 
     [McpServerTool, Description("Delete content from storage (ISO, template, image, backup). Use ListStorageContent to get the volid.")]
-    public static async Task<string> DeleteStorageContent([Description("Cluster name")] string cluster_name,
-                                                          [Description("Node name")] string node,
-                                                          [Description("Storage name")] string storage,
-                                                          [Description("Volume ID to delete (e.g. local:iso/debian.iso)")] string volid,
-                                                          IAiServerService aiServerService,
-                                                          CommandExecutor commandExecutor)
-    {
-        if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.DeleteStorageContent))
-        {
-            return JsonSerializer.Serialize(new { error = "Permission denied" });
-        }
-
-        var (clusterClient, errorJson) = aiServerService.GetClusterClient(cluster_name);
-        if (clusterClient == null) { return errorJson!; }
-
-        var storageResource = (await clusterClient.CachedData.GetResourcesAsync(false))
-                               .FirstOrDefault(a => a.ResourceType == ClusterResourceType.Storage
-                                                    && a.Status != PveConstants.StatusUnknown
-                                                    && a.Node.Equals(node, StringComparison.OrdinalIgnoreCase)
-                                                    && a.Storage.Equals(storage, StringComparison.OrdinalIgnoreCase));
-
-        if (storageResource == null)
-        {
-            return JsonSerializer.Serialize(new { error = $"Storage '{storage}' not found on node '{node}'" });
-        }
-
-        if (!(await aiServerService.HasAsync(cluster_name, [storageResource])).Any())
-        {
-            return JsonSerializer.Serialize(new { error = "Permission denied" });
-        }
-
-        var result = await commandExecutor.ExecuteAsync(new StorageDeleteContentCommand(cluster_name, node, storage, volid));
-
-        return result.IsSuccess
-                ? JsonSerializer.Serialize(new { success = true, node, storage, volid })
-                : JsonSerializer.Serialize(new { error = result.ErrorMessage });
-    }
+    public static Task<string> DeleteStorageContent([Description("Cluster name")] string cluster_name,
+                                                    [Description("Node name")] string node,
+                                                    [Description("Storage name")] string storage,
+                                                    [Description("Volume ID to delete (e.g. local:iso/debian.iso)")] string volid,
+                                                    IAiServerService aiServerService,
+                                                    ICommandExecutor commandExecutor)
+        => StorageDeleteContent(cluster_name, node, storage, volid, Permissions.Tools.DeleteStorageContent, aiServerService, commandExecutor);
 
     [McpServerTool, Description("Delete a backup from storage. Use ListBackups to get the volid.")]
-    public static async Task<string> DeleteBackup([Description("Cluster name")] string cluster_name,
-                                                  [Description("Node name")] string node,
-                                                  [Description("Storage name")] string storage,
-                                                  [Description("Volume ID of the backup to delete (e.g. local:backup/vzdump-qemu-100-2024_01_01.vma.zst)")] string volid,
-                                                  IAiServerService aiServerService,
-                                                  IPermissionService permissionService,
-                                                  CommandExecutor commandExecutor)
-    {
-        if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.DeleteBackup))
-        {
-            return JsonSerializer.Serialize(new { error = "Permission denied" });
-        }
-
-        var (clusterClient, errorJson) = aiServerService.GetClusterClient(cluster_name);
-        if (clusterClient == null) { return errorJson!; }
-
-        var storageResource = (await clusterClient.CachedData.GetResourcesAsync(false))
-                               .FirstOrDefault(a => a.ResourceType == ClusterResourceType.Storage
-                                                    && a.Status != PveConstants.StatusUnknown
-                                                    && a.Node.Equals(node, StringComparison.OrdinalIgnoreCase)
-                                                    && a.Storage.Equals(storage, StringComparison.OrdinalIgnoreCase));
-
-        if (storageResource == null)
-        {
-            return JsonSerializer.Serialize(new { error = $"Storage '{storage}' not found on node '{node}'" });
-        }
-
-        if (!(await aiServerService.HasAsync(cluster_name, [storageResource])).Any())
-        {
-            return JsonSerializer.Serialize(new { error = "Permission denied" });
-        }
-
-        var result = await commandExecutor.ExecuteAsync(new StorageDeleteContentCommand(cluster_name, node, storage, volid));
-
-        return result.IsSuccess
-                ? JsonSerializer.Serialize(new { success = true, node, storage, volid })
-                : JsonSerializer.Serialize(new { error = result.ErrorMessage });
-    }
+    public static Task<string> DeleteBackup([Description("Cluster name")] string cluster_name,
+                                            [Description("Node name")] string node,
+                                            [Description("Storage name")] string storage,
+                                            [Description("Volume ID of the backup to delete (e.g. local:backup/vzdump-qemu-100-2024_01_01.vma.zst)")] string volid,
+                                            IAiServerService aiServerService,
+                                            ICommandExecutor commandExecutor)
+        => StorageDeleteContent(cluster_name, node, storage, volid, Permissions.Tools.DeleteBackup, aiServerService, commandExecutor);
 
     [McpServerTool, Description("List ISO images available on a node storage")]
     public static async Task<string> ListIsos([Description("Cluster name")] string cluster_name,
@@ -391,31 +334,28 @@ internal static class StorageTools
     }
 
     [McpServerTool, Description("Delete an ISO image from storage. Use ListIsos to get the volid.")]
-    public static async Task<string> DeleteIso([Description("Cluster name")] string cluster_name,
-                                               [Description("Node name")] string node,
-                                               [Description("Storage name")] string storage,
-                                               [Description("Volume ID of the ISO to delete (e.g. local:iso/debian.iso)")] string volid,
-                                               IAiServerService aiServerService,
-                                               CommandExecutor commandExecutor)
+    public static Task<string> DeleteIso([Description("Cluster name")] string cluster_name,
+                                         [Description("Node name")] string node,
+                                         [Description("Storage name")] string storage,
+                                         [Description("Volume ID of the ISO to delete (e.g. local:iso/debian.iso)")] string volid,
+                                         IAiServerService aiServerService,
+                                         ICommandExecutor commandExecutor)
+        => StorageDeleteContent(cluster_name, node, storage, volid, Permissions.Tools.DeleteIso, aiServerService, commandExecutor);
+
+    private static async Task<string> StorageDeleteContent(string clusterName,
+                                                           string node,
+                                                           string storage,
+                                                           string volid,
+                                                           Permission permission,
+                                                           IAiServerService aiServerService,
+                                                           ICommandExecutor commandExecutor)
     {
-        if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.DeleteIso))
+        if (!await aiServerService.CanExecuteToolAsync(clusterName, permission))
         {
             return JsonSerializer.Serialize(new { error = "Permission denied" });
         }
 
-        var (clusterClient, errorJson) = aiServerService.GetClusterClient(cluster_name);
-        if (clusterClient == null) { return errorJson!; }
-
-        var storageResource = (await clusterClient.CachedData.GetResourcesAsync(false))
-                               .FirstOrDefault(a => a.ResourceType == ClusterResourceType.Storage
-                                                    && a.Status != PveConstants.StatusUnknown
-                                                    && a.Node.Equals(node, StringComparison.OrdinalIgnoreCase)
-                                                    && a.Storage.Equals(storage, StringComparison.OrdinalIgnoreCase));
-
-        if (storageResource == null) { return JsonSerializer.Serialize(new { error = $"Storage '{storage}' not found on node '{node}'" }); }
-        if (!(await aiServerService.HasAsync(cluster_name, [storageResource])).Any()) { return JsonSerializer.Serialize(new { error = "Permission denied" }); }
-
-        var result = await commandExecutor.ExecuteAsync(new StorageDeleteContentCommand(cluster_name, node, storage, volid));
+        var result = await commandExecutor.ExecuteAsync(new StorageDeleteContentCommand(clusterName, node, storage, volid));
 
         return result.IsSuccess
                 ? JsonSerializer.Serialize(new { success = true, node, storage, volid })

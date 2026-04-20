@@ -17,8 +17,10 @@ public static class ServiceScopeExtensions
     public static T? GetService<T>(this IServiceScope scope) where T : notnull
         => scope.ServiceProvider.GetService<T>();
 
-    public static CommandExecutor GetCommandExecutor(this IServiceScope scope) => scope.GetRequiredService<CommandExecutor>();
-    public static CommandExecutor GetCommandExecutor(this IServiceProvider serviceProvider) => serviceProvider.GetRequiredService<CommandExecutor>();
+    public static ICommandExecutor GetCommandExecutor(this IServiceScope scope) => scope.GetRequiredService<ICommandExecutor>();
+    public static ICommandExecutor GetCommandExecutor(this IServiceProvider serviceProvider) => serviceProvider.GetRequiredService<ICommandExecutor>();
+    public static IUiCommandExecutor GetUiCommandExecutor(this IServiceScope scope) => scope.GetRequiredService<IUiCommandExecutor>();
+    public static IUiCommandExecutor GetUiCommandExecutor(this IServiceProvider serviceProvider) => serviceProvider.GetRequiredService<IUiCommandExecutor>();
     public static INotifierService GetNotifierService(this IServiceScope scope) => scope.GetRequiredService<INotifierService>();
     public static IModuleService GetModuleService(this IServiceScope scope) => scope.GetRequiredService<IModuleService>();
     public static ILoggerFactory GetLoggerFactory(this IServiceScope scope) => scope.GetRequiredService<ILoggerFactory>();

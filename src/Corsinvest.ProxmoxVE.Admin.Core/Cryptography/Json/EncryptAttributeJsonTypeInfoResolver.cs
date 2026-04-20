@@ -18,7 +18,7 @@ public class EncryptAttributeJsonTypeInfoResolver(IServiceProvider serviceProvid
         {
             foreach (var property in jsonTypeInfo.Properties)
             {
-                if (property.AttributeProvider?.IsDefined(typeof(EncryptAttribute), true) == true)
+                if (property.AttributeProvider?.IsDefined(typeof(EncryptAttribute), true) is true)
                 {
                     var dataProtectionProvider = serviceProvider.GetRequiredService<IDataProtectionProvider>();
                     var protector = dataProtectionProvider.CreateProtector("EncryptPropertyConverter");

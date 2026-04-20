@@ -57,7 +57,7 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
         item.Count += count;
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

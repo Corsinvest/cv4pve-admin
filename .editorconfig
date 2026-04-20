@@ -55,11 +55,19 @@ dotnet_diagnostic.IDE0060.severity = warning
 dotnet_diagnostic.CS0168.severity = warning
 dotnet_diagnostic.CS0219.severity = warning
 dotnet_diagnostic.RCS1090.severity = warning
+dotnet_diagnostic.RCS1078.severity = suggestion   # Prefer "" over string.Empty
 dotnet_diagnostic.RCS1118.severity = none
-dotnet_diagnostic.RCS1213.severity = warning
-dotnet_diagnostic.IDE0051.severity = warning
-dotnet_diagnostic.CA1822.severity = suggestion
-dotnet_diagnostic.CA1854.severity = warning
+dotnet_diagnostic.RCS1213.severity = warning      # Unused member declaration
+dotnet_diagnostic.SA1122.severity = none          # Disable: don't force string.Empty
+dotnet_diagnostic.IDE0051.severity = warning      # Remove unused private member
+dotnet_diagnostic.CA1822.severity = suggestion    # Member can be made static
+dotnet_diagnostic.CA1854.severity = warning       # Prefer TryGetValue over ContainsKey + indexer
+
+# Async/await best practices
+dotnet_diagnostic.CS1998.severity = warning       # Async method lacks 'await' operators
+dotnet_diagnostic.RCS1174.severity = warning      # Remove redundant async/await
+dotnet_diagnostic.VSTHRD200.severity = warning    # Use "Async" suffix for async methods
+dotnet_diagnostic.CA2007.severity = none          # Do not directly await a Task (ConfigureAwait)
 
 #### .NET Coding Conventions ####
 

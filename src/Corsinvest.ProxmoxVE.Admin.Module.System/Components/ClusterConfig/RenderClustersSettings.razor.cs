@@ -22,7 +22,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender
-            && Create == true
+            && Create is true
             && !settingsService.GetEnabledClustersSettings().Any())
         {
             await AddAsync();
@@ -50,7 +50,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
         }
     }
 
-    private async Task AddAsync() => await ShowEditorAsync(new(), true);
+    private Task AddAsync() => ShowEditorAsync(new(), true);
 
     private async Task ShowEditorAsync(ClusterSettings item, bool isNew)
     {

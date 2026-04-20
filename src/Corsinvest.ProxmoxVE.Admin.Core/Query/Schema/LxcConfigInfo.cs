@@ -48,6 +48,6 @@ public class LxcConfigInfo
 #if DEBUG
         Console.WriteLine($"Load Lxc config - GuestId: {GuestId}, Node: {NodeName}");
 #endif
-        return AsyncHelper.RunSync(() => _cachedData.GetLxcConfigAsync(NodeName, GuestId, false));
+        return AsyncHelper.RunSync(() => _cachedData.GetLxcConfigAsync(NodeName, GuestId, false).AsTask());
     }
 }

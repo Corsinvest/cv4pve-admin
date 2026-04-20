@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Commands;
+using Corsinvest.ProxmoxVE.Admin.Core.Commands.Node;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
@@ -12,12 +14,13 @@ public partial class ToolBar(IBrowserService browserService,
                              IAdminService adminService,
                              DialogService dialogService,
                              ContextMenuService contextMenuService,
+                             IUiCommandExecutor uiExecutor,
                              IEnumerable<IToolBarUtility<IClusterResourceNode>> Utility) : IRefreshableData, IClusterName
 {
     [EditorRequired, Parameter] public IClusterResourceNode Node { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public bool OnlyIcon { get; set; }
-    [Parameter] public EventCallback<string> ChangeStatus { get; set; }
+    [Parameter] public EventCallback<NodePowerAction> ChangeStatus { get; set; }
 
     private WebConsoleType DefaultWebConsoleType { get; set; } = WebConsoleType.NoVnc;
 
@@ -36,30 +39,30 @@ public partial class ToolBar(IBrowserService browserService,
         await RefreshDataAsync();
     }
 
-    private async Task OpenWebConsole(bool xTermJs)
-        => await browserService.OpenPveConsole(adminService[ClusterName].GetWebConsoleUrl(Node.Node, xTermJs));
+    private Task OpenWebConsole(bool xTermJs)
+        => browserService.OpenPveConsole(adminService[ClusterName].GetWebConsoleUrl(Node.Node, xTermJs));
 
-    private static async Task OpenSpiceConsole() => await Task.CompletedTask;
+    private static Task OpenSpiceConsole() => Task.CompletedTask;
 
-    private async Task OnClickOpenConsole(RadzenSplitButtonItem item)
-         => await OpenConsole(Enum.TryParse<WebConsoleType>(item?.Value, out var parsedType)
+    private Task OnClickOpenConsole(RadzenSplitButtonItem item)
+         => OpenConsole(Enum.TryParse<WebConsoleType>(item?.Value, out var parsedType)
                                  ? parsedType
                                  : WebConsoleType.NoVnc);
 
-    private async Task OpenConsole(WebConsoleType type)
-        => await (type switch
+    private Task OpenConsole(WebConsoleType type)
+        => type switch
         {
             WebConsoleType.NoVnc => OpenWebConsole(false),
             WebConsoleType.XtermJs => OpenWebConsole(true),
             WebConsoleType.Spice => OpenSpiceConsole(),
             _ => OpenConsole(DefaultWebConsoleType)
-        });
+        };
 
     private async Task RebootAsync()
     {
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Reboot node {0}", Node.Node], true))
         {
-            await ChangeStatusExecute("reboot");
+            await ChangeStatusExecute(NodePowerAction.Reboot);
         }
     }
 
@@ -67,7 +70,7 @@ public partial class ToolBar(IBrowserService browserService,
     {
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Shutdown node {0}", Node.Node], true))
         {
-            await ChangeStatusExecute("shutdown");
+            await ChangeStatusExecute(NodePowerAction.Shutdown);
         }
     }
 
@@ -84,12 +87,10 @@ public partial class ToolBar(IBrowserService browserService,
         if (execute) { await item.ExecuteAsync(ClusterName, Node); }
     }
 
-    private async Task ChangeStatusExecute(string status)
+    private async Task ChangeStatusExecute(NodePowerAction action)
     {
-        if (ChangeStatus.HasDelegate) { await ChangeStatus.InvokeAsync(status); }
-
-        var client = await adminService[ClusterName].GetPveClientAsync();
-        await client.Nodes[Node].Status.NodeCmd(status);
+        var result = await uiExecutor.ExecuteAndNotifyAsync(new NodePowerManagementCommand(ClusterName, Node.Node, action));
+        if (result.IsSuccess && ChangeStatus.HasDelegate) { await ChangeStatus.InvokeAsync(action); }
     }
 
     private async Task OnClickPower(RadzenSplitButtonItem item)

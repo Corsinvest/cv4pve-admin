@@ -23,7 +23,7 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                          ResultLoadData.Filter);
     }
 
-    public async Task RefreshDataAsync() => await DataGridRef.Reload();
+    public Task RefreshDataAsync() => DataGridRef.Reload();
 
     private async Task KeyDownAsync(KeyboardEventArgs e)
     {

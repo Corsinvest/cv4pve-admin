@@ -140,8 +140,7 @@ internal static class NodeTools
 
         nodes = [.. await aiServerService.HasAsync(cluster_name, nodes)];
 
-        var allReplications = await Task.WhenAll(nodes.Select(node =>
-            clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false)));
+        var allReplications = await Task.WhenAll(nodes.Select(node => clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false).AsTask()));
 
         return aiServerService.SerializeTable(allReplications.SelectMany(a => a)
                                                              .Select(a => new

@@ -42,7 +42,8 @@ public partial class UnprotectedGuests(IAdminService adminService) : IClusterNam
     }
 
     private bool FilterExpression(ClusterResourceItem item, string clusterName)
-        => item.ResourceType == ClusterResourceType.Vm
+        => item.ClusterName == clusterName
+            && item.ResourceType == ClusterResourceType.Vm
             && !item.IsTemplate
             && _vmIdsInBackup.Count != 0
             && !_vmIdsInBackup.Contains(item.VmId);

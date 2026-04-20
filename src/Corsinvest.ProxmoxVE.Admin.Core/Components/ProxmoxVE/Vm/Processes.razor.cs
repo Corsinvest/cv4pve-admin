@@ -23,14 +23,14 @@ public partial class Processes(IAdminService adminService) : IRefreshableData, I
         public long Memory { get; set; }
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {
         var scriptLinux = """
             ps -eo pid,user,comm,%cpu,vsz,nlwp --no-headers | \
             awk '{printf("{\"PID\": %s, \"Username\": \"%s\", \"Name\": \"%s\", \"CPU\": %.2f, \"Memory\": %s},\n", $1, $2, $3, $4, $5*1024)}' | \
-            sed '$s/,$//' | awk 'BEGIN { print "[" } { print } END { print "]" }'            
+            sed '$s/,$//' | awk 'BEGIN { print "[" } { print } END { print "]" }'
             """;
 
         var scriptWindows = """
@@ -68,7 +68,7 @@ public partial class Processes(IAdminService adminService) : IRefreshableData, I
             }
 
             $json = $result | ConvertTo-Json
-            Write-Output $json            
+            Write-Output $json
             EOF
             """;
 

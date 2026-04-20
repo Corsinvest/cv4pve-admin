@@ -9,5 +9,5 @@ public partial class InfoScheduler<TModule>(IDialogServiceEx dialogServiceEx) : 
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [Parameter] public IJobSchedule JobSchedule { get; set; } = default!;
 
-    private async Task OpenSettingsAsync() => await dialogServiceEx.OpenSettingsAsync<TModule>(ClusterName);
+    private Task OpenSettingsAsync() => dialogServiceEx.OpenSettingsAsync<TModule>(ClusterName);
 }

@@ -114,30 +114,46 @@ public static class IdentityExtensions
 
     public static async Task<IdentityResult> AddToRolesExAsync(this UserManager<ApplicationUser> userManager,
                                                                ApplicationUser user,
-                                                               IEnumerable<string> roles)
+                                                               IEnumerable<string> roles,
+                                                               IPermissionService permissionService)
     {
         var rolesIndDb = await userManager.GetRolesAsync(user);
-        return await userManager.AddToRolesAsync(user, roles.Where(a => !rolesIndDb.Contains(a)));
+        var toAdd = roles.Where(a => !rolesIndDb.Contains(a)).ToList();
+        if (toAdd.Count == 0) { return IdentityResult.Success; }
+
+        var result = await userManager.AddToRolesAsync(user, toAdd);
+        if (result.Succeeded) { await permissionService.InvalidateUserAsync(user.Id); }
+        return result;
     }
 
     public static async Task<IdentityResult> SyncRolesAsync(this UserManager<ApplicationUser> userManager,
                                                              ApplicationUser user,
-                                                             IEnumerable<string> roles)
+                                                             IEnumerable<string> roles,
+                                                             IPermissionService permissionService)
     {
         var rolesList = roles.ToList();
         var rolesInDb = await userManager.GetRolesAsync(user);
         var toRemove = rolesInDb.Except(rolesList).ToList();
         var toAdd = rolesList.Except(rolesInDb).ToList();
 
+        var mutated = false;
+
         if (toRemove.Count > 0)
         {
             var result = await userManager.RemoveFromRolesAsync(user, toRemove);
             if (!result.Succeeded) { return result; }
+            mutated = true;
         }
 
-        return toAdd.Count > 0
-            ? await userManager.AddToRolesAsync(user, toAdd)
-            : IdentityResult.Success;
+        if (toAdd.Count > 0)
+        {
+            var result = await userManager.AddToRolesAsync(user, toAdd);
+            if (!result.Succeeded) { return result; }
+            mutated = true;
+        }
+
+        if (mutated) { await permissionService.InvalidateUserAsync(user.Id); }
+        return IdentityResult.Success;
     }
 
     public static async Task<IdentityResult> DeleteExAsync(this UserManager<ApplicationUser> userManager,
@@ -153,7 +169,12 @@ public static class IdentityExtensions
         }
 
         // Delete user
-        return await userManager.DeleteAsync(user);
+        var result = await userManager.DeleteAsync(user);
+
+        // Invalidate cache unconditionally (even if user had no direct permissions,
+        // cached UserRoles/UserId keys may still exist from previous reads)
+        if (result.Succeeded) { await permissionService.InvalidateUserAsync(user.Id); }
+        return result;
     }
 
     public static async Task<IdentityResult> DeleteExAsync(this RoleManager<ApplicationRole> roleManager,
@@ -169,7 +190,12 @@ public static class IdentityExtensions
         }
 
         // Delete role
-        return await roleManager.DeleteAsync(role);
+        var result = await roleManager.DeleteAsync(role);
+
+        // Invalidate cache unconditionally to clear RolesClaims/RolePermissions
+        // and UserRoles of all users that had this role
+        if (result.Succeeded) { await permissionService.InvalidateRoleAsync(role.Id); }
+        return result;
     }
 
     //public static async Task<IdentityResult> RemoveToRolesExAsync(this UserManager<ApplicationUser> userManager,

@@ -8,11 +8,11 @@
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="@L["Prometheus"]" Icon="monitoring">
-            <SwitchField @bind-Value="@Model.Prometheus.Enabled"
+            <SwitchField @bind-Value="@Model.ApiSettings.Prometheus.Enabled"
                          Label="@L["Enabled"]"
-                         Name="@nameof(Model.Prometheus.Enabled)" />
+                         Name="@nameof(Model.ApiSettings.Prometheus.Enabled)" />
 
-            <RadzenFormField Text="@L["Prefix"]" AllowFloatingLabel="false" class="rz-w-100">
+            @* <RadzenFormField Text="@L["Prefix"]" AllowFloatingLabel="false" class="rz-w-100">
                 <Start><RadzenIcon Icon="label" /></Start>
                 <ChildContent>
                     <RadzenTextBox Name="@nameof(Model.Prometheus.ExporterPrefix)" @bind-Value="@Model.Prometheus.ExporterPrefix" />
@@ -20,11 +20,11 @@
                 <Helper>
                     <RadzenRequiredValidator Component="@nameof(Model.Prometheus.ExporterPrefix)" />
                 </Helper>
-            </RadzenFormField>
+            </RadzenFormField> *@
 
-            <PasswordField @bind-Value="@Model.Prometheus.Token" Label="@L["Token"]" Name="@nameof(Model.Prometheus.Token)" class="rz-w-100">
+            <PasswordField @bind-Value="@Model.Token" Label="@L["Token"]" Name="@nameof(Model.Token)" class="rz-w-100">
                 <Helper>
-                    <RadzenRequiredValidator Component="@nameof(Model.Prometheus.Token)" />
+                    <RadzenRequiredValidator Component="@nameof(Model.Token)" />
                 </Helper>
             </PasswordField>
         </RadzenTabsItem>

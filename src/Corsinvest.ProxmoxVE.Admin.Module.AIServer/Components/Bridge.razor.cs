@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
+using System.Text;
 using System.Text.Json;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components;
@@ -69,7 +70,7 @@ public partial class Bridge(NavigationManager navigationManager,
 
     private async Task DownloadClaudeConfigAsync()
         => await blazorDownloadFileService.DownloadFile("claude_desktop_config.json",
-                                                        System.Text.Encoding.UTF8.GetBytes(BuildClaudeConfigJson()),
+                                                        Encoding.UTF8.GetBytes(BuildClaudeConfigJson()),
                                                         MediaTypeNames.Application.Json);
 
     private Task CopyClaudeConfigAsync()

@@ -35,7 +35,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
         public string Icon { get; set; } = default!;
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

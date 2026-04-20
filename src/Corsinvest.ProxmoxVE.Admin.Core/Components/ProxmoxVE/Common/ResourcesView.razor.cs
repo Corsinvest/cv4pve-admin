@@ -106,7 +106,7 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
     private IEnumerable<FilterDescriptor> _searchFilters = [];
 
     protected override void OnParametersSet() => StartTimer();
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     private async Task OnSearchFiltersChanged(IEnumerable<FilterDescriptor> filters)
     {
@@ -220,7 +220,7 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
                 IsGetOsInfo = true;
                 foreach (var item in Items.Where(a => a.ResourceType == ClusterResourceType.Vm))
                 {
-                    item.Set(await clusterClient.CachedData.GetVmOsInfoAsync(item, false));
+                    item.Set(await clusterClient.CachedData.GetVmOsInfoAsync(item.Node, item.VmType, item.VmId, item.IsRunning, false));
                     await InvokeAsync(StateHasChanged);
                 }
                 IsGetOsInfo = false;
@@ -240,18 +240,18 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
                 {
                     item.SnapshotsSize = item.ResourceType switch
                     {
-                        ClusterResourceType.Node => DiskInfoHelper.CalculateSnapshots(item.Node, disks, false),
-                        ClusterResourceType.Vm => DiskInfoHelper.CalculateSnapshots(item.Node, item.VmId, disks, false),
-                        ClusterResourceType.Storage => DiskInfoHelper.CalculateSnapshots(item.Node, item.Storage, disks, false),
+                        ClusterResourceType.Node => DiskSnapshotHelper.CalculateSnapshots(item.Node, disks, false),
+                        ClusterResourceType.Vm => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.VmId, disks, false),
+                        ClusterResourceType.Storage => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.Storage, disks, false),
                         ClusterResourceType.Unknown or ClusterResourceType.Pool or ClusterResourceType.Sdn or ClusterResourceType.All => 0,
                         _ => 0
                     };
 
                     item.SnapshotsReplicationSize = item.ResourceType switch
                     {
-                        ClusterResourceType.Node => DiskInfoHelper.CalculateSnapshots(item.Node, disks, true),
-                        ClusterResourceType.Vm => DiskInfoHelper.CalculateSnapshots(item.Node, item.VmId, disks, true),
-                        ClusterResourceType.Storage => DiskInfoHelper.CalculateSnapshots(item.Node, item.Storage, disks, true),
+                        ClusterResourceType.Node => DiskSnapshotHelper.CalculateSnapshots(item.Node, disks, true),
+                        ClusterResourceType.Vm => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.VmId, disks, true),
+                        ClusterResourceType.Storage => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.Storage, disks, true),
                         ClusterResourceType.Unknown or ClusterResourceType.Pool or ClusterResourceType.Sdn or ClusterResourceType.All => 0,
                         _ => 0
                     };
@@ -275,7 +275,7 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
         if (OnDataLoaded.HasDelegate) { await InvokeAsync(OnDataLoaded.InvokeAsync); }
     }
 
-    public async Task ReloadSettingsAsync() => await DataGridRef!.ReloadSettings(true);
+    public Task ReloadSettingsAsync() => DataGridRef!.ReloadSettings(true);
     public void SaveSettings() => DataGridRef?.SaveSettings();
 
     private bool IsPickable(string propertyName) => PickableColumns.Count == 0 || PickableColumns.Contains(propertyName);
@@ -338,9 +338,7 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
     }
 
     public IReadOnlyList<ClusterResourceItem> GetItems() => Items;
-
-    public async Task ExpandRowsAsync(IEnumerable<ClusterResourceItem> items)
-        => await DataGridRef!.ExpandRows(items);
+    public Task ExpandRowsAsync(IEnumerable<ClusterResourceItem> items) => DataGridRef!.ExpandRows(items);
 
     private async Task OnDataGridSettingsChanged()
     {

@@ -9,6 +9,7 @@ using Corsinvest.ProxmoxVE.Admin.Components;
 using Corsinvest.ProxmoxVE.Admin.Core;
 using Corsinvest.ProxmoxVE.Admin.Core.Cryptography.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
@@ -89,6 +90,17 @@ app.Lifetime.ApplicationStarted.Register(() =>
         app.Logger.LogInformation("Listening on: {address}", address);
     }
 });
+
+// Trust X-Forwarded-* headers from any proxy (required for Docker deploy behind reverse proxy).
+// Without this, Kestrel sees HTTP requests even when the proxy terminates HTTPS, causing
+// cookies with SecurePolicy=SameAsRequest to miss the Secure flag.
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 if (app.Environment.IsDevelopment())
 {

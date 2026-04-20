@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Text.Encodings.Web;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
@@ -48,7 +49,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName, IRefr
     //    }
     //}
 
-    private void OnRender(DataGridRenderEventArgs<Data> args)
+    private void RowRender(DataGridRenderEventArgs<Data> args)
     {
         if (args.FirstRender)
         {
@@ -142,7 +143,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName, IRefr
 
     private MarkupString GetGroupTitle(Group group)
     {
-        var ret = $"<strong>{group.GroupDescriptor!.GetTitle()}</strong>: {group.Data.Key}({group.Data.Count})";
+        var ret = $"<strong>{HtmlEncoder.Default.Encode(group.GroupDescriptor!.GetTitle())}</strong>: {HtmlEncoder.Default.Encode(group.Data.Key?.ToString() ?? "")} ({group.Data.Count})";
         if (AllowCalculateSnapshotSize && group.Data.Items != null)
         {
             ret += $"- <strong>{L["Size"]}</strong>: {FormatHelper.FromBytes(group.Data.Items.Cast<Data>().Sum(a => a.SnapshotSize))}";

@@ -12,10 +12,9 @@ internal static class GitHubFetcher
 {
     private const int MaxResponseSizeMB = 10;
 
-    public static async Task<IEnumerable<ReleaseInfo>> GetReleasesAsync(
-        IHttpClientFactory httpClientFactory,
-        ILogger logger,
-        CancellationToken cancellationToken)
+    public static async Task<IEnumerable<ReleaseInfo>> GetReleasesAsync(IHttpClientFactory httpClientFactory,
+                                                                        ILogger logger,
+                                                                        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(ApplicationHelper.RepoGitHub) ||
             ApplicationHelper.RepoGitHub.Contains("..") ||

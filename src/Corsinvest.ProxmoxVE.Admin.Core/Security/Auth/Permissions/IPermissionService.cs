@@ -36,4 +36,8 @@ public interface IPermissionService
     ValueTask ClearCacheAsync();
 
     Task<bool> PveHasAsync(string clusterName, string pvePermission, string path);
+
+    Task InvalidateUserAsync(string userId);
+    Task InvalidateAppTokenAsync(Guid appTokenId);
+    Task InvalidateRoleAsync(string roleId);
 }

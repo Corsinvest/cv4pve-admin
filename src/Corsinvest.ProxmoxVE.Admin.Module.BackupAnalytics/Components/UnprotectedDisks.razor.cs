@@ -24,7 +24,7 @@ public partial class UnprotectedDisks(IAdminService adminService) : IClusterName
         public long VmId { get; internal set; }
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

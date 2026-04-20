@@ -67,14 +67,14 @@ public partial class Render(IAdminService adminService,
 
     private async Task OnLayerAdded(Layer layer) => await RefMap.CenterToCurrentGeoLocation();
 
-    private async Task OnMarkerClickAsync(string clusterName)
-        => await DialogService.OpenAsync<ClusterDetailDialog>(L["Cluster {0}", clusterName],
-                                                              new() { [nameof(ClusterDetailDialog.ClusterName)] = clusterName },
-                                                              new DialogOptions
-                                                              {
-                                                                  Draggable = true,
-                                                                  Resizable = true
-                                                              });
+    private Task OnMarkerClickAsync(string clusterName)
+        => DialogService.OpenAsync<ClusterDetailDialog>(L["Cluster {0}", clusterName],
+                                                        new() { [nameof(ClusterDetailDialog.ClusterName)] = clusterName },
+                                                        new DialogOptions
+                                                        {
+                                                            Draggable = true,
+                                                            Resizable = true
+                                                        });
 
     public async Task RefreshDataAsync()
     {

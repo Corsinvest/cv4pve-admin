@@ -12,5 +12,6 @@ public class JobResult : JobResultBase, IId, IClusterName
 
     public Report.Settings Settings { get; set; } = Report.Settings.Fast();
 
-    public string FileName => Path.Combine(new Module().PathData, $"{Id}.xlsx");
+    public string FileNameXlsx => Path.Combine(new Module().PathData, $"{Id}.xlsx");
+    public string FileNameSvg => Path.Combine(new Module().PathData, $"{Id}.svg");
 }

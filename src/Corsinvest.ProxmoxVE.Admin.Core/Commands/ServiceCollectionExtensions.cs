@@ -10,13 +10,13 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCommands(this IServiceCollection services, params Assembly[] assemblies)
     {
-        // Register CommandExecutor
-        services.AddScoped<CommandExecutor>();
+        services.AddScoped<ICommandExecutor, CommandExecutor>();
+        services.AddScoped<IUiCommandExecutor, UiCommandExecutor>();
 
         // Auto-register all ICommandHandler implementations
         var assembliesToScan = assemblies.Length > 0
-            ? assemblies
-            : [Assembly.GetCallingAssembly()];
+                                ? assemblies
+                                : [Assembly.GetCallingAssembly()];
 
         foreach (var assembly in assembliesToScan)
         {
@@ -39,9 +39,6 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-    public static IServiceCollection AddCommandExecutor(this IServiceCollection services)
-        => services.AddScoped<CommandExecutor>();
 
     public static IServiceCollection AddCommandHandler<THandler>(this IServiceCollection services)
         where THandler : class

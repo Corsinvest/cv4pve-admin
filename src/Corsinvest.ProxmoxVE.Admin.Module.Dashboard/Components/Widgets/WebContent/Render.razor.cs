@@ -15,7 +15,7 @@ public partial class Render : IModuleWidget<Settings>
 
     private string IframeUrl { get; set; } = string.Empty;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public Task RefreshDataAsync()
     {

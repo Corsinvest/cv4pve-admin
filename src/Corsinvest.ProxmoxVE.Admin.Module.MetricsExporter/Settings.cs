@@ -14,17 +14,9 @@ public class Settings : IModuleSettings
     [Required] public string ClusterName { get; set; } = ApplicationHelper.AllClusterName;
     public bool Enabled { get; set; }
 
-    public PrometheusSettings Prometheus { get; set; } = new();
+    public Metrics.Exporter.Api.Settings ApiSettings { get; set; } = Metrics.Exporter.Api.Settings.Fast();
 
-    public class PrometheusSettings : IEnabled
-    {
-        public bool Enabled { get; set; }
-
-        [Required]
-        public string ExporterPrefix { get; set; } = "cv4pve";
-
-        [Required]
-        [Encrypt]
-        public string Token { get; set; } = string.Empty;
-    }
+    [Required]
+    [Encrypt]
+    public string Token { get; set; } = string.Empty;
 }

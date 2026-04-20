@@ -9,7 +9,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
 
     private bool IsLoading { get; set; }
-    private IEnumerable<VmDiskSnapshotInfo> _disks = [];
+    private IEnumerable<DiskSnapshotInfo> _disks = [];
 
     private sealed record Data(string Type,
                                string Host,
@@ -18,7 +18,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName
                                double Size,
                                int VMs);
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     private async Task RefreshDataAsync()
     {

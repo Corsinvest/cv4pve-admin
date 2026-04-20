@@ -1,4 +1,4 @@
-@*
+﻿@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -21,6 +21,19 @@
                 <ChildContent>
                     <RadzenNumeric @bind-Value="@S.MaxParallelRequests" Min="1" ReadOnly="@ReadOnly" />
                 </ChildContent>
+                <End>
+                    <InfoIcon>@L["Max parallel requests when fetching data (1 = sequential)."]</InfoIcon>
+                </End>
+            </RadzenFormField>
+        </RadzenColumn>
+        <RadzenColumn Size="4">
+            <RadzenFormField Text="@L["API timeout (seconds)"]" AllowFloatingLabel="false" class="rz-w-100">
+                <ChildContent>
+                    <RadzenNumeric @bind-Value="@S.ApiTimeout" Min="0" ReadOnly="@ReadOnly" />
+                </ChildContent>
+                <End>
+                    <InfoIcon>@L["API timeout in seconds. Set to 0 to use the default."]</InfoIcon>
+                </End>
             </RadzenFormField>
         </RadzenColumn>
     </RadzenRow>
@@ -54,6 +67,8 @@
                         <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.Detail.IncludeApt" Label="@L["APT"]" ReadOnly="@ReadOnly" />
                         <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.Detail.Disk.IncludeDiskDetail" Label="@L["Disk Detail"]" ReadOnly="@ReadOnly" />
                         <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.Detail.Disk.IncludeSmartData" Label="@L["S.M.A.R.T. Data"]" ReadOnly="@ReadOnly" />
+                        <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.Detail.IncludeFirewallLog" Label="@L["Firewall Log"]" ReadOnly="@ReadOnly" />
+
                         @RenderTasks(S.Node.Detail.Tasks)
                     </div>
                 }
@@ -73,12 +88,19 @@
                 <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludePartitionsSheet" Label="@L["Partitions Sheet"]" ReadOnly="@ReadOnly" />
                 <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeQemuAgent" Label="@L["QEMU Agent"]" ReadOnly="@ReadOnly" />
 
+                <RadzenFormField Text="@L["Agent Timeout sec."]" AllowFloatingLabel="false" class="rz-w-100">
+                    <RadzenNumeric @bind-Value="@S.Guest.QemuAgentTimeout" Min="1" ReadOnly="@ReadOnly" />
+                </RadzenFormField>
+
+
                 @RenderRrdData(S.Guest.RrdData)
 
                 <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.Detail.Enabled" Label="@L["Guest Detail"]" ReadOnly="@ReadOnly" />
                 @if (S.Guest.Detail.Enabled)
                 {
                     <div class="cv4pve-dashed-box" style="margin-bottom: 8px;">
+                        <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.Detail.IncludeFirewallLog" Label="@L["Firewall Log"]" ReadOnly="@ReadOnly" />
+
                         @RenderTasks(S.Guest.Detail.Tasks)
                     </div>
                 }
@@ -131,28 +153,25 @@
                         </End>
                     </RadzenFormField>
                 </RadzenColumn>
+
                 <RadzenColumn Size="4">
                     <RadzenFormField Text="@L["Since"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <ChildContent>
-                            <RadzenDatePicker TValue="DateOnly?"
-                                              @bind-Value="@fw.Since"
-                                              ShowTime="false"
-                                              AllowClear="true"
-                                              DateFormat="d"
-                                              ReadOnly="@ReadOnly" />
-                        </ChildContent>
+                        <RadzenDatePicker TValue="DateOnly?"
+                                          @bind-Value="@fw.Since"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          DateFormat="d"
+                                          ReadOnly="@ReadOnly" />
                     </RadzenFormField>
                 </RadzenColumn>
                 <RadzenColumn Size="4">
                     <RadzenFormField Text="@L["Until"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <ChildContent>
-                            <RadzenDatePicker TValue="DateOnly?"
-                                              @bind-Value="@fw.Until"
-                                              ShowTime="false"
-                                              AllowClear="true"
-                                              DateFormat="d"
-                                              ReadOnly="@ReadOnly" />
-                        </ChildContent>
+                        <RadzenDatePicker TValue="DateOnly?"
+                                          @bind-Value="@fw.Until"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          DateFormat="d"
+                                          ReadOnly="@ReadOnly" />
                     </RadzenFormField>
                 </RadzenColumn>
             </RadzenRow>
@@ -168,6 +187,7 @@
                 <RadzenColumn Size="4">
                     <SwitchField @bind-Value="@tasks.OnlyErrors" Label="@L["Only Errors"]" ReadOnly="@ReadOnly" />
                 </RadzenColumn>
+
                 <RadzenColumn Size="4">
                     <RadzenFormField Text="@L["Max Count"]" AllowFloatingLabel="false" class="rz-w-100">
                         <ChildContent>
@@ -178,6 +198,7 @@
                         </End>
                     </RadzenFormField>
                 </RadzenColumn>
+
                 <RadzenColumn Size="4">
                     <RadzenFormField Text="@L["Source"]" AllowFloatingLabel="false" class="rz-w-100">
                         <ChildContent>
@@ -226,28 +247,26 @@
                         </End>
                     </RadzenFormField>
                 </RadzenColumn>
+
                 <RadzenColumn Size="4">
                     <RadzenFormField Text="@L["Since"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <ChildContent>
-                            <RadzenDatePicker TValue="DateOnly?"
-                                              @bind-Value="@syslog.Since"
-                                              ShowTime="false"
-                                              AllowClear="true"
-                                              DateFormat="d"
-                                              ReadOnly="@ReadOnly" />
-                        </ChildContent>
+                        <RadzenDatePicker TValue="DateOnly?"
+                                          @bind-Value="@syslog.Since"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          DateFormat="d"
+                                          ReadOnly="@ReadOnly" />
                     </RadzenFormField>
                 </RadzenColumn>
+
                 <RadzenColumn Size="4">
                     <RadzenFormField Text="@L["Until"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <ChildContent>
-                            <RadzenDatePicker TValue="DateOnly?"
-                                              @bind-Value="@syslog.Until"
-                                              ShowTime="false"
-                                              AllowClear="true"
-                                              DateFormat="d"
-                                              ReadOnly="@ReadOnly" />
-                        </ChildContent>
+                        <RadzenDatePicker TValue="DateOnly?"
+                                          @bind-Value="@syslog.Until"
+                                          ShowTime="false"
+                                          AllowClear="true"
+                                          DateFormat="d"
+                                          ReadOnly="@ReadOnly" />
                     </RadzenFormField>
                 </RadzenColumn>
             </RadzenRow>

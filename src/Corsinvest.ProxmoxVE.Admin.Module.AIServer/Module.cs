@@ -4,7 +4,9 @@
  */
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Corsinvest.ProxmoxVE.Admin.Module.AIServer.Services;
 using Microsoft.AspNetCore.Builder;
@@ -154,18 +156,21 @@ public class Module : ModuleBase
 
                var auditService = scope.GetRequiredService<IAuditService>();
                var appTokenService = scope.GetRequiredService<IAppTokenService>();
-               var token = await appTokenService.ValidateAsync(apiKey!);
-               if (token is null)
+               var validation = await appTokenService.ValidateAsync(apiKey!);
+               if (!validation.IsValid)
                {
+                   var tokenFingerprint = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(apiKey!)))[..12];
                    await auditService.LogAsync("MCP.Auth",
                                                false,
-                                               $"Invalid or expired token: {apiKey!.ToString()[..Math.Min(8, apiKey!.ToString().Length)]}...");
+                                               $"{validation.Describe()} (fingerprint: {tokenFingerprint})");
+
                    await scope.GetEventNotificationService().PublishAsync(new McpAuthFailedNotification());
                    httpContext.Response.StatusCode = 401;
                    await httpContext.Response.WriteAsJsonAsync(new { error = "Invalid or expired token" });
                    return Results.Empty;
                }
 
+               var token = validation.Token!;
                httpContext.User = new ClaimsPrincipal(new ClaimsIdentity([
                    new Claim(ApplicationClaimTypes.AppTokenId, token.Id.ToString())
                ], "AppToken"));
@@ -183,12 +188,53 @@ public class Module : ModuleBase
                Debug.WriteLine(body);
 #endif
 
+               var auditDetails = BuildMcpAuditDetails(body);
                await auditService.LogAsync("MCP.Request",
                                            true,
                                            $"Token: {token.Name}\n" +
                                            $"{httpContext.Request.Method} {httpContext.Request.Path}\n" +
-                                           $"{System.Text.RegularExpressions.Regex.Unescape(body)}");
+                                           auditDetails);
 
                return await next(context);
            });
+
+    private static string BuildMcpAuditDetails(string body)
+    {
+        if (string.IsNullOrWhiteSpace(body)) { return "empty body"; }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
+
+            var method = root.TryGetProperty("method", out var m) ? m.GetString() ?? "?" : "?";
+            var id = root.TryGetProperty("id", out var idEl) ? idEl.ToString() : "?";
+
+            if (root.TryGetProperty("params", out var paramsEl) && paramsEl.ValueKind == JsonValueKind.Object)
+            {
+                var toolName = paramsEl.TryGetProperty("name", out var nameEl) ? nameEl.GetString() : null;
+
+                if (paramsEl.TryGetProperty("arguments", out var argsEl) && argsEl.ValueKind == JsonValueKind.Object)
+                {
+                    var pairs = argsEl.EnumerateObject()
+                                      .Select(p => KeyValuePair.Create<string, string?>(p.Name, p.Value.ToString()));
+                    var argsFormatted = SensitiveDataHelper.FormatPairs(pairs);
+
+                    return toolName != null
+                        ? $"method={method} id={id} tool={toolName} args=[{argsFormatted}]"
+                        : $"method={method} id={id} args=[{argsFormatted}]";
+                }
+
+                return toolName != null
+                        ? $"method={method} id={id} tool={toolName}"
+                        : $"method={method} id={id}";
+            }
+
+            return $"method={method} id={id}";
+        }
+        catch (JsonException)
+        {
+            return "invalid JSON body";
+        }
+    }
 }

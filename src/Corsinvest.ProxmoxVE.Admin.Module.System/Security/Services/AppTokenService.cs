@@ -6,11 +6,13 @@ using System.Security.Cryptography;
 using System.Text;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.AppTokens;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
 
 public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory,
-                             IAuditService auditService) : IAppTokenService
+                             IAuditService auditService,
+                             IPermissionService permissionService) : IAppTokenService
 {
     public async Task<(string RawToken, AppToken Token)> GenerateAsync(string name, string? ownerId, DateTime? expiresAt)
     {
@@ -37,16 +39,20 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         return (rawToken, token);
     }
 
-    public async Task<AppToken?> ValidateAsync(string rawToken)
+    public async Task<AppTokenValidationResult> ValidateAsync(string rawToken)
     {
         var hash = HashToken(rawToken);
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        return await db.AppTokens
-                       .AsNoTracking()
-                       .FirstOrDefaultAsync(a => a.TokenHash == hash
-                                                    && a.IsActive
-                                                    && (a.ExpiresAt == null || a.ExpiresAt > DateTime.UtcNow));
+        var token = await db.AppTokens
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(a => a.TokenHash == hash);
+
+        if (token is null) { return new(AppTokenValidationStatus.NotFound, null); }
+        if (!token.IsActive) { return new(AppTokenValidationStatus.Inactive, token); }
+        return token.ExpiresAt != null && token.ExpiresAt <= DateTime.UtcNow
+                ? new(AppTokenValidationStatus.Expired, token)
+                : new(AppTokenValidationStatus.Valid, token);
     }
 
     public async Task RevokeAsync(Guid id)
@@ -55,6 +61,8 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         await db.AppTokens
                 .Where(a => a.Id == id)
                 .ExecuteUpdateAsync(s => s.SetProperty(a => a.IsActive, false));
+
+        await permissionService.InvalidateAppTokenAsync(id);
     }
 
     public async Task<string> RegenerateAsync(Guid id)
@@ -71,6 +79,8 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         await db.AppTokens
                 .Where(a => a.Id == id)
                 .ExecuteUpdateAsync(s => s.SetProperty(a => a.TokenHash, hash));
+
+        await permissionService.InvalidateAppTokenAsync(id);
 
         await auditService.LogAsync("AppTokens.Regenerate", true, $"Token: {name}");
 
@@ -89,6 +99,8 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
                 .Where(a => a.Id == id)
                 .ExecuteDeleteAsync();
 
+        await permissionService.InvalidateAppTokenAsync(id);
+
         await auditService.LogAsync("AppTokens.Delete", true, $"Token: {name}");
     }
 
@@ -103,6 +115,8 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
         token.IsActive = isActive;
         token.ExpiresAt = expiresAt;
         await db.SaveChangesAsync();
+
+        await permissionService.InvalidateAppTokenAsync(id);
 
         await auditService.LogAsync("AppTokens.Update", true, $"Token: {token.Name}");
 
@@ -181,6 +195,8 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
             RoleId = roleId
         }));
         await db.SaveChangesAsync();
+
+        await permissionService.InvalidateAppTokenAsync(id);
     }
 
     public async Task SyncRolesAsync(Guid id, IEnumerable<string> roles)
@@ -217,5 +233,7 @@ public class AppTokenService(IDbContextFactory<ModuleDbContext> dbContextFactory
             }));
             await db.SaveChangesAsync();
         }
+
+        await permissionService.InvalidateAppTokenAsync(id);
     }
 }

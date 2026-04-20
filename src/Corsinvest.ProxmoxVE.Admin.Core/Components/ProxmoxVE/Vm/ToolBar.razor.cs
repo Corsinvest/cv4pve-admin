@@ -15,7 +15,7 @@ public partial class ToolBar(IBrowserService browserService,
                              IAdminService adminService,
                              DialogService dialogService,
                              ContextMenuService contextMenuService,
-                             CommandExecutor commandExecutor,
+                             IUiCommandExecutor uiExecutor,
                              IEnumerable<IToolBarUtility<IClusterResourceVm>> Utility) : IRefreshableData, IClusterName
 {
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
@@ -39,8 +39,12 @@ public partial class ToolBar(IBrowserService browserService,
         await RefreshDataAsync();
     }
 
-    private async Task OpenWebConsole(bool xTermJs)
-        => await browserService.OpenPveConsole(adminService[ClusterName].GetWebConsoleUrl(Vm.Node, Vm.VmType, Vm.VmId, Vm.Name, xTermJs));
+    private Task OpenWebConsole(bool xTermJs)
+        => browserService.OpenPveConsole(adminService[ClusterName].GetWebConsoleUrl(Vm.Node,
+                                                                                    Vm.VmType,
+                                                                                    Vm.VmId,
+                                                                                    Vm.Name,
+                                                                                    xTermJs));
 
     private static async Task OpenSpiceConsole() => await Task.CompletedTask;
 
@@ -54,15 +58,17 @@ public partial class ToolBar(IBrowserService browserService,
             }
         }
 
-        if (ChangeStatus.HasDelegate) { await ChangeStatus.InvokeAsync(status); }
-
-        await commandExecutor.ExecuteAsync(new VmChangeStateCommand(ClusterName, Vm.VmId, status));
+        var result = await uiExecutor.ExecuteAndNotifyAsync(new VmPowerManagementCommand(ClusterName, Vm.VmId, status));
+        if (result.IsSuccess && ChangeStatus.HasDelegate)
+        {
+            await ChangeStatus.InvokeAsync(status);
+        }
     }
 
-    private async Task OnClickPower(RadzenSplitButtonItem item)
-        => await ChageStatus(item == null
-                                ? VmStatus.Shutdown
-                                : Enum.Parse<VmStatus>(item.Value!));
+    private Task OnClickPower(RadzenSplitButtonItem item)
+        => ChageStatus(item == null
+                            ? VmStatus.Shutdown
+                            : Enum.Parse<VmStatus>(item.Value!));
 
     private async Task OnClickUtilityMenu(IToolBarUtility<IClusterResourceVm> item)
     {
@@ -77,10 +83,10 @@ public partial class ToolBar(IBrowserService browserService,
         if (execute) { await item.ExecuteAsync(ClusterName, Vm); }
     }
 
-    private async Task OnClickOpenConsole(RadzenSplitButtonItem item)
-        => await OpenConsole(Enum.TryParse<WebConsoleType>(item?.Value, out var parsedType)
-                                ? parsedType
-                                : WebConsoleType.NoVnc);
+    private Task OnClickOpenConsole(RadzenSplitButtonItem item)
+        => OpenConsole(Enum.TryParse<WebConsoleType>(item?.Value, out var parsedType)
+                            ? parsedType
+                            : WebConsoleType.NoVnc);
 
     private async Task OpenConsole(WebConsoleType type)
         => await (type switch

@@ -28,13 +28,18 @@
                      OnRefresh="RefreshDataAsync"
                      DeleteDisabled="!SelectedItems.Any()">
             <TemplateAfter>
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Text="@L["Download XLSX"]"
-                              Click="DownloadAsync"
-                              Icon="download"
-                              Disabled="!SelectedItems.Any() || !SelectedItems[0].End.HasValue"
-                              IsBusy="InDownload" />
+                <RadzenSplitButton Variant="Variant.Text"
+                                   Size="ButtonSize.Small"
+                                   Text="@L["Download"]"
+                                   Icon="download"
+                                   Click="OnDownloadClickAsync"
+                                   Disabled="!SelectedItems.Any() || !SelectedItems[0].End.HasValue"
+                                   IsBusy="InDownload">
+                    <ChildContent>
+                        <RadzenSplitButtonItem Text="@L["Download XLSX"]" Value="xlsx" Icon="table_chart" />
+                        <RadzenSplitButtonItem Text="@L["Download SVG (network diagram)"]" Value="svg" Icon="hub" />
+                    </ChildContent>
+                </RadzenSplitButton>
             </TemplateAfter>
         </CrudToolbar>
     </HeaderTemplate>

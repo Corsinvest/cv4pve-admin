@@ -122,7 +122,7 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
     private async Task RefreshLinksAsync()
     {
         var links = ModuleService.Modules
-                                 .Where(a => a.ModuleType == ModuleType.Application && a.Link?.Enabled == true)
+                                 .Where(a => a.ModuleType == ModuleType.Application && a.Link?.Enabled is true)
                                  .Select(a => a.Link!)
                                  .OrderBy(a => a.OrderIndex)
                                  .ThenBy(a => a.Text)

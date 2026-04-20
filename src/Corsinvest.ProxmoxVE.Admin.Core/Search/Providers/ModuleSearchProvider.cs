@@ -34,7 +34,7 @@ public class ModuleSearchProvider(IModuleService moduleService,
     private async Task<IEnumerable<ModuleLinkBase>> GetAvailableLinksAsync(string clusterName)
     {
         var links = moduleService.Modules
-                                 .Where(a => a.ModuleType == ModuleType.Application && a.Link?.Enabled == true)
+                                 .Where(a => a.ModuleType == ModuleType.Application && a.Link?.Enabled is true)
                                  .Select(a => a.Link!)
                                  .OrderBy(a => a.OrderIndex)
                                  .ThenBy(a => a.Text)

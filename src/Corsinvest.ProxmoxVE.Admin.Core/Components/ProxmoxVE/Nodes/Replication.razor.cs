@@ -49,7 +49,7 @@ public partial class Replication(IAdminService adminService,
         try
         {
             var clusterClient = adminService[ClusterName];
-            async Task<List<Data>> GetData(string node)
+            async Task<IEnumerable<Data>> GetData(string node)
             {
                 var data = (await clusterClient.CachedData.GetReplicationsAsync(node, VmId, false))
                                .AsQueryable()
@@ -63,13 +63,10 @@ public partial class Replication(IAdminService adminService,
 
             if (string.IsNullOrEmpty(Node))
             {
-                var items = new List<Data>();
-                foreach (var item in (await clusterClient.CachedData.GetResourcesAsync(false)).Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline))
-                {
-                    items.AddRange(await GetData(item.Node));
-                }
+                var nodes = (await clusterClient.CachedData.GetResourcesAsync(false))
+                                .Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline);
 
-                Items = items;
+                Items = [.. await ParallelHelper.RunManyAsync(nodes, n => GetData(n.Node))];
             }
             else
             {

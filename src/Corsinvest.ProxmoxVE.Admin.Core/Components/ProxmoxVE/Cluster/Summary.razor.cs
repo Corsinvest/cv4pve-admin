@@ -31,7 +31,7 @@ public partial class Summary(IAdminService adminService) : IClusterName
         public long Uptime { get; set; }
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     private async Task RefreshDataAsync()
     {

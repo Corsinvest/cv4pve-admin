@@ -92,20 +92,20 @@ public partial class Manager(DialogService dialogService,
         }
     }
 
-    private async Task RestoreFileAsync()
-        => await dialogService.OpenSideExAsync<FileRestoreDialog>(L["Restore file {0}", SelectedItem.Volume],
-                                                                  new()
-                                                                  {
-                                                                      [nameof(FileRestoreDialog.ClusterName)] = ClusterName,
-                                                                      [nameof(FileRestoreDialog.Node)] = Vm.Node,
-                                                                      [nameof(FileRestoreDialog.Storage)] = SelectedItem.Storage,
-                                                                      [nameof(FileRestoreDialog.Volume)] = SelectedItem.Volume
-                                                                  },
-                                                                  new()
-                                                                  {
-                                                                      CloseDialogOnOverlayClick = true,
-                                                                      Width = "800px"
-                                                                  });
+    private Task RestoreFileAsync()
+        => dialogService.OpenSideExAsync<FileRestoreDialog>(L["Restore file {0}", SelectedItem.Volume],
+                                                            new()
+                                                            {
+                                                                [nameof(FileRestoreDialog.ClusterName)] = ClusterName,
+                                                                [nameof(FileRestoreDialog.Node)] = Vm.Node,
+                                                                [nameof(FileRestoreDialog.Storage)] = SelectedItem.Storage,
+                                                                [nameof(FileRestoreDialog.Volume)] = SelectedItem.Volume
+                                                            },
+                                                            new()
+                                                            {
+                                                                CloseDialogOnOverlayClick = true,
+                                                                Width = "800px"
+                                                            });
 
     private async Task ShowEditorAsync(NodeStorageContent item)
     {

@@ -4,13 +4,13 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Models;
 
-public record VmDiskSnapshotInfo(long VmId,
+public record DiskSnapshotInfo(long VmId,
                                  string Disk,
                                  string Host,
                                  string SpaceName,
                                  bool HostContainSnapshot,
                                  string Type,
-                                 ICollection<VmDiskSnapshotInfo.Snapshot> Snapshots,
+                                 ICollection<DiskSnapshotInfo.Snapshot> Snapshots,
                                  Dictionary<string, object> Extra)
 {
     public record Snapshot(string Name, double Size, bool Replication, DateTime Date);

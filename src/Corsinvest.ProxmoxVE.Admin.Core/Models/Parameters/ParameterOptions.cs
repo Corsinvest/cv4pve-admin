@@ -2,13 +2,19 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Text.RegularExpressions;
+
 namespace Corsinvest.ProxmoxVE.Admin.Core.Models.Parameters;
 
-public record ParameterOptions(Func<DataSourceContext, Task<DataSourceResult>>? DataSource = null,
-                               decimal? Min = null,
-                               decimal? Max = null,
-                               string? Placeholder = null)
+public partial record ParameterOptions(Func<DataSourceContext, Task<DataSourceResult>>? DataSource = null,
+                                       decimal? Min = null,
+                                       decimal? Max = null,
+                                       string? Placeholder = null)
 {
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex PascalCaseSplitRegex();
+
+
     /// <summary>
     /// Create options with static string values for Select/MultiSelect
     /// </summary>
@@ -63,7 +69,6 @@ public record ParameterOptions(Func<DataSourceContext, Task<DataSourceResult>>? 
         );
     }
 
-    private static string FormatEnumLabel(string enumValue) =>
-        // Convert PascalCase to "Pascal Case"
-        System.Text.RegularExpressions.Regex.Replace(enumValue, "([a-z])([A-Z])", "$1 $2");
+    private static string FormatEnumLabel(string enumValue)
+        => PascalCaseSplitRegex().Replace(enumValue, "$1 $2");
 }

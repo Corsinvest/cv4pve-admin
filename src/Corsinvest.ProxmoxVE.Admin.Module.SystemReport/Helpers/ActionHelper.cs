@@ -40,6 +40,16 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                     ApplicationUrl = ApplicationHelper.GitHubRepoUrl,
                 });
 
+                var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+                if (disks.Any())
+                {
+                    engine.SnapshotSizeProvider = (node, vmType, vmId, snapName)
+                                                    => Task.FromResult(Convert.ToInt64(DiskSnapshotHelper.CalculateSnapshot(node,
+                                                                                                                        vmId,
+                                                                                                                        snapName,
+                                                                                                                        disks)));
+                }
+
                 var progress = new Progress<ReportProgress>(p =>
                 {
                     job.Logs += $"{DateTime.UtcNow:O} {p}\n";
@@ -47,8 +57,15 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 });
 
                 await using var stream = await engine.GenerateAsync(progress);
-                await using var file = File.Create(job.FileName);
-                await stream.CopyToAsync(file);
+                await using (var file = File.Create(job.FileNameXlsx))
+                {
+                    await stream.CopyToAsync(file);
+                }
+
+                if (!string.IsNullOrEmpty(engine.NetworkDiagramSvg))
+                {
+                    await File.WriteAllTextAsync(job.FileNameSvg, engine.NetworkDiagramSvg);
+                }
             }
 
             job.End = DateTime.UtcNow;

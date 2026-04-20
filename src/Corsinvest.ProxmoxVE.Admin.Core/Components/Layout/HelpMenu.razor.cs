@@ -100,18 +100,18 @@ public partial class HelpMenu(ISettingsService settingsService,
         await browserService.OpenInNewWindowAsync(url, string.Empty);
     }
 
-    private async Task ShowKeyboardShortcutsAsync()
-        => await dialogService.OpenAsync<KeyboardShortcutsDialog>(L["Keyboard Shortcuts"],
-                                                                  new Dictionary<string, object?>
-                                                                  {
-                                                                    { nameof(KeyboardShortcutsDialog.HotKeysContext), HotKeysContext }
-                                                                  },
-                                                                  new DialogOptions
-                                                                  {
-                                                                      Width = "400px",
-                                                                      CloseDialogOnOverlayClick = true,
-                                                                      ShowClose = true
-                                                                  });
+    private Task ShowKeyboardShortcutsAsync()
+        => dialogService.OpenAsync<KeyboardShortcutsDialog>(L["Keyboard Shortcuts"],
+                                                            new Dictionary<string, object?>
+                                                            {
+                                                            { nameof(KeyboardShortcutsDialog.HotKeysContext), HotKeysContext }
+                                                            },
+                                                            new DialogOptions
+                                                            {
+                                                                Width = "400px",
+                                                                CloseDialogOnOverlayClick = true,
+                                                                ShowClose = true
+                                                            });
 
     private async Task TriggerUpdateAsync()
     {
@@ -157,11 +157,11 @@ public partial class HelpMenu(ISettingsService settingsService,
         }
     }
 
-    private async Task ShowReleaseNotesAsync()
-        => await dialogService.OpenSideExAsync<ReleaseNotesDialog>(L["Release Notes"],
-                                                                   [],
-                                                                   new DialogOptions
-                                                                   {
-                                                                       CloseDialogOnOverlayClick = true,
-                                                                   });
+    private Task ShowReleaseNotesAsync()
+        => dialogService.OpenSideExAsync<ReleaseNotesDialog>(L["Release Notes"],
+                                                             [],
+                                                             new DialogOptions
+                                                             {
+                                                                 CloseDialogOnOverlayClick = true,
+                                                             });
 }

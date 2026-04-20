@@ -2,14 +2,20 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
-public static class PveAdminUIHelper
+public static partial class PveAdminUIHelper
 {
+    [GeneratedRegex(@"^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$")]
+    private static partial Regex HexColorRegex();
+
+
     public static string GetColorRange(double value)
         => value > 80
             ? Colors.Danger
@@ -81,7 +87,8 @@ public static class PveAdminUIHelper
         public static string Memory { get; } = "memory";
         public static string Storage { get; } = "storage";
         public static string Network { get; } = "lan";
-        public static string Disks { get; } = "database";
+        public static string Disks { get; } = "hard_disk";
+        public static string Partitions { get; } = "hard_drive";
         public static string Node { get; } = "domain";
         public static string Vm { get; } = "desktop_windows";
         public static string Snapshot { get; } = "photo_camera";
@@ -273,31 +280,34 @@ public static class PveAdminUIHelper
         foreach (var tag in ClusterResourceExtensions.SplitTags(tags))
         {
             var found = false;
+            var encodedTag = HtmlEncoder.Default.Encode(tag);
             foreach (var item in styles)
             {
                 var def = item.Split(":");
                 if (def[0] == tag)
                 {
-                    var color = def.Length >= 3
+                    var color = def.Length >= 3 && IsValidHexColor(def[2])
                                     ? $"color: #{def[2]};"
                                     : string.Empty;
 
-                    var backgroundColor = def.Length >= 2
+                    var backgroundColor = def.Length >= 2 && IsValidHexColor(def[1])
                                             ? $"background-color: #{def[1]};"
                                             : string.Empty;
 
                     found = true;
-                    ret.Add($"<span class='rz-badge' style='{color}{backgroundColor}'>{tag}</span>");
+                    ret.Add($"<span class='rz-badge' style='{color}{backgroundColor}'>{encodedTag}</span>");
                     break;
                 }
             }
 
             if (!found)
             {
-                ret.Add($"<span class='rz-badge rz-badge-danger rz-variant-filled rz-shade-lighter'>{tag}</span>");
+                ret.Add($"<span class='rz-badge rz-badge-danger rz-variant-filled rz-shade-lighter'>{encodedTag}</span>");
             }
         }
 
         return ret;
     }
+
+    private static bool IsValidHexColor(string value) => HexColorRegex().IsMatch(value);
 }

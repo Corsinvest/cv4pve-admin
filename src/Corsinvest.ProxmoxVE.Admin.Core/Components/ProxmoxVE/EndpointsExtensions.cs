@@ -56,7 +56,8 @@ internal static class EndpointsExtensions
     public static IEndpointRouteBuilder MapPveEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup(string.Empty)
-                             .RequireAuthorization();
+                             .RequireAuthorization()
+                             .AddEndpointFilter<ClusterAccessEndpointFilter>();
         group.MapWebConsole();
         group.MapBackup();
         group.MapSpice();
@@ -80,7 +81,8 @@ internal static class EndpointsExtensions
 
                 if (info != null)
                 {
-                    if (!long.TryParse(info.Volume.Split("/")[2], out var vmId)) { return Results.BadRequest(); }
+                    var volumeParts = info.Volume.Split('/');
+                    if (volumeParts.Length < 3 || !long.TryParse(volumeParts[2], out var vmId)) { return Results.BadRequest(); }
                     if (!await permissionService.HasVmAsync(info.ClusterName, ClusterPermissions.Vm.BackupRestoreFile, vmId)) { return Results.Unauthorized(); }
 
                     var client = await adminService[info.ClusterName].GetPveClientAsync();
@@ -124,26 +126,27 @@ internal static class EndpointsExtensions
 
     private static IEndpointRouteBuilder MapWebConsole(this IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/webconsole/{clusterName}");
+        var group = endpoints.MapGroup("/webconsole/{clusterName}")
+                             .RequireAuthorization();
 
-        group.MapGet("/", async (string clusterName,
-                                        [FromQuery] long vmId,
-                                        [FromQuery] string node,
-                                        [FromQuery] string vmName,
-                                        [FromQuery] string console,
-                                        [FromQuery] string? noVnc,
-                                        [FromQuery] string? xTermJs,
-                                        IAdminService adminService,
-                                        IPermissionService permissionService)
-            => await GetConsoleAsync(clusterName,
-                                     vmId,
-                                     node,
-                                     vmName,
-                                     console,
-                                     noVnc == "1",
-                                     xTermJs == "1",
-                                     adminService,
-                                     permissionService));
+        group.MapGet("/", (string clusterName,
+                           [FromQuery] long vmId,
+                           [FromQuery] string node,
+                           [FromQuery] string vmName,
+                           [FromQuery] string console,
+                           [FromQuery] string? noVnc,
+                           [FromQuery] string? xTermJs,
+                           IAdminService adminService,
+                           IPermissionService permissionService)
+            => GetConsoleAsync(clusterName,
+                               vmId,
+                               node,
+                               vmName,
+                               console,
+                               noVnc == "1",
+                               xTermJs == "1",
+                               adminService,
+                               permissionService));
 
         static async Task<IResult> GetConsoleAsync(string clusterName,
                                                    long vmId,

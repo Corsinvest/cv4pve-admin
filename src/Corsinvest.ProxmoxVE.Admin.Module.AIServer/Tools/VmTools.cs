@@ -114,6 +114,7 @@ internal static class VmTools
 
         allVms = [.. await aiServerService.HasAsync(cluster_name, allVms)];
 
+        var allVmsById = allVms.ToDictionary(a => a.VmId);
         var rows = new List<object>();
 
         var disks = include_size
@@ -122,7 +123,7 @@ internal static class VmTools
 
         foreach (var vmid in vmids)
         {
-            var vm = allVms.FirstOrDefault(a => a.VmId == vmid);
+            allVmsById.TryGetValue(vmid, out var vm);
             if (vm == null) { continue; }
 
             var snapshots = await clusterClient.CachedData.GetSnapshotsAsync(vm.Node, vm.VmType, vm.VmId, false);
@@ -138,7 +139,7 @@ internal static class VmTools
                     date = s.Date,
                     parent = s.Parent,
                     size = include_size
-                            ? DiskInfoHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
+                            ? DiskSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
                             : (double?)null
                 }));
             }
@@ -151,7 +152,7 @@ internal static class VmTools
                     name = s.Name,
                     date = s.Date,
                     size = include_size
-                            ? DiskInfoHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
+                            ? DiskSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
                             : (double?)null
                 }));
             }
@@ -240,7 +241,7 @@ internal static class VmTools
                                                    [Description("Action: Start, Stop, Shutdown, Reset")] VmStatus action,
                                                    IAiServerService aiServerService,
                                                    IPermissionService permissionService,
-                                                   CommandExecutor commandExecutor)
+                                                   ICommandExecutor commandExecutor)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ChangeVmState))
         {
@@ -260,7 +261,7 @@ internal static class VmTools
             return JsonSerializer.Serialize(new { error = "Permission denied" });
         }
 
-        var result = await commandExecutor.ExecuteAsync(new VmChangeStateCommand(cluster_name, vmid, action));
+        var result = await commandExecutor.ExecuteAsync(new VmPowerManagementCommand(cluster_name, vmid, action));
 
         return result.IsSuccess
             ? JsonSerializer.Serialize(new { success = true, vmid, action = action.ToString(), upid = result.Upid })
@@ -275,7 +276,7 @@ internal static class VmTools
                                                       [Description("Include VM RAM state — QEMU only (optional, default false)")] bool include_vm_state,
                                                       IAiServerService aiServerService,
                                                       IPermissionService permissionService,
-                                                      CommandExecutor commandExecutor)
+                                                      ICommandExecutor commandExecutor)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.CreateVmSnapshot))
         {
@@ -303,7 +304,7 @@ internal static class VmTools
                                                       [Description("Snapshot name")] string snapshot_name,
                                                       IAiServerService aiServerService,
                                                       IPermissionService permissionService,
-                                                      CommandExecutor commandExecutor)
+                                                      ICommandExecutor commandExecutor)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.DeleteVmSnapshot))
         {
@@ -331,7 +332,7 @@ internal static class VmTools
                                                         [Description("Snapshot name")] string snapshot_name,
                                                         IAiServerService aiServerService,
                                                         IPermissionService permissionService,
-                                                        CommandExecutor commandExecutor)
+                                                        ICommandExecutor commandExecutor)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.RollbackVmSnapshot))
         {
@@ -361,7 +362,7 @@ internal static class VmTools
                                                [Description("Target storage for disks (optional)")] string? target_storage,
                                                IAiServerService aiServerService,
                                                IPermissionService permissionService,
-                                               CommandExecutor commandExecutor)
+                                               ICommandExecutor commandExecutor)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.MigrateVm))
         {
@@ -398,7 +399,7 @@ internal static class VmTools
                                               [Description("Limit I/O bandwidth in KiB/s (optional)")] int? bwlimit,
                                               IAiServerService aiServerService,
                                               IPermissionService permissionService,
-                                              CommandExecutor commandExecutor)
+                                              ICommandExecutor commandExecutor)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.BackupVm))
         {
@@ -447,11 +448,12 @@ internal static class VmTools
 
         allVms = [.. await aiServerService.HasAsync(cluster_name, allVms)];
 
+        var allVmsById = allVms.ToDictionary(a => a.VmId);
         var results = new List<object>();
 
         foreach (var vmid in vmids)
         {
-            var vm = allVms.FirstOrDefault(a => a.VmId == vmid);
+            allVmsById.TryGetValue(vmid, out var vm);
 
             if (vm == null)
             {

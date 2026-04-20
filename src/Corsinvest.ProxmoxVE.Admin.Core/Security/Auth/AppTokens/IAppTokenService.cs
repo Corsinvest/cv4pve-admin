@@ -14,9 +14,10 @@ public interface IAppTokenService
     Task<(string RawToken, AppToken Token)> GenerateAsync(string name, string? ownerId, DateTime? expiresAt);
 
     /// <summary>
-    /// Validates a raw token string. Returns the AppToken if valid and active, null otherwise.
+    /// Validates a raw token string. Returns a result including the status (Valid / NotFound / Inactive / Expired)
+    /// and the matched token (if any). Useful for diagnostic audit logs.
     /// </summary>
-    Task<AppToken?> ValidateAsync(string rawToken);
+    Task<AppTokenValidationResult> ValidateAsync(string rawToken);
 
     /// <summary>
     /// Revokes (deactivates) a token by id.

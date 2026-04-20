@@ -58,7 +58,7 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
     private async Task<IQueryable<GuestReplicationInfo>> GetGuestReplicationInfo()
         => (await clusterClient.CachedData.GetResourcesAsync(false))
             .Where(a => a.ResourceType == ClusterResourceType.Node)
-            .Select(node => AsyncHelper.RunSync(() => clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false)))
+            .Select(node => AsyncHelper.RunSync(() => clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false).AsTask()))
             .SelectMany(replications => replications.Select(GuestReplicationInfo.Map))
             .AsQueryable();
 
@@ -81,8 +81,8 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
         return (await clusterClient.CachedData.GetResourcesAsync(false))
                 .Where(r => r.ResourceType == ClusterResourceType.Vm)
                 .SelectMany(vm => AsyncHelper.RunSync(() =>
-                    clusterClient.CachedData.GetSnapshotsAsync(vm.Node, vm.VmType, vm.VmId, false))
-                    .Select(s => GuestSnapshotInfo.Map(s, vm.VmId, vm.Node, vm.Type, DiskInfoHelper.CalculateSnapshots(vm.VmId, s.Name, disks))))
+                    clusterClient.CachedData.GetSnapshotsAsync(vm.Node, vm.VmType, vm.VmId, false).AsTask())
+                    .Select(s => GuestSnapshotInfo.Map(s, vm.VmId, vm.Node, vm.Type, DiskSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks))))
                 .AsQueryable();
     }
 
@@ -94,7 +94,7 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
 
         return nodes.SelectMany(node =>
                 storages.Where(s => s.Node == node.Node)
-                        .SelectMany(storage => AsyncHelper.RunSync(() => clusterClient.CachedData.GetStorageContentsAsync(node.Node, storage.Storage, false))
+                        .SelectMany(storage => AsyncHelper.RunSync(() => clusterClient.CachedData.GetStorageContentsAsync(node.Node, storage.Storage, false).AsTask())
                         .Select(content => StorageContentInfo.Map(content, node.Node, storage.Storage))))
                     .AsQueryable();
     }

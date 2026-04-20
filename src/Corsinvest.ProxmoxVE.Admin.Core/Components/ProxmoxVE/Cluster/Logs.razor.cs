@@ -14,7 +14,7 @@ public partial class Logs(IAdminService adminService) : IRefreshableData, IClust
     private IEnumerable<ClusterLog> Items { get; set; } = [];
     private bool IsLoading { get; set; }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

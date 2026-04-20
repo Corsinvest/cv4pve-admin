@@ -20,6 +20,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         var auditService = scope.GetAuditService();
         var settings = GetModuleSettings(scope, clusterName);
         var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
+        var httpClientFactory = scope.GetRequiredService<IHttpClientFactory>();
 
         await using var taskScope = await taskTracker.StartAsync($"Diagnostic scan [{clusterName}]", clusterName, GetModule(scope).Name);
         try
@@ -47,17 +48,18 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 taskScope.Item.Phase = "Analyzing cluster";
 
                 var client = await scope.GetClusterClient(clusterName).GetPveClientAsync();
-                var details = (await new DiagnosticEngine(client, settings.ApiSettings).AnalyzeAsync(ignoredIssues))
-                                         .Select(a => new JobDetail
-                                         {
-                                             IdResource = a.Id,
-                                             Context = a.Context,
-                                             Description = a.Description,
-                                             Gravity = a.Gravity,
-                                             IsIgnoredIssue = a.IsIgnoredIssue,
-                                             SubContext = a.SubContext
-                                         })
-                                         .ToList();
+                var details = (await new DiagnosticEngine(client, settings.ApiSettings, httpClientFactory.CreateClient())
+                                        .AnalyzeAsync(ignoredIssues))
+                                        .Select(a => new JobDetail
+                                        {
+                                            IdResource = a.Id,
+                                            Context = a.Context,
+                                            Description = a.Description,
+                                            Gravity = a.Gravity,
+                                            IsIgnoredIssue = a.IsIgnoredIssue,
+                                            SubContext = a.SubContext
+                                        })
+                                        .ToList();
 
                 int Count(DiagnosticResultGravity gravity) => details.Count(a => a.Gravity == gravity && !a.IsIgnoredIssue);
 

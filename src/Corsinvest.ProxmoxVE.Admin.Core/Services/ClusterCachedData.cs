@@ -31,52 +31,53 @@ public class ClusterCachedData
     private string GetKeyPrefix() => $"Cluster:Data:{_clusterSettings.Name}:";
     private string MakeKey(string key) => $"{GetKeyPrefix()}{key}";
 
-    public async Task<T?> GetOrDefaultAsync<T>(string key, T data) => await _fusionCache.GetOrDefaultAsync(MakeKey(key), data);
+    public ValueTask<T?> GetOrDefaultAsync<T>(string key, T data)
+        => _fusionCache.GetOrDefaultAsync(MakeKey(key), data);
 
-    public async Task<T> GetOrSetAsync<T>(string key,
-                                          T data,
-                                          int seconds,
-                                          bool forceReload)
+    public async ValueTask<T> GetOrSetAsync<T>(string key,
+                                               T data,
+                                               int seconds,
+                                               bool forceReload)
     {
         if (forceReload) { await _fusionCache.RemoveAsync(MakeKey(key)); }
         return await _fusionCache.GetOrSetAsync(MakeKey(key), data, TimeSpan.FromSeconds(seconds), tags: [GetKeyPrefix()]);
     }
 
-    public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> func, int seconds, bool forceReload)
+    public async ValueTask<T> GetOrSetAsync<T>(string key, Func<Task<T>> func, int seconds, bool forceReload)
     {
         if (forceReload) { await _fusionCache.RemoveAsync(MakeKey(key)); }
         return await _fusionCache.GetOrSetAsync(MakeKey(key), async _ => await func.Invoke(), TimeSpan.FromSeconds(seconds), tags: [GetKeyPrefix()]);
     }
 
-    public async Task<PveClient> GetPveClientAsync(bool forceReload = false)
+    public async ValueTask<PveClient> GetPveClientAsync(bool forceReload = false)
         => await GetOrSetAsync($"PveClient:{_clusterSettings.ApiHostsAndPortHA}",
                                await _pveClientFactory.CreateClientAsync(_clusterSettings, CancellationToken.None),
                                60 * 60,
                                forceReload);
 
-    public async Task<IEnumerable<ClusterResource>> GetResourcesAsync(bool forceReload)
-        => await GetOrSetAsync(nameof(GetResourcesAsync),
-                               async () => (await (await GetPveClientAsync()).GetResourcesAsync(ClusterResourceType.All)).CalculateHostUsage().ToList(),
-                               10,
-                               forceReload);
+    public ValueTask<IEnumerable<ClusterResource>> GetResourcesAsync(bool forceReload)
+        => GetOrSetAsync(nameof(GetResourcesAsync),
+                         async () => (IEnumerable<ClusterResource>)(await (await GetPveClientAsync()).GetResourcesAsync(ClusterResourceType.All)).CalculateHostUsage().ToList(),
+                         10,
+                         forceReload);
 
-    public async Task<string> GetTagStyleColorMapAsync(bool forceReload)
-        => await GetOrSetAsync(nameof(GetTagStyleColorMapAsync),
-                               async () => (await (await GetPveClientAsync()).Cluster.Options.GetAsync()).TagStyle?.ColorMap ?? string.Empty,
-                               60,
-                               forceReload);
+    public ValueTask<string> GetTagStyleColorMapAsync(bool forceReload)
+        => GetOrSetAsync(nameof(GetTagStyleColorMapAsync),
+                         async () => (await (await GetPveClientAsync()).Cluster.Options.GetAsync()).TagStyle?.ColorMap ?? string.Empty,
+                         60,
+                         forceReload);
 
-    public async Task<IEnumerable<VmDiskSnapshotInfo>> GetDiskSnapshotInfosAsync(bool forceReload)
-        => await GetOrSetAsync(nameof(GetDiskSnapshotInfosAsync),
-                               async () =>
-                               {
-                                   var snapshotSizeService = _serviceProvider.GetService<ISnapshotSizeService>();
-                                   return _clusterSettings.AllowCalculateSnapshotSize && _clusterSettings.SshIsConfigured && snapshotSizeService != null
-                                             ? await snapshotSizeService.GetAsync(_clusterSettings.Name)
-                                             : [];
-                               },
-                               5 * 60,
-                               forceReload);
+    public ValueTask<IEnumerable<DiskSnapshotInfo>> GetDiskSnapshotInfosAsync(bool forceReload)
+        => GetOrSetAsync(nameof(GetDiskSnapshotInfosAsync),
+                         async () =>
+                         {
+                             var snapshotSizeService = _serviceProvider.GetService<ISnapshotSizeService>();
+                             return _clusterSettings.AllowCalculateSnapshotSize && _clusterSettings.SshIsConfigured && snapshotSizeService != null
+                                       ? await snapshotSizeService.GetAsync(_clusterSettings.Name)
+                                       : [];
+                         },
+                         5 * 60,
+                         forceReload);
 
     private static int GetRrdCacheTtl(RrdDataTimeFrame timeFrame) => timeFrame switch
     {
@@ -88,43 +89,59 @@ public class ClusterCachedData
         _ => 120
     };
 
-    public async Task<IEnumerable<NodeRrdData>> GetRrdDataAsync(string node,
-                                                                RrdDataTimeFrame rrdDataTimeFrame,
-                                                                RrdDataConsolidation rrdDataConsolidation,
-                                                                bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
-                               async () => await (await GetPveClientAsync()).Nodes[node].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
-                               GetRrdCacheTtl(rrdDataTimeFrame),
-                               forceReload);
+    public ValueTask<IEnumerable<NodeRrdData>> GetRrdDataAsync(string node,
+                                                               RrdDataTimeFrame rrdDataTimeFrame,
+                                                               RrdDataConsolidation rrdDataConsolidation,
+                                                               bool forceReload)
+        => GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
+                         async () => await (await GetPveClientAsync()).Nodes[node].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
+                         GetRrdCacheTtl(rrdDataTimeFrame),
+                         forceReload);
 
-    public async Task<IEnumerable<NodeStorageRrdData>> GetRrdDataAsync(string node,
-                                                                       string storage,
-                                                                       RrdDataTimeFrame rrdDataTimeFrame,
-                                                                       RrdDataConsolidation rrdDataConsolidation,
-                                                                       bool forceReload)
-    => await GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{storage}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
-                           async () => await (await GetPveClientAsync()).Nodes[node].Storage[storage].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
-                           GetRrdCacheTtl(rrdDataTimeFrame),
-                           forceReload);
+    public ValueTask<IEnumerable<NodeStorageRrdData>> GetRrdDataAsync(string node,
+                                                                      string storage,
+                                                                      RrdDataTimeFrame rrdDataTimeFrame,
+                                                                      RrdDataConsolidation rrdDataConsolidation,
+                                                                      bool forceReload)
+        => GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{storage}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
+                         async () => await (await GetPveClientAsync()).Nodes[node].Storage[storage].Rrddata.GetAsync(rrdDataTimeFrame, rrdDataConsolidation),
+                         GetRrdCacheTtl(rrdDataTimeFrame),
+                         forceReload);
 
-    public async Task<VmQemuAgentNetworkGetInterfaces> GetQemuNetworkAsync(string node, long vmId, bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetQemuNetworkAsync)}:{node}:{vmId}",
-                               async () =>
-                               {
-                                   try
-                                   {
-                                       var client = await GetPveClientAsync();
-                                       return await client.Nodes[node].Qemu[vmId].Agent.NetworkGetInterfaces.GetAsync();
-                                   }
-                                   catch
-                                   {
-                                       //logger.LogWarning(ex, "Failed to get network interfaces from QEMU agent for VM {VmId} on node {Node}", Vm.VmId, Vm.Node);
-                                   }
+    public ValueTask<VmQemuAgentNetworkGetInterfaces> GetQemuNetworkAsync(string node, long vmId, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetQemuNetworkAsync)}:{node}:{vmId}",
+                         async () =>
+                         {
+                             try
+                             {
+                                 var client = await GetPveClientAsync();
+                                 return await client.Nodes[node].Qemu[vmId].Agent.NetworkGetInterfaces.GetAsync();
+                             }
+                             catch
+                             {
+                                 //logger.LogWarning(ex, "Failed to get network interfaces from QEMU agent for VM {VmId} on node {Node}", Vm.VmId, Vm.Node);
+                             }
 
-                                   return new VmQemuAgentNetworkGetInterfaces();
-                               },
-                               60 * 15,
-                               forceReload);
+                             return new VmQemuAgentNetworkGetInterfaces();
+                         },
+                         60 * 15,
+                         forceReload);
+
+    public ValueTask<IEnumerable<VmQemuAgentGetFsInfo.ResultInfo>> GetQemuFsInfoAsync(string node, long vmId, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetQemuFsInfoAsync)}:{node}:{vmId}",
+                         async () =>
+                         {
+                             try
+                             {
+                                 var client = await GetPveClientAsync();
+                                 return (await client.Nodes[node].Qemu[vmId].Agent.GetFsinfo.GetAsync())?.Result ?? [];
+                             }
+                             catch { }
+
+                             return [];
+                         },
+                         60 * 15,
+                         forceReload);
 
     private class DummyClusterResourceVmOsInfo : IClusterResourceVmOsInfo
     {
@@ -134,60 +151,118 @@ public class ClusterCachedData
         public VmOsType? OsType { get; set; }
     }
 
-    public async Task<IClusterResourceVmOsInfo> GetVmOsInfoAsync<T>(T item, bool forceReload)
-        where T : IClusterResourceVm, IClusterResourceVmOsInfo
-        => await GetOrSetAsync($"{nameof(GetVmOsInfoAsync)}:{item.VmId}",
-                               async () =>
-                               {
-                                   await VmHelper.PopulateVmOsInfoAsync(await GetPveClientAsync(), item);
-                                   return new DummyClusterResourceVmOsInfo
-                                   {
-                                       HostName = item.HostName,
-                                       OsType = item.OsType,
-                                       OsVersion = item.OsVersion,
-                                       VmQemuAgentOsInfo = item.VmQemuAgentOsInfo
-                                   };
-                               },
-                               60 * 30,
-                               forceReload);
+    public ValueTask<string> GetQemuHostnameAsync(string node, long vmId, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetQemuHostnameAsync)}:{node}:{vmId}",
+                         async () =>
+                         {
+                             string? hostname = null;
 
-    public async Task<IEnumerable<VmRrdData>> GetRrdDataAsync(string node,
-                                                              VmType vmType,
-                                                              long vmId,
-                                                              RrdDataTimeFrame rrdDataTimeFrame,
-                                                              RrdDataConsolidation rrdDataConsolidation,
-                                                              bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{vmType}:{vmId}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
-                               async () => await (await GetPveClientAsync()).GetVmRrdDataAsync(node, vmType, vmId, rrdDataTimeFrame, rrdDataConsolidation),
-                               GetRrdCacheTtl(rrdDataTimeFrame),
-                               forceReload);
+                             try
+                             {
+                                 var client = await GetPveClientAsync();
+                                 hostname = (await client.Nodes[node].Qemu[vmId].Agent.GetHostName.GetAsync())?.Result?.HostName;
+                             }
+                             catch
+                             {
+                                 //logger.LogWarning(ex, "Failed to get hostname from QEMU agent for VM {VmId} on node {Node}", Vm.VmId, Vm.Node);
+                             }
 
-    public async Task<IEnumerable<VmSnapshot>> GetSnapshotsAsync(string node,
-                                                                 VmType vmType,
-                                                                 long vmId,
-                                                                 bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetSnapshotsAsync)}:{node}:{vmType}:{vmId}",
-                               async () => await SnapshotHelper.GetSnapshotsAsync(await GetPveClientAsync(), node, vmType, vmId),
-                               10,
-                               forceReload);
+                             return hostname ?? "Error Agent data!";
+                         },
+                         60 * 15,
+                         forceReload);
 
-    public async Task<IEnumerable<NodeReplication>> GetReplicationsAsync(string node,
-                                                                         long? vmId,
-                                                                         bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetReplicationsAsync)}:{node}:{vmId ?? 0}",
-                               async () => await (await GetPveClientAsync()).Nodes[node].Replication.GetAsync(guest: vmId.HasValue
-                                                                                          ? Convert.ToInt32(vmId)
-                                                                                          : null),
-                               10,
-                               forceReload);
+    public ValueTask<IClusterResourceVmOsInfo> GetVmOsInfoAsync(string node,
+                                                                VmType vmType,
+                                                                long vmId,
+                                                                bool isRunning,
+                                                                bool forceReload)
+        => GetOrSetAsync($"{nameof(GetVmOsInfoAsync)}:{node}:{vmId}:{isRunning}",
+                         async () =>
+                         {
+                             var ret = new DummyClusterResourceVmOsInfo();
+                             switch (vmType)
+                             {
+                                 case VmType.Qemu:
+                                     var qemuConfig = await GetQemuConfigAsync(node, vmId, forceReload);
+                                     ret.OsType = qemuConfig.VmOsType;
+                                     ret.OsVersion = qemuConfig.OsTypeDecode;
 
-    public async Task<IEnumerable<ClusterReplication>> GetClusterReplicationsAsync(bool forceReload)
-        => await GetOrSetAsync(nameof(GetClusterReplicationsAsync),
-                               async () => await (await GetPveClientAsync()).Cluster.Replication.GetAsync(),
-                               60,
-                               forceReload);
+                                     if (isRunning)
+                                     {
+                                         if (qemuConfig.AgentEnabled)
+                                         {
+                                             try
+                                             {
+                                                 var client = await GetPveClientAsync();
+                                                 ret.VmQemuAgentOsInfo = await client.Nodes[node].Qemu[vmId].Agent.GetOsinfo.GetAsync();
+                                                 ret.OsVersion = ret.VmQemuAgentOsInfo?.Result?.OsVersion ?? "";
+                                                 ret.HostName = await GetQemuHostnameAsync(node, vmId, forceReload);
+                                             }
+                                             catch
+                                             {
+                                                 ret.HostName = "Error Agent data!";
+                                             }
+                                         }
+                                         else
+                                         {
+                                             ret.HostName = "Agent not enabled!";
+                                         }
+                                     }
+                                     break;
 
-    public async Task<VmConfig> GetGuestConfigAsync(string node, VmType vmType, long vmId, bool forceReload)
+                                 case VmType.Lxc:
+                                     var lxcConfig = await GetLxcConfigAsync(node, vmId, forceReload);
+                                     ret.HostName = lxcConfig.Hostname;
+                                     ret.OsVersion = lxcConfig.OsTypeDecode;
+                                     ret.OsType = lxcConfig.VmOsType;
+                                     break;
+
+                                 default: throw new InvalidEnumArgumentException();
+                             }
+
+                             return (IClusterResourceVmOsInfo)ret;
+                         },
+                         60 * 30,
+                         forceReload);
+
+    public ValueTask<IEnumerable<VmRrdData>> GetRrdDataAsync(string node,
+                                                             VmType vmType,
+                                                             long vmId,
+                                                             RrdDataTimeFrame rrdDataTimeFrame,
+                                                             RrdDataConsolidation rrdDataConsolidation,
+                                                             bool forceReload)
+        => GetOrSetAsync($"{nameof(GetRrdDataAsync)}:{node}:{vmType}:{vmId}:{rrdDataTimeFrame}:{rrdDataConsolidation}",
+                         async () => await (await GetPveClientAsync()).GetVmRrdDataAsync(node, vmType, vmId, rrdDataTimeFrame, rrdDataConsolidation),
+                         GetRrdCacheTtl(rrdDataTimeFrame),
+                         forceReload);
+
+    public ValueTask<IEnumerable<VmSnapshot>> GetSnapshotsAsync(string node,
+                                                                VmType vmType,
+                                                                long vmId,
+                                                                bool forceReload)
+        => GetOrSetAsync($"{nameof(GetSnapshotsAsync)}:{node}:{vmType}:{vmId}",
+                         async () => await SnapshotHelper.GetSnapshotsAsync(await GetPveClientAsync(), node, vmType, vmId),
+                         10,
+                         forceReload);
+
+    public ValueTask<IEnumerable<NodeReplication>> GetReplicationsAsync(string node,
+                                                                        long? vmId,
+                                                                        bool forceReload)
+        => GetOrSetAsync($"{nameof(GetReplicationsAsync)}:{node}:{vmId ?? 0}",
+                         async () => await (await GetPveClientAsync()).Nodes[node].Replication.GetAsync(guest: vmId.HasValue
+                                                                                    ? Convert.ToInt32(vmId)
+                                                                                    : null),
+                         10,
+                         forceReload);
+
+    public ValueTask<IEnumerable<ClusterReplication>> GetClusterReplicationsAsync(bool forceReload)
+        => GetOrSetAsync(nameof(GetClusterReplicationsAsync),
+                         async () => await (await GetPveClientAsync()).Cluster.Replication.GetAsync(),
+                         60,
+                         forceReload);
+
+    public async ValueTask<VmConfig> GetGuestConfigAsync(string node, VmType vmType, long vmId, bool forceReload)
         => vmType switch
         {
             VmType.Qemu => await GetQemuConfigAsync(node, vmId, forceReload),
@@ -195,29 +270,29 @@ public class ClusterCachedData
             _ => throw new InvalidEnumArgumentException(),
         };
 
-    public async Task<VmConfigQemu> GetQemuConfigAsync(string node, long vmId, bool forceReload)
-            => await GetOrSetAsync($"{nameof(GetQemuConfigAsync)}:{node}:{vmId}",
-                                   async () => await (await GetPveClientAsync()).Nodes[node].Qemu[vmId].Config.GetAsync(),
-                                   60,
-                                   forceReload);
+    public ValueTask<VmConfigQemu> GetQemuConfigAsync(string node, long vmId, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetQemuConfigAsync)}:{node}:{vmId}",
+                         async () => await (await GetPveClientAsync()).Nodes[node].Qemu[vmId].Config.GetAsync(),
+                         60,
+                         forceReload);
 
-    public async Task<VmConfigLxc> GetLxcConfigAsync(string node, long vmId, bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetLxcConfigAsync)}:{node}:{vmId}",
-                               async () => await (await GetPveClientAsync()).Nodes[node].Lxc[vmId].Config.GetAsync(),
-                               60,
-                               forceReload);
+    public ValueTask<VmConfigLxc> GetLxcConfigAsync(string node, long vmId, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetLxcConfigAsync)}:{node}:{vmId}",
+                         async () => await (await GetPveClientAsync()).Nodes[node].Lxc[vmId].Config.GetAsync(),
+                         60,
+                         forceReload);
 
-    public async Task<IEnumerable<NodeStorageContent>> GetStorageContentsAsync(string node, string storage, bool forceReload)
-        => await GetOrSetAsync($"{nameof(GetStorageContentsAsync)}:{node}:{storage}",
-                               async () => await (await GetPveClientAsync()).Nodes[node].Storage[storage].Content.GetAsync(),
-                               30,
-                               forceReload);
+    public ValueTask<IEnumerable<NodeStorageContent>> GetStorageContentsAsync(string node, string storage, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetStorageContentsAsync)}:{node}:{storage}",
+                         async () => await (await GetPveClientAsync()).Nodes[node].Storage[storage].Content.GetAsync(),
+                         30,
+                         forceReload);
 
-    public async Task<PvePermissions> PveGetPermissionsAsync(bool forceReload)
-        => await GetOrSetAsync(nameof(PveGetPermissionsAsync),
-                               async () => new PvePermissions(await (await GetPveClientAsync()).Access.Permissions.GetPermissionsAsync()),
-                               5 * 60,
-                               forceReload);
+    public ValueTask<PvePermissions> PveGetPermissionsAsync(bool forceReload)
+        => GetOrSetAsync(nameof(PveGetPermissionsAsync),
+                         async () => new PvePermissions(await (await GetPveClientAsync()).Access.Permissions.GetPermissionsAsync()),
+                         5 * 60,
+                         forceReload);
 
     public ValueTask ClearCacheAsync() => _fusionCache.RemoveByTagAsync(GetKeyPrefix());
 }

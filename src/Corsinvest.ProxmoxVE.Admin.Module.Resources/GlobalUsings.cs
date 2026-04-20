@@ -4,6 +4,7 @@
  */
 global using Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common;
 global using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
+global using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 global using Corsinvest.ProxmoxVE.Admin.Core.Models;
 global using Corsinvest.ProxmoxVE.Admin.Core.Services;
 global using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;

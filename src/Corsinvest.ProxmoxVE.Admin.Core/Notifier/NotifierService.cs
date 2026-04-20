@@ -20,8 +20,8 @@ internal class NotifierService(IModuleService moduleService,
                                                                          type.FullName!,
                                                                          false);
 
-    public async Task SetAsync(Type setttinsType, IEnumerable<NotifierConfiguration> notifiers)
-        => await settingsService.SetAsync(typeof(NotifierConfiguration).FullName!,
+    public Task SetAsync(Type setttinsType, IEnumerable<NotifierConfiguration> notifiers)
+        => settingsService.SetAsync(typeof(NotifierConfiguration).FullName!,
                                           setttinsType.FullName!,
                                           notifiers,
                                           false);

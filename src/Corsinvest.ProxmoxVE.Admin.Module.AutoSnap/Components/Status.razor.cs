@@ -33,7 +33,7 @@ public partial class Status(IAdminService adminService,
         await RefreshDataAsync();
     }
 
-    private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification) => await RefreshDataAsync();
+    private Task HandleDataChangedNotificationAsync(DataChangedNotification notification) => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {
@@ -74,7 +74,7 @@ public partial class Status(IAdminService adminService,
                 var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
                 foreach (var item in Items)
                 {
-                    item.SnapshotsSize = DiskInfoHelper.CalculateSnapshots(item.VmId, item.Name, disks);
+                    item.SnapshotsSize = DiskSnapshotHelper.CalculateSnapshots(item.VmId, item.Name, disks);
                 }
 
                 IsCalculateSnapshotSize = false;

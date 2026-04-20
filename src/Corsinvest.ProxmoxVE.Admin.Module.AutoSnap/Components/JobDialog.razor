@@ -24,7 +24,19 @@
 
                 <SwitchField @bind-Value="@Model.OnlyRuns"
                              Label="@L["While VM/CT Running"]"
-                             Name="@nameof(Model.OnlyRuns)" />
+                             Name="@nameof(Model.OnlyRuns)" />               
+
+                <RadzenFormField Text="@L["Max Parallel"]" AllowFloatingLabel="false">
+                    <Start>
+                        <RadzenIcon Icon="layers" />
+                    </Start>
+                    <ChildContent>
+                        <RadzenNumeric Name="@nameof(Model.MaxParallel)" @bind-Value="@Model.MaxParallel" Min="1" Max="10"/>
+                    </ChildContent>
+                    <Helper>
+                        <RadzenDataAnnotationValidator Component="@nameof(Model.MaxParallel)" />
+                    </Helper>
+                </RadzenFormField>
 
                 <RadzenFormField Text="@L["Label"]" AllowFloatingLabel="false">
                     <Start>

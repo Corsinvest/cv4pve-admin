@@ -173,7 +173,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                       job.TimeoutSnapshot * 1000,
                                                       settings.TimestampFormat,
                                                       settings.MaxPercentageStorage,
-                                                      job.OnlyRuns);
+                                                      job.OnlyRuns,
+                                                      Math.Max(1, job.MaxParallel));
 
                     result.SnapName = retSnap.SnapName;
                     result.Status = retSnap.Status;
@@ -277,7 +278,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             foreach (var item in snapshotList)
             {
                 logger.LogInformation("Execution Delete snapshot: {name}", item.Name);
-                await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(clusterName, item.VmId, item.Name, Force: true));
+                var result = await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(clusterName, item.VmId, item.Name, Force: true));
+                if (!result.IsSuccess)
+                {
+                    logger.LogWarning("Delete snapshot failed: {name} ({error})", item.Name, result.ErrorMessage);
+                }
             }
 
             await auditService.LogAsync("AutoSnap.DeleteSnapshots",

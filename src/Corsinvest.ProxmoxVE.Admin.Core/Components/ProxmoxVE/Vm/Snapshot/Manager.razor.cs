@@ -12,7 +12,7 @@ using Mapster;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.Snapshot;
 
 public partial class Manager(IAdminService adminService,
-                             CommandExecutor commandExecutor,
+                             IUiCommandExecutor uiExecutor,
                              DialogService dialogService) : IRefreshableData, IClusterName, IDisposable
 {
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
@@ -90,10 +90,11 @@ public partial class Manager(IAdminService adminService,
 
             foreach (var item in AllItems)
             {
-                item.SnapshotSize = disks.Where(a => a.VmId == Vm.VmId && a.Host == Vm.Node)
-                                         .SelectMany(a => a.Snapshots)
-                                         .Where(a => !a.Replication && a.Name == item.Name)
-                                         .Sum(a => a.Size);
+                item.SnapshotSize = DiskSnapshotHelper.CalculateSnapshot(Vm.Node, Vm.VmId, item.Name, disks);
+                //item.SnapshotSize = disks.Where(a => a.VmId == Vm.VmId && a.Host == Vm.Node)
+                //                         .SelectMany(a => a.Snapshots)
+                //                         .Where(a => !a.Replication && a.Name == item.Name)
+                //                         .Sum(a => a.Size);
             }
 
             IsCalculateSnapshotSize = false;
@@ -110,15 +111,19 @@ public partial class Manager(IAdminService adminService,
 
     private async Task RollbackAsync()
     {
+        if (!CanRollback) { return; }
         if (await dialogService.ConfirmAsync(L["Are you sure?"],
                                                L["Rollback snapshot '{name}'", SelectedItems[0].Name],
                                                true))
         {
-            await commandExecutor.ExecuteAsync(new VmRollbackSnapshotCommand(ClusterName,
-                                                                                    Vm.VmId,
-                                                                                    SelectedItems[0].Name));
-            SelectedItems.Clear();
-            await DataGridRef.Reload();
+            var result = await uiExecutor.ExecuteAndNotifyAsync(new VmRollbackSnapshotCommand(ClusterName,
+                                                                                                Vm.VmId,
+                                                                                                SelectedItems[0].Name));
+            if (result.IsSuccess)
+            {
+                SelectedItems.Clear();
+                await DataGridRef.Reload();
+            }
         }
     }
 
@@ -127,12 +132,15 @@ public partial class Manager(IAdminService adminService,
         if (!CanDelete) { return; }
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected snapshot"], true))
         {
-            await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(ClusterName,
-                                                                                  Vm.VmId,
-                                                                                  SelectedItems[0].Name,
-                                                                                  Force: true));
-            SelectedItems.Clear();
-            await DataGridRef.Reload();
+            var result = await uiExecutor.ExecuteAndNotifyAsync(new VmRemoveSnapshotCommand(ClusterName,
+                                                                                             Vm.VmId,
+                                                                                             SelectedItems[0].Name,
+                                                                                             Force: true));
+            if (result.IsSuccess)
+            {
+                SelectedItems.Clear();
+                await DataGridRef.Reload();
+            }
         }
     }
 
@@ -175,23 +183,21 @@ public partial class Manager(IAdminService adminService,
                                                                 : EditDialogMode.Edit,
                                                               item) != null)
         {
-            if (isNew)
-            {
-                await commandExecutor.ExecuteAsync(new VmCreateSnapshotCommand(ClusterName,
-                                                                                      Vm.VmId,
-                                                                                      item.Name,
-                                                                                      item.Description,
-                                                                                      item.VmStatus));
-            }
-            else
-            {
-                await commandExecutor.ExecuteAsync(new VmUpdateSnapshotCommand(ClusterName,
-                                                                               Vm.VmId,
-                                                                               item.Name,
-                                                                               item.Description));
-            }
+            var result = isNew
+                ? await uiExecutor.ExecuteAndNotifyAsync(new VmCreateSnapshotCommand(ClusterName,
+                                                                                       Vm.VmId,
+                                                                                       item.Name,
+                                                                                       item.Description,
+                                                                                       item.VmStatus))
+                : await uiExecutor.ExecuteAndNotifyAsync(new VmUpdateSnapshotCommand(ClusterName,
+                                                                                       Vm.VmId,
+                                                                                       item.Name,
+                                                                                       item.Description));
 
-            await DataGridRef.Reload();
+            if (result.IsSuccess)
+            {
+                await DataGridRef.Reload();
+            }
         }
     }
 

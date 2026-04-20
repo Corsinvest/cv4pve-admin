@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
+    <PackageReference Include="Corsinvest.ProxmoxVE.NodeProtect.Api" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Corsinvest.ProxmoxVE.Admin.Core\Corsinvest.ProxmoxVE.Admin.Core.csproj" />
   </ItemGroup>
 </Project>

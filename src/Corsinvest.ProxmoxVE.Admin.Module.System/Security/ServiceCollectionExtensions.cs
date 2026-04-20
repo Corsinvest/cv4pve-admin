@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.Threading.RateLimiting;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.AppTokens;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
@@ -56,7 +55,6 @@ public static class ServiceCollectionExtensions
         services.AddIdentityCore<ApplicationUser>(options =>
         {
             options.User.RequireUniqueEmail = true;
-            options.SignIn.RequireConfirmedAccount = true;
             options.SignIn.RequireConfirmedEmail = true;
 
             //read from settings
@@ -91,20 +89,6 @@ public static class ServiceCollectionExtensions
         .AddSignInManager()
         .AddDefaultTokenProviders();
 
-        // Rate limiting
-        services.AddRateLimiter(options =>
-        {
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
-                httpContext => RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: httpContext.User?.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true,
-                        PermitLimit = 10,
-                        Window = TimeSpan.FromMinutes(1)
-                    }));
-        });
-
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
         services.AddScoped<IPermissionsSummaryDialogService, PermissionsSummaryDialogService>();
@@ -112,7 +96,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static async Task InitializeSecurityAsync(this IServiceScope scope) => await PopulateSecurityAsync(scope.ServiceProvider);
+    public static Task InitializeSecurityAsync(this IServiceScope scope)
+        => PopulateSecurityAsync(scope.ServiceProvider);
+
     public static void MapSecurityAdmin(this WebApplication app) => app.MapAdditionalIdentityEndpoints();
 
     private static async Task PopulateSecurityAsync(IServiceProvider services)

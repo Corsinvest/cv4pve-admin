@@ -21,10 +21,30 @@ public static class EndpointRouteBuilderExtensions
 
     public static string GetUserProfileUrl(string email) => $"/profile-image/{email}";
 
-    private static string BuildErrorUrl(string returnUrl, string errorMessage)
+    /// <summary>
+    /// Accept only a local relative path (e.g. "/foo/bar"). Reject null/empty, absolute URLs,
+    /// protocol-relative (//host), or any form that could cause open redirect.
+    /// Returns a safe default "/" otherwise.
+    /// </summary>
+    private static string SanitizeReturnUrl(string? returnUrl)
+    {
+        if (string.IsNullOrWhiteSpace(returnUrl)) { return "/"; }
+
+        var trimmed = returnUrl.Trim();
+
+        // Must be a relative path starting with single '/' and not '//' (protocol-relative)
+        if (!trimmed.StartsWith('/') || trimmed.StartsWith("//")) { return "/"; }
+
+        // Reject scheme-relative like "/\evil.com" or backslash tricks
+        if (trimmed.Contains('\\')) { return "/"; }
+
+        return trimmed;
+    }
+
+    private static string BuildErrorUrl(string? returnUrl, string errorMessage)
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
-        query["returnUrl"] = returnUrl;
+        query["returnUrl"] = SanitizeReturnUrl(returnUrl);
         query["error"] = errorMessage;
         return $"/Login?{query}";
     }
@@ -55,17 +75,22 @@ public static class EndpointRouteBuilderExtensions
 
         accountGroup.MapGet("/profile-image/{email}", (string email) =>
         {
-            var filePath = ApplicationUser.GetUserProfileImagePath(email);
+            var filePath = Path.GetFullPath(ApplicationUser.GetUserProfileImagePath(email));
+            var baseDir = Path.GetFullPath(ApplicationHelper.UserProfileImagesPath);
+
+            if (!filePath.StartsWith(baseDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            {
+                return Results.NotFound();
+            }
+
             if (File.Exists(filePath))
             {
                 var stream = File.OpenRead(filePath);
                 return Results.File(stream, MediaTypeNames.Image.Jpeg);
             }
-            else
-            {
-                return Results.NotFound();
-            }
-        });
+
+            return Results.NotFound();
+        }).RequireAuthorization();
 
         static string FixReturnUrl(string value)
         {
@@ -189,7 +214,7 @@ public static class EndpointRouteBuilderExtensions
 
             if (!string.IsNullOrEmpty(userName)) { await auditService.LogAsync(userName, "Logout", true); }
 
-            return TypedResults.LocalRedirect($"~/{returnUrl}");
+            return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
         });
 
         accountGroup.MapPost("/PerformExternalLogin", (HttpContext context,

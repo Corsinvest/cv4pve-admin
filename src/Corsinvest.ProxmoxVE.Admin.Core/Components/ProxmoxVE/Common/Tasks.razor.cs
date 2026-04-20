@@ -24,7 +24,7 @@ public partial class Tasks(DialogService dialogService,
     private bool _disposed;
     private bool _validColumnClick;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

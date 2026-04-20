@@ -26,6 +26,41 @@
 <Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Diagnostic.Settings"
                                                                                    Settings="Model" />
 
+<RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="rz-mb-2">
+    <RadzenColumn Size="6">
+        <RadzenFormField Text="@L["Max parallel requests"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="bolt" />
+            </Start>
+            <ChildContent>
+                <RadzenNumeric Name="Model.ApiSettings.MaxParallelRequests" @bind-Value="@Model.ApiSettings.MaxParallelRequests" Min="1" />
+            </ChildContent>
+            <End>
+                <InfoIcon>@L["Max parallel requests when fetching data (1 = sequential)."]</InfoIcon>
+            </End>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="Model.ApiSettings.MaxParallelRequests" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+    <RadzenColumn Size="6">
+        <RadzenFormField Text="@L["API timeout (seconds)"]" AllowFloatingLabel="false" class="rz-w-100">
+            <Start>
+                <RadzenIcon Icon="timer" />
+            </Start>
+            <ChildContent>
+                <RadzenNumeric Name="Model.ApiSettings.ApiTimeout" @bind-Value="@Model.ApiSettings.ApiTimeout" Min="0" />
+            </ChildContent>
+            <End>
+                <InfoIcon>@L["API timeout in seconds. Set to 0 to use the default."]</InfoIcon>
+            </End>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="Model.ApiSettings.ApiTimeout" />
+            </Helper>
+        </RadzenFormField>
+    </RadzenColumn>
+</RadzenRow>
+
 <RadzenPanel Text="@L["Threshold"]" Icon="data_thresholding">
     <RadzenAccordion>
         <Items>
@@ -193,6 +228,34 @@
                         </RadzenColumn>
                     </RadzenRow>
                 }
+            </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["CVE"]" Icon="shield">
+                <SwitchField @bind-Value="@Model.ApiSettings.Cve.DebianTrackerEnabled"
+                             Label="@L["Debian Security Tracker"]"
+                             Name="Model.ApiSettings.Cve.DebianTrackerEnabled"
+                             class="rz-mb-2" />
+
+                <SwitchField @bind-Value="@Model.ApiSettings.Cve.NvdEnabled"
+                             Label="@L["NVD checks for Proxmox-specific CVE"]"
+                             Name="Model.ApiSettings.Cve.NvdEnabled"
+                             class="rz-mb-2" />
+
+                <RadzenRow JustifyContent="JustifyContent.Start" class="cv4pve-dashed-box rz-mb-2">
+                    <RadzenColumn Size="4">
+                        <RadzenFormField Text="@L["Min CVSS score"]" AllowFloatingLabel="false" class="rz-w-100">
+                            <ChildContent>
+                                <RadzenNumeric Name="Model.ApiSettings.Cve.MinCvssScore" @bind-Value="@Model.ApiSettings.Cve.MinCvssScore" Min="0" Max="10" Step="0.5" />
+                            </ChildContent>
+                            <End>
+                                <InfoIcon>@L["Minimum CVSS v3 base score (0.0-10.0) to report. Default 7.0 (HIGH + CRITICAL). Set to 0 to report all."]</InfoIcon>
+                            </End>
+                            <Helper>
+                                <RadzenDataAnnotationValidator Component="Model.ApiSettings.Cve.MinCvssScore" />
+                            </Helper>
+                        </RadzenFormField>
+                    </RadzenColumn>
+                </RadzenRow>
             </RadzenAccordionItem>
         </Items>
     </RadzenAccordion>
