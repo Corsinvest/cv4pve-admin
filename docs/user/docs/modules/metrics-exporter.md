@@ -1,6 +1,6 @@
 # Metrics Exporter
 
-Prometheus metrics exporter for cluster monitoring and observability.
+Exposes Proxmox VE metrics for monitoring systems (today Prometheus; more coming).
 
 ## Overview
 

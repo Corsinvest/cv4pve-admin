@@ -26,7 +26,7 @@ public class Module : ModuleBase
         Keywords = "metrics,prometheus,exporter,monitoring,performance,statistics,observability";
         ModuleType = ModuleType.Application;
         Name = "Metrics Exporter";
-        Description = "Prometheus metrics exporter for cluster monitoring and observability";
+        Description = "Exposes Proxmox VE metrics for monitoring systems";
         Category = Categories.Health;
         Slug = "metrics-exporter";
         HelpUrl = "modules/metrics-exporter";
@@ -60,6 +60,13 @@ public class Module : ModuleBase
     protected override string PermissionBaseKey { get; } = "MetricsExporter";
 
     internal static string GetUrl(string clusterName) => $"{PrometheusExporterUrl}/{clusterName}";
+
+    protected override Task RefreshSettingsAsync(IServiceScope scope)
+    {
+        // Drop cached engines/registries so the next scrape rebuilds them with the new settings.
+        Infos.Clear();
+        return Task.CompletedTask;
+    }
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services);
