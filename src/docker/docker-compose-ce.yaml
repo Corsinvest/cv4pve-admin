@@ -62,12 +62,15 @@ services:
         condition: service_completed_successfully
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 45s
+    # Healthcheck disabled: the runtime image ships neither wget nor curl.
+    # See https://github.com/Corsinvest/cv4pve-admin/issues/282
+    # TODO: add curl to the Dockerfile (or ship a minimal health-check binary), then re-enable.
+    # healthcheck:
+    #   test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 45s
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
