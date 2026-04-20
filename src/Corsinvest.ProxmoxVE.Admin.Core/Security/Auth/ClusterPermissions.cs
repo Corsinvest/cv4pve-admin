@@ -38,7 +38,7 @@ public static class ClusterPermissions
                                                       "Cluster Storage User",
                                                       false,
                                                       true,
-                                                      Storage.Data.Permissions);
+                                                      Storage.Data.Permissions.CombineWith(Storage.DeleteContent));
     public static Role RoleNodeUser { get; } = new($"{BaseName}.NodeUser",
                                                    "Cluster Node User",
                                                    false,
@@ -82,6 +82,7 @@ public static class ClusterPermissions
     {
         //public static PermissionsRead Data { get; } = new($"{typeof(ClusterPermissions).FullName}.{nameof(Storage)}.{nameof(Data)}");
         public static PermissionsRead Data { get; } = new(BaseName, nameof(Storage));
+        public static Permission DeleteContent { get; } = new(Data.Prefix, nameof(DeleteContent), "Delete Content");
     }
 
     public static class Vm

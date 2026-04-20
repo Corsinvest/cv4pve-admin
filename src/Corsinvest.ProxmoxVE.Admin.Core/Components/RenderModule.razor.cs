@@ -99,6 +99,6 @@ public partial class RenderModule(NavigationManager navigationManager,
         return ret;
     }
 
-    private async Task OpenSettingsAsync()
-        => await dialogServiceEx.OpenSettingsAsync(CurrentModule, CurrentModule.GetClusterNameForScope(ClusterName));
+    private Task OpenSettingsAsync()
+        => dialogServiceEx.OpenSettingsAsync(CurrentModule, CurrentModule.GetClusterNameForScope(ClusterName));
 }

@@ -20,9 +20,9 @@ public abstract class AdminComponentBase : ComponentBase
         => Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Replace("/", "-")
                   .Replace("+", "-")[..10];
 
-    protected async Task<bool> HasPermissionAsync(string clusterName, Permission permission)
-        => await PermissionService.HasAsync(clusterName, permission);
+    protected Task<bool> HasPermissionAsync(string clusterName, Permission permission)
+        => PermissionService.HasAsync(clusterName, permission);
 
-    protected async Task<bool> HasPermissionAsync(Permission permission)
-        => await PermissionService.HasAsync(ApplicationHelper.AllClusterName, permission);
+    protected Task<bool> HasPermissionAsync(Permission permission)
+        => PermissionService.HasAsync(ApplicationHelper.AllClusterName, permission);
 }

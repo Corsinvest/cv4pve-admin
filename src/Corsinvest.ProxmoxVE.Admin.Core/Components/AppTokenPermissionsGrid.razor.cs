@@ -26,7 +26,7 @@ public partial class AppTokenPermissionsGrid(IAppTokenService appTokenService,
         public bool IsExpired { get; set; }
     }
 
-    protected override async Task OnParametersSetAsync() => await RefreshAsync();
+    protected override Task OnParametersSetAsync() => RefreshAsync();
 
     public async Task RefreshAsync()
     {

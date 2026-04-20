@@ -18,7 +18,7 @@ public partial class Disks(IAdminService adminService) : IRefreshableData, INode
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
     public async Task RefreshDataAsync()
     {
         if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }

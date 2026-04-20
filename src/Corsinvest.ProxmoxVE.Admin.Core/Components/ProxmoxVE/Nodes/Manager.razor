@@ -35,7 +35,7 @@ else
 
             @if (CanAudit)
             {
-                <RadzenTabsItem Text="@L["Disks"]" Icon="database" tab-content="@TabContent.Disks">
+                <RadzenTabsItem Text="@L["Disks"]" Icon="@PveAdminUIHelper.Icons.Disks" tab-content="@TabContent.Disks">
                     <Disks Node="@Node.Node" ClusterName="@ClusterName" />
                 </RadzenTabsItem>
 

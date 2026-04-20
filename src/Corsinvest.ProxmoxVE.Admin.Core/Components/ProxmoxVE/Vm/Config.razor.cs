@@ -14,7 +14,7 @@ public partial class Config(IAdminService adminService) : IRefreshableData, IClu
 
     private VmConfig VmConfig { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

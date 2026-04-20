@@ -6,10 +6,23 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 
 public abstract class BasePermission : IId, IClusterName
 {
+    private string _path = default!;
+    private string[]? _expectedSegmentsCache;
+
     public int Id { get; set; }
     [Required] public string PermissionKey { get; set; } = default!;
 
-    [Required] public string Path { get; set; } = default!;
+    [Required]
+    public string Path
+    {
+        get => _path;
+        set
+        {
+            _path = value;
+            _expectedSegmentsCache = null;
+        }
+    }
+
     public bool Propagated { get; set; }
     [Required] public string ClusterName { get; set; } = default!;
     public bool BuiltIn { get; set; }
@@ -19,11 +32,12 @@ public abstract class BasePermission : IId, IClusterName
         if (string.IsNullOrEmpty(Path) || string.IsNullOrEmpty(actualPath)) { return false; }
         if (Path == "*") { return true; }
 
-        var expectedSegments = Path.Trim('/').Split('/');
+        var expectedSegments = _expectedSegmentsCache ??= Path.Trim('/').Split('/');
+        if (expectedSegments.Length != 2) { return false; }
+
         var actualSegments = actualPath.Trim('/').Split('/');
 
-        return expectedSegments.Length == 2
-                    && actualSegments.Length == 2
+        return actualSegments.Length == 2
                     && string.Equals(expectedSegments[0], actualSegments[0], StringComparison.OrdinalIgnoreCase)
                     && (expectedSegments[1] == "*"
                         || string.Equals(expectedSegments[1], actualSegments[1], StringComparison.OrdinalIgnoreCase));

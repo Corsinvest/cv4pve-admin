@@ -12,7 +12,7 @@ public partial class Storages(IAdminService adminService) : IRefreshableData, IC
     [Parameter] public string Style { get; set; } = default!;
 
     private IEnumerable<StorageItem> Items { get; set; } = default!;
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
     public async Task RefreshDataAsync()
     {
         var client = await adminService[ClusterName].GetPveClientAsync();

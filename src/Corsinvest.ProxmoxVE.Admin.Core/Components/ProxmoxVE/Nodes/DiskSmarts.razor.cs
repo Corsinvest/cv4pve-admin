@@ -16,7 +16,7 @@ public partial class DiskSmarts(IAdminService adminService) : IRefreshableData, 
     private bool IsLoading { get; set; }
     private NodeDiskSmart Data { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
     public async Task RefreshDataAsync()
     {
         IsLoading = true;

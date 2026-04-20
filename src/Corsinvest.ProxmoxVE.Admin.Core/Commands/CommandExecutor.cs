@@ -4,11 +4,10 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Commands;
 
-public class CommandExecutor(IServiceProvider serviceProvider)
+public class CommandExecutor(IServiceProvider serviceProvider) : ICommandExecutor
 {
-    public async Task<TResult> ExecuteAsync<TResult>(
-        ICommand<TResult> command,
-        CancellationToken cancellationToken = default)
+    public Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command,
+                                               CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(command);
 
@@ -23,9 +22,7 @@ public class CommandExecutor(IServiceProvider serviceProvider)
         var handleMethod = handlerType.GetMethod(nameof(ICommandHandler<,>.HandleAsync))
             ?? throw new InvalidOperationException($"HandleAsync method not found on handler type '{handlerType.Name}'");
 
-        var task = handleMethod.Invoke(handler, [command, cancellationToken]) as Task<TResult>
-            ?? throw new InvalidOperationException($"Handler did not return expected Task<{typeof(TResult).Name}>");
-
-        return await task;
+        return handleMethod.Invoke(handler, [command, cancellationToken]) as Task<TResult>
+                ?? throw new InvalidOperationException($"Handler did not return expected Task<{typeof(TResult).Name}>");
     }
 }

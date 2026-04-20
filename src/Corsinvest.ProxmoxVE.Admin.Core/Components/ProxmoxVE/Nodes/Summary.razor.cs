@@ -38,7 +38,7 @@ public partial class Summary(IAdminService adminService) : IRefreshableData, ICl
         }
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

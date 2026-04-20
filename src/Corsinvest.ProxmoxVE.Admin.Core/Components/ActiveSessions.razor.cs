@@ -14,7 +14,7 @@ public partial class ActiveSessions(ISessionsInfoTracker sessionsInfoTracker,
     private IList<SessionInfo> SelectedItems { get; set; } = [];
     private RadzenDataGrid<SessionInfo> DataGridRef { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public Task RefreshDataAsync()
     {
@@ -38,13 +38,13 @@ public partial class ActiveSessions(ISessionsInfoTracker sessionsInfoTracker,
         }
     }
 
-    private async Task SendMessageAsync()
-        => await dialogService.OpenSideExAsync<SendMessageDialog>(L["Send Message"],
-                                                                  new()
-                                                                  {
-                                                                      [nameof(SendMessageDialog.HubConnectionIds)] = SelectedItems.Where(a => !string.IsNullOrEmpty(a.HubConnectionId))
-                                                                                                                                .Select(a => a.HubConnectionId!)
-                                                                                                                                .ToList()
-                                                                  },
-                                                                  new());
+    private Task SendMessageAsync()
+        => dialogService.OpenSideExAsync<SendMessageDialog>(L["Send Message"],
+                                                            new()
+                                                            {
+                                                                [nameof(SendMessageDialog.HubConnectionIds)] = SelectedItems.Where(a => !string.IsNullOrEmpty(a.HubConnectionId))
+                                                                                                                        .Select(a => a.HubConnectionId!)
+                                                                                                                        .ToList()
+                                                            },
+                                                            new());
 }

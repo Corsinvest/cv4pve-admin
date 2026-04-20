@@ -89,18 +89,18 @@ public partial class FileRestoreDialog(IBrowserService browserService,
         }
     }
 
-    private async Task DownloadFileAsync() => await DownloadAsync(false);
+    private Task DownloadFileAsync() => DownloadAsync(false);
 
-    private async Task DownloadAsync(bool tar)
-        => await browserService.OpenAsync(PveAdminHelper.GetUrlDowloadFileBackup(fusionCache,
-                                                                                 ClusterName,
-                                                                                 Node,
-                                                                                 Storage,
-                                                                                 Volume,
-                                                                                 SelectedItem.FilePath,
-                                                                                 SelectedItem.Type,
-                                                                                 SelectedItem.Text,
-                                                                                 tar)
+    private Task DownloadAsync(bool tar)
+        => browserService.OpenAsync(PveAdminHelper.GetUrlDowloadFileBackup(fusionCache,
+                                                                           ClusterName,
+                                                                           Node,
+                                                                           Storage,
+                                                                           Volume,
+                                                                           SelectedItem.FilePath,
+                                                                           SelectedItem.Type,
+                                                                           SelectedItem.Text,
+                                                                           tar)
                                          , "_blank");
 
     private static string GetIcon(NodeBackupFile item)

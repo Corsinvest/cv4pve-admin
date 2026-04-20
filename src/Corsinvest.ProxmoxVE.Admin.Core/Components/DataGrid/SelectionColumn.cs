@@ -36,7 +36,7 @@ public class SelectionColumn<TItem> : RadzenDataGridColumn<TItem> where TItem : 
 
                 builder.AddAttribute(3,
                                      nameof(RadzenCheckBox<>.Change),
-                                     EventCallback.Factory.Create<bool?>(this, a => Grid.Value = [.. a == true ? Grid.Data! : []]));
+                                     EventCallback.Factory.Create<bool?>(this, a => Grid.Value = [.. a is true ? Grid.Data! : []]));
                 builder.CloseComponent();
             }
         };

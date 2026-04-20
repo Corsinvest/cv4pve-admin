@@ -32,7 +32,7 @@ public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWid
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     public async Task RefreshDataAsync()
     {

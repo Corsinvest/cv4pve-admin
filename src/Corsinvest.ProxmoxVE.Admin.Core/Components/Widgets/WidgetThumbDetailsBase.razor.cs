@@ -21,7 +21,7 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
 
     protected record Data(string Action, int Count);
 
-    protected override async Task OnInitializedAsync() => await RefreshDataAsync();
+    protected override Task OnInitializedAsync() => RefreshDataAsync();
 
     protected IEnumerable<string> GetClusterNames<TModule, TSettings>()
         where TModule : ModuleBase

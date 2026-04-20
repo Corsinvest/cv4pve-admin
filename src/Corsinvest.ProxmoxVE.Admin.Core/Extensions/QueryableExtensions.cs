@@ -3,23 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
-public static class QueryableExtensions
+public static partial class QueryableExtensions
 {
-    public static async Task<T?> FromIdAsync<T>(this IQueryable<T> source, int id) where T : IId
-        => await source.Where(a => a.Id == id).FirstOrDefaultAsync();
+    [GeneratedRegex(@"^[\w\.\s,]+(\s+(asc|desc))?$", RegexOptions.IgnoreCase)]
+    private static partial Regex OrderByValidationRegex();
 
-    public static async Task DeleteAsync<T>(this IQueryable<T> source, int id) where T : IId
-        => await source.Where(a => a.Id == id).ExecuteDeleteAsync();
 
-    public static async Task DeleteAsync<T>(this IQueryable<T> source, IEnumerable<int> ids) where T : IId
-        => await source.Where(a => ids.Contains(a.Id)).ExecuteDeleteAsync();
+    public static Task<T?> FromIdAsync<T>(this IQueryable<T> source, int id) where T : IId
+        => source.Where(a => a.Id == id).FirstOrDefaultAsync();
 
-    public static async Task DeleteAsync<T>(this IQueryable<T> source, string clusterName) where T : IClusterName
-        => await source.Where(a => a.ClusterName == clusterName).ExecuteDeleteAsync();
+    public static Task DeleteAsync<T>(this IQueryable<T> source, int id) where T : IId
+        => source.Where(a => a.Id == id).ExecuteDeleteAsync();
+
+    public static Task DeleteAsync<T>(this IQueryable<T> source, IEnumerable<int> ids) where T : IId
+        => source.Where(a => ids.Contains(a.Id)).ExecuteDeleteAsync();
+
+    public static Task DeleteAsync<T>(this IQueryable<T> source, string clusterName) where T : IClusterName
+        => source.Where(a => a.ClusterName == clusterName).ExecuteDeleteAsync();
 
     public static IQueryable<T> FromClusterName<T>(this IQueryable<T> source, string clusterName) where T : IClusterName
         => source.Where(a => a.ClusterName == clusterName);
@@ -79,7 +84,7 @@ public static class QueryableExtensions
         if (!string.IsNullOrEmpty(args.OrderBy))
         {
             // Basic validation: only allow alphanumeric, dots, spaces, and "asc"/"desc"
-            if (System.Text.RegularExpressions.Regex.IsMatch(args.OrderBy, @"^[\w\.\s,]+(\s+(asc|desc))?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            if (OrderByValidationRegex().IsMatch(args.OrderBy))
             {
                 query = query.OrderBy(args.OrderBy);
             }

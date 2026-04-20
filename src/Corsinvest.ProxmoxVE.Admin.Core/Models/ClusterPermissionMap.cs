@@ -29,5 +29,8 @@ public static class ClusterPermissionMap
         [ClusterPermissions.Node.PowerManagement.Key] = PveApiPermissions.Sys.PowerMgmt,
         [ClusterPermissions.Node.Replication.Key] = PveApiPermissions.Vm.Replicate,
         [ClusterPermissions.Node.ReplicationScheduleNow.Key] = PveApiPermissions.Vm.Replicate,
+
+        // Storage
+        [ClusterPermissions.Storage.DeleteContent.Key] = PveApiPermissions.Datastore.Allocate,
     };
 }

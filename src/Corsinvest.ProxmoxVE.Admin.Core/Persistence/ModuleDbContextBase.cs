@@ -43,7 +43,7 @@ public abstract class ModuleDbContextBase<T>(DbContextOptions<T> options) : DbCo
         {
             // PostgreSQL specific commands (can be extended for other databases)
             DatabaseMaintenanceOperation.Optimize => "VACUUM ANALYZE",
-            DatabaseMaintenanceOperation.Reindex => $"REINDEX DATABASE \"{Database.GetDbConnection().Database}\"",
+            DatabaseMaintenanceOperation.Reindex => $"REINDEX DATABASE {PostgreSqlHelper.QuoteIdentifier(Database.GetDbConnection().Database)}",
             _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, "Unknown maintenance operation")
         }, cancellationToken);
 }

@@ -36,7 +36,7 @@ public static partial class ApplicationHelper
     public const string DefaultAdminPassword = "Password123!";
 
     public static bool IsRunningInEfTool
-        => AppDomain.CurrentDomain.FriendlyName?.Contains("ef", StringComparison.OrdinalIgnoreCase) == true
+        => AppDomain.CurrentDomain.FriendlyName?.Contains("ef", StringComparison.OrdinalIgnoreCase) is true
             || Environment.CommandLine.Contains("ef", StringComparison.OrdinalIgnoreCase);
 
     public const string ThemeName = "fluent";
