@@ -19,11 +19,10 @@ public class Settings : JobScheduleBase, IModuleSettings
 /etc/.
 /var/lib/pve-cluster/.
 /var/lib/ceph/.
+/var/spool/cron/crontabs
 /root/.ssh
 /root/scripts
 /root/backup
-/root/*.sh
-/root/*.conf
 /root/.bashrc
 /root/.profile";
 

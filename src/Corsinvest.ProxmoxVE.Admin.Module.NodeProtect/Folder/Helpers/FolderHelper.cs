@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Persistence;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.NodeProtect.Api;
@@ -42,9 +43,13 @@ internal static class FolderHelper
         var loggerFactory = scope.GetLoggerFactory();
         var logger = loggerFactory.CreateLogger(typeof(FolderHelper));
         var auditService = scope.GetRequiredService<IAuditService>();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
+        var moduleName = new Module().Name;
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
         var clusterClient = scope.GetClusterClient(clusterName);
         var engine = new ProtectEngine(loggerFactory.CreateLogger<ProtectEngine>());
+
+        await using var taskScope = await taskTracker.StartAsync($"NodeProtect Folder [{clusterName}]", clusterName, moduleName, clusterName);
 
         using (logger.LogTimeOperation(LogLevel.Information, true, "NodeProtect: backup data to folder for cluster '{clusterName}'", clusterName))
         {
@@ -72,11 +77,13 @@ internal static class FolderHelper
                     {
                         logs = await engine.BackupNodeAsync(node.Node, connectionInfo, paths, targetFile);
                         nodeStatus = true;
+                        taskScope.Log(logs);
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(ex, "Backup failed for node {Node}", node.Node);
                         logs = ex.Message;
+                        taskScope.Log($"[{node.Node}] {ex.Message}", LogLevel.Error);
                     }
 
                     await db.FolderTaskResults.AddAsync(new()
@@ -115,6 +122,8 @@ internal static class FolderHelper
             {
                 success = false;
                 logger.LogError(ex, "Backup failed for cluster {ClusterName}", clusterName);
+                taskScope.Item.Status = TaskItemStatus.Failed;
+                taskScope.Log(ex.ToString(), LogLevel.Error);
                 throw;
             }
             finally
