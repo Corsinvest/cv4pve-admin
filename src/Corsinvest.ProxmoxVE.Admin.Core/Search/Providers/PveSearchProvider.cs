@@ -73,10 +73,10 @@ public class PveSearchProvider : ISearchProvider
 
     #region Command Implementations
     private async Task ChangeStatusAsync(CommandExecutionContext context, VmStatus status)
-        => await context.ServiceProvider.GetCommandExecutor()
-                                        .ExecuteAsync(new VmChangeStateCommand(context.ClusterName,
-                                                                                      _vmParamVmRunning.ToLong(context.Parameters),
-                                                                                      status));
+        => await context.ServiceProvider.GetUiCommandExecutor()
+                                        .ExecuteAndNotifyAsync(new VmPowerManagementCommand(context.ClusterName,
+                                                                                             _vmParamVmRunning.ToLong(context.Parameters),
+                                                                                             status));
 
     private Task StartAsync(CommandExecutionContext context) => ChangeStatusAsync(context, VmStatus.Start);
     private Task StopAsync(CommandExecutionContext context) => ChangeStatusAsync(context, VmStatus.Stop);
@@ -107,12 +107,12 @@ public class PveSearchProvider : ISearchProvider
     }
 
     private async Task SnapshotAsync(CommandExecutionContext context)
-        => await context.ServiceProvider.GetCommandExecutor()
-                                        .ExecuteAsync(new VmCreateSnapshotCommand(context.ClusterName,
-                                                                                         _vmParamVmRunning.ToLong(context.Parameters),
-                                                                                         _nameParam.ToString(context.Parameters),
-                                                                                         _descriptionParam.ToString(context.Parameters),
-                                                                                         _vmStateParam.ToBoolean(context.Parameters)));
+        => await context.ServiceProvider.GetUiCommandExecutor()
+                                        .ExecuteAndNotifyAsync(new VmCreateSnapshotCommand(context.ClusterName,
+                                                                                                  _vmParamVmRunning.ToLong(context.Parameters),
+                                                                                                  _nameParam.ToString(context.Parameters),
+                                                                                                  _descriptionParam.ToString(context.Parameters),
+                                                                                                  _vmStateParam.ToBoolean(context.Parameters)));
     #endregion
 
     public async Task<IEnumerable<SearchResultItem>> SearchAsync(SearchContext context)
@@ -186,7 +186,7 @@ public class PveSearchProvider : ISearchProvider
                 {
                     foreach (var item in data)
                     {
-                        item.Set(await clusterClient.CachedData.GetVmOsInfoAsync(item, false));
+                        item.Set(await clusterClient.CachedData.GetVmOsInfoAsync(item.Node, item.VmType, item.VmId, item.IsRunning, false));
 
                         if (item.VmType == VmType.Qemu)
                         {

@@ -49,7 +49,7 @@ public class QemuConfigInfo
     public int NumberOfSockets => _dataLazy.Value.Sockets;
 
     [Field(Description = "Amount of target RAM for the VM in MB. Using zero disables the ballon driver.")]
-    public int BalloonRam => _dataLazy.Value.Balloon;
+    public int? BalloonRam => _dataLazy.Value.Balloon;
 
     [Field(AllowedValues = ["seabios", "ovmf"])]
     public string BiosType => _dataLazy.Value.Bios;
@@ -80,6 +80,6 @@ public class QemuConfigInfo
 #if DEBUG
         Console.WriteLine($"Load Qemu config - GuestId: {GuestId}, Node: {NodeName}");
 #endif
-        return AsyncHelper.RunSync(() => _cachedData.GetQemuConfigAsync(NodeName, GuestId, false));
+        return AsyncHelper.RunSync(() => _cachedData.GetQemuConfigAsync(NodeName, GuestId, false).AsTask());
     }
 }
