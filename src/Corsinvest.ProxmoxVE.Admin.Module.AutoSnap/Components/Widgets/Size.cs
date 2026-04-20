@@ -50,7 +50,7 @@ public class Size(IAdminService adminService,
 
             foreach (var item in data)
             {
-                item.SnapshotsSize = DiskInfoHelper.CalculateSnapshots(item.VmId, item.Name, disks);
+                item.SnapshotsSize = DiskSnapshotHelper.CalculateSnapshots(item.VmId, item.Name, disks);
 
                 if (item.SnapshotsSize > 0)
                 {

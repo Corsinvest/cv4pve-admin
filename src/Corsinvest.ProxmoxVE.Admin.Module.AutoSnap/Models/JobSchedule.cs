@@ -25,7 +25,7 @@ public class JobSchedule : JobScheduleBase, IClusterName, IId, IDescription
 
     public bool VmStatus { get; set; }
     public bool OnlyRuns { get; set; }
-
+    public int MaxParallel { get; set; } = 1;
     public long TimeoutSnapshot { get; set; } = 30;
     public ICollection<JobResult> Results { get; set; } = [];
     public DateTimeOffset? LastRunTime => Results?.LastOrDefault()?.Start;
