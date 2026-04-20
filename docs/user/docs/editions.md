@@ -72,7 +72,7 @@ This section outlines the current development status of upcoming and evolving mo
 | **[Command Palette](modules/command-palette.md)** | ✅ | ✅ | Application | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |
 | **[Dashboard](modules/dashboard.md)** | ✅ | ✅ | Utilities | Customizable dashboards with widgets and metrics | <ul><li>Additional widgets from Enterprise modules</li></ul> |
 | **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics and health checks | <ul><li>Help links to Proxmox documentation for each issue</li><li>PDF export of diagnostic report</li></ul> |
-| **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems | |
+| **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems (Prometheus) | |
 | **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
 | **[Notifier](configuration/notifier.md)** | ✅ | ✅ | Notification | Notification system (CE: Email only) | <ul><li>119 services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
 | **[Profile](configuration/profile.md)** | ✅ | ✅ | Application | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |

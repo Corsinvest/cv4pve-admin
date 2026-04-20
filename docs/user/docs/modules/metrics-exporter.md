@@ -1,6 +1,6 @@
 # Metrics Exporter
 
-Exposes Proxmox VE metrics for monitoring systems (today Prometheus; more coming).
+Exposes Proxmox VE metrics for monitoring systems (Prometheus).
 
 ## Overview
 

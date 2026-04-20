@@ -16,7 +16,7 @@
 - **[Replication Analytics](replication-analytics.md)** - Replication job monitoring and analysis
 - **[Diagnostics](diagnostics.md)** - Automated cluster health checks and diagnostics
 - **[Resources](resources.md)** - Real-time cluster and resource status monitoring
-- **[Metrics Exporter](metrics-exporter.md)** - Exposes Proxmox VE metrics for monitoring systems
+- **[Metrics Exporter](metrics-exporter.md)** - Exposes Proxmox VE metrics for monitoring systems (Prometheus)
 - **[Update Manager](update-manager.md)** - System updates scanning and management
 - **[VM Performance](vm-performance.md)** <span class="ee"></span> - Real-time VM performance tracking with IOPS, latency, bandwidth metrics
 
