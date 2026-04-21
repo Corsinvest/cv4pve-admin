@@ -2,13 +2,11 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Microsoft.Extensions.Configuration;
-
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.ReleaseChecker;
 
 internal static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddReleaseServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddReleaseServices(this IServiceCollection services)
     {
         // Configure named HttpClient for GitHub with timeout
         services.AddHttpClient("GitHubReleaseChecker", client =>
