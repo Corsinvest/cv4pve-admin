@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static async Task AbandonStaleTasksAsync(this IServiceScope scope)
-        => await scope.GetRequiredService<ITaskTrackerService>().AbandonStaleTasksAsync();
+    public static Task AbandonStaleTasksAsync(this IServiceScope scope)
+        => scope.GetRequiredService<ITaskTrackerService>().AbandonStaleTasksAsync();
 
 }

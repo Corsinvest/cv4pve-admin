@@ -44,12 +44,16 @@ internal static class FolderHelper
         var logger = loggerFactory.CreateLogger(typeof(FolderHelper));
         var auditService = scope.GetRequiredService<IAuditService>();
         var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
-        var moduleName = new Module().Name;
+        var module = scope.GetModuleService().Get<Module>()!;
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
         var clusterClient = scope.GetClusterClient(clusterName);
         var engine = new ProtectEngine(loggerFactory.CreateLogger<ProtectEngine>());
 
-        await using var taskScope = await taskTracker.StartAsync($"NodeProtect Folder [{clusterName}]", clusterName, moduleName, clusterName);
+        await using var taskScope = await taskTracker.StartAsync($"NodeProtect Folder [{clusterName}]",
+                                                                 clusterName,
+                                                                 module.Name,
+                                                                 "Folder",
+                                                                 detailUrl: module.GetLinkByProvider("folder")!.GetRealUrl(clusterName));
 
         using (logger.LogTimeOperation(LogLevel.Information, true, "NodeProtect: backup data to folder for cluster '{clusterName}'", clusterName))
         {
@@ -64,8 +68,14 @@ internal static class FolderHelper
                 var paths = settings.PathsToBackup.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
                 var start = DateTime.Now;
 
+                taskScope.Log($"Paths to backup: {paths.Length}");
+                taskScope.Log($"Working directory: {directoryWork}");
+
                 var nodes = (await clusterClient.CachedData.GetResourcesAsync(false))
-                                .Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline);
+                                .Where(a => a.ResourceType == ClusterResourceType.Node && a.IsOnline)
+                                .ToList();
+
+                taskScope.Log($"Online nodes: {nodes.Count} ({string.Join(", ", nodes.Select(n => n.Node))})");
 
                 foreach (var node in nodes)
                 {
@@ -73,10 +83,13 @@ internal static class FolderHelper
                     var nodeStatus = false;
                     var logs = string.Empty;
                     var connectionInfo = await clusterClient.GetSshConnectionInfoAsync(node.Node, true);
+                    taskScope.Log($"Backing up node: {node.Node}");
                     try
                     {
                         logs = await engine.BackupNodeAsync(node.Node, connectionInfo, paths, targetFile);
                         nodeStatus = true;
+                        var size = File.Exists(targetFile) ? new System.IO.FileInfo(targetFile).Length : 0;
+                        taskScope.Log($"[{node.Node}] OK - Size: {size:N0} bytes");
                         taskScope.Log(logs);
                     }
                     catch (Exception ex)
@@ -103,6 +116,7 @@ internal static class FolderHelper
 
                 foreach (var item in Directory.EnumerateDirectories(baseDir).OrderDescending().Skip(settings.Folder.Keep).ToArray())
                 {
+                    taskScope.Log($"Removing old backup: {Path.GetFileName(item)}");
                     Directory.Delete(item, true);
                 }
 
