@@ -73,13 +73,13 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
 
     }
 
-    private void OnGridRender(DataGridRenderEventArgs<Data> args)
+    private async Task OnGridRenderAsync(DataGridRenderEventArgs<Data> _)
     {
         if (!_expanded && Id != null && ResultLoadData.Data is { Count: > 0 })
         {
             _expanded = true;
             var item = ResultLoadData.Data.FirstOrDefault(a => a.Id == Id);
-            if (item != null) { _ = DataGridRef.ExpandRow(item); }
+            if (item != null) { await DataGridRef.ExpandRow(item); }
         }
     }
 
