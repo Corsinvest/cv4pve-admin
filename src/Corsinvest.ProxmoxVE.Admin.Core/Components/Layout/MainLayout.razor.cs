@@ -63,7 +63,7 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
             CurrentClusterService.ClusterName = ClusterName;
 
             var user = await CurrentUserService.GetUserAsync();
-            if (user != null && await UserManager.CheckPasswordAsync(user, ApplicationHelper.DefaultAdminPassword))
+            if (user != null && await UserManager.CheckPasswordAsync(user, ApplicationHelper.DefaultUserPassword))
             {
                 NotifyDefaultPassword();
             }
