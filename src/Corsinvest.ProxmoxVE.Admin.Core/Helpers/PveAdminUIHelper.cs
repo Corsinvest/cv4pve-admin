@@ -15,7 +15,6 @@ public static partial class PveAdminUIHelper
     [GeneratedRegex(@"^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$")]
     private static partial Regex HexColorRegex();
 
-
     public static string GetColorRange(double value)
         => value > 80
             ? Colors.Danger

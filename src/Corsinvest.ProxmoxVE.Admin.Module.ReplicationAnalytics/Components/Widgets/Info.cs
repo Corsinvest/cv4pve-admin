@@ -33,8 +33,8 @@ public class Info(IDbContextFactory<ModuleDbContext> dbContextFactory,
         await InvokeAsync(StateHasChanged);
 
         var clusterNames = ClusterNames.Any()
-                  ? ClusterNames
-                  : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
+                              ? ClusterNames
+                              : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
 

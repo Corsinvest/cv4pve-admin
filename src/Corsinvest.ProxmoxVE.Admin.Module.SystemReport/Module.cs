@@ -55,8 +55,8 @@ public class Module : ModuleBase
 
     public override Task FixAsync(IServiceScope scope) => RunAsync(scope);
 
-    protected override async Task RunAsync(IServiceScope scope)
-        => await scope.MigrateDbAsync<ModuleDbContext>();
+    protected override Task RunAsync(IServiceScope scope)
+        => scope.MigrateDbAsync<ModuleDbContext>();
 
     //protected override async Task RefreshSettingsAsync(IServiceScope scope)
     //{

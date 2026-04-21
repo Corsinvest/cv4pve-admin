@@ -29,6 +29,7 @@ public class Module : ModuleBase
                 Icon = PveAdminUIHelper.Icons.Overview
            },
         };
+
         navBar.AddRange(GetProviders().Select(a => new ModuleLinkBase(this, a.Name)
         {
             Render = a.Render,
@@ -54,6 +55,9 @@ public class Module : ModuleBase
             }
         ];
     }
+
+    public ModuleLinkBase? GetLinkByProvider(string name)
+        => NavBar.FirstOrDefault(a => a.Text.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
     protected override string PermissionBaseKey { get; } = "NodeProtect";
 

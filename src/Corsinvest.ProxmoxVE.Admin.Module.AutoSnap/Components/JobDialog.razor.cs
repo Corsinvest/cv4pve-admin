@@ -10,7 +10,7 @@ public partial class JobDialog(IModuleService moduleService) : IModelParameter<J
 {
     [Parameter] public JobSchedule Model { get; set; } = default!;
 
-    private Type? WebHookTabComponentType { get; set; } = default!;
+    private Type? WebHookTabComponentType { get; set; }
 
     protected override void OnInitialized()
         => WebHookTabComponentType = moduleService.Get<Module>()!.WebHookTabComponentType;

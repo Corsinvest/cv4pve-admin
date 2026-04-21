@@ -320,7 +320,7 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
         }
     }
 
-    private async Task OnListBoxChange(object value)
+    private async Task OnListBoxChange(object _)
     {
         // Double-click or Enter on list item
         if (SelectedItem != null) { await SelectItem(SelectedItem); }

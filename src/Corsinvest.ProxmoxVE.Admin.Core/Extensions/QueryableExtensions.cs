@@ -13,7 +13,6 @@ public static partial class QueryableExtensions
     [GeneratedRegex(@"^[\w\.\s,]+(\s+(asc|desc))?$", RegexOptions.IgnoreCase)]
     private static partial Regex OrderByValidationRegex();
 
-
     public static Task<T?> FromIdAsync<T>(this IQueryable<T> source, int id) where T : IId
         => source.Where(a => a.Id == id).FirstOrDefaultAsync();
 

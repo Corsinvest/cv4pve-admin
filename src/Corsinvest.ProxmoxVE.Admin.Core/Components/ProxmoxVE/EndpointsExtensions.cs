@@ -351,14 +351,14 @@ internal static class EndpointsExtensions
         });
 
         group.Map("/api2/json/nodes/{node}/vncwebsocket",
-                  async (string clusterName,
+                  (string clusterName,
                          string node,
                          [FromQuery] int port,
                          [FromQuery] string vncticket,
                          HttpContext httpContext,
                          IAdminService adminService,
                          IPermissionService permissionService)
-            => await CreateVncWebSocketAsync(clusterName,
+            => CreateVncWebSocketAsync(clusterName,
                                              node,
                                              string.Empty,
                                              0,
@@ -369,7 +369,7 @@ internal static class EndpointsExtensions
                                              permissionService));
 
         group.Map("/api2/json/nodes/{node}/{type}/{vmId}/vncwebsocket",
-                  async (string clusterName,
+                  (string clusterName,
                          string node,
                          string type,
                          long vmId,
@@ -378,7 +378,7 @@ internal static class EndpointsExtensions
                          HttpContext httpContext,
                          IAdminService adminService,
                          IPermissionService permissionService)
-            => await CreateVncWebSocketAsync(clusterName,
+            => CreateVncWebSocketAsync(clusterName,
                                              node,
                                              type,
                                              vmId,

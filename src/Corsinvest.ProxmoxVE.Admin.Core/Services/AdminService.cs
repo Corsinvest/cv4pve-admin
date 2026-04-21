@@ -37,22 +37,22 @@ internal class AdminService(IPveClientFactory pveClientFactory,
         }
     }
 
-    public async Task<FluentResults.Result<string>> PopulateInfoAsync(ClusterSettings clusterSettings)
+    public Task<FluentResults.Result<string>> PopulateInfoAsync(ClusterSettings clusterSettings)
     {
         var clusterClient = Exists(clusterSettings.Name)
                                ? this[clusterSettings.Name]
                                : CreateClusterClient(clusterSettings);
 
-        return await clusterClient.PopulateSettingsAsync();
+        return clusterClient.PopulateSettingsAsync();
     }
 
-    public async Task<FluentResults.Result<string>> TestSshAsync(ClusterSettings clusterSettings)
+    public Task<FluentResults.Result<string>> TestSshAsync(ClusterSettings clusterSettings)
     {
         var clusterClient = Exists(clusterSettings.Name)
                                ? this[clusterSettings.Name]
                                : CreateClusterClient(clusterSettings);
 
-        return await clusterClient.TestSshAsync();
+        return clusterClient.TestSshAsync();
     }
 
     //public async Task<bool> ClusterIsValidAsync(string clusterName)

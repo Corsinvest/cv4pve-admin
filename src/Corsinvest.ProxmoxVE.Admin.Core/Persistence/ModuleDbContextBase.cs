@@ -38,8 +38,8 @@ public abstract class ModuleDbContextBase<T>(DbContextOptions<T> options) : DbCo
     /// <param name="modelBuilder">The model builder</param>
     protected abstract void ConfigureEntities(ModelBuilder modelBuilder);
 
-    public async Task ExecuteMaintenanceAsync(DatabaseMaintenanceOperation operation, CancellationToken cancellationToken = default)
-        => await Database.ExecuteSqlRawAsync(operation switch
+    public Task ExecuteMaintenanceAsync(DatabaseMaintenanceOperation operation, CancellationToken cancellationToken = default)
+        => Database.ExecuteSqlRawAsync(operation switch
         {
             // PostgreSQL specific commands (can be extended for other databases)
             DatabaseMaintenanceOperation.Optimize => "VACUUM ANALYZE",

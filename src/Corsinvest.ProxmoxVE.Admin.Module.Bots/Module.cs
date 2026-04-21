@@ -47,9 +47,9 @@ public class Module : ModuleBase
         => AddSettings<Settings, Components.RenderSettings>(services)
             .AddHostedService<BotgramService>();
 
-    protected override async Task RefreshSettingsAsync(IServiceScope scope)
-        => await scope.ServiceProvider.GetServices<IHostedService>()
-                                      .OfType<BotgramService>()
-                                      .FirstOrDefault()!
-                                      .RestartAsync();
+    protected override Task RefreshSettingsAsync(IServiceScope scope)
+        => scope.ServiceProvider.GetServices<IHostedService>()
+                                .OfType<BotgramService>()
+                                .FirstOrDefault()!
+                                .RestartAsync();
 }

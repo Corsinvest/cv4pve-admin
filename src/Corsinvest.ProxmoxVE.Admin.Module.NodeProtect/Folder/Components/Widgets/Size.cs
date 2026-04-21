@@ -36,8 +36,8 @@ public class Size(ISettingsService settingsService,
     protected override async Task RefreshDataAsyncInt()
     {
         var clusterNames = ClusterNames.Any()
-            ? ClusterNames
-            : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
+                            ? ClusterNames
+                            : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
 
         IsConfigured = clusterNames.Any(clusterName =>
         {

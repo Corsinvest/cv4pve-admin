@@ -31,8 +31,8 @@ public static class ServiceScopeExtensions
     public static ClusterClient GetClusterClient(this IServiceScope scope, string clusterName) => scope.GetAdminService()[clusterName];
     public static EventNotificationService GetEventNotificationService(this IServiceScope scope) => scope.GetRequiredService<EventNotificationService>();
 
-    public static async Task<TContext> GetDbContextAsync<TContext>(this IServiceScope scope) where TContext : DbContext
-            => await scope.GetRequiredService<IDbContextFactory<TContext>>().CreateDbContextAsync();
+    public static Task<TContext> GetDbContextAsync<TContext>(this IServiceScope scope) where TContext : DbContext
+        => scope.GetRequiredService<IDbContextFactory<TContext>>().CreateDbContextAsync();
 
     public static TContext GetDbContext<TContext>(this IServiceScope scope) where TContext : DbContext
         => scope.GetRequiredService<IDbContextFactory<TContext>>().CreateDbContext();

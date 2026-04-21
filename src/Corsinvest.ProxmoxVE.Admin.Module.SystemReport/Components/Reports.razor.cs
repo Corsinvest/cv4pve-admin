@@ -106,7 +106,7 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         else if (e.IsForNew()) { }
     }
 
-    private Task OnDownloadClickAsync(RadzenSplitButtonItem? item)=> DownloadAsync(item?.Value!);
+    private Task OnDownloadClickAsync(RadzenSplitButtonItem? item) => DownloadAsync(item?.Value!);
 
     private async Task DownloadAsync(string format)
     {

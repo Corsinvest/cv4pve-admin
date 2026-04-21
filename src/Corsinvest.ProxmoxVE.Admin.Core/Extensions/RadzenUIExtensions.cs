@@ -84,7 +84,7 @@ public static class RadzenUIExtensions
 
     public static Task<dynamic?> OpenSideExAsync<T>(this DialogService dialogService,
                                                          string title,
-                                                         Dictionary<string, object> parameters,
+                                                         Dictionary<string, object?> parameters,
                                                          DialogOptions options)
     where T : ComponentBase
     {
@@ -96,7 +96,7 @@ public static class RadzenUIExtensions
         }
         options.Style = null;
         options.Width ??= "600px";
-        return dialogService.OpenAsync<T>(title, parameters!, options);
+        return dialogService.OpenAsync<T>(title, parameters, options);
     }
 
     public static Task<dynamic?> OpenSideEditAsync<TDialog>(this DialogService dialogService,

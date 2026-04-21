@@ -10,7 +10,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;
 
 public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
                             NotificationService notificationService,
-                            IAdminService adminService,
                             IDiagnosticService diagnosticService)
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
