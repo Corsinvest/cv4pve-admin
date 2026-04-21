@@ -33,7 +33,7 @@ public static partial class ApplicationHelper
     public static string[] SupportedCultures => [DefaultCulture];
 
     public const string DefaultAdminUsername = "admin@local";
-    public const string DefaultAdminPassword = "Password123!";
+    public const string DefaultUserPassword = "Password123!";
 
     public static bool IsRunningInEfTool
         => AppDomain.CurrentDomain.FriendlyName?.Contains("ef", StringComparison.OrdinalIgnoreCase) is true

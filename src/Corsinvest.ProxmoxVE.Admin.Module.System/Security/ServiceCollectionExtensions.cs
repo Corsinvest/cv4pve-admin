@@ -56,6 +56,7 @@ public static class ServiceCollectionExtensions
         {
             options.User.RequireUniqueEmail = true;
             options.SignIn.RequireConfirmedEmail = true;
+            options.SignIn.RequireConfirmedAccount = true;
 
             //read from settings
             var sectionPasswordOptions = configuration.GetSection("Security:PasswordOptions");
@@ -82,7 +83,6 @@ public static class ServiceCollectionExtensions
 
             // 2FA settings
             options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
-            options.SignIn.RequireConfirmedAccount = false;
         })
         .AddRoles<ApplicationRole>()
         .AddEntityFrameworkStores<ModuleDbContext>()
@@ -121,7 +121,7 @@ public static class ServiceCollectionExtensions
             };
 
             //default password
-            await userManager.CreateAsync(adminUser, ApplicationHelper.DefaultAdminPassword);
+            await userManager.CreateAsync(adminUser, ApplicationHelper.DefaultUserPassword);
         }
 
         var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
