@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
@@ -157,8 +160,8 @@ public static class IdentityExtensions
     }
 
     public static async Task<IdentityResult> DeleteExAsync(this UserManager<ApplicationUser> userManager,
-                                                            ApplicationUser user,
-                                                            IPermissionService permissionService)
+                                                           ApplicationUser user,
+                                                           IPermissionService permissionService)
     {
         // Delete all user permissions
         var permissions = await permissionService.GetUserPermissionsAsync(user.Id);
@@ -214,4 +217,40 @@ public static class IdentityExtensions
     //    var rolesIndDb = await userManager.GetRolesAsync(user);
     //    return await userManager.RemoveFromRolesAsync(user, roles.Where(a => rolesIndDb.Contains(a)));
     //}
+
+    public static async Task<string> GeneratePasswordResetLinkAsync(this UserManager<ApplicationUser> userManager,
+                                                                    ApplicationUser user,
+                                                                    NavigationManager navigationManager)
+    {
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        return navigationManager.GetUriWithQueryParameters(navigationManager.ToAbsoluteUri("/ResetPassword").AbsoluteUri,
+                                                           new Dictionary<string, object?> { ["code"] = code });
+    }
+
+    public static async Task SendPasswordResetAsync(this UserManager<ApplicationUser> userManager,
+                                                    ApplicationUser user,
+                                                    NavigationManager navigationManager,
+                                                    IEmailSender<ApplicationUser> emailSender)
+    {
+        var link = await userManager.GeneratePasswordResetLinkAsync(user, navigationManager);
+        await emailSender.SendPasswordResetLinkAsync(user, user.Email!, link);
+    }
+
+    public static string GenerateRandomPassword()
+        => Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)) + "Aa1!";
+
+    public static async Task SendConfirmationAsync(this UserManager<ApplicationUser> userManager,
+                                                   ApplicationUser user,
+                                                   NavigationManager navigationManager,
+                                                   IEmailSender<ApplicationUser> emailSender)
+    {
+        var userId = await userManager.GetUserIdAsync(user);
+        var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        var link = navigationManager.GetUriWithQueryParameters(
+            navigationManager.ToAbsoluteUri("/ConfirmEmail").AbsoluteUri,
+            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
+        await emailSender.SendConfirmationLinkAsync(user, user.Email!, link);
+    }
 }
