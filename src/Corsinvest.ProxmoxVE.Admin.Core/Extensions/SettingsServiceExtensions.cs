@@ -33,20 +33,20 @@ public static class SettingsServiceExtensions
         return ret;
     }
 
-    public static async Task SetAsync<TModule, TSetting>(this ISettingsService settingsService, string clusterName, TSetting value) where TModule : ModuleBase
-        => await settingsService.SetAsync(GetContextModule(typeof(TModule)),
-                                          GetKeyModule(typeof(TSetting), clusterName),
-                                          value!,
-                                          false);
+    public static Task SetAsync<TModule, TSetting>(this ISettingsService settingsService, string clusterName, TSetting value) where TModule : ModuleBase
+        => settingsService.SetAsync(GetContextModule(typeof(TModule)),
+                                    GetKeyModule(typeof(TSetting), clusterName),
+                                    value!,
+                                    false);
 
-    public static async Task SetAsync(this ISettingsService settingsService,
+    public static Task SetAsync(this ISettingsService settingsService,
                                       ModuleBase module,
                                       string clusterName,
                                       object value)
-        => await settingsService.SetAsync(module.GetType().FullName!,
-                                          $"{module.RenderSettingsInfo!.Type.FullName}-{clusterName}",
-                                          value,
-                                          false);
+        => settingsService.SetAsync(module.GetType().FullName!,
+                                    $"{module.RenderSettingsInfo!.Type.FullName}-{clusterName}",
+                                    value,
+                                    false);
 
     public static ClustersSettings GetClustersSettings(this ISettingsService settingsService)
         => settingsService.Get<ClustersSettings>();

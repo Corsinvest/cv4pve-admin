@@ -31,7 +31,7 @@ public partial class Login(NavigationManager navigationManager,
     {
 #if DEBUG
         Input.Username = ApplicationHelper.DefaultAdminUsername;
-        Input.Password = ApplicationHelper.DefaultAdminPassword;
+        Input.Password = ApplicationHelper.DefaultUserPassword;
 #endif
 
         if (HttpContext != null && HttpMethods.IsGet(HttpContext.Request.Method))

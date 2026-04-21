@@ -57,7 +57,7 @@ public class ClusterCachedData
 
     public ValueTask<IEnumerable<ClusterResource>> GetResourcesAsync(bool forceReload)
         => GetOrSetAsync(nameof(GetResourcesAsync),
-                         async () => (IEnumerable<ClusterResource>)(await (await GetPveClientAsync()).GetResourcesAsync(ClusterResourceType.All)).CalculateHostUsage().ToList(),
+                         async () => (IEnumerable<ClusterResource>)[.. (await (await GetPveClientAsync()).GetResourcesAsync(ClusterResourceType.All)).CalculateHostUsage()],
                          10,
                          forceReload);
 

@@ -9,7 +9,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Localization;
 
 internal static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddLocalization(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAdminLocalization(this IServiceCollection services)
     {
         services.Configure<RequestLocalizationOptions>(options =>
         {

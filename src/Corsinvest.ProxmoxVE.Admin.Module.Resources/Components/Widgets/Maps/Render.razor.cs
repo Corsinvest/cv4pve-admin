@@ -65,7 +65,7 @@ public partial class Render(IAdminService adminService,
         Initalized = true;
     }
 
-    private async Task OnLayerAdded(Layer layer) => await RefMap.CenterToCurrentGeoLocation();
+    private async Task OnLayerAdded(Layer _) => await RefMap.CenterToCurrentGeoLocation();
 
     private Task OnMarkerClickAsync(string clusterName)
         => DialogService.OpenAsync<ClusterDetailDialog>(L["Cluster {0}", clusterName],

@@ -12,8 +12,8 @@ public abstract class BaseActionHelper<TModule, TSettings, TDataChangedNotificat
     protected static TSettings GetModuleSettings(IServiceScope scope, string clusterName)
         => scope.GetSettingsService().GetForModule<TModule, TSettings>(clusterName);
 
-    protected static async Task PublishDataChangedAsync(IServiceScope scope)
-        => await scope.GetEventNotificationService().PublishAsync(new TDataChangedNotification());
+    protected static Task PublishDataChangedAsync(IServiceScope scope)
+        => scope.GetEventNotificationService().PublishAsync(new TDataChangedNotification());
 
     protected static TModule GetModule(IServiceScope scope) => scope.GetModuleService().Get<TModule>()!;
 }

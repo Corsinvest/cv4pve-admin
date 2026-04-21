@@ -15,7 +15,7 @@ public class EventNotificationService(IServiceProvider serviceProvider, ILogger<
 
     public IDisposable Subscribe<T>(Func<T, Task> handler) where T : IEventNotification
     {
-        async Task Wrapper(IEventNotification notification, CancellationToken cancellationToken)
+        async Task Wrapper(IEventNotification notification, CancellationToken _)
         {
             if (notification is T typedNotification) { await handler(typedNotification); }
         }

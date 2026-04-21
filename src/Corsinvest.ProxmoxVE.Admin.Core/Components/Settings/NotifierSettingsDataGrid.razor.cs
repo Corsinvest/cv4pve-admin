@@ -45,7 +45,7 @@ public partial class NotifierSettingsDataGrid<TSettings>(INotifierService notifi
     private void CellClick(DataGridCellMouseEventArgs<TSettings> e)
         => _validColumnClick = e.Column?.Property == nameof(NotifierConfiguration.Name);
 
-    private async Task AddAsync() => await ShowEditorAsync(Activator.CreateInstance<TSettings>(), true);
+    private Task AddAsync() => ShowEditorAsync(Activator.CreateInstance<TSettings>(), true);
 
     private async Task DeleteAsync()
     {

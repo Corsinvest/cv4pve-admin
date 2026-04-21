@@ -40,21 +40,21 @@ public class PermissionService(ICurrentUserService currentUserService,
         return await HasWithRolesAsync(await userPermissionsTask, await userRolesTask, clusterName, permissionKey, path);
     }
 
-    private async Task<Dictionary<string, List<string>>> GetRolesPermissionsAsync()
-        => await fusionCache.GetOrSetAsync("Permissions:RolesClaims",
-                                           async token =>
-                                           {
-                                               await using var db = await dbContextFactory.CreateDbContextAsync(token);
+    private ValueTask<Dictionary<string, List<string>>> GetRolesPermissionsAsync()
+        => fusionCache.GetOrSetAsync("Permissions:RolesClaims",
+                                     async token =>
+                                     {
+                                         await using var db = await dbContextFactory.CreateDbContextAsync(token);
 
-                                               return await db.RoleClaims.Where(a => a.ClaimType == ApplicationClaimTypes.Permission)
-                                                                         .AsNoTracking()
-                                                                         .Select(a => new { a.RoleId, a.ClaimValue })
-                                                                         .GroupBy(a => a.RoleId)
-                                                                         .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.ClaimValue!)
-                                                                         .Distinct()
-                                                                         .ToList(),
-                                                       token);
-                                           },
+                                         return await db.RoleClaims.Where(a => a.ClaimType == ApplicationClaimTypes.Permission)
+                                                                   .AsNoTracking()
+                                                                   .Select(a => new { a.RoleId, a.ClaimValue })
+                                                                   .GroupBy(a => a.RoleId)
+                                                                   .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.ClaimValue!)
+                                                                   .Distinct()
+                                                                   .ToList(),
+                                                 token);
+                                     },
                                            TimeSpan.FromMinutes(10),
                                            tags: [CacheTag]);
 

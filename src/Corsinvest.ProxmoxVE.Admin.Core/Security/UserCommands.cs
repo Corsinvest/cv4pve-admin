@@ -34,30 +34,26 @@ public static class UserCommands
             passwordOption
         };
 
-        resetPasswordCommand.SetAction(async action
-            => await ResetPasswordAsync(services, action.GetRequiredValue(usernameOption), action.GetRequiredValue(passwordOption)));
+        resetPasswordCommand.SetAction(action => ResetPasswordAsync(services, action.GetRequiredValue(usernameOption), action.GetRequiredValue(passwordOption)));
 
         // enable subcommand
         var enableCommand = new Command("enable", "Enable user account")
         {
             usernameOption
         };
-        enableCommand.SetAction(async action
-            => await SetUserEnabledAsync(services, action.GetRequiredValue(usernameOption), true));
+        enableCommand.SetAction(action => SetUserEnabledAsync(services, action.GetRequiredValue(usernameOption), true));
 
         var disableCommand = new Command("disable", "Disable user account")
         {
             usernameOption
         };
-        disableCommand.SetAction(async action
-            => await SetUserEnabledAsync(services, action.GetRequiredValue(usernameOption), false));
+        disableCommand.SetAction(action => SetUserEnabledAsync(services, action.GetRequiredValue(usernameOption), false));
 
         var unlockCommand = new Command("unlock", "Unlock locked out user account")
         {
             usernameOption
         };
-        unlockCommand.SetAction(async action
-            => await UnlockUserAsync(services, action.GetRequiredValue(usernameOption)));
+        unlockCommand.SetAction(action => UnlockUserAsync(services, action.GetRequiredValue(usernameOption)));
 
         userCommand.Add(resetPasswordCommand);
         userCommand.Add(enableCommand);

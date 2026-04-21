@@ -88,14 +88,14 @@ public partial class ToolBar(IBrowserService browserService,
                             ? parsedType
                             : WebConsoleType.NoVnc);
 
-    private async Task OpenConsole(WebConsoleType type)
-        => await (type switch
+    private Task OpenConsole(WebConsoleType type)
+        => type switch
         {
             WebConsoleType.NoVnc => OpenWebConsole(false),
             WebConsoleType.XtermJs => OpenWebConsole(true),
             WebConsoleType.Spice => OpenSpiceConsole(),
             _ => OpenConsole(DefaultWebConsoleType)
-        });
+        };
 
     public async Task RefreshDataAsync()
     {

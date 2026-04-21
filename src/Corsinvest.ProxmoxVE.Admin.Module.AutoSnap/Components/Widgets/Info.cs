@@ -37,8 +37,8 @@ public class Info(IAdminService adminService,
         await InvokeAsync(StateHasChanged);
 
         var clusterNames = ClusterNames.Any()
-                  ? ClusterNames
-                  : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
+                              ? ClusterNames
+                              : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
 
         var allSnapshots = new List<AutoSnapInfo>();
         var totalJobs = 0;

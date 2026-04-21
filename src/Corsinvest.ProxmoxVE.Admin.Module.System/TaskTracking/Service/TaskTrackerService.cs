@@ -153,7 +153,7 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
         var remaining = max - running.Count;
         var finishing = remaining > 0
             ? await query.Where(t => t.Status != TaskItemStatus.Running)
-                         .Where(filter ?? (t => true))
+                         .Where(filter ?? (_ => true))
                          .OrderByDescending(t => t.EndedAt ?? t.StartedAt)
                          .Take(remaining)
                          .AsNoTracking()

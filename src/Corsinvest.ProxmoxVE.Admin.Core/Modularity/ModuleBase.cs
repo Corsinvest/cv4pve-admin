@@ -103,14 +103,14 @@ public abstract class ModuleBase
             || Keywords.Split(",").Any(a => a.Contains(value, StringComparison.InvariantCultureIgnoreCase));
 
     #region Authorization
-    public async Task<bool> HasPermissionAsync(IPermissionService permissionService, string clusterName, Permission permission)
-        => await permissionService.HasAsync(GetClusterNameForScope(clusterName), permission);
+    public Task<bool> HasPermissionAsync(IPermissionService permissionService, string clusterName, Permission permission)
+        => permissionService.HasAsync(GetClusterNameForScope(clusterName), permission);
 
-    public async Task<bool> HasPermissionLinkAsync(IPermissionService permissionService, string clusterName)
-        => await permissionService.HasAsync(GetClusterNameForScope(clusterName), Link?.Permission!);
+    public Task<bool> HasPermissionLinkAsync(IPermissionService permissionService, string clusterName)
+        => permissionService.HasAsync(GetClusterNameForScope(clusterName), Link?.Permission!);
 
-    public async Task<bool> HasPermissionEditorSettingsAsync(IPermissionService permissionService, string clusterName)
-        => await permissionService.HasAsync(GetClusterNameForScope(clusterName), PermissionEditSettings);
+    public Task<bool> HasPermissionEditorSettingsAsync(IPermissionService permissionService, string clusterName)
+        => permissionService.HasAsync(GetClusterNameForScope(clusterName), PermissionEditSettings);
 
     protected IEnumerable<Role> Roles { get; set; } = [];
 

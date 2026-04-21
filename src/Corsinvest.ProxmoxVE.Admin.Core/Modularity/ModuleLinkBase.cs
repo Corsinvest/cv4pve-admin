@@ -53,6 +53,6 @@ public class ModuleLinkBase : IEnabled
     public Permission Permission { get; }
     public IList<ModuleLinkBase> Child { get; set; } = [];
 
-    public async Task<bool> HasPermissionAsync(IPermissionService permissionService, string clusterName)
-        => await Module.HasPermissionAsync(permissionService, clusterName, Permission);
+    public Task<bool> HasPermissionAsync(IPermissionService permissionService, string clusterName)
+        => Module.HasPermissionAsync(permissionService, clusterName, Permission);
 }

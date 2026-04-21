@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAdminCore(this IServiceCollection services, IConfiguration configuration, IEnumerable<Type> moduleTypes)
     {
-        services.AddLocalization(configuration);
+        services.AddAdminLocalization();
 
         services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(ApplicationHelper.DataPath, "data-protection-keys")))

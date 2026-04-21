@@ -35,8 +35,8 @@ public class Info(IAdminService adminService,
         await InvokeAsync(StateHasChanged);
 
         var clusterNames = ClusterNames.Any()
-                  ? ClusterNames
-                  : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
+                              ? ClusterNames
+                              : settingsService.GetEnabledClustersSettings().Select(a => a.Name);
 
         var backups = new List<NodeStorageContent>();
         var vmsWithoutBackup = 0;

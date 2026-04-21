@@ -43,11 +43,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
                 if (disks.Any())
                 {
-                    engine.SnapshotSizeProvider = (node, vmType, vmId, snapName)
+                    engine.SnapshotSizeProvider = (node, _, vmId, snapName)
                                                     => Task.FromResult(Convert.ToInt64(DiskSnapshotHelper.CalculateSnapshot(node,
-                                                                                                                        vmId,
-                                                                                                                        snapName,
-                                                                                                                        disks)));
+                                                                                                                            vmId,
+                                                                                                                            snapName,
+                                                                                                                            disks)));
                 }
 
                 var progress = new Progress<ReportProgress>(p =>

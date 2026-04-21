@@ -14,7 +14,6 @@ public partial record ParameterOptions(Func<DataSourceContext, Task<DataSourceRe
     [GeneratedRegex("([a-z])([A-Z])")]
     private static partial Regex PascalCaseSplitRegex();
 
-
     /// <summary>
     /// Create options with static string values for Select/MultiSelect
     /// </summary>
