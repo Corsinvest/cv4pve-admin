@@ -181,8 +181,8 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
     private async Task PersistOnCompletionAsync(int id, TaskScope scope)
     {
         var tcs = new TaskCompletionSource();
-        Action onUpdate = () => _ = FlushLogsAsync(id, scope);
-        Action onEnd = () => tcs.TrySetResult();
+        void onUpdate() => _ = FlushLogsAsync(id, scope);
+        void onEnd() => tcs.TrySetResult();
 
         scope.Item.Updated += onUpdate;
         scope.Item.TaskEnded += onEnd;
