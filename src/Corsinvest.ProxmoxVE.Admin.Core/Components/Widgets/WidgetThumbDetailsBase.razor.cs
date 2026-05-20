@@ -7,6 +7,9 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Widgets;
 public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminService adminService,
                                                                       ISettingsService settingsService) : IModuleWidget<TWidgetSettings>, IDisposable
 {
+    protected IAdminService AdminService => adminService;
+    protected ISettingsService SettingsService => settingsService;
+
     [Parameter] public TWidgetSettings Settings { get; set; } = default!;
     [Parameter] public EventCallback<TWidgetSettings> SettingsChanged { get; set; }
     [Parameter] public IEnumerable<string> ClusterNames { get; set; } = [];

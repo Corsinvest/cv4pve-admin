@@ -59,10 +59,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 });
 
                 await using var stream = await engine.GenerateAsync(job.Format, progress);
-                await using (var file = File.Create(job.FileName))
-                {
-                    await stream.CopyToAsync(file);
-                }
+                await using var file = File.Create(job.FileName);
+                await stream.CopyToAsync(file);
             }
 
             job.End = DateTime.UtcNow;
