@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
+
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
 public partial class Disks(IAdminService adminService) : IClusterName, IRefreshableData
@@ -20,6 +22,7 @@ public partial class Disks(IAdminService adminService) : IClusterName, IRefresha
                         string Type,
                         string Status,
                         bool IsLocked,
+                        VmDiskKind Kind,
                         string Id,
                         string Storage,
                         string? PluginType,
@@ -58,7 +61,7 @@ public partial class Disks(IAdminService adminService) : IClusterName, IRefresha
                         async item =>
                         {
                             var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
-                            return config.Disks.Select(disk =>
+                            return config.DisksAll.Select(disk =>
                             {
                                 storageLookup.TryGetValue((item.Node, disk.Storage), out var storageRes);
 
@@ -69,6 +72,7 @@ public partial class Disks(IAdminService adminService) : IClusterName, IRefresha
                                                 item.Type,
                                                 item.Status,
                                                 item.IsLocked,
+                                                disk.Kind,
                                                 disk.Id,
                                                 disk.Storage,
                                                 storageRes?.PluginType,
