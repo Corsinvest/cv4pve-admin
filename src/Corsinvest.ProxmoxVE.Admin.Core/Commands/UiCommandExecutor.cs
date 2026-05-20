@@ -26,7 +26,7 @@ public class UiCommandExecutor(ICommandExecutor executor,
                                 ? Localizer["Permission denied"].Value
                                 : Localizer["Operation failed"].Value;
 
-            notificationService.Notify(severity, summary, result.ErrorMessage);
+            notificationService.Notify(severity, summary, result.ErrorMessage ?? string.Empty);
         }
         return result;
     }
