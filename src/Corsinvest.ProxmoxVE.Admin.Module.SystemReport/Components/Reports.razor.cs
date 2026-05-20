@@ -2,13 +2,13 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using BlazorDownloadFile;
 using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Persistence;
+using Corsinvest.ProxmoxVE.Report;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Components;
 
-public partial class Reports(IBlazorDownloadFileService blazorDownloadFileService,
+public partial class Reports(IBrowserService browserService,
                              IDbContextFactory<ModuleDbContext> dbContextFactory,
                              IBackgroundJobService backgroundJobService,
                              DialogService dialogService,
@@ -27,6 +27,7 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
 
     private record Data(int Id,
                         Report.Settings Settings,
+                        ReportFormat Format,
                         DateTime Start,
                         DateTime? End)
     {
@@ -54,6 +55,7 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
                                                          args,
                                                          a => new Data(a.Id,
                                                                        a.Settings,
+                                                                       a.Format,
                                                                        a.Start,
                                                                        a.End),
                                                          ResultLoadData.Filter);
@@ -89,8 +91,7 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             var job = (await db.JobResults.FromIdAsync(SelectedItems[0].Id))!;
-            if (File.Exists(job.FileNameXlsx)) { File.Delete(job.FileNameXlsx); }
-            if (File.Exists(job.FileNameSvg)) { File.Delete(job.FileNameSvg); }
+            if (File.Exists(job.FileName)) { File.Delete(job.FileName); }
 
             await db.JobResults.DeleteAsync(SelectedItems[0].Id);
             await eventNotificationService.PublishAsync(new DataChangedNotification());
@@ -106,9 +107,7 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
         else if (e.IsForNew()) { }
     }
 
-    private Task OnDownloadClickAsync(RadzenSplitButtonItem? item) => DownloadAsync(item?.Value!);
-
-    private async Task DownloadAsync(string format)
+    private async Task DownloadAsync()
     {
         InDownload = true;
         try
@@ -116,22 +115,16 @@ public partial class Reports(IBlazorDownloadFileService blazorDownloadFileServic
             await using var db = await dbContextFactory.CreateDbContextAsync();
             var job = (await db.JobResults.FromIdAsync(SelectedItems[0].Id))!;
 
-            var (path, contentType) = format switch
-            {
-                "svg" => (job.FileNameSvg, "image/svg+xml"),
-                _ => (job.FileNameXlsx, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            };
-
-            if (!File.Exists(path))
+            if (!File.Exists(job.FileName))
             {
                 notificationService.Notify(NotificationSeverity.Warning, L["File not available for this report."]);
                 return;
             }
 
-            await using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-            await blazorDownloadFileService.DownloadFile($"SystemReport-{job.ClusterName}-{job.Start}.{format}",
-                                                         fileStream,
-                                                         contentType);
+            await using var fileStream = new FileStream(job.FileName, FileMode.Open, FileAccess.Read);
+            await browserService.DownloadFileAsync($"SystemReport-{job.ClusterName}-{job.Start:yyyyMMdd-HHmmss}.zip",
+                                                   fileStream,
+                                                   "application/zip");
         }
         finally
         {
