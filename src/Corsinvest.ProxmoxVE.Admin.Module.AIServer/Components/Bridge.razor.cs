@@ -3,16 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
-using System.Text;
 using System.Text.Json;
-using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.AIServer.Components;
 
 public partial class Bridge(NavigationManager navigationManager,
-                            IBrowserService browserService,
-                            IBlazorDownloadFileService blazorDownloadFileService)
+                            IBrowserService browserService)
 {
     private static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true };
     private record PlatformInfo(string Icon, string Platform, string File);
@@ -69,9 +66,9 @@ public partial class Bridge(NavigationManager navigationManager,
     }
 
     private async Task DownloadClaudeConfigAsync()
-        => await blazorDownloadFileService.DownloadFile("claude_desktop_config.json",
-                                                        Encoding.UTF8.GetBytes(BuildClaudeConfigJson()),
-                                                        MediaTypeNames.Application.Json);
+        => await browserService.DownloadFileAsync("claude_desktop_config.json",
+                                                  BuildClaudeConfigJson(),
+                                                  MediaTypeNames.Application.Json);
 
     private Task CopyClaudeConfigAsync()
         => browserService.CopyToClipboardAsync(BuildClaudeConfigJson());

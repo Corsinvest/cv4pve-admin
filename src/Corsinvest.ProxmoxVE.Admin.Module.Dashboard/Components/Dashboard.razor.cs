@@ -4,7 +4,6 @@
  */
 using System.Net.Mime;
 using System.Text.Json;
-using BlazorDownloadFile;
 using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid;
 using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
@@ -16,7 +15,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Dashboard.Components;
 public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                IModuleService moduleService,
                                ICurrentUserService currentUserService,
-                               IBlazorDownloadFileService blazorDownloadFileService,
+                               IBrowserService browserService,
                                IJSRuntime jSRuntime,
                                ContextMenuService contextMenuService,
                                DialogService dialogService,
@@ -472,7 +471,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         await using var ms = new MemoryStream();
         await JsonSerializer.SerializeAsync(ms, CurrentDashboard, _jsonSerializerOptions);
         ms.Position = 0;
-        await blazorDownloadFileService.DownloadFile($"dashboard-{CurrentDashboard.Name}.json", ms, MediaTypeNames.Application.Json);
+        await browserService.DownloadFileAsync($"dashboard-{CurrentDashboard.Name}.json", ms, MediaTypeNames.Application.Json);
     }
     #endregion
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
-using BlazorDownloadFile;
+using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Models;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Persistence;
 
@@ -12,7 +12,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Folder.Components;
 public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
                             IBackgroundJobService backgroundJobService,
                             ISettingsService settingsService,
-                            IBlazorDownloadFileService blazorDownloadFileService,
+                            IBrowserService browserService,
                             DialogService dialogService,
                             NotificationService notificationService,
                             EventNotificationService eventNotificationService) : IRefreshableData,
@@ -96,7 +96,7 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
         if (File.Exists(item.GetPath(ClusterName)))
         {
             await using var fs = File.OpenRead(item.GetPath(ClusterName));
-            await blazorDownloadFileService.DownloadFile(item.FileName, fs, MediaTypeNames.Application.GZip);
+            await browserService.DownloadFileAsync(item.FileName, fs, MediaTypeNames.Application.GZip);
         }
         InDownload = false;
     }
