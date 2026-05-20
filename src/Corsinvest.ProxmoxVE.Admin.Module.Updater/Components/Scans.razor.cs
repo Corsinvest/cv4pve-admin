@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
-using BlazorDownloadFile;
+using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Models;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Services;
@@ -13,7 +13,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Updater.Components;
 public partial class Scans(IAdminService adminService,
                          IBackgroundJobService backgroundJobService,
                          ISettingsService settingsService,
-                         IBlazorDownloadFileService blazorDownloadFileService,
+                         IBrowserService browserService,
                          NotificationService notificationService,
                          IUpdaterService updaterService,
                          EventNotificationService eventNotificationService) : IRefreshableData,
@@ -71,7 +71,7 @@ public partial class Scans(IAdminService adminService,
 
         var start = Items.Min(a => a.UpdateScanTimestamp)!;
         await using var ms = updaterService.GeneratePdf(ClusterName, Items);
-        await blazorDownloadFileService.DownloadFile($"Update-{ClusterName}-{start}.pdf", ms, MediaTypeNames.Application.Pdf);
+        await browserService.DownloadFileAsync($"Update-{ClusterName}-{start}.pdf", ms, MediaTypeNames.Application.Pdf);
 
         InDownload = false;
     }

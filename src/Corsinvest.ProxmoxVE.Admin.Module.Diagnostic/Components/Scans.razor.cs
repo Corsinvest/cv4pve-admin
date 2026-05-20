@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
-using BlazorDownloadFile;
+using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;
 
-public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
+public partial class Scans(IBrowserService browserService,
                              IDbContextFactory<ModuleDbContext> dbContextFactory,
                              IBackgroundJobService backgroundJobService,
                              ISettingsService settingsService,
@@ -115,7 +115,7 @@ public partial class Scans(IBlazorDownloadFileService blazorDownloadFileService,
         await using var db = await dbContextFactory.CreateDbContextAsync();
         var result = (await db.JobResults.Include(a => a.Details).FromIdAsync(SelectedItems[0].Id))!;
         await using var ms = diagnosticService.GeneratePdf(result);
-        await blazorDownloadFileService.DownloadFile($"Diagnostic-{result.ClusterName}-{result.Start}.pdf", ms, MediaTypeNames.Application.Pdf);
+        await browserService.DownloadFileAsync($"Diagnostic-{result.ClusterName}-{result.Start}.pdf", ms, MediaTypeNames.Application.Pdf);
 
         InDownload = false;
     }
