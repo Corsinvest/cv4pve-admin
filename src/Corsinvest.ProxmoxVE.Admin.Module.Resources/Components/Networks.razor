@@ -105,6 +105,51 @@
                     </Columns>
                 </RadzenDataGrid>
             </RadzenTabsItem>
+
+            <RadzenTabsItem Text="SDN" Icon="hub">
+                <RadzenDataGrid Data="@SdnVnets"
+                                AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="false"
+                                AllowSorting="true"
+                                FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                IsLoading="IsLoadingSdn"
+                                AllowColumnPicking="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                    <HeaderTemplate>
+                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                    </HeaderTemplate>
+
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.Vnet)" Title="@L["Vnet"]" />
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.Zone)" Title="@L["Zone"]" />
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.ZoneType)" Title="@L["Zone Type"]" />
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.ZoneBridge)" Title="@L["Bridge"]" />
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.Tag)" Title="@L["Tag"]" />
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.Alias)" Title="@L["Alias"]" />
+                        <RadzenDataGridColumn Property="@nameof(SdnVnet.Nodes)" Title="@L["Nodes"]" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="@L["Diagram"]" Icon="lan">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="4px">
+                    <CrudToolbar OnRefresh="RefreshDataAsync" />
+                    <RadzenButton Icon="download" Text="@L["Download"]" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                                  Disabled="@string.IsNullOrEmpty(NetworkDiagramSvg)"
+                                  Click="DownloadDiagramAsync" />
+                </RadzenStack>
+                @if (IsLoadingDiagram)
+                {
+                    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                }
+                else if (!string.IsNullOrEmpty(NetworkDiagramSvg))
+                {
+                    <div style="overflow:auto; width:100%;">
+                        @((MarkupString)NetworkDiagramSvg)
+                    </div>
+                }
+            </RadzenTabsItem>
         </Tabs>
     </RadzenTabs>
 </RadzenPanel>
