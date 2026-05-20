@@ -72,8 +72,13 @@ public partial class HelpMenu(ISettingsService settingsService,
             catch { }
         }
 
-        var url = ApplicationHelper.GetWhoIsUsingUrl(whoBodyBuilder.ToString().TrimEnd());
-        await browserService.OpenInNewWindowAsync(url, string.Empty);
+        await browserService.CopyToClipboardAsync(whoBodyBuilder.ToString().TrimEnd());
+
+        await dialogService.Alert(L["Information copied to clipboard, paste it in the issue"],
+                                  L["Who is using cv4pve-admin?"],
+                                  new AlertOptions { OkButtonText = L["OK"] });
+
+        await browserService.OpenInNewWindowAsync("https://github.com/corsinvest/cv4pve-admin/issues/11", string.Empty);
     }
 
     private async Task OpenBugUrlAsync()

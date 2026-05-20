@@ -7,8 +7,8 @@ using Corsinvest.ProxmoxVE.Admin.Core.Commands.Models;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Commands;
 
 public class UiCommandExecutor(ICommandExecutor executor,
-                                     NotificationService notificationService,
-                                     IStringLocalizerFactory localizerFactory) : IUiCommandExecutor
+                               NotificationService notificationService,
+                               IStringLocalizerFactory localizerFactory) : IUiCommandExecutor
 {
     private IStringLocalizer? _localizer;
     private IStringLocalizer Localizer => _localizer ??= localizerFactory.Create(typeof(UiCommandExecutor));

@@ -48,6 +48,12 @@ public static class PveAdminHelper
             sockets += status.CpuInfo.Sockets;
         }
 
+        var storageTypes = storages.Select(a => a.PluginType)
+                                   .Where(t => !string.IsNullOrEmpty(t))
+                                   .Distinct()
+                                   .Order()
+                                   .JoinAsString(", ");
+
         return @$"Cluster: {clusterClient.Settings.Name}
 Nodes: {nodes.Count()}
 Proxmox VE Version: {version.Distinct().Order().JoinAsString(" , ")}
@@ -55,6 +61,7 @@ VM/CT Count: {qemu}/{lxc}
 CPU: {sockets} sockets / {cpus} cores
 RAM: {FormatHelper.FromBytes(nodes.Sum(a => a.MemorySize))}
 Storage: {FormatHelper.FromBytes(storages.Sum(a => a.DiskSize))}
+Storage Types: {storageTypes}
 Company (optional):
 ";
     }

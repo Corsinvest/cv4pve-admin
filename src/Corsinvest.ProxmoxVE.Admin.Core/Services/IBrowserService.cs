@@ -9,4 +9,6 @@ public interface IBrowserService
     Task CopyToClipboardAsync(string text);
     Task OpenAsync(string url, string target);
     Task OpenInNewWindowAsync(string url, string windowFeatures);
+    Task DownloadFileAsync(string fileName, string content, string mimeType);
+    Task DownloadFileAsync(string fileName, Stream stream, string mimeType);
 }
