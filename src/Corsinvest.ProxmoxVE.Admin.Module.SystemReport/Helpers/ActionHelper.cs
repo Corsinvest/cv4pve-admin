@@ -33,12 +33,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 var clusterClient = scope.GetClusterClient(job.ClusterName);
                 var client = await clusterClient.GetPveClientAsync();
 
-                var engine = new ReportEngine(client, job.Settings, new ReportInfo
-                {
-                    ApplicationName = appSettings.AppName,
-                    ApplicationVersion = BuildInfo.Version,
-                    ApplicationUrl = ApplicationHelper.GitHubRepoUrl,
-                });
+                var engine = new ReportEngine(client,
+                                              job.Settings,
+                                              new ReportInfo
+                                              {
+                                                  ApplicationName = appSettings.AppName,
+                                                  ApplicationVersion = BuildInfo.Version,
+                                                  ApplicationUrl = ApplicationHelper.GitHubRepoUrl,
+                                              });
 
                 var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
                 if (disks.Any())
@@ -56,15 +58,10 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                     taskScope.Log(p.ToString());
                 });
 
-                await using var stream = await engine.GenerateAsync(progress);
-                await using (var file = File.Create(job.FileNameXlsx))
+                await using var stream = await engine.GenerateAsync(job.Format, progress);
+                await using (var file = File.Create(job.FileName))
                 {
                     await stream.CopyToAsync(file);
-                }
-
-                if (!string.IsNullOrEmpty(engine.NetworkDiagramSvg))
-                {
-                    await File.WriteAllTextAsync(job.FileNameSvg, engine.NetworkDiagramSvg);
                 }
             }
 

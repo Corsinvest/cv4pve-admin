@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Report;
+
 namespace Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Models;
 
 public class JobResult : JobResultBase, IId, IClusterName
@@ -12,6 +14,7 @@ public class JobResult : JobResultBase, IId, IClusterName
 
     public Report.Settings Settings { get; set; } = Report.Settings.Fast();
 
-    public string FileNameXlsx => Path.Combine(new Module().PathData, $"{Id}.xlsx");
-    public string FileNameSvg => Path.Combine(new Module().PathData, $"{Id}.svg");
+    public ReportFormat Format { get; set; } = ReportFormat.Xlsx;
+
+    public string FileName => Path.Combine(new Module().PathData, $"{Id}.zip");
 }

@@ -17,6 +17,13 @@
 
     <RadzenRow Gap="8px" class="rz-mb-2">
         <RadzenColumn Size="4">
+            <RadzenFormField Text="@L["Format"]" AllowFloatingLabel="false" class="rz-w-100">
+                <RadzenDropDown @bind-Value="@Model.Format"
+                                Data="@(Enum.GetValues<ReportFormat>())"
+                                ReadOnly="@ReadOnly" />
+            </RadzenFormField>
+        </RadzenColumn>
+        <RadzenColumn Size="4">
             <RadzenFormField Text="@L["Max Parallel Requests"]" AllowFloatingLabel="false" class="rz-w-100">
                 <ChildContent>
                     <RadzenNumeric @bind-Value="@S.MaxParallelRequests" Min="1" ReadOnly="@ReadOnly" />
@@ -41,8 +48,8 @@
     <RadzenAccordion>
         <Items>
             <RadzenAccordionItem Text="@L["Cluster"]" Icon="@PveAdminUIHelper.Icons.Cluster">
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeSheet" Label="@L["Include Sheet"]" ReadOnly="@ReadOnly" />
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeTasksSheet" Label="@L["Tasks Sheet"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.Include" Label="@L["Include"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.IncludeTasks" Label="@L["Tasks"]" ReadOnly="@ReadOnly" />
                 @RenderLog(S.Cluster.Log, L["Audit Log"])
             </RadzenAccordionItem>
 
@@ -55,7 +62,7 @@
                                ReadOnly="@ReadOnly"
                                class="rz-w-100 rz-mb-4" />
 
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeReplicationSheet" Label="@L["Replication Sheet"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Node.IncludeReplication" Label="@L["Replication"]" ReadOnly="@ReadOnly" />
 
                 @RenderRrdData(S.Node.RrdData)
                 @RenderSyslog(S.Node.Syslog)
@@ -83,9 +90,9 @@
                                ReadOnly="@ReadOnly"
                                class="rz-mb-4 rz-w-100" />
 
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeSnapshotsSheet" Label="@L["Snapshots Sheet"]" ReadOnly="@ReadOnly" />
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeDisksSheet" Label="@L["Disks Sheet"]" ReadOnly="@ReadOnly" />
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludePartitionsSheet" Label="@L["Partitions Sheet"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeSnapshots" Label="@L["Snapshots"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeDisks" Label="@L["Disks"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludePartitions" Label="@L["Partitions"]" ReadOnly="@ReadOnly" />
                 <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Guest.IncludeQemuAgent" Label="@L["QEMU Agent"]" ReadOnly="@ReadOnly" />
 
                 <RadzenFormField Text="@L["Agent Timeout sec."]" AllowFloatingLabel="false" class="rz-w-100">
@@ -107,8 +114,8 @@
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Storage.IncludeContentSheet" Label="@L["Content Sheet"]" ReadOnly="@ReadOnly" />
-                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Storage.IncludeBackupsSheet" Label="@L["Backups Sheet"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Storage.IncludeContent" Label="@L["Content"]" ReadOnly="@ReadOnly" />
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Storage.IncludeBackups" Label="@L["Backups"]" ReadOnly="@ReadOnly" />
                 @RenderRrdData(S.Storage.RrdData)
             </RadzenAccordionItem>
 
