@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
-using Corsinvest.ProxmoxVE.Admin.Core.Services;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;

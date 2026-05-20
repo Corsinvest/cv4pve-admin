@@ -97,7 +97,7 @@ public partial class AddAppTokens : Migration
             name: "IX_AppTokenPermissions_AppTokenId_PermissionKey_Path_ClusterNa~",
             schema: "system",
             table: "AppTokenPermissions",
-            columns: new[] { "AppTokenId", "PermissionKey", "Path", "ClusterName" });
+            columns: ["AppTokenId", "PermissionKey", "Path", "ClusterName"]);
 
         migrationBuilder.CreateIndex(
             name: "IX_AppTokenRoles_RoleId",
