@@ -18,7 +18,7 @@ public class ClusterResourceItem : ClusterResource, IClusterName, ISnapshotsSize
     public string Link { get; set; } = default!;
     public double SnapshotsSize { get; set; }
     public double SnapshotsReplicationSize { get; set; }
-    public double HealthScore => this.HealthScoreCalculated;
+    public double? HealthScore => this.HealthScoreCalculated;
     public string IpAddresses { get; set; } = default!;
 
     #region VmInfo
