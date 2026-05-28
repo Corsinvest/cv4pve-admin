@@ -73,7 +73,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                     var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
                     var appSettings = scope.GetSettingsService().GetAppSettings();
 
-                    await using var ms = updaterService.GeneratePdf(clusterName, items);
+                    await using var ms = updaterService.GenerateReport(clusterName, items, ReportFormat.Pdf);
 
                     await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
                     {
@@ -133,62 +133,100 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
         await eventNotificationService.PublishAsync(new DataChangedNotification());
 
-        var allItems = items.Where(a => a.IsRunning).ToList();
-        var total = allItems.Count;
+        var toScan = items.Where(a => a.IsRunning)
+                          .OrderBy(a => a.Node)
+                          .ThenBy(a => a.VmType)
+                          .ThenBy(a => a.Name)
+                          .ToList();
+        var total = toScan.Count;
         var current = 0;
 
-        foreach (var node in items.Select(a => a.Node).Distinct().Order())
+        using var semaphore = new SemaphoreSlim(Math.Max(1, settings.MaxParallelRequests));
+
+        var tasks = toScan.Select(async item =>
         {
-            foreach (var item in items.Where(a => a.Node == node && a.IsRunning).OrderBy(a => a.VmType).ThenBy(a => a.Name))
+            try
+            {
+                await semaphore.WaitAsync(taskScope.CancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                item.UpdateScanStatus = UpdateInfoStatus.Cancelled;
+                return;
+            }
+
+            try
             {
                 if (taskScope.CancellationToken.IsCancellationRequested)
                 {
-                    taskScope.Log("Scan cancelled by user", LogLevel.Warning);
-                    foreach (var pending in items.Where(a => a.UpdateScanStatus == UpdateInfoStatus.InScan))
-                    {
-                        pending.UpdateScanStatus = UpdateInfoStatus.Cancelled;
-                    }
-                    await eventNotificationService.PublishAsync(new DataChangedNotification());
+                    item.UpdateScanStatus = UpdateInfoStatus.Cancelled;
                     return;
                 }
 
-                current++;
-                logger.LogInformation("Scan {node}/{id} ", item.Node, item.Id);
+                var done = Interlocked.Increment(ref current);
+                logger.LogInformation("Scan {node}/{id}", item.Node, item.Id);
+                taskScope.LogProgress(done, total, $"Scanning {item.VmType} {item.Name} ({item.Node}/{item.VmId})");
 
-                taskScope.LogProgress(current, total, $"Scanning {item.VmType} {item.Name} ({item.Node}/{item.VmId})");
-
-                var ret = await clusterClient.VmExecNativeAsync(item.Node, item.VmType, item.VmId, scriptLinux, scriptWindows);
-                if (ret.IsSuccess)
+                try
                 {
-                    try
+                    var ret = await clusterClient.VmExecNativeAsync(item.Node, item.VmType, item.VmId, scriptLinux, scriptWindows);
+                    if (ret.IsSuccess)
                     {
-                        var info = JsonSerializer.Deserialize<Info>(ret.Value)!;
-                        item.UpdateScanStatus = info.UpdateCheck
-                                                ? UpdateInfoStatus.Ok
-                                                : UpdateInfoStatus.InError;
-                        item.UpdateNormalAvailable = info.UpdateNormalAvailable;
-                        item.UpdateSecurityAvailable = info.UpdateSecurityAvailable;
-                        item.UpdateRequireReboot = info.RequireReboot;
+                        try
+                        {
+                            var info = JsonSerializer.Deserialize<Info>(ret.Value)!;
+                            item.UpdateScanStatus = info.UpdateCheck
+                                                    ? UpdateInfoStatus.Ok
+                                                    : UpdateInfoStatus.InError;
+                            item.UpdateNormalAvailable = info.UpdateNormalAvailable;
+                            item.UpdateSecurityAvailable = info.UpdateSecurityAvailable;
+                            item.UpdateRequireReboot = info.RequireReboot;
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "Error parsing JSON result: {result}", ret.Value);
+                            item.UpdateScanStatus = UpdateInfoStatus.InError;
+                            item.Error = $"Error parsing JSON result: {ret.Value}";
+                            taskScope.Log($"{item.Node}/{item.VmId} {item.Name}: error parsing result - {ex.Message}", LogLevel.Error);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        logger.LogError(ex, "Error parsing JSON result: {result}", ret.Value);
                         item.UpdateScanStatus = UpdateInfoStatus.InError;
-                        item.Error = $"Error parsing JSON result: {ret.Value}";
-                        taskScope.Log($"{item.Node}/{item.VmId} {item.Name}: error parsing result - {ex.Message}", LogLevel.Error);
+                        item.Error = ret.Errors.Select(a => a.Message).JoinAsString(", ");
+                        taskScope.Log($"{item.Node}/{item.VmId} {item.Name}: {item.Error}", LogLevel.Error);
                     }
                 }
-                else
+                catch (Exception ex)
                 {
+                    // Per-item exception (SSH connection failure, timeout, ...) — keep the scan going.
+                    logger.LogError(ex, "Error scanning {node}/{id}", item.Node, item.VmId);
                     item.UpdateScanStatus = UpdateInfoStatus.InError;
-                    item.Error = ret.Errors.Select(a => a.Message).JoinAsString(", ");
-                    taskScope.Log($"{item.Node}/{item.VmId} {item.Name}: {item.Error}", LogLevel.Error);
+                    item.Error = ex.Message;
+                    taskScope.Log($"{item.Node}/{item.VmId} {item.Name}: {ex.Message}", LogLevel.Error);
                 }
-
-                item.UpdateScanTimestamp = DateTime.Now;
-
-                await eventNotificationService.PublishAsync(new DataChangedNotification());
+                finally
+                {
+                    item.UpdateScanTimestamp = DateTime.Now;
+                    await eventNotificationService.PublishAsync(new DataChangedNotification());
+                }
             }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        await Task.WhenAll(tasks);
+
+        if (taskScope.CancellationToken.IsCancellationRequested)
+        {
+            taskScope.Log("Scan cancelled by user", LogLevel.Warning);
+            foreach (var pending in items.Where(a => a.UpdateScanStatus == UpdateInfoStatus.InScan))
+            {
+                pending.UpdateScanStatus = UpdateInfoStatus.Cancelled;
+            }
+            await eventNotificationService.PublishAsync(new DataChangedNotification());
         }
     }
 

@@ -8,5 +8,5 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Updater.Services;
 
 public interface IUpdaterService
 {
-    MemoryStream GeneratePdf(string clusterName, IEnumerable<ClusterResourceUpdateScanInfo> items);
+    Stream GenerateReport(string clusterName, IEnumerable<ClusterResourceUpdateScanInfo> items, ReportFormat format);
 }

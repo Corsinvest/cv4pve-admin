@@ -6,6 +6,7 @@ using System.Net.Mime;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Models;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Services;
+using Radzen.Blazor;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Updater.Components;
 
@@ -64,13 +65,27 @@ public partial class Scans(IAdminService adminService,
 
     private static bool ShowWatingUpdate(ClusterResourceUpdateScanInfo item) => item.UpdateScanStatus == UpdateInfoStatus.InScan;
 
-    private async Task DownloadAsync()
+    private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {
+        var format = item?.Value switch
+        {
+            nameof(ReportFormat.Excel) => ReportFormat.Excel,
+            _ => ReportFormat.Pdf,
+        };
+
         InDownload = true;
 
         var start = Items.Min(a => a.UpdateScanTimestamp)!;
-        await using var ms = updaterService.GeneratePdf(ClusterName, Items);
-        await browserService.DownloadFileAsync($"Update-{ClusterName}-{start}.pdf", ms, MediaTypeNames.Application.Pdf);
+        await using var ms = updaterService.GenerateReport(ClusterName, Items, format);
+
+        var (extension, contentType) = format switch
+        {
+            ReportFormat.Pdf => ("pdf", MediaTypeNames.Application.Pdf),
+            ReportFormat.Excel => ("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+            _ => throw new ArgumentOutOfRangeException(nameof(format)),
+        };
+
+        await browserService.DownloadFileAsync($"Update-{ClusterName}-{start:yyyyMMddHHmmss}.{extension}", ms, contentType);
 
         InDownload = false;
     }
@@ -89,7 +104,7 @@ public partial class Scans(IAdminService adminService,
 
     private void Scan()
     {
-        backgroundJobService.Schedule<Job>(a => a.ScanAsync(ClusterName), TimeSpan.FromSeconds(5));
+        backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
     }
 

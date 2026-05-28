@@ -46,7 +46,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<ICurrentClusterService, CurrentClusterService>();
         services.AddScoped<IBrowserService, BrowserService>();
-        services.AddScoped<IReportService, ReportService>();
         services.AddScoped<NavigationTrackerService>();
 
         // Search Providers

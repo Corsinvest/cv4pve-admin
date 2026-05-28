@@ -13,6 +13,21 @@
 
 <Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Settings" Settings="Model" />
 
+<RadzenFormField Text="@L["Max parallel requests"]" AllowFloatingLabel="false" class="rz-w-100">
+    <Start>
+        <RadzenIcon Icon="bolt" />
+    </Start>
+    <ChildContent>
+        <RadzenNumeric Name="@nameof(Model.MaxParallelRequests)" @bind-Value="@Model.MaxParallelRequests" Min="1" Max="50" />
+    </ChildContent>
+    <End>
+        <InfoIcon>@L["Max parallel scan requests (1 = sequential). Lower if your nodes get overloaded during scan."]</InfoIcon>
+    </End>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.MaxParallelRequests)" />
+    </Helper>
+</RadzenFormField>
+
 <RadzenFormField Text="@L["Script Windows Search Update"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>
         <RadzenButton Icon="refresh"
