@@ -71,7 +71,7 @@ This section outlines the current development status of upcoming and evolving mo
 | **[Bots](modules/bots.md)** | ✅ | ✅ | Control | Remote cluster management via Telegram | |
 | **[Command Palette](modules/command-palette.md)** | ✅ | ✅ | Application | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |
 | **[Dashboard](modules/dashboard.md)** | ✅ | ✅ | Utilities | Customizable dashboards with widgets and metrics | <ul><li>Additional widgets from Enterprise modules</li></ul> |
-| **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics and health checks | <ul><li>Help links to Proxmox documentation for each issue</li><li>PDF export of diagnostic report</li></ul> |
+| **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics, health checks and report export (PDF + Excel) | <ul><li>Executive Summary on PDF (counts per gravity + top critical issues)</li></ul> |
 | **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems (Prometheus) | |
 | **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
 | **[Notifier](configuration/notifier.md)** | ✅ | ✅ | Notification | Notification system (CE: Email only) | <ul><li>119 services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
@@ -92,7 +92,6 @@ These are optional add-on modules available exclusively for Enterprise Edition, 
 | **[Portal](modules/portal.md)** | ✅ | Management | Multi-tenant MSP portal with role-based access control (RBAC) for service providers |
 | **[Workflow](modules/workflow.md)** | 🚧 | Automation | Visual workflow designer with 30+ Proxmox-specific activities for advanced automation |
 | **DDR** | 📐 | Protection | Disaster Recovery orchestration with Ceph RBD Mirror support (Alpha) |
-| **[DRS](modules/drs.md)** | 🚧 | Automation | Distributed Resource Scheduler for intelligent VM load balancing |
 
 ---
 

@@ -107,14 +107,28 @@ public partial class Scans(IBrowserService browserService,
         else if (e.IsForNew()) { }
     }
 
-    private async Task DownloadAsync()
+    private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {
+        var format = item?.Value switch
+        {
+            nameof(ReportFormat.Excel) => ReportFormat.Excel,
+            _ => ReportFormat.Pdf,
+        };
+
         InDownload = true;
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
         var result = (await db.JobResults.Include(a => a.Details).FromIdAsync(SelectedItems[0].Id))!;
-        await using var ms = diagnosticService.GeneratePdf(result);
-        await browserService.DownloadFileAsync($"Diagnostic-{result.ClusterName}-{result.Start}.pdf", ms, MediaTypeNames.Application.Pdf);
+        await using var ms = diagnosticService.GenerateReport(result, format);
+
+        var (extension, contentType) = format switch
+        {
+            ReportFormat.Pdf => ("pdf", MediaTypeNames.Application.Pdf),
+            ReportFormat.Excel => ("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+            _ => throw new ArgumentOutOfRangeException(nameof(format)),
+        };
+
+        await browserService.DownloadFileAsync($"Diagnostic-{result.ClusterName}-{result.Start:yyyyMMddHHmmss}.{extension}", ms, contentType);
 
         InDownload = false;
     }

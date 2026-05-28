@@ -99,7 +99,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 {
                     var diagnosticService = scope.GetRequiredService<IDiagnosticService>();
 
-                    await using var ms = diagnosticService.GeneratePdf(new JobResult
+                    await using var ms = diagnosticService.GenerateReport(new JobResult
                     {
                         ClusterName = clusterName,
                         Start = now,
@@ -107,7 +107,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                         Critical = Count(DiagnosticResultGravity.Critical),
                         Info = Count(DiagnosticResultGravity.Info),
                         Warning = Count(DiagnosticResultGravity.Warning)
-                    });
+                    }, ReportFormat.Pdf);
 
                     var appSettings = scope.GetSettingsService().GetAppSettings();
                     var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
