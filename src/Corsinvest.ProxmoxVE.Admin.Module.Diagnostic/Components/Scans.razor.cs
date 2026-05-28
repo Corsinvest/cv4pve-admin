@@ -135,7 +135,7 @@ public partial class Scans(IBrowserService browserService,
 
     private void Scan()
     {
-        backgroundJobService.Schedule<Job>(a => a.ScanAsync(ClusterName), TimeSpan.FromSeconds(5));
+        backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
     }
 

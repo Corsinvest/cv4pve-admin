@@ -146,7 +146,7 @@ public partial class Reports(IBrowserService browserService,
             await db.JobResults.AddAsync(item);
             await db.SaveChangesAsync();
 
-            backgroundJobService.Schedule<Job>(a => a.GenerateAsync(item.Id), TimeSpan.FromSeconds(5));
+            backgroundJobService.Enqueue<Job>(a => a.GenerateAsync(item.Id));
             notificationService.Info(L["Report started!"]);
 
             await DataGridRef.Reload();
