@@ -31,6 +31,17 @@ public partial class ActiveTasksMenu(ContextMenuService contextMenuService,
     {
         args.ClientY += 24;
         contextMenuService.Open(args, _ => RenderPanel);
+
+        var unackedErrorIds = await taskTracker.GetRecentAsync(
+            _principal!,
+            a => a.Id,
+            filter: t => !t.IsAcknowledged &&
+                         (t.Status == TaskItemStatus.Failed || t.Status == TaskItemStatus.Abandoned));
+
+        if (unackedErrorIds.Count > 0)
+        {
+            await taskTracker.AcknowledgeAsync(unackedErrorIds);
+        }
     }
 
     private void OnChanged(object? sender, TaskItem e) => RefreshBadge();
