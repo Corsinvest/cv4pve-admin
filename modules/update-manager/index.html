@@ -1007,9 +1007,6 @@
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg></span> <strong>Update Scanning</strong></p>
 <hr />
 <p>Scan systems for available updates on-demand or scheduled using cron expression.</p>
-<ul>
-<li><span class="ee"></span> Enhanced reporting</li>
-</ul>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m5.86 10.31C16.23 21.22 14.28 22.45 12 23c-2.56-.61-4.7-2.07-6.42-4.37C3.86 16.34 3 13.8 3 11V5l9-4 9 4v6c0 2.39-.64 4.61-1.92 6.67l-2.91-2.91c.52-.79.83-1.76.83-2.76a5 5 0 0 0-5-5 5 5 0 0 0-5 5 5 5 0 0 0 5 5c1 0 1.97-.31 2.76-.83z"/></svg></span> <strong>Read-Only Scanning</strong></p>
@@ -1020,6 +1017,16 @@
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17 21-2.75-3 1.16-1.16L17 18.43l3.59-3.59 1.16 1.41M12.8 21H5a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h14a2 2 0 0 1 2 2v7.8c-.88-.51-1.91-.8-3-.8l-1 .08V11H7v2h7.69A5.98 5.98 0 0 0 12 18c0 1.09.29 2.12.8 3m-.8-6H7v2h5m5-10H7v2h10"/></svg></span> <strong>Status Reports</strong></p>
 <hr />
 <p>View update status with priority indicators for critical patches.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span> <strong>Export Reports</strong></p>
+<hr />
+<p>Download scan results as <strong>PDF</strong> (update table colored by status, conditional Errors section when scans fail) or <strong>Excel</strong> (autofilter-enabled Updates sheet + conditional Errors sheet). Format chosen from a split-button dropdown on the Scans page.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 17.7V21h-4v-.7zM17 3H7v3h10zm-2 4-1 .7V7h-4v3.3L9 11v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 15v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 19v1l6-3.9z"/></svg></span> <strong>Parallel Scanning</strong></p>
+<hr />
+<p>Configurable parallel scan (<code>MaxParallelRequests</code>, default 5) speeds up large clusters. A failure on one VM/CT (SSH timeout, agent error) is isolated to that item — the rest of the scan keeps running.</p>
 </li>
 </ul>
 </div>
