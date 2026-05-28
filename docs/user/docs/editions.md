@@ -79,7 +79,7 @@ This section outlines the current development status of upcoming and evolving mo
 | **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
 | **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |
 | **[System Report](modules/system-report.md)** | ✅ | ✅ | Utilities | Comprehensive cluster/VM/node/storage reports | |
-| **[Update Manager](modules/update-manager.md)** | ✅ | ✅ | Health | System update management | <ul><li>PDF export of update report</li></ul> |
+| **[Update Manager](modules/update-manager.md)** | ✅ | ✅ | Health | System update management with parallel scan and report export (PDF + Excel) | |
 | **[UPS Monitor](modules/ups-monitor.md)** | ❌ | 🚧 | Protection | Network UPS monitoring via SNMP | |
 | **[VM Performance](modules/vm-performance.md)** | ❌ | ✅ | Health | Real-time VM performance tracking with IOPS, latency, bandwidth metrics | |
 

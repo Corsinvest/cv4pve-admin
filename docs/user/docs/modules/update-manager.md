@@ -37,8 +37,6 @@ Scans VM/CT in Proxmox VE to identify available updates including security patch
 
     Scan systems for available updates on-demand or scheduled using cron expression.
 
-    - <span class="ee"></span> Enhanced reporting
-
 -   :material-shield-search:{ .lg .middle } **Read-Only Scanning**
 
     ---
@@ -50,5 +48,17 @@ Scans VM/CT in Proxmox VE to identify available updates including security patch
     ---
 
     View update status with priority indicators for critical patches.
+
+-   :material-download:{ .lg .middle } **Export Reports**
+
+    ---
+
+    Download scan results as **PDF** (update table colored by status, conditional Errors section when scans fail) or **Excel** (autofilter-enabled Updates sheet + conditional Errors sheet). Format chosen from a split-button dropdown on the Scans page.
+
+-   :material-bolt:{ .lg .middle } **Parallel Scanning**
+
+    ---
+
+    Configurable parallel scan (`MaxParallelRequests`, default 5) speeds up large clusters. A failure on one VM/CT (SSH timeout, agent error) is isolated to that item — the rest of the scan keeps running.
 
 </div>
