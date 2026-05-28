@@ -148,6 +148,7 @@
                         @RenderThreshold(L["Usage"], "Model.ApiSettings.Storage.Threshold", Model.ApiSettings.Storage.Threshold)
                     </RadzenColumn>
                 </RadzenRow>
+                @RenderPsiPressure(Model.ApiSettings.Storage.Rrd, "Model.ApiSettings.Storage.Rrd")
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Snapshot"]" Icon="camera_alt">

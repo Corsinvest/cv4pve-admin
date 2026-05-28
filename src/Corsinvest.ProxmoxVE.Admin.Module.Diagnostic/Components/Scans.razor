@@ -33,13 +33,18 @@
             </TemplateBefore>
 
             <TemplateAfter>
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Text="@L["Download PDF"]"
-                              Click="DownloadAsync"
-                              Icon="download"
-                              Disabled="!SelectedItems.Any()"
-                              IsBusy="InDownload" />
+                <RadzenSplitButton Variant="Variant.Text"
+                                   Size="ButtonSize.Small"
+                                   Text="@L["Download"]"
+                                   Icon="download"
+                                   Disabled="!SelectedItems.Any()"
+                                   IsBusy="InDownload"
+                                   Click="@(args => DownloadAsync(args))">
+                    <ChildContent>
+                        <RadzenSplitButtonItem Text="PDF" Icon="picture_as_pdf" Value="@nameof(ReportFormat.Pdf)" />
+                        <RadzenSplitButtonItem Text="Excel" Icon="table_view" Value="@nameof(ReportFormat.Excel)" />
+                    </ChildContent>
+                </RadzenSplitButton>
 
                 <InfoScheduler TModule="Module" JobSchedule="@Settings" />
             </TemplateAfter>

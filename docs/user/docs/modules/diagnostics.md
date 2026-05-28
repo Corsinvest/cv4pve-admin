@@ -44,4 +44,22 @@ Performs health checks and analysis of Proxmox VE environments. Scans clusters, 
 
     Displays issue descriptions with resolution recommendations.
 
+-   :material-download:{ .lg .middle } **Export Reports**
+
+    ---
+
+    Download scan results as **PDF** (issues table colored by gravity, ignored issues section, footer) or **Excel** (autofilter-enabled sheet for slicing/pivoting). Format chosen from a split-button dropdown on the Scans page.
+
+-   :material-link-variant:{ .lg .middle } **Help Links**
+
+    ---
+
+    Each issue can link to the relevant Proxmox documentation page (e.g. Qemu Guest Agent, VirtIO drivers, end-of-life OS tracking).
+
+-   :material-chart-box:{ .lg .middle } **Executive Summary** <span class="ee"></span>
+
+    ---
+
+    Enterprise PDF adds a one-page Executive Summary at the top: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.
+
 </div>

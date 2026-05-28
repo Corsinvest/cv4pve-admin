@@ -4,8 +4,8 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
 
-public interface IDiagnosticService
+public enum ReportFormat
 {
-    Stream GenerateReport(JobResult result, ReportFormat format);
-    string GetHelpUrl(JobDetail jobDetail);
+    Pdf,
+    Excel,
 }
