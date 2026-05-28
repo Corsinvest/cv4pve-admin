@@ -8,10 +8,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 
 public static class TaskItemFilters
 {
-    /// <summary>
-    /// Matches tasks that are not completed or ended within the last hour.
-    /// </summary>
     public static readonly Expression<Func<TaskItem, bool>> Active = t =>
-        t.Status != TaskItemStatus.Completed &&
-        (t.EndedAt == null || t.EndedAt >= DateTime.UtcNow.AddHours(-1));
+        t.Status == TaskItemStatus.Running
+        || (t.EndedAt != null && t.EndedAt >= DateTime.UtcNow.AddMinutes(-10))
+        || ((t.Status == TaskItemStatus.Failed || t.Status == TaskItemStatus.Abandoned) && !t.IsAcknowledged);
 }
