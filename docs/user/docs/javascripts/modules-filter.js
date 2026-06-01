@@ -17,7 +17,7 @@
     var a = card.querySelector("a[href]");
     if (a) {
       var href = a.getAttribute("href") || "";
-      var m = href.match(/([^/]+?)\/?$/);
+      var m = href.match(/([^/]+)\/?$/);
       if (m) { return m[1]; }
     }
     var strong = card.querySelector("strong, p strong");
