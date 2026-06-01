@@ -15,7 +15,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 </div>
 
 <div style="margin-top: auto;">
-<a href="installation.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Started →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Started →</strong></a>
 </div>
 
 </div>
@@ -43,21 +43,23 @@ Choose the edition that fits your needs: free and open source Community Edition 
 
 ### Product Roadmap & Status
 
-This section outlines the current development status of upcoming and evolving modules.
+??? note reference "Show roadmap status legend"
 
-| Status | Meaning | Description |
-|--------|---------|-------------|
-| ✅ Available | Stable | Fully supported and production-ready |
-| 🚀 Release Candidate | Near Release | Feature-complete, final testing phase |
-| 🚧 Coming Soon | In Development | Actively under development |
-| 📐 In Design | Planning | Under analysis and design phase |
-| ❌ Not Available | N/A | Not planned or discontinued |
+    This section outlines the current development status of upcoming and evolving modules.
 
-### Notes
+    | Status | Meaning | Description |
+    |--------|---------|-------------|
+    | ✅ Available | Stable | Fully supported and production-ready |
+    | 🚀 Release Candidate | Near Release | Feature-complete, final testing phase |
+    | 🚧 Coming Soon | In Development | Actively under development |
+    | 📐 In Design | Planning | Under analysis and design phase |
+    | ❌ Not Available | N/A | Not planned or discontinued |
 
-- Features in 🚀 or 🚧 status may change before final release.
-- 📐 modules are subject to roadmap prioritization.
-- Enterprise customers may request early access.
+    **Notes**
+
+    - Features in 🚀 or 🚧 status may change before final release.
+    - 📐 modules are subject to roadmap prioritization.
+    - Enterprise customers may request early access.
 
 ### Modules and Features
 
@@ -65,22 +67,22 @@ This section outlines the current development status of upcoming and evolving mo
 |--------|:--:|:--:|----------|-------------|-----------------|
 | **[Admin Area](configuration/admin-area.md)** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
 | **AI Assistant** | ❌ | 🚧 | Utilities | Chat-based AI for cluster automation and diagnostics | |
-| **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server for AI integration with 20+ tools for VMs, nodes, storage, backups, replications and metrics | <ul><li>`GetQuerySchema` — schema of all query tables</li><li>`ExecuteQuery` — SQL-like queries on cluster data</li></ul> |
+| **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server for AI integration with 33 tools for clusters, VMs, nodes, storage, backups, ISO/template management, replications and historical metrics | <ul><li>2 additional SQL-like query tools (`GetQuerySchema`, `ExecuteQuery`) on cluster data with filters, grouping, aggregates</li></ul> |
 | **[AutoSnap](modules/autosnap.md)** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
 | **[Backup Analytics](modules/backup-analytics.md)** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
 | **[Bots](modules/bots.md)** | ✅ | ✅ | Control | Remote cluster management via Telegram | |
-| **[Command Palette](modules/command-palette.md)** | ✅ | ✅ | Application | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |
-| **[Dashboard](modules/dashboard.md)** | ✅ | ✅ | Utilities | Customizable dashboards with widgets and metrics | <ul><li>Additional widgets from Enterprise modules</li></ul> |
+| **[Command Palette](modules/command-palette.md)** | ✅ | ✅ | Core | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |
+| **[Dashboard](modules/dashboard.md)** | ✅ | ✅ | Core | Customizable dashboards with widgets and metrics | <ul><li>Additional widgets from Enterprise modules</li></ul> |
 | **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics, health checks and report export (PDF + Excel) | <ul><li>Executive Summary on PDF (counts per gravity + top critical issues)</li></ul> |
 | **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems (Prometheus) | |
 | **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
-| **[Notifier](configuration/notifier.md)** | ✅ | ✅ | Notification | Notification system (CE: Email only) | <ul><li>119 services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
-| **[Profile](configuration/profile.md)** | ✅ | ✅ | Application | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |
+| **[Notifier](configuration/notifier.md)** | ✅ | ✅ | Core | Notification system (CE: SMTP + WebHook only) | <ul><li>119+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
+| **[Profile](configuration/profile.md)** | ✅ | ✅ | Core | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |
 | **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
 | **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |
 | **[System Report](modules/system-report.md)** | ✅ | ✅ | Utilities | Comprehensive cluster/VM/node/storage reports | |
 | **[Update Manager](modules/update-manager.md)** | ✅ | ✅ | Health | System update management with parallel scan and report export (PDF + Excel) | |
-| **[UPS Monitor](modules/ups-monitor.md)** | ❌ | 🚧 | Protection | Network UPS monitoring via SNMP | |
+| **[UPS Monitor](modules/ups-monitor.md)** | ❌ | ✅ | Protection | Network UPS monitoring via SNMP | |
 | **[VM Performance](modules/vm-performance.md)** | ❌ | ✅ | Health | Real-time VM performance tracking with IOPS, latency, bandwidth metrics | |
 
 ### Addon Modules (Enterprise Only)
@@ -90,7 +92,7 @@ These are optional add-on modules available exclusively for Enterprise Edition, 
 | Addon Module | Status | Category | Description |
 |--------------|:------:|----------|-------------|
 | **[Portal](modules/portal.md)** | ✅ | Management | Multi-tenant MSP portal with role-based access control (RBAC) for service providers |
-| **[Workflow](modules/workflow.md)** | 🚧 | Automation | Visual workflow designer with 30+ Proxmox-specific activities for advanced automation |
+| **[Workflow](modules/workflow.md)** | ✅ | Automation | Visual workflow designer with 40+ Proxmox-specific activities (guests, nodes, storage, HA, snapshots) for advanced automation |
 | **DDR** | 📐 | Protection | Disaster Recovery orchestration with Ceph RBD Mirror support (Alpha) |
 
 ---
@@ -226,7 +228,7 @@ No time limits</p>
 </div>
 
 <div style="margin-top: auto;">
-<a href="installation.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Install Now →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Install Now →</strong></a>
 </div>
 
 </div>

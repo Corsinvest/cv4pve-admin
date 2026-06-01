@@ -113,6 +113,24 @@ public static class ServiceCollectionExtensions
             FileProvider = new PhysicalFileProvider(ApplicationHelper.ImagesPath),
             RequestPath = "/data-images"
         });
+
+        // Embedded MkDocs help site under /help/.
+        var helpRoot = Path.Combine(app.Environment.ContentRootPath, "help");
+        if (Directory.Exists(helpRoot))
+        {
+            var helpFiles = new PhysicalFileProvider(helpRoot);
+            app.UseDefaultFiles(new DefaultFilesOptions
+            {
+                FileProvider = helpFiles,
+                RequestPath = "/help",
+                DefaultFileNames = ["index.html"]
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = helpFiles,
+                RequestPath = "/help"
+            });
+        }
     }
 
     public static async Task RunAdminCoreAsync(this IHost host, string[] args)

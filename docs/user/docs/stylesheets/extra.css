@@ -1,50 +1,404 @@
-/* Base font size to match official docs */
-
 /* Equal height admonitions in grid */
 .grid > div { display: flex; flex-direction: column; }
 .grid > div > .admonition { flex: 1; margin: 0; box-sizing: border-box; }
 
-/* EE/CE Badges */
-.ee, .ce {
+/* Hover lift for Material grid cards (Features section, etc.).
+   Note: .modules-grid overrides this with its own transition. */
+.md-typeset .grid.cards > ul > li {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+  border-color: var(--md-accent-fg-color);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Settings collapsible — replace the default "info" icon with a cog. */
+.md-typeset .admonition.settings > summary::before,
+.md-typeset details.settings > summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--settings);
+          mask-image: var(--md-admonition-icon--settings);
+}
+
+/* Tools collapsible — replace the default "info" icon with a wrench. */
+.md-typeset .admonition.tools > summary::before,
+.md-typeset details.tools > summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--tools);
+          mask-image: var(--md-admonition-icon--tools);
+}
+
+/* Widgets collapsible — replace the default "info" icon with a puzzle piece. */
+.md-typeset .admonition.widgets > summary::before,
+.md-typeset details.widgets > summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--widgets);
+          mask-image: var(--md-admonition-icon--widgets);
+}
+
+/* Examples collapsible — replace the default "info" icon with a lightbulb. */
+.md-typeset .admonition.examples > summary::before,
+.md-typeset details.examples > summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--examples);
+          mask-image: var(--md-admonition-icon--examples);
+}
+
+/* Reference collapsible — replace the default "info" icon with an open book. */
+.md-typeset .admonition.reference > summary::before,
+.md-typeset details.reference > summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--reference);
+          mask-image: var(--md-admonition-icon--reference);
+}
+
+:root {
+  --md-admonition-icon--settings:
+    url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>');
+
+  --md-admonition-icon--tools:
+    url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4Z"/></svg>');
+
+  --md-admonition-icon--widgets:
+    url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11Z"/></svg>');
+
+  --md-admonition-icon--examples:
+    url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7m-2 19a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-1h-4z"/></svg>');
+
+  --md-admonition-icon--reference:
+    url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1m0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5z"/></svg>');
+}
+
+/* ------------------------------------------------------------------
+   Modules index — filter chips + card grid
+   ------------------------------------------------------------------ */
+.md-typeset .modules-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin: 1em 0 1.4em;
+}
+
+.md-typeset .modules-filter input[type="search"] {
+  padding: 0.4em 0.7em;
+  border-radius: 6px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  font: inherit;
+  max-width: 360px;
+}
+
+.md-typeset .modules-filter .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  align-items: center;
+}
+
+/* Category + edition chips share a single row; edition chips push to the right. */
+.md-typeset .modules-filter .chips--all {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.md-typeset .modules-filter .chips--edition {
+  margin-left: auto;
+}
+
+.md-typeset .modules-filter button[data-cat],
+.md-typeset .modules-filter button[data-edition] {
+  padding: 0.25em 0.7em;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  background: transparent;
+  color: var(--md-default-fg-color);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.md-typeset .modules-filter button[data-cat]:hover,
+.md-typeset .modules-filter button[data-edition]:hover {
+  border-color: var(--md-accent-fg-color);
+}
+
+.md-typeset .modules-filter button[data-cat].active,
+.md-typeset .modules-filter button[data-edition].active {
+  color: white;
+  border-color: transparent;
+}
+
+/* Category colours — chip when active + card left border */
+.md-typeset .modules-filter button[data-cat="all"].active        { background: #455a64; }
+.md-typeset .modules-filter button[data-cat="protection"].active { background: #2e7d32; }
+.md-typeset .modules-filter button[data-cat="health"].active     { background: #1976d2; }
+.md-typeset .modules-filter button[data-cat="control"].active    { background: #6d4c41; }
+.md-typeset .modules-filter button[data-cat="automation"].active { background: #7b1fa2; }
+.md-typeset .modules-filter button[data-cat="utilities"].active  { background: #ef6c00; }
+.md-typeset .modules-filter button[data-cat="management"].active { background: #c2185b; }
+.md-typeset .modules-filter button[data-cat="features"].active   { background: #00796b; }
+
+.md-typeset .modules-filter button[data-edition="all"].active { background: #455a64; }
+.md-typeset .modules-filter button[data-edition="ce"].active  { background: #2196F3; }
+.md-typeset .modules-filter button[data-edition="ee"].active  { background: #ff9800; }
+
+.md-typeset .modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.8em;
+  margin: 1em 0;
+}
+
+.md-typeset .module-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  padding: 0.8em 0.9em;
+  border-radius: 8px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-left: 4px solid var(--md-default-fg-color--lighter);
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  text-decoration: none !important;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+}
+
+.md-typeset .module-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.md-typeset .module-card[data-cat*="protection"] { border-left-color: #2e7d32; }
+.md-typeset .module-card[data-cat*="health"]     { border-left-color: #1976d2; }
+.md-typeset .module-card[data-cat*="control"]    { border-left-color: #6d4c41; }
+.md-typeset .module-card[data-cat*="automation"] { border-left-color: #7b1fa2; }
+.md-typeset .module-card[data-cat*="utilities"]  { border-left-color: #ef6c00; }
+.md-typeset .module-card[data-cat*="management"] { border-left-color: #c2185b; }
+.md-typeset .module-card[data-cat*="features"]   { border-left-color: #00796b; }
+
+.md-typeset .module-card .module-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 600;
+}
+
+.md-typeset .module-card .module-card__head .twemoji svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.md-typeset .module-card .module-card__desc {
+  font-size: 0.85em;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .module-card .module-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  margin-top: 0.3em;
+}
+
+/* Modules grid — colour each Material grid card by category using
+   :has() to assert which link the card contains. Keep this list in sync
+   with the CATEGORIES map in javascripts/modules-filter.js. */
+.md-typeset .grid.cards.modules-grid > ul > li {
+  border-left: 4px solid var(--md-default-fg-color--lighter);
+  transition: transform 0.12s, box-shadow 0.12s;
+  position: relative; /* anchor for the EE/CE badge top-right */
+}
+
+/* Float EE/CE badge to top-right corner of each card */
+.md-typeset .grid.cards.modules-grid > ul > li .ee,
+.md-typeset .grid.cards.modules-grid > ul > li .ce {
+  position: absolute;
+  top: 0.6em;
+  right: 0.7em;
+  margin: 0;
+  z-index: 1;
+}
+
+.md-typeset .grid.cards.modules-grid > ul > li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Protection --- */
+.md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="autosnap/"]),
+  :has(a[href$="node-protect/"]),
+  :has(a[href$="ups-monitor/"])
+) {
+  background: rgba(46, 125, 50, 0.06);
+  border-left-color: #2e7d32;
+}
+/* DDR placeholder has no link — match by content via the heading text */
+.md-typeset .grid.cards.modules-grid > ul > li:not(:has(a))[data-ddr],
+.md-typeset .grid.cards.modules-grid > ul > li:not(:has(a)) {
+  /* fallback handled by JS adding data-ddr; styling above covers DDR card */
+}
+
+/* --- Health --- */
+.md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="backup-analytics/"]),
+  :has(a[href$="replication-analytics/"]),
+  :has(a[href$="diagnostics/"]),
+  :has(a[href$="resources/"]),
+  :has(a[href$="metrics-exporter/"]),
+  :has(a[href$="update-manager/"]),
+  :has(a[href$="vm-performance/"])
+) {
+  background: rgba(25, 118, 210, 0.06);
+  border-left-color: #1976d2;
+}
+
+/* --- Control --- */
+.md-typeset .grid.cards.modules-grid > ul > li:has(a[href$="bots/"]) {
+  background: rgba(109, 76, 65, 0.06);
+  border-left-color: #6d4c41;
+}
+
+/* --- Automation --- */
+.md-typeset .grid.cards.modules-grid > ul > li:has(a[href$="workflow/"]) {
+  background: rgba(123, 31, 162, 0.06);
+  border-left-color: #7b1fa2;
+}
+
+/* --- Utilities --- */
+.md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="ai-server/"]),
+  :has(a[href$="system-report/"])
+) {
+  background: rgba(239, 108, 0, 0.06);
+  border-left-color: #ef6c00;
+}
+
+/* --- Management --- */
+.md-typeset .grid.cards.modules-grid > ul > li:has(a[href$="portal/"]) {
+  background: rgba(194, 24, 91, 0.06);
+  border-left-color: #c2185b;
+}
+
+/* --- Features (always-available) --- */
+.md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="dashboard/"]),
+  :has(a[href$="command-palette/"])
+) {
+  background: rgba(0, 121, 107, 0.06);
+  border-left-color: #00796b;
+}
+
+/* Dark theme — stronger tint to remain visible on dark bg */
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="autosnap/"]),
+  :has(a[href$="node-protect/"]),
+  :has(a[href$="ups-monitor/"])
+) { background: rgba(46, 125, 50, 0.18); }
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="backup-analytics/"]),
+  :has(a[href$="replication-analytics/"]),
+  :has(a[href$="diagnostics/"]),
+  :has(a[href$="resources/"]),
+  :has(a[href$="metrics-exporter/"]),
+  :has(a[href$="update-manager/"]),
+  :has(a[href$="vm-performance/"])
+) { background: rgba(25, 118, 210, 0.18); }
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:has(a[href$="bots/"]) {
+  background: rgba(109, 76, 65, 0.22);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:has(a[href$="workflow/"]) {
+  background: rgba(123, 31, 162, 0.20);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="ai-server/"]),
+  :has(a[href$="system-report/"])
+) { background: rgba(239, 108, 0, 0.18); }
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:has(a[href$="portal/"]) {
+  background: rgba(194, 24, 91, 0.18);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards.modules-grid > ul > li:is(
+  :has(a[href$="dashboard/"]),
+  :has(a[href$="command-palette/"])
+) { background: rgba(0, 121, 107, 0.20); }
+
+/* Why grid — responsive auto-fit grid used in the "Why" section of every
+   module page (also on the homepage). Centralised so every page renders
+   the same layout; tweak here once instead of editing 14 markdown files. */
+.md-typeset .why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem;
+  align-items: stretch;
+  margin: 1em 0;
+}
+
+.md-typeset .why-grid > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.md-typeset .why-grid > div > .admonition {
+  flex: 1;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------
+   Pill badges (EE / CE / SSH / scope) — uniform shape and size
+   ------------------------------------------------------------------ */
+.ee, .ce, .ssh, .scope {
+  vertical-align: middle;
+  margin: 0 0.2em;
+}
+
+.ee:before,
+.ce:before,
+.ssh:before,
+.scope:before {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.65em;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: white;
+  display: inline-flex;
+  align-items: center;
   vertical-align: middle;
 }
 
-.ee:before {
-  content: "EE";
-  background-color: #ff9800;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.7rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
+.ee:before  { content: "EE";  background-color: #ff9800; }
+.ce:before  { content: "CE";  background-color: #2196F3; }
+.ssh:before { content: "SSH"; background-color: #607d8b; }
 
-.ce:before {
-  content: "CE";
-  background-color: #2196F3;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.7rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
+/* Scope badge — uses data-scope attribute as label */
+.scope:before { content: attr(data-scope); background-color: #455a64; }
+.scope[data-scope="all-clusters"]:before { background-color: #1976d2; }
 
-.ssh:before {
-  content: "SSH";
-  background-color: #607d8b;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.7rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+/* ------------------------------------------------------------------
+   Module screenshots — contained, centered, subtle frame.
+   Opt-in with class "screenshot" on the markdown image.
+   ------------------------------------------------------------------ */
+.md-typeset img.screenshot {
+  max-width: 700px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
-

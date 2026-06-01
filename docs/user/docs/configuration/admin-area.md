@@ -20,31 +20,31 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
     [:octicons-arrow-right-24: SSH Configuration](#ssh-configuration)
 
--   :material-security:{ .lg .middle } **Security & Access Control** <span class="ee"></span>
+-   <span class="ee"></span> :material-security:{ .lg .middle } **Security & Access Control**
 
     ---
 
     Permission system to define roles and control access.
 
--   :material-account-multiple:{ .lg .middle } **User Management** <span class="ee"></span>
+-   <span class="ee"></span> :material-account-multiple:{ .lg .middle } **User Management**
 
     ---
 
     Create and manage user accounts with role-based access control.
 
--   :material-shield-account:{ .lg .middle } **Roles & Permissions** <span class="ee"></span>
+-   <span class="ee"></span> :material-shield-account:{ .lg .middle } **Roles & Permissions**
 
     ---
 
     Define custom roles with specific permissions.
 
--   :material-history:{ .lg .middle } **Audit Logs** <span class="ee"></span>
+-   <span class="ee"></span> :material-history:{ .lg .middle } **Audit Logs**
 
     ---
 
     Track administrative actions and user activities.
 
--   :material-monitor-eye:{ .lg .middle } **Active Sessions** <span class="ee"></span>
+-   <span class="ee"></span> :material-monitor-eye:{ .lg .middle } **Active Sessions**
 
     ---
 
@@ -62,7 +62,7 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
     Monitor and manage scheduled background tasks.
 
--   :material-file-document:{ .lg .middle } **System Logs** <span class="ee"></span>
+-   <span class="ee"></span> :material-file-document:{ .lg .middle } **System Logs**
 
     ---
 
@@ -100,12 +100,14 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
 Configure the Proxmox VE API credentials used to connect to each cluster.
 
-| Field | Description |
-|-------|-------------|
-| **Access Type** | `Credential` (username/password) or `API Token` |
-| **API Token** | Token in format `user@realm!tokenname=secret` |
-| **Timeout (msec)** | HTTP request timeout in milliseconds (default: 1000) |
-| **Validate Certificate** | Verify TLS certificate of Proxmox VE nodes |
+??? note settings "Show Web API credential fields"
+
+    | Field | Description |
+    |-------|-------------|
+    | **Access Type** | `Credential` (username/password) or `API Token` |
+    | **API Token** | Token in format `user@realm!tokenname=secret` |
+    | **Timeout (msec)** | HTTP request timeout in milliseconds (default: 1000) |
+    | **Validate Certificate** | Verify TLS certificate of Proxmox VE nodes |
 
 ### Automatic API Token Creation
 
@@ -129,22 +131,24 @@ The username and password are used only during this wizard and are **never saved
 
 ### WEB API Access Type — Feature Limitations
 
-The choice of **Access Type** affects which features are available:
+??? note reference "Show WEB API access type feature matrix"
 
-| Feature | Credential (PAM user) | Credential (non-PAM) | API Token |
-|---------|:---------------------:|:--------------------:|:---------:|
-| **SSH — Same as WEB API** | ✅ | ❌ PAM only | ❌ |
-| **Node console** (NoVnc, Xterm.js) | ✅ | ❌ PAM only | ❌ |
-| **VM/LXC console** (NoVnc, Xterm.js, Spice) | ✅ | ✅ | ❌ |
+    The choice of **Access Type** affects which features are available:
 
-!!! info "Why PAM for node console and SSH Same as WEB API?"
-    Node consoles (NoVnc, Xterm.js) and SSH require OS-level credentials — i.e. a Linux system user.
-    Only PAM users (`@pam` realm, or username without realm) map to actual Linux users on the Proxmox nodes.
-    Users from other realms (PVE, LDAP, etc.) exist only in Proxmox's internal database and have no corresponding SSH/OS account.
+    | Feature | Credential (PAM user) | Credential (non-PAM) | API Token |
+    |---------|:---------------------:|:--------------------:|:---------:|
+    | **SSH — Same as WEB API** | ✅ | ❌ PAM only | ❌ |
+    | **Node console** (NoVnc, Xterm.js) | ✅ | ❌ PAM only | ❌ |
+    | **VM/LXC console** (NoVnc, Xterm.js, Spice) | ✅ | ✅ | ❌ |
 
-!!! info "Why not API Token for console?"
-    Proxmox VE requires an active **user session** (ticket) to open a VM or node console via NoVnc/Xterm.js/Spice.
-    API Tokens do not create a session ticket, so console access is not possible when using API Token authentication.
+    !!! info "Why PAM for node console and SSH Same as WEB API?"
+        Node consoles (NoVnc, Xterm.js) and SSH require OS-level credentials — i.e. a Linux system user.
+        Only PAM users (`@pam` realm, or username without realm) map to actual Linux users on the Proxmox nodes.
+        Users from other realms (PVE, LDAP, etc.) exist only in Proxmox's internal database and have no corresponding SSH/OS account.
+
+    !!! info "Why not API Token for console?"
+        Proxmox VE requires an active **user session** (ticket) to open a VM or node console via NoVnc/Xterm.js/Spice.
+        API Tokens do not create a session ticket, so console access is not possible when using API Token authentication.
 
 ---
 
@@ -154,34 +158,36 @@ Several features require SSH access to the Proxmox VE nodes, including snapshot 
 
 SSH is configured per-cluster under **Proxmox VE Clusters → SSH Credentials**.
 
-| Field | Description |
-|-------|-------------|
-| **Auth Method** | `None`, `Password`, `Private Key`, or `Same as WEB API` |
-| **Username** | SSH user (typically `root`) |
-| **Password** | Used when Auth Method is `Password` |
-| **Private Key** | PEM/OpenSSH private key content |
-| **Passphrase** | Optional passphrase for private key |
-| **Timeout (msec)** | Connection timeout in milliseconds (default: 5000) |
+??? note settings "Show SSH credential fields"
 
-### Auth Methods
+    | Field | Description |
+    |-------|-------------|
+    | **Auth Method** | `None`, `Password`, `Private Key`, or `Same as WEB API` |
+    | **Username** | SSH user (typically `root`) |
+    | **Password** | Used when Auth Method is `Password` |
+    | **Private Key** | PEM/OpenSSH private key content |
+    | **Passphrase** | Optional passphrase for private key |
+    | **Timeout (msec)** | Connection timeout in milliseconds (default: 5000) |
 
-| Method | Description |
-|--------|-------------|
-| **None** | SSH disabled — features requiring SSH will be skipped |
-| **Password** | Authenticate with username and password |
-| **Private Key** | Authenticate with a private key (recommended) |
-| **Same as WEB API** | Reuse WEB API credentials (username without `@realm`, same password) |
+??? note reference "Show SSH Auth Methods"
 
-!!! warning "Same as WEB API — PAM users only"
-    The `Same as WEB API` method is only valid for **PAM users** (e.g. `root@pam`).
-    Users authenticated via other realms (PVE, LDAP, etc.) do not have corresponding SSH credentials.
-    If the WEB API user is not a PAM user, a warning will be shown and SSH will not work.
+    | Method | Description |
+    |--------|-------------|
+    | **None** | SSH disabled — features requiring SSH will be skipped |
+    | **Password** | Authenticate with username and password |
+    | **Private Key** | Authenticate with a private key (recommended) |
+    | **Same as WEB API** | Reuse WEB API credentials (username without `@realm`, same password) |
 
-!!! tip
-    Use **Private Key** authentication for better security. You can upload the key file directly from the UI.
+    !!! warning "Same as WEB API — PAM users only"
+        The `Same as WEB API` method is only valid for **PAM users** (e.g. `root@pam`).
+        Users authenticated via other realms (PVE, LDAP, etc.) do not have corresponding SSH credentials.
+        If the WEB API user is not a PAM user, a warning will be shown and SSH will not work.
 
-!!! note
-    The SSH timeout applies only to the **connection phase** (handshake), not to command execution duration.
+    !!! tip
+        Use **Private Key** authentication for better security. You can upload the key file directly from the UI.
+
+    !!! note
+        The SSH timeout applies only to the **connection phase** (handshake), not to command execution duration.
 
 Use the **Test SSH** button to verify connectivity to all nodes before saving.
 
