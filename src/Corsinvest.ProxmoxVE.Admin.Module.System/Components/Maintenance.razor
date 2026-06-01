@@ -12,7 +12,8 @@
                       ButtonStyle="ButtonStyle.Danger"
                       Size="ButtonSize.Large"
                       Click="FixAllAsync"
-                      IsBusy="IsFixAllBusy" />
+                      IsBusy="IsFixAllBusy"
+                      Disabled="@(IsAnyBusy && !IsFixAllBusy)" />
     </RadzenCard>
 
     <RadzenFieldset Text="@L["Database Maintenance"]" class="rz-panel">
@@ -22,7 +23,8 @@
                               Text="@L["Cleanup Audit Logs"]"
                               ButtonStyle="ButtonStyle.Danger"
                               Click="CleanupAuditLogsAsync"
-                              IsBusy="IsCleanupAuditLogsBusy" />
+                              IsBusy="IsCleanupAuditLogsBusy"
+                              Disabled="@(IsAnyBusy && !IsCleanupAuditLogsBusy)" />
                 <RadzenFormField Text="@L["Keep last days"]" AllowFloatingLabel="false">
                     <RadzenNumeric @bind-Value="AuditLogRetentionDays" Min="1" Max="3650" Style="width:90px;" />
                 </RadzenFormField>
@@ -33,7 +35,8 @@
                               Text="@L["Cleanup System Logs"]"
                               ButtonStyle="ButtonStyle.Danger"
                               Click="CleanupSystemLogsAsync"
-                              IsBusy="IsCleanupSystemLogsBusy" />
+                              IsBusy="IsCleanupSystemLogsBusy"
+                              Disabled="@(IsAnyBusy && !IsCleanupSystemLogsBusy)" />
                 <RadzenFormField Text="@L["Keep last days"]" AllowFloatingLabel="false">
                     <RadzenNumeric @bind-Value="SystemLogsRetentionDays" Min="1" Max="3650" Style="width:90px;" />
                 </RadzenFormField>
@@ -44,7 +47,8 @@
                               Text="@L["Cleanup Task History"]"
                               ButtonStyle="ButtonStyle.Danger"
                               Click="CleanupTaskHistoryAsync"
-                              IsBusy="IsCleanupTaskHistoryBusy" />
+                              IsBusy="IsCleanupTaskHistoryBusy"
+                              Disabled="@(IsAnyBusy && !IsCleanupTaskHistoryBusy)" />
                 <RadzenFormField Text="@L["Keep last days"]" AllowFloatingLabel="false">
                     <RadzenNumeric @bind-Value="TaskHistoryRetentionDays" Min="1" Max="3650" Style="width:90px;" />
                 </RadzenFormField>
@@ -57,12 +61,21 @@
                               Text="@L["Reindex"]"
                               ButtonStyle="ButtonStyle.Primary"
                               Click="DbReindexAsync"
-                              IsBusy="IsDbReindexBusy" />
+                              IsBusy="IsDbReindexBusy"
+                              Disabled="@(IsAnyBusy && !IsDbReindexBusy)" />
                 <RadzenButton Icon="storage"
                               Text="@L["Optimize"]"
                               ButtonStyle="ButtonStyle.Primary"
                               Click="DbOptimizeAsync"
-                              IsBusy="IsOptimizeDDatabaseBusy" />
+                              IsBusy="IsOptimizeDDatabaseBusy"
+                              Disabled="@(IsAnyBusy && !IsOptimizeDDatabaseBusy)" />
+                <RadzenButton Icon="compress"
+                              Text="@L["Compact (full)"]"
+                              ButtonStyle="ButtonStyle.Danger"
+                              Click="DbCompactAsync"
+                              IsBusy="IsDbCompactBusy"
+                              Disabled="@(IsAnyBusy && !IsDbCompactBusy)"
+                              title="@L["Reclaims disk space. Locks tables — use only after large cleanups."]" />
             </RadzenStack>
         </RadzenStack>
     </RadzenFieldset>
@@ -75,7 +88,8 @@
                                   Text="@L["Clear Memory Cache"]"
                                   ButtonStyle="ButtonStyle.Warning"
                                   Click="ClearMemoryCacheAsync"
-                                  IsBusy="IsClearMemoryCacheBusy" />
+                                  IsBusy="IsClearMemoryCacheBusy"
+                                  Disabled="@(IsAnyBusy && !IsClearMemoryCacheBusy)" />
                 </RadzenStack>
             </RadzenFieldset>
         </RadzenColumn>
@@ -87,7 +101,8 @@
                                   Text="@L["Cleanup Failed Jobs"]"
                                   ButtonStyle="ButtonStyle.Warning"
                                   Click="CleanupFailedJobsAsync"
-                                  IsBusy="IsCleanupFailedJobsBusy" />
+                                  IsBusy="IsCleanupFailedJobsBusy"
+                                  Disabled="@(IsAnyBusy && !IsCleanupFailedJobsBusy)" />
                 </RadzenStack>
             </RadzenFieldset>
         </RadzenColumn>
@@ -99,13 +114,15 @@
                                   Text="@L["Test Cluster Connections"]"
                                   ButtonStyle="ButtonStyle.Success"
                                   Click="TestClusterConnectionsAsync"
-                                  IsBusy="IsTestClusterConnectionsBusy" />
+                                  IsBusy="IsTestClusterConnectionsBusy"
+                                  Disabled="@(IsAnyBusy && !IsTestClusterConnectionsBusy)" />
 
                     <RadzenButton Icon="public"
                                   Text="@L["Test Internet Connectivity"]"
                                   ButtonStyle="ButtonStyle.Info"
                                   Click="TestInternetConnectivityAsync"
-                                  IsBusy="IsTestInternetConnectivityBusy" />
+                                  IsBusy="IsTestInternetConnectivityBusy"
+                                  Disabled="@(IsAnyBusy && !IsTestInternetConnectivityBusy)" />
                 </RadzenStack>
             </RadzenFieldset>
         </RadzenColumn>
@@ -113,22 +130,46 @@
 
     <RadzenFieldset class="rz-panel">
         <HeaderTemplate>
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Style="width:100%">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
                 <span>@L["Log"]</span>
-                <RadzenButton Icon="delete_sweep"
-                              Text="@L["Clear"]"
-                              ButtonStyle="ButtonStyle.Light"
-                              Size="ButtonSize.Small"
-                              Click="ClearLog"
-                              Disabled="@(!LogMessages.Any())" />
+                @if (LogMessages.Any())
+                {
+                    <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@LogMessages.Count.ToString()" />
+                }
             </RadzenStack>
         </HeaderTemplate>
         <ChildContent>
-            <RadzenStack Gap="0.15rem" Style="max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.82rem;">
-                @foreach (var msg in LogMessages)
+            <RadzenStack Gap="0.5rem">
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <CopyToClipboardButton TextProvider="@(() => string.Join(Environment.NewLine, LogMessages))" />
+                    <RadzenButton Icon="delete_sweep"
+                                  Text="@L["Clear"]"
+                                  ButtonStyle="ButtonStyle.Danger"
+                                  Size="ButtonSize.Small"
+                                  Click="ClearLog"
+                                  Disabled="@(!LogMessages.Any())" />
+                </RadzenStack>
+
+                @if (IsAnyBusy)
                 {
-                    <span style="@GetLogStyle(msg)">@msg</span>
+                    <RadzenProgressBar Mode="ProgressBarMode.Indeterminate"
+                                       Style="height: 4px;"
+                                       ShowValue="false" />
                 }
+
+                <RadzenStack Gap="0.15rem" Style="max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.82rem; background: var(--rz-base-200); padding: 0.5rem; border-radius: var(--rz-border-radius);">
+                    @if (LogMessages.Any())
+                    {
+                        @foreach (var msg in LogMessages)
+                        {
+                            <span style="@GetLogStyle(msg)">@msg</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="rz-text-tertiary-color" style="font-style: italic;">@L["No log entries yet."]</span>
+                    }
+                </RadzenStack>
             </RadzenStack>
         </ChildContent>
     </RadzenFieldset>

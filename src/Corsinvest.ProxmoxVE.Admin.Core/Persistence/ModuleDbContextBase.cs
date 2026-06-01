@@ -38,12 +38,4 @@ public abstract class ModuleDbContextBase<T>(DbContextOptions<T> options) : DbCo
     /// <param name="modelBuilder">The model builder</param>
     protected abstract void ConfigureEntities(ModelBuilder modelBuilder);
 
-    public Task ExecuteMaintenanceAsync(DatabaseMaintenanceOperation operation, CancellationToken cancellationToken = default)
-        => Database.ExecuteSqlRawAsync(operation switch
-        {
-            // PostgreSQL specific commands (can be extended for other databases)
-            DatabaseMaintenanceOperation.Optimize => "VACUUM ANALYZE",
-            DatabaseMaintenanceOperation.Reindex => $"REINDEX DATABASE {PostgreSqlHelper.QuoteIdentifier(Database.GetDbConnection().Database)}",
-            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, "Unknown maintenance operation")
-        }, cancellationToken);
 }

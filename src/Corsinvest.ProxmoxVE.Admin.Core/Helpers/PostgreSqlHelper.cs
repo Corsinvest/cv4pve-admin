@@ -35,8 +35,16 @@ public static partial class PostgreSqlHelper
 
     /// <summary>
     /// Returns a double-quoted, safe PostgreSQL identifier ready for inclusion in raw SQL
-    /// (e.g. <c>"mydb"</c>). The inner value is validated with <see cref="SafeIdentifier"/>.
+    /// (e.g. <c>"my-db"</c>). Quoted identifiers may contain any character (hyphens, spaces,
+    /// reserved keywords) — the only escape needed inside a double-quoted identifier is the
+    /// double quote itself, which is escaped by doubling it.
     /// </summary>
     public static string QuoteIdentifier(string? identifier)
-        => $"\"{SafeIdentifier(identifier)}\"";
+    {
+        if (string.IsNullOrEmpty(identifier) || identifier.Length > MaxIdentifierLength)
+        {
+            throw new InvalidOperationException($"Invalid PostgreSQL identifier: '{identifier}'");
+        }
+        return $"\"{identifier.Replace("\"", "\"\"")}\"";
+    }
 }

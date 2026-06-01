@@ -25,12 +25,30 @@ public partial class Maintenance(IAdminService adminService,
     private bool IsCleanupAuditLogsBusy { get; set; }
     private bool IsDbReindexBusy { get; set; }
     private bool IsOptimizeDDatabaseBusy { get; set; }
+    private bool IsDbCompactBusy { get; set; }
     private bool IsClearMemoryCacheBusy { get; set; }
     private bool IsCleanupFailedJobsBusy { get; set; }
     private bool IsTestClusterConnectionsBusy { get; set; }
     private bool IsTestInternetConnectivityBusy { get; set; }
     private bool IsCleanupSystemLogsBusy { get; set; }
     private bool IsCleanupTaskHistoryBusy { get; set; }
+
+    /// <summary>
+    /// True while ANY maintenance operation is running. Used by the UI to disable
+    /// the other action buttons (so the user can't queue Optimize while Reindex
+    /// is still running) and to show a progress bar above the log.
+    /// </summary>
+    private bool IsAnyBusy => IsFixAllBusy
+                              || IsCleanupAuditLogsBusy
+                              || IsDbReindexBusy
+                              || IsOptimizeDDatabaseBusy
+                              || IsDbCompactBusy
+                              || IsClearMemoryCacheBusy
+                              || IsCleanupFailedJobsBusy
+                              || IsTestClusterConnectionsBusy
+                              || IsTestInternetConnectivityBusy
+                              || IsCleanupSystemLogsBusy
+                              || IsCleanupTaskHistoryBusy;
 
     private List<string> LogMessages { get; set; } = [];
     private int AuditLogRetentionDays { get; set; } = 180; // Default 6 months
@@ -202,19 +220,27 @@ public partial class Maintenance(IAdminService adminService,
             try
             {
                 AddLog("Starting database reindex...");
+                long reindexTotalBefore = 0;
+                long reindexTotalAfter = 0;
                 foreach (var item in moduleService.Modules)
                 {
+                    var maintenance = item.GetMaintenance(scope);
+                    if (maintenance == null) { continue; }
                     try
                     {
-                        await item.DatabaseMaintenanceAsync(scope, DatabaseMaintenanceOperation.Reindex);
-                        AddLog($"OK Reindex {item.Name}");
+                        var before = await maintenance.GetDatabaseSize();
+                        await maintenance.ExecuteDatabaseMaintenanceAsync(DatabaseMaintenanceOperation.Reindex);
+                        var after = await maintenance.GetDatabaseSize();
+                        reindexTotalBefore += before;
+                        reindexTotalAfter += after;
+                        AddLog($"OK Reindex {item.Name}: {FormatBytes(before)} -> {FormatBytes(after)}");
                     }
                     catch (Exception ex)
                     {
                         AddLog($"FAIL Reindex {item.Name}: {ex.Message}");
                     }
                 }
-                AddLog("Database reindex completed");
+                AddLog($"Database reindex completed: total {FormatBytes(reindexTotalBefore)} -> {FormatBytes(reindexTotalAfter)}");
                 await auditService.LogAsync("Maintenance.DbReindex", true, "Completed");
             }
             catch (Exception ex)
@@ -238,19 +264,27 @@ public partial class Maintenance(IAdminService adminService,
             try
             {
                 AddLog("Starting database optimize...");
+                long optimizeTotalBefore = 0;
+                long optimizeTotalAfter = 0;
                 foreach (var item in moduleService.Modules)
                 {
+                    var maintenance = item.GetMaintenance(scope);
+                    if (maintenance == null) { continue; }
                     try
                     {
-                        await item.DatabaseMaintenanceAsync(scope, DatabaseMaintenanceOperation.Optimize);
-                        AddLog($"OK Optimize {item.Name}");
+                        var before = await maintenance.GetDatabaseSize();
+                        await maintenance.ExecuteDatabaseMaintenanceAsync(DatabaseMaintenanceOperation.Optimize);
+                        var after = await maintenance.GetDatabaseSize();
+                        optimizeTotalBefore += before;
+                        optimizeTotalAfter += after;
+                        AddLog($"OK Optimize {item.Name}: {FormatBytes(before)} -> {FormatBytes(after)}");
                     }
                     catch (Exception ex)
                     {
                         AddLog($"FAIL Optimize {item.Name}: {ex.Message}");
                     }
                 }
-                AddLog("Database optimize completed");
+                AddLog($"Database optimize completed: total {FormatBytes(optimizeTotalBefore)} -> {FormatBytes(optimizeTotalAfter)}");
                 await auditService.LogAsync("Maintenance.DbOptimize", true, "Completed");
             }
             catch (Exception ex)
@@ -263,6 +297,77 @@ public partial class Maintenance(IAdminService adminService,
                 IsOptimizeDDatabaseBusy = false;
             }
         }
+    }
+
+    private async Task DbCompactAsync()
+    {
+        // Explicit, verbose confirmation: Compact (VACUUM FULL) holds an ACCESS EXCLUSIVE
+        // lock per table and needs disk space ~= biggest table. Never run as routine maintenance.
+        if (!await dialogService.ConfirmAsync(
+                L["Compact rewrites each table from scratch to reclaim disk space. The application becomes unresponsive while it runs (typically minutes) and requires temporary free disk space roughly equal to your largest table. Run this only after large cleanups (audit logs, task history, old reports). Are you sure?"],
+                L["Confirm Database Compact (VACUUM FULL)"],
+                true))
+        {
+            return;
+        }
+
+        using var scope = serviceScopeFactory.CreateScope();
+        IsDbCompactBusy = true;
+        try
+        {
+            AddLog("Starting database compact (VACUUM FULL)...");
+
+            long totalBefore = 0;
+            long totalAfter = 0;
+
+            foreach (var item in moduleService.Modules)
+            {
+                var maintenance = item.GetMaintenance(scope);
+                if (maintenance == null) { continue; }
+                try
+                {
+                    var before = await maintenance.GetDatabaseSize();
+                    await maintenance.ExecuteDatabaseMaintenanceAsync(DatabaseMaintenanceOperation.Compact);
+                    var after = await maintenance.GetDatabaseSize();
+
+                    totalBefore += before;
+                    totalAfter += after;
+
+                    AddLog($"OK Compact {item.Name}: {FormatBytes(before)} -> {FormatBytes(after)} (reclaimed {FormatBytes(before - after)})");
+                }
+                catch (Exception ex)
+                {
+                    AddLog($"FAIL Compact {item.Name}: {ex.Message}");
+                }
+            }
+
+            AddLog($"Database compact completed: total {FormatBytes(totalBefore)} -> {FormatBytes(totalAfter)} (reclaimed {FormatBytes(totalBefore - totalAfter)})");
+            await auditService.LogAsync("Maintenance.DbCompact",
+                                        true,
+                                        $"Before {totalBefore} bytes, after {totalAfter} bytes, reclaimed {totalBefore - totalAfter} bytes");
+        }
+        catch (Exception ex)
+        {
+            AddLog($"FAIL Database Compact: {ex.Message}");
+            await auditService.LogAsync("Maintenance.DbCompact", false, ex.Message);
+        }
+        finally
+        {
+            IsDbCompactBusy = false;
+        }
+    }
+
+    private static string FormatBytes(long bytes)
+    {
+        string[] units = ["B", "KB", "MB", "GB", "TB"];
+        double size = Math.Abs(bytes);
+        int unit = 0;
+        while (size >= 1024 && unit < units.Length - 1)
+        {
+            size /= 1024;
+            unit++;
+        }
+        return $"{(bytes < 0 ? "-" : "")}{size:0.##} {units[unit]}";
     }
 
     // Cache Management

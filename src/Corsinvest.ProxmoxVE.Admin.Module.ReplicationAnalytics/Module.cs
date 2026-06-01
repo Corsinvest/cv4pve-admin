@@ -98,8 +98,8 @@ public class Module : ModuleBase
         InitializeJob(scope);
     }
 
-    public override Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation)
-        => scope.GetRequiredService<ModuleDbContext>().ExecuteMaintenanceAsync(operation);
+    public override IModuleMaintenance GetMaintenance(IServiceScope scope)
+        => new PostgreSqlModuleMaintenance<ModuleDbContext>(scope);
 
     public override Task FixAsync(IServiceScope scope) => RunAsync(scope);
 
