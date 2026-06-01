@@ -17,9 +17,9 @@ fi
 
 show_help() {
     cat << 'EOF'
-  ______                _                      __
- / ____/___  __________(_)___ _   _____  _____/ /_
-/ /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
+   ______                _                      __
+  / ____/___  __________(_)___ _   _____  _____/ /_
+ / /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
 / /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
 \____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
 
@@ -38,6 +38,7 @@ Commands:
       db create|list       Database backups
       data create|list     Application data backups
       all create|list      Full backups (db + data)
+  self-update              Update adminctl + compose files from GitHub
   help                     Show this help message
 
 Examples:
@@ -47,6 +48,7 @@ Examples:
   ./adminctl backup all list
   ./adminctl admin start
   ./adminctl admin stop
+  ./adminctl self-update
 
 Note: You can also use 'docker compose' commands directly if you prefer.
       See README.md for more information.
@@ -248,6 +250,94 @@ case "${1:-}" in
                 exit 1
                 ;;
         esac
+        ;;
+
+    self-update)
+        # Refresh adminctl + compose files from GitHub main. Does NOT touch
+        # .env, data/, or backups/.
+        BASE_URL="https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/src/docker"
+        FILES=("adminctl" "docker-compose-ce.yaml" "docker-compose-ee.yaml")
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        SNAPSHOT_DIR="self-update-backups/${TIMESTAMP}"
+
+        echo "Self-updating adminctl and compose files from GitHub..."
+        echo "Source: ${BASE_URL}"
+        echo ""
+
+        # Detect active edition so we can regenerate docker-compose.yaml later.
+        ACTIVE_EDITION=""
+        if [ -f docker-compose.yaml ]; then
+            if [ -f docker-compose-ee.yaml ] && cmp -s docker-compose.yaml docker-compose-ee.yaml; then
+                ACTIVE_EDITION="ee"
+            elif [ -f docker-compose-ce.yaml ] && cmp -s docker-compose.yaml docker-compose-ce.yaml; then
+                ACTIVE_EDITION="ce"
+            else
+                echo "Warning: docker-compose.yaml looks customized — will not regenerate it."
+            fi
+        fi
+
+        # Download to staging first; partial failure leaves the install untouched.
+        STAGING_DIR=$(mktemp -d)
+        trap 'rm -rf "$STAGING_DIR"' EXIT
+
+        echo "Downloading latest files..."
+        for file in "${FILES[@]}"; do
+            echo "   - $file"
+            if ! curl -fsSL -o "${STAGING_DIR}/${file}" "${BASE_URL}/${file}"; then
+                echo "Failed to download ${file}. Aborting, no files changed."
+                exit 1
+            fi
+        done
+        echo ""
+
+        # Snapshot current files before overwriting.
+        mkdir -p "$SNAPSHOT_DIR"
+        echo "Snapshotting current files into ${SNAPSHOT_DIR}/"
+        for file in "${FILES[@]}" docker-compose.yaml; do
+            if [ -f "$file" ]; then
+                cp "$file" "${SNAPSHOT_DIR}/${file}"
+            fi
+        done
+        echo ""
+
+        echo "Changes detected:"
+        CHANGED=0
+        for file in "${FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+                echo "   + $file (new)"
+                CHANGED=1
+            elif ! cmp -s "$file" "${STAGING_DIR}/${file}"; then
+                echo "   ~ $file (updated)"
+                CHANGED=1
+            fi
+        done
+        if [ $CHANGED -eq 0 ]; then
+            echo "   (none — already up to date)"
+            rm -rf "$SNAPSHOT_DIR"
+            rmdir self-update-backups 2>/dev/null || true
+            echo ""
+            echo "Already up to date."
+            exit 0
+        fi
+        echo ""
+
+        # Atomic mv: safe for the running script — kernel keeps the old inode alive until exit.
+        echo "Applying updates..."
+        for file in "${FILES[@]}"; do
+            mv "${STAGING_DIR}/${file}" "${file}"
+        done
+        chmod +x adminctl
+
+        if [ -n "$ACTIVE_EDITION" ]; then
+            cp "docker-compose-${ACTIVE_EDITION}.yaml" docker-compose.yaml
+            echo "   Regenerated docker-compose.yaml from docker-compose-${ACTIVE_EDITION}.yaml"
+        fi
+        echo ""
+
+        echo "Self-update complete."
+        echo "   Snapshot kept at: ${SNAPSHOT_DIR}/"
+        echo ""
+        echo "Next step: review changes, then './adminctl restart' (or 'docker compose up -d' to pull new images)."
         ;;
 
     help|--help|-h|"")
