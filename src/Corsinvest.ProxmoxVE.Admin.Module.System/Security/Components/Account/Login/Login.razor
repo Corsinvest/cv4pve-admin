@@ -56,15 +56,6 @@ else
                      PasswordText="@L["Password"]"
                      RememberMeText="@L["Remember me"]" />
 
-        @*     <div>
-        <p>
-            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                article
-                about setting up this ASP.NET application to support logging in via external services
-            </a>.
-        </p>
-    </div> *@
-
         @if (ExternalLogins.Any())
         {
             <form action="/PerformExternalLogin" method="post">
