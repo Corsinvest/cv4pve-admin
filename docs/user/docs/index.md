@@ -45,49 +45,49 @@ Built from real-world experience to solve real problems: multi-cluster visibilit
 Proxmox VE is a great hypervisor — but it wasn't designed for multi-cluster operations, compliance, or enterprise automation.
 cv4pve-admin fills that gap: one interface, all clusters, all the tools your team needs to run infrastructure at scale.
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); align-items: stretch;" markdown>
+<div class="why-grid" markdown>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! tip "Unified Dashboard"
     Monitor your entire infrastructure from one interface. Real-time metrics and resource tracking across all clusters.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! warning "Secure VNC Proxy"
     Access VM consoles without exposing Proxmox ports. Users connect to cv4pve-admin only.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! warning "Security & RBAC"
     Role-based access control, 2FA, App Tokens, and audit logs. Enterprise-grade access management.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! success "Smart Automation"
     Automated snapshots with retention policies, node config backup with Git push, and webhook hooks.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! info "Advanced Analytics"
     Deep insights into backups, replication, storage, and VM performance. Make data-driven decisions.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! note "Notifications"
     CE: email alerts. EE: 119+ services including Telegram, Slack, Discord, Teams, and more.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! info "Infrastructure Diagnostics"
     Automated health checks across your entire cluster. Detect configuration issues before they become outages.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! note "System Reports"
     Comprehensive reports on clusters, nodes, VMs, and storage. Perfect for audits and capacity planning.
 </div>
 
-<div style="height: 100%;" markdown>
+<div markdown>
 !!! tip "Command Palette"
     Press `Ctrl+K` to navigate anywhere instantly — no mouse needed.
 </div>
@@ -154,7 +154,7 @@ cv4pve-admin is available in two editions:
 
 <div class="grid cards" markdown>
 
--   :material-book-open-variant:{ .lg .middle } **Documentation**
+- :material-book-open-variant:{ .lg .middle } **Documentation**
 
     ---
 
@@ -162,7 +162,7 @@ cv4pve-admin is available in two editions:
 
     [:octicons-arrow-right-24: Getting Started](getting-started.md)
 
--   :material-message-question:{ .lg .middle } **Community Support**
+- :material-message-question:{ .lg .middle } **Community Support**
 
     ---
 
@@ -170,7 +170,7 @@ cv4pve-admin is available in two editions:
 
     [:octicons-arrow-right-24: Get Help](https://github.com/Corsinvest/cv4pve-admin/issues)
 
--   :material-email:{ .lg .middle } **Enterprise Support**
+- :material-email:{ .lg .middle } **Enterprise Support**
 
     ---
 
@@ -178,7 +178,7 @@ cv4pve-admin is available in two editions:
 
     [:octicons-arrow-right-24: Contact Us](mailto:support@corsinvest.it)
 
--   :material-web:{ .lg .middle } **Website**
+- :material-web:{ .lg .middle } **Website**
 
     ---
 

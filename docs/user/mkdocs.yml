@@ -7,7 +7,7 @@ repo_name: Corsinvest/cv4pve-admin
 edit_uri: edit/main/docs/user/docs/
 docs_dir: docs
 use_directory_urls: true
-copyright: Copyright &copy; 2024 Corsinvest Srl
+copyright: Copyright &copy; 2024-2026 Corsinvest Srl
 
 nav:
     - Home:
@@ -82,7 +82,9 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: ["docs"]
+      check_paths: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -96,6 +98,9 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/modules-filter.js
 
 extra:
     version:

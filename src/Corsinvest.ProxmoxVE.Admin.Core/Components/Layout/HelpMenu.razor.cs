@@ -25,15 +25,18 @@ public partial class HelpMenu(ISettingsService settingsService,
     private bool IsUpdating { get; set; }
     private ModuleBase? CurrentModule { get; set; }
 
-    private string DocumentationUrl
-        => CurrentModule?.HelpUrl is { Length: > 0 } helpUrl
-            ? $"{ApplicationHelper.DocumentationUrl}/{helpUrl}"
-            : ApplicationHelper.DocumentationUrl;
+    private bool HasModuleHelp => !string.IsNullOrEmpty(CurrentModule?.HelpUrl);
 
-    private string DocumentationText
-        => CurrentModule?.HelpUrl is { Length: > 0 }
-            ? L["Documentation - {0}", CurrentModule.Name]
-            : L["Documentation"];
+    private string DocumentationUrl => HasModuleHelp
+                                        ? $"/help/{CurrentModule!.HelpUrl}/"
+                                        : "/help/";
+
+    private string DocumentationOnlineUrl => HasModuleHelp
+                                                ? $"{ApplicationHelper.DocumentationUrl}/{CurrentModule!.HelpUrl}"
+                                                : ApplicationHelper.DocumentationUrl;
+
+    private string DocumentationText => HasModuleHelp ? L["Documentation - {0}", CurrentModule!.Name] : L["Documentation"];
+    private string DocumentationOnlineText => HasModuleHelp ? L["Documentation (online) - {0}", CurrentModule!.Name] : L["Documentation (online)"];
 
     protected override async Task OnInitializedAsync()
     {

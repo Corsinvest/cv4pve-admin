@@ -4,7 +4,7 @@
 
 param(
     [Parameter(Mandatory = $false)]
-    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge", "docs-start", "docs-stop")]
+    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge", "docs-start", "docs-stop", "docs-build")]
     [string]$Command = "build",
 
     [Parameter(Mandatory = $false)]
@@ -48,6 +48,7 @@ if (-not $NoInfo) {
 function Invoke-DockerPrepare {
     & $PSCommandPath -Command clean-assets -NoInfo
     & $PSCommandPath -Command download-assets -NoInfo
+    & $PSCommandPath -Command docs-build -NoInfo
     dotnet clean $projectPath -c Release --nologo
     if ($LASTEXITCODE -ne 0) { Write-Host "Clean failed!" -ForegroundColor Red; exit $LASTEXITCODE }
 }
@@ -201,6 +202,17 @@ switch ($Command) {
         Write-Host "Stopping MkDocs..." -ForegroundColor Cyan
         docker compose -f $docsPath\docker-compose.yml down
         if ($LASTEXITCODE -ne 0) { Write-Host "Failed to stop MkDocs (maybe not running?)" -ForegroundColor Yellow }
+    }
+
+    "docs-build" {
+        # Builds the static MkDocs site into docs/user/site/ using the same Docker
+        # image that powers `docs-start`. Required before `dotnet publish`, which
+        # embeds site/ into wwwroot/help/ via MkDocs.props.
+        $docsPath = "$PSScriptRoot/docs/user"
+        Write-Host "Building MkDocs static site into $docsPath/site/..." -ForegroundColor Cyan
+        docker run --rm -v "${docsPath}:/docs" squidfunk/mkdocs-material:latest build --clean --strict
+        if ($LASTEXITCODE -ne 0) { Write-Host "MkDocs build failed!" -ForegroundColor Red; exit $LASTEXITCODE }
+        Write-Host "✓ MkDocs site built at $docsPath/site/" -ForegroundColor Green
     }
 
     "run" {

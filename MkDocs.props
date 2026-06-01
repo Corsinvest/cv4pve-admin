@@ -1,0 +1,42 @@
+<Project>
+  <!--
+    Embeds the MkDocs documentation site (docs/user/) into the published app under
+    wwwroot/help/, so the running container can serve it offline on /help/.
+
+    This file does NOT build MkDocs — that's the caller's job, because the build
+    environment differs across contexts:
+      - CI (GitHub Actions): `pip install mkdocs-material` then `mkdocs build`
+      - Local dev / admin.ps1: `docker run squidfunk/mkdocs-material build`
+
+    Before invoking `dotnet publish`, make sure docs/user/site/ exists. The
+    EnsureMkDocsBuilt target below fails the publish with a clear error if
+    you forgot to build it.
+
+    Hooks into PrepareForPublish only — runs on `dotnet publish` but NOT during
+    a regular `dotnet build` or F5 in the IDE.
+  -->
+
+  <PropertyGroup>
+    <MkDocsRoot>$(MSBuildThisFileDirectory)docs\user</MkDocsRoot>
+    <MkDocsSiteDir>$(MkDocsRoot)\site</MkDocsSiteDir>
+  </PropertyGroup>
+
+  <Target Name="EnsureMkDocsBuilt" BeforeTargets="PrepareForPublish">
+    <Error Condition="!Exists('$(MkDocsSiteDir)\index.html')"
+           Text="MkDocs site not found at $(MkDocsSiteDir). Build it first: `./admin.ps1 -Command docs-build` (locally) or `mkdocs build` (CI). See ce/MkDocs.props for details." />
+    <Message Text="Embedding MkDocs site from $(MkDocsSiteDir) into wwwroot/help/" Importance="high" />
+  </Target>
+
+  <!--
+    Copy to `help/` next to wwwroot, NOT into wwwroot/help/, because the .NET 10
+    MapStaticAssets() middleware builds its file manifest at compile time and
+    won't pick up files added by PrepareForPublish. We serve them via a separate
+    UseStaticFiles + PhysicalFileProvider middleware (see UseAdminCoreHelpDocs).
+  -->
+  <ItemGroup>
+    <Content Include="$(MkDocsSiteDir)\**\*"
+             Link="help\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToPublishDirectory="PreserveNewest"
+             CopyToOutputDirectory="Never" />
+  </ItemGroup>
+</Project>

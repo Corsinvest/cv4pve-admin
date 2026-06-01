@@ -72,6 +72,19 @@ jobs:
       - name: Download assets
         run: pwsh -ExecutionPolicy Bypass -File admin.ps1 -Command download-assets
 
+      # MkDocs site is embedded into the published app under /help/ via MkDocs.props.
+      # Build it before `dotnet publish` so the EnsureMkDocsBuilt target finds site/index.html.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build MkDocs site
+        run: |
+          pip install mkdocs-material
+          cd docs/user
+          mkdocs build --clean --strict
+
       - name: Build and push Docker image
         run: |
           dotnet publish src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj \

@@ -8,25 +8,25 @@ Account management features for password changes, two-factor authentication, and
 
 <div class="grid cards" markdown>
 
--   :material-lock:{ .lg .middle } **Password Management**
+- :material-lock:{ .lg .middle } **Password Management**
 
     ---
 
     Change account password.
 
--   :material-security:{ .lg .middle } **Two-Factor Authentication (2FA)** <span class="ee"></span>
+- <span class="ee"></span> :material-security:{ .lg .middle } **Two-Factor Authentication (2FA)**
 
     ---
 
     Enable 2FA using authenticator apps with TOTP.
 
--   :material-history:{ .lg .middle } **Personal Audit Logs** <span class="ee"></span>
+- <span class="ee"></span> :material-history:{ .lg .middle } **Personal Audit Logs**
 
     ---
 
     View history of account activities and actions.
 
--   :material-play-circle:{ .lg .middle } **Active Sessions**
+- :material-play-circle:{ .lg .middle } **Active Sessions**
 
     ---
 
