@@ -6,6 +6,154 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.1.0-rc1] - 2026-06-01
+
+### Community Edition
+
+#### Added
+
+- **Diagnostic**
+  - PDF and Excel reports are now available in the free edition (used to be Enterprise-only). The PDF lists every issue colour-coded by severity and a separate section with the issues you have chosen to ignore. The Excel workbook opens on a cover sheet and the data sheet has the autofilter already on, so you can slice and pivot straight away.
+  - **Compliance mapping**. Every check is tagged with the controls it covers across ISO/IEC 27001, EU NIS2, EU DORA and PCI DSS v4.0. The scan details now have a *Compliance* tab that groups findings by standard and control; the mapping is saved with the scan, so older reports stay consistent.
+  - **Audit mode**: a new switch makes each passing check appear as a *Pass* result — handy when you have to prove that a control was actually verified, not only when it failed.
+  - **Attach PDF / Excel** toggles in the notifier settings: choose what to send with scheduled scan emails.
+  - New checks: ZFS pool detail, LVM-thin metadata, S.M.A.R.T. temperature and SSD wearout thresholds, PSI Pressure thresholds (CPU / I/O / Memory), snapshot age and backup recency (RPO).
+  - Each issue links straight to the relevant Proxmox VE documentation page (QEMU guest agent, VirtIO drivers, end-of-life OS).
+  - The *Download* button on the Scans page is a split-button: one click for the PDF (default), use the arrow to pick the Excel.
+
+- **Updater**
+  - PDF and Excel reports in the free edition (used to be a placeholder). The PDF lists every VM/CT and the status of its update scan; if some hosts failed the scan they get their own *Errors* page. The Excel workbook mirrors the same layout.
+  - **Parallel scan** with a configurable *Max Parallel Requests* (1–50). A single host failing no longer stops the whole scan: the error is recorded against that host and the rest of the run continues.
+  - Clicking *Scan* now starts the job immediately (the previous 5-second delay is gone).
+  - Same PDF / Excel split-button on the Scans page.
+
+- **System Report**
+  - **Three output formats**: **Excel** (the existing one), **HTML** (a single browseable page with a table of contents and cross-section links) and **JSON** (machine-readable, with raw values and clean slugs).
+  - **One zip file as result**, whatever the format: the zip contains the report itself plus the SVG network diagram, so you have everything in a single download.
+  - The chosen format is **saved with the report** — opening an old report from the list reminds you how it was generated.
+  - *Read-only* mode for the report dialog: click the id in the grid to inspect a past report's settings without risk of editing them.
+  - The page is now called *Reports* in the side menu (was *Scans*).
+
+- **AutoSnap**
+  - **Max Parallel** option per job (1–10) so snapshots within the same run can execute in parallel.
+
+- **AI Server**
+  - New MCP tools: list/download/delete ISO images, list templates, delete backups, delete arbitrary storage content, read cluster defaults (migration, bandwidth, HA, console).
+
+- **Metrics Exporter**
+  - **Per-cluster configuration** (used to be global): each cluster has its own on/off, its own collectors and its own cache windows.
+  - Master *Enabled* switch, plus per-exporter and per-collector switches with editable cache seconds.
+  - *Fast / Standard / Full* preset buttons to apply common configurations in one click.
+  - The Status page shows only the current cluster, with one panel per exporter (degrades to an info message when disabled).
+
+- **Node Protect**
+  - Folder backup runs now appear in *System → Tasks* alongside AutoSnap, System Report and Diagnostic, with a clickable deep link and per-node summary lines.
+  - Updated default *Paths to backup*: dropped wildcard entries that didn't expand correctly when quoted, added `/var/spool/cron/crontabs` so per-user cron jobs are picked up.
+
+- **Resources**
+  - **Three new pages** in the side menu: **Networks**, **Disks** and **Partitions**, each with its own filters, grouping and card / list view switcher.
+  - **Networks** has four tabs:
+    - *Nodes* — per-node bridges and bonds
+    - *Guests* — per-VM virtual NICs with model, MAC, bridge, firewall flag and IP addresses
+    - *SDN* — virtual networks with Zone, Zone Type, Bridge, Tag, Alias, Nodes
+    - *Diagram* — downloadable SVG topology view
+  - **Disks** lists the physical disks across the cluster with disk **Kind** (HDD / SSD / NVMe), model, serial, health and S.M.A.R.T. summary, with a drill-down per disk.
+  - **Partitions** shows the partition / mount table per node.
+  - **Snapshots** has a new *Trends* tab next to the snapshot list, showing how snapshot size changes over time (visible when *Calculate snapshot size* is enabled on the cluster).
+  - **Storages** reorganised into tabs: *Configuration*, *Storages*, *Usage* (with sub-tabs *By Storage* and *By VMs*).
+  - **VMs** page renamed to **Guests** (it has always included LXC containers, not just QEMU VMs — the name now reflects the content).
+  - **Card view** alongside the list view: every Guest / Node / Storage gets a card with status and key metrics; click to expand the card full-width. Toolbar with type / status / tag toggles, search and grouping.
+  - Unified *Health Score* indicator: shows `N/A` when no data is available, with a tooltip explaining why (e.g. *VM stopped — score not available*).
+  - Guest cards and lists show the operating system icon with a tooltip.
+
+- **System**
+  - The **Tasks** page has a search box in the toolbar that filters across Title, Cluster, Module, Phase, Created by and Last log.
+  - The **Active Tasks** menu auto-clears the badge for failed / abandoned tasks once you have opened the panel. The *Active* filter is now explicit: running tasks + ended in the last 10 minutes + unacknowledged failures.
+  - **New user activation flow**: when an admin creates a user from the UI the new user receives an activation email with a password-reset link, instead of being created without a password.
+  - **User unlock** command added to the CLI, so you can reset a locked-out account without going through the UI.
+  - Cluster names with spaces or special characters in the URL no longer break navigation to module pages.
+  - **Maintenance: *Compact (full)*** — new button that reclaims disk space after big cleanups (audit logs, task history, old reports). The log shows the size of each module's data before and after, so you can see exactly how much was freed. The action is opt-in only, asks for explicit confirmation, and is not run by *Fix All* — tables are locked while it runs.
+  - **Help bundled with the app** — the user documentation is now included in the container and served locally. The `?` menu opens it without needing internet access; a second entry **Documentation (online)** still points to the latest version on the project website.
+
+- **Command palette**
+  - The `ip:` filter now shows one IPv4 badge per VM (IPv6 and loopback addresses filtered out).
+
+#### Changed
+
+- **Diagnostic**
+  - Settings screen redesigned with one accordion per area (Node, QEMU, LXC, Storage, Snapshot, Backup, CVE) and per-context thresholds clearly grouped.
+  - CVE checks now look up Proxmox VE specific CVEs in NVD using a CPE filter — wider coverage than the previous Debian-only tracker (which has been removed from the settings).
+
+- **Resources**
+  - The list view has been redesigned alongside the new card view (filters, grouping and search work consistently across both).
+
+- **Task Tracking**
+  - The Active Tasks panel and menu refresh row-by-row instead of reloading the whole grid, so the UI no longer flickers when tasks update.
+
+#### Fixed
+
+- **Diagnostic**
+  - Excel export no longer fails on scans where every issue is ignored.
+  - PDF reports wrap long text inside every cell — resource id, sub-context and description — instead of running off the right edge of the page. This shows up most often when an issue description carries a long error message returned by the API.
+
+- **System**
+  - Cluster names with spaces no longer break navigation between module pages.
+  - Validation messages inside edit dialogs are shown again (the form highlights the field with the error and a summary appears at the top).
+  - Pages with many permission checks load fast, even on installations with many admin roles — they used to freeze for several seconds.
+  - The "New Cluster" form no longer refuses the first submit because of a *PveName is required* error (the field is filled in automatically once the form is sent).
+  - Release notes dialog shows only the current version, not earlier release candidates.
+  - QEMU agent network cache refresh dropped from 30 to 15 minutes, so freshly attached NICs appear faster.
+  - **Maintenance: *Reindex* and *Optimize* no longer touch other modules' data**. They used to run on the whole database once per installed module — so on an installation with sixteen modules each action ran sixteen times over everything. Now they run once per module, on that module's data only, and complete in a fraction of the time. *Reindex* also works again on databases whose name contains a hyphen (e.g. `cv4pve-admin`).
+
+- **Notifier**
+  - SMTP and WebHook editors refresh correctly when you pick a different notifier from the list (no more leftover bindings from the previous one).
+
+- **Docker**
+  - The container health check no longer marks the running container as unhealthy on every probe.
+
+### Enterprise Edition
+
+#### Added
+
+- **Diagnostic — Compliance report**
+  - The PDF gains one section per standard (ISO 27001, NIS2, DORA, PCI DSS). Every section starts on a new page with a short disclaimer, a summary table (Control / Title / Critical / Warning / Info / Ok / Status) and a per-control detail block listing the underlying findings.
+  - The Excel workbook gains one *Compliance - &lt;Standard&gt;* sheet per standard, each with the same disclaimer, a *Summary* table and a *Details* table for filtering and pivoting.
+  - In the scan details page the *Compliance* tab is a real grid grouped by Standard → Control, with the human-readable control title shown next to its id, and clickable links to the affected resources.
+  - Colour coding on Gravity / Status cells is consistent between PDF and Excel.
+
+- **System / Logs**
+  - New native *Logs* page (replaces the Serilog UI integration) with server-side filtering by level, message and source.
+
+- **System / Security**
+  - When an admin creates a new user, a confirmation email is sent automatically — same flow as the Community self-registration. The new user receives an *activate your account* link instead of being stuck with no password.
+  - Audit log detail dialog has a copy-to-clipboard button.
+
+- **Portal**
+  - Tenant user dialog has a new *Display Name* field; the previous *Admin* checkbox is now clearly labelled *Tenant Admin*. The *UserName* field only accepts email addresses, and is editable only when creating a new user.
+  - Tenants without VMs show a friendly note instead of an empty table.
+
+- **Node Protect / Git**
+  - Git push runs appear in the task tracker with a clickable link to the Git page, and the task log lines now show remote URL, branch and outcome.
+
+- **Updater**
+  - The Enterprise PDF builds on top of the new free-edition PDF and still includes the Executive Summary at the top.
+
+- **Workflow**
+  - New built-in activities to query the cluster (replications, guest config, guests, RRD data) and pickers for HA groups, node names, storage names and VM ids.
+
+#### Changed
+
+- **Notifications**
+  - Updated. Microsoft Teams is no longer supported; ntfy.sh users may need to update their URL.
+
+#### Fixed
+
+- **Diagnostic / Updater**
+  - PDF tables wrap long values correctly (shared fix with the Community edition).
+
+- **Workflow**
+  - The workflow editor no longer fails to start in tenant mode (the live-update channel authenticates correctly).
+
 ## [2.0.0] - 2026-03-09
 
 > 🎉 After over a year of complete rewrite, **cv4pve-admin 2.0.0** is here.
