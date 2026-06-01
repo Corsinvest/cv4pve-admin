@@ -977,46 +977,79 @@
   
 
 
-<h1 id="portal">Portal<a class="headerlink" href="#portal" title="Permanent link">&para;</a></h1>
-<p><span class="ee"></span> Multi-tenant management portal for Proxmox VE environments, designed for MSPs and IT teams.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p><strong>Portal</strong> is a multi-tenant management solution that allows you to create, assign, and isolate virtual environments for clients, departments, or specific groups, ensuring control and security.
-It provides centralized tenant management while maintaining the full flexibility of the Proxmox VE cluster.</p>
-<hr />
-<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<h1 id="portal"><span class="ee"></span> <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 9a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2m13-6H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1M7 19a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2m13-6H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1"/></svg></span> Portal <span class="scope" data-scope="all-clusters"></span><a class="headerlink" href="#portal" title="Permanent link">&para;</a></h1>
+<p>Multi-tenant management portal for Proxmox VE environments, designed for MSPs and IT teams. Create, assign and isolate virtual environments for clients, departments or groups while keeping centralised control over the cluster.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
 <ul>
-<li><strong>Isolated Tenant Management</strong> — Each tenant can access only their own virtual resources.</li>
-<li><strong>Centralized Control</strong> — Assign resources, policies, and access from a single point.</li>
-<li><strong>Easy Scalability</strong> — Quickly add new tenants without impacting the existing infrastructure.</li>
-<li><strong>Intuitive Interface</strong> — Clear and well-organized frontend for administrators and tenants.</li>
-<li><strong>Secure and Segmented Access</strong> — Separate logins for tenants with specific roles and permissions.</li>
-<li><strong>Native Proxmox Integration</strong> — Fully compatible with existing infrastructure, no invasive changes required.</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5.5A3.5 3.5 0 0 1 15.5 9a3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 8.5 9 3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42-.15 1.43.27 2.85 1.13 3.96C7.16 13.34 6.16 14 5 14a3 3 0 0 1-3-3 3 3 0 0 1 3-3m14 0a3 3 0 0 1 3 3 3 3 0 0 1-3 3c-1.16 0-2.16-.66-2.66-1.62a5.54 5.54 0 0 0 1.13-3.96c.45-.27.97-.42 1.53-.42M5.5 18.25c0-2.07 2.91-3.75 6.5-3.75s6.5 1.68 6.5 3.75V20h-13zM0 20v-1.5c0-1.39 1.89-2.56 4.45-2.9-.59.68-.95 1.62-.95 2.65V20zm24 0h-3.5v-1.75c0-1.03-.36-1.97-.95-2.65 2.56.34 4.45 1.51 4.45 2.9z"/></svg></span> <strong>Isolated Tenant Management</strong></p>
+<hr />
+<p>Each tenant can access only their own virtual resources.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.4 18.2q.6.75.6 1.8c0 1.7-1.3 3-3 3s-3-1.3-3-3 1.3-3 3-3q.6 0 1.2.3l1.4-1.8c-.9-1-1.3-2.4-1.1-3.7l-2-.7c-.5.8-1.4 1.4-2.5 1.4-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3v.2l2 .7c.6-1.2 1.8-2.1 3.2-2.3V5.9C10 5.6 9 4.4 9 3c0-1.7 1.3-3 3-3s3 1.3 3 3c0 1.4-1 2.6-2.2 2.9v2.2c1.4.2 2.6 1.1 3.2 2.3l2-.7v-.2c0-1.7 1.3-3 3-3s3 1.3 3 3-1.3 3-3 3c-1.1 0-2-.6-2.5-1.4l-2 .7c.2 1.3-.2 2.7-1.1 3.7l1.4 1.8q.6-.3 1.2-.3c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3q0-1.05.6-1.8l-1.4-1.8c-1.4.8-3 .8-4.4 0z"/></svg></span> <strong>Centralized Control</strong></p>
+<hr />
+<p>Assign resources, policies and access from a single point.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m16 6 2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></span> <strong>Easy Scalability</strong></p>
+<hr />
+<p>Quickly add new tenants without impacting the existing infrastructure.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V4H3v12zm0-14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7v2h2v2H8v-2h2v-2H3a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2zM5 6h9v5H5zm10 0h4v2h-4zm4 3v5h-4V9zM5 12h4v2H5zm5 0h4v2h-4z"/></svg></span> <strong>Intuitive Interface</strong></p>
+<hr />
+<p>Clear and well-organised frontend for administrators and tenants.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7m0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3"/></svg></span> <strong>Secure and Segmented Access</strong></p>
+<hr />
+<p>Separate logins for tenants with role-based permissions.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.98 2.98 0 0 0 0-4.24 2.98 2.98 0 0 0-4.24 0l-3.53 3.53a2.98 2.98 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.98 2.98 0 0 0 0 4.24 2.98 2.98 0 0 0 4.24 0l3.53-3.53a2.98 2.98 0 0 0 0-4.24.973.973 0 0 1 0-1.42"/></svg></span> <strong>Native Proxmox Integration</strong></p>
+<hr />
+<p>Fully compatible with existing infrastructure — no invasive changes required.</p>
+</li>
 </ul>
-<hr />
-<h2 id="pages">Pages<a class="headerlink" href="#pages" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Page</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Overview</strong></td>
-<td>Summary of tenant status and resources</td>
-</tr>
-<tr>
-<td><strong>Tenants</strong></td>
-<td>Create and manage tenants with their VMs and users</td>
-</tr>
-</tbody>
-</table>
-<hr />
+</div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why a portal layer when PVE has its own users and roles?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Customers see only their VMs</p>
+<p>Tenant users log into a portal that exposes only the VMs assigned to their tenant — no chance of accidentally touching another customer.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Single pane across clusters</p>
+<p>A tenant can have VMs across multiple PVE clusters — they see one list, not "log into cluster A, log into cluster B".</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">RBAC over PVE permissions</p>
+<p>Portal roles (Admin / Tenant Admin / Tenant User) layer on top of PVE permissions — define the customer experience once, regardless of underlying cluster ACLs.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">MSP-grade isolation</p>
+<p>Customers don't see each other, can't navigate to other tenants' resources, can't enumerate VM IDs that aren't theirs.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Tenants</strong> — create and manage tenants with their assigned VMs/CTs and users</li>
+</ul>
 <h2 id="tenants">Tenants<a class="headerlink" href="#tenants" title="Permanent link">&para;</a></h2>
 <p>Each tenant contains:</p>
 <ul>
-<li><strong>VMs</strong> — list of Proxmox VE virtual machines and containers assigned to the tenant</li>
+<li><strong>VMs / CTs</strong> — list of Proxmox VE resources assigned to the tenant</li>
 <li><strong>Users</strong> — tenant users with role-based access control</li>
 </ul>
 <h3 id="roles">Roles<a class="headerlink" href="#roles" title="Permanent link">&para;</a></h3>
@@ -1030,7 +1063,7 @@ It provides centralized tenant management while maintaining the full flexibility
 <tbody>
 <tr>
 <td><strong>Portal Admin</strong></td>
-<td>Full access to tenant management, VMs, and users</td>
+<td>Full access to tenant management, VMs and users</td>
 </tr>
 <tr>
 <td><strong>Portal Tenant Admin</strong></td>
@@ -1042,12 +1075,11 @@ It provides centralized tenant management while maintaining the full flexibility
 </tr>
 </tbody>
 </table>
-<hr />
 <h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>MSP / Service Providers</strong> — Separate environments per customer with isolated access</li>
-<li><strong>Enterprise IT</strong> — Department-level resource isolation on a shared cluster</li>
-<li><strong>Education</strong> — Assign lab environments to student groups</li>
+<li><strong>MSP / Service Providers</strong> — separate environments per customer with isolated access</li>
+<li><strong>Enterprise IT</strong> — department-level resource isolation on a shared cluster</li>
+<li><strong>Education</strong> — assign lab environments to student groups</li>
 </ul>
 
 
@@ -1140,7 +1172,7 @@ It provides centralized tenant management while maintaining the full flexibility
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1192,6 +1224,8 @@ It provides centralized tenant management while maintaining the full flexibility
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

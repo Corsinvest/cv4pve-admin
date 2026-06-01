@@ -977,10 +977,9 @@
   
 
 
-<h1 id="autosnap">AutoSnap<a class="headerlink" href="#autosnap" title="Permanent link">&para;</a></h1>
+<h1 id="autosnap"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m8 3a5 5 0 0 0-5 5 5 5 0 0 0 5 5 5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 2a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3"/></svg></span> AutoSnap <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#autosnap" title="Permanent link">&para;</a></h1>
 <p>Automated snapshot scheduling and management for Proxmox VE virtual machines.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Automated snapshot creation, rotation, and retention management for Proxmox VE infrastructure.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
@@ -1004,13 +1003,126 @@
 <p>Apply a single job to multiple VMs and containers using filters or explicit selection.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.46 19C9 21.07 6.15 21.59 4.09 20.15c-2.05-1.44-2.53-4.31-1.09-6.4a4.59 4.59 0 0 1 3.58-1.98l.05 1.43c-.91.07-1.79.54-2.36 1.36-1 1.44-.69 3.38.68 4.35 1.38.96 3.31.59 4.31-.84.31-.45.49-.94.56-1.44v-1.01l5.58-.04.07-.11c.53-.92 1.68-1.24 2.58-.72a1.9 1.9 0 0 1 .68 2.6c-.53.91-1.69 1.23-2.59.71-.41-.23-.7-.6-.83-1.02l-4.07.02a5 5 0 0 1-.78 1.94m7.28-7.14c2.53.31 4.33 2.58 4.02 5.07-.31 2.5-2.61 4.27-5.14 3.96a4.63 4.63 0 0 1-3.43-2.21l1.24-.72a3.22 3.22 0 0 0 2.32 1.45c1.75.21 3.3-.98 3.51-2.65s-1.03-3.2-2.76-3.41c-.54-.06-1.06.01-1.53.18l-.85.44-2.58-4.77h-.22a1.906 1.906 0 0 1-1.85-1.95c.03-1.04.93-1.85 1.98-1.81 1.05.06 1.88.91 1.85 1.95-.02.44-.19.84-.46 1.15l1.9 3.51c.62-.2 1.3-.27 2-.19M8.25 9.14c-1-2.35.06-5.04 2.37-6.02 2.32-.98 5 .13 6 2.48.59 1.37.47 2.87-.2 4.07l-1.24-.72c.42-.81.49-1.8.09-2.73-.68-1.6-2.49-2.37-4.04-1.72-1.56.66-2.26 2.5-1.58 4.1.28.66.75 1.17 1.32 1.51l.39.21-3.07 4.99c.03.05.07.11.1.19.49.91.15 2.06-.77 2.55-.91.49-2.06.13-2.56-.81-.49-.93-.15-2.08.77-2.57.39-.21.82-.26 1.23-.17l2.31-3.77c-.47-.43-.87-.97-1.12-1.59"/></svg></span> <strong>Web API Hook</strong> <span class="ee"></span></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21 9-4-4v3h-7v2h7v3M7 11l-4 4 4 4v-3h7v-2H7z"/></svg></span> <strong>Node-independent</strong></p>
+<hr />
+<p>Jobs target VM IDs / tags / groups — never a specific node. When a VM migrates (manual or HA failover), the next scheduled snapshot just runs on its new home with no reconfiguration.</p>
+</li>
+<li>
+<p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.46 19C9 21.07 6.15 21.59 4.09 20.15c-2.05-1.44-2.53-4.31-1.09-6.4a4.59 4.59 0 0 1 3.58-1.98l.05 1.43c-.91.07-1.79.54-2.36 1.36-1 1.44-.69 3.38.68 4.35 1.38.96 3.31.59 4.31-.84.31-.45.49-.94.56-1.44v-1.01l5.58-.04.07-.11c.53-.92 1.68-1.24 2.58-.72a1.9 1.9 0 0 1 .68 2.6c-.53.91-1.69 1.23-2.59.71-.41-.23-.7-.6-.83-1.02l-4.07.02a5 5 0 0 1-.78 1.94m7.28-7.14c2.53.31 4.33 2.58 4.02 5.07-.31 2.5-2.61 4.27-5.14 3.96a4.63 4.63 0 0 1-3.43-2.21l1.24-.72a3.22 3.22 0 0 0 2.32 1.45c1.75.21 3.3-.98 3.51-2.65s-1.03-3.2-2.76-3.41c-.54-.06-1.06.01-1.53.18l-.85.44-2.58-4.77h-.22a1.906 1.906 0 0 1-1.85-1.95c.03-1.04.93-1.85 1.98-1.81 1.05.06 1.88.91 1.85 1.95-.02.44-.19.84-.46 1.15l1.9 3.51c.62-.2 1.3-.27 2-.19M8.25 9.14c-1-2.35.06-5.04 2.37-6.02 2.32-.98 5 .13 6 2.48.59 1.37.47 2.87-.2 4.07l-1.24-.72c.42-.81.49-1.8.09-2.73-.68-1.6-2.49-2.37-4.04-1.72-1.56.66-2.26 2.5-1.58 4.1.28.66.75 1.17 1.32 1.51l.39.21-3.07 4.99c.03.05.07.11.1.19.49.91.15 2.06-.77 2.55-.91.49-2.06.13-2.56-.81-.49-.93-.15-2.08.77-2.57.39-.21.82-.26 1.23-.17l2.31-3.77c-.47-.43-.87-.97-1.12-1.59"/></svg></span> <strong>Web API Hook</strong></p>
 <hr />
 <p>Trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete). Configure per-job HTTP endpoints with custom headers and body templates.</p>
 <p><a href="../autosnap-webhook/">Learn more</a></p>
 </li>
 </ul>
 </div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Proxmox can already take snapshots — why use a module for it?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Snapshots actually happen</p>
+<p>On a schedule <strong>you</strong> choose. No human has to remember before the next risky operation.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Manage 50 VMs as one set</p>
+<p>A single job targets a group via tags, wildcards or explicit list — no copy-paste per VM.</p>
+</div>
+</div>
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Different schedules per workload</p>
+<p>Hourly for the database, nightly for dev VMs, weekly for templates — each job runs on its own cron, side by side on the same cluster.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Follows the VM, not the node</p>
+<p>Jobs target VM IDs / tags. When a VM migrates to another node, the next snapshot just runs there — no reconfiguration needed.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Retention without thinking</p>
+<p>Set <code>Keep=7</code> once; the module deletes the 8th snapshot for you. Plain Proxmox keeps them forever until someone notices.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Storage-safe by default</p>
+<p><code>MaxPercentageStorage</code> skips the snapshot when the target pool is too full — your storage never fills because of automation.</p>
+</div>
+</div>
+<div>
+<div class="admonition note">
+<p class="admonition-title">Auditable history</p>
+<p>Every run logged in the Jobs grid, Time line and Errors tab — you know what was snapshotted, when, and what failed.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Jobs</strong> — manage AutoSnap jobs: target VMs, schedule, retention, name template, optional Web API Hook</li>
+<li><strong>Time line</strong> — visual timeline of snapshots created across jobs and VMs</li>
+<li><strong>Errors</strong> — history of failed snapshot operations with the underlying error message</li>
+<li><strong>Status</strong> — current snapshot inventory across the cluster with per-VM counts and last successful run</li>
+</ul>
+<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show all settings</summary>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>off</td>
+<td>Master on/off switch for the cluster</td>
+</tr>
+<tr>
+<td><strong>Keep History</strong></td>
+<td>10</td>
+<td>Maximum number of past run results to keep per job</td>
+</tr>
+<tr>
+<td><strong>Notify</strong></td>
+<td>None</td>
+<td>When to send notifier events: never, on errors, always</td>
+</tr>
+<tr>
+<td><strong>Search Mode</strong></td>
+<td>Managed</td>
+<td>How snapshots created by AutoSnap are identified (<code>Managed</code> = recognised by name pattern only)</td>
+</tr>
+<tr>
+<td><strong>Timestamp Format</strong></td>
+<td>engine default</td>
+<td>Format applied to the <code>{timestamp}</code> placeholder in snapshot names</td>
+</tr>
+<tr>
+<td><strong>On Remove Job Remove Snapshots</strong></td>
+<td>on</td>
+<td>Delete the snapshots created by a job when the job itself is deleted</td>
+</tr>
+<tr>
+<td><strong>Max Percentage Storage</strong></td>
+<td>95</td>
+<td>Skip snapshot creation if the target storage is more full than this percentage — prevents filling the pool</td>
+</tr>
+<tr>
+<td><strong>Notifier Configurations</strong></td>
+<td>–</td>
+<td>List of Notifier configurations to deliver events to</td>
+</tr>
+</tbody>
+</table>
+</details>
 
 
 
@@ -1102,7 +1214,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1154,6 +1266,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

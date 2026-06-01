@@ -736,34 +736,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Security Settings">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#password-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Password Options
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lockout-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Lockout Options
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -774,56 +746,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Serilog Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#log-levels" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Log Levels
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#file-sink" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        File Sink
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#postgresql-sink-enterprise-edition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PostgreSQL Sink (Enterprise Edition)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#console-sink" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Console Sink
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1192,6 +1114,8 @@
 </ul>
 </div>
 <h2 id="connection-strings">Connection Strings<a class="headerlink" href="#connection-strings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show Connection Strings settings</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">&quot;DefaultConnection&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Host=localhost;Database=cv4pve_admin;Username=postgres;Password=yourpassword&quot;</span>
@@ -1212,10 +1136,13 @@
 </tr>
 </tbody>
 </table>
+</details>
 <h2 id="cookie-settings">Cookie Settings<a class="headerlink" href="#cookie-settings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show Cookie settings</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;CookieSettings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">&quot;ExpireDays&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">&quot;ExpireDays&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
 </span></code></pre></div>
@@ -1230,13 +1157,15 @@
 <tbody>
 <tr>
 <td><code>ExpireDays</code></td>
-<td>14</td>
+<td>30</td>
 <td>Number of days before authentication cookie expires</td>
 </tr>
 </tbody>
 </table>
+</details>
 <h2 id="security-settings">Security Settings<a class="headerlink" href="#security-settings" title="Permanent link">&para;</a></h2>
-<h3 id="password-options">Password Options<a class="headerlink" href="#password-options" title="Permanent link">&para;</a></h3>
+<details class="note settings">
+<summary>Show Password Options</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;Security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;PasswordOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1285,7 +1214,9 @@
 </tr>
 </tbody>
 </table>
-<h3 id="lockout-options">Lockout Options<a class="headerlink" href="#lockout-options" title="Permanent link">&para;</a></h3>
+</details>
+<details class="note settings">
+<summary>Show Lockout Options</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;Security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;LockoutOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1322,7 +1253,10 @@
 </tr>
 </tbody>
 </table>
+</details>
 <h2 id="serilog-configuration">Serilog Configuration<a class="headerlink" href="#serilog-configuration" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show Serilog base configuration</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;Serilog&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">&quot;MinimumLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1340,7 +1274,7 @@
 </span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="log-levels">Log Levels<a class="headerlink" href="#log-levels" title="Permanent link">&para;</a></h3>
+<p><strong>Log Levels</strong></p>
 <ul>
 <li><code>Verbose</code> - Most detailed logging</li>
 <li><code>Debug</code> - Debugging information</li>
@@ -1349,7 +1283,10 @@
 <li><code>Error</code> - Errors that need attention</li>
 <li><code>Fatal</code> - Critical failures</li>
 </ul>
-<h3 id="file-sink">File Sink<a class="headerlink" href="#file-sink" title="Permanent link">&para;</a></h3>
+</details>
+<details class="note reference">
+<summary>Show all Serilog sinks (File / PostgreSQL / Console)</summary>
+<p><strong>File Sink</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">&quot;Args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1386,7 +1323,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="postgresql-sink-enterprise-edition">PostgreSQL Sink (Enterprise Edition)<a class="headerlink" href="#postgresql-sink-enterprise-edition" title="Permanent link">&para;</a></h3>
+<p><strong>PostgreSQL Sink</strong> <span class="ee"></span></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PostgreSQL&quot;</span><span class="p">,</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">&quot;Args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1452,7 +1389,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="console-sink">Console Sink<a class="headerlink" href="#console-sink" title="Permanent link">&para;</a></h3>
+<p><strong>Console Sink</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Console&quot;</span><span class="p">,</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;Args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1461,7 +1398,10 @@
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">}</span>
 </span></code></pre></div>
+</details>
 <h2 id="other-settings">Other Settings<a class="headerlink" href="#other-settings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show other settings</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;DetailedErrors&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">&quot;AllowedHosts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
@@ -1478,8 +1418,8 @@
 <tbody>
 <tr>
 <td><code>DetailedErrors</code></td>
-<td>false</td>
-<td>Show detailed error messages (development only)</td>
+<td>true</td>
+<td>Show detailed error messages (set to <code>false</code> in production for security)</td>
 </tr>
 <tr>
 <td><code>AllowedHosts</code></td>
@@ -1488,7 +1428,10 @@
 </tr>
 </tbody>
 </table>
+</details>
 <h2 id="example-complete-configuration">Example Complete Configuration<a class="headerlink" href="#example-complete-configuration" title="Permanent link">&para;</a></h2>
+<details class="note examples">
+<summary>Show full appsettings.extra.json example</summary>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">&quot;DefaultConnection&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Host=localhost;Database=cv4pve_admin;Username=postgres;Password=secret&quot;</span>
@@ -1532,6 +1475,7 @@
 </span><span id="__span-9-41"><a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a><span class="w">  </span><span class="nt">&quot;AllowedHosts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
 </span><span id="__span-9-42"><a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a><span class="p">}</span>
 </span></code></pre></div>
+</details>
 
 
 
@@ -1661,7 +1605,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1713,6 +1657,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

@@ -798,23 +798,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SMTP">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -825,45 +808,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="WebHook">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configuration_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#placeholders" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Placeholders
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#default-payload" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Default payload
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1139,7 +1083,7 @@
 <p><a href="#webhook"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Configure WebHook</a></p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 14v3h-3v2h3v3h2v-3h3v-2h-3v-3M12 2a2 2 0 0 0-2 2 2 2 0 0 0 0 .29C7.12 5.14 5 7.82 5 11v6l-2 2v1h9.35a6 6 0 0 1-.35-2 6 6 0 0 1 6-6 6 6 0 0 1 1 .09V11c0-3.18-2.12-5.86-5-6.71A2 2 0 0 0 14 4a2 2 0 0 0-2-2m-2 19a2 2 0 0 0 2 2 2 2 0 0 0 1.65-.87 6 6 0 0 1-.84-1.13Z"/></svg></span> <strong>119+ Channels</strong> <span class="ee"></span></p>
+<p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 14v3h-3v2h3v3h2v-3h3v-2h-3v-3M12 2a2 2 0 0 0-2 2 2 2 0 0 0 0 .29C7.12 5.14 5 7.82 5 11v6l-2 2v1h9.35a6 6 0 0 1-.35-2 6 6 0 0 1 6-6 6 6 0 0 1 1 .09V11c0-3.18-2.12-5.86-5-6.71A2 2 0 0 0 14 4a2 2 0 0 0-2-2m-2 19a2 2 0 0 0 2 2 2 2 0 0 0 1.65-.87 6 6 0 0 1-.84-1.13Z"/></svg></span> <strong>119+ Channels</strong></p>
 <hr />
 <p>Telegram, Discord, Slack, Microsoft Teams, Apprise and many more notification services.</p>
 </li>
@@ -1148,7 +1092,8 @@
 <hr />
 <h2 id="smtp">SMTP<a class="headerlink" href="#smtp" title="Permanent link">&para;</a></h2>
 <p>Send notifications via email using any SMTP server.</p>
-<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<details class="note settings">
+<summary>Show SMTP configuration fields</summary>
 <table>
 <thead>
 <tr>
@@ -1187,10 +1132,12 @@
 </tr>
 </tbody>
 </table>
+</details>
 <hr />
 <h2 id="webhook">WebHook<a class="headerlink" href="#webhook" title="Permanent link">&para;</a></h2>
 <p>Send an HTTP request to any URL when a notification is triggered.</p>
-<h3 id="configuration_1">Configuration<a class="headerlink" href="#configuration_1" title="Permanent link">&para;</a></h3>
+<details class="note settings">
+<summary>Show WebHook configuration fields</summary>
 <table>
 <thead>
 <tr>
@@ -1229,8 +1176,10 @@
 </tr>
 </tbody>
 </table>
-<h3 id="placeholders">Placeholders<a class="headerlink" href="#placeholders" title="Permanent link">&para;</a></h3>
-<p>Placeholders are replaced at runtime in the URL, headers and body:</p>
+</details>
+<details class="note reference">
+<summary>Show placeholders and default payload</summary>
+<p><strong>Placeholders</strong> are replaced at runtime in the URL, headers and body:</p>
 <table>
 <thead>
 <tr>
@@ -1249,12 +1198,14 @@
 </tr>
 </tbody>
 </table>
-<h3 id="default-payload">Default payload<a class="headerlink" href="#default-payload" title="Permanent link">&para;</a></h3>
-<p>If <strong>Body</strong> is left empty, the following JSON is sent automatically:</p>
+<p><strong>Default payload</strong> — if <strong>Body</strong> is left empty, the following JSON is sent automatically:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%subject%&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%body%&quot;</span><span class="p">}</span>
 </span></code></pre></div>
+</details>
 <hr />
 <h2 id="webhook-examples">WebHook Examples<a class="headerlink" href="#webhook-examples" title="Permanent link">&para;</a></h2>
+<details class="note examples">
+<summary>Show WebHook integration examples (Telegram / Teams / Slack)</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Telegram</label><label for="__tabbed_1_2">Microsoft Teams</label><label for="__tabbed_1_3">Slack</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -1402,6 +1353,7 @@
 </div>
 </div>
 </div>
+</details>
 
 
 
@@ -1531,7 +1483,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1583,6 +1535,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

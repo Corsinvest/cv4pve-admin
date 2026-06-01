@@ -977,15 +977,9 @@
   
 
 
-<h1 id="update-manager">Update Manager<a class="headerlink" href="#update-manager" title="Permanent link">&para;</a></h1>
-<p>System updates scanning and management.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Scans VM/CT in Proxmox VE to identify available updates including security patches. Provides visibility into pending updates without making changes.</p>
-<div class="admonition warning">
-<p class="admonition-title">Requirements</p>
-<p><span class="ssh"></span> SSH access is required. Configure credentials under <strong>Admin Area → Proxmox VE Clusters → SSH Credentials</strong>.</p>
-<p>Web shell PAM user is required for update scanning functionality.</p>
-</div>
+<h1 id="update-manager"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10.12h-6.78l2.74-2.82c-2.73-2.7-7.15-2.8-9.88-.1a6.887 6.887 0 0 0 0 9.8c2.73 2.7 7.15 2.7 9.88 0 1.36-1.35 2.04-2.92 2.04-4.9h2c0 1.98-.88 4.55-2.64 6.29-3.51 3.48-9.21 3.48-12.72 0-3.5-3.47-3.53-9.11-.02-12.58a8.987 8.987 0 0 1 12.65 0L21 3zM12.5 8v4.25l3.5 2.08-.72 1.21L11 13V8z"/></svg></span> Update Manager <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#update-manager" title="Permanent link">&para;</a></h1>
+<p>Scans VM/CT in Proxmox VE to identify available updates including security patches. Read-only — provides visibility into pending updates without making changes.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
@@ -999,14 +993,9 @@
 <p>View available updates by system, package, and severity level.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23.5 17-5 5-3.5-3.5 1.5-1.5 2 2 3.5-3.5zM6 2c-1.11 0-2 .89-2 2v16c0 1.11.89 2 2 2h7.81c-.53-.91-.81-1.95-.81-3 0-3.31 2.69-6 6-6 .34 0 .67.03 1 .08V8l-6-6m-1 1.5L18.5 9H13Z"/></svg></span> <strong>Compliance Reports</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg></span> <strong>On-demand or scheduled</strong></p>
 <hr />
-<p>Generate reports showing patch status for security audits.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg></span> <strong>Update Scanning</strong></p>
-<hr />
-<p>Scan systems for available updates on-demand or scheduled using cron expression.</p>
+<p>Trigger a run manually from the UI, or schedule recurring runs with a cron expression — the Settings panel includes a quick link to <a href="https://crontab.guru" target="_blank">crontab.guru</a> to validate your expression.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m5.86 10.31C16.23 21.22 14.28 22.45 12 23c-2.56-.61-4.7-2.07-6.42-4.37C3.86 16.34 3 13.8 3 11V5l9-4 9 4v6c0 2.39-.64 4.61-1.92 6.67l-2.91-2.91c.52-.79.83-1.76.83-2.76a5 5 0 0 0-5-5 5 5 0 0 0-5 5 5 5 0 0 0 5 5c1 0 1.97-.31 2.76-.83z"/></svg></span> <strong>Read-Only Scanning</strong></p>
@@ -1014,21 +1003,105 @@
 <p>Check for updates without making system changes.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17 21-2.75-3 1.16-1.16L17 18.43l3.59-3.59 1.16 1.41M12.8 21H5a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h14a2 2 0 0 1 2 2v7.8c-.88-.51-1.91-.8-3-.8l-1 .08V11H7v2h7.69A5.98 5.98 0 0 0 12 18c0 1.09.29 2.12.8 3m-.8-6H7v2h5m5-10H7v2h10"/></svg></span> <strong>Status Reports</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span> <strong>Export PDF / Excel</strong></p>
 <hr />
-<p>View update status with priority indicators for critical patches.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span> <strong>Export Reports</strong></p>
-<hr />
-<p>Download scan results as <strong>PDF</strong> (update table colored by status, conditional Errors section when scans fail) or <strong>Excel</strong> (autofilter-enabled Updates sheet + conditional Errors sheet). Format chosen from a split-button dropdown on the Scans page.</p>
+<p>Download results as <strong>PDF</strong> (colored table with footer and page numbers) or <strong>Excel</strong> (autofilter-enabled sheet for slicing, pivoting and sharing). Format chosen from a split-button dropdown.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 17.7V21h-4v-.7zM17 3H7v3h10zm-2 4-1 .7V7h-4v3.3L9 11v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 15v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 19v1l6-3.9z"/></svg></span> <strong>Parallel Scanning</strong></p>
 <hr />
-<p>Configurable parallel scan (<code>MaxParallelRequests</code>, default 5) speeds up large clusters. A failure on one VM/CT (SSH timeout, agent error) is isolated to that item — the rest of the scan keeps running.</p>
+<p>Configurable <code>MaxParallelRequests</code> (default 5) speeds up scans on large clusters; set to 1 to fall back to sequential mode. A failure on one resource is isolated to that item — the rest of the scan keeps running.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6zm-7 2a2 2 0 0 1-2 2 2 2 0 0 1-2-2m9.75-17.81-1.42 1.42A8.98 8.98 0 0 1 21 11h2c0-2.93-1.16-5.75-3.25-7.81M1 11h2c0-2.4.96-4.7 2.67-6.39L4.25 3.19A10.96 10.96 0 0 0 1 11"/></svg></span> <strong>Notifier Integration</strong></p>
+<hr />
+<p>Attach the generated report to a notification using any of the configured <a href="../../configuration/notifier/">Notifier</a> channels — handy for nightly cron-based runs.</p>
 </li>
 </ul>
+</div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why centralise update checks when <code>apt list --upgradable</code> already exists?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">One view, every VM</p>
+<p>See pending updates across all running VMs and CTs of the cluster on a single page — no per-host SSH session, no script-on-script.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Security signal isolated</p>
+<p>Each row carries Normal / Security / Reboot-required flags so the security backlog never gets buried in the rest.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Read-only by design</p>
+<p>The module never patches anything. Safe to schedule and forget — you stay in control of when and how to apply updates.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">One broken VM doesn't break the run</p>
+<p>SSH timeout, missing agent or parse error are isolated to that single item — the rest of the scan completes and the failure surfaces in the report.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Scans</strong> — live grid of every running VM/CT with its current scan status (Ok / InError / Cancelled), available updates (Normal / Security), reboot required flag. Trigger a new scan, download the report as PDF or Excel</li>
+</ul>
+<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show all settings</summary>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled schedulation</strong></td>
+<td>off</td>
+<td>Master on/off switch for the scheduled scan</td>
+</tr>
+<tr>
+<td><strong>Cron Expression</strong></td>
+<td><code>0 */12 * * *</code> <a href="https://crontab.guru/#0_*/12_*_*_*" target="_blank" title="Open on crontab.guru"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"/></svg></span></a></td>
+<td>When the scheduled scan runs</td>
+</tr>
+<tr>
+<td><strong>Max Parallel Requests</strong></td>
+<td>5</td>
+<td>Max concurrent VM/CT scans (1 = sequential, range 1-50)</td>
+</tr>
+<tr>
+<td><strong>Script Windows Search Update</strong></td>
+<td>bundled PowerShell</td>
+<td>Script run inside Windows guests to detect updates — restorable to default with the refresh button</td>
+</tr>
+<tr>
+<td><strong>Script Linux Search Update</strong></td>
+<td>bundled bash</td>
+<td>Script run inside Linux guests / LXC to detect updates — restorable to default with the refresh button</td>
+</tr>
+<tr>
+<td><strong>Notifier Configurations</strong></td>
+<td>–</td>
+<td>List of Notifier configurations to deliver the report to</td>
+</tr>
+</tbody>
+</table>
+</details>
+<!-- markdownlint-disable MD041 -->
+
+<div class="admonition warning">
+<p class="admonition-title">Requirements</p>
+<p><span class="ssh"></span> SSH access is required. Configure credentials under <strong>Admin Area → Proxmox VE Clusters → SSH Credentials</strong>.</p>
+<p>Web shell PAM user is required.</p>
 </div>
 
 
@@ -1121,7 +1194,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1173,6 +1246,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

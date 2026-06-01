@@ -977,10 +977,9 @@
   
 
 
-<h1 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h1>
-<p>Customizable dashboards with widgets and metrics for centralized Proxmox VE infrastructure monitoring.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Create multiple personal dashboards by combining widgets from different modules. Each dashboard is per-user and fully customizable: choose which clusters to monitor, set an auto-refresh interval, arrange widgets freely on a 24×24 grid.</p>
+<h1 id="dashboard"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3z"/></svg></span> Dashboard <span class="scope" data-scope="all-clusters"></span><a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h1>
+<p>Customizable dashboards with widgets and metrics for centralised Proxmox VE infrastructure monitoring. Each dashboard is personal, fully customisable and shareable.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
@@ -1015,6 +1014,34 @@
 </li>
 </ul>
 </div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why a custom dashboard when PVE has its own summary?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">What you care about, not what's default</p>
+<p>Compose the view: backup status + diagnostic alerts + cluster gauges + a Memo with the on-call rota. PVE shows the same thing to everyone.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Personal, not global</p>
+<p>Each user has their own dashboards — change yours without affecting colleagues, and theirs without seeing yours.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Aggregates from every module</p>
+<p>Widgets surface data from Resources, AutoSnap, Backup Analytics, Replication Analytics, Diagnostics, Node Protect — one screen, every signal.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Auto-refresh + export</p>
+<p>Set the refresh interval once; the dashboard stays current on a wall display. Export to JSON to share a standard "ops board" across the team.</p>
+</div>
+</div>
+</div>
 <h2 id="edit-mode">Edit Mode<a class="headerlink" href="#edit-mode" title="Permanent link">&para;</a></h2>
 <p>Click the <strong>Edit</strong> button to enter edit mode. In edit mode you can:</p>
 <ul>
@@ -1025,28 +1052,10 @@
 <li><strong>Remove</strong> — delete a widget from the dashboard.</li>
 <li><strong>Save / Cancel</strong> — save persists all changes to the database; cancel discards unsaved changes (with confirmation if changes exist).</li>
 </ul>
-<h2 id="built-in-widgets">Built-in Widgets<a class="headerlink" href="#built-in-widgets" title="Permanent link">&para;</a></h2>
-<p>The Dashboard module provides two generic widgets available in all editions:</p>
-<table>
-<thead>
-<tr>
-<th>Widget</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Web Content</strong></td>
-<td>Displays a link (with icon and label), an iframe, or raw HTML content. Configurable URL, icon, text, and HTML.</td>
-</tr>
-<tr>
-<td><strong>Memo</strong></td>
-<td>A Markdown note pad. Write formatted notes directly inside the widget.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="widgets-from-other-modules">Widgets from Other Modules<a class="headerlink" href="#widgets-from-other-modules" title="Permanent link">&para;</a></h2>
-<p>When other modules are installed, their widgets become available in the Dashboard widget library:</p>
+<h2 id="widgets">Widgets<a class="headerlink" href="#widgets" title="Permanent link">&para;</a></h2>
+<p>The Dashboard ships two generic widgets always available; every other module contributes its own widgets as soon as it is enabled.</p>
+<details class="note widgets">
+<summary>Show all available widgets</summary>
 <table>
 <thead>
 <tr>
@@ -1056,6 +1065,16 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><strong>Dashboard</strong> (built-in)</td>
+<td>Web Content</td>
+<td>Displays a link (icon + label), an iframe, or raw HTML content</td>
+</tr>
+<tr>
+<td><strong>Dashboard</strong> (built-in)</td>
+<td>Memo</td>
+<td>Markdown note pad — write formatted notes inside the widget</td>
+</tr>
 <tr>
 <td>Resources</td>
 <td>Resources Status</td>
@@ -1144,15 +1163,16 @@
 <tr>
 <td>Node Protect</td>
 <td>Folder Size</td>
-<td>NodeProtect backup folder size</td>
+<td>Node Protect backup folder size</td>
 </tr>
 <tr>
 <td>Node Protect</td>
 <td>Git Size</td>
-<td>NodeProtect Git repository size <span class="ee"></span></td>
+<td><span class="ee"></span> Node Protect Git repository size</td>
 </tr>
 </tbody>
 </table>
+</details>
 <h2 id="default-dashboard">Default Dashboard<a class="headerlink" href="#default-dashboard" title="Permanent link">&para;</a></h2>
 <p>On first access, a default dashboard is created automatically from a built-in template. You can reset to defaults at any time using the <strong>Create Default</strong> action.</p>
 
@@ -1246,7 +1266,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1298,6 +1318,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

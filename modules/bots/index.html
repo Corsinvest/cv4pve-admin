@@ -977,10 +977,9 @@
   
 
 
-<h1 id="bots">Bots<a class="headerlink" href="#bots" title="Permanent link">&para;</a></h1>
-<p>Remote cluster management via Telegram chatbot.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Remote Proxmox VE cluster management through Telegram chatbot. Execute commands, monitor status, and manage operations via Telegram.</p>
+<h1 id="bots"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg></span> Bots <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#bots" title="Permanent link">&para;</a></h1>
+<p>Remote Proxmox VE cluster management through a Telegram chatbot — execute commands, monitor status and receive alerts from any device.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
@@ -994,9 +993,9 @@
 <p>Receive notifications for cluster events and status changes.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg></span> <strong>Authentication</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg></span> <strong>Access Control</strong></p>
 <hr />
-<p>Token-based authentication for bot access control.</p>
+<p>Restrict bot usage to a whitelist of authorised Telegram chat IDs; the token is stored encrypted at rest.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 19H7V5h10m0-4H7c-1.11 0-2 .89-2 2v18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2"/></svg></span> <strong>Mobile Access</strong></p>
@@ -1015,6 +1014,38 @@
 </li>
 </ul>
 </div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why a chatbot when the web UI is already there?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Cluster status from your phone</p>
+<p>Check node uptime, VM state, last backup — without opening a browser or VPN-ing in. Anywhere Telegram works, the cluster does.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Push, not pull</p>
+<p>Telegram delivers alerts and replies you initiated. No polling, no missed mail filter, no email password to keep current.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Authorised chats only</p>
+<p>Only the chat IDs you whitelist can talk to the bot — the token is stored encrypted at rest.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Quick fire-and-forget</p>
+<p>"Restart VM 200" from your phone while you walk to the data centre — no laptop, no SSH, no UI clicks.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Telegram</strong> — status of the Telegram bot connection — token configured, chats whitelist, recent activity</li>
+</ul>
 <h2 id="set-up-your-telegram-bot">Set Up Your Telegram Bot<a class="headerlink" href="#set-up-your-telegram-bot" title="Permanent link">&para;</a></h2>
 <p>To connect the Bots module to Telegram, you need to create a bot via <strong>BotFather</strong> and copy the generated token into the module settings.</p>
 <ol>
@@ -1039,9 +1070,44 @@
 </li>
 </ol>
 <div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<p class="admonition-title">Unique test usernames</p>
 <p>If you are creating a bot just for testing, prefix the username with your name to make it unique (e.g. <code>john_pve_bot</code>).</p>
 </div>
+<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show all settings</summary>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>off</td>
+<td>Master on/off switch for the module on the cluster</td>
+</tr>
+<tr>
+<td><strong>Telegram → Enabled</strong></td>
+<td>off</td>
+<td>Enable the Telegram transport</td>
+</tr>
+<tr>
+<td><strong>Telegram → BOT API Token</strong></td>
+<td>–</td>
+<td>Token generated by BotFather, stored encrypted at rest</td>
+</tr>
+<tr>
+<td><strong>Telegram → Chats Id</strong></td>
+<td>–</td>
+<td>Newline-separated list of allowed chat IDs — leave empty to disable access control</td>
+</tr>
+</tbody>
+</table>
+</details>
 
 
 
@@ -1133,7 +1199,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1185,6 +1251,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

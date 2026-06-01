@@ -977,59 +977,393 @@
   
 
 
-<h1 id="diagnostics">Diagnostics<a class="headerlink" href="#diagnostics" title="Permanent link">&para;</a></h1>
-<p>System health checks and infrastructure diagnostics for Proxmox VE.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Performs health checks and analysis of Proxmox VE environments. Scans clusters, nodes, and virtual machines to identify configuration issues and performance problems.</p>
+<h1 id="diagnostics"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 8c.56 0 1 .43 1 1a1 1 0 0 1-1 1c-.57 0-1-.45-1-1 0-.57.43-1 1-1M2 2v9c0 2.96 2.19 5.5 5.14 5.91.62 3.01 3.28 5.09 6.36 5.09a6.5 6.5 0 0 0 6.5-6.5v-3.69c1.16-.42 2-1.52 2-2.81a3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 1.29.84 2.4 2 2.81v3.6c0 2.5-2 4.5-4.5 4.5-2 0-3.68-1.21-4.28-3.01C12 16.3 14 13.8 14 11V2h-4v3h2v6a4 4 0 0 1-4 4 4 4 0 0 1-4-4V5h2V2z"/></svg></span> Diagnostics <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#diagnostics" title="Permanent link">&para;</a></h1>
+<p>Automated health checks and infrastructure diagnostics for Proxmox VE, built on the <a href="https://github.com/Corsinvest/cv4pve-diag"><code>cv4pve-diag</code></a> library. Each issue is reported with a gravity (<code>Info</code> / <code>Warning</code> / <code>Critical</code>), a context (cluster, node, storage, qemu, lxc) and a sub-context that pinpoints what to look at.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg></span> <strong>Health Checks</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg></span> <strong>On-demand or scheduled</strong></p>
 <hr />
-<p>Run diagnostic scans on Proxmox VE infrastructure with on-demand or scheduled execution using cron expression.</p>
+<p>Trigger a run manually from the UI, or schedule recurring runs with a cron expression — the Settings panel includes a quick link to <a href="https://crontab.guru" target="_blank">crontab.guru</a> to validate your expression.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 13h-2V7h2m0 10h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> <strong>Issue Detection</strong></p>
 <hr />
-<p>Identifies misconfigurations, hardware problems, and performance bottlenecks.</p>
+<p>Detects misconfigurations, hardware problems, end-of-life software, snapshot/backup hygiene and resource pressure across <strong>cluster, nodes, storage, QEMU VMs and LXC containers</strong>.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4zm11 3h5.5L15 1.5zM8 0h8l6 6v12c0 1.11-.89 2-2 2H8a2 2 0 0 1-2-2V2c0-1.11.89-2 2-2m9 16v-2H8v2zm3-4v-2H8v2z"/></svg></span> <strong>System Analysis</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 13c-1.86 0-3.41 1.28-3.86 3H2v2h2.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22v-2H11.86c-.45-1.72-2-3-3.86-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2M19.86 6c-.45-1.72-2-3-3.86-3s-3.41 1.28-3.86 3H2v2h10.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22V6zM16 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2"/></svg></span> <strong>Tunable Thresholds</strong></p>
 <hr />
-<p>Examines system logs, configurations, and resource utilization patterns.</p>
+<p>Per-context thresholds (CPU, Memory, Network, Health Score, PSI pressure) editable from the settings UI. Separate profiles for Node, Qemu, Lxc and Storage. Optional checks for S.M.A.R.T. disk attributes (temperature, SSD wearout), ZFS pool detail and LVM-thin metadata.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.5 8H12v5l4.28 2.54.72-1.21-3.5-2.08zM13 3a9 9 0 0 0-9 9H1l3.96 4.03L9 12H6a7 7 0 0 1 7-7 7 7 0 0 1 7 7 7 7 0 0 1-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.9 8.9 0 0 0 13 21a9 9 0 0 0 9-9 9 9 0 0 0-9-9"/></svg></span> <strong>Issue History</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 5h2v14H1zm4 0h2v14H5zm17 0H10a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1M11 17l2.5-3.15L15.29 16l2.5-3.22L21 17z"/></svg></span> <strong>Snapshot &amp; Backup Hygiene</strong></p>
 <hr />
-<p>Maintains history of discovered problems with option to ignore known issues.</p>
+<p>Per-VM checks for snapshot count and age, backup recency (RPO violation) and stale backup files wasting storage. Each check toggleable, thresholds editable.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.4 7.5c.8.8.8 2.1 0 2.8l-2.8 2.8-7.8-7.8 2.8-2.8c.8-.8 2.1-.8 2.8 0l1.8 1.8 3-3 1.4 1.4-3 3zm-5.8 5.8-1.4-1.4-2.8 2.8-2.1-2.1 2.8-2.8-1.4-1.4-2.8 2.8-1.5-1.4-2.8 2.8c-.8.8-.8 2.1 0 2.8l1.8 1.8-4 4 1.4 1.4 4-4 1.8 1.8c.8.8 2.1.8 2.8 0l2.8-2.8-1.4-1.4z"/></svg></span> <strong>Proxmox VE Integration</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 13h2v1h-2zm10-8v6c0 5.5-3.8 10.7-9 12-5.2-1.3-9-6.5-9-12V5l9-4zm-4 5h-2.2c-.2-.6-.6-1.1-1.1-1.5l1.2-1.2-.7-.7L12.8 8H12c-.2 0-.5 0-.7.1L9.9 6.6l-.8.8 1.2 1.2c-.5.3-.9.8-1.1 1.4H7v1h2v1H7v1h2v1H7v1h2.2c.4 1.2 1.5 2 2.8 2s2.4-.8 2.8-2H17v-1h-2v-1h2v-1h-2v-1h2zm-6 2h2v-1h-2z"/></svg></span> <strong>CVE Tracking</strong></p>
 <hr />
-<p>Uses Proxmox VE API to collect system information.</p>
+<p>Optional NVD lookup for Proxmox VE specific CVEs via CPE filter. Filter by minimum CVSS v3 score (default 7.0 = HIGH + CRITICAL only).</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 6a6 6 0 0 1 6 6c0 2.22-1.21 4.16-3 5.2V19a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.8c-1.79-1.04-3-2.98-3-5.2a6 6 0 0 1 6-6m2 15v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1zm6-10h3v2h-3zM1 11h3v2H1zM13 1v3h-2V1zM4.92 3.5l2.13 2.14-1.42 1.41L3.5 4.93zm12.03 2.13 2.12-2.13 1.43 1.43-2.13 2.12z"/></svg></span> <strong>Issue Details</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0a12 12 0 0 1 12 12 12 12 0 0 1-12 12A12 12 0 0 1 0 12 12 12 0 0 1 12 0m0 2A10 10 0 0 0 2 12c0 2.4.85 4.6 2.26 6.33L18.33 4.26A10 10 0 0 0 12 2m0 20a10 10 0 0 0 10-10c0-2.4-.85-4.6-2.26-6.33L5.67 19.74A10 10 0 0 0 12 22"/></svg></span> <strong>Ignored Issues</strong></p>
 <hr />
-<p>Displays issue descriptions with resolution recommendations.</p>
+<p>Hide known/accepted issues from the active result — they still appear in a dedicated section at the bottom of the report for full traceability.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span> <strong>Export Reports</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 17.7V21h-4v-.7zM17 3H7v3h10zm-2 4-1 .7V7h-4v3.3L9 11v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 15v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 19v1l6-3.9z"/></svg></span> <strong>Parallel Scanning</strong></p>
 <hr />
-<p>Download scan results as <strong>PDF</strong> (issues table colored by gravity, ignored issues section, footer) or <strong>Excel</strong> (autofilter-enabled sheet for slicing/pivoting). Format chosen from a split-button dropdown on the Scans page.</p>
+<p>Configurable <code>MaxParallelRequests</code> (default 5) speeds up scans on large clusters; set to 1 to fall back to sequential mode. A failure on one resource is isolated to that item — the rest of the scan keeps running.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span> <strong>Export PDF / Excel</strong></p>
+<hr />
+<p>Download results as <strong>PDF</strong> (colored table with footer and page numbers) or <strong>Excel</strong> (autofilter-enabled sheet for slicing, pivoting and sharing). Format chosen from a split-button dropdown.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.98 2.98 0 0 0 0-4.24 2.98 2.98 0 0 0-4.24 0l-3.53 3.53a2.98 2.98 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.98 2.98 0 0 0 0 4.24 2.98 2.98 0 0 0 4.24 0l3.53-3.53a2.98 2.98 0 0 0 0-4.24.973.973 0 0 1 0-1.42"/></svg></span> <strong>Help Links</strong></p>
 <hr />
-<p>Each issue can link to the relevant Proxmox documentation page (e.g. Qemu Guest Agent, VirtIO drivers, end-of-life OS tracking).</p>
+<p>Each issue can link to the relevant Proxmox documentation page (e.g. QEMU Guest Agent, VirtIO drivers, end-of-life OS tracking).</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg></span> <strong>Executive Summary</strong> <span class="ee"></span></p>
+<p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg></span> <strong>Executive Summary</strong></p>
 <hr />
 <p>Enterprise PDF adds a one-page Executive Summary at the top: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.</p>
 </li>
+<li>
+<p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m10 17-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9m-6-8L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5z"/></svg></span> <strong>Compliance Reports</strong></p>
+<hr />
+<p>Each diagnostic check carries its mapping to normative controls (ISO 27001, NIS2, DORA, PCI DSS). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6zm-7 2a2 2 0 0 1-2 2 2 2 0 0 1-2-2m9.75-17.81-1.42 1.42A8.98 8.98 0 0 1 21 11h2c0-2.93-1.16-5.75-3.25-7.81M1 11h2c0-2.4.96-4.7 2.67-6.39L4.25 3.19A10.96 10.96 0 0 0 1 11"/></svg></span> <strong>Notifier Integration</strong></p>
+<hr />
+<p>Attach the generated report to a notification using any of the configured <a href="../../configuration/notifier/">Notifier</a> channels — handy for nightly cron-based runs.</p>
+</li>
 </ul>
 </div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why scan automatically when you can check things by hand?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">All clusters in one report</p>
+<p>A scan covers every node, storage, QEMU VM and LXC container of the cluster — you don't open one PVE UI per node and click around.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Every issue tagged for triage</p>
+<p>Each finding carries gravity (Info / Warning / Critical), context, sub-context — sort by gravity, filter by context, fix the right things first.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Accept the noise, keep the signal</p>
+<p>Known false positives go to the Ignored list — they keep showing in the report (audit trail) but stop cluttering the active scan.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Compliance hand-off</p>
+<p>Persisted scan history + PDF / Excel reports — hand them to auditors or customers without screenshotting the UI.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Scans</strong> — browse the history of scans, expand a row to drill into per-issue detail, download the report as PDF or Excel, trigger a new on-demand scan</li>
+<li><strong>Ignored Issues</strong> — manage the list of issues you want to hide from active results (still shown in the report's Ignored section)</li>
+</ul>
+<h2 id="compliance-reports">Compliance reports <span class="ee"></span><a class="headerlink" href="#compliance-reports" title="Permanent link">&para;</a></h2>
+<p>Each check in the <code>cv4pve-diag</code> library declares which normative controls it covers (a single check can satisfy more than one control, even across different standards). This mapping is persisted with the scan, so historic reports stay consistent even when the catalog evolves.</p>
+<p>When you export an Enterprise PDF, the report includes — after the standard issues section — <strong>one section per standard</strong> that produced at least one mapped finding. Each section starts on a new page and contains:</p>
+<ul>
+<li>A compact <strong>disclaimer</strong> at the top (every section, so any single page extracted in isolation still carries the audit-scope notice).</li>
+<li>A <strong>summary table</strong> with one row per control: <code>Control</code> · <code>Title</code> · <code>Critical</code> · <code>Warning</code> · <code>Info</code> · <code>Ok</code> · <code>Status</code>. The numeric columns count findings mapped to that control by gravity; <code>Status</code> summarises the worst gravity present (<code>Fail</code> for any Critical, <code>Warning</code> if no Critical, <code>Info</code> if only Info, <code>Pass</code> if only Ok results).</li>
+<li>A <strong>detail block</strong> for each control, listing the underlying findings with <code>Code</code>, <code>Context</code>, <code>Resource</code>, <code>Description</code>, <code>Status</code>.</li>
+</ul>
+<p>Excel exports get <strong>one extra sheet per standard</strong> with two tables: a <code>Summary</code> (one row per control, identical to the PDF summary) and a <code>Details</code> (one row per finding × control mapping, flattened for filtering and pivoting). Each sheet starts with the same disclaimer note.</p>
+<p>Gravity / Status cells use a pastel colour palette consistent between PDF and Excel (Critical/Fail red, Warning orange, Info blue, Ok/Pass green). The Excel formatting is applied as a conditional rule on any column named <code>Gravity</code> or <code>Status</code>, so user-driven sort/filter keeps the colours.</p>
+<p>Currently supported standards: <strong>ISO/IEC 27001:2022</strong>, <strong>EU NIS2</strong>, <strong>EU DORA</strong>, <strong>PCI DSS v4.0</strong>. Sections only appear for standards with actual mappings — empty standards are skipped.</p>
+<div class="admonition tip">
+<p class="admonition-title">Audit mode</p>
+<p>Enable <strong>Include OK results (audit mode)</strong> in the General settings to also emit a <code>Pass</code> result for every check that succeeds. Useful when auditors want evidence that controls were <em>verified</em>, not only when they failed.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Disclaimer</p>
+<p>The compliance mapping is automated and technical only — it covers the subset of each standard that can be verified from the Proxmox VE state. Policies, training, supplier management, physical security and other organisational controls are out of scope. A passing check confirms only that the specific automated rule passed; full conformity usually requires manual evidence (policies, procedures, evidence of operation). This report does not constitute a formal audit or certification.</p>
+</div>
+<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<details class="note settings">
+<summary>Show all settings</summary>
+<p><strong>General</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled schedulation</strong></td>
+<td>off</td>
+<td>Master on/off switch for the scheduled scan</td>
+</tr>
+<tr>
+<td><strong>Cron Expression</strong></td>
+<td><code>0 6 * * *</code> <a href="https://crontab.guru/#0_6_*_*_*" target="_blank" title="Open on crontab.guru"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"/></svg></span></a></td>
+<td>When the scheduled scan runs</td>
+</tr>
+<tr>
+<td><strong>Keep</strong></td>
+<td>30</td>
+<td>Max number of past scan results to retain</td>
+</tr>
+<tr>
+<td><strong>Notifier Configurations</strong></td>
+<td>–</td>
+<td>List of Notifier configurations to deliver the report to</td>
+</tr>
+<tr>
+<td><strong>Attach PDF report</strong></td>
+<td>on</td>
+<td>Attach the PDF report (with Executive Summary and Compliance sections) to scheduled notifications</td>
+</tr>
+<tr>
+<td><strong>Attach Excel report</strong></td>
+<td>off</td>
+<td>Attach the Excel workbook (Issues, Ignored, Compliance sheets) to scheduled notifications</td>
+</tr>
+</tbody>
+</table>
+<p><strong>API</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Max Parallel Requests</strong></td>
+<td>5</td>
+<td>Max concurrent API calls (1 = sequential)</td>
+</tr>
+<tr>
+<td><strong>API Timeout</strong></td>
+<td>0</td>
+<td>API timeout in seconds (0 = use the client default)</td>
+</tr>
+<tr>
+<td><strong>Include OK results (audit mode)</strong></td>
+<td>off</td>
+<td>Also emit a result for every check that passes (Gravity = Ok). Useful for audit-style reports proving controls were verified, not only violated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Host thresholds</strong> — Node / QEMU / LXC each have their own profile (Node extends Host with extra checks)</p>
+<table>
+<thead>
+<tr>
+<th>Threshold</th>
+<th>Warning</th>
+<th>Critical</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU usage (%)</strong></td>
+<td>70</td>
+<td>85</td>
+</tr>
+<tr>
+<td><strong>Memory usage (%)</strong></td>
+<td>70</td>
+<td>85</td>
+</tr>
+<tr>
+<td><strong>Network usage (%)</strong></td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td><strong>Health Score</strong> (Host default)</td>
+<td>70</td>
+<td>50</td>
+</tr>
+<tr>
+<td><strong>Health Score</strong> (QEMU / LXC default)</td>
+<td>60</td>
+<td>40</td>
+</tr>
+<tr>
+<td><strong>PSI Pressure CPU (%)</strong> — host</td>
+<td>50</td>
+<td>80</td>
+</tr>
+<tr>
+<td><strong>PSI Pressure CPU (%)</strong> — node</td>
+<td>40</td>
+<td>70</td>
+</tr>
+<tr>
+<td><strong>PSI Pressure I/O full (%)</strong> — host</td>
+<td>20</td>
+<td>50</td>
+</tr>
+<tr>
+<td><strong>PSI Pressure I/O full (%)</strong> — node</td>
+<td>10</td>
+<td>30</td>
+</tr>
+<tr>
+<td><strong>PSI Pressure Memory full (%)</strong> — host</td>
+<td>10</td>
+<td>30</td>
+</tr>
+<tr>
+<td><strong>PSI Pressure Memory full (%)</strong> — node</td>
+<td>5</td>
+<td>15</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Node-only thresholds</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Max vCPU ratio</strong></td>
+<td>4.0</td>
+<td>Warn when total vCPUs / physical CPUs exceeds this ratio</td>
+</tr>
+<tr>
+<td><strong>Consolidation CPU threshold (%)</strong></td>
+<td>10</td>
+<td>Below this, the node is considered underutilised</td>
+</tr>
+<tr>
+<td><strong>Consolidation Memory threshold (%)</strong></td>
+<td>20</td>
+<td>Below this, the node is considered underutilised</td>
+</tr>
+<tr>
+<td><strong>S.M.A.R.T. checks → Enabled</strong></td>
+<td>off</td>
+<td>Per-disk SMART attribute scan (1 API call per disk per node)</td>
+</tr>
+<tr>
+<td><strong>S.M.A.R.T. → Temperature (°C)</strong></td>
+<td>Warn 55 / Crit 65</td>
+<td>Disk temperature thresholds (set Warning to 0 to disable)</td>
+</tr>
+<tr>
+<td><strong>S.M.A.R.T. → SSD Wearout (%)</strong></td>
+<td>Warn 70 / Crit 85</td>
+<td>Percentage of SSD life consumed before warning</td>
+</tr>
+<tr>
+<td><strong>NodeStorage → ZFS detail</strong></td>
+<td>off</td>
+<td>Deeper ZFS pool status check</td>
+</tr>
+<tr>
+<td><strong>NodeStorage → LVM-thin metadata</strong></td>
+<td>on</td>
+<td>LVM-thin metadata usage check (full metadata pool causes data corruption)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Snapshot checks</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>on</td>
+<td>Toggle the per-VM/CT snapshot scan (skip the API call when off)</td>
+</tr>
+<tr>
+<td><strong>MaxCount</strong></td>
+<td>10</td>
+<td>Warn when a VM/CT has more than this many snapshots (0 = disabled)</td>
+</tr>
+<tr>
+<td><strong>MaxAgeDays</strong></td>
+<td>30</td>
+<td>Warn when the oldest snapshot exceeds this age in days (0 = disabled)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Backup checks</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>on</td>
+<td>Toggle backup hygiene checks (skip API calls when off)</td>
+</tr>
+<tr>
+<td><strong>MaxAgeDays</strong></td>
+<td>60</td>
+<td>Warn about backups older than this on storage (0 = disabled)</td>
+</tr>
+<tr>
+<td><strong>RecentDays</strong></td>
+<td>7</td>
+<td>Warn when no backup exists within this window (RPO violation, 0 = disabled)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CVE checks</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NVD</strong></td>
+<td>off</td>
+<td>Lookup NVD for Proxmox VE specific CVEs (CPE filter)</td>
+</tr>
+<tr>
+<td><strong>Min CVSS v3 score</strong></td>
+<td>7.0</td>
+<td>Report only CVEs at or above this score (0 = report all)</td>
+</tr>
+</tbody>
+</table>
+</details>
 
 
 
@@ -1121,7 +1455,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1173,6 +1507,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

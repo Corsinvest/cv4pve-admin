@@ -977,44 +977,315 @@
   
 
 
-<h1 id="metrics-exporter">Metrics Exporter<a class="headerlink" href="#metrics-exporter" title="Permanent link">&para;</a></h1>
-<p>Exposes Proxmox VE metrics for monitoring systems (Prometheus).</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Exports Proxmox VE metrics to Prometheus for monitoring cluster performance, resource utilization, and system health.</p>
+<h1 id="metrics-exporter"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m16 11.78 4.24-7.33 1.73 1-5.23 9.05-6.51-3.75L5.46 19H22v2H2V3h2v14.54L9.5 8z"/></svg></span> Metrics Exporter <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#metrics-exporter" title="Permanent link">&para;</a></h1>
+<p>Exposes Proxmox VE metrics over a Prometheus-compatible HTTP endpoint, ready to be scraped and visualised in Grafana or any compatible monitoring stack. Each enabled cluster gets its own scrape endpoint; collectors are opt-in, individually cached and parallelised.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23.5 17-5 5-3.5-3.5 1.5-1.5 2 2 3.5-3.5zM12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5 1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85-.9-.54-1.96-.85-3.08-.85-.78 0-1.5.15-2.21.42.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5 5 5 0 0 0-5 5 5 5 0 0 0 5 5"/></svg></span> <strong>Metrics Collection</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg></span> <strong>Two-level Enable</strong></p>
 <hr />
-<p>Export VM, container, and node performance metrics to Prometheus.</p>
+<p>Master <strong>Enabled</strong> switch for the module, plus an independent <strong>Prometheus Enabled</strong> toggle inside the Prometheus tab. Either disabled returns <code>503</code> to scrapes.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6zm-7 2a2 2 0 0 1-2 2 2 2 0 0 1-2-2m9.75-17.81-1.42 1.42A8.98 8.98 0 0 1 21 11h2c0-2.93-1.16-5.75-3.25-7.81M1 11h2c0-2.4.96-4.7 2.67-6.39L4.25 3.19A10.96 10.96 0 0 0 1 11"/></svg></span> <strong>Alerting Integration</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 18v4h-4v-3h-3v-3h-3l-2.26-2.26c-.55.17-1.13.26-1.74.26a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6c0 .61-.09 1.19-.26 1.74zM7 5a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2"/></svg></span> <strong>Per-cluster Token</strong></p>
 <hr />
-<p>Works with Prometheus Alertmanager for issue detection.</p>
+<p>Each cluster has its own token, stored encrypted at rest and validated with <code>CryptographicOperations.FixedTimeEquals</code> at scrape time. Rotate it any time from the settings page.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3 14 .5.07L8.07 9.5a1.95 1.95 0 0 1 .52-1.91c.78-.79 2.04-.79 2.82 0 .53.52.7 1.26.52 1.91l2.57 2.57.5-.07c.18 0 .35 0 .5.07l3.57-3.57C19 8.35 19 8.18 19 8a2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2c-.18 0-.35 0-.5-.07l-3.57 3.57c.07.15.07.32.07.5a2 2 0 0 1-2 2 2 2 0 0 1-2-2l.07-.5-2.57-2.57c-.32.07-.68.07-1 0L4.93 15.5 5 16a2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2"/></svg></span> <strong>Performance Data</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 13c-1.86 0-3.41 1.28-3.86 3H2v2h2.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22v-2H11.86c-.45-1.72-2-3-3.86-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2M19.86 6c-.45-1.72-2-3-3.86-3s-3.41 1.28-3.86 3H2v2h10.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22V6zM16 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2"/></svg></span> <strong>Presets</strong></p>
 <hr />
-<p>Collect resource and performance metrics for analysis.</p>
+<p>Three one-click profiles: <strong>Fast</strong> (essentials only — low API impact), <strong>Standard</strong> (sensible default), <strong>Full</strong> (everything on). Each preset can still be tweaked collector by collector.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.4 7.5c.8.8.8 2.1 0 2.8l-2.8 2.8-7.8-7.8 2.8-2.8c.8-.8 2.1-.8 2.8 0l1.8 1.8 3-3 1.4 1.4-3 3zm-5.8 5.8-1.4-1.4-2.8 2.8-2.1-2.1 2.8-2.8-1.4-1.4-2.8 2.8-1.5-1.4-2.8 2.8c-.8.8-.8 2.1 0 2.8l1.8 1.8-4 4 1.4 1.4 4-4 1.8 1.8c.8.8 2.1.8 2.8 0l2.8-2.8-1.4-1.4z"/></svg></span> <strong>Prometheus Integration</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 17.7V21h-4v-.7zM17 3H7v3h10zm-2 4-1 .7V7h-4v3.3L9 11v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 15v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 19v1l6-3.9z"/></svg></span> <strong>Parallel Collection</strong></p>
 <hr />
-<p>Standard Prometheus metrics format for compatibility.</p>
+<p><code>MaxParallelRequests</code> (default 5) controls how many per-node/per-guest fetches run concurrently. Lower it on small or slow clusters; raise it for big clusters with fast APIs.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zM3 5v2h10V5zm10 16v-2h8v-2h-8v-2h-2v6zM7 9v2H3v2h4v2h2V9zm14 4v-2H11v2zm-6-4h2V7h4V5h-4V3h-2z"/></svg></span> <strong>Metric Configuration</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m19 8-4 4h3a6 6 0 0 1-6 6c-1 0-1.97-.25-2.8-.7l-1.46 1.46A7.93 7.93 0 0 0 12 20a8 8 0 0 0 8-8h3M6 12a6 6 0 0 1 6-6c1 0 1.97.25 2.8.7l1.46-1.46A7.93 7.93 0 0 0 12 4a8 8 0 0 0-8 8H1l4 4 4-4"/></svg></span> <strong>Per-collector Cache</strong></p>
 <hr />
-<p>Define and export specific Proxmox VE metrics.</p>
+<p>Every collector has its own <code>CacheSeconds</code> TTL. Slow collectors like S.M.A.R.T. or Subscription can be cached for minutes while keeping fast ones (Node Status) fresh.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m9.5 13.09 1.41 1.41-4.5 4.5H10v2H3v-7h2v3.59zm1.41-3.59L9.5 10.91 5 6.41V10H3V3h7v2H6.41zm3.59 3.59 4.5 4.5V14h2v7h-7v-2h3.59l-4.5-4.5zM13.09 9.5l4.5-4.5H14V3h7v7h-2V6.41l-4.5 4.5z"/></svg></span> <strong>Scalable Collection</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V4H3v12zm0-14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7v2h2v2H8v-2h2v-2H3a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2zM5 6h9v5H5zm10 0h4v2h-4zm4 3v5h-4V9zM5 12h4v2H5zm5 0h4v2h-4z"/></svg></span> <strong>API Instrumentation</strong></p>
 <hr />
-<p>Metrics collection for small to large-scale deployments.</p>
+<p>Optional — exports counters and histograms about the cv4pve-admin → PVE API calls themselves (latency, errors). Handy to spot a misbehaving cluster.</p>
 </li>
 </ul>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Hot reload</p>
+<p>Saving the settings clears the cached engine for that cluster — the next scrape rebuilds it with the new configuration. No service restart needed.</p>
+</div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why this exporter when PVE already has metrics?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Cluster-wide in one scrape</p>
+<p>A single endpoint covers cluster, every node, every guest. Prometheus doesn't need to talk to each PVE node individually.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Opt-in collectors, no surprises</p>
+<p>Disk SMART, replication, HA, balloon memory — each is a switch with its own cache TTL. You pay for what you actually scrape.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Auth without certificates</p>
+<p>Each cluster has a per-cluster token validated in constant time. No PVE API token in your Prometheus config, no certificate rotation pain.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Drop-in for Grafana</p>
+<p>Standard Prometheus text format with <code># HELP</code> and <code># TYPE</code> lines on every metric — your existing dashboards keep working.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Status</strong> — health check for the current cluster: the scrape URL (clickable), how many requests have been served, and when the last one happened</li>
+</ul>
+<h2 id="endpoint">Endpoint<a class="headerlink" href="#endpoint" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>GET /module/*/metrics-exporter/prometheus/&lt;clusterName&gt;?token=&lt;TOKEN&gt;
+</span></code></pre></div>
+<ul>
+<li><strong><code>&lt;clusterName&gt;</code></strong> — name of the configured Proxmox VE cluster</li>
+<li><strong><code>&lt;TOKEN&gt;</code></strong> — per-cluster token defined in the module settings</li>
+</ul>
+<p>A <code>503</code> response means the module or the Prometheus exporter is disabled; <code>401</code> means the token is wrong; <code>400</code> means the cluster name is unknown or disabled.</p>
+<div class="admonition tip">
+<p class="admonition-title">Grab the URL from the UI</p>
+<p>The fully-qualified scrape URL for the current cluster is shown (clickable) in the <strong>Status</strong> tab — copy it from there instead of building it by hand.</p>
+</div>
+<h2 id="collectors">Collectors<a class="headerlink" href="#collectors" title="Permanent link">&para;</a></h2>
+<p>Grouped per scope; each collector is independently toggleable and has its own cache TTL.</p>
+<h3 id="cluster">Cluster<a class="headerlink" href="#cluster" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>What it exposes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>High Availability</strong></td>
+<td>HA state of cluster manager, groups and resources</td>
+</tr>
+<tr>
+<td><strong>Backup Info</strong></td>
+<td>Configured backup jobs and per-VM backup coverage</td>
+</tr>
+</tbody>
+</table>
+<h3 id="node">Node<a class="headerlink" href="#node" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>What it exposes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Status</strong></td>
+<td>Memory, swap, load average, uptime</td>
+</tr>
+<tr>
+<td><strong>Subscription</strong></td>
+<td>License status and tier per node (Community / Basic / Standard / Premium / None)</td>
+</tr>
+<tr>
+<td><strong>Replication</strong></td>
+<td>Per-VM replication jobs, sync status and lag</td>
+</tr>
+<tr>
+<td><strong>Disk S.M.A.R.T.</strong></td>
+<td>S.M.A.R.T. attributes per physical disk (one API call per disk per node — keep cached)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="guest">Guest<a class="headerlink" href="#guest" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>What it exposes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>QEMU Balloon Memory</strong></td>
+<td>Real used memory inside the guest (only on QEMU VMs with the balloon driver enabled)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="connecting-prometheus">Connecting Prometheus<a class="headerlink" href="#connecting-prometheus" title="Permanent link">&para;</a></h2>
+<p>Minimal <code>prometheus.yml</code> scrape job:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">scrape_configs</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cv4pve-admin</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/module/*/metrics-exporter/prometheus/my-cluster&quot;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;REPLACE_WITH_YOUR_TOKEN&#39;</span><span class="p p-Indicator">]</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;cv4pve-admin.example.com&#39;</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Quote the metrics_path</p>
+<p>Quote <code>metrics_path</code> because the literal <code>*</code> in the URL is a wildcard for the "all clusters" routing context and must be preserved as-is — without quotes some YAML parsers treat it as a special character.</p>
+</div>
+<p>If you have multiple clusters, add one scrape job per cluster (or a single job with <code>__metrics_path__</code> relabeling from a static list).</p>
+<h2 id="metric-naming">Metric Naming<a class="headerlink" href="#metric-naming" title="Permanent link">&para;</a></h2>
+<p>All metrics are prefixed with <code>cv4pve_</code> and grouped by scope. Examples:</p>
+<ul>
+<li><code>cv4pve_cluster_quorate</code>, <code>cv4pve_cluster_nodes</code></li>
+<li><code>cv4pve_node_cpu_assigned_cores</code>, <code>cv4pve_node_memory_total_bytes</code>, <code>cv4pve_node_disk_health</code>, <code>cv4pve_node_disk_wearout</code></li>
+<li><code>cv4pve_guest_cpu_usage_ratio</code>, <code>cv4pve_guest_memory_usage_bytes</code>, <code>cv4pve_guest_disk_size_bytes</code>, <code>cv4pve_guest_uptime_seconds</code>, <code>cv4pve_guest_network_receive_bytes_total</code></li>
+<li><code>cv4pve_ha_state</code>, <code>cv4pve_ha_node_state</code>, <code>cv4pve_ha_quorate</code></li>
+<li><code>cv4pve_guests_not_backed_up</code></li>
+<li><code>cv4pve_api_request_duration_seconds</code>, <code>cv4pve_api_request_errors_total</code> (when <strong>API instrumentation</strong> is on)</li>
+</ul>
+<p>For the full, always up-to-date catalogue scrape the endpoint above — every metric carries its own <code># HELP</code> and <code># TYPE</code> line in the response.</p>
+<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<p>The default preset on a new module is <strong>Fast</strong>. Each collector has its own <code>Enabled</code> switch and <code>CacheSeconds</code> TTL (0 = no cache).</p>
+<details class="note settings">
+<summary>Show all settings</summary>
+<p><strong>Module</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>off</td>
+<td>Master on/off switch for the module on the cluster</td>
+</tr>
+<tr>
+<td><strong>Token</strong></td>
+<td>empty (required)</td>
+<td>Per-cluster token (stored encrypted, validated with constant-time compare)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prometheus (Fast preset)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>on</td>
+<td>Enable the Prometheus scrape endpoint</td>
+</tr>
+<tr>
+<td><strong>Max Parallel Requests</strong></td>
+<td>5</td>
+<td>Max concurrent per-node / per-guest fetches (1 = sequential)</td>
+</tr>
+<tr>
+<td><strong>API Instrumentation</strong></td>
+<td>off in Fast (on in Standard / Full)</td>
+<td>Export counters and histograms about the underlying PVE API calls (latency, errors)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cluster collectors</strong></p>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>Default in Fast</th>
+<th>Default in Standard</th>
+<th>Default in Full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>High Availability</strong> (<code>Ha</code>)</td>
+<td>on, cache 0s</td>
+<td>on, cache 0s</td>
+<td>on, cache 30s</td>
+</tr>
+<tr>
+<td><strong>Backup Info</strong></td>
+<td>on, cache 0s</td>
+<td>on, cache 600s</td>
+<td>on, cache 600s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Node collectors</strong></p>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>Default in Fast</th>
+<th>Default in Standard</th>
+<th>Default in Full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Status</strong> (memory, swap, load, uptime)</td>
+<td>off</td>
+<td>on, cache 0s</td>
+<td>on, cache 0s</td>
+</tr>
+<tr>
+<td><strong>Subscription</strong></td>
+<td>off</td>
+<td>on, cache 3600s</td>
+<td>on, cache 3600s</td>
+</tr>
+<tr>
+<td><strong>Replication</strong></td>
+<td>off</td>
+<td>on, cache 0s</td>
+<td>on, cache 60s</td>
+</tr>
+<tr>
+<td><strong>Disk S.M.A.R.T.</strong></td>
+<td>off</td>
+<td>off</td>
+<td>on, cache 600s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Guest collectors</strong></p>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>Default in Fast</th>
+<th>Default in Standard</th>
+<th>Default in Full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>QEMU Balloon Memory</strong></td>
+<td>off</td>
+<td>off</td>
+<td>on, cache 0s</td>
+</tr>
+</tbody>
+</table>
+</details>
 
 
 
@@ -1106,7 +1377,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1158,6 +1429,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

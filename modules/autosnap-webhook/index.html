@@ -977,138 +977,139 @@
   
 
 
-<h1 id="autosnap-web-api-hook">AutoSnap — Web API Hook <span class="ee"></span><a class="headerlink" href="#autosnap-web-api-hook" title="Permanent link">&para;</a></h1>
-<p>The Web API Hook feature allows you to trigger HTTP requests at specific phases of the AutoSnap snapshot lifecycle. This enables integration with external systems such as monitoring platforms, orchestration tools, CI/CD pipelines, or any HTTP-capable service.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Each AutoSnap job can have one or more webhook hooks configured. Each hook is bound to a specific <strong>phase</strong> of the snapshot process and is executed in order when that phase is reached.</p>
-<p>If a webhook returns a non-successful HTTP status code, the execution is aborted and an error is raised in the job log.</p>
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
-<p>Hooks are configured per-job in the <strong>Hooks</strong> tab of the job editor.</p>
-<h3 id="hook-fields">Hook fields<a class="headerlink" href="#hook-fields" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Description</strong></td>
-<td>Label to identify the hook in logs and UI</td>
-</tr>
-<tr>
-<td><strong>Enabled</strong></td>
-<td>Enable or disable the hook without deleting it</td>
-</tr>
-<tr>
-<td><strong>Order</strong></td>
-<td>Execution order when multiple hooks share the same phase</td>
-</tr>
-<tr>
-<td><strong>Phase</strong></td>
-<td>The snapshot lifecycle phase that triggers this hook</td>
-</tr>
-<tr>
-<td><strong>URL</strong></td>
-<td>Target HTTP endpoint (supports variable placeholders)</td>
-</tr>
-<tr>
-<td><strong>Method</strong></td>
-<td>HTTP method: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></td>
-</tr>
-<tr>
-<td><strong>Body Type</strong></td>
-<td>Request body format: <code>None</code>, <code>JSON</code>, <code>XML</code>, <code>Text</code></td>
-</tr>
-<tr>
-<td><strong>Body</strong></td>
-<td>Request body content (supports variable placeholders)</td>
-</tr>
-<tr>
-<td><strong>Headers</strong></td>
-<td>Custom HTTP headers (supports variable placeholders)</td>
-</tr>
-<tr>
-<td><strong>Auth</strong></td>
-<td>Authentication: <code>None</code>, <code>Basic</code>, <code>Bearer</code>, <code>API Key</code></td>
-</tr>
-<tr>
-<td><strong>Timeout (s)</strong></td>
-<td>Request timeout in seconds (default: 30)</td>
-</tr>
-<tr>
-<td><strong>Ignore SSL</strong></td>
-<td>Skip SSL certificate validation</td>
-</tr>
-</tbody>
-</table>
-<h2 id="phases">Phases<a class="headerlink" href="#phases" title="Permanent link">&para;</a></h2>
-<p>Hooks are triggered at the following phases of the AutoSnap lifecycle:</p>
+<h1 id="autosnap-web-api-hook"><span class="ee"></span> <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.46 19C9 21.07 6.15 21.59 4.09 20.15c-2.05-1.44-2.53-4.31-1.09-6.4a4.59 4.59 0 0 1 3.58-1.98l.05 1.43c-.91.07-1.79.54-2.36 1.36-1 1.44-.69 3.38.68 4.35 1.38.96 3.31.59 4.31-.84.31-.45.49-.94.56-1.44v-1.01l5.58-.04.07-.11c.53-.92 1.68-1.24 2.58-.72a1.9 1.9 0 0 1 .68 2.6c-.53.91-1.69 1.23-2.59.71-.41-.23-.7-.6-.83-1.02l-4.07.02a5 5 0 0 1-.78 1.94m7.28-7.14c2.53.31 4.33 2.58 4.02 5.07-.31 2.5-2.61 4.27-5.14 3.96a4.63 4.63 0 0 1-3.43-2.21l1.24-.72a3.22 3.22 0 0 0 2.32 1.45c1.75.21 3.3-.98 3.51-2.65s-1.03-3.2-2.76-3.41c-.54-.06-1.06.01-1.53.18l-.85.44-2.58-4.77h-.22a1.906 1.906 0 0 1-1.85-1.95c.03-1.04.93-1.85 1.98-1.81 1.05.06 1.88.91 1.85 1.95-.02.44-.19.84-.46 1.15l1.9 3.51c.62-.2 1.3-.27 2-.19M8.25 9.14c-1-2.35.06-5.04 2.37-6.02 2.32-.98 5 .13 6 2.48.59 1.37.47 2.87-.2 4.07l-1.24-.72c.42-.81.49-1.8.09-2.73-.68-1.6-2.49-2.37-4.04-1.72-1.56.66-2.26 2.5-1.58 4.1.28.66.75 1.17 1.32 1.51l.39.21-3.07 4.99c.03.05.07.11.1.19.49.91.15 2.06-.77 2.55-.91.49-2.06.13-2.56-.81-.49-.93-.15-2.08.77-2.57.39-.21.82-.26 1.23-.17l2.31-3.77c-.47-.43-.87-.97-1.12-1.59"/></svg></span> AutoSnap — Web API Hook <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#autosnap-web-api-hook" title="Permanent link">&para;</a></h1>
+<p>Trigger HTTP requests at specific phases of the <a href="../autosnap/">AutoSnap</a> snapshot lifecycle — integrate with monitoring platforms, orchestration tools, CI/CD pipelines or any HTTP-capable service.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2.79l4.31-8.21 1.18 8.96 3.22-4.09L17.83 13H21v2h-4l-2.33-2.33-4.75 6.06-.98-7.42L7 15H3z"/></svg></span> <strong>Phase-bound triggers</strong></p>
+<hr />
+<p>Bind a hook to a specific point of the snapshot lifecycle (<code>SnapCreatePre</code>, <code>SnapCreatePost</code>, <code>SnapRemovePre</code>, …) — fires exactly when you need it.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 2h14v14H2zm20 6v14H8v-4h10V8zM4 4v10h10V4z"/></svg></span> <strong>Multiple hooks per phase</strong></p>
+<hr />
+<p>Configure several hooks on the same phase; they run sequentially in a user-defined <strong>Order</strong>.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3h2v2H5v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5h2v2H5c-1.07-.27-2-.9-2-2v-4a2 2 0 0 0-2-2H0v-2h1a2 2 0 0 0 2-2V5a2 2 0 0 1 2-2m14 0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h1v2h-1a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2h-2v-2h2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5h-2V3zm-7 12a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m8 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1"/></svg></span> <strong>JSON / XML / Text / GET bodies</strong></p>
+<hr />
+<p>POST/PUT/PATCH with <code>JSON</code>, <code>XML</code> or <code>Text</code> body, or simple GET with query parameters — the right shape for the receiver.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 18v4h-4v-3h-3v-3h-3l-2.26-2.26c-.55.17-1.13.26-1.74.26a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6c0 .61-.09 1.19-.26 1.74zM7 5a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2"/></svg></span> <strong>Built-in authentication</strong></p>
+<hr />
+<p>None, Basic, Bearer or API Key — set credentials once per hook, no custom header juggling.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.5 9A1.5 1.5 0 0 0 7 7.5 1.5 1.5 0 0 0 5.5 6 1.5 1.5 0 0 0 4 7.5 1.5 1.5 0 0 0 5.5 9m11.91 2.58c.36.36.59.86.59 1.42 0 .55-.22 1.05-.59 1.41l-5 5a1.996 1.996 0 0 1-2.83 0l-6.99-6.99C2.22 12.05 2 11.55 2 11V6c0-1.11.89-2 2-2h5c.55 0 1.05.22 1.41.58zm-3.87-5.87 1-1 6.87 6.87c.37.36.59.87.59 1.42s-.22 1.05-.58 1.41l-5.38 5.38-1-1L20.75 13z"/></svg></span> <strong>Variable placeholders</strong></p>
+<hr />
+<p>Reference the current VM ID, name, type, snapshot name, duration or success state via <code>%CV4PVE_AUTOSNAP_*%</code> tokens in URL, body or headers.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 13h-2V7h2m-2 8h2v2h-2m4.73-14H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27z"/></svg></span> <strong>Fail-fast on errors</strong></p>
+<hr />
+<p>A non-2xx response or network error stops execution for that phase and surfaces in the job log — no silent failures.</p>
+</li>
+</ul>
+</div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why webhooks when AutoSnap already runs on schedule?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Quiesce before snapshot</p>
+<p>Call your app's <code>/freeze</code> endpoint on <code>SnapCreatePre</code> so the snapshot captures a consistent state — and <code>/thaw</code> on <code>SnapCreatePost</code> to resume.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Tell monitoring you're alive</p>
+<p>Ping a status page or PagerDuty on <code>SnapJobEnd</code> — backups silently failing is the #1 cause of "we thought we were protected".</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Wire snapshots into CI/CD</p>
+<p>Trigger a deploy on <code>SnapCreatePost</code> — every release gets a tagged rollback point baked into the pipeline.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Audit trail outside PVE</p>
+<p>Stream every snapshot event to your SIEM / log pipeline — independent record of who-snapshotted-what-when.</p>
+</div>
+</div>
+</div>
+<h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
+<p>Hooks fire at well-defined phases of the snapshot lifecycle and receive context via <code>%CV4PVE_AUTOSNAP_*%</code> placeholders that you can use in URL, body and header values.</p>
+<details class="note reference">
+<summary>All phases</summary>
 <table>
 <thead>
 <tr>
 <th>Phase</th>
-<th>Description</th>
+<th>When</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>SnapJobStart</code></td>
-<td>Before the entire snapshot job begins</td>
+<td>before the entire snapshot job begins</td>
 </tr>
 <tr>
 <td><code>SnapJobEnd</code></td>
-<td>After the entire snapshot job completes</td>
+<td>after the entire snapshot job completes</td>
 </tr>
 <tr>
 <td><code>SnapCreatePre</code></td>
-<td>Before creating a snapshot on a specific VM</td>
+<td>before creating a snapshot on a specific VM</td>
 </tr>
 <tr>
 <td><code>SnapCreatePost</code></td>
-<td>After a snapshot has been successfully created</td>
+<td>after a snapshot has been successfully created</td>
 </tr>
 <tr>
 <td><code>SnapCreateAbort</code></td>
-<td>When snapshot creation fails or is aborted</td>
+<td>when snapshot creation fails or is aborted</td>
 </tr>
 <tr>
 <td><code>CleanJobStart</code></td>
-<td>Before the cleanup (retention) job begins</td>
+<td>before the cleanup (retention) job begins</td>
 </tr>
 <tr>
 <td><code>CleanJobEnd</code></td>
-<td>After the cleanup job completes</td>
+<td>after the cleanup job completes</td>
 </tr>
 <tr>
 <td><code>SnapRemovePre</code></td>
-<td>Before removing an expired snapshot</td>
+<td>before removing an expired snapshot</td>
 </tr>
 <tr>
 <td><code>SnapRemovePost</code></td>
-<td>After an expired snapshot has been removed</td>
+<td>after an expired snapshot has been removed</td>
 </tr>
 <tr>
 <td><code>SnapRemoveAbort</code></td>
-<td>When snapshot removal fails or is aborted</td>
+<td>when snapshot removal fails or is aborted</td>
 </tr>
 </tbody>
 </table>
-<h2 id="variable-placeholders">Variable placeholders<a class="headerlink" href="#variable-placeholders" title="Permanent link">&para;</a></h2>
-<p>You can use placeholders in the <strong>URL</strong>, <strong>Body</strong>, and <strong>Header values</strong>. Placeholders are replaced at execution time with the current context values.</p>
-<p>Syntax: <code>%VARIABLE_NAME%</code></p>
+</details>
+<details class="note reference">
+<summary>All placeholders</summary>
 <table>
 <thead>
 <tr>
 <th>Placeholder</th>
-<th>Description</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_PHASE%</code></td>
-<td>Current phase name (e.g. <code>snap-create-pre</code>)</td>
+<td>current phase name (e.g. <code>snap-create-pre</code>)</td>
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_VMID%</code></td>
@@ -1120,19 +1121,19 @@
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_VMTYPE%</code></td>
-<td>Type: <code>qemu</code> or <code>lxc</code></td>
+<td><code>qemu</code> or <code>lxc</code></td>
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_LABEL%</code></td>
-<td>Snapshot label defined in the job</td>
+<td>snapshot label defined in the job</td>
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_KEEP%</code></td>
-<td>Number of snapshots to keep</td>
+<td>number of snapshots to keep</td>
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_SNAP_NAME%</code></td>
-<td>Full snapshot name</td>
+<td>full snapshot name</td>
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_VMSTATE%</code></td>
@@ -1140,7 +1141,7 @@
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_DURATION%</code></td>
-<td>Duration of the operation in seconds</td>
+<td>duration of the operation in seconds</td>
 </tr>
 <tr>
 <td><code>%CV4PVE_AUTOSNAP_STATE%</code></td>
@@ -1148,14 +1149,79 @@
 </tr>
 </tbody>
 </table>
+</details>
+<details class="note reference">
+<summary>All hook fields</summary>
+<p>Configured per-job in the <strong>Hooks</strong> tab of the job editor.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Description</strong></td>
+<td>label to identify the hook in logs and UI</td>
+</tr>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>toggle without deleting</td>
+</tr>
+<tr>
+<td><strong>Order</strong></td>
+<td>execution order when multiple hooks share the same phase</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>the snapshot lifecycle phase that triggers this hook</td>
+</tr>
+<tr>
+<td><strong>URL</strong></td>
+<td>target HTTP endpoint (supports placeholders)</td>
+</tr>
+<tr>
+<td><strong>Method</strong></td>
+<td><code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></td>
+</tr>
+<tr>
+<td><strong>Body Type</strong></td>
+<td><code>None</code>, <code>JSON</code>, <code>XML</code>, <code>Text</code></td>
+</tr>
+<tr>
+<td><strong>Body</strong></td>
+<td>request body (supports placeholders)</td>
+</tr>
+<tr>
+<td><strong>Headers</strong></td>
+<td>custom HTTP headers (support placeholders)</td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td><code>None</code>, <code>Basic</code>, <code>Bearer</code>, <code>API Key</code></td>
+</tr>
+<tr>
+<td><strong>Timeout (s)</strong></td>
+<td>request timeout (default: 30)</td>
+</tr>
+<tr>
+<td><strong>Ignore SSL</strong></td>
+<td>skip SSL certificate validation</td>
+</tr>
+</tbody>
+</table>
+</details>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="notify-a-monitoring-system-after-snapshot-creation">Notify a monitoring system after snapshot creation<a class="headerlink" href="#notify-a-monitoring-system-after-snapshot-creation" title="Permanent link">&para;</a></h3>
+<details class="note examples">
+<summary>Notify a monitoring system after snapshot creation</summary>
 <ul>
 <li><strong>Phase:</strong> <code>SnapCreatePost</code></li>
 <li><strong>Method:</strong> <code>POST</code></li>
 <li><strong>URL:</strong> <code>https://monitoring.example.com/api/events</code></li>
 <li><strong>Body Type:</strong> <code>JSON</code></li>
-<li><strong>Body:</strong>
+<li><strong>Body:</strong></li>
+</ul>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;snapshot_created&quot;</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;vmid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%CV4PVE_AUTOSNAP_VMID%&quot;</span><span class="p">,</span>
@@ -1163,9 +1229,10 @@
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">&quot;snapshot&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%CV4PVE_AUTOSNAP_SNAP_NAME%&quot;</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%CV4PVE_AUTOSNAP_DURATION%&quot;</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
-</span></code></pre></div></li>
-</ul>
-<h3 id="call-a-webhook-with-bearer-token-authentication">Call a webhook with Bearer token authentication<a class="headerlink" href="#call-a-webhook-with-bearer-token-authentication" title="Permanent link">&para;</a></h3>
+</span></code></pre></div>
+</details>
+<details class="note examples">
+<summary>Call a webhook with Bearer token authentication</summary>
 <ul>
 <li><strong>Phase:</strong> <code>SnapJobEnd</code></li>
 <li><strong>Method:</strong> <code>POST</code></li>
@@ -1173,19 +1240,24 @@
 <li><strong>Auth:</strong> <code>Bearer</code> → set your token</li>
 <li><strong>Body:</strong> <em>(empty or custom payload)</em></li>
 </ul>
-<h3 id="trigger-a-get-request-with-query-parameters">Trigger a GET request with query parameters<a class="headerlink" href="#trigger-a-get-request-with-query-parameters" title="Permanent link">&para;</a></h3>
+</details>
+<details class="note examples">
+<summary>Trigger a GET request with query parameters</summary>
 <ul>
 <li><strong>Phase:</strong> <code>SnapCreatePre</code></li>
 <li><strong>Method:</strong> <code>GET</code></li>
 <li><strong>URL:</strong> <code>https://example.com/notify?vm=%CV4PVE_AUTOSNAP_VMID%&amp;label=%CV4PVE_AUTOSNAP_LABEL%</code></li>
 </ul>
-<h2 id="execution-behavior">Execution behavior<a class="headerlink" href="#execution-behavior" title="Permanent link">&para;</a></h2>
+</details>
+<div class="admonition info">
+<p class="admonition-title">How execution works</p>
 <ul>
-<li>Hooks within the same phase are executed <strong>sequentially</strong> in the configured order.</li>
-<li>If a hook fails (non-2xx HTTP response or network error), <strong>execution stops</strong> and an error is logged.</li>
+<li>Hooks within the same phase run <strong>sequentially</strong> in the configured order.</li>
+<li>A non-2xx HTTP response or network error <strong>stops execution</strong> and writes an error to the job log.</li>
 <li>The hook result (HTTP status code) is written to the job execution log.</li>
 <li>Hooks with <strong>Enabled = false</strong> are skipped silently.</li>
 </ul>
+</div>
 
 
 
@@ -1277,7 +1349,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1329,6 +1401,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

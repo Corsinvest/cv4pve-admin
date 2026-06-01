@@ -561,17 +561,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#modules-and-features" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1141,7 +1130,7 @@
 </div>
 
 <div style="margin-top: auto;">
-<a href="installation.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Started →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Started →</strong></a>
 </div>
 
 </div>
@@ -1166,6 +1155,8 @@
 <hr />
 <h2 id="module-comparison">Module Comparison<a class="headerlink" href="#module-comparison" title="Permanent link">&para;</a></h2>
 <h3 id="product-roadmap-status">Product Roadmap &amp; Status<a class="headerlink" href="#product-roadmap-status" title="Permanent link">&para;</a></h3>
+<details class="note reference">
+<summary>Show roadmap status legend</summary>
 <p>This section outlines the current development status of upcoming and evolving modules.</p>
 <table>
 <thead>
@@ -1203,12 +1194,13 @@
 </tr>
 </tbody>
 </table>
-<h3 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h3>
+<p><strong>Notes</strong></p>
 <ul>
 <li>Features in 🚀 or 🚧 status may change before final release.</li>
 <li>📐 modules are subject to roadmap prioritization.</li>
 <li>Enterprise customers may request early access.</li>
 </ul>
+</details>
 <h3 id="modules-and-features">Modules and Features<a class="headerlink" href="#modules-and-features" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1243,8 +1235,8 @@
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td>Utilities</td>
-<td>Model Context Protocol server for AI integration with 20+ tools for VMs, nodes, storage, backups, replications and metrics</td>
-<td><ul><li><code>GetQuerySchema</code> — schema of all query tables</li><li><code>ExecuteQuery</code> — SQL-like queries on cluster data</li></ul></td>
+<td>Model Context Protocol server for AI integration with 33 tools for clusters, VMs, nodes, storage, backups, ISO/template management, replications and historical metrics</td>
+<td><ul><li>2 additional SQL-like query tools (<code>GetQuerySchema</code>, <code>ExecuteQuery</code>) on cluster data with filters, grouping, aggregates</li></ul></td>
 </tr>
 <tr>
 <td><strong><a href="../modules/autosnap/">AutoSnap</a></strong></td>
@@ -1274,7 +1266,7 @@
 <td><strong><a href="../modules/command-palette/">Command Palette</a></strong></td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
-<td>Application</td>
+<td>Core</td>
 <td>Quick access to commands and navigation (Ctrl+K / Cmd+K)</td>
 <td><ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul></td>
 </tr>
@@ -1282,7 +1274,7 @@
 <td><strong><a href="../modules/dashboard/">Dashboard</a></strong></td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
-<td>Utilities</td>
+<td>Core</td>
 <td>Customizable dashboards with widgets and metrics</td>
 <td><ul><li>Additional widgets from Enterprise modules</li></ul></td>
 </tr>
@@ -1314,15 +1306,15 @@
 <td><strong><a href="../configuration/notifier/">Notifier</a></strong></td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
-<td>Notification</td>
-<td>Notification system (CE: Email only)</td>
-<td><ul><li>119 services (Telegram, Discord, Slack, Teams, and more...)</li></ul></td>
+<td>Core</td>
+<td>Notification system (CE: SMTP + WebHook only)</td>
+<td><ul><li>119+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul></td>
 </tr>
 <tr>
 <td><strong><a href="../configuration/profile/">Profile</a></strong></td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
-<td>Application</td>
+<td>Core</td>
 <td>User profile management</td>
 <td><ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul></td>
 </tr>
@@ -1361,7 +1353,7 @@
 <tr>
 <td><strong><a href="../modules/ups-monitor/">UPS Monitor</a></strong></td>
 <td style="text-align: center;">❌</td>
-<td style="text-align: center;">🚧</td>
+<td style="text-align: center;">✅</td>
 <td>Protection</td>
 <td>Network UPS monitoring via SNMP</td>
 <td></td>
@@ -1396,9 +1388,9 @@
 </tr>
 <tr>
 <td><strong><a href="../modules/workflow/">Workflow</a></strong></td>
-<td style="text-align: center;">🚧</td>
+<td style="text-align: center;">✅</td>
 <td>Automation</td>
-<td>Visual workflow designer with 30+ Proxmox-specific activities for advanced automation</td>
+<td>Visual workflow designer with 40+ Proxmox-specific activities (guests, nodes, storage, HA, snapshots) for advanced automation</td>
 </tr>
 <tr>
 <td><strong>DDR</strong></td>
@@ -1535,7 +1527,7 @@ No time limits</p>
 </div>
 
 <div style="margin-top: auto;">
-<a href="installation.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Install Now →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Install Now →</strong></a>
 </div>
 
 </div>
@@ -1693,7 +1685,7 @@ Optional addon modules</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1745,6 +1737,8 @@ Optional addon modules</p>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/modules-filter.js"></script>
       
     
   </body>

@@ -977,62 +977,104 @@
   
 
 
-<h1 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h1>
-<p>Infrastructure resource management and visualization for Proxmox VE clusters.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Real-time cluster overview with VM states, node health, and resource utilization.</p>
-<h2 id="enterprise-edition-features">Enterprise Edition Features<a class="headerlink" href="#enterprise-edition-features" title="Permanent link">&para;</a></h2>
-<p>The Enterprise Edition includes additional columns for enhanced resource visibility:</p>
-<ul>
-<li><strong>Hostname</strong>: Display the hostname for each VM/container</li>
-<li><strong>OS Info</strong>: Operating system information for better identification and management</li>
-</ul>
+<h1 id="resources"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23 12-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68zm-13 5-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9z"/></svg></span> Resources <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#resources" title="Permanent link">&para;</a></h1>
+<p>Real-time, cross-cluster inventory and operations on every kind of Proxmox VE resource: clusters, nodes, guests, storage, networks, disks, partitions and snapshots.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
 <li>
-<p>:material-dashboard:{ .lg .middle } <strong>System Health</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg></span> <strong>Search</strong></p>
 <hr />
-<p>View CPU, memory, and storage usage across cluster nodes.</p>
+<p>Search box on Guests, Snapshots and other grids — filters across name, description, IP, hostname, tags simultaneously.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 1h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 8h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1m0 8h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1M9 5h1V3H9zm0 8h1v-2H9zm0 8h1v-2H9zM5 3v2h2V3zm0 8v2h2v-2zm0 8v2h2v-2z"/></svg></span> <strong>VM Status</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 11h8V3H3m0 18h8v-8H3m10 8h8v-8h-8m0-10v8h8V3"/></svg></span> <strong>Card View</strong></p>
 <hr />
-<p>View VM and container running, stopped, and error states.</p>
+<p>On Guests and Storages, switch from grid to card layout for a glance-at-everything overview. Cards show health score, status badges, key metrics and the same quick actions as the grid.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span> <strong>Storage Monitoring</strong></p>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 16a3 3 0 0 1-3-3c0-1.12.61-2.1 1.5-2.61l9.71-5.62-5.53 9.58c-.5.98-1.51 1.65-2.68 1.65m0-13c1.81 0 3.5.5 4.97 1.32l-2.1 1.21C14 5.19 13 5 12 5a8 8 0 0 0-8 8c0 2.21.89 4.21 2.34 5.65h.01c.39.39.39 1.02 0 1.41s-1.03.39-1.42.01A9.97 9.97 0 0 1 2 13 10 10 0 0 1 12 3m10 10c0 2.76-1.12 5.26-2.93 7.07-.39.38-1.02.38-1.41-.01a.996.996 0 0 1 0-1.41A7.95 7.95 0 0 0 20 13c0-1-.19-2-.54-2.9L20.67 8C21.5 9.5 22 11.18 22 13"/></svg></span> <strong>Health Score</strong></p>
 <hr />
-<p>Monitor storage capacity and performance indicators.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v2h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg></span> <strong>Network Metrics</strong></p>
-<hr />
-<p>View connectivity and bandwidth utilization metrics.</p>
+<p>Unified <code>HealthScore</code> indicator (badge or gauge) computed from CPU, memory, disk usage and resource type, with a contextual tooltip explaining the score.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 16.5v-9l6 4.5M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> <strong>Quick Actions</strong></p>
 <hr />
-<p>Start, stop, restart VMs from status view.</p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m16 11.78 4.24-7.33 1.73 1-5.23 9.05-6.51-3.75L5.46 19H22v2H2V3h2v14.54L9.5 8z"/></svg></span> <strong>Performance Data</strong></p>
-<hr />
-<p>Real-time CPU, memory, and I/O statistics.</p>
+<p>Start, stop, restart, shutdown, snapshot or open a console directly from any row — without leaving the page.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 19V7H4v12zm0-16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-7 14v-2h5v2zm-3.42-4L5.57 9H8.4l3.3 3.3c.39.39.39 1.03 0 1.42L8.42 17H5.59z"/></svg></span> <strong>Console Access</strong></p>
 <hr />
-<p>Open NoVnc, Xterm.js, or Spice console directly from the resource view.</p>
+<p>Open NoVnc, Xterm.js or Spice console for nodes, VMs and containers from the resource view.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.98 2.98 0 0 0 0-4.24 2.98 2.98 0 0 0-4.24 0l-3.53 3.53a2.98 2.98 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.98 2.98 0 0 0 0 4.24 2.98 2.98 0 0 0 4.24 0l3.53-3.53a2.98 2.98 0 0 0 0-4.24.973.973 0 0 1 0-1.42"/></svg></span> <strong>Cross-references</strong></p>
+<hr />
+<p>Click a node name, VM ID, storage or snapshot to jump to its detail page; the cluster context is preserved automatically.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 17c-.13 0-.26 0-.39.04l-1.61-3.25a2.5 2.5 0 0 0-1.75-4.29c-.13 0-.25 0-.39.04l-1.63-3.25c.48-.45.77-1.08.77-1.79a2.5 2.5 0 0 0-5 0c0 .71.29 1.34.76 1.79L8.64 9.54c-.14-.04-.26-.04-.39-.04a2.5 2.5 0 0 0-1.75 4.29l-1.61 3.25C4.76 17 4.63 17 4.5 17a2.5 2.5 0 0 0 0 5A2.5 2.5 0 0 0 7 19.5c0-.7-.29-1.34-.76-1.79l1.62-3.25c.14.04.26.04.39.04s.25 0 .39-.04l1.63 3.25c-.47.45-.77 1.09-.77 1.79a2.5 2.5 0 0 0 5 0A2.5 2.5 0 0 0 12 17c-.13 0-.26 0-.39.04L10 13.79c.46-.45.75-1.08.75-1.79s-.29-1.34-.75-1.79l1.61-3.25c.13.04.26.04.39.04s.26 0 .39-.04L14 10.21c-.45.45-.75 1.09-.75 1.79a2.5 2.5 0 0 0 2.5 2.5c.13 0 .25 0 .39-.04l1.63 3.25c-.47.45-.77 1.09-.77 1.79a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0-2.5-2.5"/></svg></span> <strong>Network diagram</strong></p>
+<hr />
+<p>The Networks → Diagram tab renders an interactive SVG topology of nodes, bridges, VNets and guests (powered by <a href="https://github.com/Corsinvest/cv4pve-report"><code>cv4pve-report</code></a>) — savable for documentation.</p>
 </li>
 </ul>
 </div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why this view when PVE already shows resources per cluster?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Every cluster at once</p>
+<p>PVE's UI is per-cluster. Resources lists VMs, nodes, storage and snapshots from <strong>every</strong> configured cluster in one filterable grid.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Filter, sort, group, search</p>
+<p>RadzenDataGrid gives multi-column sort, grouping, column picker and free-text search — find that one VM with <code>prod</code> in tags across 200 across clusters.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Quick actions from the list</p>
+<p>Start, stop, snapshot, open console without ever opening the per-VM page — straight from the row.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Network at a glance</p>
+<p>The Networks tab gives bridges/bonds/SDN/diagram in one place — what PVE only shows split between per-node tabs.</p>
+</div>
+</div>
+</div>
+<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Overview</strong> — high-level dashboard of clusters, nodes, guests and storage</li>
+<li><strong>Cluster</strong> — per-cluster summary with node counts, guest counts and resource roll-ups</li>
+<li><strong>Nodes</strong> — all cluster nodes with CPU/Memory/Disk usage, status, kernel, uptime, hostname</li>
+<li><strong>Guests</strong> — VMs and containers from every cluster, with running/stopped state, owner node, tags, IPs, lock state and quick actions (start/stop/console/snapshot)</li>
+<li><strong>Storages</strong> — storage definitions across the cluster, type, status, usage</li>
+<li><strong>Networks</strong> — tabbed view: <strong>Nodes</strong> (bridges/bonds) · <strong>Guests</strong> (per-VM NIC config) · <strong>SDN</strong> (zones, VNets) · <strong>Diagram</strong> (interactive SVG topology)</li>
+<li><strong>Disks</strong> — physical disks per node with model, size, S.M.A.R.T. health, vendor, <strong>Kind</strong> column (HDD / SSD / NVMe), wearout</li>
+<li><strong>Partitions</strong> — partitions and mount points (read via QEMU Guest Agent)</li>
+<li><strong>Snapshots</strong> — all snapshots in the cluster with creation date, description, parent, optional <strong>size on disk</strong></li>
+</ul>
+<h2 id="enterprise-additions"><span class="ee"></span> Enterprise Additions<a class="headerlink" href="#enterprise-additions" title="Permanent link">&para;</a></h2>
+<p>Enterprise enables extra columns and detail data on Guests and other grids:</p>
+<ul>
+<li><strong>Hostname</strong> — collected via QEMU Guest Agent, useful when the VM name and the in-guest hostname differ</li>
+<li><strong>OS Info</strong> — OS family, distribution and version</li>
+<li>Additional widgets in the <a href="../dashboard/">Dashboard</a> feeding from Resources data</li>
+</ul>
 <h2 id="console-limitations">Console Limitations<a class="headerlink" href="#console-limitations" title="Permanent link">&para;</a></h2>
-<h3 id="node-console-novnc-xtermjs">Node Console (NoVnc, Xterm.js)<a class="headerlink" href="#node-console-novnc-xtermjs" title="Permanent link">&para;</a></h3>
-<p>Node console access requires the WEB API user to be a <strong>PAM user</strong> (e.g. <code>root@pam</code>).</p>
-<p>Users authenticated via other realms (PVE, LDAP, etc.) cannot open a node console because Proxmox VE node consoles require OS-level authentication. The console button will be disabled if the WEB API user is not a PAM user.</p>
-<h3 id="vmcontainer-console-qemu-lxc">VM/Container Console (Qemu, LXC)<a class="headerlink" href="#vmcontainer-console-qemu-lxc" title="Permanent link">&para;</a></h3>
-<p>VM and container console access requires the WEB API connection to use <strong>Credential</strong> authentication (username/password).</p>
-<p>The console button will be disabled when the WEB API is configured with <strong>API Token</strong> authentication, as Proxmox VE requires a user session to open a VM console.</p>
+<div class="admonition warning">
+<p class="admonition-title">Node console requires a PAM user</p>
+<p>Node console (NoVnc, Xterm.js) requires the WEB API user to be a <strong>PAM user</strong> (e.g. <code>root@pam</code>). Users authenticated via other realms (PVE, LDAP, …) cannot open a node console because Proxmox VE requires OS-level authentication. The console button is disabled if the WEB API user is not a PAM user.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">VM/CT console requires Credential authentication</p>
+<p>VM and container console (QEMU, LXC) requires the WEB API to use <strong>Credential</strong> authentication (username/password). The console button is disabled when the WEB API is configured with <strong>API Token</strong> authentication, because Proxmox VE requires a user session to open a VM console.</p>
+</div>
 
 
 
@@ -1124,7 +1166,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1176,6 +1218,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

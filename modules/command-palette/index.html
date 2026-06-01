@@ -977,189 +977,189 @@
   
 
 
-<h1 id="command-palette">Command Palette<a class="headerlink" href="#command-palette" title="Permanent link">&para;</a></h1>
-<p>The Command Palette provides fast keyboard-driven access to modules, navigation, and Proxmox VE operations — without leaving your current page.</p>
-<h2 id="opening-the-palette">Opening the Palette<a class="headerlink" href="#opening-the-palette" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Platform</th>
-<th>Shortcut</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Windows / Linux</td>
-<td><code>Ctrl+K</code></td>
-</tr>
-<tr>
-<td>macOS</td>
-<td><code>Cmd+K</code></td>
-</tr>
-</tbody>
-</table>
-<p>You can also open it by clicking the search bar in the top header.</p>
+<h1 id="command-palette"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg></span> Command Palette <span class="scope" data-scope="all-clusters"></span> <span class="scope" data-scope="per-cluster"></span><a class="headerlink" href="#command-palette" title="Permanent link">&para;</a></h1>
+<p>Keyboard-driven access to modules, navigation and Proxmox VE operations — without leaving your current page. The palette is always available; some result types and commands appear only when a specific cluster is selected.</p>
+<p><img alt="Command Palette" class="screenshot" src="../../images/modules/screenshot-command-palette.png" /></p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 10h-2V8h2m0 5h-2v-2h2m-3-1h-2V8h2m0 5h-2v-2h2m0 6H8v-2h8m-9-5H5V8h2m0 5H5v-2h2m1 0h2v2H8m0-5h2v2H8m3 1h2v2h-2m0-5h2v2h-2m9-5H4c-1.11 0-2 .89-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2"/></svg></span> <strong>Single shortcut, anywhere</strong></p>
 <hr />
-<h2 id="navigation">Navigation<a class="headerlink" href="#navigation" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>↑</code> / <code>↓</code></td>
-<td>Move through results</td>
-</tr>
-<tr>
-<td><code>Enter</code></td>
-<td>Execute selected item</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>Close palette</td>
-</tr>
-</tbody>
-</table>
+<p><code>Ctrl+K</code> (or <code>Cmd+K</code> on macOS) opens the palette from any page. <code>↑</code> <code>↓</code> to move, <code>Enter</code> to execute, <code>Esc</code> to close.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 22v-2h3v-3h2v3.5c0 .39-.16.74-.46 1.04s-.65.46-1.04.46zM7 22H3.5c-.39 0-.74-.16-1.04-.46S2 20.89 2 20.5V17h2v3h3zM17 2h3.5c.39 0 .74.16 1.04.46s.46.65.46 1.04V7h-2V4h-3zM7 2v2H4v3H2V3.5c0-.39.16-.74.46-1.04S3.11 2 3.5 2zm3.5 4C13 6 15 8 15 10.5c0 .88-.25 1.7-.69 2.4l3.26 3.26-1.41 1.41-3.26-3.26c-.7.44-1.52.69-2.4.69C8 15 6 13 6 10.5S8 6 10.5 6m0 2a2.5 2.5 0 0 0 0 5 2.5 2.5 0 0 0 0-5"/></svg></span> <strong>Mixed search</strong></p>
 <hr />
-<h2 id="search-filters">Search Filters<a class="headerlink" href="#search-filters" title="Permanent link">&para;</a></h2>
-<p>Prefix your query to narrow results to a specific category:</p>
+<p>One textbox spans modules, VMs / containers, nodes and commands. Prefix tokens (<code>vm:</code>, <code>node:</code>, <code>ip:</code>, <code>&gt;</code>) narrow the scope on demand.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></span> <strong>Quick PVE actions</strong></p>
+<hr />
+<p><code>start</code>, <code>stop</code>, <code>restart</code>, <code>console</code>, <code>create snapshot</code> — operate on any VM/CT without clicking through the resource grid.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 4a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m5.13 12A9.7 9.7 0 0 1 12 20.92 9.7 9.7 0 0 1 6.87 17c-.34-.5-.63-1-.87-1.53 0-1.65 2.71-3 6-3s6 1.32 6 3c-.24.53-.53 1.03-.87 1.53"/></svg></span> <strong>Permission-aware</strong></p>
+<hr />
+<p>Results are filtered by the current user's PVE permissions; commands the user can't execute don't appear.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7h5v10h-5v2a1 1 0 0 0 1 1h2v2h-2.5c-.55 0-1.5-.45-1.5-1 0 .55-.95 1-1.5 1H12v-2h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-2V2h2.5c.55 0 1.5.45 1.5 1 0-.55.95-1 1.5-1H20v2h-2a1 1 0 0 0-1 1zM2 7h11v2H4v6h9v2H2zm18 8V9h-3v6z"/></svg></span> <strong>Parameter dialogs</strong></p>
+<hr />
+<p>Commands that need input open a typed parameter dialog (VM picker, text, boolean) — no command-line syntax to remember.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 13h12v-2H6M3 6v2h18V6M10 18h4v-2h-4z"/></svg></span> <strong>Context-aware footer</strong></p>
+<hr />
+<p>The footer dynamically lists the prefixes available in your current cluster context, so you always see what you can search for right now.</p>
+</li>
+</ul>
+</div>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Why a palette when you already have a sidebar?</p>
+<div class="why-grid">
+<div>
+<div class="admonition tip">
+<p class="admonition-title">Zero clicks, zero scrolling</p>
+<p>Open from anywhere with a keystroke — no breaking your flow to navigate menus or scroll long resource grids.</p>
+</div>
+</div>
+<div>
+<div class="admonition success">
+<p class="admonition-title">Stops working with VM IDs in your head</p>
+<p>Type <code>vm:web</code> and the matching VMs surface across <strong>every</strong> cluster — no need to remember which node or storage hosts what.</p>
+</div>
+</div>
+<div>
+<div class="admonition info">
+<p class="admonition-title">Trigger ops without the resource page</p>
+<p><code>&gt;start</code> + pick a VM = started. No need to open Resources, find the row, click the kebab — three keystrokes total.</p>
+</div>
+</div>
+<div>
+<div class="admonition warning">
+<p class="admonition-title">Find by what you remember</p>
+<p>Lost a VM but know its IP? <code>ip:192.168.1</code> lists every guest matching. Hostname, OS, tags also searchable.</p>
+</div>
+</div>
+</div>
+<h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
+<details class="note">
+<summary>All search prefixes</summary>
 <table>
 <thead>
 <tr>
 <th>Prefix</th>
 <th>Filters</th>
+<th>Example</th>
+<th>Scope</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>vm:</code></td>
-<td>VM / Container by ID (e.g. <code>vm:100</code>)</td>
+<td>VM / Container by ID or description</td>
+<td><code>vm:100</code>, <code>vm:web</code></td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>node:</code></td>
-<td>Node by name (e.g. <code>node:pve1</code>)</td>
+<td>Node by name or description</td>
+<td><code>node:pve1</code></td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>ip:</code></td>
-<td>VM / Container by IP address or hostname (e.g. <code>ip:192.168</code>)</td>
+<td>VM / Container by IP address</td>
+<td><code>ip:192.168</code></td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>&gt;</code></td>
-<td>Commands only (e.g. <code>&gt;start</code>, <code>&gt;logout</code>)</td>
+<td>Commands only</td>
+<td><code>&gt;start</code></td>
+<td><span class="scope" data-scope="all-clusters"></span></td>
 </tr>
 </tbody>
 </table>
-<p>Without a prefix, the search spans all categories: modules, VMs, nodes, and commands.</p>
-<hr />
-<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
-<p>Commands are executable actions. Those that require parameters open a dialog before execution.</p>
-<h3 id="system">System<a class="headerlink" href="#system" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>logout</code></td>
-<td>Log out the current user</td>
-</tr>
-</tbody>
-</table>
-<h3 id="proxmox-ve">Proxmox VE<a class="headerlink" href="#proxmox-ve" title="Permanent link">&para;</a></h3>
+</details>
+<details class="note">
+<summary>All commands</summary>
+<p>Commands open a dialog if they require parameters. PVE commands operate on the currently selected cluster.</p>
 <table>
 <thead>
 <tr>
 <th>Command</th>
 <th>Description</th>
 <th>Parameters</th>
+<th>Scope</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td><code>logout</code></td>
+<td>Log out the current user</td>
+<td>–</td>
+<td><span class="scope" data-scope="all-clusters"></span></td>
+</tr>
+<tr>
 <td><code>start</code></td>
 <td>Start a stopped VM / Container</td>
-<td>VM / CT selector</td>
+<td>VM / CT</td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>stop</code></td>
 <td>Stop a running VM / Container</td>
-<td>VM / CT selector</td>
+<td>VM / CT</td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>restart</code></td>
 <td>Restart a running VM / Container</td>
-<td>VM / CT selector</td>
+<td>VM / CT</td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>console</code></td>
-<td>Open web console for a running VM / Container</td>
-<td>VM / CT selector</td>
+<td>Open web console (NoVnc / Xterm.js / Spice)</td>
+<td>VM / CT</td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 <tr>
 <td><code>create snapshot</code></td>
-<td>Create a snapshot</td>
-<td>VM / CT selector, name, description (optional), include RAM (optional)</td>
+<td>Create a VM / CT snapshot</td>
+<td>VM / CT, name, description, include RAM</td>
+<td><span class="scope" data-scope="per-cluster"></span></td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Console requirement</p>
-<p>The <code>console</code> command requires a <strong>PAM user</strong> with credential-based access. It is not available with API Token authentication.</p>
+</details>
+<details class="note">
+<summary>Result rows anatomy</summary>
+<p>Each row shows an icon (color-coded by category), title, subtitle, status badges (running / stopped, hostname, OS, lock) and a final indicator — <code>open_in_new</code> if the command opens a dialog, <code>bolt</code> for instant actions.</p>
+<p>Result types: <strong>Module</strong> · <strong>VM / CT</strong> · <strong>Node</strong> · <strong>Command</strong>.</p>
+</details>
+<h2 id="search-behaviour">Search behaviour<a class="headerlink" href="#search-behaviour" title="Permanent link">&para;</a></h2>
+<p><img alt="Search by IP" class="screenshot" src="../../images/modules/screenshot-command-palette-search-ip.png" /></p>
+<p>The query is tokenised on spaces. Each token is either a <code>prefix:value</code> filter or free text; without a prefix the search spans modules, VMs, nodes and commands.</p>
+<ul>
+<li>Free text matches <code>Title</code>, <code>Subtitle</code> and tagged extras (hostname, OS, IPs) — <strong>not</strong> status badges. <code>vm:100 stopped</code> doesn't work; use the <a href="../resources/">Resources</a> module to filter by state.</li>
+<li>Only one resource filter takes effect at a time — combining <code>node:</code> and <code>vm:</code> falls back to <code>node:</code>.</li>
+<li>The footer of the palette lists the prefixes available in your current cluster context.</li>
+</ul>
+<p><img alt="Start VM command" class="screenshot" src="../../images/modules/screenshot-command-palette-command-start.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">Console authentication</p>
+<p><code>console</code> requires the WEB API to use Credential authentication (PAM user). It is disabled with API Token authentication.</p>
 </div>
-<hr />
-<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
-<p>Each result shows:</p>
+<div class="admonition info">
+<p class="admonition-title">Cluster context</p>
 <ul>
-<li><strong>Icon</strong> — colored by category (green = VM, blue = module, …)</li>
-<li><strong>Title</strong> — VM ID, module name, or command prefix</li>
-<li><strong>Subtitle</strong> — description or additional info</li>
-<li><strong>Status badges</strong> — running / stopped, hostname, OS version, lock state</li>
-<li><strong>Action indicator</strong> — dialog icon if parameters are required, or instant execution icon</li>
+<li><span class="scope" data-scope="all-clusters"></span> entries (modules navigation, <code>logout</code>, the <code>&gt;</code> command filter) are always there.</li>
+<li><span class="scope" data-scope="per-cluster"></span> entries (VM / CT / Node search, PVE commands) appear <strong>only when a single cluster is selected</strong>. Switching to <strong>All Clusters</strong> hides them.</li>
 </ul>
-<hr />
-<h2 id="result-types">Result Types<a class="headerlink" href="#result-types" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Module</strong></td>
-<td>Application modules and navigation links</td>
-</tr>
-<tr>
-<td><strong>VM / CT</strong></td>
-<td>Proxmox VE virtual machines and containers</td>
-</tr>
-<tr>
-<td><strong>Node</strong></td>
-<td>Proxmox cluster nodes</td>
-</tr>
-<tr>
-<td><strong>Command</strong></td>
-<td>Executable actions</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="permissions-cluster-context">Permissions &amp; Cluster Context<a class="headerlink" href="#permissions-cluster-context" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Results and commands respect the current user's permissions.</li>
-<li>Modules that require a specific cluster are hidden when <strong>All Clusters</strong> is selected.</li>
-<li>Proxmox VE commands (start, stop, …) operate on the <strong>currently selected cluster</strong>.</li>
-</ul>
-<hr />
-<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permanent link">&para;</a></h2>
-<p>More commands and search providers are planned for future releases, including additional Proxmox VE operations, storage management actions, and expanded search filters.</p>
+</div>
 
 
 
@@ -1251,7 +1251,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1303,6 +1303,8 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>

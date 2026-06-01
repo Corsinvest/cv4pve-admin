@@ -12,7 +12,7 @@
         <meta name="author" content="Corsinvest Srl">
       
       
-        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/modules/drs/">
+        <link rel="canonical" href="https://corsinvest.github.io/cv4pve-admin/_includes/requirements-ssh/">
       
       
       
@@ -25,7 +25,7 @@
     
     
       
-        <title>Resource Scheduler (DRS) - cv4pve-admin</title>
+        <title>Requirements ssh - cv4pve-admin</title>
       
     
     
@@ -79,11 +79,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#resource-scheduler-drs" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -117,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Resource Scheduler (DRS)
+              Requirements ssh
             
           </span>
         </div>
@@ -310,7 +305,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../" class="md-tabs__link">
+      <a href="../../modules/" class="md-tabs__link">
         
   
   
@@ -784,7 +779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../modules/" class="md-nav__link">
         
   
   
@@ -977,177 +972,15 @@
   
 
 
-<h1 id="resource-scheduler-drs">Resource Scheduler (DRS)<a class="headerlink" href="#resource-scheduler-drs" title="Permanent link">&para;</a></h1>
-<p><span class="ee"></span> Dynamic Resource Scheduler that automatically balances VM load across Proxmox VE nodes.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p><strong>DRS (Dynamic Resource Scheduler)</strong> continuously monitors resource usage across all Proxmox VE nodes and automatically migrates VMs to maintain an optimal load balance throughout the cluster.
-It runs on a configurable schedule and evaluates CPU, memory, disk, and PSI pressure metrics to determine whether migrations are necessary.</p>
-<hr />
-<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Automatic VM Migration</strong> — Balances load across nodes based on configurable metrics</li>
-<li><strong>Maintenance Mode</strong> — Automatically evacuates all VMs from nodes entering maintenance, ensuring zero downtime</li>
-<li><strong>Affinity Rules</strong> — Keep related VMs co-located on the same node for low-latency communication</li>
-<li><strong>Anti-Affinity Rules</strong> — Spread VMs across different nodes for fault isolation and high availability</li>
-<li><strong>Pinned VMs</strong> — Exclude specific VMs from migration to honour licensing or hardware constraints</li>
-<li><strong>Dry Run</strong> — Simulate the balancing cycle without performing actual migrations for safe testing</li>
-<li><strong>HA Integration</strong> — Respects Proxmox HA group restrictions; restricted groups constrain DRS migrations to the listed nodes only</li>
-</ul>
-<hr />
-<h2 id="balancing-methods">Balancing Methods<a class="headerlink" href="#balancing-methods" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Method</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Memory</strong></td>
-<td>Current memory usage % (snapshot)</td>
-</tr>
-<tr>
-<td><strong>CPU</strong></td>
-<td>Current CPU usage % (snapshot)</td>
-</tr>
-<tr>
-<td><strong>MemoryRrd</strong></td>
-<td>Average memory usage % over the last hour (RRD). Avoids transient spikes.</td>
-</tr>
-<tr>
-<td><strong>CpuRrd</strong></td>
-<td>Average CPU usage % over the last hour (RRD). Avoids transient spikes.</td>
-</tr>
-<tr>
-<td><strong>MemoryAssigned</strong></td>
-<td>Allocated maxmem % per node. Production-safe, based on configured resources.</td>
-</tr>
-<tr>
-<td><strong>CpuAssigned</strong></td>
-<td>Allocated vCPU count % per node. Production-safe, based on configured resources.</td>
-</tr>
-<tr>
-<td><strong>Disk</strong></td>
-<td>Local (non-shared) storage utilisation % across nodes</td>
-</tr>
-<tr>
-<td><strong>PSI</strong></td>
-<td>Linux Pressure Stall Information — the most accurate real-world load indicator, detecting CPU, memory, and I/O pressure before performance degrades. Requires PVE 9+.</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Setting</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Enabled</strong></td>
-<td>Enable or disable automatic scheduling</td>
-</tr>
-<tr>
-<td><strong>Live Migration</strong></td>
-<td>Use live migration (online) when migrating VMs</td>
-</tr>
-<tr>
-<td><strong>Dry Run</strong></td>
-<td>Simulate without executing actual migrations</td>
-</tr>
-<tr>
-<td><strong>Schedule (Cron)</strong></td>
-<td>Configurable cron expression for automatic runs</td>
-</tr>
-<tr>
-<td><strong>Balancing Method</strong></td>
-<td>The metric used to evaluate and balance load</td>
-</tr>
-<tr>
-<td><strong>Balanciness Delta (%)</strong></td>
-<td>Minimum load difference between nodes required to trigger a migration</td>
-</tr>
-<tr>
-<td><strong>Max Parallel Migrations</strong></td>
-<td>Maximum number of concurrent VM migrations</td>
-</tr>
-<tr>
-<td><strong>Max Disk Usage (%)</strong></td>
-<td>Skip migration if destination node disk usage exceeds this threshold (0 = disabled)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="psi-thresholds-pve-9">PSI Thresholds (PVE 9+)<a class="headerlink" href="#psi-thresholds-pve-9" title="Permanent link">&para;</a></h3>
-<p>When using the PSI method, configure per-metric thresholds:</p>
-<table>
-<thead>
-<tr>
-<th>Threshold</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Full (%)</strong></td>
-<td>All tasks stalled — critical pressure</td>
-</tr>
-<tr>
-<td><strong>Some (%)</strong></td>
-<td>At least one task stalled — elevated pressure</td>
-</tr>
-<tr>
-<td><strong>Spike (%)</strong></td>
-<td>Instantaneous peak pressure</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="pages">Pages<a class="headerlink" href="#pages" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Page</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Overview</strong></td>
-<td>Summary of DRS capabilities and balancing methods</td>
-</tr>
-<tr>
-<td><strong>DRS</strong></td>
-<td>Configuration, node management, migration history, and manual run</td>
-</tr>
-</tbody>
-</table>
-<h3 id="drs-page-tabs">DRS Page — Tabs<a class="headerlink" href="#drs-page-tabs" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Tab</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Settings</strong></td>
-<td>Scheduler configuration, balancing method, VM constraints, enabled/disabled/maintenance nodes</td>
-</tr>
-<tr>
-<td><strong>HA Groups</strong></td>
-<td>Proxmox HA groups (read-only); restricted groups limit DRS migrations to specified nodes</td>
-</tr>
-<tr>
-<td><strong>Last Migrations</strong></td>
-<td>History of DRS runs with migration details (VM, source/destination node, load, result)</td>
-</tr>
-</tbody>
-</table>
+  <h1>Requirements ssh</h1>
+
+<!-- markdownlint-disable MD041 -->
+
+<div class="admonition warning">
+<p class="admonition-title">Requirements</p>
+<p><span class="ssh"></span> SSH access is required. Configure credentials under <strong>Admin Area → Proxmox VE Clusters → SSH Credentials</strong>.</p>
+<p>Web shell PAM user is required.</p>
+</div>
 
 
 
@@ -1239,7 +1072,7 @@ It runs on a configurable schedule and evaluates CPU, memory, disk, and PSI pres
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2024 Corsinvest Srl
+      Copyright &copy; 2024-2026 Corsinvest Srl
     </div>
   
   
@@ -1291,6 +1124,8 @@ It runs on a configurable schedule and evaluates CPU, memory, disk, and PSI pres
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/modules-filter.js"></script>
       
     
   </body>
