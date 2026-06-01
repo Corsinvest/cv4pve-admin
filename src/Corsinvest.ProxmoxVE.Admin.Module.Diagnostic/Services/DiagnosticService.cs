@@ -99,11 +99,19 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         var section = CreateSection(document);
 
         AddTitle(section, result);
+        AddExecutiveSummary(section, result);
         AddIssuesSection(section, result);
+        AddComplianceSections(section, result);
         AddFooter(section);
 
         return Render(document);
     }
+
+    /// <summary>
+    /// Hook for the Executive Summary block printed right after the title.
+    /// CE base prints nothing; EE renders the gravity counters and the top critical issues.
+    /// </summary>
+    protected virtual void AddExecutiveSummary(Section section, JobResult result) { }
 
     protected virtual Stream GenerateExcel(JobResult result)
     {
@@ -111,9 +119,66 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
 
         AddIssuesSheet(builder, result);
         AddIgnoredIssuesSheet(builder, result);
+        AddComplianceSheets(builder, result);
 
         return builder.Build(L["Diagnostic result of cluster '{0}' Date {1}", result.ClusterName, result.Start]);
     }
+
+    /// <summary>
+    /// CE base renders a single "Compliance" page that points the user to the Enterprise Edition.
+    /// EE overrides this and renders one full page per supported standard, reusing
+    /// <see cref="AddComplianceHeader"/> for the per-page boilerplate (page break + title + disclaimer).
+    /// </summary>
+    protected virtual void AddComplianceSections(Section section, JobResult result)
+    {
+        AddComplianceHeader(section, L["Compliance"]);
+        SubscriptionGateReportHelper.AddEnterprisePlaceholder(
+            section,
+            L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, NIS2, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ENS, C5) is available in the Enterprise Edition."],
+            L["Get Enterprise"]);
+    }
+
+    /// <summary>
+    /// Inserts a page break, a section title and the compact compliance disclaimer.
+    /// Shared between CE (one Compliance page) and EE (one page per standard) so that
+    /// every page extracted in isolation still carries the audit-scope notice.
+    /// </summary>
+    protected void AddComplianceHeader(Section section, string title)
+    {
+        section.AddPageBreak();
+
+        var titleParagraph = section.AddParagraph(title);
+        titleParagraph.Format.Font.Size = 14;
+        titleParagraph.Format.Font.Bold = true;
+        titleParagraph.Format.SpaceAfter = Unit.FromMillimeter(2);
+
+        var disclaimer = section.AddParagraph(ComplianceDisclaimerText());
+        disclaimer.Format.Font.Size = 7;
+        disclaimer.Format.Font.Italic = true;
+        disclaimer.Format.Font.Color = MigraDocColors.DarkGray;
+        disclaimer.Format.SpaceAfter = Unit.FromMillimeter(3);
+    }
+
+    /// <summary>
+    /// The disclaimer text that appears above every compliance section in PDF and on
+    /// every compliance sheet in Excel. Kept here in CE base so both editions stay in sync.
+    /// </summary>
+    protected string ComplianceDisclaimerText()
+        => L["The compliance mapping is automated and technical only — it covers the subset of each standard that can be verified from the Proxmox VE state. Policies, training, supplier management, physical security and other organisational controls are out of scope. A passing check confirms only that the specific automated rule passed; full conformity usually requires manual evidence (policies, procedures, evidence of operation). This report does not constitute a formal audit or certification."];
+
+    /// <summary>
+    /// CE base adds a single placeholder sheet. EE overrides it and adds one sheet per standard.
+    /// </summary>
+    protected virtual void AddComplianceSheets(ExcelBuilder builder, JobResult result)
+        => builder.AddSheet(L["Compliance"],
+                            L["Compliance mapping is available in the Enterprise Edition"],
+                            sheet =>
+                            {
+                                sheet.AddNote(L["Disclaimer"], ComplianceDisclaimerText());
+                                sheet.AddEnterprisePlaceholder(
+                                    L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, NIS2, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ENS, C5) is available in the Enterprise Edition."],
+                                    L["Get Enterprise"]);
+                            });
 
     protected void AddIssuesSheet(ExcelBuilder builder, JobResult result)
         => builder.AddSheet("Issues",
@@ -252,8 +317,12 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
             var row = table.AddRow();
             AddBreakableText(row.Cells[0], item.IdResource);
             row.Cells[1].AddParagraph(item.Context.ToString());
-            row.Cells[2].AddParagraph(item.SubContext ?? string.Empty);
-            row.Cells[3].AddParagraph(item.Description ?? string.Empty);
+            // SubContext and Description can contain long unbroken tokens — typically .NET type
+            // names or stack traces surfaced from API errors — that overflow the cell and spill
+            // past the right margin of the page. Insert zero-width spaces after separators so
+            // MigraDoc has wrap points inside the word.
+            AddBreakableText(row.Cells[2], item.SubContext);
+            AddBreakableText(row.Cells[3], item.Description);
             var cell = row.Cells[4];
             cell.AddParagraph(item.Gravity.ToString());
             ApplyGravityShading(cell, item.Gravity);
