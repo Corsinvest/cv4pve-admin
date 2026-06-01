@@ -17,7 +17,7 @@
     var a = card.querySelector("a[href]");
     if (a) {
       var href = a.getAttribute("href") || "";
-      var m = href.match(/([^\/]+?)\/?$/);
+      var m = href.match(/([^/]+?)\/?$/);
       if (m) { return m[1]; }
     }
     var strong = card.querySelector("strong, p strong");
@@ -40,7 +40,9 @@
       var activeEditionChip = filterRoot.querySelector("[data-edition].active");
       var edition = activeEditionChip ? activeEditionChip.getAttribute("data-edition") : "all";
       var q = (search.value || "").trim().toLowerCase();
-      var allowed = cat === "all" ? null : CATEGORIES[cat] || [];
+      var allowed = cat === "all"
+        ? null
+        : (Object.prototype.hasOwnProperty.call(CATEGORIES, cat) ? CATEGORIES[cat] : []);
 
       cards.forEach(function (card) {
         var slug = slugOf(card);
