@@ -18,9 +18,15 @@ nav:
     - Configuration:
         - configuration/index.md
         - appsettings.extra.json: configuration/appsettings-extra.md
-        - Admin Area: configuration/admin-area.md
+        - Admin Area:
+            - configuration/admin-area/index.md
+            - Proxmox VE Clusters: configuration/admin-area/clusters.md
+            - Security & Access Control: configuration/admin-area/security.md
+            - Monitoring: configuration/admin-area/monitoring.md
+            - Maintenance: configuration/admin-area/maintenance.md
+            - General Settings: configuration/admin-area/general-settings.md
+            - Notification Hub: configuration/admin-area/notifier.md
         - PVE Permissions: configuration/pve-permissions.md
-        - Notification Hub: configuration/notifier.md
         - User Profile: configuration/profile.md
     - Modules: modules/index.md
     - Troubleshooting:
@@ -39,7 +45,6 @@ theme:
   features:
     - navigation.tabs
     - navigation.top
-    - navigation.sections
     - navigation.expand
     - navigation.indexes
     - navigation.footer

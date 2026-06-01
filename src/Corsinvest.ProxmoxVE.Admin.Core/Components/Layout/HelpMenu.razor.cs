@@ -36,7 +36,6 @@ public partial class HelpMenu(ISettingsService settingsService,
                                                 : ApplicationHelper.DocumentationUrl;
 
     private string DocumentationText => HasModuleHelp ? L["Documentation - {0}", CurrentModule!.Name] : L["Documentation"];
-    private string DocumentationOnlineText => HasModuleHelp ? L["Documentation (online) - {0}", CurrentModule!.Name] : L["Documentation (online)"];
 
     protected override async Task OnInitializedAsync()
     {

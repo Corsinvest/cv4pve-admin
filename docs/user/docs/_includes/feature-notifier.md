@@ -2,4 +2,4 @@
 
     ---
 
-    Attach the generated report to a notification using any of the configured [Notifier](../configuration/notifier.md) channels — handy for nightly cron-based runs.
+    Attach the generated report to a notification using any of the configured [Notifier](../configuration/admin-area/notifier.md) channels — handy for nightly cron-based runs.

@@ -121,11 +121,13 @@
     Model Context Protocol server for AI integration <span class="scope" data-scope="all-clusters"></span>
 
 
+<!-- TODO: AI Assistant is not yet released — re-enable this card when the module ships.
 - :material-auto-awesome:{ .lg .middle } **[AI Assistant](ai-assistant.md)**
 
     ---
 
     Built-in chat assistant accessible from the main header <span class="ee"></span> <span class="scope" data-scope="all-clusters"></span>
+-->
 
 
 - :material-file-document:{ .lg .middle } **[System Report](system-report.md)**
