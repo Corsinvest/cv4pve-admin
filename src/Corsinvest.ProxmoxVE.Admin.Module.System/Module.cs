@@ -207,8 +207,10 @@ public class Module : ModuleBase
                    .AddReleaseServices()
                    .AddTaskTracker();
 
-    public override Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation)
-        => scope.GetRequiredService<ModuleDbContext>().ExecuteMaintenanceAsync(operation);
+    // Non-generic PostgreSqlModuleMaintenance because the System ModuleDbContext inherits
+    // from IdentityDbContext, not ModuleDbContextBase<T>.
+    public override IModuleMaintenance GetMaintenance(IServiceScope scope)
+        => new PostgreSqlModuleMaintenance(scope.GetRequiredService<ModuleDbContext>());
 
     public override Task FixAsync(IServiceScope scope) => RunAsync(scope);
 

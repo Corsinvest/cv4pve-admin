@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Microsoft.AspNetCore.Builder;
@@ -69,7 +68,13 @@ public abstract class ModuleBase
     protected internal virtual Task RunAsync(IServiceScope scope) => Task.CompletedTask;
     protected internal virtual Task InitializeAsync(IServiceScope scope) => Task.CompletedTask;
     public virtual Task FixAsync(IServiceScope scope) => Task.CompletedTask;
-    public virtual Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation) => Task.CompletedTask;
+    /// <summary>
+    /// Hook for modules with persistence: return an <see cref="IModuleMaintenance"/>
+    /// (typically <c>new PostgreSqlModuleMaintenance&lt;ModuleDbContext&gt;(scope)</c>)
+    /// so the system maintenance UI can run vacuum / reindex / size queries per-schema.
+    /// Returns null for modules without persistence; the maintenance UI skips them.
+    /// </summary>
+    public virtual IModuleMaintenance? GetMaintenance(IServiceScope scope) => null;
 
     public async Task RefreshSettingsEventAsync(IServiceScope scope)
     {

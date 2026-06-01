@@ -53,8 +53,8 @@ public class Module : ModuleBase
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => services.AddDbContextFactoryPostgreSql<ModuleDbContext>("dashboard");
 
-    public override Task DatabaseMaintenanceAsync(IServiceScope scope, DatabaseMaintenanceOperation operation)
-        => scope.GetRequiredService<ModuleDbContext>().ExecuteMaintenanceAsync(operation);
+    public override IModuleMaintenance GetMaintenance(IServiceScope scope)
+        => new PostgreSqlModuleMaintenance<ModuleDbContext>(scope);
 
     public override Task FixAsync(IServiceScope scope) => RunAsync(scope);
 

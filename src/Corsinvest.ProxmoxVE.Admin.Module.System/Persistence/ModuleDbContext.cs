@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.System.Settings.Models;
@@ -172,12 +171,4 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
         });
     }
 
-    public Task ExecuteMaintenanceAsync(DatabaseMaintenanceOperation operation, CancellationToken cancellationToken = default)
-        => Database.ExecuteSqlRawAsync(operation switch
-        {
-            // PostgreSQL specific commands (can be extended for other databases)
-            DatabaseMaintenanceOperation.Optimize => "VACUUM ANALYZE",
-            DatabaseMaintenanceOperation.Reindex => $"REINDEX DATABASE {PostgreSqlHelper.QuoteIdentifier(Database.GetDbConnection().Database)}",
-            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, "Unknown maintenance operation")
-        }, cancellationToken);
 }
