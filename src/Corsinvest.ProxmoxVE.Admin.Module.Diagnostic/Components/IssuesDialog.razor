@@ -55,7 +55,7 @@
 <RadzenFormField Text="@L["Sub Context"]" AllowFloatingLabel="false">
     <Start><RadzenIcon Icon="subdirectory_arrow_right" /></Start>
     <ChildContent>
-        <RadzenTextBox Name="@nameof(Model.SubContext)" @bind-Value="@Model.SubContext" />
+        <RadzenTextBox Name="@nameof(Model.SubContext)" @bind-Value="@Model.SubContext" type="search" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.SubContext)" />
@@ -65,7 +65,7 @@
 <RadzenFormField Text="@L["Description"]" AllowFloatingLabel="false">
     <Start><RadzenIcon Icon="notes" /></Start>
     <ChildContent>
-        <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" />
+        <RadzenTextBox Name="@nameof(Model.Description)" @bind-Value="@Model.Description" type="search" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.Description)" />

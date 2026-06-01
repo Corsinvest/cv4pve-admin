@@ -69,10 +69,6 @@ public class ExcelSheetBuilder
     private static bool IsGravityColumn(string name)
         => name is "Gravity" or "Status";
 
-    /// <summary>
-    /// Pastel background + bold dark foreground on cells matching gravity/status keywords.
-    /// Same palette as the PDF report for visual consistency.
-    /// </summary>
     private static void ApplyGravityConditionalFormatting(IXLRangeColumn dataCol)
     {
         Apply("Critical", "#F8D7DA", "#721C24");
@@ -89,6 +85,12 @@ public class ExcelSheetBuilder
             cf.Font.SetFontColor(XLColor.FromHtml(fg));
             cf.Font.SetBold(true);
         }
+    }
+
+    public ExcelSheetBuilder AddEnterprisePlaceholder(string availableLabel, string ctaLabel)
+    {
+        _currentRow += SubscriptionGateReportHelper.AddEnterprisePlaceholder(_ws, _currentRow, availableLabel, ctaLabel);
+        return this;
     }
 
     internal void FinalizeSheet() => _ws.Columns().AdjustToContents(1, 80);
