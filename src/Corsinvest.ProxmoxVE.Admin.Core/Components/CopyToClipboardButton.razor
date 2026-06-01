@@ -14,12 +14,19 @@
               aria-label="@L["Copy to clipboard"]" />
 
 @code {
-    [Parameter, EditorRequired] public string Text { get; set; } = default!;
+    [Parameter] public Func<string>? TextProvider { get; set; }
+    [Parameter] public Func<Task<string>>? TextProviderAsync { get; set; }
     [Parameter] public bool ShowNotification { get; set; } = true;
 
     private async Task CopyAsync()
     {
-        await BrowserService.CopyToClipboardAsync(Text);
+        var text = TextProviderAsync is not null
+                            ? await TextProviderAsync()
+                            : TextProvider?.Invoke();
+
+        if (text is null) { return; }
+
+        await BrowserService.CopyToClipboardAsync(text);
         if (ShowNotification) { NotificationService.Success(L["Copied!"]); }
     }
 }

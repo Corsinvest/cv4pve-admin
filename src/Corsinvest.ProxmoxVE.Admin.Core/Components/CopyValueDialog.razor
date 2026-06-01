@@ -15,7 +15,7 @@
             <RadzenTextBox Value="@Value" Style="font-family:monospace; width:100%" ReadOnly="true" />
         </ChildContent>
         <End>
-            <CopyToClipboardButton Text="@Value" />
+            <CopyToClipboardButton TextProvider="@(() => Value)" />
         </End>
     </RadzenFormField>
 

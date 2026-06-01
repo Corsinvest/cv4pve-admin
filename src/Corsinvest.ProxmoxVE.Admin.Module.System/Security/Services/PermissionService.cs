@@ -85,18 +85,23 @@ public class PermissionService(ICurrentUserService currentUserService,
                                            TimeSpan.FromMinutes(10),
                                            tags: [CacheTag]);
 
-    public async Task<List<RolePermission>> GetRolePermissionsAsync(string roleId)
-        => await fusionCache.GetOrSetAsync($"Permissions:RolePermissions:{roleId}",
-                                           async token =>
-                                           {
-                                               await using var db = await dbContextFactory.CreateDbContextAsync(token);
+    private ValueTask<Dictionary<string, List<RolePermission>>> GetAllRolePermissionsAsync()
+        => fusionCache.GetOrSetAsync("Permissions:AllRolePermissions",
+                                     async token =>
+                                     {
+                                         await using var db = await dbContextFactory.CreateDbContextAsync(token);
 
-                                               return await db.RolePermissions.AsNoTracking()
-                                                                              .Where(a => a.RoleId == roleId)
-                                                                              .ToListAsync(token);
-                                           },
-                                           TimeSpan.FromMinutes(10),
-                                           tags: [CacheTag]);
+                                         var all = await db.RolePermissions.AsNoTracking().ToListAsync(token);
+                                         return all.GroupBy(a => a.RoleId).ToDictionary(g => g.Key, g => g.ToList());
+                                     },
+                                     TimeSpan.FromMinutes(10),
+                                     tags: [CacheTag]);
+
+    public async Task<List<RolePermission>> GetRolePermissionsAsync(string roleId)
+    {
+        var all = await GetAllRolePermissionsAsync();
+        return all.TryGetValue(roleId, out var list) ? list : [];
+    }
 
     public async Task<bool> HasAnyAsync(string userId,
                                         string clusterName,
@@ -255,7 +260,7 @@ public class PermissionService(ICurrentUserService currentUserService,
 
     private async Task InvalidateRolePermissionsAsync(string roleId)
     {
-        await fusionCache.RemoveAsync($"Permissions:RolePermissions:{roleId}");
+        await fusionCache.RemoveAsync("Permissions:AllRolePermissions");
         await fusionCache.RemoveAsync("Permissions:RolesClaims");
     }
 
