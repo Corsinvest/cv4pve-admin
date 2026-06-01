@@ -43,7 +43,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 
 ### Product Roadmap & Status
 
-??? note reference "Show roadmap status legend"
+!!! note reference "Roadmap status legend"
 
     This section outlines the current development status of upcoming and evolving modules.
 
@@ -65,8 +65,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 
 | Module | CE | EE | Category | Description | EE Enhancements |
 |--------|:--:|:--:|----------|-------------|-----------------|
-| **[Admin Area](configuration/admin-area.md)** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
-| **AI Assistant** | ❌ | 🚧 | Utilities | Chat-based AI for cluster automation and diagnostics | |
+| **[Admin Area](configuration/admin-area/index.md)** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
 | **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server for AI integration with 33 tools for clusters, VMs, nodes, storage, backups, ISO/template management, replications and historical metrics | <ul><li>2 additional SQL-like query tools (`GetQuerySchema`, `ExecuteQuery`) on cluster data with filters, grouping, aggregates</li></ul> |
 | **[AutoSnap](modules/autosnap.md)** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
 | **[Backup Analytics](modules/backup-analytics.md)** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
@@ -76,7 +75,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 | **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics, health checks and report export (PDF + Excel) | <ul><li>Executive Summary on PDF (counts per gravity + top critical issues)</li></ul> |
 | **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems (Prometheus) | |
 | **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
-| **[Notifier](configuration/notifier.md)** | ✅ | ✅ | Core | Notification system (CE: SMTP + WebHook only) | <ul><li>119+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
+| **[Notifier](configuration/admin-area/notifier.md)** | ✅ | ✅ | Core | Notification system (CE: SMTP + WebHook only) | <ul><li>119+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
 | **[Profile](configuration/profile.md)** | ✅ | ✅ | Core | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |
 | **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
 | **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |

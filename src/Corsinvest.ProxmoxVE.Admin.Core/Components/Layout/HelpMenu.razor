@@ -53,8 +53,20 @@
 
             <hr />
 
-            <RadzenMenuItem Text="@DocumentationText" Icon="menu_book" Path="@DocumentationUrl" Target="_blank" />
-            <RadzenMenuItem Text="@DocumentationOnlineText" Icon="cloud" Path="@DocumentationOnlineUrl" Target="_blank" />
+            <RadzenMenuItem Icon="menu_book" Path="@DocumentationUrl" Target="_blank">
+                <Template>
+                    <span style="display: flex; align-items: center; gap: 0.5rem; width: 100%;">
+                        <span style="flex: 1;">@DocumentationText</span>
+                        <RadzenLink Path="@DocumentationOnlineUrl"
+                                    Target="_blank"
+                                    title="@L["Open online version"]"
+                                    @onclick:stopPropagation="true"
+                                    Style="display: inline-flex; align-items: center; padding: 0.15rem 0.3rem;">
+                            <RadzenIcon Icon="cloud" Style="font-size: 1rem; color: var(--rz-text-secondary-color);" />
+                        </RadzenLink>
+                    </span>
+                </Template>
+            </RadzenMenuItem>
             <RadzenMenuItem Text="@L["Release notes"]" Icon="celebration" Click="@(async () => { ds.Close(); await ShowReleaseNotesAsync(); })" />
             <RadzenMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
 

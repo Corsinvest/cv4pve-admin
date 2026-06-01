@@ -1,4 +1,11 @@
+---
+draft: true
+---
+
 # <span class="ee"></span> :material-auto-awesome: AI Assistant <span class="scope" data-scope="all-clusters"></span>
+
+!!! warning "Coming soon"
+    AI Assistant is not yet released. This page is a preview of the planned feature and may change before the module ships.
 
 Built-in chat assistant integrated directly into cv4pve-admin — accessible from the main header without leaving the application.
 

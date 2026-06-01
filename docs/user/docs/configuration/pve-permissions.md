@@ -12,7 +12,7 @@ This grants full functionality for all modules without any further configuration
 
 !!! tip "Automatic API Token Creation"
     cv4pve-admin can create a dedicated Proxmox user and API token for you automatically.
-    [:octicons-arrow-right-24: Learn more](admin-area.md#automatic-api-token-creation)
+    [:octicons-arrow-right-24: Learn more](admin-area/clusters.md#automatic-api-token-creation)
 
 ---
 

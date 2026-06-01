@@ -46,7 +46,7 @@ Continuously tracks UPS battery levels, power status, load conditions and runtim
 
     ---
 
-    Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../configuration/notifier.md) configuration.
+    Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../configuration/admin-area/notifier.md) configuration.
 
 </div>
 
