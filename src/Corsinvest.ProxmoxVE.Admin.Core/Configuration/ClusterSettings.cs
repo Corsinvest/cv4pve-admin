@@ -10,7 +10,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 public class ClusterSettings : IName, IDescription, IEnabled, IValidatableObject
 {
     [Required] public string Name { get; set; } = default!;
-    [Required] public string PveName { get; set; } = default!;
+    public string PveName { get; set; } = default!;
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ClusterType Type { get; set; } = default!;
