@@ -14,10 +14,10 @@ public class Module : ModuleBase
 {
     public Module()
     {
-        Keywords = "diagnostic,health,troubleshoot,scan,issues,errors,analysis,cluster health";
+        Keywords = "diagnostic,health,troubleshoot,scan,issues,errors,analysis,cluster health,compliance,iso27001,nis2,dora,pci dss,audit";
         ModuleType = ModuleType.Application;
         Name = "Diagnostic";
-        Description = "Automated cluster health checks, diagnostics and issue detection";
+        Description = "Automated cluster health checks, diagnostics, issue detection and compliance checks";
         Category = Categories.Health;
         Slug = "diagnostic";
         HelpUrl = "modules/diagnostics";
@@ -67,6 +67,13 @@ public class Module : ModuleBase
     }
 
     protected override string PermissionBaseKey { get; } = "Diagnostic";
+
+    /// <summary>
+    /// Component used to render the Compliance tab inside scan details.
+    /// CE returns a stub that shows a "Get Enterprise" gate. EE overrides this
+    /// to return the real grouped grid.
+    /// </summary>
+    public virtual Type ComplianceViewType => typeof(Components.ComplianceView);
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services)

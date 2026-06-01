@@ -1,7 +1,7 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="Corsinvest.ProxmoxVE.NodeProtect.Api" Version="2.1.1" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Report" Version="2.5.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Report" Version="2.5.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.8" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
@@ -28,7 +28,7 @@
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="10.4.6" />
+    <PackageVersion Include="Radzen.Blazor" Version="10.4.7" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.5.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -40,7 +40,7 @@
     <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
     <PackageVersion Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageVersion Include="FluentResults" Version="4.0.0" />
-    <PackageVersion Include="CronExpressionDescriptor" Version="2.45.0" />
+    <PackageVersion Include="CronExpressionDescriptor" Version="2.48.0" />
     <PackageVersion Include="cronos" Version="0.13.0" />
     <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.6.0" />
     <!-- 3.1.12: latest 3.x (Apache-2.0) with all known CVEs fixed.
@@ -65,7 +65,7 @@
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="2.0.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.1.1" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.3.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.4.0" />
   </ItemGroup>
   <!-- Development and Code Quality -->
   <ItemGroup>

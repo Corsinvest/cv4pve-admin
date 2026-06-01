@@ -10,6 +10,7 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options) : Module
 {
     public DbSet<JobResult> JobResults { get; set; } = default!;
     public DbSet<JobDetail> JobDetails { get; set; } = default!;
+    public DbSet<JobDetailCompliance> JobDetailCompliances { get; set; } = default!;
     public DbSet<IgnoredIssue> IgnoredIssues { get; set; } = default!;
 
     protected override string SchemaName => "diagnostic";
@@ -18,5 +19,12 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options) : Module
     {
         modelBuilder.Entity<JobResult>().HasIndex(a => a.ClusterName);
         modelBuilder.Entity<IgnoredIssue>().HasIndex(a => a.ClusterName);
+
+        modelBuilder.Entity<JobDetailCompliance>()
+                    .HasOne(a => a.JobDetail)
+                    .WithMany(a => a.Compliances)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<JobDetailCompliance>().HasIndex(a => a.Standard);
     }
 }

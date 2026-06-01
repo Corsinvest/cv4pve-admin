@@ -4,6 +4,10 @@
 *@
 @inherits AdminComponentBase
 
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="@L["Issues"]" Icon="bug_report">
+
 <RadzenDataGrid @ref="DataGridRef"
                 TItem="JobDetail"
                 Data="@Items"
@@ -27,21 +31,17 @@
     </GroupHeaderTemplate>
 
     <Columns>
-        <RadzenDataGridColumn Property="@nameof(JobDetail.Gravity)" Title="@L["Gravity"]" Width="150px" OrderIndex="1" SortOrder="SortOrder.Ascending">
-            <Template>
-                @context.Gravity.ToString()
-            </Template>
-        </RadzenDataGridColumn>
-
-        <RadzenDataGridColumn Property="@nameof(JobDetail.IdResource)" Title="@L["Id"]" Width="150px" OrderIndex="2" SortOrder="SortOrder.Ascending">
+        <RadzenDataGridColumn Property="@nameof(JobDetail.Gravity)" Title="@L["Gravity"]" Width="150px" OrderIndex="1" SortOrder="SortOrder.Ascending" FilterMode="FilterMode.CheckBoxList"/>
+        <RadzenDataGridColumn Property="@nameof(JobDetail.ErrorCode)" Title="@L["Code"]" Width="150px" OrderIndex="2" SortOrder="SortOrder.Ascending" />
+        <RadzenDataGridColumn Property="@nameof(JobDetail.IdResource)" Title="@L["Id"]" Width="150px" OrderIndex="3" SortOrder="SortOrder.Ascending">
             <Template>
                 <RadzenLink class="rz-link link" Text="@context.IdResource" Path="@GetPveUrl(context)" />
             </Template>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="@nameof(JobDetail.Context)" Title="@L["Context"]" Width="150px" OrderIndex="3" SortOrder="SortOrder.Ascending" />
-        <RadzenDataGridColumn Property="@nameof(JobDetail.SubContext)" Title="@L["SubContext"]" Width="150px" OrderIndex="4" SortOrder="SortOrder.Ascending" />
-        <RadzenDataGridColumn Property="@nameof(JobDetail.Description)" Title="@L["Description"]" OrderIndex="5" SortOrder="SortOrder.Ascending" />
+        <RadzenDataGridColumn Property="@nameof(JobDetail.Context)" Title="@L["Context"]" Width="150px" OrderIndex="4" SortOrder="SortOrder.Ascending" />
+        <RadzenDataGridColumn Property="@nameof(JobDetail.SubContext)" Title="@L["SubContext"]" Width="200px" OrderIndex="5" SortOrder="SortOrder.Ascending" />
+        <RadzenDataGridColumn Property="@nameof(JobDetail.Description)" Title="@L["Description"]" OrderIndex="6" SortOrder="SortOrder.Ascending" />
 
         <RadzenDataGridColumn Filterable="false"
                               Sortable="false"
@@ -72,3 +72,11 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="@L["Compliance"]" Icon="shield">
+            <DynamicComponent Type="@Module.ComplianceViewType"
+                              Parameters="@(new Dictionary<string, object?> { [nameof(ResultId)] = ResultId })" />
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>

@@ -5,6 +5,7 @@
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
 using Corsinvest.ProxmoxVE.Diagnostic.Api;
@@ -53,11 +54,17 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                         .Select(a => new JobDetail
                                         {
                                             IdResource = a.Id,
+                                            ErrorCode = a.ErrorCode,
                                             Context = a.Context,
                                             Description = a.Description,
                                             Gravity = a.Gravity,
                                             IsIgnoredIssue = a.IsIgnoredIssue,
-                                            SubContext = a.SubContext
+                                            SubContext = a.SubContext,
+                                            Compliances = [.. a.Compliance.Select(c => new JobDetailCompliance
+                                            {
+                                                Standard = c.Standard,
+                                                ControlId = c.ControlId,
+                                            })],
                                         })
                                         .ToList();
 
@@ -95,11 +102,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 //send notification
                 taskScope.Item.Phase = "Sending notifications";
-                if (settings.NotifierConfigurations?.Any() is true)
+                if (settings.NotifierConfigurations?.Any() is true && (settings.NotifyPdf || settings.NotifyExcel))
                 {
                     var diagnosticService = scope.GetRequiredService<IDiagnosticService>();
 
-                    await using var ms = diagnosticService.GenerateReport(new JobResult
+                    var resultForReport = new JobResult
                     {
                         ClusterName = clusterName,
                         Start = now,
@@ -107,17 +114,40 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                         Critical = Count(DiagnosticResultGravity.Critical),
                         Info = Count(DiagnosticResultGravity.Info),
                         Warning = Count(DiagnosticResultGravity.Warning)
-                    }, ReportFormat.Pdf);
+                    };
 
-                    var appSettings = scope.GetSettingsService().GetAppSettings();
-                    var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
-
-                    await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
+                    var attachments = new List<Attachment>();
+                    Stream? pdfStream = null;
+                    Stream? excelStream = null;
+                    try
                     {
-                        Subject = L["{0} - Diagnostic result of cluster '{1}'", appSettings.AppName, clusterName],
-                        Body = L["Diagnostic result of {0}", now],
-                        Attachments = [new(ms, "Diagnostic.pdf", MediaTypeNames.Application.Pdf)]
-                    });
+                        if (settings.NotifyPdf)
+                        {
+                            pdfStream = diagnosticService.GenerateReport(resultForReport, ReportFormat.Pdf);
+                            attachments.Add(new(pdfStream, "Diagnostic.pdf", MediaTypeNames.Application.Pdf));
+                        }
+
+                        if (settings.NotifyExcel)
+                        {
+                            excelStream = diagnosticService.GenerateReport(resultForReport, ReportFormat.Excel);
+                            attachments.Add(new(excelStream, "Diagnostic.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+                        }
+
+                        var appSettings = scope.GetSettingsService().GetAppSettings();
+                        var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
+
+                        await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
+                        {
+                            Subject = L["{0} - Diagnostic result of cluster '{1}'", appSettings.AppName, clusterName],
+                            Body = L["Diagnostic result of {0}", now],
+                            Attachments = attachments
+                        });
+                    }
+                    finally
+                    {
+                        if (pdfStream != null) { await pdfStream.DisposeAsync(); }
+                        if (excelStream != null) { await excelStream.DisposeAsync(); }
+                    }
                 }
 
                 var totalIssues = details.Count(a => !a.IsIgnoredIssue);
@@ -145,4 +175,5 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             throw;
         }
     }
+
 }

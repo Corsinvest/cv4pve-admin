@@ -118,7 +118,10 @@ public partial class Scans(IBrowserService browserService,
         InDownload = true;
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var result = (await db.JobResults.Include(a => a.Details).FromIdAsync(SelectedItems[0].Id))!;
+        var result = (await db.JobResults
+                               .Include(a => a.Details)
+                                .ThenInclude(a => a.Compliances)
+                               .FromIdAsync(SelectedItems[0].Id))!;
         await using var ms = diagnosticService.GenerateReport(result, format);
 
         var (extension, contentType) = format switch

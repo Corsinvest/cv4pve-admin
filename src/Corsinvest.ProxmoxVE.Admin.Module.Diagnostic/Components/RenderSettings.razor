@@ -26,6 +26,19 @@
 <Corsinvest.ProxmoxVE.Admin.Core.Components.Settings.NotifierConfigurationSelector T="Diagnostic.Settings"
                                                                                    Settings="Model" />
 
+<RadzenRow JustifyContent="JustifyContent.Start" Gap="16px" class="rz-mb-2 cv4pve-dashed-box">
+    <RadzenColumn Size="6">
+        <SwitchField @bind-Value="@Model.NotifyPdf"
+                     Label="@L["Attach PDF report"]"
+                     Name="@nameof(Model.NotifyPdf)" />
+    </RadzenColumn>
+    <RadzenColumn Size="6">
+        <SwitchField @bind-Value="@Model.NotifyExcel"
+                     Label="@L["Attach Excel report"]"
+                     Name="@nameof(Model.NotifyExcel)" />
+    </RadzenColumn>
+</RadzenRow>
+
 <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="rz-mb-2">
     <RadzenColumn Size="6">
         <RadzenFormField Text="@L["Max parallel requests"]" AllowFloatingLabel="false" class="rz-w-100">
@@ -60,6 +73,14 @@
         </RadzenFormField>
     </RadzenColumn>
 </RadzenRow>
+
+<SwitchField @bind-Value="@Model.ApiSettings.IncludeOkResult"
+             Label="@L["Include OK results (audit mode)"]"
+             Name="Model.ApiSettings.IncludeOkResult"
+             class="rz-mb-2" />
+<RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary rz-mb-3">
+    @L["Also emit a result for every check that passes (Gravity = Ok). Useful for audit-style reports proving controls were verified, not only violated."]
+</RadzenText>
 
 <RadzenPanel Text="@L["Threshold"]" Icon="data_thresholding">
     <RadzenAccordion>
@@ -232,13 +253,8 @@
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["CVE"]" Icon="shield">
-                <SwitchField @bind-Value="@Model.ApiSettings.Cve.DebianTrackerEnabled"
-                             Label="@L["Debian Security Tracker"]"
-                             Name="Model.ApiSettings.Cve.DebianTrackerEnabled"
-                             class="rz-mb-2" />
-
                 <SwitchField @bind-Value="@Model.ApiSettings.Cve.NvdEnabled"
-                             Label="@L["NVD checks for Proxmox-specific CVE"]"
+                             Label="@L["NVD checks for Proxmox VE specific CVE"]"
                              Name="Model.ApiSettings.Cve.NvdEnabled"
                              class="rz-mb-2" />
 
