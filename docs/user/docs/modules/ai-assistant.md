@@ -6,25 +6,25 @@ Built-in chat assistant integrated directly into cv4pve-admin — accessible fro
 
 <div class="grid cards" markdown>
 
--   :material-chat:{ .lg .middle } **In-app Chat**
+- :material-chat:{ .lg .middle } **In-app Chat**
 
     ---
 
     Chat panel reachable from the top header — ask questions about the cluster without context-switching to a separate tool.
 
--   :material-cloud:{ .lg .middle } **Hosted API**
+- :material-cloud:{ .lg .middle } **Hosted API**
 
     ---
 
     Talks to a Corsinvest-hosted AI endpoint by default (`cv4pve-admin.corsinvest.it/api`) — bring your own key.
 
--   :material-format-list-bulleted:{ .lg .middle } **Multi-format Output**
+- :material-format-list-bulleted:{ .lg .middle } **Multi-format Output**
 
     ---
 
     Responses can be rendered as HTML or Markdown with optional value decoration (emojis on thresholds for at-a-glance status).
 
--   :material-table:{ .lg .middle } **CSV Export**
+- :material-table:{ .lg .middle } **CSV Export**
 
     ---
 

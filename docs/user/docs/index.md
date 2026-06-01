@@ -154,7 +154,7 @@ cv4pve-admin is available in two editions:
 
 <div class="grid cards" markdown>
 
--   :material-book-open-variant:{ .lg .middle } **Documentation**
+- :material-book-open-variant:{ .lg .middle } **Documentation**
 
     ---
 
@@ -162,7 +162,7 @@ cv4pve-admin is available in two editions:
 
     [:octicons-arrow-right-24: Getting Started](getting-started.md)
 
--   :material-message-question:{ .lg .middle } **Community Support**
+- :material-message-question:{ .lg .middle } **Community Support**
 
     ---
 
@@ -170,7 +170,7 @@ cv4pve-admin is available in two editions:
 
     [:octicons-arrow-right-24: Get Help](https://github.com/Corsinvest/cv4pve-admin/issues)
 
--   :material-email:{ .lg .middle } **Enterprise Support**
+- :material-email:{ .lg .middle } **Enterprise Support**
 
     ---
 
@@ -178,7 +178,7 @@ cv4pve-admin is available in two editions:
 
     [:octicons-arrow-right-24: Contact Us](mailto:support@corsinvest.it)
 
--   :material-web:{ .lg .middle } **Website**
+- :material-web:{ .lg .middle } **Website**
 
     ---
 

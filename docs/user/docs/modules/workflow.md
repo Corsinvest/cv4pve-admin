@@ -6,37 +6,37 @@ Visual designer for event-driven automation against Proxmox VE — built on [Els
 
 <div class="grid cards" markdown>
 
--   :material-cursor-pointer:{ .lg .middle } **Drag-and-drop Designer**
+- :material-cursor-pointer:{ .lg .middle } **Drag-and-drop Designer**
 
     ---
 
     Build workflows visually in Elsa Studio — embedded directly in cv4pve-admin, no external tool.
 
--   :material-server-network:{ .lg .middle } **PVE Activities**
+- :material-server-network:{ .lg .middle } **PVE Activities**
 
     ---
 
     Pre-built activities for guests (power, backup, snapshot, migrate, clone, resize), nodes (shutdown/reboot, inventory, RRD), storages (inventory, content, RRD), HA (manage state) and replications.
 
--   :material-bell-ring:{ .lg .middle } **Admin Activities**
+- :material-bell-ring:{ .lg .middle } **Admin Activities**
 
     ---
 
     Built-in `Notify` activity to send messages through any configured Notifier — Slack, Telegram, email, webhook.
 
--   :material-code-tags:{ .lg .middle } **C# and JavaScript**
+- :material-code-tags:{ .lg .middle } **C# and JavaScript**
 
     ---
 
     Inline expressions in C# or JavaScript anywhere a value is accepted — branching, filtering, formatting.
 
--   :material-clipboard-list:{ .lg .middle } **History & Audit**
+- :material-clipboard-list:{ .lg .middle } **History & Audit**
 
     ---
 
     Every workflow run is recorded with status, inputs and timing — replay or inspect from the History tab.
 
--   :material-account-group:{ .lg .middle } **Multi-tenant**
+- :material-account-group:{ .lg .middle } **Multi-tenant**
 
     ---
 

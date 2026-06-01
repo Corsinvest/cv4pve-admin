@@ -6,43 +6,43 @@ Continuously tracks UPS battery levels, power status, load conditions and runtim
 
 <div class="grid cards" markdown>
 
--   :material-pulse:{ .lg .middle } **Real-time Status Monitoring**
+- :material-pulse:{ .lg .middle } **Real-time Status Monitoring**
 
     ---
 
     Continuous tracking of voltage, frequency, load percentage and battery levels.
 
--   :material-alert-octagon:{ .lg .middle } **Critical Power Alerts**
+- :material-alert-octagon:{ .lg .middle } **Critical Power Alerts**
 
     ---
 
     Immediate notifications for power failures, low battery and UPS malfunctions.
 
--   :material-timer-sand:{ .lg .middle } **Runtime Estimation**
+- :material-timer-sand:{ .lg .middle } **Runtime Estimation**
 
     ---
 
     Calculates remaining backup power time based on current load conditions.
 
--   :material-shield-search:{ .lg .middle } **Proactive Warnings**
+- :material-shield-search:{ .lg .middle } **Proactive Warnings**
 
     ---
 
     Early alerts for UPS maintenance needs and battery degradation indicators.
 
--   :material-power-off:{ .lg .middle } **Automatic Shutdown**
+- :material-power-off:{ .lg .middle } **Automatic Shutdown**
 
     ---
 
     Graceful shutdown procedures for VMs and hosts during extended power outages, with failover-aware ordering to preserve critical systems longest.
 
--   :material-lan-connect:{ .lg .middle } **SNMP-based Polling**
+- :material-lan-connect:{ .lg .middle } **SNMP-based Polling**
 
     ---
 
     Connects to UPS devices via SNMP with configurable scan schedule. Auto-detection of brand profiles.
 
--   :material-bell-ring:{ .lg .middle } **Notifier Integration**
+- :material-bell-ring:{ .lg .middle } **Notifier Integration**
 
     ---
 

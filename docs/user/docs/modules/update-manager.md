@@ -6,13 +6,13 @@ Scans VM/CT in Proxmox VE to identify available updates including security patch
 
 <div class="grid cards" markdown>
 
--   :material-security:{ .lg .middle } **Security Patches**
+- :material-security:{ .lg .middle } **Security Patches**
 
     ---
 
     Identify critical security patches across VMs and containers.
 
--   :material-package-variant:{ .lg .middle } **Update Inventory**
+- :material-package-variant:{ .lg .middle } **Update Inventory**
 
     ---
 
@@ -20,7 +20,7 @@ Scans VM/CT in Proxmox VE to identify available updates including security patch
 
 --8<-- "_includes/feature-cron.md"
 
--   :material-shield-search:{ .lg .middle } **Read-Only Scanning**
+- :material-shield-search:{ .lg .middle } **Read-Only Scanning**
 
     ---
 

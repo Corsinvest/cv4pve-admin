@@ -6,37 +6,37 @@ Automated snapshot scheduling and management for Proxmox VE virtual machines.
 
 <div class="grid cards" markdown>
 
--   :material-auto-fix:{ .lg .middle } **Scheduled Snapshots**
+- :material-auto-fix:{ .lg .middle } **Scheduled Snapshots**
 
     ---
 
     Create snapshots automatically based on cron schedule with retention policies.
 
--   :material-clock-check:{ .lg .middle } **Retention Policies**
+- :material-clock-check:{ .lg .middle } **Retention Policies**
 
     ---
 
     Define how many snapshots to keep per VM, with automatic cleanup of expired ones.
 
--   :material-briefcase-check:{ .lg .middle } **Job Management**
+- :material-briefcase-check:{ .lg .middle } **Job Management**
 
     ---
 
     Configure snapshot jobs with cron schedule, VM selection, execution history and status monitoring.
 
--   :material-database-check:{ .lg .middle } **Multi-VM Support**
+- :material-database-check:{ .lg .middle } **Multi-VM Support**
 
     ---
 
     Apply a single job to multiple VMs and containers using filters or explicit selection.
 
--   :material-swap-horizontal:{ .lg .middle } **Node-independent**
+- :material-swap-horizontal:{ .lg .middle } **Node-independent**
 
     ---
 
     Jobs target VM IDs / tags / groups — never a specific node. When a VM migrates (manual or HA failover), the next scheduled snapshot just runs on its new home with no reconfiguration.
 
--   <span class="ee"></span> :material-webhook:{ .lg .middle } **Web API Hook**
+- <span class="ee"></span> :material-webhook:{ .lg .middle } **Web API Hook**
 
     ---
 

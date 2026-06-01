@@ -6,37 +6,37 @@ Customizable dashboards with widgets and metrics for centralised Proxmox VE infr
 
 <div class="grid cards" markdown>
 
--   :material-view-dashboard:{ .lg .middle } **Multiple Dashboards**
+- :material-view-dashboard:{ .lg .middle } **Multiple Dashboards**
 
     ---
 
     Create, clone, rename and delete as many dashboards as needed. Each dashboard is personal and independent.
 
--   :material-widgets:{ .lg .middle } **Widget Library**
+- :material-widgets:{ .lg .middle } **Widget Library**
 
     ---
 
     Add widgets from any installed module (Resources, AutoSnap, Backup Analytics, Diagnostics, and more). Each widget can be resized and repositioned freely on the grid.
 
--   :material-server-network:{ .lg .middle } **Multi-Cluster Filter**
+- :material-server-network:{ .lg .middle } **Multi-Cluster Filter**
 
     ---
 
     Enable cluster selection per dashboard to filter widget data by one or more clusters.
 
--   :material-refresh:{ .lg .middle } **Auto Refresh**
+- :material-refresh:{ .lg .middle } **Auto Refresh**
 
     ---
 
     Configure an automatic refresh interval (in seconds) to keep all widget data up to date without manual interaction.
 
--   :material-monitor:{ .lg .middle } **Screen Resolution Preview**
+- :material-monitor:{ .lg .middle } **Screen Resolution Preview**
 
     ---
 
     Preview how the dashboard looks at different screen resolutions (Full HD, HD+, WXGA+, and more) while editing.
 
--   :material-export:{ .lg .middle } **Import / Export**
+- :material-export:{ .lg .middle } **Import / Export**
 
     ---
 

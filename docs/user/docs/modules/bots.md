@@ -6,37 +6,37 @@ Remote Proxmox VE cluster management through a Telegram chatbot — execute comm
 
 <div class="grid cards" markdown>
 
--   :material-remote:{ .lg .middle } **Remote Control**
+- :material-remote:{ .lg .middle } **Remote Control**
 
     ---
 
     Execute commands and manage nodes through Telegram bot.
 
--   :material-bell-alert:{ .lg .middle } **Notifications**
+- :material-bell-alert:{ .lg .middle } **Notifications**
 
     ---
 
     Receive notifications for cluster events and status changes.
 
--   :material-lock:{ .lg .middle } **Access Control**
+- :material-lock:{ .lg .middle } **Access Control**
 
     ---
 
     Restrict bot usage to a whitelist of authorised Telegram chat IDs; the token is stored encrypted at rest.
 
--   :material-cellphone:{ .lg .middle } **Mobile Access**
+- :material-cellphone:{ .lg .middle } **Mobile Access**
 
     ---
 
     Manage cluster from any device with Telegram app.
 
--   :material-flash:{ .lg .middle } **Command Response**
+- :material-flash:{ .lg .middle } **Command Response**
 
     ---
 
     Receive feedback on commands and system status.
 
--   :material-message-text:{ .lg .middle } **Chat Interface**
+- :material-message-text:{ .lg .middle } **Chat Interface**
 
     ---
 

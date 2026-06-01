@@ -6,37 +6,37 @@ Exposes Proxmox VE metrics over a Prometheus-compatible HTTP endpoint, ready to 
 
 <div class="grid cards" markdown>
 
--   :material-toggle-switch:{ .lg .middle } **Two-level Enable**
+- :material-toggle-switch:{ .lg .middle } **Two-level Enable**
 
     ---
 
     Master **Enabled** switch for the module, plus an independent **Prometheus Enabled** toggle inside the Prometheus tab. Either disabled returns `503` to scrapes.
 
--   :material-key-variant:{ .lg .middle } **Per-cluster Token**
+- :material-key-variant:{ .lg .middle } **Per-cluster Token**
 
     ---
 
     Each cluster has its own token, stored encrypted at rest and validated with `CryptographicOperations.FixedTimeEquals` at scrape time. Rotate it any time from the settings page.
 
--   :material-tune-variant:{ .lg .middle } **Presets**
+- :material-tune-variant:{ .lg .middle } **Presets**
 
     ---
 
     Three one-click profiles: **Fast** (essentials only — low API impact), **Standard** (sensible default), **Full** (everything on). Each preset can still be tweaked collector by collector.
 
--   :material-bolt:{ .lg .middle } **Parallel Collection**
+- :material-bolt:{ .lg .middle } **Parallel Collection**
 
     ---
 
     `MaxParallelRequests` (default 5) controls how many per-node/per-guest fetches run concurrently. Lower it on small or slow clusters; raise it for big clusters with fast APIs.
 
--   :material-cached:{ .lg .middle } **Per-collector Cache**
+- :material-cached:{ .lg .middle } **Per-collector Cache**
 
     ---
 
     Every collector has its own `CacheSeconds` TTL. Slow collectors like S.M.A.R.T. or Subscription can be cached for minutes while keeping fast ones (Node Status) fresh.
 
--   :material-monitor-dashboard:{ .lg .middle } **API Instrumentation**
+- :material-monitor-dashboard:{ .lg .middle } **API Instrumentation**
 
     ---
 

@@ -6,7 +6,7 @@ Periodic backup of selected Proxmox VE node configuration files — `/etc`, `/va
 
 <div class="grid cards" markdown>
 
--   :material-folder-multiple:{ .lg .middle } **Targeted path list**
+- :material-folder-multiple:{ .lg .middle } **Targeted path list**
 
     ---
 
@@ -14,19 +14,19 @@ Periodic backup of selected Proxmox VE node configuration files — `/etc`, `/va
 
 --8<-- "_includes/feature-cron.md"
 
--   :material-folder-zip:{ .lg .middle } **Local folder destination**
+- :material-folder-zip:{ .lg .middle } **Local folder destination**
 
     ---
 
     Each run is stored as a versioned snapshot in a local folder, capped by the **Keep** retention setting — older runs are pruned automatically.
 
--   <span class="ee"></span> :material-source-branch:{ .lg .middle } **Git destination**
+- <span class="ee"></span> :material-source-branch:{ .lg .middle } **Git destination**
 
     ---
 
     Push every backup as a Git commit to a remote repository — full configuration history with diffs, blame, code review and the rest of the Git ecosystem.
 
--   :material-chart-line:{ .lg .middle } **Size widgets on the Dashboard**
+- :material-chart-line:{ .lg .middle } **Size widgets on the Dashboard**
 
     ---
 

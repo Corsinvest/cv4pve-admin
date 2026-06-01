@@ -1,4 +1,4 @@
--   :material-bolt:{ .lg .middle } **Parallel Scanning**
+- :material-bolt:{ .lg .middle } **Parallel Scanning**
 
     ---
 

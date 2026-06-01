@@ -6,37 +6,37 @@ Track and analyze backup job performance across Proxmox VE clusters. Surfaces su
 
 <div class="grid cards" markdown>
 
--   :material-chart-bar:{ .lg .middle } **Job Status**
+- :material-chart-bar:{ .lg .middle } **Job Status**
 
     ---
 
     Monitor backup job execution and completion status across cluster nodes.
 
--   :material-speedometer:{ .lg .middle } **Performance Metrics**
+- :material-speedometer:{ .lg .middle } **Performance Metrics**
 
     ---
 
     Track backup duration, throughput, and resource usage patterns.
 
--   :material-shield-alert:{ .lg .middle } **RPO Blind Spots**
+- :material-shield-alert:{ .lg .middle } **RPO Blind Spots**
 
     ---
 
     Dedicated views for guests and disks **not** covered by any backup job — find the gaps before they bite you.
 
--   :material-history:{ .lg .middle } **Historical Data**
+- :material-history:{ .lg .middle } **Historical Data**
 
     ---
 
     View backup trends and patterns over time for capacity planning.
 
--   :material-file-search:{ .lg .middle } **Failure Logs**
+- :material-file-search:{ .lg .middle } **Failure Logs**
 
     ---
 
     Access detailed logs and error information for failed backup jobs.
 
--   :material-database-cog:{ .lg .middle } **Storage Metrics**
+- :material-database-cog:{ .lg .middle } **Storage Metrics**
 
     ---
 

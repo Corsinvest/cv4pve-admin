@@ -1,4 +1,4 @@
--   :material-format-list-checks:{ .lg .middle } **Task Tracker integration**
+- :material-format-list-checks:{ .lg .middle } **Task Tracker integration**
 
     ---
 

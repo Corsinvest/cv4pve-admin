@@ -8,7 +8,7 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
 <div class="grid cards" markdown>
 
--   :material-dns:{ .lg .middle } **Proxmox VE Clusters**
+- :material-dns:{ .lg .middle } **Proxmox VE Clusters**
 
     ---
 
@@ -20,61 +20,61 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
 
     [:octicons-arrow-right-24: SSH Configuration](#ssh-configuration)
 
--   <span class="ee"></span> :material-security:{ .lg .middle } **Security & Access Control**
+- <span class="ee"></span> :material-security:{ .lg .middle } **Security & Access Control**
 
     ---
 
     Permission system to define roles and control access.
 
--   <span class="ee"></span> :material-account-multiple:{ .lg .middle } **User Management**
+- <span class="ee"></span> :material-account-multiple:{ .lg .middle } **User Management**
 
     ---
 
     Create and manage user accounts with role-based access control.
 
--   <span class="ee"></span> :material-shield-account:{ .lg .middle } **Roles & Permissions**
+- <span class="ee"></span> :material-shield-account:{ .lg .middle } **Roles & Permissions**
 
     ---
 
     Define custom roles with specific permissions.
 
--   <span class="ee"></span> :material-history:{ .lg .middle } **Audit Logs**
+- <span class="ee"></span> :material-history:{ .lg .middle } **Audit Logs**
 
     ---
 
     Track administrative actions and user activities.
 
--   <span class="ee"></span> :material-monitor-eye:{ .lg .middle } **Active Sessions**
+- <span class="ee"></span> :material-monitor-eye:{ .lg .middle } **Active Sessions**
 
     ---
 
     View and manage active user sessions.
 
--   :material-information:{ .lg .middle } **System Information**
+- :material-information:{ .lg .middle } **System Information**
 
     ---
 
     View system metrics including CPU, memory, disk usage, and service status.
 
--   :material-calendar-clock:{ .lg .middle } **Background Jobs**
+- :material-calendar-clock:{ .lg .middle } **Background Jobs**
 
     ---
 
     Monitor and manage scheduled background tasks.
 
--   <span class="ee"></span> :material-file-document:{ .lg .middle } **System Logs**
+- <span class="ee"></span> :material-file-document:{ .lg .middle } **System Logs**
 
     ---
 
     Access application logs for troubleshooting.
 
--   :material-wrench:{ .lg .middle } **Maintenance**
+- :material-wrench:{ .lg .middle } **Maintenance**
 
     ---
 
     Perform system maintenance tasks including database cleanup and cache clearing.
 
--   :material-cog:{ .lg .middle } **General Settings**
+- :material-cog:{ .lg .middle } **General Settings**
 
     ---
 
@@ -83,7 +83,7 @@ Centralized management for Proxmox VE infrastructure. Connect and manage multipl
     - <span class="ce"></span> SMTP server configuration for email notifications
     - <span class="ee"></span> Appearance customization
 
--   :material-bell:{ .lg .middle } **Notification Hub**
+- :material-bell:{ .lg .middle } **Notification Hub**
 
     ---
 

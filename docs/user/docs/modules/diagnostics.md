@@ -8,31 +8,31 @@ Automated health checks and infrastructure diagnostics for Proxmox VE, built on 
 
 --8<-- "_includes/feature-cron.md"
 
--   :material-alert-circle:{ .lg .middle } **Issue Detection**
+- :material-alert-circle:{ .lg .middle } **Issue Detection**
 
     ---
 
     Detects misconfigurations, hardware problems, end-of-life software, snapshot/backup hygiene and resource pressure across **cluster, nodes, storage, QEMU VMs and LXC containers**.
 
--   :material-tune-variant:{ .lg .middle } **Tunable Thresholds**
+- :material-tune-variant:{ .lg .middle } **Tunable Thresholds**
 
     ---
 
     Per-context thresholds (CPU, Memory, Network, Health Score, PSI pressure) editable from the settings UI. Separate profiles for Node, Qemu, Lxc and Storage. Optional checks for S.M.A.R.T. disk attributes (temperature, SSD wearout), ZFS pool detail and LVM-thin metadata.
 
--   :material-camera-burst:{ .lg .middle } **Snapshot & Backup Hygiene**
+- :material-camera-burst:{ .lg .middle } **Snapshot & Backup Hygiene**
 
     ---
 
     Per-VM checks for snapshot count and age, backup recency (RPO violation) and stale backup files wasting storage. Each check toggleable, thresholds editable.
 
--   :material-shield-bug:{ .lg .middle } **CVE Tracking**
+- :material-shield-bug:{ .lg .middle } **CVE Tracking**
 
     ---
 
     Optional NVD lookup for Proxmox VE specific CVEs via CPE filter. Filter by minimum CVSS v3 score (default 7.0 = HIGH + CRITICAL only).
 
--   :material-block-helper:{ .lg .middle } **Ignored Issues**
+- :material-block-helper:{ .lg .middle } **Ignored Issues**
 
     ---
 
@@ -42,19 +42,19 @@ Automated health checks and infrastructure diagnostics for Proxmox VE, built on 
 
 --8<-- "_includes/feature-export-pdf-excel.md"
 
--   :material-link-variant:{ .lg .middle } **Help Links**
+- :material-link-variant:{ .lg .middle } **Help Links**
 
     ---
 
     Each issue can link to the relevant Proxmox documentation page (e.g. QEMU Guest Agent, VirtIO drivers, end-of-life OS tracking).
 
--   <span class="ee"></span> :material-chart-box:{ .lg .middle } **Executive Summary**
+- <span class="ee"></span> :material-chart-box:{ .lg .middle } **Executive Summary**
 
     ---
 
     Enterprise PDF adds a one-page Executive Summary at the top: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.
 
--   <span class="ee"></span> :material-shield-check:{ .lg .middle } **Compliance Reports**
+- <span class="ee"></span> :material-shield-check:{ .lg .middle } **Compliance Reports**
 
     ---
 

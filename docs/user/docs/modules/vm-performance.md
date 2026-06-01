@@ -6,25 +6,25 @@ Real-time per-disk I/O monitoring for running QEMU virtual machines — bytes re
 
 <div class="grid cards" markdown>
 
--   :material-harddisk:{ .lg .middle } **Per-device I/O**
+- :material-harddisk:{ .lg .middle } **Per-device I/O**
 
     ---
 
     Bytes read/written and read/write IOPS exposed per virtual disk device, not just per VM.
 
--   :material-speedometer:{ .lg .middle } **Derived Rates**
+- :material-speedometer:{ .lg .middle } **Derived Rates**
 
     ---
 
     Read/Write bytes/sec and IOPS/sec computed from the delta between two consecutive samples.
 
--   :material-server:{ .lg .middle } **Grouped View**
+- :material-server:{ .lg .middle } **Grouped View**
 
     ---
 
     Results grouped by Node and then by VM ID — drill straight to the noisy disk.
 
--   :material-refresh:{ .lg .middle } **On-demand Refresh**
+- :material-refresh:{ .lg .middle } **On-demand Refresh**
 
     ---
 

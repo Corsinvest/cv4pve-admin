@@ -1,4 +1,4 @@
--   :material-calendar-clock:{ .lg .middle } **On-demand or scheduled**
+- :material-calendar-clock:{ .lg .middle } **On-demand or scheduled**
 
     ---
 

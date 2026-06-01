@@ -6,37 +6,37 @@ Trigger HTTP requests at specific phases of the [AutoSnap](autosnap.md) snapshot
 
 <div class="grid cards" markdown>
 
--   :material-pulse:{ .lg .middle } **Phase-bound triggers**
+- :material-pulse:{ .lg .middle } **Phase-bound triggers**
 
     ---
 
     Bind a hook to a specific point of the snapshot lifecycle (`SnapCreatePre`, `SnapCreatePost`, `SnapRemovePre`, …) — fires exactly when you need it.
 
--   :material-arrange-send-backward:{ .lg .middle } **Multiple hooks per phase**
+- :material-arrange-send-backward:{ .lg .middle } **Multiple hooks per phase**
 
     ---
 
     Configure several hooks on the same phase; they run sequentially in a user-defined **Order**.
 
--   :material-code-json:{ .lg .middle } **JSON / XML / Text / GET bodies**
+- :material-code-json:{ .lg .middle } **JSON / XML / Text / GET bodies**
 
     ---
 
     POST/PUT/PATCH with `JSON`, `XML` or `Text` body, or simple GET with query parameters — the right shape for the receiver.
 
--   :material-key-variant:{ .lg .middle } **Built-in authentication**
+- :material-key-variant:{ .lg .middle } **Built-in authentication**
 
     ---
 
     None, Basic, Bearer or API Key — set credentials once per hook, no custom header juggling.
 
--   :material-tag-multiple:{ .lg .middle } **Variable placeholders**
+- :material-tag-multiple:{ .lg .middle } **Variable placeholders**
 
     ---
 
     Reference the current VM ID, name, type, snapshot name, duration or success state via `%CV4PVE_AUTOSNAP_*%` tokens in URL, body or headers.
 
--   :material-alert-octagon:{ .lg .middle } **Fail-fast on errors**
+- :material-alert-octagon:{ .lg .middle } **Fail-fast on errors**
 
     ---
 

@@ -6,43 +6,43 @@ Real-time, cross-cluster inventory and operations on every kind of Proxmox VE re
 
 <div class="grid cards" markdown>
 
--   :material-magnify:{ .lg .middle } **Search**
+- :material-magnify:{ .lg .middle } **Search**
 
     ---
 
     Search box on Guests, Snapshots and other grids — filters across name, description, IP, hostname, tags simultaneously.
 
--   :material-view-grid:{ .lg .middle } **Card View**
+- :material-view-grid:{ .lg .middle } **Card View**
 
     ---
 
     On Guests and Storages, switch from grid to card layout for a glance-at-everything overview. Cards show health score, status badges, key metrics and the same quick actions as the grid.
 
--   :material-speedometer:{ .lg .middle } **Health Score**
+- :material-speedometer:{ .lg .middle } **Health Score**
 
     ---
 
     Unified `HealthScore` indicator (badge or gauge) computed from CPU, memory, disk usage and resource type, with a contextual tooltip explaining the score.
 
--   :material-play-circle:{ .lg .middle } **Quick Actions**
+- :material-play-circle:{ .lg .middle } **Quick Actions**
 
     ---
 
     Start, stop, restart, shutdown, snapshot or open a console directly from any row — without leaving the page.
 
--   :material-console:{ .lg .middle } **Console Access**
+- :material-console:{ .lg .middle } **Console Access**
 
     ---
 
     Open NoVnc, Xterm.js or Spice console for nodes, VMs and containers from the resource view.
 
--   :material-link-variant:{ .lg .middle } **Cross-references**
+- :material-link-variant:{ .lg .middle } **Cross-references**
 
     ---
 
     Click a node name, VM ID, storage or snapshot to jump to its detail page; the cluster context is preserved automatically.
 
--   :material-graph:{ .lg .middle } **Network diagram**
+- :material-graph:{ .lg .middle } **Network diagram**
 
     ---
 

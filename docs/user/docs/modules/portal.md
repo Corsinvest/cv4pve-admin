@@ -6,37 +6,37 @@ Multi-tenant management portal for Proxmox VE environments, designed for MSPs an
 
 <div class="grid cards" markdown>
 
--   :material-account-group:{ .lg .middle } **Isolated Tenant Management**
+- :material-account-group:{ .lg .middle } **Isolated Tenant Management**
 
     ---
 
     Each tenant can access only their own virtual resources.
 
--   :material-hub:{ .lg .middle } **Centralized Control**
+- :material-hub:{ .lg .middle } **Centralized Control**
 
     ---
 
     Assign resources, policies and access from a single point.
 
--   :material-trending-up:{ .lg .middle } **Easy Scalability**
+- :material-trending-up:{ .lg .middle } **Easy Scalability**
 
     ---
 
     Quickly add new tenants without impacting the existing infrastructure.
 
--   :material-monitor-dashboard:{ .lg .middle } **Intuitive Interface**
+- :material-monitor-dashboard:{ .lg .middle } **Intuitive Interface**
 
     ---
 
     Clear and well-organised frontend for administrators and tenants.
 
--   :material-shield-lock:{ .lg .middle } **Secure and Segmented Access**
+- :material-shield-lock:{ .lg .middle } **Secure and Segmented Access**
 
     ---
 
     Separate logins for tenants with role-based permissions.
 
--   :material-link-variant:{ .lg .middle } **Native Proxmox Integration**
+- :material-link-variant:{ .lg .middle } **Native Proxmox Integration**
 
     ---
 

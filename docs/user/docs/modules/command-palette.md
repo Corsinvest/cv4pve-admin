@@ -8,37 +8,37 @@ Keyboard-driven access to modules, navigation and Proxmox VE operations — with
 
 <div class="grid cards" markdown>
 
--   :material-keyboard:{ .lg .middle } **Single shortcut, anywhere**
+- :material-keyboard:{ .lg .middle } **Single shortcut, anywhere**
 
     ---
 
     `Ctrl+K` (or `Cmd+K` on macOS) opens the palette from any page. `↑` `↓` to move, `Enter` to execute, `Esc` to close.
 
--   :material-magnify-scan:{ .lg .middle } **Mixed search**
+- :material-magnify-scan:{ .lg .middle } **Mixed search**
 
     ---
 
     One textbox spans modules, VMs / containers, nodes and commands. Prefix tokens (`vm:`, `node:`, `ip:`, `>`) narrow the scope on demand.
 
--   :material-flash:{ .lg .middle } **Quick PVE actions**
+- :material-flash:{ .lg .middle } **Quick PVE actions**
 
     ---
 
     `start`, `stop`, `restart`, `console`, `create snapshot` — operate on any VM/CT without clicking through the resource grid.
 
--   :material-shield-account:{ .lg .middle } **Permission-aware**
+- :material-shield-account:{ .lg .middle } **Permission-aware**
 
     ---
 
     Results are filtered by the current user's PVE permissions; commands the user can't execute don't appear.
 
--   :material-form-textbox:{ .lg .middle } **Parameter dialogs**
+- :material-form-textbox:{ .lg .middle } **Parameter dialogs**
 
     ---
 
     Commands that need input open a typed parameter dialog (VM picker, text, boolean) — no command-line syntax to remember.
 
--   :material-filter-variant:{ .lg .middle } **Context-aware footer**
+- :material-filter-variant:{ .lg .middle } **Context-aware footer**
 
     ---
 

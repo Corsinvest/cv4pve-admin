@@ -6,37 +6,37 @@ Monitors Proxmox VE replication jobs across the cluster: status, trends, error p
 
 <div class="grid cards" markdown>
 
--   :material-shield-check:{ .lg .middle } **Replication Status**
+- :material-shield-check:{ .lg .middle } **Replication Status**
 
     ---
 
     Monitor VM and CT replication job execution and success rates.
 
--   :material-chart-line:{ .lg .middle } **Performance Metrics**
+- :material-chart-line:{ .lg .middle } **Performance Metrics**
 
     ---
 
     Track replication speed, duration, and failure patterns.
 
--   :material-monitor-eye:{ .lg .middle } **Analysis Reports**
+- :material-monitor-eye:{ .lg .middle } **Analysis Reports**
 
     ---
 
     Generate reports for replication job monitoring with on-demand or scheduled analysis using cron expression.
 
--   :material-link-variant:{ .lg .middle } **Proxmox VE Integration**
+- :material-link-variant:{ .lg .middle } **Proxmox VE Integration**
 
     ---
 
     Works with Proxmox VE replication jobs via API.
 
--   :material-timeline-clock:{ .lg .middle } **Historical Data**
+- :material-timeline-clock:{ .lg .middle } **Historical Data**
 
     ---
 
     View replication trends over time for optimization.
 
--   :material-tools:{ .lg .middle } **Failure Logs**
+- :material-tools:{ .lg .middle } **Failure Logs**
 
     ---
 

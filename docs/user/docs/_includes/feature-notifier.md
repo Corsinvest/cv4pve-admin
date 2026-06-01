@@ -1,4 +1,4 @@
--   :material-bell-ring:{ .lg .middle } **Notifier Integration**
+- :material-bell-ring:{ .lg .middle } **Notifier Integration**
 
     ---
 
