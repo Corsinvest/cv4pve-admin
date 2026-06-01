@@ -75,7 +75,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 | **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics, health checks and report export (PDF + Excel) | <ul><li>Executive Summary on PDF (counts per gravity + top critical issues)</li></ul> |
 | **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems (Prometheus) | |
 | **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
-| **[Notifier](configuration/admin-area/notifier.md)** | ✅ | ✅ | Core | Notification system (CE: SMTP + WebHook only) | <ul><li>119+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
+| **[Notifier](configuration/admin-area/notifier.md)** | ✅ | ✅ | Core | Notification system (CE: SMTP + WebHook only) | <ul><li>140+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
 | **[Profile](configuration/profile.md)** | ✅ | ✅ | Core | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |
 | **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
 | **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |

@@ -20,7 +20,7 @@ Configure notification channels to receive alerts from cv4pve-admin modules (job
 
     [:octicons-arrow-right-24: Configure WebHook](#webhook)
 
-- <span class="ee"></span> :material-bell-plus:{ .lg .middle } **119+ Channels**
+- <span class="ee"></span> :material-bell-plus:{ .lg .middle } **140+ Channels**
 
     ---
 

@@ -74,7 +74,7 @@ cv4pve-admin fills that gap: one interface, all clusters, all the tools your tea
 
 <div markdown>
 !!! note "Notifications"
-    CE: email alerts. EE: 119+ services including Telegram, Slack, Discord, Teams, and more.
+    CE: email alerts. EE: 140+ services including Telegram, Slack, Discord, Teams, and more.
 </div>
 
 <div markdown>

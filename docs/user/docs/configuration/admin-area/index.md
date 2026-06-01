@@ -40,7 +40,7 @@ System administration, security, monitoring and Proxmox VE cluster configuration
 
     ---
 
-    Notification channels — SMTP and WebHook in CE, 119+ services via Apprise <span class="ee"></span>.
+    Notification channels — SMTP and WebHook in CE, 140+ services via Apprise <span class="ee"></span>.
 
 </div>
 
