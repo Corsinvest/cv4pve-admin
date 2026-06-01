@@ -57,15 +57,7 @@
          <lastmod>2026-06-01</lastmod>
     </url>
     <url>
-         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/</loc>
-         <lastmod>2026-06-01</lastmod>
-    </url>
-    <url>
          <loc>https://corsinvest.github.io/cv4pve-admin/configuration/appsettings-extra/</loc>
-         <lastmod>2026-06-01</lastmod>
-    </url>
-    <url>
-         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/notifier/</loc>
          <lastmod>2026-06-01</lastmod>
     </url>
     <url>
@@ -74,6 +66,34 @@
     </url>
     <url>
          <loc>https://corsinvest.github.io/cv4pve-admin/configuration/pve-permissions/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/clusters/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/general-settings/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/maintenance/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/monitoring/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/notifier/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://corsinvest.github.io/cv4pve-admin/configuration/admin-area/security/</loc>
          <lastmod>2026-06-01</lastmod>
     </url>
     <url>
