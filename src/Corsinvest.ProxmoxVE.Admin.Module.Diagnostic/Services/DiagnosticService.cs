@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Exporters.Excel;
+using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Diagnostic.Api;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
@@ -71,6 +72,19 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         return url;
     }
 
+    public string GetPveResourceUrl(string idResource, DiagnosticResultContext context, string clusterName)
+    {
+        if (string.IsNullOrEmpty(idResource)) { return "#"; }
+
+        var data = idResource.Split("/");
+        return context switch
+        {
+            DiagnosticResultContext.Node when data.Length > 1 => UrlHelper.Resources.NodeUrl(data[1], clusterName),
+            DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc when data.Length > 3 && long.TryParse(data[3], out var vmid) => UrlHelper.Resources.VmUrl(vmid, clusterName),
+            _ => "#",
+        };
+    }
+
     public Stream GenerateReport(JobResult result, ReportFormat format)
         => format switch
         {
@@ -96,26 +110,33 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         var builder = new ExcelBuilder(SettingsService.GetAppSettings());
 
         AddIssuesSheet(builder, result);
+        AddIgnoredIssuesSheet(builder, result);
 
         return builder.Build(L["Diagnostic result of cluster '{0}' Date {1}", result.ClusterName, result.Start]);
     }
 
     protected void AddIssuesSheet(ExcelBuilder builder, JobResult result)
-    {
-        var rows = result.Details.OrderBy(a => a.Gravity)
-                                 .ThenBy(a => a.IdResource)
-                                 .Select(a => new
-                                 {
-                                     Id = a.IdResource,
-                                     Context = a.Context.ToString(),
-                                     SubContext = a.SubContext ?? string.Empty,
-                                     a.Description,
-                                     Gravity = a.Gravity.ToString(),
-                                     IsIgnored = a.IsIgnoredIssue,
-                                 });
+        => builder.AddSheet("Issues",
+                            L["Active diagnostic issues"],
+                            ToExcelRows(result.Details.Where(a => !a.IsIgnoredIssue)));
 
-        builder.AddSheet("Issues", L["All diagnostic issues found"], rows);
-    }
+    protected void AddIgnoredIssuesSheet(ExcelBuilder builder, JobResult result)
+        => builder.AddSheet("Ignored Issues",
+                            L["Issues hidden from the active result"],
+                            ToExcelRows(result.Details.Where(a => a.IsIgnoredIssue)));
+
+    private static IEnumerable<object> ToExcelRows(IEnumerable<JobDetail> details)
+        => details.OrderBy(a => a.Gravity)
+                  .ThenBy(a => a.IdResource)
+                  .Select(a => new
+                  {
+                      Id = a.IdResource,
+                      a.ErrorCode,
+                      Context = a.Context.ToString(),
+                      SubContext = a.SubContext ?? string.Empty,
+                      a.Description,
+                      Gravity = a.Gravity.ToString(),
+                  });
 
     protected Section CreateSection(Document document)
     {
@@ -235,15 +256,33 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
             row.Cells[3].AddParagraph(item.Description ?? string.Empty);
             var cell = row.Cells[4];
             cell.AddParagraph(item.Gravity.ToString());
-            cell.Format.Font.Color = item.Gravity switch
-            {
-                DiagnosticResultGravity.Info => MigraDocColors.Black,
-                DiagnosticResultGravity.Warning => MigraDocColors.Orange,
-                DiagnosticResultGravity.Critical => MigraDocColors.Red,
-                _ => cell.Format.Font.Color
-            };
+            ApplyGravityShading(cell, item.Gravity);
         }
     }
+
+    /// <summary>
+    /// Pastel background + dark foreground for gravity cells in PDF tables.
+    /// Same palette as the Excel conditional formatting — keeps the two reports visually consistent.
+    /// </summary>
+    protected static void ApplyGravityShading(Cell cell, DiagnosticResultGravity gravity)
+    {
+        var (bg, fg) = GravityPalette(gravity);
+        cell.Shading.Color = Color.FromRgb(bg.R, bg.G, bg.B);
+        cell.Format.Font.Color = Color.FromRgb(fg.R, fg.G, fg.B);
+    }
+
+    /// <summary>
+    /// Pastel palette shared between PDF and Excel for gravity/status cells.
+    /// Returns (background, foreground) as standard <see cref="System.Drawing.Color"/>.
+    /// </summary>
+    protected static (System.Drawing.Color Background, System.Drawing.Color Foreground) GravityPalette(DiagnosticResultGravity gravity) => gravity switch
+    {
+        DiagnosticResultGravity.Critical => (System.Drawing.Color.FromArgb(0xF8, 0xD7, 0xDA), System.Drawing.Color.FromArgb(0x72, 0x1C, 0x24)),
+        DiagnosticResultGravity.Warning => (System.Drawing.Color.FromArgb(0xFF, 0xF3, 0xCD), System.Drawing.Color.FromArgb(0x85, 0x64, 0x04)),
+        DiagnosticResultGravity.Info => (System.Drawing.Color.FromArgb(0xD1, 0xEC, 0xF1), System.Drawing.Color.FromArgb(0x0C, 0x54, 0x60)),
+        DiagnosticResultGravity.Ok => (System.Drawing.Color.FromArgb(0xD4, 0xED, 0xDA), System.Drawing.Color.FromArgb(0x15, 0x57, 0x24)),
+        _ => (System.Drawing.Color.White, System.Drawing.Color.Black),
+    };
 
     // MigraDoc breaks paragraphs only at whitespace. Long tokens like
     // "access/user/cv4pve-admin@pve" have no spaces and overflow the cell.

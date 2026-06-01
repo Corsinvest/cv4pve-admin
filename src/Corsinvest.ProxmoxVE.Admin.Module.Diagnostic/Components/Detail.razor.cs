@@ -2,36 +2,26 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
-using Corsinvest.ProxmoxVE.Diagnostic.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;
 
 public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
                             NotificationService notificationService,
-                            IDiagnosticService diagnosticService)
+                            IDiagnosticService diagnosticService,
+                            IModuleService moduleService)
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [Parameter] public int ResultId { get; set; } = default!;
 
+    private Module Module => moduleService.Get<Module>()!;
+
     private RadzenDataGrid<JobDetail> DataGridRef { get; set; } = default!;
-    //private string _baseAddress { get; set; } = default!;
     private IEnumerable<JobDetail> Items { get; set; } = [];
 
     private string GetHelpUrl(JobDetail item) => diagnosticService.GetHelpUrl(item);
-    private string GetPveUrl(JobDetail item)
-    {
-        var data = item.IdResource.Split("/");
-        return item.Context switch
-        {
-            DiagnosticResultContext.Node => UrlHelper.Resources.NodeUrl(data[1], ClusterName),
-            //TODO implement
-            DiagnosticResultContext.Cluster or DiagnosticResultContext.Storage => "#",
-            DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc => UrlHelper.Resources.VmUrl(long.Parse(data[3]), ClusterName),
-            _ => "#",
-        };
-    }
+    private string GetPveUrl(JobDetail item) => diagnosticService.GetPveResourceUrl(item.IdResource, item.Context, ClusterName);
 
     protected override async Task OnInitializedAsync()
     {

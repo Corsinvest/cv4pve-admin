@@ -16,6 +16,27 @@ public class ExcelSheetBuilder
 
     internal ExcelSheetBuilder(IXLWorksheet ws) => _ws = ws;
 
+    /// <summary>
+    /// Writes a bold heading followed by an italic gray text block. Use for disclaimers
+    /// or short notes that should appear above the data tables on the sheet.
+    /// </summary>
+    public ExcelSheetBuilder AddNote(string heading, string body)
+    {
+        _ws.Cell(_currentRow, 1).Value = heading;
+        _ws.Cell(_currentRow, 1).Style.Font.SetBold(true);
+        _ws.Cell(_currentRow, 1).Style.Font.SetFontSize(11);
+        _currentRow++;
+
+        _ws.Cell(_currentRow, 1).Value = body;
+        _ws.Cell(_currentRow, 1).Style.Font.SetItalic(true);
+        _ws.Cell(_currentRow, 1).Style.Font.SetFontColor(XLColor.Gray);
+        _ws.Cell(_currentRow, 1).Style.Alignment.SetWrapText(true);
+        _ws.Range(_currentRow, 1, _currentRow, 6).Merge();
+        _ws.Row(_currentRow).Height = 60;
+        _currentRow += 2;
+        return this;
+    }
+
     public ExcelSheetBuilder AddTable<T>(string title, IEnumerable<T> data)
     {
         // Section title
@@ -24,86 +45,53 @@ public class ExcelSheetBuilder
         _ws.Cell(_currentRow, 1).Style.Font.SetFontSize(13);
         _currentRow++;
 
-        var list = data.ToList();
-        if (list.Count == 0)
-        {
-            _ws.Cell(_currentRow, 1).Value = "(no data)";
-            _ws.Cell(_currentRow, 1).Style.Font.SetItalic(true);
-            _ws.Cell(_currentRow, 1).Style.Font.SetFontColor(XLColor.Gray);
-            _currentRow += 2;
-            return this;
-        }
-
-        var props = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                             .Where(p => p.CanRead && IsSupportedType(p.PropertyType))
-                             .ToArray();
-
-        // Header row
-        for (var col = 0; col < props.Length; col++)
-        {
-            var cell = _ws.Cell(_currentRow, col + 1);
-            cell.Value = ToHeaderName(props[col].Name);
-            cell.Style.Font.SetBold(true);
-            cell.Style.Fill.SetBackgroundColor(XLColor.FromHtml("#4472C4"));
-            cell.Style.Font.SetFontColor(XLColor.White);
-        }
-
-        var headerRow = _currentRow;
-        _currentRow++;
-
-        // Data rows
-        foreach (var item in list)
-        {
-            for (var col = 0; col < props.Length; col++)
-            {
-                var cell = _ws.Cell(_currentRow, col + 1);
-                var value = props[col].GetValue(item);
-                SetCellValue(cell, value);
-            }
-            _currentRow++;
-        }
-
-        // Apply table style with autofilter
-        var tableRange = _ws.Range(headerRow, 1, _currentRow - 1, props.Length);
-        var table = tableRange.CreateTable();
+        var table = _ws.Cell(_currentRow, 1).InsertTable(data, true);
         table.Theme = XLTableTheme.TableStyleMedium2;
         table.ShowAutoFilter = true;
 
-        _currentRow += 2; // gap between tables
+        // Pretty-print header names (PascalCase → "Pascal Case") and
+        // auto-apply conditional formatting on well-known gravity/status columns.
+        foreach (var field in table.Fields)
+        {
+            var rawName = field.HeaderCell.Value.ToString();
+            field.HeaderCell.Value = ToHeaderName(rawName);
+
+            if (IsGravityColumn(rawName))
+            {
+                ApplyGravityConditionalFormatting(table.DataRange.Column(field.Index + 1));
+            }
+        }
+
+        _currentRow += table.RowCount() + 2; // header + data rows + gap
         return this;
     }
 
-    internal void FinalizeSheet() => _ws.Columns().AdjustToContents(1, 80);
+    private static bool IsGravityColumn(string name)
+        => name is "Gravity" or "Status";
 
-    private static void SetCellValue(IXLCell cell, object? value)
+    /// <summary>
+    /// Pastel background + bold dark foreground on cells matching gravity/status keywords.
+    /// Same palette as the PDF report for visual consistency.
+    /// </summary>
+    private static void ApplyGravityConditionalFormatting(IXLRangeColumn dataCol)
     {
-        switch (value)
+        Apply("Critical", "#F8D7DA", "#721C24");
+        Apply("Fail", "#F8D7DA", "#721C24");
+        Apply("Warning", "#FFF3CD", "#856404");
+        Apply("Info", "#D1ECF1", "#0C5460");
+        Apply("Ok", "#D4EDDA", "#155724");
+        Apply("Pass", "#D4EDDA", "#155724");
+
+        void Apply(string value, string bg, string fg)
         {
-            case null: break;
-            case bool b: cell.Value = b; break;
-            case int i: cell.Value = i; break;
-            case long l: cell.Value = l; break;
-            case double d: cell.Value = d; break;
-            case float f: cell.Value = f; break;
-            case decimal dec: cell.Value = dec; break;
-            case DateTime dt: cell.Value = dt; cell.Style.DateFormat.Format = "yyyy-MM-dd HH:mm:ss"; break;
-            case DateOnly donly: cell.Value = donly.ToDateTime(TimeOnly.MinValue); cell.Style.DateFormat.Format = "yyyy-MM-dd"; break;
-            case TimeSpan ts: cell.Value = ts.ToString(); break;
-            default: cell.Value = value.ToString(); break;
+            var cf = dataCol.AddConditionalFormat().WhenEquals(value);
+            cf.Fill.SetBackgroundColor(XLColor.FromHtml(bg));
+            cf.Font.SetFontColor(XLColor.FromHtml(fg));
+            cf.Font.SetBold(true);
         }
     }
 
-    private static bool IsSupportedType(Type t)
-    {
-        var underlying = Nullable.GetUnderlyingType(t) ?? t;
-        return underlying.IsPrimitive
-            || underlying == typeof(string)
-            || underlying == typeof(decimal)
-            || underlying == typeof(DateTime)
-            || underlying == typeof(DateOnly)
-            || underlying == typeof(TimeSpan)
-            || underlying.IsEnum;
-    }
+    internal void FinalizeSheet() => _ws.Columns().AdjustToContents(1, 80);
 
     private static string ToHeaderName(string propertyName)
     {

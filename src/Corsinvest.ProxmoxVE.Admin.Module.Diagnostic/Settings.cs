@@ -17,4 +17,14 @@ public class Settings : JobScheduleBase, IModuleSettings, INotifierConfiguration
     public int Keep { get; set; } = 30;
 
     public IEnumerable<string> NotifierConfigurations { get; set; } = [];
+
+    /// <summary>
+    /// Attach the PDF report to scheduled notifications. Default: on.
+    /// </summary>
+    public bool NotifyPdf { get; set; } = true;
+
+    /// <summary>
+    /// Attach the Excel report to scheduled notifications. Default: off.
+    /// </summary>
+    public bool NotifyExcel { get; set; }
 }
