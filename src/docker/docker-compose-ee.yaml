@@ -2,6 +2,13 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Repository: https://gitlab.com/Corsinvest/cv4pve-admin
 
+# Project name. If omitted, Docker Compose uses the name of the directory
+# containing this file (so by default this stack ends up named "docker",
+# producing containers like "docker-postgres-1"). Uncomment the line below to
+# pin a clear, fixed name independent of where you place the file — useful when
+# you run multiple compose stacks on the same host.
+# name: cv4pve-admin-ee
+
 services:
   # PostgreSQL Database
   postgres:
@@ -27,7 +34,7 @@ services:
 
   # Apprise Notification Service
   apprise:
-    image: caronc/apprise:1.9.9
+    image: caronc/apprise:v1.11.0
     restart: unless-stopped
     environment:
       - APPRISE_WORKER_COUNT=1
