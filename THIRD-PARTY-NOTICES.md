@@ -1,22 +1,22 @@
 # Third-Party Notices
 
-This project incorporates components from the following third-party projects.
+This project incorporates components from the following third-party projects. Only **direct** package references are listed (transitive dependencies are not enumerated). Source of truth: `Directory.Packages.props`.
 
 | Package | License | Project Link |
 | --- | --- | --- |
 | **BlazorDownloadFile** | MIT | [BlazorDownloadFile](https://github.com/arivera12/BlazorDownloadFile) |
 | **ClosedXML & ClosedXML.Report** | MIT | [ClosedXML](https://github.com/ClosedXML/ClosedXML) |
-| **cronos** | MIT | [cronos](https://github.com/HangfireIO/Cronos) |
-| **CronExpressionDescriptor** | MIT | [CronExpressionDescriptor](https://github.com/bradymholt/cron-expression-descriptor) |
-| **CsvHelper** | MS-PL / Apache-2.0 | [CsvHelper](https://github.com/JoshClose/CsvHelper) |
-| **cv4pve-api-dotnet** | MIT | [cv4pve-api-dotnet](https://github.com/Corsinvest/cv4pve-api-dotnet) |
+| **Corsinvest.ProxmoxVE.Api.Extension** | MIT | [cv4pve-api-dotnet](https://github.com/Corsinvest/cv4pve-api-dotnet) |
 | **cv4pve-autosnap** | GPL-3.0-only | [cv4pve-autosnap](https://github.com/Corsinvest/cv4pve-autosnap) |
-| **cv4pve-botgram** | GPL-3.0-only | [cv4pve-botgram](https://github.com/Corsinvest/cv4pve-botgram) |
 | **cv4pve-diag** | GPL-3.0-only | [cv4pve-diag](https://github.com/Corsinvest/cv4pve-diag) |
 | **cv4pve-metrics-exporter** | GPL-3.0-only | [cv4pve-metrics-exporter](https://github.com/Corsinvest/cv4pve-metrics-exporter) |
 | **cv4pve-nodeprotect** | GPL-3.0-only | [cv4pve-nodeprotect](https://github.com/Corsinvest/cv4pve-nodeprotect) |
 | **cv4pve-report** | GPL-3.0-only | [cv4pve-report](https://github.com/Corsinvest/cv4pve-report) |
-| **Entity Framework Core** | MIT | [EF Core](https://github.com/dotnet/efcore) |
+| **cv4pve-telegrambot** | GPL-3.0-only | [cv4pve-telegrambot](https://github.com/Corsinvest/cv4pve-telegrambot) |
+| **cronos** | MIT | [cronos](https://github.com/HangfireIO/Cronos) |
+| **CronExpressionDescriptor** | MIT | [CronExpressionDescriptor](https://github.com/bradymholt/cron-expression-descriptor) |
+| **CsvHelper** | MS-PL / Apache-2.0 | [CsvHelper](https://github.com/JoshClose/CsvHelper) |
+| **Entity Framework Core** (incl. Design, Diagnostics, Identity) | MIT | [EF Core](https://github.com/dotnet/efcore) |
 | **FluentResults** | MIT | [FluentResults](https://github.com/altmann/FluentResults) |
 | **Hangfire (Core, AspNetCore, PostgreSQL)** | LGPL-3.0 | [Hangfire](https://github.com/HangfireIO/Hangfire) |
 | **Hangfire.Console & Extensions** | MIT | [Hangfire.Console](https://github.com/pieceofsummer/Hangfire.Console) |
@@ -24,15 +24,15 @@ This project incorporates components from the following third-party projects.
 | **MailKit** | MIT | [MailKit](https://github.com/jstedfast/MailKit) |
 | **Mapster** | MIT | [Mapster](https://github.com/MapsterMapper/Mapster) |
 | **Microsoft.Extensions.ServiceDiscovery** | MIT | [Aspire ServiceDiscovery](https://github.com/dotnet/aspire) |
-| **Model Context Protocol (MCP)** | Apache-2.0 | [MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk) |
+| **Model Context Protocol (MCP)** | MIT | [MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk) |
 | **Npgsql (EF Core PostgreSQL)** | PostgreSQL | [Npgsql](https://github.com/npgsql/efcore.pg) |
 | **OpenLayers.Blazor** | MIT | [OpenLayers.Blazor](https://github.com/loiste-interactive/OpenLayers-Blazor) |
 | **OpenTelemetry .NET** | Apache-2.0 | [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-dotnet) |
 | **PDFsharp & MigraDoc** | MIT | [PDFsharp](https://github.com/empira/PDFsharp) |
 | **Radzen.Blazor** | MIT | [Radzen.Blazor](https://github.com/radzenhq/radzen-blazor) |
-| **Roslynator.Analyzers** | MIT | [Roslynator](https://github.com/dotnet/roslynator) |
+| **Roslynator.Analyzers** | Apache-2.0 | [Roslynator](https://github.com/dotnet/roslynator) |
 | **Semver** | MIT | [Semver](https://github.com/maxhauser/semver) |
-| **Serilog Ecosystem** | Apache-2.0 | [Serilog](https://github.com/serilog/serilog) |
+| **Serilog Ecosystem** (Core, AspNetCore, Sinks.Console/File, Settings.Configuration) | Apache-2.0 | [Serilog](https://github.com/serilog/serilog) |
 | **SixLabors.ImageSharp** (v3.x) | Apache-2.0 | [ImageSharp](https://github.com/SixLabors/ImageSharp) |
 | **SSH.NET** | MIT | [SSH.NET](https://github.com/sshnet/SSH.NET) |
 | **System.CommandLine** | MIT | [System.CommandLine](https://github.com/dotnet/command-line-api) |
@@ -42,4 +42,6 @@ This project incorporates components from the following third-party projects.
 | **Wangkanai.Detection** | Apache-2.0 | [Detection](https://github.com/wangkanai/wangkanai) |
 | **ZiggyCreatures.FusionCache** | MIT | [FusionCache](https://github.com/ZiggyCreatures/FusionCache) |
 
-*Document updated: May 2026*
+---
+
+*Document updated: June 2026*
