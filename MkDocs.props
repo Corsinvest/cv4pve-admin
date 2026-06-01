@@ -1,7 +1,7 @@
 <Project>
   <!--
     Embeds the MkDocs documentation site (docs/user/) into the published app under
-    wwwroot/help/, so the running container can serve it offline on /help/.
+    a `help/` folder next to wwwroot, so the running container can serve it offline on /help/.
 
     This file does NOT build MkDocs — that's the caller's job, because the build
     environment differs across contexts:
@@ -24,7 +24,7 @@
   <Target Name="EnsureMkDocsBuilt" BeforeTargets="PrepareForPublish">
     <Error Condition="!Exists('$(MkDocsSiteDir)\index.html')"
            Text="MkDocs site not found at $(MkDocsSiteDir). Build it first: `./admin.ps1 -Command docs-build` (locally) or `mkdocs build` (CI). See ce/MkDocs.props for details." />
-    <Message Text="Embedding MkDocs site from $(MkDocsSiteDir) into wwwroot/help/" Importance="high" />
+    <Message Text="Embedding MkDocs site from $(MkDocsSiteDir) into the published app" Importance="high" />
   </Target>
 
   <!--

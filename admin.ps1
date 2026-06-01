@@ -207,7 +207,7 @@ switch ($Command) {
     "docs-build" {
         # Builds the static MkDocs site into docs/user/site/ using the same Docker
         # image that powers `docs-start`. Required before `dotnet publish`, which
-        # embeds site/ into wwwroot/help/ via MkDocs.props.
+        # embeds site/ into the published app via MkDocs.props.
         $docsPath = "$PSScriptRoot/docs/user"
         Write-Host "Building MkDocs static site into $docsPath/site/..." -ForegroundColor Cyan
         docker run --rm -v "${docsPath}:/docs" squidfunk/mkdocs-material:latest build --clean --strict

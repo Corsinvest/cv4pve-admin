@@ -6,7 +6,7 @@
   <!-- Docker configuration -->
   <Import Project="..\..\Docker.props" />
 
-  <!-- Embed MkDocs documentation into wwwroot/help/ on publish -->
+  <!-- Embed MkDocs documentation into the published app on publish -->
   <Import Project="..\..\MkDocs.props" />
 
   <PropertyGroup>
