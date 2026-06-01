@@ -23,6 +23,32 @@ Click it to trigger an immediate update via Watchtower (requires `WATCHTOWER_HTT
 
 The application checks for new versions every 12 hours.
 
+### Refresh `adminctl` and the compose files
+
+`adminctl` itself and the `docker-compose-{ce,ee}.yaml` files can fall behind over time.
+To pull the latest copy from GitHub `main`:
+
+```bash
+./adminctl self-update
+```
+
+This:
+
+- Downloads the latest `adminctl` + `docker-compose-{ce,ee}.yaml`
+- Snapshots the current files into `self-update-backups/<timestamp>/` so a rollback is always possible
+- Regenerates the active `docker-compose.yaml` to match the detected edition (CE or EE)
+- Leaves `.env`, `data/`, and `backups/` untouched
+
+If your `docker-compose.yaml` is customized (differs from both `docker-compose-ce.yaml` and `docker-compose-ee.yaml`), it is **not** rewritten — you will see a warning and can merge the changes manually by comparing with the updated `docker-compose-{ce,ee}.yaml`.
+
+After running, restart the stack to apply changes:
+
+```bash
+./adminctl restart
+# or, to pull new container images at the same time:
+docker compose up -d
+```
+
 ---
 
 ## Testing Pre-Release Versions
