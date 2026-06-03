@@ -16,7 +16,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     private static async Task<(int JobCount, int SuccessCount, int FailureCount)> ScanAsync(PveClient client,
                                                                                            Settings settings,
                                                                                            ModuleDbContext db,
-                                                                                           ILogger logger)
+                                                                                           ILogger logger,
+                                                                                           TaskScope? taskScope = null)
     {
         const string KEY_SIZE = ": total estimated size is";
         var jobCount = 0;
@@ -25,9 +26,15 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
         static DateTime ParseDateTime(string value) => DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", null);
 
-        foreach (var node in (await client.GetNodesAsync()).Where(a => a.IsOnline))
+        var nodes = (await client.GetNodesAsync()).Where(a => a.IsOnline).ToList();
+        var nodeIndex = 0;
+        foreach (var node in nodes)
         {
+            nodeIndex++;
+            taskScope?.LogProgress(nodeIndex, nodes.Count, $"[{nodeIndex}/{nodes.Count}] Scanning node {node.Node}", phase: $"Scanning {node.Node}");
+
             var jobs = await client.Nodes[node.Node].Replication.GetAsync();
+            taskScope?.Log($"  {node.Node}: {jobs.Count()} replication job(s) found");
 
             // Batch optimization: Load all existing jobs for this node in one query
             var jobKeys = jobs.Select(j => new
@@ -137,11 +144,13 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
                 taskScope.Item.Phase = "Collecting replication data";
+                taskScope.Log($"Collecting replication data for cluster {clusterName}");
 
                 var (jobCount, successCount, failureCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
                                                                               GetModuleSettings(scope, clusterName),
                                                                               db,
-                                                                              logger);
+                                                                              logger,
+                                                                              taskScope);
 
                 taskScope.Item.Phase = "Saving results";
 

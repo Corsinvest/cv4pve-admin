@@ -31,6 +31,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
                 taskScope.Item.Phase = "Loading ignored issues";
+                taskScope.Log($"Loading ignored issues for cluster {clusterName}");
 
                 var ignoredIssues = db.IgnoredIssues
                                       .FromClusterName(clusterName)
@@ -44,11 +45,15 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                       })
                                       .ToList();
 
+                taskScope.Log($"Loaded {ignoredIssues.Count} ignored issue(s)");
+
                 var now = DateTime.UtcNow;
 
                 taskScope.Item.Phase = "Analyzing cluster";
+                taskScope.Log($"Analyzing cluster {clusterName}");
 
                 var client = await scope.GetClusterClient(clusterName).GetPveClientAsync();
+                var analyzeStart = DateTime.UtcNow;
                 var details = (await new DiagnosticEngine(client, settings.ApiSettings, httpClientFactory.CreateClient())
                                         .AnalyzeAsync(ignoredIssues))
                                         .Select(a => new JobDetail
@@ -70,7 +75,10 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 int Count(DiagnosticResultGravity gravity) => details.Count(a => a.Gravity == gravity && !a.IsIgnoredIssue);
 
+                taskScope.Log($"Analysis completed in {(DateTime.UtcNow - analyzeStart).TotalSeconds:F1}s: {details.Count} check(s), Critical={Count(DiagnosticResultGravity.Critical)}, Warning={Count(DiagnosticResultGravity.Warning)}, Info={Count(DiagnosticResultGravity.Info)}");
+
                 taskScope.Item.Phase = "Saving results";
+                taskScope.Log("Saving results");
 
                 var jobResult = new JobResult
                 {
@@ -85,6 +93,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 await db.JobResults.AddAsync(jobResult);
                 await db.SaveChangesAsync();
+                taskScope.Log($"Saved scan result ID {jobResult.Id}");
 
                 taskScope.Item.ReferenceId = jobResult.Id.ToString();
                 taskScope.Item.DetailUrl = QueryHelpers.AddQueryString(GetModule(scope).LinkMain!.GetRealUrl(clusterName),
@@ -98,12 +107,17 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                              .Select(a => a.Id)
                                              .ToListAsync();
 
-                await db.JobResults.Where(a => ids.Contains(a.Id)).ExecuteDeleteAsync();
+                if (ids.Count > 0)
+                {
+                    var deleted = await db.JobResults.Where(a => ids.Contains(a.Id)).ExecuteDeleteAsync();
+                    taskScope.Log($"Deleted {deleted} old scan result(s) (keep={settings.Keep})");
+                }
 
                 //send notification
                 taskScope.Item.Phase = "Sending notifications";
                 if (settings.NotifierConfigurations?.Any() is true && (settings.NotifyPdf || settings.NotifyExcel))
                 {
+                    taskScope.Log($"Sending notification (PDF={settings.NotifyPdf}, Excel={settings.NotifyExcel})");
                     var diagnosticService = scope.GetRequiredService<IDiagnosticService>();
 
                     var resultForReport = new JobResult
