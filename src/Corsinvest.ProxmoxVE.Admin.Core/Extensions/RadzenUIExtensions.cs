@@ -6,6 +6,21 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
 public static class RadzenUIExtensions
 {
+    public static IEnumerable<T> FlattenItems<T>(this GroupResult group)
+    {
+        if (group.Items is not null)
+        {
+            foreach (var item in group.Items.Cast<T>()) { yield return item; }
+        }
+        if (group.Subgroups is not null)
+        {
+            foreach (var sub in group.Subgroups)
+            {
+                foreach (var item in sub.FlattenItems<T>()) { yield return item; }
+            }
+        }
+    }
+
     public static void SetRowStyleError<T>(this RowRenderEventArgs<T> args)
         => args.Attributes.Add("style", $"background-color: {Colors.DangerLight};");
 

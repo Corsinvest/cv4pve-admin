@@ -41,11 +41,6 @@ public partial class StorageContents<TItem> where TItem : NodeStorageContent
         if (args.FirstRender) { args.Expanded = false; }
     }
 
-    private static string GetGroupHeader(Group group)
-        => group.Data.Items != null
-            ? FormatHelper.FromBytes(group.Data.Items!.Cast<NodeStorageContent>().Sum(a => a.Size))
-            : string.Empty;
-
     private static FilterMode? GetFilterMode(string propertyName)
         => propertyName switch
         {

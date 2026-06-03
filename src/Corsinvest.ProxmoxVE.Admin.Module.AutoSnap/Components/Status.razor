@@ -47,7 +47,7 @@
                 }
                 else
                 {
-                    @FormatHelper.FromBytes(context.Data.Items!.Cast<AutoSnapInfo>().Sum(a => a.SnapshotsSize))
+                    @FormatHelper.FromBytes(context.Data.FlattenItems<AutoSnapInfo>().Sum(a => a.SnapshotsSize))
                 }
             }
         </RadzenStack>

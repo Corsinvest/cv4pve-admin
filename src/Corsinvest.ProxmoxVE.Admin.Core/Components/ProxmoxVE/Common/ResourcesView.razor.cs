@@ -302,17 +302,21 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
         void GetUsages(IEnumerable<ClusterResource> items)
             => sb.AddRange(items.GetResourceUsage(L).Select(a => $"<strong>{a.Name}</strong>: {a.Usage}%"));
 
-        if (group.Data.Count > 0 && group.Data.Items != null)
+        if (group.Data.Count > 0)
         {
-            var clusterName = group.Data.Items.Cast<ClusterResourceItem>().FirstOrDefault()!.ClusterName;
+            var firstItem = group.Data.FlattenItems<ClusterResourceItem>().FirstOrDefault();
+            if (firstItem is not null)
+            {
+                var clusterName = firstItem.ClusterName;
 
-            if (group.GroupDescriptor!.Property == nameof(IClusterName.ClusterName))
-            {
-                GetUsages(Items.Where(a => a.ClusterName == clusterName));
-            }
-            else if (group.GroupDescriptor.Property == nameof(INode.Node))
-            {
-                GetUsages(Items.Where(a => a.ClusterName == clusterName && a.Node == group.Data.Key));
+                if (group.GroupDescriptor!.Property == nameof(IClusterName.ClusterName))
+                {
+                    GetUsages(Items.Where(a => a.ClusterName == clusterName));
+                }
+                else if (group.GroupDescriptor.Property == nameof(INode.Node))
+                {
+                    GetUsages(Items.Where(a => a.ClusterName == clusterName && a.Node == group.Data.Key));
+                }
             }
         }
 
