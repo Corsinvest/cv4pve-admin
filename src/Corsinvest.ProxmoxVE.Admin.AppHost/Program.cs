@@ -6,7 +6,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 //var mailpit = builder.AddMailPit("mailpit");
 
+// Pinned to 17: Postgres 18+ changed PGDATA layout (subdirectory per major
+// version) and refuses to start against volumes created by 17.x without an
+// explicit pg_upgrade. Bump only after a tested migration.
 var postgres = builder.AddPostgres("postgres", port: 5432)
+                      .WithImageTag("17")
                       .WithContainerName("postgres-cv4pve-admin")
                       .WithDataVolume()
                       //.WithPgAdmin()
