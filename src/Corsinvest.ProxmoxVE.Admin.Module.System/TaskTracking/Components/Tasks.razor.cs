@@ -13,11 +13,20 @@ public partial class Tasks(ITaskTrackerService taskTracker,
 {
     [Parameter] public string? ClusterName { get; set; }
 
+    private static readonly TimeSpan ChartMaxRange = TimeSpan.FromDays(30);
+
     private RadzenDataGrid<TaskItemInfo> DataGridRef { get; set; } = default!;
     private ResultLoadData<TaskItemInfo> ResultLoadData { get; set; } = new(null!, -1, null);
     private SearchTextBox<TaskItemInfo>? SearchTextBox { get; set; }
     private IReadOnlyList<string> _allowedModules = [];
     private IEnumerable<FilterDescriptor> _searchFilters = [];
+
+    private List<TasksChart.ChartPoint> ChartData { get; set; } = [];
+    private bool ChartVisible { get; set; }
+    private bool ChartLoading { get; set; }
+    private string? ChartError { get; set; }
+
+    private GridLoader<TaskItem, TaskItemInfo>? _loader;
 
     protected override void OnInitialized()
     {
@@ -26,6 +35,27 @@ public partial class Tasks(ITaskTrackerService taskTracker,
                                            .Select(a => a.Name)];
 
         taskTracker.Changed += OnTrackerChanged;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<TaskItem, TaskItemInfo>(DataGridRef, defaultOrderBy: "StartedAt desc, Id desc");
+
+            _loader.WithExtraFilters(() => _searchFilters);
+
+            _loader.OnFiltersChanged(async filters =>
+            {
+                if (!ChartVisible) { return; }
+                ChartLoading = true;
+                await InvokeAsync(StateHasChanged);
+                await using var db = await dbContextFactory.CreateDbContextAsync();
+                await LoadChartDataAsync(db, filters);
+                ChartLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private void OnTrackerChanged(object? sender, TaskItem e)
@@ -49,44 +79,76 @@ public partial class Tasks(ITaskTrackerService taskTracker,
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
+        if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-
-        // merge search-box filters with grid filters
-        var mergedFilters = (args.Filters ?? []).Concat(_searchFilters).ToList();
-        args = new LoadDataArgs
-        {
-            Skip = args.Skip,
-            Top = args.Top,
-            OrderBy = args.OrderBy,
-            Filter = args.Filter,
-            Filters = mergedFilters,
-            Sorts = args.Sorts
-        };
-
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.TaskItems
-                                                           .Where(a => a.ModuleName == null || _allowedModules.Contains(a.ModuleName))
-                                                           .Where(a => a.ClusterName == ClusterName, ClusterName is not null),
-                                                         args,
-                                                         a => new TaskItemInfo
-                                                         {
-                                                             Id = a.Id,
-                                                             Title = a.Title,
-                                                             ClusterName = a.ClusterName,
-                                                             ModuleName = a.ModuleName,
-                                                             DetailUrl = a.DetailUrl,
-                                                             IsCancellable = a.IsCancellable,
-                                                             Status = a.Status,
-                                                             Phase = a.Phase,
-                                                             StartedAt = a.StartedAt,
-                                                             EndedAt = a.EndedAt,
-                                                             CreatedBy = a.CreatedBy,
-                                                             Progress = a.Progress,
-                                                             LastLog = a.LastLog,
-                                                         },
-                                                         ResultLoadData.Filter);
+        var query = db.TaskItems
+                      .Where(a => a.ModuleName == null || _allowedModules.Contains(a.ModuleName))
+                      .Where(a => a.ClusterName == ClusterName, ClusterName is not null);
+        ResultLoadData = await _loader.LoadAsync(query,
+                                                 args,
+                                                 a => new TaskItemInfo
+                                                 {
+                                                     Id = a.Id,
+                                                     Title = a.Title,
+                                                     ClusterName = a.ClusterName,
+                                                     ModuleName = a.ModuleName,
+                                                     DetailUrl = a.DetailUrl,
+                                                     IsCancellable = a.IsCancellable,
+                                                     Status = a.Status,
+                                                     Phase = a.Phase,
+                                                     StartedAt = a.StartedAt,
+                                                     EndedAt = a.EndedAt,
+                                                     CreatedBy = a.CreatedBy,
+                                                     Progress = a.Progress,
+                                                     LastLog = a.LastLog,
+                                                 });
     }
 
-    private Task RefreshAsync() => DataGridRef.Reload();
+    private async Task LoadChartDataAsync(ModuleDbContext db, List<FilterDescriptor> filters)
+    {
+        ChartError = null;
+        try
+        {
+            var cutoff = DateTime.UtcNow - ChartMaxRange;
+            var query = db.TaskItems.AsQueryable()
+                                    .Where(a => a.ModuleName == null || _allowedModules.Contains(a.ModuleName))
+                                    .Where(a => a.ClusterName == ClusterName, ClusterName is not null)
+                                    .Where(filters, LogicalFilterOperator.And, FilterCaseSensitivity.CaseInsensitive)
+                                    .Where(a => a.StartedAt >= cutoff);
+
+            ChartData = await query.GroupBy(a => new { a.StartedAt.Date, a.Status })
+                                   .Select(g => new TasksChart.ChartPoint(g.Key.Date, g.Key.Status, g.Count()))
+                                   .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            ChartData = [];
+            ChartError = ex.Message;
+        }
+    }
+
+    private async Task ToggleChart()
+    {
+        ChartVisible = !ChartVisible;
+        if (!ChartVisible) { return; }
+
+        ChartLoading = true;
+        StateHasChanged();
+        await Task.Yield();
+
+        try
+        {
+            await using var db = await dbContextFactory.CreateDbContextAsync();
+            await LoadChartDataAsync(db, [.. _searchFilters]);
+        }
+        finally
+        {
+            ChartLoading = false;
+        }
+    }
+
+    private Task RefreshAsync()
+        => _loader?.RefreshAsync() ?? DataGridRef.Reload();
 
     private async Task OnSearchFiltersChanged(IEnumerable<FilterDescriptor> filters)
     {
@@ -94,5 +156,9 @@ public partial class Tasks(ITaskTrackerService taskTracker,
         await RefreshAsync();
     }
 
-    public void Dispose() => taskTracker.Changed -= OnTrackerChanged;
+    public void Dispose()
+    {
+        taskTracker.Changed -= OnTrackerChanged;
+        _loader?.Dispose();
+    }
 }

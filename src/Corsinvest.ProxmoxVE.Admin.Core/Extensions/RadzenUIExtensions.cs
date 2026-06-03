@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.Linq.Expressions;
-
 namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
 public static class RadzenUIExtensions
@@ -118,15 +116,6 @@ public static class RadzenUIExtensions
                                                 {
                                                     CloseDialogOnOverlayClick = true,
                                                 });
-
-    public static Task<ResultLoadData<TResult>> LoadDataAsync<TSource, TResult>(this RadzenDataGrid<TResult> grid,
-                                                                                IQueryable<TSource> query,
-                                                                                LoadDataArgs args,
-                                                                                Expression<Func<TSource, TResult>> selector,
-                                                                                string? lastFilter)
-       where TResult : notnull
-       where TSource : class
-        => query.LoadDataAsync(args, grid, selector, lastFilter);
 
     public static Task OpenCopyValueAsync(this DialogService dialogService,
                                           string title,

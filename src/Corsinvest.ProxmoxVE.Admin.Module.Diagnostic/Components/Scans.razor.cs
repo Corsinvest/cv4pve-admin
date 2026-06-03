@@ -28,6 +28,7 @@ public partial class Scans(IBrowserService browserService,
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
 
     private bool _expanded;
+    private GridLoader<JobResult, Data>? _loader;
 
     private record Data(int Id,
                          int Warning,
@@ -48,6 +49,14 @@ public partial class Scans(IBrowserService browserService,
         await RefreshDataAsync();
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<JobResult, Data>(DataGridRef, defaultOrderBy: "Start desc, Id desc");
+        }
+    }
+
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
         await RefreshDataAsync();
@@ -56,20 +65,18 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
+        if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.JobResults
-                                                           .FromClusterName(ClusterName)
-                                                           .Where(a => a.Id == Id, !_expanded && Id != null)
-                                                      ,
-                                                         args,
-                                                         a => new Data(a.Id,
-                                                                       a.Warning,
-                                                                       a.Critical,
-                                                                       a.Info,
-                                                                       a.Start,
-                                                                       a.End),
-                                                         ResultLoadData.Filter);
-
+        ResultLoadData = await _loader.LoadAsync(db.JobResults
+                                                   .FromClusterName(ClusterName)
+                                                   .Where(a => a.Id == Id, !_expanded && Id != null),
+                                                 args,
+                                                 a => new Data(a.Id,
+                                                               a.Warning,
+                                                               a.Critical,
+                                                               a.Info,
+                                                               a.Start,
+                                                               a.End));
     }
 
     private async Task OnGridRenderAsync(DataGridRenderEventArgs<Data> _)
@@ -85,7 +92,8 @@ public partial class Scans(IBrowserService browserService,
     public async Task RefreshDataAsync()
     {
         Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
-        if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
+        if (_loader is not null) { await _loader.RefreshAsync(); }
+        else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
 
     private async Task DeleteAsync()
@@ -142,5 +150,9 @@ public partial class Scans(IBrowserService browserService,
         notificationService.Info(L["Scan started!"]);
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _loader?.Dispose();
+    }
 }

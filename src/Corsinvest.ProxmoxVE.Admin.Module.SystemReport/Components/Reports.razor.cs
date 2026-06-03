@@ -24,6 +24,7 @@ public partial class Reports(IBrowserService browserService,
     private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
     private bool _validColumnClick;
+    private GridLoader<JobResult, Data>? _loader;
 
     private record Data(int Id,
                         Report.Settings Settings,
@@ -40,6 +41,14 @@ public partial class Reports(IBrowserService browserService,
         await RefreshDataAsync();
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<JobResult, Data>(DataGridRef, defaultOrderBy: "Start desc, Id desc");
+        }
+    }
+
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
         await RefreshDataAsync();
@@ -50,21 +59,19 @@ public partial class Reports(IBrowserService browserService,
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
+        if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.JobResults.FromClusterName(ClusterName),
-                                                         args,
-                                                         a => new Data(a.Id,
-                                                                       a.Settings,
-                                                                       a.Format,
-                                                                       a.Start,
-                                                                       a.End),
-                                                         ResultLoadData.Filter);
+        ResultLoadData = await _loader.LoadAsync(db.JobResults.FromClusterName(ClusterName),
+                                                 args,
+                                                 a => new Data(a.Id,
+                                                               a.Settings,
+                                                               a.Format,
+                                                               a.Start,
+                                                               a.End));
     }
 
-    public async Task RefreshDataAsync()
-    {
-        if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
-    }
+    public Task RefreshDataAsync()
+        => _loader?.RefreshAsync() ?? (DataGridRef != null ? InvokeAsync(DataGridRef.Reload) : Task.CompletedTask);
 
     private void CellClick(DataGridCellMouseEventArgs<Data> e)
         => _validColumnClick = e.Column!.Property == nameof(Data.Id);
@@ -153,5 +160,9 @@ public partial class Reports(IBrowserService browserService,
         }
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _loader?.Dispose();
+    }
 }
