@@ -159,7 +159,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
             //list task backup
             var taskItems = await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "vzdump"); //, limit: 9999
-            taskScope?.Log($"  {node.Node}: {taskItems.Count} vzdump task(s) found");
+            taskScope?.Log($"  {node.Node}: {taskItems.Count()} vzdump task(s) found");
 
             // Batch optimization: Load all existing tasks for this node in one query
             var taskIds = taskItems.Select(t => t.UniqueTaskId).ToList();
@@ -232,7 +232,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             }
 
             await db.SaveChangesAsync();
-            taskScope?.Log($"  {node.Node}: imported {taskItems.Count} task(s)");
+            taskScope?.Log($"  {node.Node}: imported {taskItems.Count()} task(s)");
         }
 
         //remove old logs

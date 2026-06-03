@@ -34,7 +34,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             taskScope?.LogProgress(nodeIndex, nodes.Count, $"[{nodeIndex}/{nodes.Count}] Scanning node {node.Node}", phase: $"Scanning {node.Node}");
 
             var jobs = await client.Nodes[node.Node].Replication.GetAsync();
-            taskScope?.Log($"  {node.Node}: {jobs.Count} replication job(s) found");
+            taskScope?.Log($"  {node.Node}: {jobs.Count()} replication job(s) found");
 
             // Batch optimization: Load all existing jobs for this node in one query
             var jobKeys = jobs.Select(j => new
