@@ -504,3 +504,31 @@ cv4pve.RangeSelector = (function () {
         }
     };
 })();
+
+/**
+ * Clipboard helper with fallback for non-secure contexts (HTTP on LAN IP).
+ * `navigator.clipboard` is only exposed on HTTPS / localhost / 127.0.0.1.
+ * For everything else (http://192.168.x.x:8080, common LAN deployment)
+ * we fall back to the legacy `document.execCommand('copy')` via a hidden textarea.
+ */
+cv4pve.clipboard = {
+    writeText: function (text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        }
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+        } finally {
+            document.body.removeChild(ta);
+        }
+    }
+};
