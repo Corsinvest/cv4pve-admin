@@ -55,7 +55,7 @@
         </EmptyTemplate>
 
         <GroupHeaderTemplate>
-            <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data!.Key (@context.Data.Count) @FormatHelper.FromBytes(context.Data.Items!.Cast<Data>().Sum(a => a.Size))
+            <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data!.Key (@context.Data.Count) @FormatHelper.FromBytes(context.Data.FlattenItems<Data>().Sum(a => a.Size))
         </GroupHeaderTemplate>
 
         <Columns>
