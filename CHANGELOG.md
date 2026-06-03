@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.1.0-rc2] - 2026-06-03
+
+### Added
+
+- **`adminctl self-update`** command refreshes your local `adminctl` script and the docker-compose YAML to match a chosen release without touching your data or `.env` configuration. By default it bumps to the latest release; you can also target a specific version. Existing files are backed up under `_backup/<timestamp>/` before being overwritten, so you can always roll back.
+
+- **System Logs *(EE)*** chart: a stacked column chart of the last 30 days grouped by level (Verbose / Debug / Information / Warning / Error / Fatal) sits above the logs grid. It is hidden by default; click *Show chart* to load it. The chart respects the current search and column filters.
+
+### Changed
+
+- **System Logs *(EE)*** grid: the main grid now lists only timestamp, level and a one-line message preview. Heavy fields (message template, exception, raw log event JSON) are loaded only when you expand the row, so the page stays fluid even on tables with millions of records.
+
+### Fixed
+
+- **Resources → Snapshots** and other grouped grids (AutoSnap status, BackupAnalytics, ReplicationAnalytics, Node Protect folders, Node storage contents): when grouping by more than one column the outer headers used to show only the group key and count. They now correctly aggregate totals (sizes, CPU and disk usage) from every nested level.
+
+- **Apprise notifier *(EE)***: the *Render* page sometimes failed to load the catalog of available services because Apprise can serve either JSON or HTML on the same URL depending on the request. We now explicitly ask for JSON and show a clear error if the endpoint replies with something else (typical when the URL points to the wrong service).
+
+### Compatibility note
+
+- The default Apprise endpoint in the notifier settings changed from `http://localhost:8000` to `http://apprise:8000` to match the docker-compose service name. If you already have a notifier configured it keeps the value you saved and nothing breaks; new notifiers will use the new default.
+
 ## [2.1.0-rc1] - 2026-06-01
 
 ### Community Edition
