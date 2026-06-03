@@ -61,7 +61,7 @@
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.2.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.2.1" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="2.0.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.1.1" />
