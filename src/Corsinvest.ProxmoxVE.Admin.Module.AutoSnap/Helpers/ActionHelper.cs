@@ -25,16 +25,31 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Delete snapshot {Id}", id))
+        var job = await db.Jobs.FromIdAsync(id);
+        if (job == null)
         {
-            //remove snapshot
-            var job = await db.Jobs.FromIdAsync(id);
-            if (job != null)
+            await db.Jobs.DeleteAsync(id);
+            await PublishDataChangedAsync(scope);
+            return;
+        }
+
+        await using var taskScope = await taskTracker.StartAsync($"AutoSnap delete job [{job.ClusterName}] Job {id} ({job.Label})", job.ClusterName, GetModule(scope).Name, id.ToString());
+        try
+        {
+            using (logger.LogTimeOperation(LogLevel.Information, true, "Delete AutoSnap job {Id}", id))
             {
                 var settings = GetModuleClusterSettings(scope, job.ClusterName);
-                if (settings.OnRemoveJobRemoveSnapshots) { await PurgeAsync(scope, id); }
+                if (settings.OnRemoveJobRemoveSnapshots)
+                {
+                    await PurgeCoreAsync(scope, job, taskScope);
+                }
+
+                taskScope.Item.Phase = "Deleting job";
+                taskScope.Log($"Deleting job {id} ({job.Label}) from cluster {job.ClusterName}, VMs: {job.VmIds}");
+                await db.Jobs.DeleteAsync(id);
 
                 await auditService.LogAsync("AutoSnap.DeleteJob",
                                             true,
@@ -42,16 +57,21 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                             $", Cluster: {job.ClusterName}, " +
                                             $"Label: {job.Label}, " +
                                             $"VMs: {job.VmIds}");
+
+                taskScope.Log($"Job {id} deleted");
+                await PublishDataChangedAsync(scope);
             }
-            await db.Jobs.DeleteAsync(id);
-            await PublishDataChangedAsync(scope);
+        }
+        catch (Exception ex)
+        {
+            taskScope.Item.Status = TaskItemStatus.Failed;
+            taskScope.Log(ex.ToString(), LogLevel.Error);
+            throw;
         }
     }
 
     public static async Task PurgeAsync(IServiceScope scope, int id)
     {
-        var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
-        var auditService = scope.GetAuditService();
         var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
         await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
@@ -59,7 +79,24 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         if (job == null) { return; }
 
         await using var taskScope = await taskTracker.StartAsync($"AutoSnap purge [{job.ClusterName}] Job {id}", job.ClusterName, GetModule(scope).Name, id.ToString());
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Purge snapshot from Job {Id}", id))
+        try
+        {
+            await PurgeCoreAsync(scope, job, taskScope);
+            await PublishDataChangedAsync(scope);
+        }
+        catch
+        {
+            taskScope.Item.Status = TaskItemStatus.Failed;
+            throw;
+        }
+    }
+
+    private static async Task PurgeCoreAsync(IServiceScope scope, JobSchedule job, TaskScope taskScope)
+    {
+        var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
+        var auditService = scope.GetAuditService();
+
+        using (logger.LogTimeOperation(LogLevel.Information, true, "Purge snapshot from Job {Id}", job.Id))
         {
             var settings = GetModuleClusterSettings(scope, job.ClusterName);
             var client = await scope.GetClusterClient(job.ClusterName).GetPveClientAsync();
@@ -68,8 +105,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             try
             {
                 taskScope.Item.Phase = "Purging snapshots";
+                taskScope.Log($"Purging snapshots for job {job.Id} ({job.Label}) on cluster {job.ClusterName}");
 
                 await using var log = new StringWriterEvent();
+                log.WritedData += (_, line) =>
+                {
+                    var trimmed = line?.Trim();
+                    if (!string.IsNullOrEmpty(trimmed)) { taskScope.Log(trimmed); }
+                };
                 var app = GetApp(client, scope.GetLoggerFactory(), log);
 
                 await app.CleanAsync(job.VmIds,
@@ -81,22 +124,19 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             catch (Exception ex)
             {
                 success = false;
-                taskScope.Item.Status = TaskItemStatus.Failed;
                 taskScope.Log(ex.ToString(), LogLevel.Error);
-                logger.LogError(ex, "Purge failed for Job ID {Id}", id);
+                logger.LogError(ex, "Purge failed for Job ID {Id}", job.Id);
                 throw;
             }
             finally
             {
                 await auditService.LogAsync("AutoSnap.PurgeSnapshots",
                                             success,
-                                            $"Job ID: {id}, " +
+                                            $"Job ID: {job.Id}, " +
                                             $"Cluster: {job.ClusterName}, " +
                                             $"Label: {job.Label}, " +
                                             $"VMs: {job.VmIds.Split(',').Length}");
             }
-
-            await PublishDataChangedAsync(scope);
         }
     }
 
@@ -127,7 +167,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 };
 
                 await using var log = new StringWriterEvent();
-                log.WritedData += (_, _) => result.Logs = log.ToString();
+                log.WritedData += (_, line) =>
+                {
+                    result.Logs = log.ToString();
+                    var trimmed = line?.Trim();
+                    if (!string.IsNullOrEmpty(trimmed)) { taskScope.Log(trimmed); }
+                };
 
                 result.Start = DateTime.UtcNow;
                 logger.LogInformation("Execution AutoSnap Job: {Id}", id);
@@ -270,28 +315,59 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
         var commandExecutor = scope.GetCommandExecutor();
+        var taskTracker = scope.GetRequiredService<ITaskTrackerService>();
 
-        using (logger.LogTimeOperation(LogLevel.Information, true, "Execution Delete snapshots"))
+        var snapshotList = snapshots.ToList();
+        var total = snapshotList.Count;
+
+        await using var taskScope = await taskTracker.StartAsync($"AutoSnap delete snapshots [{clusterName}] ({total})", clusterName, GetModule(scope).Name);
+        var failed = 0;
+        try
         {
-            var snapshotList = snapshots.ToList();
-
-            foreach (var item in snapshotList)
+            using (logger.LogTimeOperation(LogLevel.Information, true, "Execution Delete snapshots"))
             {
-                logger.LogInformation("Execution Delete snapshot: {name}", item.Name);
-                var result = await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(clusterName, item.VmId, item.Name, Force: true));
-                if (!result.IsSuccess)
+                taskScope.Item.Phase = $"Deleting {total} snapshot(s)";
+                taskScope.Log($"Deleting {total} snapshot(s) on cluster {clusterName}");
+
+                var index = 0;
+                foreach (var item in snapshotList)
                 {
-                    logger.LogWarning("Delete snapshot failed: {name} ({error})", item.Name, result.ErrorMessage);
+                    index++;
+                    taskScope.Item.Phase = $"Deleting {index}/{total}: VM {item.VmId} '{item.Name}'";
+                    taskScope.Item.Progress = (int)((double)index / total * 100);
+
+                    logger.LogInformation("Execution Delete snapshot: {name}", item.Name);
+                    taskScope.Log($"[{index}/{total}] Deleting snapshot '{item.Name}' on VM {item.VmId}");
+
+                    var result = await commandExecutor.ExecuteAsync(new VmRemoveSnapshotCommand(clusterName, item.VmId, item.Name, Force: true));
+                    if (!result.IsSuccess)
+                    {
+                        failed++;
+                        logger.LogWarning("Delete snapshot failed: {name} ({error})", item.Name, result.ErrorMessage);
+                        taskScope.Log($"  Failed: {result.ErrorMessage}", LogLevel.Warning);
+                    }
                 }
+
+                taskScope.Log(failed == 0
+                                ? $"All {total} snapshot(s) deleted"
+                                : $"Done: {total - failed} deleted, {failed} failed");
+
+                await auditService.LogAsync("AutoSnap.DeleteSnapshots",
+                                            failed == 0,
+                                            $"Cluster: {clusterName}, " +
+                                            $"Count: {total}, " +
+                                            $"Failed: {failed}, " +
+                                            $"Snapshots: {snapshotList.Select(s => $"{s.VmId}:{s.Name}").JoinAsString(", ")}");
             }
 
-            await auditService.LogAsync("AutoSnap.DeleteSnapshots",
-                                        true,
-                                        $"Cluster: {clusterName}, " +
-                                        $"Count: {snapshotList.Count}, " +
-                                        $"Snapshots: {snapshotList.Select(s => $"{s.VmId}:{s.Name}").JoinAsString(", ")}");
+            if (failed > 0) { taskScope.Item.Status = TaskItemStatus.Failed; }
+            await PublishDataChangedAsync(scope);
         }
-
-        await PublishDataChangedAsync(scope);
+        catch (Exception ex)
+        {
+            taskScope.Item.Status = TaskItemStatus.Failed;
+            taskScope.Log(ex.ToString(), LogLevel.Error);
+            throw;
+        }
     }
 }

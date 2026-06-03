@@ -143,16 +143,23 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                                         Settings settings,
                                                                         ModuleDbContext db,
                                                                         bool all,
-                                                                        ILogger logger)
+                                                                        ILogger logger,
+                                                                        TaskScope? taskScope = null)
     {
         const string KEY_STORAGE = "--storage ";
         var taskCount = 0;
         var jobCount = 0;
 
-        foreach (var node in (await client.GetNodesAsync()).Where(a => a.IsOnline))
+        var nodes = (await client.GetNodesAsync()).Where(a => a.IsOnline).ToList();
+        var nodeIndex = 0;
+        foreach (var node in nodes)
         {
+            nodeIndex++;
+            taskScope?.LogProgress(nodeIndex, nodes.Count, $"[{nodeIndex}/{nodes.Count}] Scanning node {node.Node}", phase: $"Scanning {node.Node}");
+
             //list task backup
             var taskItems = await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "vzdump"); //, limit: 9999
+            taskScope?.Log($"  {node.Node}: {taskItems.Count} vzdump task(s) found");
 
             // Batch optimization: Load all existing tasks for this node in one query
             var taskIds = taskItems.Select(t => t.UniqueTaskId).ToList();
@@ -225,14 +232,17 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             }
 
             await db.SaveChangesAsync();
+            taskScope?.Log($"  {node.Node}: imported {taskItems.Count} task(s)");
         }
 
         //remove old logs
         var minDate = DateTime.UtcNow.AddDays(-settings.MaxDaysLogs);
 
-        await db.TaskResults.FromClusterName(settings.ClusterName)
-                            .Where(a => a.Start < minDate)
-                            .ExecuteDeleteAsync();
+        taskScope?.Log($"Cleaning logs older than {settings.MaxDaysLogs} day(s)");
+        var deleted = await db.TaskResults.FromClusterName(settings.ClusterName)
+                                          .Where(a => a.Start < minDate)
+                                          .ExecuteDeleteAsync();
+        if (deleted > 0) { taskScope?.Log($"Deleted {deleted} old task(s)"); }
 
         return (taskCount, jobCount);
     }
@@ -251,12 +261,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 await using var db = await scope.GetDbContextAsync<ModuleDbContext>();
 
                 taskScope.Item.Phase = "Collecting backup data";
+                taskScope.Log($"Collecting backup data for cluster {clusterName}");
 
                 var (taskCount, jobCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
                                                             GetModuleSettings(scope, clusterName),
                                                             db,
                                                             false,
-                                                            logger);
+                                                            logger,
+                                                            taskScope);
 
                 taskScope.Item.Phase = "Saving results";
 
