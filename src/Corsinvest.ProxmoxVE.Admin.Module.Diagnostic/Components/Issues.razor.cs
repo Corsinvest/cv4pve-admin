@@ -5,7 +5,7 @@
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;
 
 public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
-                            DialogService dialogService) : IClusterName, IRefreshableData
+                            DialogService dialogService) : IClusterName, IRefreshableData, IDisposable
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
@@ -13,17 +13,26 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private IList<IgnoredIssue> SelectedItems { get; set; } = [];
     private ResultLoadData<IgnoredIssue> ResultLoadData { get; set; } = new(null!, 0, null);
     private bool _validColumnClick;
+    private GridLoader<IgnoredIssue, IgnoredIssue>? _loader;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<IgnoredIssue, IgnoredIssue>(DataGridRef, defaultOrderBy: "Id");
+        }
+    }
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
+        if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.IgnoredIssues.FromClusterName(ClusterName),
-                                                         args,
-                                                         a => a,
-                                                         ResultLoadData.Filter);
+        ResultLoadData = await _loader.LoadAsync(db.IgnoredIssues.FromClusterName(ClusterName), args, x => x);
     }
 
-    public Task RefreshDataAsync() => DataGridRef.Reload();
+    public Task RefreshDataAsync() => _loader?.RefreshAsync() ?? DataGridRef.Reload();
+
+    public void Dispose() => _loader?.Dispose();
 
     private async Task KeyDownAsync(KeyboardEventArgs e)
     {

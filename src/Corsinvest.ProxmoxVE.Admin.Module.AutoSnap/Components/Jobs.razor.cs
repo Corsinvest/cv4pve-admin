@@ -18,6 +18,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null); private IList<Data> SelectedItems { get; set; } = [];
 
     private bool _validColumnClick;
+    private GridLoader<JobSchedule, Data>? _loader;
 
     private class Data : JobSchedule;
 
@@ -27,35 +28,41 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
         await RefreshDataAsync();
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<JobSchedule, Data>(DataGridRef, defaultOrderBy: "Label");
+        }
+    }
+
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
         await RefreshDataAsync();
         await InvokeAsync(StateHasChanged);
     }
 
-    public async Task RefreshDataAsync()
-    {
-        if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
-    }
+    public Task RefreshDataAsync()
+        => _loader?.RefreshAsync() ?? (DataGridRef != null ? InvokeAsync(DataGridRef.Reload) : Task.CompletedTask);
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
+        if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.Jobs.FromClusterName(ClusterName),
-                                                         args,
-                                                         a => new Data
-                                                         {
-                                                             Id = a.Id,
-                                                             Enabled = a.Enabled,
-                                                             VmIds = a.VmIds,
-                                                             Label = a.Label,
-                                                             Description = a.Description,
-                                                             Keep = a.Keep,
-                                                             VmStatus = a.VmStatus,
-                                                             OnlyRuns = a.OnlyRuns,
-                                                             TimeoutSnapshot = a.TimeoutSnapshot
-                                                         },
-                                                         ResultLoadData.Filter);
+        ResultLoadData = await _loader.LoadAsync(db.Jobs.FromClusterName(ClusterName),
+                                                 args,
+                                                 a => new Data
+                                                 {
+                                                     Id = a.Id,
+                                                     Enabled = a.Enabled,
+                                                     VmIds = a.VmIds,
+                                                     Label = a.Label,
+                                                     Description = a.Description,
+                                                     Keep = a.Keep,
+                                                     VmStatus = a.VmStatus,
+                                                     OnlyRuns = a.OnlyRuns,
+                                                     TimeoutSnapshot = a.TimeoutSnapshot
+                                                 });
     }
 
     private async Task DeleteAsync()
@@ -139,5 +146,9 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
         }
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _loader?.Dispose();
+    }
 }

@@ -23,6 +23,7 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
     private Settings Settings { get; set; } = new();
     private IEnumerable<VmData> Vms { get; set; } = [];
+    private GridLoader<JobResult, Data>? _loader;
 
     private record VmData(string VmId,
                           string Name,
@@ -47,6 +48,21 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         await RefreshDataAsync();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        Vms = [.. (await adminService[ClusterName].CachedData.GetResourcesAsync(false))
+                    .Where(a => a.ResourceType == ClusterResourceType.Vm)
+                    .Select(a => new VmData(a.VmId.ToString(), a.Name, a.Description, a.VmType))];
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<JobResult, Data>(DataGridRef, defaultOrderBy: "Start desc, Id desc");
+        }
+    }
+
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
         await RefreshDataAsync();
@@ -56,33 +72,31 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
     public async Task RefreshDataAsync()
     {
         Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
-        if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
+        if (_loader is not null) { await _loader.RefreshAsync(); }
+        else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
-        Vms = [.. (await adminService[ClusterName].CachedData.GetResourcesAsync(false))
-                    .Where(a => a.ResourceType == ClusterResourceType.Vm)
-                    .Select(a => new VmData(a.VmId.ToString(), a.Name, a.Description, a.VmType))];
+        if (_loader is null) { return; }
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.JobResults.Where(a => a.TaskResult.ClusterName == ClusterName),
-                                                         args,
-                                                         a => new Data(Vms)
-                                                         {
-                                                             TaskId = a.TaskResult.TaskId!,
-                                                             Node = a.TaskResult.Node!,
-                                                             Storage = a.TaskResult.Storage!,
-                                                             Archive = a.Archive!,
-                                                             Start = a.Start,
-                                                             End = a.End,
-                                                             Error = a.Error,
-                                                             Size = a.Size,
-                                                             Status = a.Status,
-                                                             TransferSize = a.TransferSize,
-                                                             VmId = a.VmId
-                                                         },
-                                                         ResultLoadData.Filter);
+        ResultLoadData = await _loader.LoadAsync(db.JobResults.Where(a => a.TaskResult.ClusterName == ClusterName),
+                                                 args,
+                                                 a => new Data(Vms)
+                                                 {
+                                                     TaskId = a.TaskResult.TaskId!,
+                                                     Node = a.TaskResult.Node!,
+                                                     Storage = a.TaskResult.Storage!,
+                                                     Archive = a.Archive!,
+                                                     Start = a.Start,
+                                                     End = a.End,
+                                                     Error = a.Error,
+                                                     Size = a.Size,
+                                                     Status = a.Status,
+                                                     TransferSize = a.TransferSize,
+                                                     VmId = a.VmId
+                                                 });
     }
 
     private async Task ShowLogAsync(Data item, bool forJob)
@@ -128,5 +142,9 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         notificationService.Info(L["Scan started!"]);
     }
 
-    public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+    public void Dispose()
+    {
+        eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+        _loader?.Dispose();
+    }
 }

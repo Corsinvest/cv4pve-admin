@@ -5,7 +5,7 @@
 namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Components;
 
 public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory,
-                             DialogService dialogService) : IClusterName
+                             DialogService dialogService) : IClusterName, IDisposable
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [Parameter] public bool ShowOnlyError { get; set; }
@@ -15,26 +15,37 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
     private bool _validColumnClick;
     private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
+    private GridLoader<JobResult, Data>? _loader;
 
     private class Data : JobResult;
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _loader = GridLoader.Create<JobResult, Data>(DataGridRef, defaultOrderBy: "Start desc, Id desc");
+        }
+    }
+
     private async Task LoadDataAsync(LoadDataArgs args)
     {
+        if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await DataGridRef.LoadDataAsync(db.Results
-                                                           .Where(a => a.Job.Id == JobId, JobId != null)
-                                                           .Where(a => !a.Status, ShowOnlyError),
-                                                         args,
-                                                         a => new Data
-                                                         {
-                                                             Id = a.Id,
-                                                             SnapName = a.SnapName,
-                                                             Status = a.Status,
-                                                             Start = a.Start,
-                                                             End = a.End
-                                                         },
-                                                         ResultLoadData.Filter);
+        ResultLoadData = await _loader.LoadAsync(db.Results
+                                                   .Where(a => a.Job.Id == JobId, JobId != null)
+                                                   .Where(a => !a.Status, ShowOnlyError),
+                                                 args,
+                                                 a => new Data
+                                                 {
+                                                     Id = a.Id,
+                                                     SnapName = a.SnapName,
+                                                     Status = a.Status,
+                                                     Start = a.Start,
+                                                     End = a.End
+                                                 });
     }
+
+    public void Dispose() => _loader?.Dispose();
 
     private void CellClick(DataGridCellMouseEventArgs<Data> e)
         => _validColumnClick = new[] { nameof(Data.SnapName) }.Contains(e.Column!.Property);

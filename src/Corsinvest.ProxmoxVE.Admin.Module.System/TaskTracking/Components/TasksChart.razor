@@ -1,0 +1,46 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking
+@inherits AdminComponentBase
+
+<RadzenCard class="rz-mb-2">
+    <RadzenText TextStyle="TextStyle.Subtitle2" Text="@L["Last 30 days by status"]" class="rz-mb-1" />
+
+    @if (Loading)
+    {
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height:6px" />
+    }
+    else if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" Text="@ErrorMessage" />
+    }
+    else if (Data.Count == 0)
+    {
+        <RadzenText TextStyle="TextStyle.Body2" class="rz-p-2" Text="@L["No data for the current filters in the last 30 days."]" />
+    }
+    else
+    {
+        <RadzenChart Style="height:200px;">
+            <RadzenColumnOptions Radius="2" />
+            @foreach (var status in _statuses)
+            {
+                var data = Data.Where(p => p.Status == status).OrderBy(p => p.Day);
+                if (data.Any())
+                {
+                    <RadzenStackedColumnSeries Data="@data"
+                                               CategoryProperty="@nameof(ChartPoint.Day)"
+                                               ValueProperty="@nameof(ChartPoint.Count)"
+                                               Title="@status.ToString()"
+                                               Fill="@StatusColor(status)">
+                        <RadzenColumnOptions Width="20" />
+                    </RadzenStackedColumnSeries>
+                }
+            }
+            <RadzenCategoryAxis FormatString="{0:MM-dd}" />
+            <RadzenValueAxis />
+            <RadzenLegend Position="LegendPosition.Top" />
+        </RadzenChart>
+    }
+</RadzenCard>

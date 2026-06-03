@@ -3,16 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
-public static partial class QueryableExtensions
+public static class QueryableExtensions
 {
-    [GeneratedRegex(@"^[\w\.\s,]+(\s+(asc|desc))?$", RegexOptions.IgnoreCase)]
-    private static partial Regex OrderByValidationRegex();
-
     public static Task<T?> FromIdAsync<T>(this IQueryable<T> source, int id) where T : IId
         => source.Where(a => a.Id == id).FirstOrDefaultAsync();
 
@@ -53,51 +49,4 @@ public static partial class QueryableExtensions
         => condition
             ? source.Where(truePredicate)
             : source.Where(falsePredicate);
-
-    public static async Task<ResultLoadData<TResult>> LoadDataAsync<TSource, TResult>(this IQueryable<TSource> query,
-                                                                                      LoadDataArgs args,
-                                                                                      RadzenDataGrid<TResult> grid,
-                                                                                      Expression<Func<TSource, TResult>> selector,
-                                                                                      string? lastFilter,
-                                                                                      ILogger? logger = null)
-         where TResult : notnull
-         where TSource : class
-    {
-        var skip = args.Skip ?? 0;
-        var take = args.Top ?? 50;
-
-        var newFilter = lastFilter;
-
-        if (!string.IsNullOrEmpty(args.Filter) && lastFilter != args.Filter)
-        {
-            skip = 0;
-            newFilter = args.Filter;
-        }
-
-        query = query.AsNoTracking()
-                     .Where(args.Filters!, grid.LogicalFilterOperator, grid.FilterCaseSensitivity);
-
-        var totalCount = await query.CountAsync();
-
-        // Validate OrderBy to prevent SQL injection via dynamic LINQ
-        if (!string.IsNullOrEmpty(args.OrderBy))
-        {
-            // Basic validation: only allow alphanumeric, dots, spaces, and "asc"/"desc"
-            if (OrderByValidationRegex().IsMatch(args.OrderBy))
-            {
-                query = query.OrderBy(args.OrderBy);
-            }
-            else
-            {
-                logger?.LogWarning("Potentially unsafe OrderBy clause rejected: {OrderBy}", args.OrderBy);
-            }
-        }
-
-        var items = await query.Select(selector)
-                               .Skip(skip)
-                               .Take(take)
-                               .ToListAsync();
-
-        return new(items, totalCount, newFilter);
-    }
 }

@@ -6,6 +6,11 @@
 @using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking
 @using Corsinvest.ProxmoxVE.Admin.Core.Components.TaskTracking
 
+@if (ChartVisible)
+{
+    <TasksChart Data="@ChartData" ErrorMessage="@ChartError" Loading="@ChartLoading" />
+}
+
 <RadzenDataGrid @ref="@DataGridRef"
                 TItem="TaskItemInfo"
                 Data="@ResultLoadData.Data"
@@ -17,7 +22,7 @@
                 AllowSorting="true"
                 AllowVirtualization="true"
                 AllowColumnPicking="true"
-                Style="height: calc(100vh - 140px)"
+                Style="@($"height: calc(100vh - {(ChartVisible ? 405 : 140)}px);")"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <HeaderTemplate>
@@ -28,6 +33,12 @@
                                Properties="@([x => x.Title, x => x.ClusterName, x => x.ModuleName, x => x.Phase, x => x.CreatedBy, x => x.LastLog])"
                                FiltersChanged="OnSearchFiltersChanged"
                                Style="width:260px;" />
+
+                <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
+                              Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
+                              ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small"
+                              Click="@ToggleChart" />
             </TemplateAfter>
         </CrudToolbar>
     </HeaderTemplate>
