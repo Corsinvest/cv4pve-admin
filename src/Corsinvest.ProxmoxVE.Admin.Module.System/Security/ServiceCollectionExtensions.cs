@@ -124,11 +124,40 @@ public static class ServiceCollectionExtensions
             await userManager.CreateAsync(adminUser, ApplicationHelper.DefaultUserPassword);
         }
 
-        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
-        await roleManager.CreateAsync(RoleConstants.AdministratorRole, "Admin", true, false);
-        await userManager.AddToRolesAsync(adminUser, [RoleConstants.AdministratorRole]);
+        var systemUser = await userManager.FindByNameAsync(SystemUser.UserName);
+        if (systemUser == null)
+        {
+            systemUser = new ApplicationUser
+            {
+                UserName = SystemUser.UserName,
+                IsActive = true,
+                DisplayName = SystemUser.DisplayName,
+                Email = SystemUser.Email,
+                EmailConfirmed = false,
+                BuiltIn = true,
+                LockoutEnabled = true,
+                LockoutEnd = DateTimeOffset.MaxValue,
+            };
 
+            //no password: cannot log in
+            await userManager.CreateAsync(systemUser);
+        }
+
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
         var permissionService = services.GetRequiredService<IPermissionService>();
+
+        await AddSystemRolesAsync(userManager, roleManager, permissionService, services, adminUser);
+        await AddSystemRolesAsync(userManager, roleManager, permissionService, services, systemUser);
+    }
+
+    private static async Task AddSystemRolesAsync(UserManager<ApplicationUser> userManager,
+                                                  RoleManager<ApplicationRole> roleManager,
+                                                  IPermissionService permissionService,
+                                                  IServiceProvider services,
+                                                  ApplicationUser user)
+    {
+        await roleManager.CreateAsync(RoleConstants.AdministratorRole, "Admin", true, false);
+        await userManager.AddToRolesAsync(user, [RoleConstants.AdministratorRole]);
 
         var roles = new[]
         {
@@ -141,7 +170,7 @@ public static class ServiceCollectionExtensions
         foreach (var item in roles)
         {
             var role = await roleManager.CreateAsync(item, permissionService);
-            await userManager.AddToRoleAsync(adminUser, role.Name!);
+            await userManager.AddToRoleAsync(user, role.Name!);
 
             if (ClusterPermissions.RoleAdmin == item)
             {
@@ -153,7 +182,7 @@ public static class ServiceCollectionExtensions
         //create roles for module
         foreach (var module in services.GetRequiredService<IModuleService>().Modules)
         {
-            await userManager.AddToRoleAsync(adminUser, (await roleManager.CreateAsync(module.RoleAdmin, permissionService)).Name!);
+            await userManager.AddToRoleAsync(user, (await roleManager.CreateAsync(module.RoleAdmin, permissionService)).Name!);
 
             //role and permission specific module
             foreach (var item in module.AllRoles)

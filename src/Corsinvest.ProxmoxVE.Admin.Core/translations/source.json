@@ -1060,5 +1060,10 @@
   "Mem. Status": "",
   "Select all items": "",
   "Histories": "",
-  "Select item": ""
+  "Select item": "",
+  "Delete selected rows": "",
+  "Deleting snapshots started!": "",
+  "Only set": "",
+  "The system account cannot be deleted.": "",
+  "The system account cannot be modified.": ""
 }

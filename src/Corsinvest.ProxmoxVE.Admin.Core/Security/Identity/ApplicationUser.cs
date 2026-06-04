@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
@@ -12,6 +13,9 @@ public class ApplicationUser : IdentityUser, IBuiltIn
     public bool IsActive { get; set; } = true;
     public string? ProfileImageUrl { get; set; }
     public bool BuiltIn { get; set; }
+
+    [NotMapped]
+    public bool IsSystem => UserName == SystemUser.UserName;
 
     public static string GetUserProfileImagePath(string email) => Path.Combine(ApplicationHelper.UserProfileImagesPath, $"{email}.jpg");
     public virtual ICollection<UserPermission> UserPermissions { get; set; } = [];
