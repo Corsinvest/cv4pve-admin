@@ -76,6 +76,12 @@ public static class UserCommands
                 return 1;
             }
 
+            if (user.IsSystem)
+            {
+                Console.WriteLine($"Error: User '{username}' is a system user and cannot be modified");
+                return 1;
+            }
+
             // Reset password
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
             var result = await userManager.ResetPasswordAsync(user, token, password);
@@ -112,6 +118,12 @@ public static class UserCommands
                 return 1;
             }
 
+            if (user.IsSystem)
+            {
+                Console.WriteLine($"Error: User '{username}' is a system user and cannot be unlocked");
+                return 1;
+            }
+
             var result = await userManager.SetLockoutEndDateAsync(user, null);
             if (!result.Succeeded)
             {
@@ -140,6 +152,12 @@ public static class UserCommands
             if (user == null)
             {
                 Console.WriteLine($"Error: User '{username}' not found");
+                return 1;
+            }
+
+            if (user.IsSystem)
+            {
+                Console.WriteLine($"Error: User '{username}' is a system user and cannot be modified");
                 return 1;
             }
 

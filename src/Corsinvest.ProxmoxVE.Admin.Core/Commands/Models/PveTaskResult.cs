@@ -23,11 +23,11 @@ public record PveTaskResult : CommandResult<Result>
         };
 
     public static PveTaskResult Failure(string clusterName, string errorMessage)
-        => (PveTaskResult)CommandResult<Result>.Failure(errorMessage) with { ClusterName = clusterName };
+        => new() { Status = CommandResultStatus.Failed, ErrorMessage = errorMessage, ClusterName = clusterName };
 
     public static new PveTaskResult Forbidden(string clusterName)
-        => (PveTaskResult)CommandResult<Result>.Forbidden() with { ClusterName = clusterName };
+        => new() { Status = CommandResultStatus.Forbidden, ErrorMessage = "Operation not permitted", ClusterName = clusterName };
 
     public static new PveTaskResult Unauthorized(string clusterName)
-        => (PveTaskResult)CommandResult<Result>.Unauthorized() with { ClusterName = clusterName };
+        => new() { Status = CommandResultStatus.Unauthorized, ErrorMessage = "Authentication required", ClusterName = clusterName };
 }

@@ -31,12 +31,18 @@ internal static class ServiceCollectionExtensions
         GlobalJobFilters.Filters.Add(new PreventConcurrentExecutionWithJobAndArgsFilter());
 
         //services.AddSingleton<JobActivator, JobActivatorEx>();
-        services.AddHangfire(config =>
+        services.AddHangfire((sp, config) =>
         {
+            var diagLogger = sp.GetRequiredService<ILoggerFactory>().CreateLogger("HangfireConfig");
+            diagLogger.LogWarning("===== AddHangfire lambda executing — registering custom filters =====");
+
             config.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(configuration.GetConnectionString("DefaultConnection")),
                                                                                new PostgreSqlStorageOptions { SchemaName = "hangfire" });
 
-            config.UseFilter(new LogJobFilter());
+            // UserContextJobFilter must run before LogJobFilter so the log
+            // entries see the principal populated by the former.
+            config.UseFilter(new UserContextJobFilter(sp));
+            config.UseFilter(new LogJobFilter(sp));
             // config.UseFilter(new SkipConcurrentExecutionFilter(provider.GetRequiredService<ILogger<SkipConcurrentExecutionFilter>>()));
             config.UseColouredConsoleLogProvider();
             config.UseRecommendedSerializerSettings();
@@ -52,6 +58,21 @@ internal static class ServiceCollectionExtensions
     {
         using var scope = app.Services.CreateScope();
         var appSettings = scope.GetRequiredService<ISettingsService>().GetAppSettings();
+
+        // Fallback: if AddHangfire lambda was bypassed (e.g. Elsa starts its
+        // own Hangfire server before our config runs), our filters never get
+        // registered. Add them here against the live application provider.
+        var logger = scope.GetRequiredService<ILoggerFactory>().CreateLogger("HangfireConfig");
+        if (!GlobalJobFilters.Filters.Select(f => f.Instance).OfType<UserContextJobFilter>().Any())
+        {
+            logger.LogWarning("UserContextJobFilter not registered — adding via fallback on app.Services");
+            GlobalJobFilters.Filters.Add(new UserContextJobFilter(app.Services));
+            GlobalJobFilters.Filters.Add(new LogJobFilter(app.Services));
+        }
+        else
+        {
+            logger.LogInformation("UserContextJobFilter already registered via AddHangfire lambda");
+        }
 
         app.MapHangfireDashboard(BackgroundJobsDashboardUrl,
                                  new DashboardOptions

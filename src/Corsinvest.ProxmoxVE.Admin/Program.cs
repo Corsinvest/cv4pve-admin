@@ -20,9 +20,16 @@ var (_, extraSettingsWarning) = builder.Configuration.AddJsonFileSafe(Path.Combi
 // Add service defaults & Aspire client integrations.
 builder.AddServiceAspireDefaults();
 
+// Surface sink errors to stderr instead of swallowing them.
+Serilog.Debugging.SelfLog.Enable(Console.Error);
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
 builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
 
-Log.Logger.Information("Start cv4pve-admin....");
+Log.Logger.Information("========== Start cv4pve-admin ==========");
 Log.Logger.Information("Version: {Version}", BuildInfo.Version);
 if (extraSettingsWarning != null) { Log.Logger.Warning(extraSettingsWarning); }
 

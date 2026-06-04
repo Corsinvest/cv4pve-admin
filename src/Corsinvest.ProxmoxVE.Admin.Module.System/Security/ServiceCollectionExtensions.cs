@@ -106,6 +106,8 @@ public static class ServiceCollectionExtensions
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(Module));
         logger.LogDebug("Initialize Security db");
 
+        await ApplyBackwardCompatFixesAsync(services, logger);
+
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var adminUser = await userManager.FindByEmailAsync(ApplicationHelper.DefaultAdminUsername);
         if (adminUser == null)
@@ -124,11 +126,41 @@ public static class ServiceCollectionExtensions
             await userManager.CreateAsync(adminUser, ApplicationHelper.DefaultUserPassword);
         }
 
-        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
-        await roleManager.CreateAsync(RoleConstants.AdministratorRole, "Admin", true, false);
-        await userManager.AddToRolesAsync(adminUser, [RoleConstants.AdministratorRole]);
+        var systemUser = await userManager.FindByNameAsync(SystemUser.UserName);
+        if (systemUser == null)
+        {
+            systemUser = new ApplicationUser
+            {
+                UserName = SystemUser.UserName,
+                IsActive = true,
+                DisplayName = SystemUser.DisplayName,
+                Email = SystemUser.Email,
+                EmailConfirmed = false,
+                BuiltIn = true,
+                LockoutEnabled = true,
+                LockoutEnd = DateTimeOffset.MaxValue,
+            };
 
+            //no password: cannot log in
+            await userManager.CreateAsync(systemUser);
+        }
+        SystemUser.Id = systemUser.Id;
+
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
         var permissionService = services.GetRequiredService<IPermissionService>();
+
+        await AddSystemRolesAsync(userManager, roleManager, permissionService, services, adminUser);
+        await AddSystemRolesAsync(userManager, roleManager, permissionService, services, systemUser);
+    }
+
+    private static async Task AddSystemRolesAsync(UserManager<ApplicationUser> userManager,
+                                                  RoleManager<ApplicationRole> roleManager,
+                                                  IPermissionService permissionService,
+                                                  IServiceProvider services,
+                                                  ApplicationUser user)
+    {
+        await roleManager.CreateAsync(RoleConstants.AdministratorRole, "Admin", true, false);
+        await userManager.AddToRolesAsync(user, [RoleConstants.AdministratorRole]);
 
         var roles = new[]
         {
@@ -141,7 +173,7 @@ public static class ServiceCollectionExtensions
         foreach (var item in roles)
         {
             var role = await roleManager.CreateAsync(item, permissionService);
-            await userManager.AddToRoleAsync(adminUser, role.Name!);
+            await userManager.AddToRoleAsync(user, role.Name!);
 
             if (ClusterPermissions.RoleAdmin == item)
             {
@@ -153,13 +185,35 @@ public static class ServiceCollectionExtensions
         //create roles for module
         foreach (var module in services.GetRequiredService<IModuleService>().Modules)
         {
-            await userManager.AddToRoleAsync(adminUser, (await roleManager.CreateAsync(module.RoleAdmin, permissionService)).Name!);
+            await userManager.AddToRoleAsync(user, (await roleManager.CreateAsync(module.RoleAdmin, permissionService)).Name!);
 
             //role and permission specific module
             foreach (var item in module.AllRoles)
             {
                 await roleManager.CreateAsync(item, permissionService);
             }
+        }
+    }
+
+    /// <summary>
+    /// Run all idempotent backward-compat data fixes for older installations.
+    /// Add new sub-fixes here when historical bugs leave stale rows that need
+    /// realignment at boot. Each sub-fix must be safe to run on already-fixed
+    /// or fresh databases (no-op when nothing matches).
+    /// </summary>
+    private static async Task ApplyBackwardCompatFixesAsync(IServiceProvider services, ILogger logger)
+    {
+        await using var db = await services.GetRequiredService<IDbContextFactory<ModuleDbContext>>().CreateDbContextAsync();
+
+        // Builtin role permissions with Path="*" were seeded with
+        // Propagated=false, which broke checks against specific paths (e.g.
+        // /vms/1000). New rows are now written with Propagated=true.
+        var propagatedRows = await db.RolePermissions
+                                     .Where(r => r.BuiltIn && r.Path == "*" && !r.Propagated)
+                                     .ExecuteUpdateAsync(s => s.SetProperty(r => r.Propagated, true));
+        if (propagatedRows > 0)
+        {
+            logger.LogInformation("Realigned {Rows} builtin role permission(s) to Propagated=true", propagatedRows);
         }
     }
 }
