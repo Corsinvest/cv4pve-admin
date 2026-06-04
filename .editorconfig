@@ -27,7 +27,7 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 spelling_exclusion_path = spelling.dic
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
-end_of_line = crlf
+end_of_line = lf
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
 dotnet_style_prefer_auto_properties = true:silent
 dotnet_style_object_initializer = true:warning
@@ -49,7 +49,7 @@ roslynator_analyzers.enabled_by_default = true
 [*.cs]
 indent_size = 4
 tab_width = 4
-end_of_line = crlf
+end_of_line = lf
 dotnet_diagnostic.IDE0059.severity = warning
 dotnet_diagnostic.IDE0060.severity = warning
 dotnet_diagnostic.CS0168.severity = warning
@@ -373,5 +373,5 @@ end_of_line = lf
 [*.{razor,cshtml}]
 indent_size = 4
 tab_width = 4
-end_of_line = crlf
+end_of_line = lf
 charset = utf-8-bom
