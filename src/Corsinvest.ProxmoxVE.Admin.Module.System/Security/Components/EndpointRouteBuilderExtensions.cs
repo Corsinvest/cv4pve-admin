@@ -129,22 +129,22 @@ public static class EndpointRouteBuilderExtensions
 
             if (result.Succeeded)
             {
-                await auditService.LogAsync(userName.Value, "Login-TwoFactor", true);
+                await auditService.LogAsync("Login-TwoFactor", true, $"User '{userName.Value}' logged in");
                 url = tmpReturnUrl;
             }
             else if (result.IsLockedOut)
             {
-                await auditService.LogAsync(userName.Value, "Login-TwoFactor", false, "Account locked out");
+                await auditService.LogAsync("Login-TwoFactor", false, $"Account locked out for user '{userName.Value}'");
                 url = BuildErrorUrl(tmpReturnUrl, "This account has been locked out, please try again later");
             }
             else if (result.IsNotAllowed)
             {
-                await auditService.LogAsync(userName.Value, "Login-TwoFactor", false, "Account not allowed");
+                await auditService.LogAsync("Login-TwoFactor", false, $"Account not allowed for user '{userName.Value}'");
                 url = BuildErrorUrl(tmpReturnUrl, "This account is not allowed, please try again later");
             }
             else
             {
-                await auditService.LogAsync(userName.Value, "Login-TwoFactor", false, "Invalid authenticator code");
+                await auditService.LogAsync("Login-TwoFactor", false, $"Invalid authenticator code for user '{userName.Value}'");
                 url = BuildErrorUrl(tmpReturnUrl, "Invalid authenticator code entered");
             }
 
@@ -167,7 +167,7 @@ public static class EndpointRouteBuilderExtensions
             var result = await signInManager.PasswordSignInExAsync(model.UserName, model.Password, model.RememberMe, true);
             if (result.Succeeded)
             {
-                await auditService.LogAsync(model.UserName, "Login-Password", true);
+                await auditService.LogAsync("Login-Password", true, $"User '{model.UserName}' logged in");
 
                 var userSettings = settingsService.Get<UserSettings>(forCurrentUser: true);
                 httpContext.Response.AppendCultureCookie(userSettings.Culture);
@@ -187,17 +187,17 @@ public static class EndpointRouteBuilderExtensions
             }
             else if (result.IsLockedOut)
             {
-                await auditService.LogAsync(model.UserName, "Login-Password", false, "Account locked out");
+                await auditService.LogAsync("Login-Password", false, $"Account locked out for user '{model.UserName}'");
                 url = BuildErrorUrl(tmpReturnUrl, "This account has been locked out, please try again later");
             }
             else if (result.IsNotAllowed)
             {
-                await auditService.LogAsync(model.UserName, "Login-Password", false, "Account not allowed");
+                await auditService.LogAsync("Login-Password", false, $"Account not allowed for user '{model.UserName}'");
                 url = BuildErrorUrl(tmpReturnUrl, "This account is not allowed, please try again later");
             }
             else
             {
-                await auditService.LogAsync(model.UserName, "Login-Password", false, "Invalid credentials");
+                await auditService.LogAsync("Login-Password", false, $"Invalid credentials for user '{model.UserName}'");
                 url = BuildErrorUrl(tmpReturnUrl, "Invalid user or password");
             }
 
@@ -212,7 +212,7 @@ public static class EndpointRouteBuilderExtensions
             var userName = context.User?.Identity?.Name;
             await signInManager.SignOutAsync();
 
-            if (!string.IsNullOrEmpty(userName)) { await auditService.LogAsync(userName, "Logout", true); }
+            if (!string.IsNullOrEmpty(userName)) { await auditService.LogAsync("Logout", true, $"User '{userName}' logged out"); }
 
             return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
         });
