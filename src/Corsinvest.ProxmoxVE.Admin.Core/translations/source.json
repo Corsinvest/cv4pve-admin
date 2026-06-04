@@ -1065,5 +1065,7 @@
   "Deleting snapshots started!": "",
   "Only set": "",
   "The system account cannot be deleted.": "",
-  "The system account cannot be modified.": ""
+  "The system account cannot be modified.": "",
+  "Run retention cleanup now?": "",
+  "Deleted {0} record(s)": ""
 }
