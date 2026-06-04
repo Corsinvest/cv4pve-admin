@@ -97,7 +97,7 @@ public static class IdentityExtensions
             await permissionService.AddForRoleAsync(role.Id, permissions.Select(a => new PermissionData(ApplicationHelper.AllClusterName,
                                                                                                         a.Key,
                                                                                                         "*",
-                                                                                                        false,
+                                                                                                        true,
                                                                                                         role.BuiltIn)));
         }
     }

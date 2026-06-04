@@ -15,4 +15,5 @@ public static class SystemUser
     public const string UserName = "system";
     public const string DisplayName = "System";
     public const string Email = "system@cv4pve-admin.invalid";
+    public static string Id { get; set; } = string.Empty;
 }

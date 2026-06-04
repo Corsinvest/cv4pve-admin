@@ -106,6 +106,8 @@ public static class ServiceCollectionExtensions
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(Module));
         logger.LogDebug("Initialize Security db");
 
+        await ApplyBackwardCompatFixesAsync(services, logger);
+
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var adminUser = await userManager.FindByEmailAsync(ApplicationHelper.DefaultAdminUsername);
         if (adminUser == null)
@@ -142,6 +144,7 @@ public static class ServiceCollectionExtensions
             //no password: cannot log in
             await userManager.CreateAsync(systemUser);
         }
+        SystemUser.Id = systemUser.Id;
 
         var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
         var permissionService = services.GetRequiredService<IPermissionService>();
@@ -189,6 +192,28 @@ public static class ServiceCollectionExtensions
             {
                 await roleManager.CreateAsync(item, permissionService);
             }
+        }
+    }
+
+    /// <summary>
+    /// Run all idempotent backward-compat data fixes for older installations.
+    /// Add new sub-fixes here when historical bugs leave stale rows that need
+    /// realignment at boot. Each sub-fix must be safe to run on already-fixed
+    /// or fresh databases (no-op when nothing matches).
+    /// </summary>
+    private static async Task ApplyBackwardCompatFixesAsync(IServiceProvider services, ILogger logger)
+    {
+        await using var db = await services.GetRequiredService<IDbContextFactory<ModuleDbContext>>().CreateDbContextAsync();
+
+        // Builtin role permissions with Path="*" were seeded with
+        // Propagated=false, which broke checks against specific paths (e.g.
+        // /vms/1000). New rows are now written with Propagated=true.
+        var propagatedRows = await db.RolePermissions
+                                     .Where(r => r.BuiltIn && r.Path == "*" && !r.Propagated)
+                                     .ExecuteUpdateAsync(s => s.SetProperty(r => r.Propagated, true));
+        if (propagatedRows > 0)
+        {
+            logger.LogInformation("Realigned {Rows} builtin role permission(s) to Propagated=true", propagatedRows);
         }
     }
 }
