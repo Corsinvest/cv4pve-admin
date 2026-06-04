@@ -10,7 +10,7 @@ using Hangfire.Storage;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.BackgroundJobs.Filters;
 
-public class LogJobFilter : IClientFilter, IServerFilter, IElectStateFilter, IApplyStateFilter
+public class LogJobFilter(IServiceProvider serviceProvider) : IClientFilter, IServerFilter, IElectStateFilter, IApplyStateFilter
 {
     private static readonly ILog Logger = LogProvider.GetCurrentClassLogger();
 
@@ -23,10 +23,19 @@ public class LogJobFilter : IClientFilter, IServerFilter, IElectStateFilter, IAp
                              context.BackgroundJob?.Id);
 
     public void OnPerforming(PerformingContext context)
-        => Logger.InfoFormat("Starting to perform job {0}", context.BackgroundJob.Id);
+        => Logger.InfoFormat("Starting to perform job {0} as user '{1}'",
+                             context.BackgroundJob.Id,
+                             GetExecutingUser());
 
     public void OnPerformed(PerformedContext context)
-        => Logger.InfoFormat("Job {0} has been performed", context.BackgroundJob.Id);
+        => Logger.InfoFormat("Job {0} has been performed by user '{1}'",
+                             context.BackgroundJob.Id,
+                             GetExecutingUser());
+
+    // UserContextJobFilter runs before this one and populates HttpContext.User
+    // with the principal of the user running the job (or the system user).
+    private string? GetExecutingUser()
+        => serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User?.Identity?.Name;
 
     public void OnStateElection(ElectStateContext context)
     {
