@@ -20,10 +20,7 @@ public class UserContextJobFilter(IServiceProvider serviceProvider) : IClientFil
         if (!string.IsNullOrEmpty(userId)) { context.SetJobParameter(ParameterName, userId); }
     }
 
-    public void OnCreated(CreatedContext context)
-    {
-
-    }
+    public void OnCreated(CreatedContext context) { }
 
     public void OnPerforming(PerformingContext context)
     {
