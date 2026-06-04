@@ -126,7 +126,7 @@ public partial class Status(IAdminService adminService,
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected rows"], true))
         {
-            backgroundJobService.Schedule<Job>(a => a.DeleteAsync(SelectedItems, ClusterName), TimeSpan.FromSeconds(5));
+            backgroundJobService.Enqueue<Job>(a => a.DeleteAsync(SelectedItems, ClusterName));
             notificationService.Info(L["Deleting snapshots started!"]);
             SelectedItems.Clear();
         }

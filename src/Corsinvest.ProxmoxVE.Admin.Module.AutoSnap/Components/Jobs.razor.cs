@@ -74,7 +74,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.Jobs.DeleteAsync(SelectedItems[0].Id);
 
-            backgroundJobService.Schedule<Job>(a => a.DeleteAsync(SelectedItems[0].Id), TimeSpan.FromSeconds(5));
+            backgroundJobService.Enqueue<Job>(a => a.DeleteAsync(SelectedItems[0].Id));
             notificationService.Info(L["Delete started!"]);
 
             SelectedItems.Clear();
@@ -105,14 +105,14 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     {
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Clean selected row"], false))
         {
-            backgroundJobService.Schedule<Job>(a => a.PurgeAsync(SelectedItems[0].Id), TimeSpan.FromSeconds(5));
+            backgroundJobService.Enqueue<Job>(a => a.PurgeAsync(SelectedItems[0].Id));
             notificationService.Info(L["Purge started!"]);
         }
     }
 
     private void Snap()
     {
-        backgroundJobService.Schedule<Job>(a => a.SnapAsync(SelectedItems[0].Id), TimeSpan.FromSeconds(5));
+        backgroundJobService.Enqueue<Job>(a => a.SnapAsync(SelectedItems[0].Id));
         notificationService.Info(L["Job started!"]);
     }
 
