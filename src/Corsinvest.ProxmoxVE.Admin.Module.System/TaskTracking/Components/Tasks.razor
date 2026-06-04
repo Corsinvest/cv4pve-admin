@@ -52,7 +52,18 @@
 
         <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ClusterName)" Title="@L["Cluster"]"  Width="140px" FilterMode="FilterMode.CheckBoxList" />
         <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ModuleName)"  Title="@L["Module"]"   Width="140px" FilterMode="FilterMode.CheckBoxList" />
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Status)"      Title="@L["Status"]"   Width="110px" FilterMode="FilterMode.CheckBoxList" />
+
+        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Status)"      Title="@L["Status"]"   Width="130px" FilterMode="FilterMode.CheckBoxList">
+            <Template Context="item">
+                <RadzenBadge BadgeStyle="@GetStatusBadgeStyle(item.Status)"
+                             IsPill="true"
+                             Shade="Shade.Lighter">
+                    <RadzenIcon Icon="@GetStatusIcon(item.Status)" Style="font-size:14px;vertical-align:middle;margin-right:4px;" />
+                    @item.Status
+                </RadzenBadge>
+            </Template>
+        </RadzenDataGridColumn>
+
         <RadzenDataGridColumn Property="@nameof(TaskItemInfo.StartedAt)"   Title="@L["Started"]"  Width="150px" FormatString="{0:g}" SortOrder="SortOrder.Descending"/>
         <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Duration)"    Title="@L["Duration"]" Width="100px" FormatString="{0:hh':'mm':'ss}" Filterable="false" />
 
