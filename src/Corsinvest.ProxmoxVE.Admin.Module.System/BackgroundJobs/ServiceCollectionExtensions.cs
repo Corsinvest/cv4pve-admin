@@ -33,9 +33,6 @@ internal static class ServiceCollectionExtensions
         //services.AddSingleton<JobActivator, JobActivatorEx>();
         services.AddHangfire((sp, config) =>
         {
-            var diagLogger = sp.GetRequiredService<ILoggerFactory>().CreateLogger("HangfireConfig");
-            diagLogger.LogWarning("===== AddHangfire lambda executing — registering custom filters =====");
-
             config.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(configuration.GetConnectionString("DefaultConnection")),
                                                                                new PostgreSqlStorageOptions { SchemaName = "hangfire" });
 

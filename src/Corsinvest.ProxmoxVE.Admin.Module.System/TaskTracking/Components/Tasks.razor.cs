@@ -161,4 +161,24 @@ public partial class Tasks(ITaskTrackerService taskTracker,
         taskTracker.Changed -= OnTrackerChanged;
         _loader?.Dispose();
     }
+
+    private static string GetStatusIcon(TaskItemStatus status) => status switch
+    {
+        TaskItemStatus.Running => "autorenew",
+        TaskItemStatus.Completed => "check_circle",
+        TaskItemStatus.Failed => "error",
+        TaskItemStatus.Cancelled => "cancel",
+        TaskItemStatus.Abandoned => "report_problem",
+        _ => "circle"
+    };
+
+    private static BadgeStyle GetStatusBadgeStyle(TaskItemStatus status) => status switch
+    {
+        TaskItemStatus.Running => BadgeStyle.Info,
+        TaskItemStatus.Completed => BadgeStyle.Success,
+        TaskItemStatus.Failed => BadgeStyle.Danger,
+        TaskItemStatus.Cancelled => BadgeStyle.Secondary,
+        TaskItemStatus.Abandoned => BadgeStyle.Warning,
+        _ => BadgeStyle.Light
+    };
 }
