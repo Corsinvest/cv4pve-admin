@@ -1068,5 +1068,6 @@
   "The system account cannot be modified.": "",
   "Run retention cleanup now?": "",
   "Deleted {0} record(s)": "",
-  "Failed": ""
+  "Failed": "",
+  "User details updated successfully.": ""
 }

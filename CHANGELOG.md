@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.1.0-rc3] - 2026-06-05
+
+### Added
+
+- **Built-in `system` user**. A locked-out, no-password user is now created on first boot and shown in the users list with the *Built-in* flag. It is the identity used by scheduled jobs and other non-interactive workflows (cron snapshots, retention cleanups, workflow timers), so the audit trail records *who actually did what* even when no person is logged in. It cannot be deleted, modified or used to sign in.
+
+- **Scheduled job identity**. Any background job started from the web UI now runs as the user who clicked the button — manual *Snapshot now*, *Run scan now*, *Cleanup retention* and so on are recorded against your account, not as *anonymous*. Cron-driven jobs run as the new `system` user. This makes the **Tasks** and *(EE)* **Audit Logs** pages actually useful to track activity.
+
+- **Status badges**. The **Tasks** page status column now shows a coloured pill with an icon (Running / Completed / Failed / Cancelled / Abandoned), matching the level badges already used on the *(EE)* **Logs** page. The *(EE)* **Audit Logs** *Success* column gets the same treatment, with a *Success* / *Failed* label instead of a bare check icon.
+
+### Fixed
+
+- **Built-in role permissions on existing installations**. Older databases were seeded with a flag that prevented built-in admin roles from matching specific resources (single VM, single node). The check appeared to *succeed* in role lists but silently *denied* the actual action — most visibly on scheduled AutoSnap deletes. The flag is now correctly set on fresh installs, and existing installations are realigned automatically on first boot with this version (you'll see one line in the logs: *Realigned N built-in role permission(s)*).
+
+- **Background job permissions** *(EE)*. AutoSnap retention deletions and other scheduled jobs were failing with *Permission denied* because the job was running as *anonymous*. They now run as the `system` user with full admin rights and complete successfully.
+
+- **Audit log writes** *(EE)*. Some audit log entries were silently dropped because the database constraint that links them to the user table was violated when no user could be resolved. The user is now always known (real user from the request, or `system` for jobs), and entries are written without errors.
+
+- **Postgres log sink**. A typo in the column configuration was preventing the database log sink from writing any row — the file log kept working, so the issue went unnoticed. Database logging is now restored, and any future sink failure is surfaced on standard error instead of being swallowed.
+
+- **Login activity in audit logs** *(EE)*. Successful and failed login attempts are now recorded with the attempted username (in the *Details* column), not as *anonymous*, making it possible to spot brute-force attempts on a specific account.
+
+- **PVE command result on permission denied / unauthorized / failure**. A regression in the result object construction caused an internal error to bubble up to the UI instead of the expected *Operation not permitted* / *Authentication required* message. PVE command results now return cleanly with the correct status.
+
+- **Edit User dialog** *(EE)*. Opening the *Edit user* dialog could fail on first render because of an internal type-visibility issue with the roles pick-list. The dialog opens reliably again.
+
+### Internal
+
+- The background job system now uses a real PostgreSQL queue again (it had quietly fallen back to in-memory storage because of a conflicting registration from the workflow engine). Jobs survive process restarts, retries are durable, and the *Hangfire* dashboard shows real history.
+
 ## [2.1.0-rc2] - 2026-06-03
 
 ### Added
