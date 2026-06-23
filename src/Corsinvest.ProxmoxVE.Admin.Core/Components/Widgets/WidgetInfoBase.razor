@@ -9,7 +9,7 @@
     <RadzenRow>
         @foreach (var stat in Stats)
         {
-            <RadzenColumn Size="12" SizeMD="3">
+            <RadzenColumn Size="12" SizeSM="3">
                 <RadzenCard Variant="Variant.Outlined" Class="rz-text-align-center rz-p-4">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.25rem">
                         <RadzenText TextStyle="TextStyle.Caption" Class="rz-text-uppercase rz-m-0" Text="@stat.Title" />
@@ -26,7 +26,7 @@
     </RadzenRow>
 
     <RadzenRow>
-        <RadzenColumn Size="12" SizeMD="6">
+        <RadzenColumn Size="12" SizeSM="6">
             <RadzenCard Style="height: 100%">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: 1px solid var(--rz-divider)">
                     <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["ALERTS / WARNINGS"]" />
@@ -54,7 +54,7 @@
             </RadzenCard>
         </RadzenColumn>
 
-        <RadzenColumn Size="12" SizeMD="6">
+        <RadzenColumn Size="12" SizeSM="6">
             <RadzenCard Style="height: 100%">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: 1px solid var(--rz-divider)">
                     <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["AGE DISTRIBUTION"]" />
