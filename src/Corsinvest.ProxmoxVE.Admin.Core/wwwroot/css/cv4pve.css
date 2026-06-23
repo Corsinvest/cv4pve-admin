@@ -352,6 +352,7 @@
 
 .cv4pve-thumb-widget-icon .rzi {
     font-size: clamp(2.5rem, 35cqmin, 12rem);
+
     --rz-icon-fill: 1;
 }
 
