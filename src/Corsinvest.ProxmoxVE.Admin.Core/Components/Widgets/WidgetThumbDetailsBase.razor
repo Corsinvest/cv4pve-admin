@@ -1,31 +1,100 @@
-﻿@*
+@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@using Radzen.Blazor.Rendering
 @inherits AdminComponentBase
 
 @typeparam TWidgetSettings
 
-<RadzenStack class="rz-p-2 rz-w-100 rz-h-100" Orientation="Orientation.Vertical">
-    @if (ShowIcon)
+<div class="cv4pve-thumb-widget">
+    @switch (Status)
     {
-        <BoolIcon Value="!Items.Any()"
-                  IconTrue="thumb_up"
-                  IconFalse="thumb_down"
-                  class="rz-w-100 rz-h-100"
-                  Style="font-size: xxx-large; --rz-icon-fill: 1;" />
-    }
+        case WidgetState.NotConfigured:
+            <div class="cv4pve-thumb-widget-icon neutral">
+                <RadzenIcon Icon="settings" />
+            </div>
+            break;
 
-    @foreach (var item in Items)
-    {
-        <RadzenText>
-            @item.Action
-            <RadzenBadge BadgeStyle="BadgeStyle.Danger" IsPill="true" Text="@item.Count.ToString()" />
-        </RadzenText>
+        case WidgetState.Ok:
+            <div class="cv4pve-thumb-widget-icon ok">
+                <RadzenIcon Icon="thumb_up" />
+            </div>
+            break;
+
+        case WidgetState.Issues:
+            <div class="cv4pve-thumb-widget-row">
+                <div class="cv4pve-thumb-widget-icon ko">
+                    <RadzenIcon Icon="thumb_down" />
+                </div>
+                <div @ref="_badgeRef"
+                     class="cv4pve-thumb-widget-dot critical"
+                     style="@(Items.Any() ? "cursor: pointer;" : "")"
+                     @onmouseenter="OpenDetails"
+                     @onclick="ToggleDetails">
+                    @Count
+                </div>
+            </div>
+            break;
     }
 
     @if (!string.IsNullOrEmpty(Message))
     {
-        <RadzenText Text="@Message" class="rz-w-100 rz-text-align-center" TextStyle="TextStyle.Subtitle2" />
+        <div class="cv4pve-thumb-widget-message">@Message</div>
     }
-</RadzenStack>
+</div>
+
+@if (Items.Any())
+{
+    <Popup @ref="_detailsPopup"
+           Lazy="true"
+           Style="display: none; position: absolute;"
+           class="cv4pve-thumb-widget-popup rz-panel"
+           AutoFocusFirstElement="false"
+           Open="@(() => _popupOpen = true)"
+           Close="@(() => _popupOpen = false)">
+        <div class="cv4pve-thumb-widget-tooltip @(Items.Count() > 5 ? "cv4pve-thumb-widget-tooltip-scroll" : "")">
+            <table>
+                <tbody>
+                    @foreach (var item in OrderedItems)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Url))
+                                {
+                                    <a href="@item.Url"
+                                       class="cv4pve-thumb-widget-tooltip-link">@item.Text</a>
+                                }
+                                else
+                                {
+                                    @item.Text
+                                }
+                            </td>
+                            <td class="rz-text-align-right">@item.Count</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </Popup>
+}
+
+@code {
+    private ElementReference _badgeRef;
+    private Popup _detailsPopup = default!;
+    private bool _popupOpen;
+
+    private IEnumerable<Data> OrderedItems => Items.OrderByDescending(a => a.Count);
+
+    private async Task OpenDetails()
+    {
+        if (!Items.Any() || _popupOpen) { return; }
+        await _detailsPopup.ToggleAsync(_badgeRef);
+    }
+
+    private async Task ToggleDetails()
+    {
+        if (!Items.Any()) { return; }
+        await _detailsPopup.ToggleAsync(_badgeRef);
+    }
+}

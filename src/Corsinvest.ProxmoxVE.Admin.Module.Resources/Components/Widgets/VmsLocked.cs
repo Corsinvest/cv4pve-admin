@@ -11,17 +11,24 @@ public partial class VmsLocked(IAdminService adminService, ISettingsService sett
 {
     protected override async Task RefreshDataAsyncInt()
     {
-        var allLockedVms = new List<ClusterResource>();
+        var lockedRows = new List<Data>();
 
         foreach (var clusterClient in AdminService.GetFrom(ClusterNames))
         {
             var lockedVms = (await clusterClient.CachedData.GetResourcesAsync(false))
                                 .Where(a => a.ResourceType == ClusterResourceType.Vm && a.IsLocked);
 
-            allLockedVms.AddRange(lockedVms);
+            foreach (var vm in lockedVms)
+            {
+                lockedRows.Add(new Data(
+                    $"VM {vm.VmId} — {vm.Lock}",
+                    1,
+                    UrlHelper.Resources.VmUrl(vm.VmId, clusterClient.Settings.Name)));
+            }
         }
 
-        Items = [.. allLockedVms.GroupBy(a => a.Lock)
-                                .Select(a => new Data(a.Key, a.Count()))];
+        Items = lockedRows;
+        Count = lockedRows.Count;
+        Status = Count > 0 ? WidgetState.Issues : WidgetState.Ok;
     }
 }

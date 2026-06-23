@@ -85,6 +85,33 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         };
     }
 
+    public string GetResourceLabel(string idResource, DiagnosticResultContext context, string clusterName)
+    {
+        if (string.IsNullOrEmpty(idResource)) { return $"{context} ({clusterName})"; }
+
+        var parts = idResource.Split('/');
+
+        return context switch
+        {
+            DiagnosticResultContext.Node when parts.Length > 1
+                => $"Node {parts[1]} ({clusterName})",
+
+            DiagnosticResultContext.Qemu when parts.Length > 3
+                => $"VM {parts[3]} on {parts[1]} ({clusterName})",
+
+            DiagnosticResultContext.Lxc when parts.Length > 3
+                => $"CT {parts[3]} on {parts[1]} ({clusterName})",
+
+            DiagnosticResultContext.Storage when parts.Length > 1
+                => $"Storage {parts[^1]} ({clusterName})",
+
+            DiagnosticResultContext.Cluster
+                => $"Cluster {clusterName}: {idResource}",
+
+            _ => $"{context}: {idResource} ({clusterName})"
+        };
+    }
+
     public Stream GenerateReport(JobResult result, ReportFormat format)
         => format switch
         {

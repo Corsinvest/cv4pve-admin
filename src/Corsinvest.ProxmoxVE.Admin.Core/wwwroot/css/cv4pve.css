@@ -324,3 +324,116 @@
     padding: 12px;
 }
 
+/* ========================================
+   Thumb-details widget — health icon + severity dots
+   Used by WidgetThumbDetailsBase. The icon scales with
+   the widget size via container queries; severity dots
+   appear only when there are issues to highlight.
+   ======================================== */
+
+.cv4pve-thumb-widget {
+    container-type: size;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0.5rem;
+    gap: 0.5rem;
+}
+
+.cv4pve-thumb-widget-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.cv4pve-thumb-widget-icon .rzi {
+    font-size: clamp(2.5rem, 35cqmin, 12rem);
+    --rz-icon-fill: 1;
+}
+
+.cv4pve-thumb-widget-icon.ok      .rzi { color: var(--rz-success); }
+.cv4pve-thumb-widget-icon.ko      .rzi { color: var(--rz-danger);  }
+.cv4pve-thumb-widget-icon.neutral .rzi { color: var(--rz-text-tertiary-color); }
+
+.cv4pve-thumb-widget-row {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 4cqmin, 2rem);
+    min-height: 0;
+}
+
+.cv4pve-thumb-widget-row .cv4pve-thumb-widget-icon {
+    flex: 0 1 auto;
+}
+
+.cv4pve-thumb-widget-dot {
+    border-radius: 50%;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:  clamp(2rem, 10cqmin, 4rem);
+    height: clamp(2rem, 10cqmin, 4rem);
+    font-size: clamp(0.85rem, 4cqmin, 1.5rem);
+}
+
+.cv4pve-thumb-widget-dot.critical { background: var(--rz-danger); }
+
+.cv4pve-thumb-widget-message {
+    font-size: 0.8rem;
+    color: var(--rz-text-tertiary-color);
+    text-align: center;
+}
+
+.cv4pve-thumb-widget-popup {
+    padding: 0;
+    background: var(--rz-panel-background-color);
+    border: 1px solid var(--rz-panel-border-color);
+    border-radius: var(--rz-border-radius);
+    box-shadow: var(--rz-panel-shadow);
+}
+
+.cv4pve-thumb-widget-tooltip-scroll {
+    max-height: 13rem;
+    overflow-y: auto;
+}
+
+.cv4pve-thumb-widget-tooltip {
+    padding: 0.25rem;
+}
+
+.cv4pve-thumb-widget-tooltip table {
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 240px;
+    color: var(--rz-text-color);
+}
+
+.cv4pve-thumb-widget-tooltip table td {
+    padding: 0.3rem 0.6rem;
+}
+
+.cv4pve-thumb-widget-tooltip table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--rz-base-300);
+}
+
+.cv4pve-thumb-widget-tooltip-link,
+.cv4pve-thumb-widget-tooltip-link:link,
+.cv4pve-thumb-widget-tooltip-link:visited {
+    color: var(--rz-primary) !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.cv4pve-thumb-widget-tooltip-link:hover {
+    text-decoration: underline;
+}
+
