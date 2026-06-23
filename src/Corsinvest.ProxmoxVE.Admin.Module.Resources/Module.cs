@@ -83,6 +83,7 @@ public class Module : ModuleBase
                                         typeof(Components.Widgets.Status.RenderSettings)),
                Height = 3,
                Width = 3,
+               ShowInOverview = false,
            },
            new(this,"Resources Usage")
            {
@@ -92,6 +93,7 @@ public class Module : ModuleBase
                                         typeof(Components.Widgets.ResourcesUsage.RenderSettings)),
                Height = 7,
                Width = 9,
+               ShowInOverview = false,
            },
            new(this,"Cluster Usage Gauge")
            {
@@ -99,6 +101,7 @@ public class Module : ModuleBase
                RenderInfo = new(typeof(Components.Widgets.ClusterUsage.Gauge)),
                Height = 4,
                Width = 4,
+               ShowInOverview = false,
            },
            new(this,"Cluster Usage Gauge Stacked")
            {
@@ -106,6 +109,7 @@ public class Module : ModuleBase
                RenderInfo = new(typeof(Components.Widgets.ClusterUsage.GaugeStacked)),
                Height = 5,
                Width = 3,
+               ShowInOverview = false,
            },
            new(this,"Cluster Usage Grid")
            {
@@ -113,6 +117,7 @@ public class Module : ModuleBase
                RenderInfo = new(typeof(Components.Widgets.ClusterUsage.Grid)),
                Height = 4,
                Width = 5,
+               ShowInOverview = false,
            },
            new(this,"Clusters Maps")
            {
@@ -120,6 +125,7 @@ public class Module : ModuleBase
                RenderInfo = new(typeof(Components.Widgets.Maps.Render)),
                Height = 7,
                Width = 9,
+               ShowInOverview = false,
            },
            new(this,"VM/CT Locked")
            {
@@ -127,6 +133,7 @@ public class Module : ModuleBase
                RenderInfo = new(typeof(Components.Widgets.VmsLocked)),
                Height = 3,
                Width = 3,
+               ShowInOverview = false,
            },
            new(this,"Nodes Status")
            {
@@ -134,6 +141,7 @@ public class Module : ModuleBase
                RenderInfo = new(typeof(Components.Widgets.NodesStatus)),
                Height = 3,
                Width = 3,
+               ShowInOverview = false,
            }
         ];
     }
