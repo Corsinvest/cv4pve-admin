@@ -98,7 +98,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 else if (row.StartsWith(KEY_FAILED))
                 {
                     backup.Status = false;
-                    backup.Start = ParseDateBackup(row[KEY_FAILED.Length..]);
+                    backup.Start = DateTime.SpecifyKind(ParseDateBackup(row[KEY_FAILED.Length..]), DateTimeKind.Local).ToUniversalTime();
                     backup.End = backup.Start;
                     backups.Add(backup);
                 }
