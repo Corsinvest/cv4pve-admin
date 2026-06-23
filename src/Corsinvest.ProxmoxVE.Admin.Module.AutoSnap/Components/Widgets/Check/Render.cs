@@ -13,27 +13,25 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
     protected override async Task RefreshDataAsyncInt()
     {
         var clusterNames = GetClusterNames<Module, Settings>();
-        if (clusterNames.Any())
+        if (!clusterNames.Any())
         {
-            await using var db = await dbContextFactory.CreateDbContextAsync();
-
-            var count = await db.Jobs
-                                .Where(a => clusterNames.Contains(a.ClusterName))
-                                .SelectMany(a => a.Results)
-                                .Where(a => !a.Status && a.Start > DateTime.UtcNow.AddDays(-Settings.Day))
-                                .CountAsync();
-
-            Items = count > 0
-                        ? [new("Failed", count)]
-                        : [];
-
-            Message = L["Last {0} days", Settings.Day];
-        }
-        else
-        {
-            ShowIcon = false;
+            Status = WidgetState.NotConfigured;
+            Count = 0;
             Items = [];
             Message = L["Module not configured!"];
+            return;
         }
+
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+
+        Count = await db.Jobs
+                        .Where(a => clusterNames.Contains(a.ClusterName))
+                        .SelectMany(a => a.Results)
+                        .Where(a => !a.Status && a.Start > DateTime.UtcNow.AddDays(-Settings.Day))
+                        .CountAsync();
+
+        Status = Count > 0 ? WidgetState.Issues : WidgetState.Ok;
+        Items = [];
+        Message = L["Last {0} days", Settings.Day];
     }
 }

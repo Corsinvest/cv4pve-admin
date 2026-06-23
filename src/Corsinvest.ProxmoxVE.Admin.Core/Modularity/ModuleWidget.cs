@@ -24,4 +24,11 @@ public class ModuleWidget
     public int Width { get; set; } = 1;
     public string Description { get; set; } = default!;
     public Permission Permission { get; }
+
+    /// <summary>
+    /// Whether to include this widget in the module Overview page.
+    /// Default is <c>true</c>: opt out (set <c>false</c>) for widgets that are too heavy
+    /// or too specialised to be useful in the fixed mini-dashboard.
+    /// </summary>
+    public bool ShowInOverview { get; set; } = true;
 }

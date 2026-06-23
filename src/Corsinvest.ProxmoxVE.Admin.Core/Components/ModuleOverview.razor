@@ -1,0 +1,21 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid
+@typeparam TModule where TModule : ModuleBase
+
+<Overview3Cols Icon1="@Icon1" Title1="@Title1" Block1="@Block1" Content1="@Content1"
+               Icon2="@Icon2" Title2="@Title2" Block2="@Block2" Content2="@Content2"
+               Icon3="@Icon3" Title3="@Title3" Block3="@Block3" Content3="@Content3" />
+
+@if (GridItems.Count > 0)
+{
+    <div class="rz-mt-4">
+        <WidgetGrid Items="@GridItems"
+                    Rows="@TotalRows"
+                    Cols="@GridCols"
+                    Margin="8"
+                    Height="@($"{TotalRows * RowHeightPx}px")" />
+    </div>
+}

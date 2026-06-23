@@ -15,14 +15,33 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
     [Parameter] public IEnumerable<string> ClusterNames { get; set; } = [];
     [Parameter] public bool InEditing { get; set; }
 
-    protected IEnumerable<Data> Items { get; set; } = [];
-    private readonly SemaphoreSlim _refreshLock = new(1, 1);
-    private bool _disposed;
-    protected bool ShowIcon { get; set; } = true;
+    /// <summary>Number shown in the badge. The consumer sets this directly; no need to fake an Items entry.</summary>
+    protected int Count { get; set; }
 
+    /// <summary>Optional details rendered in the tooltip. Leave empty when the badge count alone is enough.</summary>
+    protected IEnumerable<Data> Items { get; set; } = [];
+
+    /// <summary>Free-form context line shown under the icon (e.g. "Last 7 days", "2 nodes online").</summary>
     protected string Message { get; set; } = default!;
 
-    protected record Data(string Action, int Count);
+    /// <summary>Explicit widget state. Drives the icon and whether the badge is shown.</summary>
+    protected WidgetState Status { get; set; } = WidgetState.Ok;
+
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private bool _disposed;
+
+    protected record Data(string Text, int Count, string? Url = null);
+
+    /// <summary>Visual state of the widget.</summary>
+    protected enum WidgetState
+    {
+        /// <summary>Everything fine — thumb up, no badge.</summary>
+        Ok,
+        /// <summary>Issues found — thumb down + badge with Count.</summary>
+        Issues,
+        /// <summary>Module/data not available — neutral icon, no badge.</summary>
+        NotConfigured
+    }
 
     protected override Task OnInitializedAsync() => RefreshDataAsync();
 
