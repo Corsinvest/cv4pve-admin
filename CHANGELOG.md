@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.1.0-rc4] - 2026-06-23
+
+### Changed
+
+- **Module Overview pages**. Every module landing page now opens with the existing three-column intro plus a small dashboard built from the module's own widgets — no more *Overview* tabs that only show decorative text. Modules that have nothing meaningful to show as widgets (e.g. **Resources**) keep the textual overview as before.
+
+- **Issue cards on the *AutoSnap*, *Backup Analytics*, *Replication Analytics*, *Diagnostic* and *Resources* widgets**. The old "thumb up / thumb down + bullet list" has been redesigned: when everything is fine you see a green thumb up, when there are issues a red thumb down with a number, and when the module is not configured a neutral icon with an explanatory message. Hovering the number opens a compact list of the failing items; each row is clickable and takes you straight to the relevant detail page (the failing VM, the offline node, the diagnostic scan, etc.). With many rows the list scrolls inside itself instead of growing without bound.
+
+- **Diagnostic issue labels**. The items on the *Diagnostic* widget used to be shown as internal paths that were hard to read. They now read *VM 100 on cc01 (cluster)*, *Node cc01 (cluster)*, *Storage ssd-pool (cluster)* and so on.
+
+### Fixed
+
+- **KPI cards in the *Snapshot Statistics and Insights* widget**. The four KPI tiles at the top of the widget kept stacking vertically even on large screens because the layout did not adapt correctly to desktop window sizes. They now stay horizontal as soon as there is room for them.
+
 ## [2.1.0-rc3] - 2026-06-05
 
 ### Added
