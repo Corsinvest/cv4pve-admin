@@ -1,4 +1,4 @@
-﻿@*
+@*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
@@ -18,10 +18,10 @@
                 <RadzenText Text="@L[Titles[idx]]" TextStyle="Radzen.Blazor.TextStyle.DisplayH5" class="rz-m-0" />
             </RadzenStack>
 
-            @if (Texts[idx] != null)
+            @if (Blocks[idx] != null)
             {
                 <RadzenText TextStyle="TextStyle.Body2">
-                    @Texts[idx]
+                    @Blocks[idx]
                 </RadzenText>
             }
 
@@ -37,21 +37,21 @@
 {
     private string[] Titles => [Title1, Title2, Title3];
     private string?[] Icons => [Icon1, Icon2, Icon3];
-    private RenderFragment?[] Texts => [Text1, Text2, Text3];
+    private RenderFragment?[] Blocks => [Block1, Block2, Block3];
     private RenderFragment?[] Contents => [Content1, Content2, Content3];
 
     [Parameter] public string Icon1 { get; set; } = "overview";
     [Parameter] public string Title1 { get; set; } = "Overview";
-    [Parameter] public RenderFragment? Text1 { get; set; }
+    [Parameter] public RenderFragment? Block1 { get; set; }
     [Parameter] public RenderFragment? Content1 { get; set; }
 
     [Parameter] public string Icon2 { get; set; } = "thumb_up";
     [Parameter] public string Title2 { get; set; } = "Benefit";
-    [Parameter] public RenderFragment? Text2 { get; set; }
+    [Parameter] public RenderFragment? Block2 { get; set; }
     [Parameter] public RenderFragment? Content2 { get; set; }
 
     [Parameter] public string Icon3 { get; set; } = "self_improvement";
     [Parameter] public string Title3 { get; set; } = "Experience";
-    [Parameter] public RenderFragment? Text3 { get; set; }
+    [Parameter] public RenderFragment? Block3 { get; set; }
     [Parameter] public RenderFragment? Content3 { get; set; }
 }
