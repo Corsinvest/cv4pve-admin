@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.1.0-rc5] - 2026-06-23
+
+### Fixed
+
+- **Backup Analytics scan**. The scan aborted in the middle when at least one vzdump task in the run had failed (e.g. a VM locked by a snapshot). The failed task is now imported correctly together with the successful ones.
+
 ## [2.1.0-rc4] - 2026-06-23
 
 ### Changed
