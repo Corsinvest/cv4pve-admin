@@ -4,14 +4,15 @@
  */
 using System.Reflection;
 using System.Text.Json;
-using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Dashboard.Components;
 
-internal class DashboardWidgetItem : WidgetGridItem
+internal class DashboardWidgetItem
 {
+    public int Id { get; set; }
     public Widget Widget { get; }
     public IRefreshableData? Instance { get; private set; }
+    public RenderFragment? Template { get; private set; }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ModuleWidget? _moduleWidget;
@@ -43,13 +44,6 @@ internal class DashboardWidgetItem : WidgetGridItem
         var item = new DashboardWidgetItem(widget, serviceScopeFactory)
         {
             Id = widget.Id,
-            Col = widget.X,
-            Row = widget.Y,
-            ColSpan = widget.Width,
-            RowSpan = widget.Height,
-            Title = widget.Title,
-            TitleCss = widget.TitleCss,
-            BodyCss = widget.BodyCss
         };
 
         var parameters = new Dictionary<string, object>();

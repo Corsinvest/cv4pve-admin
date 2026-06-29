@@ -1098,5 +1098,9 @@
   "Last {0} days": "",
   "Pve Name": "",
   "Disk. %": "",
-  "Open Web UI Proxmox VE": ""
+  "Open Web UI Proxmox VE": "",
+  "Resource Type": "",
+  "VM Type": "",
+  "Markdown Content": "",
+  "Write markdown here...": ""
 }

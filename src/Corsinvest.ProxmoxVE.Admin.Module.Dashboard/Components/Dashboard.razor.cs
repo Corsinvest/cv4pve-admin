@@ -4,7 +4,6 @@
  */
 using System.Net.Mime;
 using System.Text.Json;
-using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid;
 using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Microsoft.AspNetCore.Components.Routing;
@@ -29,7 +28,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     private const int GridRows = 24;
     private IEnumerable<Data> Items { get; set; } = [];
     private IEnumerable<string> SelectedClusterNames { get; set; } = [];
-    private WidgetGrid? GridRef { get; set; }
     private bool InEditing { get; set; }
     private bool ShowGrid { get; set; }
     private Data? SelectedItem { get; set; }
@@ -45,34 +43,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     private int _widgetId;
 
     private record Data(string Name, int Id);
-    private record ScreenResolution(string Name, int Width, int Height);
-
-    private static readonly ScreenResolution[] ScreenResolutions =
-    [
-        new("Auto (100%)", 0, 0),
-        new("1920x1080 (Full HD)", 1920, 1080),
-        new("1680x1050 (WSXGA+)", 1680, 1050),
-        new("1600x900 (HD+)", 1600, 900),
-        new("1440x900 (WXGA+)", 1440, 900),
-        new("1366x768 (HD)", 1366, 768),
-        new("1280x720 (720p)", 1280, 720),
-        new("1024x768 (XGA)", 1024, 768),
-        new("800x600 (SVGA)", 800, 600),
-    ];
-
-    private ScreenResolution SelectedScreenResolution { get; set; } = ScreenResolutions[0];
-    private int CurrentWidth { get; set; }
-    private int CurrentHeight { get; set; }
-
-    private string GridContainerStyle => SelectedScreenResolution.Width == 0
-        ? "width: 100%; height: 100%;"
-        : $"width: {SelectedScreenResolution.Width}px; height: {SelectedScreenResolution.Height - 150}px; margin: 0 auto; border: 2px dashed var(--rz-primary);";
-
-    private async Task OnScreenResolutionChanged()
-    {
-        await Task.Yield();
-        if (GridRef != null) { await GridRef.RefreshAsync(); }
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,22 +60,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         {
             context.PreventNavigation();
         }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender) { await UpdateCurrentResolutionAsync(); }
-    }
-
-    private async Task UpdateCurrentResolutionAsync()
-    {
-        try
-        {
-            CurrentWidth = await jSRuntime.InvokeAsync<int>("eval", "window.innerWidth");
-            CurrentHeight = await jSRuntime.InvokeAsync<int>("eval", "window.innerHeight");
-            await InvokeAsync(StateHasChanged);
-        }
-        catch { }
     }
 
     public async Task RefreshDataAsync()
@@ -150,7 +104,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
             StartTimer();
         }
 
-        // Convert widgets to WidgetGridItems
+        // Convert widgets to tile items
         foreach (var widget in CurrentDashboard.Widgets)
         {
             WidgetItems.Add(CreateWidgetItem(widget));
@@ -164,17 +118,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
 
     private DashboardWidgetItem CreateWidgetItem(Widget widget)
         => DashboardWidgetItem.Create(widget, serviceScopeFactory, SelectedClusterNames, InEditing, this);
-
-    private static void OnWidgetPositionChanged(WidgetGridItem item)
-    {
-        if (item is DashboardWidgetItem dashItem)
-        {
-            dashItem.Widget.X = item.Col;
-            dashItem.Widget.Y = item.Row;
-            dashItem.Widget.Width = item.ColSpan;
-            dashItem.Widget.Height = item.RowSpan;
-        }
-    }
 
     #region Timer
     private void StartTimer()
@@ -205,11 +148,11 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         await Task.WhenAll(tasks);
     }
 
-    private static async Task RefreshWidgetAsync(WidgetGridItem item)
+    private static async Task RefreshWidgetAsync(DashboardWidgetItem item)
     {
-        if (item is DashboardWidgetItem { Instance: not null } dashItem)
+        if (item.Instance != null)
         {
-            await dashItem.Instance.RefreshDataAsync();
+            await item.Instance.RefreshDataAsync();
         }
     }
 
@@ -317,10 +260,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     {
         InEditing = false;
         ShowGrid = false;
-
-        //reset resolution
-        SelectedScreenResolution = ScreenResolutions[0];
-
         await RefreshDataAsync();
     }
     #endregion
@@ -383,52 +322,60 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         WidgetItems.Add(CreateWidgetItem(newWidget));
 
         await InvokeAsync(StateHasChanged);
-        await Task.Yield();
-        if (GridRef != null) { await GridRef.RefreshAsync(); }
     }
 
-    private async Task ConfigureWidgetAsync(WidgetGridItem item)
+    private async Task ConfigureWidgetAsync(DashboardWidgetItem item)
     {
-        if (item is not DashboardWidgetItem dashItem) { return; }
-        if (await dashItem.ConfigureAsync(dialogService))
+        if (await item.ConfigureAsync(dialogService))
         {
-            var index = WidgetItems.IndexOf(dashItem);
-            if (index >= 0) { WidgetItems[index] = CreateWidgetItem(dashItem.Widget); }
+            var index = WidgetItems.IndexOf(item);
+            if (index >= 0) { WidgetItems[index] = CreateWidgetItem(item.Widget); }
 
         }
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task CloneWidgetAsync(WidgetGridItem item)
+    private async Task CloneWidgetAsync(DashboardWidgetItem item)
     {
-        if (item is not DashboardWidgetItem dashItem) { return; }
-
-        var moduleWidget = dashItem.Widget.GetModuleWidget(moduleService);
+        var moduleWidget = item.Widget.GetModuleWidget(moduleService);
         if (moduleWidget != null)
         {
             await AddWidgetAsync(moduleWidget);
             var newWidget = CurrentDashboard.Widgets.Last();
-            newWidget.Title = $"Copy of {dashItem.Widget.Title}";
-            newWidget.TitleCss = dashItem.Widget.TitleCss;
-            newWidget.BodyCss = dashItem.Widget.BodyCss;
-            newWidget.Height = dashItem.Widget.Height;
-            newWidget.Width = dashItem.Widget.Width;
-            newWidget.SettingsJson = dashItem.Widget.SettingsJson;
+            newWidget.Title = $"Copy of {item.Widget.Title}";
+            newWidget.TitleCss = item.Widget.TitleCss;
+            newWidget.BodyCss = item.Widget.BodyCss;
+            newWidget.Height = item.Widget.Height;
+            newWidget.Width = item.Widget.Width;
+            newWidget.SettingsJson = item.Widget.SettingsJson;
 
             WidgetItems[^1] = CreateWidgetItem(newWidget);
             await InvokeAsync(StateHasChanged);
         }
     }
 
-    private async Task RemoveWidgetAsync(WidgetGridItem item)
+    private async Task RemoveWidgetAsync(DashboardWidgetItem item)
     {
-        if (item is DashboardWidgetItem dashItem)
-        {
-            CurrentDashboard.Widgets.Remove(dashItem.Widget);
-            WidgetItems.Remove(dashItem);
-            await InvokeAsync(StateHasChanged);
-        }
+        CurrentDashboard.Widgets.Remove(item.Widget);
+        WidgetItems.Remove(item);
+        await InvokeAsync(StateHasChanged);
     }
+    #endregion
+
+    #region Tile Layout Helpers
+    private static Task OnTileChanged(DashboardWidgetItem item,
+                                      int? col = null,
+                                      int? row = null,
+                                      int? colSpan = null,
+                                      int? rowSpan = null)
+    {
+        if (col is not null)     { item.Widget.X = col.Value - 1; }
+        if (row is not null)     { item.Widget.Y = row.Value - 1; }
+        if (colSpan is not null) { item.Widget.Width = colSpan.Value; }
+        if (rowSpan is not null) { item.Widget.Height = rowSpan.Value; }
+        return Task.CompletedTask;
+    }
+
     #endregion
 
     #region Import/Export
@@ -480,7 +427,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         _disposed = true;
         StopTimer();
         _navigationHandler?.Dispose();
-
-        if (GridRef != null) { await GridRef.DisposeAsync(); }
+        await ValueTask.CompletedTask;
     }
 }
