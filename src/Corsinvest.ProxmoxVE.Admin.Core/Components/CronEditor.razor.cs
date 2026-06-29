@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Radzen.Blazor.Rendering;
-
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 
 public partial class CronEditor(TooltipService TooltipService)
@@ -20,7 +18,7 @@ public partial class CronEditor(TooltipService TooltipService)
     [Parameter] public string Label { get; set; } = default!;
 
     private string Id { get; set; } = UniqueID!;
-    private Popup PopupRef { get; set; } = default!;
+    private RadzenPopup PopupRef { get; set; } = default!;
     private bool PopupIsVisible { get; set; }
     private RadzenTextBox TextBoxRef { get; set; } = default!;
 
