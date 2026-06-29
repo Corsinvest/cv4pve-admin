@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
-@using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid
-
 @inherits AdminComponentBase
 
 <RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
@@ -44,17 +42,6 @@
                           Click="@(() => ShowGrid = !ShowGrid)"
                           ButtonStyle="ButtonStyle.Light" />
 
-            <RadzenFormField Text="@L["Test resolution"]" AllowFloatingLabel="false">
-                <RadzenDropDown @bind-Value="@SelectedScreenResolution"
-                                @bind-Value:after="@OnScreenResolutionChanged"
-                                Data="@ScreenResolutions"
-                                TextProperty="@nameof(ScreenResolution.Name)"
-                                Style="min-width: 180px;" />
-            </RadzenFormField>
-
-            <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-tertiary-color);">
-                @L["Current"]: @CurrentWidth x @CurrentHeight
-            </RadzenText>
         }
         else
         {
@@ -90,24 +77,47 @@
     </RadzenStack>
 
     <div style="overflow: auto; width: 100%; height: calc(100vh - 225px);">
-        <div style="@GridContainerStyle">
-            <WidgetGrid @ref="GridRef"
-                    Items="@WidgetItems"
-                    Rows="GridRows"
-                    Cols="GridCols"
-                    Margin="5"
-                    EditMode="@InEditing"
-                    ShowGrid="@ShowGrid"
-                    Height="100%"
-                    OnPositionChanged="OnWidgetPositionChanged">
-            <MenuTemplate>
-                <RadzenButton Icon="more_vert"
-                              Variant="Variant.Text"
-                              Size="ButtonSize.ExtraSmall"
-                              Click="@(args => ShowWidgetMenu(args, context))" />
-            </MenuTemplate>
-        </WidgetGrid>
-        </div>
+        <RadzenTileLayout Columns="GridCols"
+                          Rows="GridRows"
+                          RowHeight="40"
+                          Gap="10"
+                          EditMode="@InEditing"
+                          ShowGrid="@ShowGrid">
+            @foreach (var item in WidgetItems)
+            {
+                var capture = item;
+                <RadzenTileLayoutItem @key="capture.Id"
+                                      Col="@(capture.Widget.X + 1)"
+                                      ColChanged="@(v => OnTileChanged(capture, col: v))"
+                                      Row="@(capture.Widget.Y + 1)"
+                                      RowChanged="@(v => OnTileChanged(capture, row: v))"
+                                      ColSpan="@capture.Widget.Width"
+                                      ColSpanChanged="@(v => OnTileChanged(capture, colSpan: v))"
+                                      RowSpan="@capture.Widget.Height"
+                                      RowSpanChanged="@(v => OnTileChanged(capture, rowSpan: v))"
+                                      HeaderTemplate="@HeaderFor(capture)">
+                    <ChildContent>
+                        <div style="@capture.Widget.BodyCss height: 100%;">
+                            <ErrorBoundary>
+                                <ChildContent>
+                                    @if (capture.Template != null)
+                                    {
+                                        @capture.Template
+                                    }
+                                </ChildContent>
+                                <ErrorContent>
+                                    <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                                 Text="@context.Message"
+                                                 Shade="Shade.Lighter"
+                                                 Size="AlertSize.ExtraSmall"
+                                                 AllowClose="false" />
+                                </ErrorContent>
+                            </ErrorBoundary>
+                        </div>
+                    </ChildContent>
+                </RadzenTileLayoutItem>
+            }
+        </RadzenTileLayout>
     </div>
 </RadzenStack>
 
@@ -145,11 +155,29 @@
         }
     </RadzenMenu>);
 
-    private void ShowWidgetMenu(MouseEventArgs args, WidgetGridItem item) => contextMenuService.Open(args, ds =>
+    private void ShowWidgetMenu(MouseEventArgs args, DashboardWidgetItem item) => contextMenuService.Open(args, ds =>
     @<RadzenMenu Click="@(() => ds.Close())">
         <RadzenMenuItem Text="@L["Configure"]" Icon="settings" Click="@(() => ConfigureWidgetAsync(item))" />
         <RadzenMenuItem Text="@L["Clone"]" Icon="file_copy" Click="@(() => CloneWidgetAsync(item))" />
         <RadzenMenuItem Text="@L["Refresh"]" Icon="refresh" Click="@(() => RefreshWidgetAsync(item))" />
         <RadzenMenuItem Text="@L["Remove"]" Icon="delete" IconColor="@Colors.Danger" Click="@(() => RemoveWidgetAsync(item))" />
     </RadzenMenu>);
+
+    private RenderFragment? HeaderFor(DashboardWidgetItem item)
+    {
+        if (!InEditing && string.IsNullOrEmpty(item.Widget.Title)) { return null; }
+
+        return @<div style="display: flex; align-items: center; gap: 0.5rem; width: 100%; @item.Widget.TitleCss">
+            <span style="flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600;">@item.Widget.Title</span>
+            @if (InEditing)
+            {
+                <span @onpointerdown:stopPropagation="true" @onclick:stopPropagation="true">
+                    <RadzenButton Icon="more_vert"
+                                  Variant="Variant.Text"
+                                  Size="ButtonSize.ExtraSmall"
+                                  Click="@(args => ShowWidgetMenu(args, item))" />
+                </span>
+            }
+        </div>;
+    }
 }

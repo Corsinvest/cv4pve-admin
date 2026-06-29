@@ -25,7 +25,7 @@
     </RadzenFormField>
 </RadzenStack>
 
-<Popup @ref="PopupRef"
+<RadzenPopup @ref="PopupRef"
        Lazy="true"
        Style="display: none; position: absolute; width: min-content;" class="rz-panel"
        AutoFocusFirstElement="false"
@@ -38,7 +38,7 @@
 
     <RadzenText TextStyle="TextStyle.Subtitle2"><strong>@L["Schedule:"]</strong> @Descriptor </RadzenText>
     <RadzenText TextStyle="TextStyle.Subtitle2"><strong>@L["Next occurrence:"]</strong> @NextOccurrence</RadzenText>
-</Popup>
+</RadzenPopup>
 
 @code {
     private void ShowTooltip(ElementReference elementReference)

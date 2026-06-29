@@ -322,7 +322,7 @@
       {
         "Title": "",
         "TitleCss": null,
-        "BodyCss": "overflow: hidden; display: flex; align-items: center; justify-content: center;",
+        "BodyCss": "overflow: hidden; display: flex;  align-items: center; justify-content: center; margin: -0.75rem; height: calc(100% + 1.5rem) !important;",
         "X": 0,
         "Y": 0,
         "Width": 6,
@@ -333,7 +333,7 @@
       {
         "Title": "",
         "TitleCss": null,
-        "BodyCss": "overflow: hidden; display: flex; align-items: center; justify-content: center;",
+        "BodyCss": "overflow: hidden; display: flex;  align-items: center; justify-content: center; margin: -0.75rem; height: calc(100% + 1.5rem) !important;",
         "X": 6,
         "Y": 0,
         "Width": 6,
@@ -344,7 +344,7 @@
       {
         "Title": "",
         "TitleCss": null,
-        "BodyCss": "overflow: hidden; display: flex; align-items: center; justify-content: center;",
+        "BodyCss": "overflow: hidden; display: flex;  align-items: center; justify-content: center; margin: -0.75rem; height: calc(100% + 1.5rem) !important;",
         "X": 12,
         "Y": 0,
         "Width": 6,
@@ -355,7 +355,7 @@
       {
         "Title": "",
         "TitleCss": null,
-        "BodyCss": "overflow: hidden; display: flex; align-items: center; justify-content: center;",
+        "BodyCss": "overflow: hidden; display: flex;  align-items: center; justify-content: center; margin: -0.75rem; height: calc(100% + 1.5rem) !important;",
         "X": 18,
         "Y": 0,
         "Width": 3,

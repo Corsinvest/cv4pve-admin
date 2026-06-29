@@ -67,7 +67,7 @@
             </RadzenStack>
 
 
-            <RadzenChart>
+            <RadzenChart AllowZoom="true" AllowPan="true">
                 @foreach (var item in Items.GroupBy(a => a.VmId))
                 {
                     <RadzenLineSeries Smooth="true"
@@ -90,7 +90,7 @@
                 </RadzenValueAxis>
             </RadzenChart>
 
-            <RadzenChart>
+            <RadzenChart AllowZoom="true" AllowPan="true">
                 <RadzenChartTooltipOptions Shared="true" />
 
                 @foreach (var item in Items.GroupBy(a => a.VmId))

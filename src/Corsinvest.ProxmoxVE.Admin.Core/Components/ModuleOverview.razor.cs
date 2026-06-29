@@ -2,10 +2,14 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using Corsinvest.ProxmoxVE.Admin.Core.Components.WidgetGrid;
-
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 
+/// <summary>
+/// Reusable module landing page: the standard three-column intro on top
+/// plus a fixed mini-dashboard rendered through <c>RadzenTileLayout</c>.
+/// Each module gets its overview by adding a single tag and the three text fragments.
+/// Widgets opt out by setting <see cref="ModuleWidget.ShowInOverview"/> to <c>false</c>.
+/// </summary>
 public partial class ModuleOverview<TModule> where TModule : ModuleBase
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string? ClusterName { get; set; }
@@ -34,64 +38,50 @@ public partial class ModuleOverview<TModule> where TModule : ModuleBase
 
     protected ModuleBase? Module { get; private set; }
 
-    protected List<WidgetGridItem> GridItems { get; private set; } = [];
+    /// <summary>Visible widgets packed greedily into 1-based (col, row) positions.</summary>
+    protected List<Tile> Tiles { get; private set; } = [];
 
-    protected int TotalRows { get; private set; }
+    protected sealed record Tile(int Col, int Row, int ColSpan, int RowSpan, Type Type, Dictionary<string, object> Parameters);
 
     protected override void OnInitialized()
     {
         Module = IModuleService.GetCached<TModule>();
-        BuildGrid();
+        Tiles = BuildTiles();
     }
 
     /// <summary>
-    /// Auto-positions visible widgets in a greedy 12-col grid in declared order:
-    /// fills the current row left-to-right, opens a new row when the next widget doesn't fit.
+    /// Greedy bin-packing in declared order in a <see cref="GridCols"/>-wide grid.
+    /// Returns 1-based (Col, Row) positions ready for <c>RadzenTileLayoutItem</c>.
     /// </summary>
-    private void BuildGrid()
+    private List<Tile> BuildTiles()
     {
-        GridItems = [];
-        var col = 0;
-        var row = 0;
-        var rowHeight = 0;
-        var id = 0;
+        var tiles = new List<Tile>();
+        if (Module is null) { return tiles; }
 
-        foreach (var widget in Module?.Widgets.Where(w => w.ShowInOverview) ?? [])
+        var col = 1;
+        var row = 1;
+        var rowHeight = 0;
+
+        foreach (var widget in Module.Widgets.Where(w => w.ShowInOverview))
         {
             var colSpan = Math.Clamp(widget.Width, 1, GridCols);
             var rowSpan = Math.Max(1, widget.Height);
 
-            if (col + colSpan > GridCols)
+            if (col + colSpan - 1 > GridCols)
             {
                 row += rowHeight;
-                col = 0;
+                col = 1;
                 rowHeight = 0;
             }
 
-            GridItems.Add(new WidgetGridItem
-            {
-                Id = id++,
-                Col = col,
-                Row = row,
-                ColSpan = colSpan,
-                RowSpan = rowSpan,
-                Template = BuildTemplate(widget),
-            });
+            tiles.Add(new Tile(col, row, colSpan, rowSpan, widget.RenderInfo.Type, BuildParameters(widget)));
 
             col += colSpan;
             rowHeight = Math.Max(rowHeight, rowSpan);
         }
 
-        TotalRows = row + rowHeight;
+        return tiles;
     }
-
-    private RenderFragment BuildTemplate(ModuleWidget widget) => builder =>
-    {
-        builder.OpenComponent(0, typeof(DynamicComponent));
-        builder.AddAttribute(1, "Type", widget.RenderInfo.Type);
-        builder.AddAttribute(2, "Parameters", BuildParameters(widget));
-        builder.CloseComponent();
-    };
 
     private Dictionary<string, object> BuildParameters(ModuleWidget widget)
     {
