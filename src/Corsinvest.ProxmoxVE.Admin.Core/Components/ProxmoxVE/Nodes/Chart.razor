@@ -7,7 +7,7 @@
 @switch (ChartType)
 {
     case RrdChartType.Cpu:
-        <RadzenChart>
+        <RadzenChart AllowZoom="true" AllowPan="true">
             <RadzenChartTooltipOptions Shared="true" />
             <RadzenAreaSeries Smooth="true"
                               Data="@Data"
@@ -39,7 +39,7 @@
         break;
 
     case RrdChartType.Memory:
-        <RadzenChart>
+        <RadzenChart AllowZoom="true" AllowPan="true">
             <RadzenChartTooltipOptions Shared="true" />
             <RadzenAreaSeries Smooth="true"
                               Data="@Data"
@@ -72,7 +72,7 @@
         break;
 
     case RrdChartType.Network:
-        <RadzenChart>
+        <RadzenChart AllowZoom="true" AllowPan="true">
             <RadzenChartTooltipOptions Shared="true" />
             <RadzenAreaSeries Smooth="true"
                               Data="@Data"
@@ -105,7 +105,7 @@
         break;
 
     case RrdChartType.ServerLoad:
-        <RadzenChart>
+        <RadzenChart AllowZoom="true" AllowPan="true">
             <RadzenChartTooltipOptions Shared="true" />
             <RadzenAreaSeries Smooth="true"
                               Data="@Data"
@@ -128,7 +128,7 @@
         break;
 
     case RrdChartType.Swap:
-        <RadzenChart>
+        <RadzenChart AllowZoom="true" AllowPan="true">
             <RadzenChartTooltipOptions Shared="true" />
             <RadzenAreaSeries Smooth="true"
                               Data="@Data"
