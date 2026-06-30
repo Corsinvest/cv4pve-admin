@@ -96,6 +96,11 @@ The Dashboard ships two generic widgets always available; every other module con
     | Resources | Resources Status | Shows the status of cluster resources |
     | Resources | Resources Usage | Shows resource usage metrics |
     | Resources | Cluster Usage Gauge | Concentric arc gauge for cluster CPU/RAM/storage usage |
+    | Resources | Cluster Usage Gauge Stacked | Concentric arc gauge with stacked rings for cluster usage |
+    | Resources | Cluster Usage Grid | Grid view of cluster usage metrics |
+    | Resources | Clusters Maps | Map view of cluster topology |
+    | Resources | VM/CT Locked | Shows VMs and containers in locked state |
+    | Resources | Nodes Status | Overview of node status |
     | AutoSnap | Status | AutoSnap job status overview |
     | AutoSnap | Size | Snapshot size over time chart |
     | AutoSnap | Check | Failed snapshots alert |
@@ -112,6 +117,7 @@ The Dashboard ships two generic widgets always available; every other module con
     | Replication Analytics | Info | Replication analytics overview |
     | Node Protect | Folder Size | Node Protect backup folder size |
     | Node Protect | Git Size | <span class="ee"></span> Node Protect Git repository size |
+    | Update Manager | Status | Update Manager status overview |
 
 ## Default Dashboard
 
