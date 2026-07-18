@@ -30,7 +30,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 </div>
 
 <div style="margin-top: auto;">
-<a href="https://shop.corsinvest.it" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
 </div>
 
 </div>
@@ -134,7 +134,7 @@ Expert technical assistance<br>
 </div>
 
 <div style="margin-top: auto;">
-<a href="https://shop.corsinvest.it" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
 </div>
 
 </div>
@@ -199,7 +199,7 @@ Mission-critical operations<br>
 </div>
 
 <div style="margin-top: auto;">
-<a href="https://shop.corsinvest.it" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
 </div>
 
 </div>
@@ -245,7 +245,7 @@ Optional addon modules</p>
 </div>
 
 <div style="margin-top: auto;">
-<a href="https://shop.corsinvest.it" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
 </div>
 
 </div>
