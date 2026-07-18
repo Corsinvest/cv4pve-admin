@@ -25,7 +25,6 @@ Access at `http://localhost:8080` — default: `admin@local` / `Password123!`
 
 - 📖 [Documentation](https://corsinvest.github.io/cv4pve-admin/)
 - 📋 [CE vs EE Comparison](https://corsinvest.github.io/cv4pve-admin/editions/)
-- 🛒 [Get Enterprise License](https://shop.corsinvest.it/store/cv4pve-admin-pve)
 - 🌐 [www.corsinvest.it](https://www.corsinvest.it)
 
 *Proxmox® is a registered trademark of Proxmox Server Solutions GmbH.*
