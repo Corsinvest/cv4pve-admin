@@ -14,7 +14,7 @@
       "destination": "wwwroot/lib/MaterialDesign-Webfont/"
     },
     {
-      "library": "openlayers@10.3.1",
+      "library": "openlayers@10.6.1",
       "destination": "wwwroot/lib/openlayers/",
       "files": [
         "dist/ol.min.js",
