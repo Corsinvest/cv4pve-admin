@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-07-20
+
+### Community Edition
+
+#### Changed
+
+- **Dashboard and Module Overview**: smoother widget grid. Drag, resize and rearrange widgets with better precision. Layout is more responsive across different screen sizes. Existing saved dashboards keep working as before — no manual step required.
+
+- **Historical charts with zoom and pan**: on time-series charts (node/storage/VM metrics, Backup Analytics, Replication Analytics, Tasks) you can now zoom with the mouse wheel and drag to pan the view. Useful for inspecting a specific interval without changing filters.
+
+#### Added
+
+- **Dashboard widgets**: newly listed widgets on the Dashboard page (Cluster Usage Gauge Stacked, Cluster Usage Grid, Clusters Maps, VM/CT Locked, Nodes Status, Update Manager Status).
+
+### Enterprise Edition
+
+#### Changed
+
+- **System Logs — Range selector**: below the 30-day log chart there is now a summary mini-chart with two draggable handles. Narrow the window down to days, hours or single spikes and the log grid below updates to match. Opens on the last 7 days by default.
+
+- **Enterprise Edition — no license registration required**: the Subscription page is no longer shown in the menu. All enterprise modules run without activation.
+
 ## [2.1.0] - 2026-06-29
 
 ### Community Edition
