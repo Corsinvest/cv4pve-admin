@@ -34,8 +34,11 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsync();
-        await InvokeAsync(StateHasChanged);
+        await InvokeAsync(async () =>
+        {
+            await RefreshDataAsync();
+            StateHasChanged();
+        });
     }
 
     public async Task RefreshDataAsync()

@@ -38,8 +38,11 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsync();
-        await InvokeAsync(StateHasChanged);
+        await InvokeAsync(async () =>
+        {
+            await RefreshDataAsync();
+            StateHasChanged();
+        });
     }
 
     public Task RefreshDataAsync()

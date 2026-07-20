@@ -51,8 +51,11 @@ public partial class Reports(IBrowserService browserService,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsync();
-        await InvokeAsync(StateHasChanged);
+        await InvokeAsync(async () =>
+        {
+            await RefreshDataAsync();
+            StateHasChanged();
+        });
     }
 
     private static bool ShowWating(Data item) => item.Start == DateTime.MinValue && item.End == null;

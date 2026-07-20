@@ -59,8 +59,11 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsync();
-        await InvokeAsync(StateHasChanged);
+        await InvokeAsync(async () =>
+        {
+            await RefreshDataAsync();
+            StateHasChanged();
+        });
     }
 
     private async Task LoadDataAsync(LoadDataArgs args)
