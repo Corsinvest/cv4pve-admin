@@ -16,6 +16,7 @@
                           Text="@L["Save"]"
                           Icon="save"
                           Click="SaveAsync"
+                          Disabled="@string.IsNullOrWhiteSpace(CurrentDashboard?.Name)"
                           ButtonStyle="ButtonStyle.Primary" />
 
             <RadzenButton Variant="Variant.Text"
