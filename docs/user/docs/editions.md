@@ -30,7 +30,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 </div>
 
 <div style="margin-top: auto;">
-<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Try Enterprise →</strong></a>
 </div>
 
 </div>
@@ -86,7 +86,7 @@ Choose the edition that fits your needs: free and open source Community Edition 
 
 ### Addon Modules (Enterprise Only)
 
-These are optional add-on modules available exclusively for Enterprise Edition, sold separately or included in specific subscription tiers.
+These are optional add-on modules available exclusively for Enterprise Edition.
 
 | Addon Module | Status | Category | Description |
 |--------------|:------:|----------|-------------|
@@ -134,7 +134,7 @@ Expert technical assistance<br>
 </div>
 
 <div style="margin-top: auto;">
-<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Try Enterprise →</strong></a>
 </div>
 
 </div>
@@ -153,7 +153,7 @@ Expert technical assistance<br>
 <h3 style="margin-top: 0; font-size: 1.5rem;">Community Edition</h3>
 <p style="font-weight: 600; margin: 1rem 0;">Open Source (AGPL-3.0)</p>
 <p>
-✅ Free forever<br>
+✅ Free and open source<br>
 ✅ Full source code access<br>
 ✅ Modify as you need<br>
 ✅ No usage restrictions<br>
@@ -179,15 +179,14 @@ Learning Proxmox management<br>
 
 <div style="flex-grow: 1;">
 <h3 style="margin-top: 0; font-size: 1.5rem;">Enterprise Edition</h3>
-<p style="font-weight: 600; margin: 1rem 0;">Subscription-Based</p>
+<p style="font-weight: 600; margin: 1rem 0;">Full enterprise features</p>
 <p><em>All CE features, plus:</em></p>
 <p>
 ✅ Advanced enterprise modules<br>
-✅ Professional support included<br>
+✅ Professional support<br>
 ✅ Custom integrations<br>
 ✅ Keep modifications private<br>
 ✅ Commercial warranty<br>
-✅ Flexible subscription plans<br>
 </p>
 <p style="font-weight: 600; margin: 1rem 0;">Best for:</p>
 <p>
@@ -199,7 +198,7 @@ Mission-critical operations<br>
 </div>
 
 <div style="margin-top: auto;">
-<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Try Enterprise →</strong></a>
 </div>
 
 </div>
@@ -208,7 +207,7 @@ Mission-critical operations<br>
 
 ---
 
-## Pricing
+## Availability
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
 
@@ -217,7 +216,7 @@ Mission-critical operations<br>
 <div style="flex-grow: 1;">
 <h3 style="margin-top: 0; font-size: 1.5rem;">Community Edition</h3>
 <div style="font-size: 3rem; font-weight: 700; color: #2196F3; margin: 1rem 0;">OPEN SOURCE</div>
-<p style="font-weight: 600; margin: 1rem 0;">Free Forever</p>
+<p style="font-weight: 600; margin: 1rem 0;">Free and open source</p>
 <p>No cost<br>
 No license fees<br>
 No hidden charges<br>
@@ -236,16 +235,17 @@ No time limits</p>
 
 <div style="flex-grow: 1;">
 <h3 style="margin-top: 0; font-size: 1.5rem;">Enterprise Edition</h3>
-<div style="font-size: 3rem; font-weight: 700; color: #FF9800; margin: 1rem 0;">CONTACT US</div>
-<p style="font-weight: 600; margin: 1rem 0;">Custom Pricing</p>
-<p><em>CE is free forever, EE pricing based on:</em></p>
+<div style="font-size: 3rem; font-weight: 700; color: #FF9800; margin: 1rem 0;">AVAILABLE</div>
+<p style="font-weight: 600; margin: 1rem 0;">No license registration required</p>
 <p>
-Number of Proxmox nodes<br>
-Optional addon modules</p>
+Full Enterprise features<br>
+All enterprise modules<br>
+No activation key<br>
+No time limits</p>
 </div>
 
 <div style="margin-top: auto;">
-<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Get Enterprise (Free) →</strong></a>
+<a href="getting-started.md" class="md-button md-button--primary" style="display: inline-block;"><strong>Try Enterprise →</strong></a>
 </div>
 
 </div>
