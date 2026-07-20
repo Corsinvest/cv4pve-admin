@@ -1,0 +1,44 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@typeparam TNotification where TNotification : Corsinvest.ProxmoxVE.Admin.Core.Models.IEventNotification
+@inherits AdminComponentBase
+
+@if (Loading)
+{
+    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary"
+                               ShowValue="false"
+                               Mode="ProgressBarMode.Indeterminate" />
+}
+else if (Points.Count == 0)
+{
+    <RadzenAlert AlertStyle="AlertStyle.Info"
+                 AllowClose="false"
+                 Text="@L["No data in the last {0} days.", DaysRange]"
+                 Size="AlertSize.ExtraSmall" />
+}
+else
+{
+    <RadzenChart Style="width: 100%; height: 100%;">
+        <RadzenChartTooltipOptions Shared="true" />
+        <RadzenColumnOptions Radius="2" />
+
+        <RadzenStackedColumnSeries Data="@Points"
+                                   CategoryProperty="@nameof(DayPoint.DayLabel)"
+                                   ValueProperty="@nameof(DayPoint.Success)"
+                                   Title="@L["Success"]"
+                                   Fill="#43a047" />
+        <RadzenStackedColumnSeries Data="@Points"
+                                   CategoryProperty="@nameof(DayPoint.DayLabel)"
+                                   ValueProperty="@nameof(DayPoint.Failed)"
+                                   Title="@L["Failed"]"
+                                   Fill="#e53935" />
+
+        <RadzenCategoryAxis FormatString="{0}" />
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+        </RadzenValueAxis>
+        <RadzenLegend Position="LegendPosition.Top" />
+    </RadzenChart>
+}
