@@ -12,6 +12,8 @@ public partial class Manager : IRefreshableData, IDisposable, IClusterName
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
 
+    [Parameter] public bool ShowOrphans { get; set; }
+
     private RadzenTabs RadzenTabsRef { get; set; } = default!;
     private Summary SummaryRef { get; set; } = default!;
     private Charts ChartsRef { get; set; } = default!;

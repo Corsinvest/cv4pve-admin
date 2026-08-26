@@ -4,6 +4,22 @@
 *@
 @inherits AdminComponentBase
 
+@if (Items is not null && Items.Any(a => a.IsOrphan))
+{
+	<RadzenAlert AlertStyle="AlertStyle.Warning"
+				 Variant="Variant.Flat"
+				 Size="AlertSize.Small"
+				 AllowClose="false"
+				 ShowIcon="true"
+				 Icon="warning">
+		@L["{0} orphan snapshot(s) found on disk, taking {1}. They are unknown to Proxmox and cannot be managed from here.",
+			 Items.Count(a => a.IsOrphan),
+			 string.Format(FormatterHelper.FormatProvider,
+						   FormatHelper.DataFormatBytes,
+						   Items.Where(a => a.IsOrphan).Sum(a => a.SnapshotSize))]
+	</RadzenAlert>
+}
+
 <RadzenDataGrid @ref="@DataGridRef"
 				TItem="Data"
 				Data="@Items"
@@ -26,7 +42,7 @@
 		<CrudToolbar OnAdd="AddAsync"
 					 AddDisabled="!CanCreate"
 					 OnDelete="DeleteAsync"
-					 DeleteDisabled="!CanDelete || !SelectedItems.Any()"
+					 DeleteDisabled="!CanDelete || !SelectionIsActionable"
 					 OnRefresh="RefreshDataAsync">
 			<ChildContent>
 				<RadzenButton Variant="Variant.Text"
@@ -34,7 +50,7 @@
 							  Text="@L["Rollback"]"
 							  Icon="history"
 							  Click="RollbackAsync"
-							  Disabled="!CanRollback || !SelectedItems.Any()"
+							  Disabled="!CanRollback || !SelectionIsActionable"
 							  ButtonStyle="ButtonStyle.Danger" />
 			</ChildContent>			
 		</CrudToolbar>
@@ -54,13 +70,31 @@
 	<Columns>
 		<RadzenDataGridColumn Property="@nameof(Data.Name)" Sortable="true" Title="@L["Name"]">
 			<Template>
-				<span class="rz-link link" style="text-decoration: underline;">@context.Name</span>
+				@if (context.IsOrphan)
+				{
+					<span>@context.Name</span>
+				}
+				else
+				{
+					<span class="rz-link link" style="text-decoration: underline;">@context.Name</span>
+				}
 			</Template>
 		</RadzenDataGridColumn>
 
 		<BoolIconColumn Property="@nameof(Data.VmStatus)" Title="@L["Include RAM"]" IconFalse="" />
         <DateTimeLocalColumn Property="@nameof(Data.Date)" Sortable="true" Title="@L["Date"]" Width="200px" />
-		<RadzenDataGridColumn Property="@nameof(Data.Description)" Sortable="true" Title="@L["Description"]" />
+		<RadzenDataGridColumn Property="@nameof(Data.Description)" Sortable="true" Title="@L["Description"]">
+			<Template>
+				@if (context.IsOrphan)
+				{
+					<RadzenBadge BadgeStyle="BadgeStyle.Warning" IsPill="true" Text="@L["Orphan on disk"]" />
+				}
+				else
+				{
+					@context.Description
+				}
+			</Template>
+		</RadzenDataGridColumn>
         <SnapshotSizeColumn Property="@nameof(Data.SnapshotSize)" Title="@L["Size"]" ShowWating="IsCalculateSnapshotSize" Visible="AllowCalculateSnapshotSize" />
 	</Columns>
 </RadzenDataGrid>

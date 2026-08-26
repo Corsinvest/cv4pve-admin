@@ -73,6 +73,7 @@ else
                 <RadzenTabsItem Text="@L["Snapshots"]" Icon="@PveAdminUIHelper.Icons.Snapshot" tab-content="@TabContent.Snapshot">
                     <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.Snapshot.Manager ClusterName="@ClusterName"
                                                                                               Vm="@Vm"
+                                                                                              ShowOrphans="@ShowOrphans"
                                                                                               Style="height:400px" />
                 </RadzenTabsItem>
             }

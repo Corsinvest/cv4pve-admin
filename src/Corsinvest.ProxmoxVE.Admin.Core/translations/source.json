@@ -1136,5 +1136,7 @@
   "Xml": "",
   "Basic": "",
   "Bearer": "",
-  "API Key": ""
+  "API Key": "",
+  "{0} orphan snapshot(s) found on disk, taking {1}. They are unknown to Proxmox and cannot be managed from here.": "",
+  "Orphan on disk": ""
 }
