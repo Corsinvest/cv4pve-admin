@@ -96,7 +96,19 @@ Enterprise enables extra columns and detail data on Guests and other grids:
 
 - **Hostname** — collected via QEMU Guest Agent, useful when the VM name and the in-guest hostname differ
 - **OS Info** — OS family, distribution and version
+- **Orphan snapshots** — see below
 - Additional widgets in the [Dashboard](dashboard.md) feeding from Resources data
+
+### Orphan snapshots
+
+A snapshot removed in Proxmox VE can survive on the underlying storage: the removal does not always propagate to the dataset, and the space stays occupied. Proxmox VE no longer lists it, so nothing in its UI reveals it — the disk simply looks fuller than the snapshots explain.
+
+Opening a guest's **Snapshots** tab from Resources lists these first, marked as orphans, with a warning summing the space they hold. They cannot be rolled back, edited or deleted from here, since Proxmox VE has no snapshot to act on: removing one means working on the storage directly, on the node.
+
+!!! note "Requires SSH"
+    Orphan detection compares what the storage holds against what Proxmox VE reports, so it needs the same [SSH credentials](../configuration/admin-area/clusters.md#ssh-configuration) as snapshot size calculation. Without them, neither is shown.
+
+Sizes are read per storage type. On ZFS the reported size is the space the snapshot actually occupies; on other backends it is currently an approximation.
 
 ## Console Limitations
 
