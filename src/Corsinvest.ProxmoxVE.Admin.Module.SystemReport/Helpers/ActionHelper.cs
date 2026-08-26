@@ -42,11 +42,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                   ApplicationUrl = ApplicationHelper.GitHubRepoUrl,
                                               });
 
-                var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+                var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
                 if (disks.Any())
                 {
                     engine.SnapshotSizeProvider = (node, _, vmId, snapName)
-                                                    => Task.FromResult(Convert.ToInt64(DiskSnapshotHelper.CalculateSnapshot(node,
+                                                    => Task.FromResult(Convert.ToInt64(StorageSnapshotHelper.CalculateSnapshot(node,
                                                                                                                             vmId,
                                                                                                                             snapName,
                                                                                                                             disks)));

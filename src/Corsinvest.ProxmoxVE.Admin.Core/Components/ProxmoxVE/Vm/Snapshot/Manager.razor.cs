@@ -94,11 +94,11 @@ public partial class Manager(IAdminService adminService,
             IsCalculateSnapshotSize = true;
             await InvokeAsync(StateHasChanged);
 
-            var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+            var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
 
             foreach (var item in AllItems)
             {
-                item.SnapshotSize = DiskSnapshotHelper.CalculateSnapshot(Vm.Node, Vm.VmId, item.Name, disks);
+                item.SnapshotSize = StorageSnapshotHelper.CalculateSnapshot(Vm.Node, Vm.VmId, item.Name, disks);
             }
 
             if (ShowOrphans)
@@ -117,7 +117,7 @@ public partial class Manager(IAdminService adminService,
         await InvokeAsync(StateHasChanged);
     }
 
-    private IEnumerable<Data> GetOrphans(HashSet<string> knownNames, IEnumerable<DiskSnapshotInfo> disks)
+    private IEnumerable<Data> GetOrphans(HashSet<string> knownNames, IEnumerable<StorageSnapshotInfo> disks)
         => disks.Where(a => a.VmId == Vm.VmId && a.Host == Vm.Node)
                 .SelectMany(a => a.Snapshots)
                 .Where(a => !a.Replication && !knownNames.Contains(a.Name))

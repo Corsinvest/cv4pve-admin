@@ -118,7 +118,7 @@ internal static class VmTools
         var rows = new List<object>();
 
         var disks = include_size
-            ? await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false)
+            ? await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false)
             : null;
 
         foreach (var vmid in vmids)
@@ -139,7 +139,7 @@ internal static class VmTools
                     date = s.Date,
                     parent = s.Parent,
                     size = include_size
-                            ? DiskSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
+                            ? StorageSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
                             : (double?)null
                 }));
             }
@@ -152,7 +152,7 @@ internal static class VmTools
                     name = s.Name,
                     date = s.Date,
                     size = include_size
-                            ? DiskSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
+                            ? StorageSnapshotHelper.CalculateSnapshots(vm.VmId, s.Name, disks!)
                             : (double?)null
                 }));
             }
