@@ -4,9 +4,9 @@
  */
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 
-public static class DiskSnapshotHelper
+public static class StorageSnapshotHelper
 {
-    public static double CalculateSnapshots(long vmid, string snapName, IEnumerable<DiskSnapshotInfo> disks)
+    public static double CalculateSnapshots(long vmid, string snapName, IEnumerable<StorageSnapshotInfo> disks)
         => disks.Where(a => a.VmId == vmid, vmid > 0)
                 .SelectMany(a => a.Snapshots)
                 .Where(a => a.Name == snapName)
@@ -14,7 +14,7 @@ public static class DiskSnapshotHelper
                 .DefaultIfEmpty(0)
                 .Sum();
 
-    public static double CalculateSnapshots(string node, long vmid, IEnumerable<DiskSnapshotInfo> disks, bool replication)
+    public static double CalculateSnapshots(string node, long vmid, IEnumerable<StorageSnapshotInfo> disks, bool replication)
         => disks.Where(a => a.VmId == vmid && (!a.HostContainSnapshot || a.Host == node))
                 .SelectMany(a => a.Snapshots)
                 .Where(a => a.Replication, replication)
@@ -22,7 +22,7 @@ public static class DiskSnapshotHelper
                 .DefaultIfEmpty(0)
                 .Sum();
 
-    public static double CalculateSnapshots(string node, IEnumerable<DiskSnapshotInfo> disks, bool replication)
+    public static double CalculateSnapshots(string node, IEnumerable<StorageSnapshotInfo> disks, bool replication)
         => disks.Where(a => a.Host == node)
                 .SelectMany(a => a.Snapshots)
                 .Where(a => a.Replication, replication)
@@ -30,7 +30,7 @@ public static class DiskSnapshotHelper
                 .DefaultIfEmpty(0)
                 .Sum();
 
-    public static double CalculateSnapshots(string node, string storage, IEnumerable<DiskSnapshotInfo> disks, bool replication)
+    public static double CalculateSnapshots(string node, string storage, IEnumerable<StorageSnapshotInfo> disks, bool replication)
         => disks.Where(a => a.Host == node && a.SpaceName == storage
                             && (!a.HostContainSnapshot || a.Host == node))
                 .SelectMany(a => a.Snapshots)
@@ -39,7 +39,7 @@ public static class DiskSnapshotHelper
                 .DefaultIfEmpty(0)
                 .Sum();
 
-    public static double CalculateSnapshots(string node, long vmId, string storage, string fileName, IEnumerable<DiskSnapshotInfo> disks, bool replication)
+    public static double CalculateSnapshots(string node, long vmId, string storage, string fileName, IEnumerable<StorageSnapshotInfo> disks, bool replication)
         => disks.Where(a => a.Host == node
                             && a.SpaceName == storage
                             && a.VmId == vmId
@@ -50,7 +50,7 @@ public static class DiskSnapshotHelper
                 .DefaultIfEmpty(0)
                 .Sum();
 
-    public static double CalculateSnapshot(string node, long vmId, string snapName, IEnumerable<DiskSnapshotInfo> disks)
+    public static double CalculateSnapshot(string node, long vmId, string snapName, IEnumerable<StorageSnapshotInfo> disks)
         => disks.Where(a => a.VmId == vmId && a.Host == node)
                 .SelectMany(a => a.Snapshots)
                 .Where(a => !a.Replication && a.Name == snapName)

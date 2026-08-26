@@ -234,24 +234,24 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
                 IsCalculateSnapshotSize = true;
                 await InvokeAsync(StateHasChanged);
 
-                var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+                var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
 
                 foreach (var item in Items)
                 {
                     item.SnapshotsSize = item.ResourceType switch
                     {
-                        ClusterResourceType.Node => DiskSnapshotHelper.CalculateSnapshots(item.Node, disks, false),
-                        ClusterResourceType.Vm => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.VmId, disks, false),
-                        ClusterResourceType.Storage => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.Storage, disks, false),
+                        ClusterResourceType.Node => StorageSnapshotHelper.CalculateSnapshots(item.Node, disks, false),
+                        ClusterResourceType.Vm => StorageSnapshotHelper.CalculateSnapshots(item.Node, item.VmId, disks, false),
+                        ClusterResourceType.Storage => StorageSnapshotHelper.CalculateSnapshots(item.Node, item.Storage, disks, false),
                         ClusterResourceType.Unknown or ClusterResourceType.Pool or ClusterResourceType.Sdn or ClusterResourceType.All => 0,
                         _ => 0
                     };
 
                     item.SnapshotsReplicationSize = item.ResourceType switch
                     {
-                        ClusterResourceType.Node => DiskSnapshotHelper.CalculateSnapshots(item.Node, disks, true),
-                        ClusterResourceType.Vm => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.VmId, disks, true),
-                        ClusterResourceType.Storage => DiskSnapshotHelper.CalculateSnapshots(item.Node, item.Storage, disks, true),
+                        ClusterResourceType.Node => StorageSnapshotHelper.CalculateSnapshots(item.Node, disks, true),
+                        ClusterResourceType.Vm => StorageSnapshotHelper.CalculateSnapshots(item.Node, item.VmId, disks, true),
+                        ClusterResourceType.Storage => StorageSnapshotHelper.CalculateSnapshots(item.Node, item.Storage, disks, true),
                         ClusterResourceType.Unknown or ClusterResourceType.Pool or ClusterResourceType.Sdn or ClusterResourceType.All => 0,
                         _ => 0
                     };

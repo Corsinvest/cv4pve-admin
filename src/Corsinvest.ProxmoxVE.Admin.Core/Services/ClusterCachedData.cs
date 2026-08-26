@@ -67,8 +67,8 @@ public class ClusterCachedData
                          60,
                          forceReload);
 
-    public ValueTask<IEnumerable<DiskSnapshotInfo>> GetDiskSnapshotInfosAsync(bool forceReload)
-        => GetOrSetAsync(nameof(GetDiskSnapshotInfosAsync),
+    public ValueTask<IEnumerable<StorageSnapshotInfo>> GetStorageSnapshotInfosAsync(bool forceReload)
+        => GetOrSetAsync(nameof(GetStorageSnapshotInfosAsync),
                          async () =>
                          {
                              var snapshotSizeService = _serviceProvider.GetService<ISnapshotSizeService>();

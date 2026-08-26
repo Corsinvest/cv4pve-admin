@@ -21,7 +21,7 @@ public partial class Timeline(IAdminService adminService,
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
-    private IEnumerable<DiskSnapshotInfo> _disks = [];
+    private IEnumerable<StorageSnapshotInfo> _disks = [];
 
     private record Data(DateTime Date, bool Status, int Count) : ISnapshotsSize
     {
@@ -81,7 +81,7 @@ public partial class Timeline(IAdminService adminService,
                 IsCalculateSnapshotSize = true;
 
                 //snapshot size
-                _disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+                _disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
 
                 foreach (var item in Items)
                 {
@@ -90,7 +90,7 @@ public partial class Timeline(IAdminService adminService,
                                   .Select(a => a.SnapName)
                                   .ToList();
 
-                    item.SnapshotsSize = names.Select(a => DiskSnapshotHelper.CalculateSnapshots(0, a, _disks))
+                    item.SnapshotsSize = names.Select(a => StorageSnapshotHelper.CalculateSnapshots(0, a, _disks))
                                               .DefaultIfEmpty(0)
                                               .Sum();
                 }
@@ -140,7 +140,7 @@ public partial class Timeline(IAdminService adminService,
                           .Select(a => a.SnapName)
                           .ToList();
 
-            item.SnapshotsSize = names.Select(a => DiskSnapshotHelper.CalculateSnapshots(0, a, _disks))
+            item.SnapshotsSize = names.Select(a => StorageSnapshotHelper.CalculateSnapshots(0, a, _disks))
                                       .DefaultIfEmpty(0)
                                       .Sum();
         }
@@ -157,7 +157,7 @@ public partial class Timeline(IAdminService adminService,
 
         foreach (var item in items)
         {
-            item.SnapshotsSize = DiskSnapshotHelper.CalculateSnapshots(0, item.SnapName, _disks);
+            item.SnapshotsSize = StorageSnapshotHelper.CalculateSnapshots(0, item.SnapName, _disks);
         }
 
         return items;

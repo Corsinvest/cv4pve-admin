@@ -46,11 +46,11 @@ public class Size(IAdminService adminService,
                                                        loggerFactory,
                                                        ActionHelper.AllVms);
 
-            var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+            var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
 
             foreach (var item in data)
             {
-                item.SnapshotsSize = DiskSnapshotHelper.CalculateSnapshots(item.VmId, item.Name, disks);
+                item.SnapshotsSize = StorageSnapshotHelper.CalculateSnapshots(item.VmId, item.Name, disks);
 
                 if (item.SnapshotsSize > 0)
                 {

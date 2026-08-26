@@ -21,7 +21,7 @@ public static class ClusterClientExtensions
 
         if (includeSnapshots)
         {
-            var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+            var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
             var snapshotSize = disks.SelectMany(a => a.Snapshots).Sum(a => a.Size);
 
             var allStorage = resources.Where(a => a.ResourceType == ClusterResourceType.Storage && a.IsAvailable);

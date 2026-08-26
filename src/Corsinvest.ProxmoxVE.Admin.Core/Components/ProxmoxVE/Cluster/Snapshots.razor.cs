@@ -9,7 +9,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
 
     private bool IsLoading { get; set; }
-    private IEnumerable<DiskSnapshotInfo> _disks = [];
+    private IEnumerable<StorageSnapshotInfo> _disks = [];
 
     private sealed record Data(string Type,
                                string Host,
@@ -23,7 +23,7 @@ public partial class Snapshots(IAdminService adminService) : IClusterName
     private async Task RefreshDataAsync()
     {
         IsLoading = true;
-        _disks = await adminService[ClusterName].CachedData.GetDiskSnapshotInfosAsync(false);
+        _disks = await adminService[ClusterName].CachedData.GetStorageSnapshotInfosAsync(false);
         IsLoading = false;
     }
 

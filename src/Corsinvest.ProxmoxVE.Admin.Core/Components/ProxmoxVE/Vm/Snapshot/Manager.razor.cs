@@ -19,6 +19,8 @@ public partial class Manager(IAdminService adminService,
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
 
+    [Parameter] public bool ShowOrphans { get; set; }
+
     private bool CanCreate { get; set; }
     private bool CanEdit { get; set; }
     private bool CanDelete { get; set; }
@@ -38,6 +40,8 @@ public partial class Manager(IAdminService adminService,
         [Display(Name = "Snapshots Size")]
         [DisplayFormat(DataFormatString = FormatHelper.DataFormatBytes)]
         public double SnapshotSize { get; set; }
+
+        public bool IsOrphan { get; set; }
     }
 
     protected override async Task OnInitializedAsync()
@@ -78,7 +82,11 @@ public partial class Manager(IAdminService adminService,
                             .AsQueryable()
                             .ProjectToType<Data>()];
 
-        Items = [.. AllItems.Where(a => a.Parent == "no-parent")];
+        // Roots are snapshots without a parent, plus orphans: Proxmox keeps the parent name
+        // on the children when a snapshot is removed, so a guest whose original root has been
+        // rotated away by retention ends up with no "no-parent" entry and nothing to render.
+        var names = AllItems.Select(a => a.Name).ToHashSet();
+        Items = [.. AllItems.Where(a => a.Parent == "no-parent" || !names.Contains(a.Parent))];
         SelectedItems.Clear();
 
         if (AllowCalculateSnapshotSize)
@@ -86,15 +94,18 @@ public partial class Manager(IAdminService adminService,
             IsCalculateSnapshotSize = true;
             await InvokeAsync(StateHasChanged);
 
-            var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+            var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
 
             foreach (var item in AllItems)
             {
-                item.SnapshotSize = DiskSnapshotHelper.CalculateSnapshot(Vm.Node, Vm.VmId, item.Name, disks);
-                //item.SnapshotSize = disks.Where(a => a.VmId == Vm.VmId && a.Host == Vm.Node)
-                //                         .SelectMany(a => a.Snapshots)
-                //                         .Where(a => !a.Replication && a.Name == item.Name)
-                //                         .Sum(a => a.Size);
+                item.SnapshotSize = StorageSnapshotHelper.CalculateSnapshot(Vm.Node, Vm.VmId, item.Name, disks);
+            }
+
+            if (ShowOrphans)
+            {
+                // Top level only: AllItems feeds the child lookup, and the same instance in both
+                // would render twice among siblings, which Blazor rejects as a duplicate key.
+                Items = [.. GetOrphans(names, disks), .. Items];
             }
 
             IsCalculateSnapshotSize = false;
@@ -106,12 +117,38 @@ public partial class Manager(IAdminService adminService,
         await InvokeAsync(StateHasChanged);
     }
 
-    private void RowRender(RowRenderEventArgs<Data> args) => args.Expandable = AllItems.Any(e => e.Parent == args.Data!.Name);
-    private void LoadChildData(DataGridLoadChildDataEventArgs<Data> args) => args.Data = AllItems.Where(e => e.Parent == args.Item!.Name);
+    private IEnumerable<Data> GetOrphans(HashSet<string> knownNames, IEnumerable<StorageSnapshotInfo> disks)
+        => disks.Where(a => a.VmId == Vm.VmId && a.Host == Vm.Node)
+                .SelectMany(a => a.Snapshots)
+                .Where(a => !a.Replication && !knownNames.Contains(a.Name))
+                .GroupBy(a => a.Name)
+                .Select(a => new Data
+                {
+                    Name = a.Key,
+                    SnapshotSize = a.Sum(b => b.Size),
+                    IsOrphan = true
+                })
+                .OrderByDescending(a => a.SnapshotSize);
+
+    private void RowRender(RowRenderEventArgs<Data> args)
+    {
+        if (args.Data!.IsOrphan)
+        {
+            args.Expandable = false;
+            args.Attributes["class"] = "rz-background-color-warning-lighter";
+            return;
+        }
+        args.Expandable = AllItems.Any(e => !e.IsOrphan && e.Parent == args.Data.Name);
+    }
+
+    private void LoadChildData(DataGridLoadChildDataEventArgs<Data> args)
+        => args.Data = AllItems.Where(e => !e.IsOrphan && e.Parent == args.Item!.Name);
+
+    private bool SelectionIsActionable => SelectedItems.Any() && !SelectedItems[0].IsOrphan;
 
     private async Task RollbackAsync()
     {
-        if (!CanRollback) { return; }
+        if (!CanRollback || !SelectionIsActionable) { return; }
         if (await dialogService.ConfirmAsync(L["Are you sure?"],
                                                L["Rollback snapshot '{name}'", SelectedItems[0].Name],
                                                true))
@@ -129,7 +166,7 @@ public partial class Manager(IAdminService adminService,
 
     private async Task DeleteAsync()
     {
-        if (!CanDelete) { return; }
+        if (!CanDelete || !SelectionIsActionable) { return; }
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected snapshot"], true))
         {
             var result = await uiExecutor.ExecuteAndNotifyAsync(new VmRemoveSnapshotCommand(ClusterName,
@@ -153,7 +190,7 @@ public partial class Manager(IAdminService adminService,
 
     private async Task RowSelectAsync(Data item)
     {
-        if (_validColumnClick && CanEdit)
+        if (_validColumnClick && CanEdit && !item.IsOrphan)
         {
             await ShowEditorAsync(new SnapshotModel
             {

@@ -16,7 +16,7 @@ public partial class StorageUsage(IAdminService adminService) : IClusterName
 
     private IEnumerable<NodeStorageContentEx> Contents { get; set; } = [];
     private IEnumerable<ClusterResource> Storages { get; set; } = [];
-    private IEnumerable<DiskSnapshotInfo> Disks { get; set; } = [];
+    private IEnumerable<StorageSnapshotInfo> Disks { get; set; } = [];
 
     private class NodeStorageContentEx : NodeStorageContent, ISnapshotsSize, ISnapshotsReplicationSize
     {
@@ -70,7 +70,7 @@ public partial class StorageUsage(IAdminService adminService) : IClusterName
         Storages = [.. (await clusterClient.CachedData.GetResourcesAsync(false)).Where(a => a.ResourceType == ClusterResourceType.Storage)];
 
         AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
-        if (AllowCalculateSnapshotSize) { Disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false); }
+        if (AllowCalculateSnapshotSize) { Disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false); }
 
         Contents = (await GetContents())
                     .DistinctBy(a => a.Volume)
@@ -93,8 +93,8 @@ public partial class StorageUsage(IAdminService adminService) : IClusterName
         if (AllowCalculateSnapshotSize)
         {
             ret += L[" - Snapshot {0} - For replication {1}",
-                     FormatHelper.FromBytes(DiskSnapshotHelper.CalculateSnapshots(info.Node, info.Storage, Disks, false)),
-                     FormatHelper.FromBytes(DiskSnapshotHelper.CalculateSnapshots(info.Node, info.Storage, Disks, true))];
+                     FormatHelper.FromBytes(StorageSnapshotHelper.CalculateSnapshots(info.Node, info.Storage, Disks, false)),
+                     FormatHelper.FromBytes(StorageSnapshotHelper.CalculateSnapshots(info.Node, info.Storage, Disks, true))];
         }
 
         return ret;
@@ -110,8 +110,8 @@ public partial class StorageUsage(IAdminService adminService) : IClusterName
             var contentAllowed = new[] { "images", "rootdir" };
             foreach (var item in items.Where(a => contentAllowed.Contains(a.Content)))
             {
-                item.SnapshotsSize = DiskSnapshotHelper.CalculateSnapshots(node, item.VmId, item.Storage, item.FileName, Disks, false);
-                item.SnapshotsReplicationSize = DiskSnapshotHelper.CalculateSnapshots(node, item.VmId, item.Storage, item.FileName, Disks, true);
+                item.SnapshotsSize = StorageSnapshotHelper.CalculateSnapshots(node, item.VmId, item.Storage, item.FileName, Disks, false);
+                item.SnapshotsReplicationSize = StorageSnapshotHelper.CalculateSnapshots(node, item.VmId, item.Storage, item.FileName, Disks, true);
             }
         }
 

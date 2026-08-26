@@ -71,10 +71,10 @@ public partial class Status(IAdminService adminService,
                 await InvokeAsync(StateHasChanged);
 
                 //snapshot size
-                var disks = await clusterClient.CachedData.GetDiskSnapshotInfosAsync(false);
+                var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
                 foreach (var item in Items)
                 {
-                    item.SnapshotsSize = DiskSnapshotHelper.CalculateSnapshots(item.VmId, item.Name, disks);
+                    item.SnapshotsSize = StorageSnapshotHelper.CalculateSnapshots(item.VmId, item.Name, disks);
                 }
 
                 IsCalculateSnapshotSize = false;
