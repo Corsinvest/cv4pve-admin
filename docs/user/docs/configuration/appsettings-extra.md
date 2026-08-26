@@ -100,7 +100,12 @@ This document describes all configurable settings available in `appsettings.extr
           "Override": {
             "Microsoft": "Warning",
             "Microsoft.Hosting.Lifetime": "Warning",
-            "System": "Warning"
+            "System": "Warning",
+            "System.Net.Http.HttpClient": "Warning",
+            "LibGit2Sharp": "Warning",
+            "ZiggyCreatures.Caching.Fusion": "Warning",
+            "Polly": "Warning",
+            "Corsinvest.ProxmoxVE.Api": "Warning"
           }
         },
         "Properties": {
@@ -151,28 +156,17 @@ This document describes all configurable settings available in `appsettings.extr
       "Args": {
         "connectionString": "DefaultConnection",
         "tableName": "Logs",
-        "schemaName": "serilog",
+        "schemaName": "logs_serilog",
         "needAutoCreateTable": true,
         "needAutoCreateSchema": true,
-        "columnOptionsSection": {
-          "message": "RenderedMessage",
-          "message_template": "MessageTemplate",
-          "level": "Level",
-          "raise_date": "Timestamp",
-          "exception": "Exception",
-          "properties": "LogEventSerialized",
-          "user_name": {
-            "Name": "SingleProperty",
-            "Args": { "propertyName": "UserName" }
-          },
-          "client_ip": {
-            "Name": "SingleProperty",
-            "Args": { "propertyName": "ClientIp" }
-          },
-          "source_context": {
-            "Name": "SingleProperty",
-            "Args": { "propertyName": "SourceContext" }
-          }
+        "loggerColumnOptions": {
+          "Id": { "Name": "IdAutoIncrement" },
+          "Timestamp": { "Name": "Timestamp" },
+          "Level": { "Name": "Level" },
+          "Message": { "Name": "RenderedMessage" },
+          "MessageTemplate": { "Name": "Message" },
+          "Exception": { "Name": "Exception" },
+          "LogEvent": { "Name": "LogEvent" }
         }
       }
     }
@@ -185,7 +179,7 @@ This document describes all configurable settings available in `appsettings.extr
     | `schemaName` | Database schema name |
     | `needAutoCreateTable` | Auto-create table if not exists |
     | `needAutoCreateSchema` | Auto-create schema if not exists |
-    | `columnOptionsSection` | Column mapping configuration |
+    | `loggerColumnOptions` | Column mapping configuration |
 
     **Console Sink**
 

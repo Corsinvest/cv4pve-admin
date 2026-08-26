@@ -17,7 +17,7 @@ The Command Palette provides fast access to navigation, search, and commands —
 
 ### Search
 
-Type any text to search across modules, VMs, nodes, storages, and pools.
+Type any text to search across modules, VMs and nodes.
 
 When the palette opens with an **empty query**, it shows suggested modules and available commands.
 
@@ -29,8 +29,6 @@ Use prefixes to narrow results to a specific resource type. Filters require a cl
 |--------|-------------|---------|
 | `vm:` | Filter by Virtual Machine or Container | `vm:101`, `vm:debian` |
 | `node:` | Filter by Node | `node:pve1` |
-| `storage:` | Filter by Storage | `storage:local` |
-| `pool:` | Filter by Pool | `pool:dev` |
 | `ip:` | Filter by IP address (requires OS info) | `ip:192.168` |
 
 Filters can be combined with free text. For example: `vm: debian` searches for VMs matching "debian".

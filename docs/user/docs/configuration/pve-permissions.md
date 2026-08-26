@@ -42,12 +42,13 @@ These are the permissions included in the built-in `PVEAuditor` role — equival
 | **Metrics Exporter** | — |
 | **Diagnostics** | — |
 | **System Report** | — |
-| **VM OS Info** | • `VM.GuestAgent.Audit` |
 | **AutoSnap** | • `VM.Snapshot`<br>• `VM.Snapshot.Rollback`<br>• `Datastore.AllocateSpace`<br>• `Pool.Allocate`<br>• `VM.PowerMgmt` _(only if Include RAM is enabled)_ |
 | **Node Protect** | Base only — uses SSH to operate on nodes |
 | **Update Manager** | Base only — uses SSH to operate on nodes/VMs |
 | **UPS Monitor** | — _(SNMP only, no PVE API)_ |
 | **VM Performance** | • `VM.Monitor` |
+| **AI Server** | Depends on which tools are enabled:<br>• Power state: `VM.PowerMgmt`<br>• Snapshots: `VM.Snapshot`, `VM.Snapshot.Rollback`<br>• Migrate: `VM.Migrate`<br>• Backup: `VM.Backup`, `Datastore.AllocateSpace`<br>• Delete backups / storage content: `Datastore.Allocate`<br>• Download ISO: `Datastore.AllocateTemplate`<br>_(read-only tools need base only; each tool is individually grantable)_ |
+| **Bots** | Depends on the commands enabled in the bot _(power and snapshot commands need `VM.PowerMgmt` and `VM.Snapshot`)_ |
 | **Portal** | • `VM.PowerMgmt`<br>• `VM.Console`<br>• `VM.Snapshot`<br>• `VM.Snapshot.Rollback`<br>• `VM.Backup`<br>• `Datastore.AllocateSpace`<br>_(depends on tenant permissions configured)_ |
 | **Workflow** | Depends on configured activities:<br>• Clone: `VM.Clone`, `Datastore.AllocateSpace`<br>• Backup: `VM.Backup`, `Datastore.AllocateSpace`<br>• Resize disk: `VM.Config.Disk`<br>• HA operations: `Sys.Modify`<br>• Node reboot/shutdown: `Sys.PowerMgmt`<br>• Convert to template: `VM.Allocate` |
 

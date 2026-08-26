@@ -99,4 +99,4 @@ SSH is configured per-cluster under **Proxmox VE Clusters → SSH Credentials**.
     !!! note "Timeout scope"
         The SSH timeout applies only to the **connection phase** (handshake), not to command execution duration.
 
-Use the **Test SSH** button to verify connectivity to all nodes before saving.
+Connectivity to the nodes is verified automatically when the cluster settings are saved.

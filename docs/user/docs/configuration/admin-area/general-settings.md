@@ -6,7 +6,7 @@ Global application configuration. Settings live in the database (not in `appsett
 
 - **Application** — app name, default theme, default language
 - <span class="ce"></span> **SMTP** — outbound email server
-- <span class="ee"></span> **Appearance** — logo, colours, login page customisation
+- <span class="ee"></span> **Appearance** — favicon and sign in page customisation
 - **Release Channel** — stable / pre-release for the Updater module
 
 ## Application
@@ -36,10 +36,9 @@ Customise how the UI looks to your users.
 
 | Field | Description |
 |-------|-------------|
-| **Logo** | Custom logo image shown in the top header and on the login page. |
-| **Favicon** | Browser tab icon. |
-| **Primary colour** | Overrides the default indigo theme accent. |
-| **Login page** | Background image, welcome text, footer text. |
+| **Favicon** | Browser tab icon. Maximum file size 1 MB. |
+| **Sign in page — Title** | Heading shown on the login page. |
+| **Sign in page — Description** | Text below the heading, written in Markdown. |
 
 Useful for MSPs and enterprises that want to brand the admin interface for their own customers.
 
