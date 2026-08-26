@@ -105,18 +105,23 @@ The Dashboard ships two generic widgets always available; every other module con
     | AutoSnap | Size | Snapshot size over time chart |
     | AutoSnap | Check | Failed snapshots alert |
     | AutoSnap | Info | Snapshot statistics and insights |
+    | AutoSnap | Daily Status | <span class="ee"></span> Successful and failed snapshots per day, last 14 days |
     | Backup Analytics | Status | Backup job status overview |
     | Backup Analytics | Size | Backup size chart |
     | Backup Analytics | Check | Failed backups alert |
     | Backup Analytics | Info | Backup statistics |
+    | Backup Analytics | Daily Status | <span class="ee"></span> Successful and failed backups per day, last 14 days |
     | Diagnostics | Status | Diagnostic check status |
     | Diagnostics | Check | Diagnostic issues list |
     | Replication Analytics | Status | Replication status overview |
     | Replication Analytics | Size | Replication size chart |
     | Replication Analytics | Check | Replication check alerts |
     | Replication Analytics | Info | Replication analytics overview |
+    | Replication Analytics | Daily Status | <span class="ee"></span> Successful and failed replications per day, last 14 days |
     | Node Protect | Folder Size | Node Protect backup folder size |
     | Node Protect | Git Size | <span class="ee"></span> Node Protect Git repository size |
+    | Node Protect | Daily Status | <span class="ee"></span> Successful and failed folder tasks per day, last 14 days |
+    | System Report | Daily Status | <span class="ee"></span> Successful and failed reports per day, last 14 days |
     | Update Manager | Status | Update Manager status overview |
 
 ## Default Dashboard
