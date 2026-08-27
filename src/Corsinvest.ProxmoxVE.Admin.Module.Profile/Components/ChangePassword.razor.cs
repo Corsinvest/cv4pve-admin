@@ -10,6 +10,7 @@ public partial class ChangePassword(UserManager<ApplicationUser> userManager,
 {
     private string? Error { get; set; }
     private InputModel Model { get; set; } = new();
+    private bool ShowPasswords { get; set; }
 
     private class InputModel
     {
@@ -32,6 +33,12 @@ public partial class ChangePassword(UserManager<ApplicationUser> userManager,
         if (result.Succeeded)
         {
             await userManager.UpdateSecurityStampAsync(user);
+
+            // Leave nothing behind on screen: clear the fields and put any revealed password
+            // back under the dots.
+            Model = new();
+            ShowPasswords = false;
+
             notificationService.Success(L["Your password has been changed"]);
         }
         else
