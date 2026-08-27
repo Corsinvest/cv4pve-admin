@@ -1138,5 +1138,12 @@
   "Bearer": "",
   "API Key": "",
   "{0} orphan snapshot(s) found on disk, taking {1}. They are unknown to Proxmox and cannot be managed from here.": "",
-  "Orphan on disk": ""
+  "Orphan on disk": "",
+  "Preferences": "",
+  "Two-factor authentication (2FA)": "",
+  "Update password": "",
+  "Old Password": "",
+  "New Password": "",
+  "Confirm Password": "",
+  "Your password has been changed": ""
 }
