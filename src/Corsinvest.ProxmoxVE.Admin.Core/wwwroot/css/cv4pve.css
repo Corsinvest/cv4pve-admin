@@ -109,6 +109,38 @@
 }
 
 /* ========================================
+   Diagnostic — gravity group header
+   ======================================== */
+
+/* A tinted left edge over a washed background, rather than a filled row: the groups sit
+   directly on top of each other and three saturated bands read as an error state of the
+   page itself. */
+.cv4pve-diag-group > td {
+    border-left: 4px solid transparent;
+    font-weight: 600;
+}
+
+.cv4pve-diag-group.critical > td {
+    border-left-color: var(--rz-danger);
+    background: color-mix(in srgb, var(--rz-danger) var(--cv4pve-severity-tint), transparent);
+}
+
+.cv4pve-diag-group.warning > td {
+    border-left-color: var(--rz-warning);
+    background: color-mix(in srgb, var(--rz-warning) var(--cv4pve-severity-tint), transparent);
+}
+
+.cv4pve-diag-group.info > td {
+    border-left-color: var(--rz-info);
+    background: color-mix(in srgb, var(--rz-info) var(--cv4pve-severity-tint), transparent);
+}
+
+.cv4pve-diag-group.ok > td {
+    border-left-color: var(--rz-success);
+    background: color-mix(in srgb, var(--rz-success) var(--cv4pve-severity-tint), transparent);
+}
+
+/* ========================================
    Thumb-details widget — health icon + severity dots
    Used by WidgetThumbDetailsBase. The icon scales with
    the widget size via container queries; severity dots
@@ -221,21 +253,3 @@
 .cv4pve-thumb-widget-tooltip-link:hover {
     text-decoration: underline;
 }
-
-
-/* ========================================
-   Diagnostic — gravity group header
-   ======================================== */
-
-/* A tinted left edge over a washed background, rather than a filled row: the groups sit
-   directly on top of each other and three saturated bands read as an error state of the
-   page itself. */
-.cv4pve-diag-group > td {
-    border-left: 4px solid transparent;
-    font-weight: 600;
-}
-
-.cv4pve-diag-group.critical > td { border-left-color: var(--rz-danger);  background: color-mix(in srgb, var(--rz-danger)  var(--cv4pve-severity-tint), transparent); }
-.cv4pve-diag-group.warning  > td { border-left-color: var(--rz-warning); background: color-mix(in srgb, var(--rz-warning) var(--cv4pve-severity-tint), transparent); }
-.cv4pve-diag-group.info     > td { border-left-color: var(--rz-info);    background: color-mix(in srgb, var(--rz-info)    var(--cv4pve-severity-tint), transparent); }
-.cv4pve-diag-group.ok       > td { border-left-color: var(--rz-success); background: color-mix(in srgb, var(--rz-success) var(--cv4pve-severity-tint), transparent); }
