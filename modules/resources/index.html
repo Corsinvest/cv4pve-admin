@@ -1255,8 +1255,17 @@
 <ul>
 <li><strong>Hostname</strong> — collected via QEMU Guest Agent, useful when the VM name and the in-guest hostname differ</li>
 <li><strong>OS Info</strong> — OS family, distribution and version</li>
+<li><strong>Orphan snapshots</strong> — see below</li>
 <li>Additional widgets in the <a href="../dashboard/">Dashboard</a> feeding from Resources data</li>
 </ul>
+<h3 id="orphan-snapshots">Orphan snapshots<a class="headerlink" href="#orphan-snapshots" title="Permanent link">&para;</a></h3>
+<p>A snapshot removed in Proxmox VE can survive on the underlying storage: the removal does not always propagate to the dataset, and the space stays occupied. Proxmox VE no longer lists it, so nothing in its UI reveals it — the disk simply looks fuller than the snapshots explain.</p>
+<p>Opening a guest's <strong>Snapshots</strong> tab from Resources lists these first, marked as orphans, with a warning summing the space they hold. They cannot be rolled back, edited or deleted from here, since Proxmox VE has no snapshot to act on: removing one means working on the storage directly, on the node.</p>
+<div class="admonition note">
+<p class="admonition-title">Requires SSH</p>
+<p>Orphan detection compares what the storage holds against what Proxmox VE reports, so it needs the same <a href="../../configuration/admin-area/clusters/#ssh-configuration">SSH credentials</a> as snapshot size calculation. Without them, neither is shown.</p>
+</div>
+<p>Sizes are read per storage type. On ZFS the reported size is the space the snapshot actually occupies; on other backends it is currently an approximation.</p>
 <h2 id="console-limitations">Console Limitations<a class="headerlink" href="#console-limitations" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Node console requires a PAM user</p>

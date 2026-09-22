@@ -1365,10 +1365,6 @@
 <td>—</td>
 </tr>
 <tr>
-<td><strong>VM OS Info</strong></td>
-<td>• <code>VM.GuestAgent.Audit</code></td>
-</tr>
-<tr>
 <td><strong>AutoSnap</strong></td>
 <td>• <code>VM.Snapshot</code><br>• <code>VM.Snapshot.Rollback</code><br>• <code>Datastore.AllocateSpace</code><br>• <code>Pool.Allocate</code><br>• <code>VM.PowerMgmt</code> <em>(only if Include RAM is enabled)</em></td>
 </tr>
@@ -1387,6 +1383,14 @@
 <tr>
 <td><strong>VM Performance</strong></td>
 <td>• <code>VM.Monitor</code></td>
+</tr>
+<tr>
+<td><strong>AI Server</strong></td>
+<td>Depends on which tools are enabled:<br>• Power state: <code>VM.PowerMgmt</code><br>• Snapshots: <code>VM.Snapshot</code>, <code>VM.Snapshot.Rollback</code><br>• Migrate: <code>VM.Migrate</code><br>• Backup: <code>VM.Backup</code>, <code>Datastore.AllocateSpace</code><br>• Delete backups / storage content: <code>Datastore.Allocate</code><br>• Download ISO: <code>Datastore.AllocateTemplate</code><br><em>(read-only tools need base only; each tool is individually grantable)</em></td>
+</tr>
+<tr>
+<td><strong>Bots</strong></td>
+<td>Depends on the commands enabled in the bot <em>(power and snapshot commands need <code>VM.PowerMgmt</code> and <code>VM.Snapshot</code>)</em></td>
 </tr>
 <tr>
 <td><strong>Portal</strong></td>
