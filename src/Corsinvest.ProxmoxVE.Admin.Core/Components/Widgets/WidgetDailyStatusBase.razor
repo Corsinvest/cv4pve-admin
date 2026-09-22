@@ -28,12 +28,12 @@ else
                                    CategoryProperty="@nameof(DayPoint.DayLabel)"
                                    ValueProperty="@nameof(DayPoint.Success)"
                                    Title="@L["Success"]"
-                                   Fill="#43a047" />
+                                   Fill="var(--rz-success)" />
         <RadzenStackedColumnSeries Data="@Points"
                                    CategoryProperty="@nameof(DayPoint.DayLabel)"
                                    ValueProperty="@nameof(DayPoint.Failed)"
                                    Title="@L["Failed"]"
-                                   Fill="#e53935" />
+                                   Fill="var(--rz-danger)" />
 
         <RadzenCategoryAxis FormatString="{0}" />
         <RadzenValueAxis>

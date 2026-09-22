@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
+using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Models;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Persistence;
 
@@ -110,6 +111,8 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
     }
 
     public void Dispose() => eventNotificationService.Unsubscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
+
+    private GroupCollapseState Groups { get; } = new();
 
     private void OnRender(DataGridRenderEventArgs<Data> args)
     {

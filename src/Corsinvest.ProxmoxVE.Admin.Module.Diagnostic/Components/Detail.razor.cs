@@ -2,8 +2,10 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
+using Corsinvest.ProxmoxVE.Diagnostic.Api;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;
 
@@ -70,10 +72,30 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
         }
     }
 
-    private static void OnGroupRowRender(GroupRowRenderEventArgs args)
+    private GroupCollapseState Groups { get; } = new();
+
+    private void OnGroupRowRender(GroupRowRenderEventArgs args)
     {
-        if (args.FirstRender) { args.Expanded = false; }
+        Groups.OnRender(args);
+
+        // The gravity groups are collapsed, so their header is all the reader sees of a hundred
+        // findings: colouring it says how bad the report is before anything is expanded. Only the
+        // header row — colouring every finding underneath would leave nothing legible.
+        if (args.Group?.Data.Key is DiagnosticResultGravity gravity)
+        {
+            args.Attributes["class"] = $"cv4pve-diag-group {GravityCssClass(gravity)}";
+        }
     }
+
+    /// <summary>Theme variables rather than fixed colours: the grid is also rendered on a dark
+    /// background, where a hard-coded pastel is unreadable.</summary>
+    private static string GravityCssClass(DiagnosticResultGravity gravity) => gravity switch
+    {
+        DiagnosticResultGravity.Critical => "critical",
+        DiagnosticResultGravity.Warning => "warning",
+        DiagnosticResultGravity.Info => "info",
+        _ => "ok",
+    };
 
     private async Task IgnoreIssueAsync(JobDetail item)
     {

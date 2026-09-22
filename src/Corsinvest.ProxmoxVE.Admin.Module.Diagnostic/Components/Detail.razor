@@ -10,6 +10,7 @@
 
 <RadzenDataGrid @ref="DataGridRef"
                 TItem="JobDetail"
+                KeyProperty="@nameof(JobDetail.Id)"
                 Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
@@ -21,11 +22,12 @@
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 AllowGrouping="true"
-                AllGroupsExpanded="false"
                 ShowMultiColumnSortingIndex="true"
                 HideGroupedColumn="false"
                 Render="@OnRender"
-                GroupRowRender="OnGroupRowRender">
+                GroupRowRender="OnGroupRowRender"
+                GroupRowExpand="Groups.OnExpand"
+                GroupRowCollapse="Groups.OnCollapse">
     <GroupHeaderTemplate>
         <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count)
     </GroupHeaderTemplate>

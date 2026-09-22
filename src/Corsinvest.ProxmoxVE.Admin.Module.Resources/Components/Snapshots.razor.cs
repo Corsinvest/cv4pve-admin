@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
 using System.Text.Encodings.Web;
 using Corsinvest.ProxmoxVE.Api.Shared.Utils;
 
@@ -9,6 +10,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
 public partial class Snapshots(IAdminService adminService) : IClusterName, IRefreshableData
 {
+    private GroupCollapseState Groups { get; } = new();
+
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
     private IEnumerable<Data> Items { get; set; } = [];

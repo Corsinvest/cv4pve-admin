@@ -45,7 +45,8 @@ public class Module : ModuleBase
             },
             new(this,"Status")
             {
-                Render = new (typeof(Components.Status)),
+                Render = new (typeof(Components.Status),
+                              new Dictionary<string, object> { [nameof(Components.Status.Style)] = "height: calc(100vh - 140px)" }),
                 Icon = PveAdminUIHelper.Icons.Status
             }
         ];

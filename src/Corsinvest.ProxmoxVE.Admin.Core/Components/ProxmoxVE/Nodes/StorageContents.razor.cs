@@ -36,10 +36,7 @@ public partial class StorageContents<TItem> where TItem : NodeStorageContent
         }
     }
 
-    private static void OnGroupRowRender(GroupRowRenderEventArgs args)
-    {
-        if (args.FirstRender) { args.Expanded = false; }
-    }
+    private DataGrid.GroupCollapseState GroupState { get; } = new();
 
     private static FilterMode? GetFilterMode(string propertyName)
         => propertyName switch

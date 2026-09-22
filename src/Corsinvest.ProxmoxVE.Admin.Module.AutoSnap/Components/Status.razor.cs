@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
+
 namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Components;
 
 public partial class Status(IAdminService adminService,
@@ -17,6 +19,7 @@ public partial class Status(IAdminService adminService,
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [Parameter] public string VmIds { get; set; } = default!;
+    [Parameter] public string Style { get; set; } = default!;
 
     private IEnumerable<AutoSnapInfo> Items { get; set; } = default!;
     private bool IsLoading { get; set; }
@@ -108,10 +111,7 @@ public partial class Status(IAdminService adminService,
         }
     }
 
-    private static void OnGroupRowRender(GroupRowRenderEventArgs args)
-    {
-        if (args.FirstRender) { args.Expanded = false; }
-    }
+    private GroupCollapseState Groups { get; } = new();
 
     private async Task KeyDownAsync(KeyboardEventArgs e)
     {

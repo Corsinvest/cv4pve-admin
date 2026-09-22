@@ -4,6 +4,27 @@
  */
 
 /* ========================================
+   Severity
+   ======================================== */
+
+/* Severity uses the theme's own --rz-danger / --rz-warning / --rz-info / --rz-success
+   directly. Only the states with no obvious theme colour are named here, plus the tint
+   strength. */
+:root {
+    /* A running task takes the primary colour rather than a severity one. */
+    --cv4pve-severity-running: var(--rz-primary);
+    --cv4pve-severity-muted: var(--rz-text-tertiary-color);
+    --cv4pve-severity-disabled: var(--rz-base-400);
+
+    /* How much of the accent colour a tinted row or group header carries. Mixed towards
+       transparent rather than taken from the theme's "-lighter" variables: those are pale
+       in the light theme but saturated in the dark one (--rz-warning-lighter is #fff786
+       there), where the white row text would be lost on them. Mixing lets the theme's own
+       background show through, so one value works in both. */
+    --cv4pve-severity-tint: 12%;
+}
+
+/* ========================================
    RadzenPanel - icon/text spacing fix
    ======================================== */
 
@@ -120,8 +141,8 @@
 }
 
 .cv4pve-thumb-widget-icon.ok      .rzi { color: var(--rz-success); }
-.cv4pve-thumb-widget-icon.ko      .rzi { color: var(--rz-danger);  }
-.cv4pve-thumb-widget-icon.neutral .rzi { color: var(--rz-text-tertiary-color); }
+.cv4pve-thumb-widget-icon.ko      .rzi { color: var(--rz-danger); }
+.cv4pve-thumb-widget-icon.neutral .rzi { color: var(--cv4pve-severity-muted); }
 
 .cv4pve-thumb-widget-row {
     flex: 1;
@@ -201,3 +222,20 @@
     text-decoration: underline;
 }
 
+
+/* ========================================
+   Diagnostic — gravity group header
+   ======================================== */
+
+/* A tinted left edge over a washed background, rather than a filled row: the groups sit
+   directly on top of each other and three saturated bands read as an error state of the
+   page itself. */
+.cv4pve-diag-group > td {
+    border-left: 4px solid transparent;
+    font-weight: 600;
+}
+
+.cv4pve-diag-group.critical > td { border-left-color: var(--rz-danger);  background: color-mix(in srgb, var(--rz-danger)  var(--cv4pve-severity-tint), transparent); }
+.cv4pve-diag-group.warning  > td { border-left-color: var(--rz-warning); background: color-mix(in srgb, var(--rz-warning) var(--cv4pve-severity-tint), transparent); }
+.cv4pve-diag-group.info     > td { border-left-color: var(--rz-info);    background: color-mix(in srgb, var(--rz-info)    var(--cv4pve-severity-tint), transparent); }
+.cv4pve-diag-group.ok       > td { border-left-color: var(--rz-success); background: color-mix(in srgb, var(--rz-success) var(--cv4pve-severity-tint), transparent); }
