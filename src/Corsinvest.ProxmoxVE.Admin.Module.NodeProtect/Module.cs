@@ -107,8 +107,10 @@ public class Module : ModuleBase
     protected virtual void InitializeJob(IBackgroundJobService backgroundJobService, Settings settings) { }
 
     /// <summary>The Git provider's name, shared so the Enterprise edition can replace this
-    /// placeholder entry instead of adding a second one beside it.</summary>
-    public const string GitProviderName = "Git";
+    /// placeholder entry instead of adding a second one beside it. A property rather than a
+    /// const: a const is inlined into the Enterprise assembly, which would then keep filtering
+    /// on the old name until it is rebuilt — bringing the duplicate back in silence.</summary>
+    public static string GitProviderName { get; } = "Git";
 
     public virtual IEnumerable<Provider> GetProviders() =>
     [
