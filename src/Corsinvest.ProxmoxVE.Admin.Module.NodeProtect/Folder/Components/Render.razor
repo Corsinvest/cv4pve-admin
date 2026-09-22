@@ -10,7 +10,6 @@
                     AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="false"
-                    AllGroupsExpanded="false"
                     AllowSorting="true"
                     AllowVirtualization="true"
                     Style="height: calc(100vh - 140px);"
@@ -19,6 +18,9 @@
                     AllowGrouping="true"
                     AllowColumnPicking="true"
                     Render="OnRender"
+                    GroupRowRender="Groups.OnRender"
+                    GroupRowExpand="Groups.OnExpand"
+                    GroupRowCollapse="Groups.OnCollapse"
                     @bind-Value="@SelectedItems">
         <HeaderTemplate>
             <CrudToolbar OnRefresh="RefreshDataAsync">

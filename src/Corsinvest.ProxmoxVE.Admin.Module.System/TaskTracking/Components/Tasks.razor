@@ -13,6 +13,7 @@
 
 <RadzenDataGrid @ref="@DataGridRef"
                 TItem="TaskItemInfo"
+                KeyProperty="@nameof(TaskItemInfo.Id)"
                 Data="@ResultLoadData.Data"
                 Count="@ResultLoadData.TotalCount"
                 LoadData="@LoadDataAsync"

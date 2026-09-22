@@ -10,6 +10,7 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
     [Parameter] public bool ShowOnlyError { get; set; }
     [Parameter] public int? JobId { get; set; }
+    [Parameter] public string Style { get; set; } = default!;
 
     private IList<Data> SelectedItems { get; set; } = [];
     private bool _validColumnClick;

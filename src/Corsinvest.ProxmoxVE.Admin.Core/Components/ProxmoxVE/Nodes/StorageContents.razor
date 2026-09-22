@@ -15,11 +15,12 @@
                 AllowGrouping="true"
                 Style="@Style"
                 IsLoading="@IsLoading"
-                AllGroupsExpanded="false"
                 AllowMultiColumnSorting="true"
                 ShowMultiColumnSortingIndex="true"
                 Render="OnRender"
-                GroupRowRender="OnGroupRowRender"
+                GroupRowRender="GroupState.OnRender"
+                GroupRowExpand="GroupState.OnExpand"
+                GroupRowCollapse="GroupState.OnCollapse"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <GroupHeaderTemplate>

@@ -6,6 +6,7 @@
 
 <RadzenDataGrid @ref="@DataGridRef"
                 TItem="Data"
+                KeyProperty="@nameof(Data.Id)"
                 Data="@ResultLoadData.Data"
                 Count="@ResultLoadData.TotalCount"
                 AllowFiltering="true"
@@ -62,11 +63,11 @@
             <RadzenTabs>
                 <Tabs>
                     <RadzenTabsItem Text="@L["Histories"]" Icon="history">
-                        <Results JobId="context.Id" />
+                        <Results JobId="context.Id" Style="height: 500px;" />
                     </RadzenTabsItem>
 
                     <RadzenTabsItem Text="@L["Status"]" Icon="list">
-                        <Status VmIds="@context.VmIds" />
+                        <Status VmIds="@context.VmIds" Style="height: 500px;" />
                     </RadzenTabsItem>
                 </Tabs>
             </RadzenTabs>

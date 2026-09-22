@@ -21,11 +21,19 @@ public static class RadzenUIExtensions
         }
     }
 
+    // A wash of the accent colour rather than the colour itself: DangerLight (#d29396) and
+    // WarningDark (#e6b409) are solid colours meant for icons and badges, and a whole row of
+    // either drowns out the text it is supposed to draw attention to.
+    //
+    // The strength is a CSS variable, shared with the group-header rule in cv4pve.css so the two
+    // cannot drift apart. Set as a style and not a class: the grid renders class before
+    // @attributes on the tr, so a class here would replace Radzen's own — selection, alternating
+    // rows, hover.
     public static void SetRowStyleError<T>(this RowRenderEventArgs<T> args)
-        => args.Attributes.Add("style", $"background-color: {Colors.DangerLight};");
+        => args.Attributes.Add("style", "background-color: color-mix(in srgb, var(--rz-danger) var(--cv4pve-severity-tint), transparent);");
 
     public static void SetRowStyleWarning<T>(this RowRenderEventArgs<T> args)
-        => args.Attributes.Add("style", $"background-color: {Colors.WarningDark};");
+        => args.Attributes.Add("style", "background-color: color-mix(in srgb, var(--rz-warning) var(--cv4pve-severity-tint), transparent);");
 
     public static void Success(this NotificationService notificationService, string summary, string detail = null!)
         => notificationService.Notify(new()

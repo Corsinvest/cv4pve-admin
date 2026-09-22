@@ -1,8 +1,8 @@
 /*
-using static Corsinvest.ProxmoxVE.Admin.Core.BuildInfo;
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
 
 using Corsinvest.ProxmoxVE.Admin.Core;
 using Corsinvest.ProxmoxVE.Api;
@@ -16,6 +16,9 @@ public partial class Networks(IAdminService adminService,
                               ISettingsService settingsService,
                               IBrowserService browserService) : IClusterName, IRefreshableData
 {
+    private GroupCollapseState Groups1 { get; } = new();
+    private GroupCollapseState Groups2 { get; } = new();
+
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
     private List<VmNetwork> VmNetworks { get; set; } = [];

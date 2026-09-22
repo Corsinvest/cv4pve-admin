@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+using Corsinvest.ProxmoxVE.Admin.Core.Components.DataGrid;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
 public partial class Disks(IAdminService adminService) : IClusterName, IRefreshableData
 {
+    private GroupCollapseState Groups { get; } = new();
+
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
     private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;

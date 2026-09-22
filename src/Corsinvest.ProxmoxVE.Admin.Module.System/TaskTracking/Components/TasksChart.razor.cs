@@ -36,13 +36,15 @@ public partial class TasksChart
         return true;
     }
 
+    // Theme colours rather than fixed hex: the chart then follows the theme and agrees with the
+    // badges and tinted rows elsewhere. These were Material greens and reds in a Fluent product.
     private static string StatusColor(TaskItemStatus status) => status switch
     {
-        TaskItemStatus.Running => "#1e88e5",       // blue
-        TaskItemStatus.Completed => "#43a047",     // green
-        TaskItemStatus.Failed => "#e53935",        // red
-        TaskItemStatus.Cancelled => "#757575",     // grey
-        TaskItemStatus.Abandoned => "#fb8c00",     // orange
-        _ => "#9e9e9e"
+        TaskItemStatus.Running => "var(--cv4pve-severity-running)",
+        TaskItemStatus.Completed => "var(--rz-success)",
+        TaskItemStatus.Failed => "var(--rz-danger)",
+        TaskItemStatus.Cancelled => "var(--cv4pve-severity-muted)",
+        TaskItemStatus.Abandoned => "var(--rz-warning)",
+        _ => "var(--cv4pve-severity-disabled)"
     };
 }
