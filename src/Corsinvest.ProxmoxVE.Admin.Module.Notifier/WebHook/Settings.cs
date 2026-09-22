@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Text.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Hooks;
 using Microsoft.Extensions.DependencyInjection;
 using OperationResult = FluentResults.Result;
@@ -28,10 +29,19 @@ public class Settings : NotifierConfiguration
                 : WebHook.Body
         };
 
+        // The values land inside the template as-is, so for a JSON body they are escaped first:
+        // a body carrying a quote or a line break — a job log, a list of UPS alerts — would
+        // otherwise produce a payload the receiver rejects as malformed. Left untouched for the
+        // other body types, where JSON escaping would be wrong.
+        string Encode(string? value) => hook.BodyType == WebHookBodyType.Json
+            ? JsonEncodedText.Encode(value ?? string.Empty).ToString()
+            : value ?? string.Empty;
+
         var variables = new Dictionary<string, string>
         {
-            ["subject"] = message.Subject,
-            ["body"] = message.Body
+            ["subject"] = Encode(message.Subject),
+            ["body"] = Encode(message.Body),
+            ["severity"] = message.Severity.ToString(),
         };
 
         var hookExecutor = serviceProvider.GetRequiredService<IHookExecutor>();

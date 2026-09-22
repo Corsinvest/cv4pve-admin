@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
+using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Services;
 using Corsinvest.ProxmoxVE.Api;
@@ -245,9 +246,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 //send notification
                 taskScope.Item.Phase = "Sending notifications";
 
+                // OnFailureOnly filters on the outcome; Allways does not. Previously both were
+                // followed by the same "!result.Status", so Allways only ever sent failures.
                 if (settings.NotifierConfigurations?.Any() is true
-                    && settings.Notify is Notify.Allways or Notify.OnFailureOnly
-                    && !result.Status)
+                    && (settings.Notify is Notify.Allways
+                        || (settings.Notify is Notify.OnFailureOnly && !result.Status)))
                 {
                     var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
                     var appSettings = scope.GetSettingsService().GetAppSettings();
@@ -259,7 +262,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                     id,
                                     result.Status ? L["OK"] : L["KO"],
                                     job.ClusterName],
-                        Body = result.Logs.ReplaceLineEndings("<br>")
+
+                        // Plain text: the log also travels to a webhook payload and to a chat
+                        // message, where "<br>" arrives as those four characters.
+                        Body = result.Logs,
+
+                        Severity = result.Status
+                            ? NotifierMessageSeverity.Success
+                            : NotifierMessageSeverity.Error,
                     });
                 }
 

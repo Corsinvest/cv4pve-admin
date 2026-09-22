@@ -29,7 +29,10 @@ public class Settings : NotifierConfiguration, INotifierEmail
                                          .Select(a => a.Trim())
                                          .Select(MailboxAddress.Parse));
 
-            var builder = new BodyBuilder { HtmlBody = message.Body };
+            // Sent as text, because that is what it is: one body serves mail, webhooks and chat
+            // channels alike, and none of them writes markup. Putting it in HtmlBody instead
+            // would render a log line containing "<" or "&" as markup and swallow it.
+            var builder = new BodyBuilder { TextBody = message.Body };
 
             foreach (var item in message.Attachments)
             {

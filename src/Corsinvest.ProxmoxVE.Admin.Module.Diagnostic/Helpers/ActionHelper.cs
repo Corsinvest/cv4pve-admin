@@ -150,10 +150,40 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                         var appSettings = scope.GetSettingsService().GetAppSettings();
                         var L = scope.GetRequiredService<IStringLocalizer<ActionHelper>>();
 
+                        var critical = Count(DiagnosticResultGravity.Critical);
+                        var warning = Count(DiagnosticResultGravity.Warning);
+                        var info = Count(DiagnosticResultGravity.Info);
+
+                        // One line of plain text, no markup and no line breaks: the same body
+                        // reaches a mailbox (where the SMTP provider sends it as HTML, so a \n
+                        // would be swallowed), a webhook payload and whatever Apprise forwards it
+                        // to — usually a chat message.
+                        //
+                        // Said here rather than left to the attachment: on a phone, or in a chat
+                        // client, the report is not opened. These counts are what decides whether
+                        // anyone opens it at all.
+                        var body = critical + warning + info == 0
+                            ? L["No issues found on cluster '{0}'.", clusterName]
+                            : L["Cluster '{0}': {1} critical, {2} warning, {3} info. See the attached report for details.",
+                                clusterName, critical, warning, info];
+
                         await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
                         {
                             Subject = L["{0} - Diagnostic result of cluster '{1}'", appSettings.AppName, clusterName],
-                            Body = L["Diagnostic result of {0}", now],
+                            // Local time: the subject line and the mail header show it that way,
+                            // and now is UTC.
+                            Body = $"{body} {L["Scan completed on {0}.", now.ToLocalTime()]}",
+
+                            // Carries the worst finding, so a provider that colours or routes by
+                            // severity can tell a clean scan from one with critical issues.
+                            Severity = critical > 0
+                                        ? NotifierMessageSeverity.Error
+                                        : warning > 0
+                                            ? NotifierMessageSeverity.Warning
+                                            : info > 0
+                                                ? NotifierMessageSeverity.Info
+                                                : NotifierMessageSeverity.Success,
+
                             Attachments = attachments
                         });
                     }
