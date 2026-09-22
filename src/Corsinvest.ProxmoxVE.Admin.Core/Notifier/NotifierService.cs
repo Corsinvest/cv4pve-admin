@@ -30,10 +30,17 @@ internal class NotifierService(IModuleService moduleService,
 
     public IEnumerable<NotifierConfiguration> GetConfigurations(ModuleBase module) => Get(GetType(module));
 
+    /// <summary>
+    /// Sends to the named configurations, or to every enabled one when no name is given — which
+    /// is what the workflow Notify activity offers as "leave empty for all". Without this an
+    /// empty list matched nothing and the notification was dropped in silence.
+    /// </summary>
     public async Task SendAsync(IEnumerable<string> notifiers, NotifierMessage message)
     {
+        var names = notifiers?.ToArray() ?? [];
+
         foreach (var item in Modules.SelectMany(a => Get(GetType(a)))
-                                    .Where(a => a.Enabled && notifiers.Contains(a.Name)))
+                                    .Where(a => a.Enabled && (names.Length == 0 || names.Contains(a.Name))))
         {
             try
             {

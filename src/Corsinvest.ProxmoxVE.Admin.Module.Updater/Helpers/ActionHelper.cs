@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Models;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Services;
@@ -66,6 +67,13 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 //send notification
                 taskScope.Item.Phase = "Sending notifications";
 
+                var itemsList = items.ToList();
+                var vmCount = itemsList.Count(a => a.VmType == VmType.Qemu);
+                var ctCount = itemsList.Count(a => a.VmType == VmType.Lxc);
+                var securityCount = itemsList.Count(a => a.UpdateSecurityAvailable);
+                var normalCount = itemsList.Count(a => a.UpdateNormalAvailable && !a.UpdateSecurityAvailable);
+                var rebootCount = itemsList.Count(a => a.UpdateRequireReboot);
+
                 if (items.Any(a => a.UpdateRequireReboot || a.UpdateNormalAvailable || a.UpdateSecurityAvailable)
                     && settings.NotifierConfigurations?.Any() is true)
                 {
@@ -75,20 +83,22 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                     await using var ms = updaterService.GenerateReport(clusterName, items, ReportFormat.Pdf);
 
+                    // What is waiting, not just that something is: the report is an attachment,
+                    // and on a phone or a chat channel it is not opened.
                     await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
                     {
                         Subject = L["{0} - Update VM/CT of cluster {1}", appSettings.AppName, clusterName],
-                        Body = L["Update result of {0}", items.Min(a => a.UpdateScanTimestamp)!],
+                        Body = L["Cluster '{0}': {1} security, {2} regular update(s) pending, {3} guest(s) need a reboot. See the attached report for details. Scan completed on {4}.",
+                                 clusterName, securityCount, normalCount, rebootCount, items.Min(a => a.UpdateScanTimestamp)!],
+
+                        // A security update is the one a reader must not miss.
+                        Severity = securityCount > 0
+                            ? NotifierMessageSeverity.Warning
+                            : NotifierMessageSeverity.Info,
+
                         Attachments = [new(ms, "Update.pdf", MediaTypeNames.Application.Pdf)]
                     });
                 }
-
-                var itemsList = items.ToList();
-                var vmCount = itemsList.Count(a => a.VmType == VmType.Qemu);
-                var ctCount = itemsList.Count(a => a.VmType == VmType.Lxc);
-                var securityCount = itemsList.Count(a => a.UpdateSecurityAvailable);
-                var normalCount = itemsList.Count(a => a.UpdateNormalAvailable && !a.UpdateSecurityAvailable);
-                var rebootCount = itemsList.Count(a => a.UpdateRequireReboot);
 
                 await auditService.LogAsync("Updater.Scan",
                                             true,
