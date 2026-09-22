@@ -10,10 +10,13 @@ public interface IDiagnosticService
     string GetHelpUrl(JobDetail jobDetail);
 
     /// <summary>
-    /// Resolves the PVE-side URL for the resource referenced by a diagnostic finding.
-    /// Returns "#" when the context does not have a direct PVE URL (Cluster / Storage / unknown).
+    /// The page of this application that shows the resource a finding refers to, or null when
+    /// there is none: findings about storage, users or cluster-wide settings have no page here,
+    /// and the caller renders those as plain text.
     /// </summary>
-    string GetPveResourceUrl(string idResource, Corsinvest.ProxmoxVE.Diagnostic.Api.DiagnosticResultContext context, string clusterName);
+    string? GetPveResourceUrl(string idResource,
+                              Corsinvest.ProxmoxVE.Diagnostic.Api.DiagnosticResultContext context,
+                              string clusterName);
 
     /// <summary>
     /// Builds a human-readable label from the raw <c>idResource</c> path (es. "nodes/cc01/qemu/100")

@@ -35,7 +35,17 @@
         <RadzenDataGridColumn Property="@nameof(JobDetail.ErrorCode)" Title="@L["Code"]" Width="150px" OrderIndex="2" SortOrder="SortOrder.Ascending" />
         <RadzenDataGridColumn Property="@nameof(JobDetail.IdResource)" Title="@L["Id"]" Width="150px" OrderIndex="3" SortOrder="SortOrder.Ascending">
             <Template>
-                <RadzenLink class="rz-link link" Text="@context.IdResource" Path="@GetPveUrl(context)" />
+                @* Plain text when there is no page for the resource: a link that goes nowhere
+                   navigates away from this page and loses the report. *@
+                @{ var url = GetPveUrl(context); }
+                @if (!string.IsNullOrEmpty(url))
+                {
+                    <RadzenLink class="rz-link link" Text="@context.IdResource" Path="@url" />
+                }
+                else
+                {
+                    @context.IdResource
+                }
             </Template>
         </RadzenDataGridColumn>
 

@@ -72,16 +72,19 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         return url;
     }
 
-    public string GetPveResourceUrl(string idResource, DiagnosticResultContext context, string clusterName)
+    public string? GetPveResourceUrl(string idResource, DiagnosticResultContext context, string clusterName)
     {
-        if (string.IsNullOrEmpty(idResource)) { return "#"; }
+        if (string.IsNullOrEmpty(idResource)) { return null; }
 
         var data = idResource.Split("/");
+
+        // Null, not "#", for everything else: storage, users and cluster-wide settings have no
+        // page here, and "#" is a link that navigates away and loses the report.
         return context switch
         {
             DiagnosticResultContext.Node when data.Length > 1 => UrlHelper.Resources.NodeUrl(data[1], clusterName),
             DiagnosticResultContext.Qemu or DiagnosticResultContext.Lxc when data.Length > 3 && long.TryParse(data[3], out var vmid) => UrlHelper.Resources.VmUrl(vmid, clusterName),
-            _ => "#",
+            _ => null,
         };
     }
 
