@@ -106,10 +106,14 @@ public class Module : ModuleBase
 
     protected virtual void InitializeJob(IBackgroundJobService backgroundJobService, Settings settings) { }
 
+    /// <summary>The Git provider's name, shared so the Enterprise edition can replace this
+    /// placeholder entry instead of adding a second one beside it.</summary>
+    public const string GitProviderName = "Git";
+
     public virtual IEnumerable<Provider> GetProviders() =>
     [
         new("Folder", new(typeof(Folder.Components.Render)), new(typeof(Folder.Components.RenderSettings)),"folder_zip"),
-        new("Git", new(typeof(Core.Components.SubscriptionRequired)),new(typeof(Core.Components.SubscriptionRequired)),"commit")
+        new(GitProviderName, new(typeof(Core.Components.SubscriptionRequired)),new(typeof(Core.Components.SubscriptionRequired)),"commit")
         //Icon="󰊢" class="mdi"
     ];
 
