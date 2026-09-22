@@ -21,13 +21,12 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private IEnumerable<JobDetail> Items { get; set; } = [];
 
     private string GetHelpUrl(JobDetail item) => diagnosticService.GetHelpUrl(item);
-    private string GetPveUrl(JobDetail item) => diagnosticService.GetPveResourceUrl(item.IdResource, item.Context, ClusterName);
+    private string? GetPveUrl(JobDetail item)
+        => diagnosticService.GetPveResourceUrl(item.IdResource, item.Context, ClusterName);
 
     protected override async Task OnInitializedAsync()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-
-        //_baseAddress = (await adminService[ClusterName].GetPveClientAsync()).BaseAddress;
 
         Items = await db.JobDetails.Where(a => a.JobResult.Id == ResultId && !a.IsIgnoredIssue).ToListAsync();
     }
