@@ -58,7 +58,7 @@ Automated health checks and infrastructure diagnostics for Proxmox VE, built on 
 
     ---
 
-    Each diagnostic check carries its mapping to normative controls (ISO 27001, NIS2, DORA, PCI DSS). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.
+    Each diagnostic check carries its mapping to normative controls across **14 standards** (ISO 27001, NIS2, DORA, GDPR, PCI DSS, AgID, ENS, BSI C5 and more). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.
 
 --8<-- "_includes/feature-notifier.md"
 
@@ -111,7 +111,26 @@ Excel exports get **one extra sheet per standard** with two tables: a `Summary` 
 
 Gravity / Status cells use a pastel colour palette consistent between PDF and Excel (Critical/Fail red, Warning orange, Info blue, Ok/Pass green). The Excel formatting is applied as a conditional rule on any column named `Gravity` or `Status`, so user-driven sort/filter keeps the colours.
 
-Currently supported standards: **ISO/IEC 27001:2022**, **EU NIS2**, **EU DORA**, **PCI DSS v4.0**. Sections only appear for standards with actual mappings — empty standards are skipped.
+Sections only appear for standards with actual mappings — empty standards are skipped.
+
+Currently supported standards:
+
+| Standard | Scope |
+|----------|-------|
+| **ISO/IEC 27001:2022** | Information security management systems |
+| **ISO/IEC 27017** | Security controls for cloud services |
+| **ISO/IEC 27018:2019** | Protection of personal data in public clouds |
+| **EU NIS2** | Network and Information Security Directive |
+| **EU DORA** | Digital Operational Resilience Act |
+| **EU GDPR** | General Data Protection Regulation |
+| **PCI DSS v4.0** | Payment Card Industry Data Security Standard |
+| **NIST CSF 2.0** | NIST Cybersecurity Framework |
+| **NIST SP 800-53 rev.5** | Security and Privacy Controls (Moderate baseline subset) |
+| **CIS Controls v8** | Center for Internet Security |
+| **SOC 2** | AICPA Trust Services Criteria |
+| **AgID** | Misure minime di sicurezza ICT per le Pubbliche Amministrazioni (Italy) |
+| **ENS** | Esquema Nacional de Seguridad (Spain, Real Decreto 311/2022) |
+| **BSI C5:2020** | Cloud Computing Compliance Criteria Catalogue (Germany) |
 
 !!! tip "Audit mode"
     Enable **Include OK results (audit mode)** in the General settings to also emit a `Pass` result for every check that succeeds. Useful when auditors want evidence that controls were *verified*, not only when they failed.

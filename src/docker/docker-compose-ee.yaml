@@ -34,7 +34,7 @@ services:
 
   # Apprise Notification Service
   apprise:
-    image: caronc/apprise:latest
+    image: caronc/apprise:1.5
     restart: unless-stopped
     environment:
       - APPRISE_WORKER_COUNT=1
