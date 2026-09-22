@@ -2,12 +2,12 @@
   <ItemGroup>
     <PackageVersion Include="Corsinvest.ProxmoxVE.NodeProtect.Api" Version="2.1.1" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Report" Version="2.5.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.9.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.10.0" />
     <PackageVersion Include="SSH.NET" Version="2026.0.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.1" />
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
@@ -20,15 +20,15 @@
     <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.1" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.18.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.18.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.18.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.19.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.19.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.19.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.19.0" />
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="11.2.7" />
+    <PackageVersion Include="Radzen.Blazor" Version="11.4.2" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.6.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -42,18 +42,18 @@
     <PackageVersion Include="FluentResults" Version="4.0.0" />
     <PackageVersion Include="CronExpressionDescriptor" Version="2.51.0" />
     <PackageVersion Include="cronos" Version="0.13.0" />
-    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.7.1" />
+    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.8.0" />
     <!-- 3.1.12: latest 3.x (Apache-2.0) with all known CVEs fixed.
          DO NOT upgrade to v4.x: switched to Six Labors Split License (commercial). -->
     <PackageVersion Include="SixLabors.ImageSharp" Version="[3.1.12]" />
     <PackageVersion Include="Semver" Version="3.0.0" />
-    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.3" />
-    <PackageVersion Include="MailKit" Version="4.17.0" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.11" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.4" />
+    <PackageVersion Include="MailKit" Version="4.18.0" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.12" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->
   <ItemGroup>
-    <PackageVersion Include="Hangfire" Version="1.8.24" />
+    <PackageVersion Include="Hangfire" Version="1.8.25" />
     <PackageVersion Include="Hangfire.Console" Version="1.4.3" />
     <PackageVersion Include="Hangfire.Console.Extensions" Version="2.1.2" />
     <PackageVersion Include="Hangfire.Console.Extensions.Serilog" Version="2.1.2" />
@@ -61,11 +61,11 @@
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.2.1" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.2.1.1" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="2.0.0" />
     <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.1.1" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.4.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.5.0" />
   </ItemGroup>
   <!-- Development and Code Quality -->
   <ItemGroup>
