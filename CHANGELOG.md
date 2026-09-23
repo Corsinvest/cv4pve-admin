@@ -43,6 +43,8 @@ This release focuses on **stability and interface polish**: pages no longer cras
 - **Dashboard**: the *Save* button is disabled until a name is entered; saving without a name raised an error.
 - Pages listing AutoSnap jobs, backups, diagnostic scans, replications and system reports no longer crash when a background job updates the data while the page is open.
 - Nested pools are now resolved correctly when selecting guests with `@pool-`.
+- **Active Tasks panel**: a task finishing while the panel was open could appear twice and disconnect the page (yellow reconnect bar).
+- **Tasks**: progress lines of long jobs such as System Report could fail to be saved, or get lost, while the job was running.
 
 #### Documentation
 
