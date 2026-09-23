@@ -6,6 +6,71 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-09-23
+
+This release focuses on **stability and interface polish**: pages no longer crash when data is refreshed in the background, grids keep expanded rows and groups the way you left them, severity colours are consistent and readable across light and dark themes, and notifications are clearer on every channel. All underlying components have been updated to their latest versions.
+
+### Community Edition
+
+#### Added
+
+- **Orphan snapshots in Resources**: the guest *Snapshots* panel now also lists snapshots that still exist on the storage but are no longer known to Proxmox VE. They appear at the top, marked as orphans, with a warning showing how much space they take. They cannot be rolled back, edited or deleted from the UI. Like snapshot size calculation, this requires SSH access to the nodes.
+
+- **Diagnostic — all compliance standards listed**: the Diagnostic page now names every standard the checks are mapped to (fourteen instead of four), including GDPR, AgID, ENS and BSI C5.
+
+- **Diagnostic — permission visibility check**: a new check reports up front which parts of the cluster the configured account can actually see. With a read-only role such as *PVEAuditor*, Proxmox VE hides data instead of returning an error, so guests could look unprotected; the backup checks now say they cannot see the volumes instead of reporting the opposite.
+
+#### Changed
+
+- **Notifications report what actually happened**:
+  - Messages sent to webhooks and chat services no longer contain raw HTML tags; mail is sent as plain text.
+  - The **Updater** notification now says how many security and regular updates are pending and how many guests need a reboot.
+  - The test message names the notifier configuration that sent it, useful when several are set up.
+  - Each module now sends its notifications with an appropriate severity instead of always as plain information.
+
+- **Grids**: rows and groups tinted by severity use a lighter wash of the accent colour, so the text stays readable (also in the dark theme). Chart colours for severities now follow the application theme.
+
+- The Apprise notifier image is pinned to a fixed version, so rebuilding the containers no longer changes the notifier under a working installation.
+
+#### Fixed
+
+- **AutoSnap**: the *Always* notification setting only sent failures, behaving like *On failure only*.
+- **Webhook**: the default JSON template broke when the message contained quotes or line breaks (for example a job log).
+- **Grids**: expanded detail rows collapsed and collapsed groups re-opened after a refresh or while scrolling; grids meant to open with groups collapsed now actually do.
+- **Diagnostic**: findings about storages, users, backup jobs or cluster-wide settings no longer show a link that navigated away from the report.
+- **Resources — Snapshots**: guests whose oldest snapshot had been removed by retention showed an empty snapshot list.
+- **Profile**: the password fields are cleared (and hidden again) after a successful password change.
+- **Dashboard**: the *Save* button is disabled until a name is entered; saving without a name raised an error.
+- Pages listing AutoSnap jobs, backups, diagnostic scans, replications and system reports no longer crash when a background job updates the data while the page is open.
+- Nested pools are now resolved correctly when selecting guests with `@pool-`.
+
+#### Documentation
+
+- New section on orphan snapshots in Resources.
+- Corrected the PostgreSQL logging example in the advanced settings (the documented block did not produce any logging configuration), the Appearance settings, the search prefixes, the Proxmox VE permissions table (added AI Server and Bots) and the SSH verification in cluster settings.
+
+### Enterprise Edition
+
+#### Added
+
+- **Daily Status widgets**: AutoSnap, Backup Analytics, Replication Analytics, Node Protect (folders) and System Report have a new widget showing successful and failed runs per day over the last 14 days.
+
+- **UPS Monitor** and **Workflow** modules are now included in the released Enterprise Edition.
+
+#### Changed
+
+- **UPS Monitor — alerts**: notifications carry the right severity (error when a shutdown threshold is reached, warning for low battery or running on battery), are sent as plain text readable on every channel, and are translated.
+- **System Logs**: the chart uses the application theme colours for log levels, matching badges and tinted rows elsewhere.
+- **Portal**: orphan snapshots are not shown to tenants.
+
+#### Fixed
+
+- **Node Protect**: the *Git* entry showed "subscription required" instead of the actual Git configuration, because a placeholder appeared next to the real entry.
+- **Workflow — Notify activity**: leaving the notifier list empty ("all") dropped the notification silently instead of sending it to every configuration.
+- **Diagnostic — Compliance tab**: groups now stay collapsed or expanded as you left them, and findings with no page to open are shown as plain text instead of a link that left the report.
+- **Grids**: expanded rows and groups are kept after a refresh in Portal tenants, Audit Logs, UPS devices and Node Protect Git.
+- UPS dashboard, UPS devices and Node Protect Git pages no longer crash when a background job updates the data while the page is open.
+
 ## [2.2.0] - 2026-07-20
 
 ### Community Edition
