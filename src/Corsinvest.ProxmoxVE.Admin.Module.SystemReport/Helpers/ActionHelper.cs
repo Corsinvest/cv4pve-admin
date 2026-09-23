@@ -52,9 +52,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                                                                                             disks)));
                 }
 
+                // Progress<T> runs its callbacks on the thread pool, so parallel requests report
+                // concurrently: unsynchronized, the string append drops lines.
+                var logsLock = new Lock();
                 var progress = new Progress<ReportProgress>(p =>
                 {
-                    job.Logs += $"{DateTime.UtcNow:O} {p}\n";
+                    lock (logsLock) { job.Logs += $"{DateTime.UtcNow:O} {p}\n"; }
                     taskScope.Log(p.ToString());
                 });
 

@@ -27,15 +27,27 @@ public class TaskItem : IId, IClusterName
 
     public List<string> Logs { get; set; } = [];
 
+    // Jobs log from several threads at once (e.g. progress callbacks of parallel requests)
+    // while the tracker serializes the list to the database: both go through this lock.
+    private readonly Lock _logsLock = new();
+
     public event Action? Updated;
     public event Action? TaskEnded;
 
     public void AddLog(string message, LogLevel level = LogLevel.Information)
     {
-        LastActivity = DateTime.UtcNow;
-        LastLog = $"[{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}] [{level}] {message}";
-        Logs.Add(LastLog);
+        lock (_logsLock)
+        {
+            LastActivity = DateTime.UtcNow;
+            LastLog = $"[{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}] [{level}] {message}";
+            Logs.Add(LastLog);
+        }
         Updated?.Invoke();
+    }
+
+    public List<string> GetLogsSnapshot()
+    {
+        lock (_logsLock) { return [.. Logs]; }
     }
 
     internal void NotifyUpdated() => Updated?.Invoke();

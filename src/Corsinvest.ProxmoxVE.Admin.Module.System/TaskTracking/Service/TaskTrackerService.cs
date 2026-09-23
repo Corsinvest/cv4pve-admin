@@ -144,7 +144,14 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
         var query = db.TaskItems
                       .Where(a => a.ModuleName == null || allowedModules.Contains(a.ModuleName));
 
-        var running = await query.Where(t => t.Status == TaskItemStatus.Running)
+        // Ids first, then both lists keyed on them: a task that completes between the two queries
+        // would otherwise match "running" and then "finished", and appear twice (duplicate @key
+        // in the Active Tasks panel, which kills the circuit).
+        var runningIds = await query.Where(t => t.Status == TaskItemStatus.Running)
+                                    .Select(t => t.Id)
+                                    .ToListAsync();
+
+        var running = await query.Where(t => runningIds.Contains(t.Id))
                                  .OrderByDescending(t => t.StartedAt)
                                  .AsNoTracking()
                                  .Select(selector)
@@ -152,7 +159,7 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
 
         var remaining = max - running.Count;
         var finishing = remaining > 0
-            ? await query.Where(t => t.Status != TaskItemStatus.Running)
+            ? await query.Where(t => t.Status != TaskItemStatus.Running && !runningIds.Contains(t.Id))
                          .Where(filter ?? (_ => true))
                          .OrderByDescending(t => t.EndedAt ?? t.StartedAt)
                          .Take(remaining)
@@ -168,7 +175,7 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
     {
         if (_active.TryGetValue(id, out var scope))
         {
-            return scope.Item.Logs.AsReadOnly();
+            return scope.Item.GetLogsSnapshot();
         }
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
@@ -196,11 +203,12 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
 
             _active.TryRemove(id, out _);
 
+            var logs = scope.Item.GetLogsSnapshot();
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.TaskItems.Where(t => t.Id == id)
                               .ExecuteUpdateAsync(s => s.SetProperty(t => t.Status, scope.Item.Status)
                                                         .SetProperty(t => t.EndedAt, scope.Item.EndedAt)
-                                                        .SetProperty(t => t.Logs, scope.Item.Logs)
+                                                        .SetProperty(t => t.Logs, logs)
                                                         .SetProperty(t => t.LastLog, scope.Item.LastLog)
                                                         .SetProperty(t => t.DetailUrl, scope.Item.DetailUrl)
                                                         .SetProperty(t => t.LastActivity, scope.Item.LastActivity)
@@ -220,9 +228,11 @@ internal class TaskTrackerService(IDbContextFactory<ModuleDbContext> dbContextFa
     {
         try
         {
+            // A snapshot, not the live list: other threads keep appending while EF serializes it.
+            var logs = scope.Item.GetLogsSnapshot();
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.TaskItems.Where(t => t.Id == id)
-                              .ExecuteUpdateAsync(s => s.SetProperty(t => t.Logs, scope.Item.Logs)
+                              .ExecuteUpdateAsync(s => s.SetProperty(t => t.Logs, logs)
                                                         .SetProperty(t => t.LastLog, scope.Item.LastLog)
                                                         .SetProperty(t => t.LastActivity, scope.Item.LastActivity)
                                                         .SetProperty(t => t.Progress, scope.Item.Progress));
