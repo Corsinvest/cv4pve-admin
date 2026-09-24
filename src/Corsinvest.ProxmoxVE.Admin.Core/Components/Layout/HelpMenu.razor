@@ -4,12 +4,23 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenButton Icon="help_outline"
-              Variant="Variant.Text"
+<RadzenButton Variant="Variant.Text"
               ButtonStyle="ButtonStyle.Light"
+              class="rz-button-icon-only"
               Click="ShowHelpMenu"
-              title="@L["Help"]"
-              aria-label="@L["Help"]" />
+              title="@HelpTitle"
+              aria-label="@HelpTitle"
+              Style="position: relative;">
+
+    <RadzenIcon Icon="help_outline" />
+
+    @if (NewRelease != null)
+    {
+        <RadzenBadge BadgeStyle="BadgeStyle.Danger"
+                     IsPill="true"
+                     Style="position: absolute; top: 6px; right: 6px; width: 8px; min-width: 8px; height: 8px; padding: 0;" />
+    }
+</RadzenButton>
 
 @code {
     private void ShowHelpMenu(MouseEventArgs args)
@@ -18,40 +29,48 @@
 
         contextMenuService.Open(args, ds =>
         @<RadzenMenu Click="@(() => ds.Close())">
-            <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold;padding: 0 10px 0 10px;">@L["Your"] @AppSettings.AppName @L["version"] 🚀</RadzenText>
-            <RadzenStack Style="padding: 0 0 5px 10px;" Orientation="Orientation.Horizontal">
-                <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color">
-                    @BuildInfo.Version
-
-                    <RadzenBadge Text="@BuildInfo.EditionFull" BadgeStyle="@(BuildInfo.IsEnterpriseEdition? BadgeStyle.Warning: BadgeStyle.Primary)" />
-                </RadzenText>
+            <RadzenStack Style="padding: 0 6px 5px 10px;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: bold; margin: 0;">@AppSettings.AppName</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body2" class="rz-text-secondary-color" Style="margin: 0;">@BuildInfo.Version</RadzenText>
+                <RadzenBadge Text="@BuildInfo.EditionFull" BadgeStyle="@(BuildInfo.IsEnterpriseEdition? BadgeStyle.Warning: BadgeStyle.Primary)" />
+                <RadzenButton Icon="refresh"
+                              Variant="Variant.Text"
+                              ButtonStyle="ButtonStyle.Base"
+                              Size="ButtonSize.ExtraSmall"
+                              Style="margin-left: auto;"
+                              Click="@(async () => { ds.Close(); await CheckForUpdatesAsync(); })"
+                              title="@L["Check for updates"]"
+                              aria-label="@L["Check for updates"]" />
             </RadzenStack>
 
             @if (NewRelease != null)
             {
                 <RadzenStack Style="padding: 0 0 5px 10px;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                    <RadzenLink Path="@NewRelease.Url" Target="_blank" Style="text-decoration: none;">
-                        <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@L["Update available {0}", NewRelease.Version]" />
-                        <RadzenIcon Icon="open_in_new" IconColor="@Colors.Primary" Style="font-size: 0.9rem; margin-left: 2px; vertical-align: middle;" />
-                    </RadzenLink>
-                        @if (releaseService.IsAutoUpdateSupported)
-                        {
-                            <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"
-                                            PermissionClusterName="@ApplicationHelper.AllClusterName"
-                                            Path="*">
-                                <RadzenButton Icon="upgrade"
-                                              ButtonStyle="ButtonStyle.Success"
-                                              Variant="Variant.Flat"
-                                              Size="ButtonSize.ExtraSmall"
-                                              Click="@(async () => { ds.Close(); await TriggerUpdateAsync(); })"
-                                              title="@(releaseService.IsAutoUpdateSupported ? L["Trigger automatic update"] : L["Automatic update not available"])"
-                                              IsBusy="@IsUpdating" />
-                            </PermissionView>
-                        }
-                    </RadzenStack>
+                    <a href="@NewRelease.Url" target="_blank" title="@L["Open the release page"]" style="text-decoration: none;">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Shade="Shade.Lighter" Style="cursor: pointer;">
+                            @L["Update available {0}", NewRelease.Version]
+                            <RadzenIcon Icon="open_in_new" Style="font-size: 0.85rem; margin-left: 2px; vertical-align: middle;" />
+                        </RadzenBadge>
+                    </a>
+                    @if (releaseService.IsAutoUpdateSupported)
+                    {
+                        <PermissionView PermissionKey="@ApplicationPermissions.Upgrade.Key"
+                                        PermissionClusterName="@ApplicationHelper.AllClusterName"
+                                        Path="*">
+                            <RadzenButton Icon="upgrade"
+                                          Text="@L["Update"]"
+                                          ButtonStyle="ButtonStyle.Success"
+                                          Variant="Variant.Flat"
+                                          Size="ButtonSize.ExtraSmall"
+                                          Click="@(async () => { ds.Close(); await TriggerUpdateAsync(); })"
+                                          title="@L["Trigger automatic update"]"
+                                          IsBusy="@IsUpdating" />
+                        </PermissionView>
+                    }
+                </RadzenStack>
             }
 
-            <hr />
+            <hr style="margin: 4px 0;" />
 
             <RadzenMenuItem Icon="menu_book" Path="@DocumentationUrl" Target="_blank">
                 <Template>
@@ -70,11 +89,11 @@
             <RadzenMenuItem Text="@L["Release notes"]" Icon="celebration" Click="@(async () => { ds.Close(); await ShowReleaseNotesAsync(); })" />
             <RadzenMenuItem Text="@L["Support"]" Icon="support_agent" Path="https://github.com/Corsinvest/cv4pve-admin/issues" Target="_blank" />
 
-            <hr />
+            <hr style="margin: 4px 0;" />
 
             <RadzenMenuItem Text="@L["Keyboard Shortcuts"]" Icon="keyboard" Click="@(async () => { ds.Close(); await ShowKeyboardShortcutsAsync(); })" />
 
-            <hr />
+            <hr style="margin: 4px 0;" />
             <RadzenMenuItem Text="@L["Report a Bug"]" Icon="bug_report" Click="@(async () => { ds.Close(); await OpenBugUrlAsync(); })" />
             <RadzenMenuItem Text="@L["Request a Feature"]" Icon="auto_awesome" Path="@ApplicationHelper.FeatureRequestUrl" Target="_blank" />
             <RadzenMenuItem Text="@L["Provide Feedback"]" Icon="feedback" Path="@ApplicationHelper.FeedbackUrl" Target="_blank" />

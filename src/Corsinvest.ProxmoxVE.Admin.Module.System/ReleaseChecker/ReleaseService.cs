@@ -15,6 +15,8 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
                             IFusionCache fusionCache) : IReleaseService
 {
     private const string CacheKey = "LatestReleaseInfo";
+    private static readonly TimeSpan ForcedCheckInterval = TimeSpan.FromMinutes(1);
+    private static DateTimeOffset _lastForcedCheck = DateTimeOffset.MinValue;
     private string WatchtowerUrl => configuration["Container:Watchtower:Url"]!;
     private string WatchtowerToken => configuration["Container:Watchtower:Token"]!;
     private bool UseDockerHub => !string.IsNullOrWhiteSpace(WatchtowerUrl);
@@ -34,7 +36,11 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
     {
         var cacheKey = $"{CacheKey}:{includePrerelease}";
 
-        if (force) { await fusionCache.RemoveAsync(cacheKey, token: cancellationToken); }
+        if (force && DateTimeOffset.UtcNow - _lastForcedCheck >= ForcedCheckInterval)
+        {
+            _lastForcedCheck = DateTimeOffset.UtcNow;
+            await fusionCache.RemoveAsync(cacheKey, token: cancellationToken);
+        }
 
         return await fusionCache.GetOrSetAsync(cacheKey,
                                                async ct =>

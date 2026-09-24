@@ -16,7 +16,8 @@ public partial class HelpMenu(ISettingsService settingsService,
                               IAdminService adminService,
                               IDetectionService detectionService,
                               NavigationManager navigationManager,
-                              IModuleService moduleService) : IDisposable
+                              IModuleService moduleService,
+                              NotificationService notificationService) : IDisposable
 {
     [Parameter] public HotKeysContext HotKeysContext { get; set; } = default!;
 
@@ -24,6 +25,10 @@ public partial class HelpMenu(ISettingsService settingsService,
     private ReleaseInfo? NewRelease { get; set; }
     private bool IsUpdating { get; set; }
     private ModuleBase? CurrentModule { get; set; }
+
+    private string HelpTitle => NewRelease != null
+                                    ? L["Update available {0}", NewRelease.Version]
+                                    : L["Help"];
 
     private bool HasModuleHelp => !string.IsNullOrEmpty(CurrentModule?.HelpUrl);
 
@@ -119,6 +124,21 @@ public partial class HelpMenu(ISettingsService settingsService,
                                                                 CloseDialogOnOverlayClick = true,
                                                                 ShowClose = true
                                                             });
+
+    private async Task CheckForUpdatesAsync()
+    {
+        NewRelease = await releaseService.NewReleaseIsAvailableAsync(includePrerelease: BuildInfo.IsTesting, force: true);
+        StateHasChanged();
+
+        if (NewRelease != null)
+        {
+            notificationService.Info(L["Update available {0}", NewRelease.Version]);
+        }
+        else
+        {
+            notificationService.Info(L["You are running the latest version"]);
+        }
+    }
 
     private async Task TriggerUpdateAsync()
     {

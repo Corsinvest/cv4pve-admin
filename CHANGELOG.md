@@ -8,13 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Community Edition
 
+#### Added
+
+- **Check for updates**: a button in the Help menu looks for a new version right away, instead of waiting for the periodic check (up to 12 hours).
+
 #### Changed
+
+- **Help menu**: the version, edition and update check share a single line at the top.
 
 - **Diagnostic**: resource links in the results (and in the Compliance view *(EE)*) open in a new tab, so the report stays open.
 
 #### Fixed
 
 - **Grids**: a group, once expanded, can be collapsed again.
+
+- **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
 
 ## [2.3.0] - 2026-09-24
 
