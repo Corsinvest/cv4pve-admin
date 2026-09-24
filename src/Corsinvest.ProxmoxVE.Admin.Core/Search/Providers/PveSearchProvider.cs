@@ -202,11 +202,28 @@ public class PveSearchProvider : ISearchProvider
                         }
                         else if (item.VmType == VmType.Lxc)
                         {
-                            var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
-                            item.IpAddresses = config.Networks
-                                                     .Select(a => a.IpAddress)
-                                                     .Where(ip => !ip.Contains(':') && ip != "127.0.0.1")
-                                                     .JoinAsString(",");
+                            // Running containers: addresses assigned now (also with dhcp); otherwise the configured ones.
+                            var live = item.IsRunning
+                                        ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
+                                        : [];
+
+                            var liveIps = live.Where(a => a.Name != "lo")
+                                              .SelectMany(a => a.GetAddresses(false))
+                                              .Where(ip => !ip.StartsWith("127."))
+                                              .ToList();
+
+                            if (liveIps.Count > 0)
+                            {
+                                item.IpAddresses = liveIps.JoinAsString(",");
+                            }
+                            else
+                            {
+                                var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
+                                item.IpAddresses = config.Networks
+                                                         .Select(a => a.IpAddress)
+                                                         .Where(ip => !ip.Contains(':') && ip != "127.0.0.1")
+                                                         .JoinAsString(",");
+                            }
                         }
                     }
                 }

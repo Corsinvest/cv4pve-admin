@@ -127,6 +127,25 @@ public class ClusterCachedData
                          60 * 15,
                          forceReload);
 
+    public ValueTask<IEnumerable<VmLxcInterface>> GetLxcInterfacesAsync(string node, long vmId, bool forceReload)
+        => GetOrSetAsync($"{nameof(GetLxcInterfacesAsync)}:{node}:{vmId}",
+                         async () =>
+                         {
+                             try
+                             {
+                                 var client = await GetPveClientAsync();
+                                 return (IEnumerable<VmLxcInterface>)[.. await client.Nodes[node].Lxc[vmId].Interfaces.GetAsync()];
+                             }
+                             catch
+                             {
+                                 // Container stopped or endpoint missing on older PVE releases: the config values are used.
+                             }
+
+                             return [];
+                         },
+                         60 * 15,
+                         forceReload);
+
     public ValueTask<IEnumerable<VmQemuAgentGetFsInfo.ResultInfo>> GetQemuFsInfoAsync(string node, long vmId, bool forceReload)
         => GetOrSetAsync($"{nameof(GetQemuFsInfoAsync)}:{node}:{vmId}",
                          async () =>
