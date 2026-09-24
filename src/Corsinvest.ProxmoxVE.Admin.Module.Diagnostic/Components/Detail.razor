@@ -42,7 +42,7 @@
                 @{ var url = GetPveUrl(context); }
                 @if (!string.IsNullOrEmpty(url))
                 {
-                    <RadzenLink class="rz-link link" Text="@context.IdResource" Path="@url" />
+                    <RadzenLink class="rz-link link" Text="@context.IdResource" Path="@url" Target="_blank" />
                 }
                 else
                 {
