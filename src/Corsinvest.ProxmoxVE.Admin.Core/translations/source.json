@@ -1145,5 +1145,13 @@
   "Old Password": "",
   "New Password": "",
   "Confirm Password": "",
-  "Your password has been changed": ""
+  "Your password has been changed": "",
+  "Check for updates": "",
+  "You are running the latest version": "",
+  "Update available {0}": "",
+  "Open the release page": "",
+  "Trigger automatic update": "",
+  "Update": "",
+  "Cluster \u0027{0}\u0027: {1} critical, {2} warning, {3} info. See the attached report for details.": "",
+  "Scan completed on {0}.": ""
 }

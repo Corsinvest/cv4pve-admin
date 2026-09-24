@@ -26,7 +26,7 @@ public interface IReleaseService
     /// Checks if a new release is available (cached for 12 hours per includePrerelease value)
     /// </summary>
     /// <param name="includePrerelease">Whether to include prerelease versions</param>
-    /// <param name="force">Force cache refresh</param>
+    /// <param name="force">Force cache refresh (at most once per minute; more frequent calls get the cached result)</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The latest release info if a newer version is available, null otherwise</returns>
     Task<ReleaseInfo?> NewReleaseIsAvailableAsync(bool includePrerelease = false, bool force = false, CancellationToken cancellationToken = default);
