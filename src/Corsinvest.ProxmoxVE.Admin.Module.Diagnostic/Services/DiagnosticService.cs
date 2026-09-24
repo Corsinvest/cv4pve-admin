@@ -152,7 +152,11 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
     /// Adds a bookmarked heading (also shown in the PDF outline) and registers it in the
     /// cover page table of contents. Use it for every top-level block of the PDF body.
     /// </summary>
-    protected Paragraph AddSectionHeading(Section section, string title, string description, int fontSize = 14)
+    protected Paragraph AddSectionHeading(Section section, string title, string description)
+        => AddSectionHeading(section, title, description, 14);
+
+    /// <inheritdoc cref="AddSectionHeading(Section, string, string)"/>
+    protected Paragraph AddSectionHeading(Section section, string title, string description, int fontSize)
     {
         var bookmark = $"section{_pdfContents.Count + 1}";
         _pdfContents.Add((title, description, bookmark));
