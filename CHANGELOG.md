@@ -18,9 +18,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostic**: resource links in the results (and in the Compliance view *(EE)*) open in a new tab, so the report stays open.
 
+- **Container IP addresses**: running containers show the address they have right now, also when it comes from DHCP (`10.0.0.5/24 (dhcp)` instead of just `dhcp`), in the Resources network list, in the network diagram and in the IP search. Stopped containers and older Proxmox VE releases keep showing the configured value.
+
+- **Resources network list**: new *Trunks* column for guest NICs.
+
+- **Report**:
+  - Containers show the IP they actually have, like in Resources.
+  - VM trunk ports appear in the network sheet and in the diagram; Cluster Access reports the disabled two-factor entries.
+  - Rows always come in the same order, with numbers sorted as numbers (`105` before `1000`), so two reports of an unchanged cluster differ only in live values.
+
 #### Fixed
 
 - **Grids**: a group, once expanded, can be collapsed again.
+
+- **Network diagram**: a guest on several bridges is linked to all of them, guests are listed by numeric id, Open vSwitch bridges are wired to their physical ports, and storages on older network configurations get their link to the bridge.
+
+- **Guest details**: NVMe disks show their wearout like SSDs; the guest agent is recognised also when enabled with the `enabled=1` form; VM trunk ports are shown; options left at their Proxmox VE default (memory, swap, CPU type, OS type, …) show that default instead of an empty or zero value.
+
+#### Internal
+
+- Underlying components updated (Proxmox VE API library, Report library, UI components, cache).
+
+### Enterprise Edition
+
+#### Fixed
+
+- **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
 
 - **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
 

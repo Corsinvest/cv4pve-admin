@@ -97,6 +97,7 @@ public partial class Networks(IAdminService adminService,
                              string? MacAddress,
                              string? Bridge,
                              int? Tag,
+                             string? Trunks,
                              string? Model,
                              bool Firewall,
                              string IpAddress,
@@ -214,13 +215,17 @@ public partial class Networks(IAdminService adminService,
                                            })];
 
                 case VmType.Lxc:
+                    var lxcLive = (item.IsRunning
+                                    ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
+                                    : []).ToDictionaryByMac();
+
                     return networks.Select(n => new NetworkDiagramBuilder.VmNetworkRow(item.VmId,
                                                                                        item.Name,
                                                                                        item.Node,
                                                                                        item.Type,
                                                                                        item.Status,
                                                                                        (config as VmConfigLxc)?.Hostname,
-                                                                                       n,
+                                                                                       n.WithLiveAddresses(lxcLive, ", "),
                                                                                        false));
 
                 default: return [];
@@ -416,6 +421,7 @@ public partial class Networks(IAdminService adminService,
                                                                  net.HardwareAddress?.ToUpperInvariant(),
                                                                  configNet?.Bridge,
                                                                  configNet?.Tag,
+                                                                 configNet?.Trunks,
                                                                  configNet?.Model,
                                                                  configNet?.Firewall ?? false,
 
@@ -435,6 +441,10 @@ public partial class Networks(IAdminService adminService,
 
                                 case VmType.Lxc:
                                     var hostName = (config as VmConfigLxc)?.Hostname;
+                                    var live = (item.IsRunning
+                                                ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
+                                                : []).ToDictionaryByMac();
+
                                     return networks.Select(network => new VmNetwork(item.Node,
                                                                                     item.VmId,
                                                                                     item.Name,
@@ -448,10 +458,13 @@ public partial class Networks(IAdminService adminService,
                                                                                     network.MacAddress,
                                                                                     network.Bridge,
                                                                                     network.Tag,
+                                                                                    network.Trunks,
                                                                                     network.Model,
                                                                                     network.Firewall,
-                                                                                    network.IpAddress,
-                                                                                    network.IpAddress6,
+                                                                                    live.GetValueOrDefault(network.MacAddress ?? "")
+                                                                                        .GetLiveAddress(network.IpAddress, false, Environment.NewLine)!,
+                                                                                    live.GetValueOrDefault(network.MacAddress ?? "")
+                                                                                        .GetLiveAddress(network.IpAddress6, true, Environment.NewLine)!,
                                                                                     network.Gateway,
                                                                                     network.Gateway6,
                                                                                     network.Mtu,
