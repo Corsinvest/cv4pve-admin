@@ -6,17 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-## [2.3.0] - 2026-09-23
+## [2.3.0] - 2026-09-24
 
-This release focuses on **stability and interface polish**: pages no longer crash when data is refreshed in the background, grids keep expanded rows and groups the way you left them, severity colours are consistent and readable across light and dark themes, and notifications are clearer on every channel. All underlying components have been updated to their latest versions.
+This release focuses on **stability and interface polish**: pages no longer crash when data is refreshed in the background, grids keep expanded rows and groups the way you left them, severity colours are consistent and readable across light and dark themes, and notifications are clearer on every channel. Underlying components have been updated.
 
 ### Community Edition
 
 #### Added
 
 - **Orphan snapshots in Resources**: the guest *Snapshots* panel now also lists snapshots that still exist on the storage but are no longer known to Proxmox VE. They appear at the top, marked as orphans, with a warning showing how much space they take. They cannot be rolled back, edited or deleted from the UI. Like snapshot size calculation, this requires SSH access to the nodes.
-
-- **Diagnostic — all compliance standards listed**: the Diagnostic page now names every standard the checks are mapped to (fourteen instead of four), including GDPR, AgID, ENS and BSI C5.
 
 - **Diagnostic — permission visibility check**: a new check reports up front which parts of the cluster the configured account can actually see. With a read-only role such as *PVEAuditor*, Proxmox VE hides data instead of returning an error, so guests could look unprotected; the backup checks now say they cannot see the volumes instead of reporting the opposite.
 
@@ -29,8 +27,6 @@ This release focuses on **stability and interface polish**: pages no longer cras
   - Each module now sends its notifications with an appropriate severity instead of always as plain information.
 
 - **Grids**: rows and groups tinted by severity use a lighter wash of the accent colour, so the text stays readable (also in the dark theme). Chart colours for severities now follow the application theme.
-
-- The Apprise notifier image is pinned to a fixed version, so rebuilding the containers no longer changes the notifier under a working installation.
 
 #### Fixed
 
@@ -49,6 +45,7 @@ This release focuses on **stability and interface polish**: pages no longer cras
 #### Documentation
 
 - New section on orphan snapshots in Resources.
+- Diagnostics: the page now lists all 14 compliance standards the checks are mapped to (previously only four were named), including GDPR, AgID, ENS and BSI C5.
 - Corrected the PostgreSQL logging example in the advanced settings (the documented block did not produce any logging configuration), the Appearance settings, the search prefixes, the Proxmox VE permissions table (added AI Server and Bots) and the SSH verification in cluster settings.
 
 ### Enterprise Edition
@@ -64,6 +61,7 @@ This release focuses on **stability and interface polish**: pages no longer cras
 - **UPS Monitor — alerts**: notifications carry the right severity (error when a shutdown threshold is reached, warning for low battery or running on battery), are sent as plain text readable on every channel, and are translated.
 - **System Logs**: the chart uses the application theme colours for log levels, matching badges and tinted rows elsewhere.
 - **Portal**: orphan snapshots are not shown to tenants.
+- The Apprise notifier image is pinned to a fixed version, so rebuilding the containers no longer changes the notifier under a working installation.
 
 #### Fixed
 
