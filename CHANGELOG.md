@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostic**: resource links in the results (and in the Compliance view *(EE)*) open in a new tab, so the report stays open.
 
+#### Fixed
+
+- **Grids**: a group, once expanded, can be collapsed again.
+
 ## [2.3.0] - 2026-09-24
 
 This release focuses on **stability and interface polish**: pages no longer crash when data is refreshed in the background, grids keep expanded rows and groups the way you left them, severity colours are consistent and readable across light and dark themes, and notifications are clearer on every channel. Underlying components have been updated.

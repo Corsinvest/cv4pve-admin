@@ -40,9 +40,12 @@ public sealed class GroupCollapseState(bool collapsedByDefault = true)
         // This also covers a group that appears later, and a change of grouping column.
         if (collapsedByDefault && _seen.Add(key)) { _collapsed.Add(key); }
 
-        // Written on every render, never left null: null means "let the grid decide", and what
-        // the grid decides is exactly the behaviour being corrected here.
-        args.Expanded = !_collapsed.Contains(key);
+        // A collapsed group is forced to false on every render: left null, the grid would find no
+        // match for the rebuilt row and open it, which is the behaviour being corrected here.
+        // An expanded group is left null, not true: the grid reads true as "forced open" and
+        // ignores the click on its header, so the group could never be collapsed again. Null
+        // lets the grid decide, and for a row it cannot match it decides expanded anyway.
+        args.Expanded = _collapsed.Contains(key) ? false : null;
     }
 
     /// <summary>Wire to <c>GroupRowExpand</c>.</summary>
