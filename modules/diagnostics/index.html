@@ -1226,7 +1226,7 @@
 <li>
 <p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m10 17-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9m-6-8L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5z"/></svg></span> <strong>Compliance Reports</strong></p>
 <hr />
-<p>Each diagnostic check carries its mapping to normative controls across <strong>14 standards</strong> (ISO 27001, NIS2, DORA, GDPR, PCI DSS, AgID, ENS, BSI C5 and more). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.</p>
+<p>Each diagnostic check carries its mapping to normative controls across <strong>18 standards</strong> (ISO 27001, ISO 22301, NIS2, DORA, GDPR, PCI DSS, AgID, ACN, ENS, BSI C5, BSI IT-Grundschutz and more). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6zm-7 2a2 2 0 0 1-2 2 2 2 0 0 1-2-2m9.75-17.81-1.42 1.42A8.98 8.98 0 0 1 21 11h2c0-2.93-1.16-5.75-3.25-7.81M1 11h2c0-2.4.96-4.7 2.67-6.39L4.25 3.19A10.96 10.96 0 0 0 1 11"/></svg></span> <strong>Notifier Integration</strong></p>
@@ -1301,8 +1301,16 @@
 <td>Protection of personal data in public clouds</td>
 </tr>
 <tr>
+<td><strong>ISO 22301:2019</strong></td>
+<td>Business continuity management systems</td>
+</tr>
+<tr>
 <td><strong>EU NIS2</strong></td>
 <td>Network and Information Security Directive</td>
+</tr>
+<tr>
+<td><strong>NIS2 Implementing Regulation (EU) 2024/2690</strong></td>
+<td>Detailed NIS2 requirements for cloud, data centre, managed service providers and other digital providers</td>
 </tr>
 <tr>
 <td><strong>EU DORA</strong></td>
@@ -1337,12 +1345,20 @@
 <td>Misure minime di sicurezza ICT per le Pubbliche Amministrazioni (Italy)</td>
 </tr>
 <tr>
+<td><strong>ACN</strong></td>
+<td>NIS2 security measures for Italian essential and important entities (Determinazione ACN n. 379907/2025)</td>
+</tr>
+<tr>
 <td><strong>ENS</strong></td>
 <td>Esquema Nacional de Seguridad (Spain, Real Decreto 311/2022)</td>
 </tr>
 <tr>
 <td><strong>BSI C5:2020</strong></td>
 <td>Cloud Computing Compliance Criteria Catalogue (Germany)</td>
+</tr>
+<tr>
+<td><strong>BSI IT-Grundschutz</strong></td>
+<td>IT-Grundschutz-Kompendium, Edition 2023 (Germany)</td>
 </tr>
 </tbody>
 </table>
@@ -1396,6 +1412,29 @@
 <td><strong>Attach Excel report</strong></td>
 <td>off</td>
 <td>Attach the Excel workbook (Issues, Ignored, Compliance sheets) to scheduled notifications</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Profiles</strong> — the <strong>Fast</strong>, <strong>Standard</strong> and <strong>Full</strong> buttons at the top of the settings load a ready-made set of values (thresholds go back to their defaults):</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fast</strong></td>
+<td>Skips the slowest reads — backup content, snapshots, LVM-thin metadata — for a quick scan of large clusters</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>The defaults</td>
+</tr>
+<tr>
+<td><strong>Full</strong></td>
+<td>Turns on every optional check — S.M.A.R.T. details, ZFS pool details, NVD CVE lookup, OK results — for audits</td>
 </tr>
 </tbody>
 </table>
@@ -1519,6 +1558,11 @@
 <td>Below this, the node is considered underutilised</td>
 </tr>
 <tr>
+<td><strong>IOWait (%)</strong></td>
+<td>Warn 10 / Crit 25</td>
+<td>Average CPU time spent waiting for I/O over the RRD time frame; sustained high values point to a storage bottleneck</td>
+</tr>
+<tr>
 <td><strong>S.M.A.R.T. checks → Enabled</strong></td>
 <td>off</td>
 <td>Per-disk SMART attribute scan (1 API call per disk per node)</td>
@@ -1542,6 +1586,23 @@
 <td><strong>NodeStorage → LVM-thin metadata</strong></td>
 <td>on</td>
 <td>LVM-thin metadata usage check (full metadata pool causes data corruption)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Storage thresholds</strong></p>
+<table>
+<thead>
+<tr>
+<th>Threshold</th>
+<th>Warning</th>
+<th>Critical</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Usage (%)</strong></td>
+<td>70</td>
+<td>85</td>
 </tr>
 </tbody>
 </table>
