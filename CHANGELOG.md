@@ -12,6 +12,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Check for updates**: a button in the Help menu looks for a new version right away, instead of waiting for the periodic check (up to 12 hours).
 
+- **Diagnostic — profiles**: *Fast*, *Standard* and *Full* buttons in the settings, as in Report. *Fast* skips the slowest reads (backup content, snapshots, LVM-thin metadata) for a quick scan of large clusters; *Full* turns on every optional check (S.M.A.R.T., ZFS details, CVE lookup, OK results) for audits.
+
+- **Diagnostic — IOWait threshold**: a node spending too much CPU time waiting for disks is now reported, with its own threshold (Warning 10%, Critical 25%). Before, the check used the CPU thresholds and never fired.
+
+- **Diagnostic — new network checks**: a guest using a VLAN its bridge does not let out of the node, and a guest using a bridge missing on another node (migration or HA would fail).
+
+- **Diagnostic — PDF cover page**: the PDF report opens with a cover page, as the Excel file does: report information and a table of contents with the page number of each section, clickable to jump there. The sections also appear in the bookmarks panel of the PDF viewer.
+
 #### Changed
 
 - **Help menu**: the version, edition and update check share a single line at the top.
@@ -31,15 +39,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Grids**: a group, once expanded, can be collapsed again.
 
+- **Diagnostic — settings**: the node RRD time frame and PSI pressure thresholds changed from the settings page are now applied; before, the scan kept using the defaults. The Storage section no longer shows RRD and PSI fields, which the storage check never used.
+
+- **Diagnostic — fewer false alarms and more accurate checks**:
+  - The scan no longer stops halfway when a storage, node or guest does not answer: the missing part is reported and the rest of the scan is completed. When backups or other lists cannot be read, the checks depending on them are skipped instead of reporting "no backup" or "nothing configured".
+  - Removed or corrected checks that fired by mistake: VLAN tag on a non VLAN-aware bridge (removed), unused network ports down, start on boot / locked / protection on containers, protected backups counted as old, container bind mounts, ZFS hot spares, disks behind RAID controllers, services not installed, CVEs already fixed in the installed version, and more.
+  - Checks that could never fire now work: API tokens, quorum loss on node failure, failing replication jobs, pending kernel reboot, disabled storages still in use, empty pools.
+  - Orphaned disks and backups now include containers and are reported once per deleted guest, and are skipped when the account cannot see every guest.
+  - Numbers in the messages no longer depend on the server's regional settings (`80.9%` everywhere).
+  - Compliance references checked against the official texts (DORA, NIS2, ENS, BSI C5).
+
+- **Diagnostic — ignore rules to review**: the check for a VLAN tag on a non VLAN-aware bridge has been removed, and the *nesting without keyctl* warning is now an Info finding under a new code: ignore rules written for them no longer match anything. Rules matching numbers with a decimal comma (`80,9%`) must be rewritten with a dot.
+
 - **Network diagram**: a guest on several bridges is linked to all of them, guests are listed by numeric id, Open vSwitch bridges are wired to their physical ports, and storages on older network configurations get their link to the bridge.
 
 - **Guest details**: NVMe disks show their wearout like SSDs; the guest agent is recognised also when enabled with the `enabled=1` form; VM trunk ports are shown; options left at their Proxmox VE default (memory, swap, CPU type, OS type, …) show that default instead of an empty or zero value.
 
 #### Internal
 
-- Underlying components updated (Proxmox VE API library, Report library, UI components, cache).
+- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
 
 ### Enterprise Edition
+
+#### Added
+
+- **Compliance — four new standards**, for a total of 18: ACN (Italian NIS2 measures), NIS2 Implementing Regulation (EU) 2024/2690, ISO 22301 (business continuity) and BSI IT-Grundschutz (Germany). They appear in the Compliance view and in the PDF and Excel reports.
 
 #### Fixed
 

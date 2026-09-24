@@ -1153,5 +1153,13 @@
   "Trigger automatic update": "",
   "Update": "",
   "Cluster \u0027{0}\u0027: {1} critical, {2} warning, {3} info. See the attached report for details.": "",
-  "Scan completed on {0}.": ""
+  "Scan completed on {0}.": "",
+  "Fast skips the slowest reads (backup content, snapshots, LVM-thin metadata). Full turns on every optional check (S.M.A.R.T., ZFS detail, CVE lookup, OK results). Thresholds go back to their defaults.": "",
+  "IOWait (%)": "",
+  "Average CPU time spent waiting for I/O over the RRD time frame. Sustained high values point to a storage bottleneck.": "",
+  "Issue counts by gravity and top critical issues": "",
+  "Report Information": "",
+  "Generated": "",
+  "Application": "",
+  "Contents": ""
 }
