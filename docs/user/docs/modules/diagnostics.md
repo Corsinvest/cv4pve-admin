@@ -58,7 +58,7 @@ Automated health checks and infrastructure diagnostics for Proxmox VE, built on 
 
     ---
 
-    Each diagnostic check carries its mapping to normative controls across **14 standards** (ISO 27001, NIS2, DORA, GDPR, PCI DSS, AgID, ENS, BSI C5 and more). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.
+    Each diagnostic check carries its mapping to normative controls across **18 standards** (ISO 27001, ISO 22301, NIS2, DORA, GDPR, PCI DSS, AgID, ACN, ENS, BSI C5, BSI IT-Grundschutz and more). Enterprise PDF appends one section per standard — a new page that starts with a summary table (control / title / status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard with the same data flattened for filtering and pivoting.
 
 --8<-- "_includes/feature-notifier.md"
 
@@ -120,7 +120,9 @@ Currently supported standards:
 | **ISO/IEC 27001:2022** | Information security management systems |
 | **ISO/IEC 27017** | Security controls for cloud services |
 | **ISO/IEC 27018:2019** | Protection of personal data in public clouds |
+| **ISO 22301:2019** | Business continuity management systems |
 | **EU NIS2** | Network and Information Security Directive |
+| **NIS2 Implementing Regulation (EU) 2024/2690** | Detailed NIS2 requirements for cloud, data centre, managed service providers and other digital providers |
 | **EU DORA** | Digital Operational Resilience Act |
 | **EU GDPR** | General Data Protection Regulation |
 | **PCI DSS v4.0** | Payment Card Industry Data Security Standard |
@@ -129,8 +131,10 @@ Currently supported standards:
 | **CIS Controls v8** | Center for Internet Security |
 | **SOC 2** | AICPA Trust Services Criteria |
 | **AgID** | Misure minime di sicurezza ICT per le Pubbliche Amministrazioni (Italy) |
+| **ACN** | NIS2 security measures for Italian essential and important entities (Determinazione ACN n. 379907/2025) |
 | **ENS** | Esquema Nacional de Seguridad (Spain, Real Decreto 311/2022) |
 | **BSI C5:2020** | Cloud Computing Compliance Criteria Catalogue (Germany) |
+| **BSI IT-Grundschutz** | IT-Grundschutz-Kompendium, Edition 2023 (Germany) |
 
 !!! tip "Audit mode"
     Enable **Include OK results (audit mode)** in the General settings to also emit a `Pass` result for every check that succeeds. Useful when auditors want evidence that controls were *verified*, not only when they failed.
@@ -152,6 +156,14 @@ Currently supported standards:
     | **Notifier Configurations** | – | List of Notifier configurations to deliver the report to |
     | **Attach PDF report** | on | Attach the PDF report (with Executive Summary and Compliance sections) to scheduled notifications |
     | **Attach Excel report** | off | Attach the Excel workbook (Issues, Ignored, Compliance sheets) to scheduled notifications |
+
+    **Profiles** — the **Fast**, **Standard** and **Full** buttons at the top of the settings load a ready-made set of values (thresholds go back to their defaults):
+
+    | Profile | What it does |
+    |---------|--------------|
+    | **Fast** | Skips the slowest reads — backup content, snapshots, LVM-thin metadata — for a quick scan of large clusters |
+    | **Standard** | The defaults |
+    | **Full** | Turns on every optional check — S.M.A.R.T. details, ZFS pool details, NVD CVE lookup, OK results — for audits |
 
     **API**
 
@@ -184,11 +196,18 @@ Currently supported standards:
     | **Max vCPU ratio** | 4.0 | Warn when total vCPUs / physical CPUs exceeds this ratio |
     | **Consolidation CPU threshold (%)** | 10 | Below this, the node is considered underutilised |
     | **Consolidation Memory threshold (%)** | 20 | Below this, the node is considered underutilised |
+    | **IOWait (%)** | Warn 10 / Crit 25 | Average CPU time spent waiting for I/O over the RRD time frame; sustained high values point to a storage bottleneck |
     | **S.M.A.R.T. checks → Enabled** | off | Per-disk SMART attribute scan (1 API call per disk per node) |
     | **S.M.A.R.T. → Temperature (°C)** | Warn 55 / Crit 65 | Disk temperature thresholds (set Warning to 0 to disable) |
     | **S.M.A.R.T. → SSD Wearout (%)** | Warn 70 / Crit 85 | Percentage of SSD life consumed before warning |
     | **NodeStorage → ZFS detail** | off | Deeper ZFS pool status check |
     | **NodeStorage → LVM-thin metadata** | on | LVM-thin metadata usage check (full metadata pool causes data corruption) |
+
+    **Storage thresholds**
+
+    | Threshold | Warning | Critical |
+    |-----------|---------|----------|
+    | **Usage (%)** | 70 | 85 |
 
     **Snapshot checks**
 

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core;
 using Corsinvest.ProxmoxVE.Admin.Core.Exporters.Excel;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Diagnostic.Api;
@@ -125,16 +126,115 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
 
     protected virtual MemoryStream GeneratePdf(JobResult result)
     {
+        _pdfContents.Clear();
+
         var document = new Document();
+
+        // The cover section is created first so it renders as page 1, but it is filled
+        // last: the table of contents needs the headings registered by the body sections.
+        var cover = CreateSection(document);
         var section = CreateSection(document);
 
-        AddTitle(section, result);
         AddExecutiveSummary(section, result);
         AddIssuesSection(section, result);
         AddComplianceSections(section, result);
         AddFooter(section);
 
+        AddCoverPage(cover, result);
+        AddFooter(cover);
+
         return Render(document);
+    }
+
+    private readonly List<(string Title, string Description, string Bookmark)> _pdfContents = [];
+
+    /// <summary>
+    /// Adds a bookmarked heading (also shown in the PDF outline) and registers it in the
+    /// cover page table of contents. Use it for every top-level block of the PDF body.
+    /// </summary>
+    protected Paragraph AddSectionHeading(Section section, string title, string description)
+        => AddSectionHeading(section, title, description, 14);
+
+    /// <inheritdoc cref="AddSectionHeading(Section, string, string)"/>
+    protected Paragraph AddSectionHeading(Section section, string title, string description, int fontSize)
+    {
+        var bookmark = $"section{_pdfContents.Count + 1}";
+        _pdfContents.Add((title, description, bookmark));
+
+        var heading = section.AddParagraph();
+        heading.AddBookmark(bookmark);
+        heading.AddFormattedText(title, TextFormat.Bold);
+        heading.Format.Font.Size = fontSize;
+        heading.Format.OutlineLevel = OutlineLevel.Level1;
+        heading.Format.KeepWithNext = true;
+        heading.Format.SpaceAfter = Unit.FromMillimeter(5);
+        return heading;
+    }
+
+    private void AddCoverPage(Section cover, JobResult result)
+    {
+        var appSettings = SettingsService.GetAppSettings();
+        var width = Unit.FromCentimeter(19);
+
+        var title = cover.AddParagraph();
+        title.AddFormattedText(L["Diagnostic result of cluster '{0}' Date {1}", result.ClusterName, result.Start], TextFormat.Bold);
+        title.Format.Font.Size = 20;
+        title.Format.SpaceAfter = Unit.FromMillimeter(10);
+
+        AddCoverHeading(cover, L["Report Information"]);
+
+        var info = cover.AddTable();
+        info.Borders.Visible = false;
+        info.Format.Font.Size = 10;
+        info.AddColumn(width * 0.25);
+        info.AddColumn(width * 0.75);
+
+        foreach (var (label, value) in new[]
+        {
+            (L["Cluster"].Value, result.ClusterName),
+            (L["Generated"].Value, DateTime.Now.ToString("g")),
+            (L["Application"].Value, $"{appSettings.AppName} v{BuildInfo.Version}"),
+        })
+        {
+            var row = info.AddRow();
+            row.Cells[0].AddParagraph(label + ":");
+            row.Cells[1].AddParagraph(value);
+        }
+
+        cover.AddParagraph().Format.SpaceAfter = Unit.FromMillimeter(5);
+        AddCoverHeading(cover, L["Contents"]);
+
+        var contents = cover.AddTable();
+        contents.Borders.Visible = false;
+        contents.Format.Font.Size = 10;
+        contents.AddColumn(width * 0.30);
+        contents.AddColumn(width * 0.60);
+        contents.AddColumn(width * 0.10);
+
+        foreach (var (text, description, bookmark) in _pdfContents)
+        {
+            var row = contents.AddRow();
+            row.TopPadding = 2;
+
+            var link = row.Cells[0].AddParagraph().AddHyperlink(bookmark);
+            link.AddText(text);
+            link.Font.Color = MigraDocColors.Blue;
+            link.Font.Underline = Underline.Single;
+
+            row.Cells[1].AddParagraph(description);
+
+            var pageCell = row.Cells[2].AddParagraph();
+            pageCell.Format.Alignment = ParagraphAlignment.Right;
+            pageCell.AddHyperlink(bookmark).AddPageRefField(bookmark);
+        }
+    }
+
+    private static void AddCoverHeading(Section cover, string text)
+    {
+        var heading = cover.AddParagraph(text);
+        heading.Format.Font.Size = 14;
+        heading.Format.Font.Bold = true;
+        heading.Format.SpaceAfter = Unit.FromMillimeter(3);
     }
 
     /// <summary>
@@ -161,7 +261,7 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
     /// </summary>
     protected virtual void AddComplianceSections(Section section, JobResult result)
     {
-        AddComplianceHeader(section, L["Compliance"]);
+        AddComplianceHeader(section, L["Compliance"], L["Compliance mapping is available in the Enterprise Edition"]);
         SubscriptionGateReportHelper.AddEnterprisePlaceholder(
             section,
             L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, NIS2, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ENS, C5) is available in the Enterprise Edition."],
@@ -173,13 +273,11 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
     /// Shared between CE (one Compliance page) and EE (one page per standard) so that
     /// every page extracted in isolation still carries the audit-scope notice.
     /// </summary>
-    protected void AddComplianceHeader(Section section, string title)
+    protected void AddComplianceHeader(Section section, string title, string description)
     {
         section.AddPageBreak();
 
-        var titleParagraph = section.AddParagraph(title);
-        titleParagraph.Format.Font.Size = 14;
-        titleParagraph.Format.Font.Bold = true;
+        var titleParagraph = AddSectionHeading(section, title, description);
         titleParagraph.Format.SpaceAfter = Unit.FromMillimeter(2);
 
         var disclaimer = section.AddParagraph(ComplianceDisclaimerText());
@@ -244,26 +342,16 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         return section;
     }
 
-    protected void AddTitle(Section section, JobResult result)
-    {
-        var title = section.AddParagraph();
-        title.AddFormattedText(L["Diagnostic result of cluster '{0}' Date {1}", result.ClusterName, result.Start], TextFormat.Bold);
-        title.Format.Font.Size = 14;
-        title.Format.SpaceAfter = Unit.FromMillimeter(5);
-    }
-
     protected void AddIssuesSection(Section section, JobResult result)
     {
+        AddSectionHeading(section, L["Issues"], L["Active diagnostic issues"]);
         AddResultsTable(section, result.Details.Where(a => !a.IsIgnoredIssue));
 
         var ignoredIssues = result.Details.Where(a => a.IsIgnoredIssue).ToList();
         if (ignoredIssues.Count != 0)
         {
             section.AddPageBreak();
-            var ignoredTitle = section.AddParagraph(L["Ignored"]);
-            ignoredTitle.Format.Font.Size = 16;
-            ignoredTitle.Format.Font.Bold = true;
-            ignoredTitle.Format.SpaceAfter = Unit.FromMillimeter(5);
+            AddSectionHeading(section, L["Ignored Issues"], L["Issues hidden from the active result"]);
             AddResultsTable(section, ignoredIssues);
         }
     }

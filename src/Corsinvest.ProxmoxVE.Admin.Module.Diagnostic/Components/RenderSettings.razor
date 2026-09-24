@@ -4,6 +4,7 @@
 *@
 @using Corsinvest.ProxmoxVE.Api.Shared.Utils
 @using Corsinvest.ProxmoxVE.Diagnostic.Api
+@using DiagnosticApiSettings = Corsinvest.ProxmoxVE.Diagnostic.Api.Settings
 
 @inherits AdminComponentBase
 
@@ -38,6 +39,15 @@
                      Name="@nameof(Model.NotifyExcel)" />
     </RadzenColumn>
 </RadzenRow>
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="4px" class="rz-mb-2">
+    <RadzenButton Text="@L["Fast"]" Icon="bolt" Size="ButtonSize.Small" Click="@(() => ApplyPreset(DiagnosticApiSettings.Fast(), L["Fast"]))" />
+    <RadzenButton Text="@L["Standard"]" Icon="tune" Size="ButtonSize.Small" Click="@(() => ApplyPreset(DiagnosticApiSettings.Standard(), L["Standard"]))" />
+    <RadzenButton Text="@L["Full"]" Icon="dataset" Size="ButtonSize.Small" Click="@(() => ApplyPreset(DiagnosticApiSettings.Full(), L["Full"]))" />
+</RadzenStack>
+<RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary rz-mb-3">
+    @L["Fast skips the slowest reads (backup content, snapshots, LVM-thin metadata). Full turns on every optional check (S.M.A.R.T., ZFS detail, CVE lookup, OK results). Thresholds go back to their defaults."]
+</RadzenText>
 
 <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="rz-mb-2">
     <RadzenColumn Size="6">
@@ -124,6 +134,17 @@
                     </RadzenColumn>
                 </RadzenRow>
 
+                <RadzenRow JustifyContent="JustifyContent.Start" Gap="8px" class="cv4pve-dashed-box rz-mb-2">
+                    <RadzenColumn Size="4">
+                        @RenderThreshold(L["IOWait (%)"], "Model.ApiSettings.Node.IoWait", Model.ApiSettings.Node.IoWait)
+                    </RadzenColumn>
+                    <RadzenColumn Size="8" class="rz-display-flex rz-align-items-center">
+                        <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+                            @L["Average CPU time spent waiting for I/O over the RRD time frame. Sustained high values point to a storage bottleneck."]
+                        </RadzenText>
+                    </RadzenColumn>
+                </RadzenRow>
+
                 <RadzenText Text="@L["Storage"]" TextStyle="TextStyle.Subtitle1" class="rz-mt-4" Style="font-weight: bold;" />
 
                 <SwitchField @bind-Value="@Model.ApiSettings.Node.Smart.Enabled"
@@ -163,13 +184,11 @@
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Storage"]" Icon="@PveAdminUIHelper.Icons.Storage">
-                @RenderRrd(Model.ApiSettings.Storage.Rrd, "Model.ApiSettings.Storage.Rrd")
                 <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenColumn Size="4">
                         @RenderThreshold(L["Usage"], "Model.ApiSettings.Storage.Threshold", Model.ApiSettings.Storage.Threshold)
                     </RadzenColumn>
                 </RadzenRow>
-                @RenderPsiPressure(Model.ApiSettings.Storage.Rrd, "Model.ApiSettings.Storage.Rrd")
             </RadzenAccordionItem>
 
             <RadzenAccordionItem Text="@L["Snapshot"]" Icon="camera_alt">
