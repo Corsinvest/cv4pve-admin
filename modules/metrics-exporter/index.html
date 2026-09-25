@@ -1207,7 +1207,7 @@
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Hot reload</p>
-<p>Saving the settings clears the cached engine for that cluster — the next scrape rebuilds it with the new configuration. No service restart needed.</p>
+<p>Saving the settings clears the cached engines of all clusters (and resets the <strong>Status</strong> request counters) — the next scrape rebuilds it with the new configuration. No service restart needed.</p>
 </div>
 <h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
 <p>Why this exporter when PVE already has metrics?</p>
@@ -1248,7 +1248,7 @@
 <li><strong><code>&lt;clusterName&gt;</code></strong> — name of the configured Proxmox VE cluster</li>
 <li><strong><code>&lt;TOKEN&gt;</code></strong> — per-cluster token defined in the module settings</li>
 </ul>
-<p>A <code>503</code> response means the module or the Prometheus exporter is disabled; <code>401</code> means the token is wrong; <code>400</code> means the cluster name is unknown or disabled.</p>
+<p>A <code>503</code> response means the module or the Prometheus exporter is disabled; <code>401</code> means the token is wrong; <code>400</code> means the cluster name is unknown or disabled, or no token is configured.</p>
 <div class="admonition tip">
 <p class="admonition-title">Grab the URL from the UI</p>
 <p>The fully-qualified scrape URL for the current cluster is shown (clickable) in the <strong>Status</strong> tab — copy it from there instead of building it by hand.</p>
@@ -1312,7 +1312,7 @@
 <tbody>
 <tr>
 <td><strong>QEMU Balloon Memory</strong></td>
-<td>Real used memory inside the guest (only on QEMU VMs with the balloon driver enabled)</td>
+<td>Current balloon size — memory actually assigned to the guest, read from the QEMU monitor <code>info balloon</code> (only on QEMU VMs with the balloon driver enabled)</td>
 </tr>
 </tbody>
 </table>

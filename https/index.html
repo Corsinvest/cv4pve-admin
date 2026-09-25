@@ -1270,7 +1270,7 @@ Internal services (Watchtower, postgres) continue to communicate via <code>appne
 </div>
 <div class="admonition info">
 <p class="admonition-title">Forwarded headers</p>
-<p>The Docker Compose files already include <code>ASPNETCORE_FORWARDEDHEADERS_ENABLED=true</code>, so the application correctly handles HTTPS termination at the proxy level. No extra configuration needed.</p>
+<p>The container image already enables forwarded-header handling (<code>X-Forwarded-For</code>, <code>X-Forwarded-Proto</code>, <code>X-Forwarded-Host</code> from any proxy), so the application correctly handles HTTPS termination at the proxy level. No extra configuration needed.</p>
 </div>
 <hr />
 <h2 id="caddy">Caddy<a class="headerlink" href="#caddy" title="Permanent link">&para;</a></h2>
@@ -1325,8 +1325,12 @@ Internal services (Watchtower, postgres) continue to communicate via <code>appne
 </span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">      </span><span class="nt">traefik.http.routers.cv4pve-admin.tls</span><span class="p">:</span><span class="w"> </span><span class="s">"true"</span>
 </span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">      </span><span class="nt">traefik.http.routers.cv4pve-admin.tls.certresolver</span><span class="p">:</span><span class="w"> </span><span class="s">"letsencrypt"</span>
 </span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">      </span><span class="nt">traefik.http.services.cv4pve-admin.loadbalancer.server.port</span><span class="p">:</span><span class="w"> </span><span class="s">"8080"</span>
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">      </span><span class="nt">traefik.docker.network</span><span class="p">:</span><span class="w"> </span><span class="s">"publicnet"</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">      </span><span class="nt">traefik.docker.network</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;project&gt;_publicnet"</span>
 </span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Network name</p>
+<p>Docker Compose prefixes network names with the project name (by default the directory name, e.g. <code>cv4pve-admin-docker_publicnet</code> for an installer setup). Use the full name in <code>traefik.docker.network</code>, or uncomment <code>name:</code> at the top of <code>docker-compose.yaml</code> to pin a fixed project name.</p>
+</div>
 <hr />
 <h2 id="nginx-manual-external">Nginx (manual, external)<a class="headerlink" href="#nginx-manual-external" title="Permanent link">&para;</a></h2>
 <p>If Nginx runs outside Docker (directly on the host), it cannot use the Docker network name — point it to <code>localhost</code> on the host port. The host port mapping must remain in <code>docker-compose.yaml</code>.</p>

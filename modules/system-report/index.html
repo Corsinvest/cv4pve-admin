@@ -1176,12 +1176,12 @@
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6m-1 1.5L18.5 9H13m-4.07 3.22H16v7.07l-2.12-2.12L11.05 20l-2.83-2.83 2.83-2.82"/></svg></span> <strong>Multiple Formats</strong></p>
 <hr />
-<p>Export as <strong>Xlsx</strong> (single workbook with one sheet per section), <strong>Html</strong> (browsable static site) or <strong>Json</strong> (multi-file, one per section). Html and Json formats are packaged as a single <code>.zip</code>.</p>
+<p>Export as <strong>Xlsx</strong> (single workbook with one sheet per section), <strong>Html</strong> (browsable static site) or <strong>Json</strong> (multi-file, one per section). Every report is downloaded as a single <code>.zip</code>.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 13c-1.86 0-3.41 1.28-3.86 3H2v2h2.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22v-2H11.86c-.45-1.72-2-3-3.86-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2M19.86 6c-.45-1.72-2-3-3.86-3s-3.41 1.28-3.86 3H2v2h10.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22V6zM16 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2"/></svg></span> <strong>Presets &amp; Fine-grained Settings</strong></p>
 <hr />
-<p>Pick a preset — <strong>Fast</strong> (structure only, no heavy data), <strong>Standard</strong> (default), <strong>Full</strong> (RRD on week timeframe, syslog, firewall log, S.M.A.R.T.) — or toggle every individual section yourself.</p>
+<p>Pick a preset — <strong>Fast</strong> (structure only, no heavy data; default for a new report), <strong>Standard</strong> (all except S.M.A.R.T.), <strong>Full</strong> (RRD on week timeframe, syslog, firewall log, S.M.A.R.T.) — or toggle every individual section yourself.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4m0-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg></span> <strong>What's Included</strong></p>
@@ -1196,7 +1196,7 @@
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 16.5v-9l6 4.5M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> <strong>On-demand Generation</strong></p>
 <hr />
-<p>Generate reports manually from the Reports page — each run is persisted with the format and settings you chose. The history grid lets you download any past report or re-run it.</p>
+<p>Generate reports manually from the Reports page — each run is persisted with the format and settings you chose. The history grid lets you download or delete any past report and view the settings it was generated with.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 17.7V21h-4v-.7zM17 3H7v3h10zm-2 4-1 .7V7h-4v3.3L9 11v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 15v1l6-3.9zm0 4-1 .7v-2l-4 2.7v2L9 19v1l6-3.9z"/></svg></span> <strong>Parallel Fetching</strong></p>
@@ -1235,7 +1235,7 @@
 </div>
 <h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Reports</strong> — browse the history of generated reports, download a previous report, trigger a new one with custom settings or one of the presets (Fast / Standard / Full)</li>
+<li><strong>Reports</strong> — browse the history of generated reports, download or delete a previous report, trigger a new one with custom settings or one of the presets (Fast / Standard / Full)</li>
 </ul>
 <h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
 <details class="note settings">

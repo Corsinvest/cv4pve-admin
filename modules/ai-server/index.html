@@ -1229,7 +1229,7 @@
 <div>
 <div class="admonition warning">
 <p class="admonition-title">Permission-aware</p>
-<p>Tools respect the user's PVE permissions — the assistant can't do what the underlying account can't do. Write tools require explicit role grants.</p>
+<p>Every tool call is checked against the cv4pve-admin permissions of the AI Server token, per tool and per cluster — a tool the token isn't granted is refused.</p>
 </div>
 </div>
 </div>
@@ -1244,7 +1244,7 @@
 <ol>
 <li>Open the <strong>AI Server</strong> module and go to the <strong>API Access</strong> tab</li>
 <li>Click <strong>Regenerate</strong> on the AI Server token</li>
-<li>Copy the key — it will be used in the connection URL below</li>
+<li>Copy the key — it will be sent as the <code>X-API-Key</code> header (see below)</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Copy the key now</p>
@@ -1252,11 +1252,11 @@
 </div>
 <h3 id="mcp-endpoint-url">MCP endpoint URL<a class="headerlink" href="#mcp-endpoint-url" title="Permanent link">&para;</a></h3>
 <p>The MCP endpoint is exposed at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://&lt;your-server&gt;/mcp/&lt;api-key&gt;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://&lt;your-server&gt;/mcp
 </span></code></pre></div>
-<p>Where <code>&lt;api-key&gt;</code> is configured in the AI Server module settings.</p>
+<p>Clients authenticate by sending the AI Server token (from the <strong>API Access</strong> tab) in the <code>X-API-Key</code> HTTP header. A missing or invalid key returns <code>401</code>; <code>503</code> means the AI Server module is disabled.</p>
 <h3 id="native-http-clients">Native HTTP clients<a class="headerlink" href="#native-http-clients" title="Permanent link">&para;</a></h3>
-<p>Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) can connect directly using the URL above — no additional software needed.</p>
+<p>Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) can connect directly using the URL above plus the <code>X-API-Key</code> header — no additional software needed.</p>
 <h3 id="claude-desktop-and-stdio-only-clients">Claude Desktop and stdio-only clients<a class="headerlink" href="#claude-desktop-and-stdio-only-clients" title="Permanent link">&para;</a></h3>
 <p>Claude Desktop only supports stdio transport and cannot connect to HTTP MCP servers directly.
 Use <strong>cv4pve-mcp-bridge</strong> to proxy stdio ↔ HTTP.</p>
@@ -1270,7 +1270,7 @@ Use <strong>cv4pve-mcp-bridge</strong> to proxy stdio ↔ HTTP.</p>
 <p>Use the <strong>Bridge</strong> tab in the AI Server module to download the binary for your platform and generate a ready-to-use <code>claude_desktop_config.json</code> pre-filled with your server URL.</p>
 </div>
 <h2 id="available-tools">Available Tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
-<p>33 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries.</p>
+<p>29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries.</p>
 <details class="note tools">
 <summary>Show all tools</summary>
 <h3 id="cluster">Cluster<a class="headerlink" href="#cluster" title="Permanent link">&para;</a></h3>
@@ -1358,7 +1358,7 @@ Use <strong>cv4pve-mcp-bridge</strong> to proxy stdio ↔ HTTP.</p>
 <tbody>
 <tr>
 <td><code>ListNodes</code></td>
-<td>List cluster nodes with CPU, memory, disk usage. Minimal/Full detail level</td>
+<td>List cluster nodes with CPU, memory, disk usage, status and network interfaces. Minimal/Full detail level</td>
 </tr>
 <tr>
 <td><code>GetNodeStatus</code></td>
@@ -1554,7 +1554,7 @@ Use <strong>cv4pve-mcp-bridge</strong> to proxy stdio ↔ HTTP.</p>
 </details>
 <div class="admonition warning">
 <p class="admonition-title">Permissions matter</p>
-<p>Write tools (<code>ChangeVmState</code>, <code>CreateVmSnapshot</code>, <code>DeleteVmSnapshot</code>, <code>RollbackVmSnapshot</code>, <code>MigrateVm</code>, <code>BackupVm</code>, <code>Delete*</code>, <code>DownloadIso</code>) require both the tool permission <strong>and</strong> the underlying Proxmox VE permission on the target resource. The default role grants read-only access; grant write permissions explicitly in <strong>AI Server → Roles</strong>.</p>
+<p>Write tools (<code>ChangeVmState</code>, <code>CreateVmSnapshot</code>, <code>DeleteVmSnapshot</code>, <code>RollbackVmSnapshot</code>, <code>MigrateVm</code>, <code>BackupVm</code>, <code>Delete*</code>, <code>DownloadIso</code>) change or delete data on the cluster. The AI Server token is created with the <strong>AI Server Tools</strong> role — which already includes every tool except <code>DownloadIso</code> and <code>DeleteIso</code> — plus the cluster <strong>Admin</strong> role, and these roles are re-applied at every startup. Review the role's permissions under <strong>Admin Area → Security → Roles</strong> before connecting an AI client.</p>
 </div>
 <h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
 <details class="note settings">

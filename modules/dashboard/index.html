@@ -1194,11 +1194,6 @@
 <p>Configure an automatic refresh interval (in seconds) to keep all widget data up to date without manual interaction.</p>
 </li>
 <li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16H3V4h18m0-2H3c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h7v2H8v2h8v-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2"/></svg></span> <strong>Screen Resolution Preview</strong></p>
-<hr />
-<p>Preview how the dashboard looks at different screen resolutions (Full HD, HD+, WXGA+, and more) while editing.</p>
-</li>
-<li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23 12-4-4v3h-9v2h9v3M1 18V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3h-2V6H3v12h12v-3h2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2"/></svg></span> <strong>Import / Export</strong></p>
 <hr />
 <p>Export a dashboard to JSON and import it on another instance or share it with other users.</p>
@@ -1238,10 +1233,10 @@
 <ul>
 <li><strong>Add widgets</strong> — select a widget from the module widget menu and it is placed automatically in the first free position on the grid.</li>
 <li><strong>Move and resize</strong> — drag widgets to reposition them; drag the resize handle to change size.</li>
-<li><strong>Configure</strong> — open the widget settings dialog to customize title, CSS classes, and widget-specific options.</li>
+<li><strong>Configure</strong> — open the widget settings dialog to customize title (empty = hidden), title/body CSS styles, and widget-specific options.</li>
 <li><strong>Clone</strong> — duplicate a widget with the same settings.</li>
 <li><strong>Remove</strong> — delete a widget from the dashboard.</li>
-<li><strong>Save / Cancel</strong> — save persists all changes to the database; cancel discards unsaved changes (with confirmation if changes exist).</li>
+<li><strong>Save / Cancel</strong> — save persists all changes to the database; cancel discards unsaved changes. Leaving the page while in edit mode asks for confirmation.</li>
 </ul>
 <h2 id="widgets">Widgets<a class="headerlink" href="#widgets" title="Permanent link">&para;</a></h2>
 <p>The Dashboard ships two generic widgets always available; every other module contributes its own widgets as soon as it is enabled.</p>

@@ -1230,7 +1230,7 @@
 </tr>
 <tr>
 <td><strong><code>/app/data/</code></strong> (Docker volume)</td>
-<td>Persistent state: SQLite/Postgres data, exports, attachments, logs.</td>
+<td>Persistent application state: logs, images, translations, temp files. The PostgreSQL database is stored in a separate volume (<code>data/postgres/data</code>).</td>
 </tr>
 <tr>
 <td><strong>Environment variables</strong></td>

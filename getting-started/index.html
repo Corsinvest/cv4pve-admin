@@ -1347,7 +1347,7 @@ There is currently no migration path from v1 to v2 — a fresh installation is r
 </div>
 <div class="admonition success">
 <p class="admonition-title">Installation Complete</p>
-<p>After installation completes, open your browser to <strong>http://localhost:8080</strong></p>
+<p>After installation completes, run <code>cd cv4pve-admin-docker &amp;&amp; docker compose up -d</code>, then open your browser to <strong>http://localhost:8080</strong></p>
 </div>
 <h3 id="change-version-after-installation">Change version after installation<a class="headerlink" href="#change-version-after-installation" title="Permanent link">&para;</a></h3>
 <p>Edit <code>CV4PVE_ADMIN_TAG</code> in <code>.env</code> (e.g. <code>nano .env</code> or <code>notepad .env</code>), then restart:</p>
@@ -1358,7 +1358,7 @@ There is currently no migration path from v1 to v2 — a fresh installation is r
 <ol>
 <li>Open <strong>http://localhost:8080</strong></li>
 <li>Login: <code>admin@local</code> / <code>Password123!</code></li>
-<li><strong>You will be prompted to change the default password</strong> — this is required before you can proceed</li>
+<li><strong>Change the default password</strong> — a persistent security warning is shown until you do</li>
 <li>Configure your first Proxmox cluster — the setup dialog opens automatically</li>
 </ol>
 <h3 id="proxmox-ve-api-credentials">Proxmox VE API Credentials<a class="headerlink" href="#proxmox-ve-api-credentials" title="Permanent link">&para;</a></h3>
@@ -1376,7 +1376,7 @@ For advanced least-privilege setups, see <a href="../configuration/pve-permissio
 </div>
 <div class="admonition info">
 <p class="admonition-title">First Login Password Change</p>
-<p>On first login with the default <code>admin@local / Password123!</code> credentials, the application will automatically prompt you to set a new password before you can continue.</p>
+<p>While the default <code>admin@local / Password123!</code> credentials are in use, a persistent security warning is shown — change the password immediately via the <strong>Change password now</strong> link.</p>
 </div>
 <hr />
 <h2 id="advanced-docker-setup">Advanced Docker Setup<a class="headerlink" href="#advanced-docker-setup" title="Permanent link">&para;</a></h2>

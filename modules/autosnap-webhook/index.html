@@ -1201,7 +1201,7 @@
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 13h-2V7h2m-2 8h2v2h-2m4.73-14H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27z"/></svg></span> <strong>Fail-fast on errors</strong></p>
 <hr />
-<p>A non-2xx response or network error stops execution for that phase and surfaces in the job log — no silent failures.</p>
+<p>A non-2xx response or network error stops the remaining hooks of that phase, surfaces in the job log and marks the run as failed — no silent failures.</p>
 </li>
 </ul>
 </div>
@@ -1343,7 +1343,7 @@
 </details>
 <details class="note reference">
 <summary>All hook fields</summary>
-<p>Configured per-job in the <strong>Hooks</strong> tab of the job editor.</p>
+<p>Configured per-job in the <strong>Web API Hook</strong> tab of the job editor.</p>
 <table>
 <thead>
 <tr>
@@ -1444,7 +1444,8 @@
 <p class="admonition-title">How execution works</p>
 <ul>
 <li>Hooks within the same phase run <strong>sequentially</strong> in the configured order.</li>
-<li>A non-2xx HTTP response or network error <strong>stops execution</strong> and writes an error to the job log.</li>
+<li>A non-2xx HTTP response or network error <strong>stops the remaining hooks of that phase</strong> and writes an error to the job log.</li>
+<li>The snapshot operation itself is not aborted; the run is marked as failed.</li>
 <li>The hook result (HTTP status code) is written to the job execution log.</li>
 <li>Hooks with <strong>Enabled = false</strong> are skipped silently.</li>
 </ul>

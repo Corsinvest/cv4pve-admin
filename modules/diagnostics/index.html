@@ -1176,7 +1176,7 @@
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg></span> <strong>On-demand or scheduled</strong></p>
 <hr />
-<p>Trigger a run manually from the UI, or schedule recurring runs with a cron expression — the Settings panel includes a quick link to <a href="https://crontab.guru" target="_blank">crontab.guru</a> to validate your expression.</p>
+<p>Trigger a run manually from the UI, or schedule recurring runs with a cron expression, using the built-in editor that shows a human-readable description and the next occurrence.</p>
 </li>
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 13h-2V7h2m0 10h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> <strong>Issue Detection</strong></p>
@@ -1221,7 +1221,7 @@
 <li>
 <p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg></span> <strong>Executive Summary</strong></p>
 <hr />
-<p>Enterprise PDF adds a one-page Executive Summary at the top: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.</p>
+<p>Enterprise PDF adds an Executive Summary block at the top of the report, right after the cover page: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.</p>
 </li>
 <li>
 <p><span class="ee"></span> <span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m10 17-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9m-6-8L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5z"/></svg></span> <strong>Compliance Reports</strong></p>
@@ -1240,7 +1240,7 @@
 <div class="why-grid">
 <div>
 <div class="admonition tip">
-<p class="admonition-title">All clusters in one report</p>
+<p class="admonition-title">Whole cluster in one report</p>
 <p>A scan covers every node, storage, QEMU VM and LXC container of the cluster — you don't open one PVE UI per node and click around.</p>
 </div>
 </div>
@@ -1265,7 +1265,7 @@
 </div>
 <h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Scans</strong> — browse the history of scans, expand a row to drill into per-issue detail, download the report as PDF or Excel, trigger a new on-demand scan</li>
+<li><strong>Scans</strong> — browse the history of scans, expand a row to drill into the scan detail — an <strong>Issues</strong> tab with per-issue detail and a <strong>Compliance</strong> tab <span class="ee"></span> with the findings grouped by standard and control — download the report as PDF or Excel, trigger a new on-demand scan. Both reports open with a cover page: report information and a table of contents (in the PDF with page numbers, clickable, and listed in the viewer's bookmarks panel)</li>
 <li><strong>Ignored Issues</strong> — manage the list of issues you want to hide from active results (still shown in the report's Ignored section)</li>
 </ul>
 <h2 id="compliance-reports">Compliance reports <span class="ee"></span><a class="headerlink" href="#compliance-reports" title="Permanent link">&para;</a></h2>
@@ -1364,7 +1364,7 @@
 </table>
 <div class="admonition tip">
 <p class="admonition-title">Audit mode</p>
-<p>Enable <strong>Include OK results (audit mode)</strong> in the General settings to also emit a <code>Pass</code> result for every check that succeeds. Useful when auditors want evidence that controls were <em>verified</em>, not only when they failed.</p>
+<p>Enable <strong>Include OK results (audit mode)</strong> in the API settings to also emit a <code>Pass</code> result for every check that succeeds. Useful when auditors want evidence that controls were <em>verified</em>, not only when they failed.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Disclaimer</p>
