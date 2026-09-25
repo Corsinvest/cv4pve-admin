@@ -101,34 +101,22 @@
 </RadzenPanel>
 
 <RadzenPanel Text="@L["Headers"]">
-    <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
-        @foreach (var header in _headers)
-        {
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                <RadzenTextBox Placeholder="@L["Name"]"
-                               Value="@header.Name"
-                               ValueChanged="@((string value) => { header.Name = value; UpdateHeaders(); })"
-                               class="rz-w-100" />
-                <RadzenTextBox Placeholder="@L["Value"]"
-                               Value="@header.Value"
-                               ValueChanged="@((string value) => { header.Value = value; UpdateHeaders(); })"
-                               class="rz-w-100" />
-                <RadzenButton Icon="delete"
-                              ButtonStyle="ButtonStyle.Danger"
-                              Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Click="@(() => RemoveHeader(header))"
-                              title="@L["Delete"]" />
-            </RadzenStack>
-        }
-        <RadzenStack Orientation="Orientation.Horizontal">
-            <RadzenButton Icon="add"
-                          Text="@L["Add header"]"
-                          ButtonStyle="ButtonStyle.Light"
-                          Size="ButtonSize.Small"
-                          Click="@AddHeader" />
-        </RadzenStack>
-    </RadzenStack>
+    <ListEditor TItem="HeaderRow"
+                Items="@_headers"
+                NewItem="@(() => new HeaderRow())"
+                AddText="@L["Add header"]"
+                Changed="@UpdateHeaders">
+        <ItemTemplate Context="header">
+            <RadzenTextBox Placeholder="@L["Name"]"
+                           Value="@header.Name"
+                           ValueChanged="@((string value) => { header.Name = value; UpdateHeaders(); })"
+                           class="rz-w-100" />
+            <RadzenTextBox Placeholder="@L["Value"]"
+                           Value="@header.Value"
+                           ValueChanged="@((string value) => { header.Value = value; UpdateHeaders(); })"
+                           class="rz-w-100" />
+        </ItemTemplate>
+    </ListEditor>
 </RadzenPanel>
 
 <RadzenFormField Text="@L["Timeout (seconds)"]" AllowFloatingLabel="false">
@@ -167,14 +155,6 @@
             _loadedFrom = Value;
             _headers = [.. Value.Headers.Select(a => new HeaderRow { Name = a.Key, Value = a.Value })];
         }
-    }
-
-    private void AddHeader() => _headers.Add(new HeaderRow());
-
-    private void RemoveHeader(HeaderRow header)
-    {
-        _headers.Remove(header);
-        UpdateHeaders();
     }
 
     // Rows without a name are skipped; with a repeated name the last row wins

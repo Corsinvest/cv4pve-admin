@@ -26,6 +26,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Help menu**: the version, edition and update check share a single line at the top.
 
+- **Cluster settings — nodes**: the node list is edited directly, with no edit/save step per row. The order, which sets the node tried first for the API, is changed with up/down buttons instead of drag and drop, and a note explains that the same addresses are used for SSH.
+
 - **Diagnostic**: resource links in the results (and in the Compliance view *(EE)*) open in a new tab, so the report stays open.
 
 - **Container IP addresses**: running containers show the address they have right now, also when it comes from DHCP (`10.0.0.5/24 (dhcp)` instead of just `dhcp`), in the Resources network list, in the network diagram and in the IP search. Stopped containers and older Proxmox VE releases keep showing the configured value.
@@ -46,6 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 #### Fixed
 
 - **Grids**: a group, once expanded, can be collapsed again.
+
+- **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
 
 - **Diagnostic — settings**: the node RRD time frame and PSI pressure thresholds changed from the settings page are now applied; before, the scan kept using the defaults. The Storage section no longer shows RRD and PSI fields, which the storage check never used.
 
@@ -80,8 +84,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 #### Fixed
 
 - **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
-
-- **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
 
 - **NodeProtect — Git credentials**: the username and password changed in the Git settings are now saved; before, the change was lost. The password, like the secrets of AutoSnap hooks, is now stored encrypted; values saved before are kept and encrypted on the next save.
 
