@@ -10,7 +10,7 @@
 
 A stdio↔HTTP bridge that connects MCP clients (e.g. Claude Desktop) to a [cv4pve-admin](https://github.com/Corsinvest/cv4pve-admin) MCP server endpoint.
 
-It reads JSON-RPC messages from **stdin**, forwards them via HTTP POST to the MCP server, and writes the SSE responses back to **stdout**.
+It reads JSON-RPC messages from **stdin**, forwards them to the MCP server using the MCP Streamable HTTP transport, and writes the responses back to **stdout**.
 
 ## Download
 
@@ -89,7 +89,7 @@ Add the following to your `claude_desktop_config.json`:
 }
 ```
 
-> The API key is an **App Token** generated in cv4pve-admin under **System → Security → App Tokens**.
+> The API key is an **App Token** generated in cv4pve-admin under **Admin Area → Security → App Tokens** (Enterprise Edition).
 
 ## How it works
 
@@ -98,10 +98,10 @@ Claude Desktop
      │  stdin (JSON-RPC)
      ▼
 cv4pve-mcp-bridge
-     │  HTTP POST + X-API-Key
+     │  Streamable HTTP + X-API-Key
      ▼
 cv4pve-admin MCP endpoint
-     │  SSE response (data: {...})
+     │  Streamable HTTP response
      ▼
 cv4pve-mcp-bridge
      │  stdout (JSON-RPC)

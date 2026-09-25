@@ -54,7 +54,7 @@ Why a config backup module when you already do disk / VM backups?
 
 <div markdown>
 !!! info "Know what changed, when"
-    With the Git destination every change is a commit you can diff. Find out who edited `corosync.conf` and when — no more silent drift across nodes.
+    With the Git destination every run is a commit you can diff in your Git tooling. Find out when `corosync.conf` changed — no more silent drift across nodes.
 </div>
 
 <div markdown>
@@ -66,8 +66,8 @@ Why a config backup module when you already do disk / VM backups?
 
 ## Sections
 
-- **Folder** — browse, download and restore backups stored in the local folder destination
-- <span class="ee"></span> **Git** — browse commits, diffs and restore files from the Git destination
+- **Folder** — list, download and delete backups stored in the local folder destination; view the log of each run
+- <span class="ee"></span> **Git** — list commits with their changed files, download a commit as archive, view the log; push, reset or sync from the remote repository
 
 ## Settings
 

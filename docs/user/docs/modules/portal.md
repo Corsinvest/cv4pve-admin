@@ -34,7 +34,7 @@ Multi-tenant management portal for Proxmox VE environments, designed for MSPs an
 
     ---
 
-    Separate logins for tenants with role-based permissions.
+    Tenant users get their own cv4pve-admin accounts with per-VM permissions.
 
 - :material-link-variant:{ .lg .middle } **Native Proxmox Integration**
 
@@ -52,17 +52,17 @@ Why a portal layer when PVE has its own users and roles?
 
 <div markdown>
 !!! tip "Customers see only their VMs"
-    Tenant users log into a portal that exposes only the VMs assigned to their tenant — no chance of accidentally touching another customer.
+    Tenant users log into cv4pve-admin and are granted permissions only on the VMs assigned to their tenant — no chance of accidentally touching another customer.
 </div>
 
 <div markdown>
-!!! success "Single pane across clusters"
-    A tenant can have VMs across multiple PVE clusters — they see one list, not "log into cluster A, log into cluster B".
+!!! success "One tenant, one cluster"
+    Each tenant is bound to a single cluster; its VMs/CTs are picked from that cluster's resources.
 </div>
 
 <div markdown>
-!!! info "RBAC over PVE permissions"
-    Portal roles (Admin / Tenant Admin / Tenant User) layer on top of PVE permissions — define the customer experience once, regardless of underlying cluster ACLs.
+!!! info "cv4pve-admin permissions, not PVE ACLs"
+    Access is granted through cv4pve-admin's own per-VM permissions — no users or ACLs to create on the Proxmox VE cluster.
 </div>
 
 <div markdown>
@@ -78,10 +78,10 @@ Why a portal layer when PVE has its own users and roles?
 
 ## Tenants
 
-Each tenant contains:
+Each tenant belongs to one cluster and contains:
 
-- **VMs / CTs** — list of Proxmox VE resources assigned to the tenant
-- **Users** — tenant users with role-based access control
+- **VMs / CTs** — list of Proxmox VE resources (from the tenant's cluster) assigned to the tenant
+- **Users** — tenant users: regular cv4pve-admin accounts (a new user is created with a random password and receives a confirmation email). For each VM/CT of the tenant you pick which permissions the user gets: Read, Audit, Console, Power Management, Replication manager, Replication Schedule Now, Snapshot manager, Snapshot Rollback, Backup manager, Backup Restore, Backup Restore File. A user can also be flagged as **Tenant Admin**
 
 ### Roles
 

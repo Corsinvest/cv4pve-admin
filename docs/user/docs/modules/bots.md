@@ -12,11 +12,11 @@ Remote Proxmox VE cluster management through a Telegram chatbot — execute comm
 
     Execute commands and manage nodes through Telegram bot.
 
-- :material-bell-alert:{ .lg .middle } **Notifications**
+- :material-bell-alert:{ .lg .middle } **Messages**
 
     ---
 
-    Receive notifications for cluster events and status changes.
+    Receive replies to your commands and messages sent manually from the Telegram page to one or all connected chats.
 
 - :material-lock:{ .lg .middle } **Access Control**
 
@@ -57,7 +57,7 @@ Why a chatbot when the web UI is already there?
 
 <div markdown>
 !!! success "Push, not pull"
-    Telegram delivers alerts and replies you initiated. No polling, no missed mail filter, no email password to keep current.
+    Telegram delivers the replies you initiated and the messages sent from the Telegram page. No polling, no missed mail filter, no email password to keep current.
 </div>
 
 <div markdown>
@@ -67,14 +67,14 @@ Why a chatbot when the web UI is already there?
 
 <div markdown>
 !!! warning "Quick fire-and-forget"
-    "Restart VM 200" from your phone while you walk to the data centre — no laptop, no SSH, no UI clicks.
+    `/vmstart` to start VM 200 from your phone while you walk to the data centre — no laptop, no SSH, no UI clicks.
 </div>
 
 </div>
 
 ## Sections
 
-- **Telegram** — status of the Telegram bot connection — token configured, chats whitelist, recent activity
+- **Telegram** — live bot log and a box to send a message to all or one of the connected chats
 
 ## Set Up Your Telegram Bot
 

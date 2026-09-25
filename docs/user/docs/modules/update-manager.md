@@ -10,13 +10,13 @@ Scans VM/CT in Proxmox VE to identify available updates including security patch
 
     ---
 
-    Identify critical security patches across VMs and containers.
+    Flag VMs and containers with pending security updates.
 
 - :material-package-variant:{ .lg .middle } **Update Inventory**
 
     ---
 
-    View available updates by system, package, and severity level.
+    Per VM/CT: pending regular updates, pending security updates, reboot required.
 
 --8<-- "_includes/feature-cron.md"
 
@@ -64,7 +64,7 @@ Why centralise update checks when `apt list --upgradable` already exists?
 
 ## Sections
 
-- **Scans** — live grid of every running VM/CT with its current scan status (Ok / InError / Cancelled), available updates (Normal / Security), reboot required flag. Trigger a new scan, download the report as PDF or Excel
+- **Scans** — live grid of every running VM/CT with its current scan status (InScan / Ok / InError / Cancelled), available updates (Normal / Security), reboot required flag. Trigger a new scan, download the report as PDF or Excel
 
 ## Settings
 
@@ -80,3 +80,6 @@ Why centralise update checks when `apt list --upgradable` already exists?
     | **Notifier Configurations** | – | List of Notifier configurations to deliver the report to |
 
 --8<-- "_includes/requirements-ssh.md"
+
+!!! info "Guest requirements"
+    QEMU VMs must have the QEMU Guest Agent enabled and responding; Windows guests are scanned only when their OS type is `win10` or `win11`. LXC containers need no agent.

@@ -77,9 +77,9 @@ Why analytics when PVE already shows backup jobs?
 - **Backups** — per-VM backup history with date, size, duration, status and storage
 - **Scheduled** — configured backup jobs with schedule, target storage and selection
 - **Unprotected Guests** — VMs/CTs not covered by any backup job — your RPO blind spots
-- **Unprotected Disks** — disks excluded from backup (e.g. `backup=0`) on otherwise protected guests
-- **Backup in line** — timeline view of backup runs across nodes/storages
-- **Trends** — charts of backup size, duration and success rate over time
+- **Unprotected Disks** — disks excluded from backup (e.g. `backup=0`)
+- **Backup in line** — backup files currently on the storages, grouped by storage and VM, with size, date, format, verified/encrypted flags
+- **Trends** — charts of backup size, transfer speed and duration over time
 
 ## Settings
 

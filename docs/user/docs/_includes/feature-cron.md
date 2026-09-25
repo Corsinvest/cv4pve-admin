@@ -2,4 +2,4 @@
 
     ---
 
-    Trigger a run manually from the UI, or schedule recurring runs with a cron expression — the Settings panel includes a quick link to [crontab.guru](https://crontab.guru){target=_blank} to validate your expression.
+    Trigger a run manually from the UI, or schedule recurring runs with a cron expression, using the built-in editor that shows a human-readable description and the next occurrence.

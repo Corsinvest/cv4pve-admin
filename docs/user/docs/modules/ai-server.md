@@ -67,7 +67,7 @@ Why an MCP server when the PVE API is already there?
 
 <div markdown>
 !!! warning "Permission-aware"
-    Tools respect the user's PVE permissions — the assistant can't do what the underlying account can't do. Write tools require explicit role grants.
+    Every tool call is checked against the cv4pve-admin permissions of the AI Server token, per tool and per cluster — a tool the token isn't granted is refused.
 </div>
 
 </div>
@@ -85,7 +85,7 @@ Before connecting any AI client, generate the API key:
 
 1. Open the **AI Server** module and go to the **API Access** tab
 2. Click **Regenerate** on the AI Server token
-3. Copy the key — it will be used in the connection URL below
+3. Copy the key — it will be sent as the `X-API-Key` header (see below)
 
 !!! warning "Copy the key now"
     The API key is shown only once after generation. Copy it before closing the dialog.
@@ -95,14 +95,14 @@ Before connecting any AI client, generate the API key:
 The MCP endpoint is exposed at:
 
 ```
-https://<your-server>/mcp/<api-key>
+https://<your-server>/mcp
 ```
 
-Where `<api-key>` is configured in the AI Server module settings.
+Clients authenticate by sending the AI Server token (from the **API Access** tab) in the `X-API-Key` HTTP header. A missing or invalid key returns `401`; `503` means the AI Server module is disabled.
 
 ### Native HTTP clients
 
-Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) can connect directly using the URL above — no additional software needed.
+Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) can connect directly using the URL above plus the `X-API-Key` header — no additional software needed.
 
 ### Claude Desktop and stdio-only clients
 
@@ -123,7 +123,7 @@ Pre-built binaries are available for Windows, Linux, and macOS. See the [Documen
 
 ## Available Tools
 
-33 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries.
+29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries.
 
 ??? note tools "Show all tools"
 
@@ -154,7 +154,7 @@ Pre-built binaries are available for Windows, Linux, and macOS. See the [Documen
 
     | Tool | Description |
     |------|-------------|
-    | `ListNodes` | List cluster nodes with CPU, memory, disk usage. Minimal/Full detail level |
+    | `ListNodes` | List cluster nodes with CPU, memory, disk usage, status and network interfaces. Minimal/Full detail level |
     | `GetNodeStatus` | Detailed node status: PVE version, kernel, CPU model, memory, swap, load average, root fs |
     | `ListReplications` | List cluster replications with schedule, sync status and error info |
     | `ListNodeRrdData` | Historical metrics (CPU, Load avg, Memory, Swap, Disk, Network, Pressure PSI) for nodes |
@@ -273,7 +273,7 @@ Real prompts you can paste into your AI assistant once the MCP endpoint is conne
     > List storages with more than 80% usage.
 
 !!! warning "Permissions matter"
-    Write tools (`ChangeVmState`, `CreateVmSnapshot`, `DeleteVmSnapshot`, `RollbackVmSnapshot`, `MigrateVm`, `BackupVm`, `Delete*`, `DownloadIso`) require both the tool permission **and** the underlying Proxmox VE permission on the target resource. The default role grants read-only access; grant write permissions explicitly in **AI Server → Roles**.
+    Write tools (`ChangeVmState`, `CreateVmSnapshot`, `DeleteVmSnapshot`, `RollbackVmSnapshot`, `MigrateVm`, `BackupVm`, `Delete*`, `DownloadIso`) change or delete data on the cluster. The AI Server token is created with the **AI Server Tools** role — which already includes every tool except `DownloadIso` and `DeleteIso` — plus the cluster **Admin** role, and these roles are re-applied at every startup. Review the role's permissions under **Admin Area → Security → Roles** before connecting an AI client.
 
 ## Settings
 

@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: Copyright Corsinvest Srl
 # SPDX-License-Identifier: AGPL-3.0-only
-# Repository: https://gitlab.com/Corsinvest/cv4pve-admin
+# Repository: https://github.com/Corsinvest/cv4pve-admin
 
 # Project name. If omitted, Docker Compose uses the name of the directory
 # containing this file (so by default this stack ends up named "docker",

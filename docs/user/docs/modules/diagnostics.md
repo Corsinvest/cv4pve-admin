@@ -52,7 +52,7 @@ Automated health checks and infrastructure diagnostics for Proxmox VE, built on 
 
     ---
 
-    Enterprise PDF adds a one-page Executive Summary at the top: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.
+    Enterprise PDF adds an Executive Summary block at the top of the report, right after the cover page: issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues — useful for management or MSP customer reports.
 
 - <span class="ee"></span> :material-shield-check:{ .lg .middle } **Compliance Reports**
 
@@ -71,7 +71,7 @@ Why scan automatically when you can check things by hand?
 <div class="why-grid" markdown>
 
 <div markdown>
-!!! tip "All clusters in one report"
+!!! tip "Whole cluster in one report"
     A scan covers every node, storage, QEMU VM and LXC container of the cluster — you don't open one PVE UI per node and click around.
 </div>
 
@@ -94,7 +94,7 @@ Why scan automatically when you can check things by hand?
 
 ## Sections
 
-- **Scans** — browse the history of scans, expand a row to drill into per-issue detail, download the report as PDF or Excel, trigger a new on-demand scan
+- **Scans** — browse the history of scans, expand a row to drill into the scan detail — an **Issues** tab with per-issue detail and a **Compliance** tab <span class="ee"></span> with the findings grouped by standard and control — download the report as PDF or Excel, trigger a new on-demand scan. Both reports open with a cover page: report information and a table of contents (in the PDF with page numbers, clickable, and listed in the viewer's bookmarks panel)
 - **Ignored Issues** — manage the list of issues you want to hide from active results (still shown in the report's Ignored section)
 
 ## Compliance reports <span class="ee"></span>
@@ -137,7 +137,7 @@ Currently supported standards:
 | **BSI IT-Grundschutz** | IT-Grundschutz-Kompendium, Edition 2023 (Germany) |
 
 !!! tip "Audit mode"
-    Enable **Include OK results (audit mode)** in the General settings to also emit a `Pass` result for every check that succeeds. Useful when auditors want evidence that controls were *verified*, not only when they failed.
+    Enable **Include OK results (audit mode)** in the API settings to also emit a `Pass` result for every check that succeeds. Useful when auditors want evidence that controls were *verified*, not only when they failed.
 
 !!! warning "Disclaimer"
     The compliance mapping is automated and technical only — it covers the subset of each standard that can be verified from the Proxmox VE state. Policies, training, supplier management, physical security and other organisational controls are out of scope. A passing check confirms only that the specific automated rule passed; full conformity usually requires manual evidence (policies, procedures, evidence of operation). This report does not constitute a formal audit or certification.

@@ -45,7 +45,7 @@ Exposes Proxmox VE metrics over a Prometheus-compatible HTTP endpoint, ready to 
 </div>
 
 !!! tip "Hot reload"
-    Saving the settings clears the cached engine for that cluster — the next scrape rebuilds it with the new configuration. No service restart needed.
+    Saving the settings clears the cached engines of all clusters (and resets the **Status** request counters) — the next scrape rebuilds it with the new configuration. No service restart needed.
 
 ## Why
 
@@ -88,7 +88,7 @@ GET /module/*/metrics-exporter/prometheus/<clusterName>?token=<TOKEN>
 - **`<clusterName>`** — name of the configured Proxmox VE cluster
 - **`<TOKEN>`** — per-cluster token defined in the module settings
 
-A `503` response means the module or the Prometheus exporter is disabled; `401` means the token is wrong; `400` means the cluster name is unknown or disabled.
+A `503` response means the module or the Prometheus exporter is disabled; `401` means the token is wrong; `400` means the cluster name is unknown or disabled, or no token is configured.
 
 !!! tip "Grab the URL from the UI"
     The fully-qualified scrape URL for the current cluster is shown (clickable) in the **Status** tab — copy it from there instead of building it by hand.
@@ -117,7 +117,7 @@ Grouped per scope; each collector is independently toggleable and has its own ca
 
 | Collector | What it exposes |
 |-----------|------------------|
-| **QEMU Balloon Memory** | Real used memory inside the guest (only on QEMU VMs with the balloon driver enabled) |
+| **QEMU Balloon Memory** | Current balloon size — memory actually assigned to the guest, read from the QEMU monitor `info balloon` (only on QEMU VMs with the balloon driver enabled) |
 
 ## Connecting Prometheus
 

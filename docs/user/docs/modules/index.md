@@ -34,7 +34,7 @@
 
     ---
 
-    Automated node configuration backup and restore <span class="scope" data-scope="per-cluster"></span>
+    Automated node configuration backup <span class="scope" data-scope="per-cluster"></span>
 
 
 - :material-flash:{ .lg .middle } **[UPS Monitor](ups-monitor.md)**

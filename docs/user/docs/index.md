@@ -59,12 +59,12 @@ cv4pve-admin fills that gap: one interface, all clusters, all the tools your tea
 
 <div markdown>
 !!! warning "Security & RBAC"
-    Role-based access control, 2FA, App Tokens, and audit logs. Enterprise-grade access management.
+    Role-based access control, 2FA, App Tokens, and audit logs <span class="ee"></span>. Enterprise-grade access management.
 </div>
 
 <div markdown>
 !!! success "Smart Automation"
-    Automated snapshots with retention policies, node config backup with Git push, and webhook hooks.
+    Automated snapshots with retention policies, node config backup with Git push <span class="ee"></span>, and webhook hooks <span class="ee"></span>.
 </div>
 
 <div markdown>
@@ -74,7 +74,7 @@ cv4pve-admin fills that gap: one interface, all clusters, all the tools your tea
 
 <div markdown>
 !!! note "Notifications"
-    CE: email alerts. EE: 140+ services including Telegram, Slack, Discord, Teams, and more.
+    CE: email and webhook. EE: 140+ services including Telegram, Slack, Discord, Teams, and more.
 </div>
 
 <div markdown>
@@ -112,7 +112,7 @@ Get up and running in under 2 minutes:
     irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
     ```
 
-Access at `http://localhost:8080` with credentials: `admin@local` / `Password123!`
+Then start the stack with `cd cv4pve-admin-docker && docker compose up -d` and access `http://localhost:8080` with credentials: `admin@local` / `Password123!`
 
 [**Detailed Installation Guide →**](getting-started.md){ .md-button .md-button--primary }
 

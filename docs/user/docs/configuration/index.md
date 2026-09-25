@@ -48,5 +48,5 @@ Per-user preferences — every signed-in user can change their own.
 |-------|------|
 | **Database** | All UI-driven settings: cluster credentials, users, roles, notifier channels, module options. Survives container updates. |
 | **`appsettings.extra.json`** | Bootstrap configuration: database connection, log level, identity policies. Read at startup. |
-| **`/app/data/`** (Docker volume) | Persistent state: SQLite/Postgres data, exports, attachments, logs. |
+| **`/app/data/`** (Docker volume) | Persistent application state: logs, images, translations, temp files. The PostgreSQL database is stored in a separate volume (`data/postgres/data`). |
 | **Environment variables** | Container deployment knobs: `ASPNETCORE_URLS`, timezone, etc. — see the Docker docs. |

@@ -19,7 +19,7 @@ cv4pve-admin user reset-password --help
 
 ## User commands
 
-All user commands accept `-u <username>` (default: `admin@local`).
+All user commands accept `-u` / `--username <username>` (default: `admin@local`); `reset-password` also takes `-p` / `--password <password>`.
 
 | Command | Description |
 |---------|-------------|

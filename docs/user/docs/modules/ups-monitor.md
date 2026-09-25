@@ -1,6 +1,6 @@
 # <span class="ee"></span> :material-flash: UPS Monitor <span class="scope" data-scope="per-cluster"></span>
 
-Continuously tracks UPS battery levels, power status, load conditions and runtime estimates — with automated shutdown procedures to protect VMs and hosts during extended power outages.
+Continuously tracks UPS battery levels, power status, load conditions and runtime estimates — with alerts when the UPS runs on battery or its charge or runtime drops below the configured thresholds.
 
 ## Features
 
@@ -10,37 +10,25 @@ Continuously tracks UPS battery levels, power status, load conditions and runtim
 
     ---
 
-    Continuous tracking of voltage, frequency, load percentage and battery levels.
+    Continuous tracking of battery charge and voltage, input/output voltage, load percentage, temperature and power source.
 
 - :material-alert-octagon:{ .lg .middle } **Critical Power Alerts**
 
     ---
 
-    Immediate notifications for power failures, low battery and UPS malfunctions.
+    Notifications when the UPS switches to battery, the battery charge falls below the low or shutdown threshold, or the estimated runtime drops below the configured minutes.
 
 - :material-timer-sand:{ .lg .middle } **Runtime Estimation**
 
     ---
 
-    Calculates remaining backup power time based on current load conditions.
-
-- :material-shield-search:{ .lg .middle } **Proactive Warnings**
-
-    ---
-
-    Early alerts for UPS maintenance needs and battery degradation indicators.
-
-- :material-power-off:{ .lg .middle } **Automatic Shutdown**
-
-    ---
-
-    Graceful shutdown procedures for VMs and hosts during extended power outages, with failover-aware ordering to preserve critical systems longest.
+    Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold.
 
 - :material-lan-connect:{ .lg .middle } **SNMP-based Polling**
 
     ---
 
-    Connects to UPS devices via SNMP with configurable scan schedule. Auto-detection of brand profiles.
+    Connects to UPS devices via SNMP v2c with configurable scan schedule. Auto-detection of brand profiles.
 
 - :material-bell-ring:{ .lg .middle } **Notifier Integration**
 
@@ -57,8 +45,8 @@ Why integrate UPS into cv4pve-admin instead of NUT alone?
 <div class="why-grid" markdown>
 
 <div markdown>
-!!! tip "Graceful shutdown of VMs, not just hosts"
-    Coordinated shutdown sequence preserves critical VMs longest — the orchestration knows about hosts AND guests, not only the host.
+!!! tip "Every reading kept"
+    Each scan stores status, battery, voltages, load, temperature and runtime — expand a device to see its reading history, retained for **Max Days Logs**.
 </div>
 
 <div markdown>
@@ -68,12 +56,12 @@ Why integrate UPS into cv4pve-admin instead of NUT alone?
 
 <div markdown>
 !!! info "Alerts before the silence"
-    Battery low, runtime dropping, hardware fault — surfaced via Notifier on any configured channel before the power actually goes out.
+    On battery, battery low, runtime dropping — surfaced via Notifier on any configured channel before the power actually goes out.
 </div>
 
 <div markdown>
 !!! warning "Trends spot a dying battery"
-    Battery health degrades slowly. Charts of runtime/load over time make the "this UPS won't last another outage" call obvious.
+    Battery health degrades slowly. Charts of battery charge, load, input voltage and temperature over time make the "this UPS won't last another outage" call obvious.
 </div>
 
 </div>
@@ -90,12 +78,16 @@ Each UPS device is configured with:
 
 | Field | Description |
 |-------|-------------|
+| **Enabled** | Include the device in the scheduled scan (default: on) |
 | **Name** | Friendly name for the UPS device |
-| **Host** | SNMP hostname or IP address |
+| **Host** | IP address of the UPS SNMP agent |
 | **Port** | SNMP port (default: 161) |
-| **Profile** | SNMP device profile (auto-detected brand) |
+| **Community** | SNMP v2c community string (default: `public`) |
+| **Profile** | SNMP device profile (`auto` = detect the brand from the device, or pick one explicitly) |
 | **Location** | Physical location label |
-| **Managed Nodes** | Proxmox nodes managed by this UPS (empty = all nodes) |
+| **Description** | Free-text notes |
+| **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes) — informational |
+| **Identification** | Manufacturer, Model, Firmware Version, Serial Number — filled from the device with **Retrieve Info** |
 
 Per-device actions:
 
@@ -112,6 +104,6 @@ Per-device actions:
     | **Cron Expression** | `*/5 * * * *` [:material-open-in-new:](https://crontab.guru/#*/5_*_*_*_*){target=_blank title="Open on crontab.guru"} | When the scheduled scan runs |
     | **Max Days Logs** | 30 | How many days of historical readings to retain |
     | **Default Battery Low Threshold (%)** | 20 | Alert threshold for low battery level |
-    | **Default Shutdown Battery Threshold (%)** | 10 | Initiate shutdown when battery falls below this level |
-    | **Default Shutdown Time Threshold (minutes)** | 5 | Initiate shutdown when estimated runtime falls below this value |
+    | **Default Shutdown Battery Threshold (%)** | 10 | Send a critical alert when battery falls below this level |
+    | **Default Shutdown Time Threshold (minutes)** | 5 | Send a critical alert when estimated runtime falls below this value |
     | **Notifier Configurations** | – | List of Notifier configurations to deliver power alerts to |
