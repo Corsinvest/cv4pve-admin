@@ -10,12 +10,12 @@ public class WebHookAuth
 
     // Basic
     public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    [Encrypt] public string Password { get; set; } = string.Empty;
 
     // Bearer
-    public string Token { get; set; } = string.Empty;
+    [Encrypt] public string Token { get; set; } = string.Empty;
 
     // ApiKey
     public string ApiKeyHeader { get; set; } = string.Empty;
-    public string ApiKeyValue { get; set; } = string.Empty;
+    [Encrypt] public string ApiKeyValue { get; set; } = string.Empty;
 }

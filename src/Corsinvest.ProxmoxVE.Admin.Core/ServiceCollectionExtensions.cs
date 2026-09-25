@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net;
+using System.Text.Json;
 using BlazorDownloadFile;
 using Corsinvest.ProxmoxVE.Admin.Core.Clients.Pve;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
@@ -100,6 +101,12 @@ public static class ServiceCollectionExtensions
 
     public static void UseAdminCore(this WebApplication app)
     {
+        // Compact copy of the application options: same [Encrypt] handling, no indentation in the stored value
+        ExtendedData.JsonOptions = new JsonSerializerOptions(app.Services.GetRequiredService<JsonSerializerOptions>())
+        {
+            WriteIndented = false
+        };
+
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapPveEndpoints();
 

@@ -14,4 +14,9 @@ public class WebHook
     public bool IgnoreSslCertificate { get; set; }
     public int TimeoutSeconds { get; set; } = 30;
     public WebHookAuth Auth { get; set; } = new();
+
+    /// <summary>
+    /// Shallow copy: Headers and Auth are shared with the source.
+    /// </summary>
+    public WebHook Clone() => (WebHook)MemberwiseClone();
 }

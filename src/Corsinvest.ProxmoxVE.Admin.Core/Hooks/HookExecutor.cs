@@ -4,7 +4,9 @@
  */
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Security;
 using System.Text;
+using System.Text.Json;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Hooks;
 
@@ -22,15 +24,23 @@ internal class HookExecutor(IHttpClientFactory httpClientFactory, ILogger<HookEx
             var client = httpClientFactory.CreateClient(clientName);
             client.Timeout = TimeSpan.FromSeconds(hook.TimeoutSeconds);
 
-            var url = ReplacePlaceholders(hook.Url, variables);
-            var body = ReplacePlaceholders(hook.Body, variables);
+            // Each value is escaped for where it lands, so a quote or a line break in a job log
+            // cannot break the URL, a header or the body syntax
+            var url = ReplacePlaceholders(hook.Url, variables, Uri.EscapeDataString);
+            Func<string, string> encodeBody = hook.BodyType switch
+            {
+                WebHookBodyType.Json => value => JsonEncodedText.Encode(value).ToString(),
+                WebHookBodyType.Xml => value => SecurityElement.Escape(value) ?? string.Empty,
+                _ => value => value
+            };
+            var body = ReplacePlaceholders(hook.Body, variables, encodeBody);
 
-            var request = new HttpRequestMessage(ToHttpMethod(hook.Method), url);
+            using var request = new HttpRequestMessage(ToHttpMethod(hook.Method), url);
 
-            // Headers
+            // Headers: a line break would end the header, so it becomes a space
             foreach (var (key, value) in hook.Headers)
             {
-                request.Headers.TryAddWithoutValidation(key, ReplacePlaceholders(value, variables));
+                request.Headers.TryAddWithoutValidation(key, ReplacePlaceholders(value, variables, a => a.ReplaceLineEndings(" ")));
             }
 
             // Auth
@@ -49,24 +59,37 @@ internal class HookExecutor(IHttpClientFactory httpClientFactory, ILogger<HookEx
                 request.Content = new StringContent(body, Encoding.UTF8, mediaType);
             }
 
-            var response = await client.SendAsync(request);
+            using var response = await client.SendAsync(request);
             var responseBody = await response.Content.ReadAsStringAsync();
             var statusCode = (int)response.StatusCode;
 
             stopwatch.Stop();
+
+            // The receiver's answer usually says why it refused the call: keep a short part of it
+            string? errorMessage = null;
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage = $"HTTP {statusCode} {response.ReasonPhrase}";
+                if (!string.IsNullOrWhiteSpace(responseBody))
+                {
+                    errorMessage += $": {(responseBody.Length > MaxErrorBodyLength ? responseBody[..MaxErrorBodyLength] + "..." : responseBody)}";
+                }
+                logger.LogWarning("WebHook call to {Target} failed: {Error}", SafeTarget(url), errorMessage);
+            }
 
             return new WebHookResult
             {
                 Success = response.IsSuccessStatusCode,
                 StatusCode = statusCode,
                 ResponseBody = responseBody,
+                ErrorMessage = errorMessage,
                 DurationMs = stopwatch.ElapsedMilliseconds
             };
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
-            logger.LogError(ex, "WebHook execution failed: {Url}", hook.Url);
+            logger.LogError(ex, "WebHook execution failed: {Target}", SafeTarget(hook.Url));
 
             return new WebHookResult
             {
@@ -76,6 +99,14 @@ internal class HookExecutor(IHttpClientFactory httpClientFactory, ILogger<HookEx
             };
         }
     }
+
+    private const int MaxErrorBodyLength = 500;
+
+    // Scheme and host only: Slack, Discord and Teams put the secret in the path or the query
+    private static string SafeTarget(string url)
+        => Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            ? $"{uri.Scheme}://{uri.Authority}"
+            : "(invalid URL)";
 
     private static void ApplyAuth(HttpRequestMessage request, WebHookAuth auth)
     {
@@ -107,15 +138,35 @@ internal class HookExecutor(IHttpClientFactory httpClientFactory, ILogger<HookEx
             _ => HttpMethod.Post
         };
 
-    private static string ReplacePlaceholders(string template, IReadOnlyDictionary<string, string> variables)
+    // Single pass: a value containing "%name%" is not expanded again.
+    // An unknown "%...%" is kept and its closing '%' can still open a placeholder, so a URL
+    // like "a%20%subject%" (percent-encoding next to a placeholder) is expanded correctly.
+    private static string ReplacePlaceholders(string template,
+                                              IReadOnlyDictionary<string, string> variables,
+                                              Func<string, string> encode)
     {
         if (string.IsNullOrEmpty(template)) { return template; }
 
-        var result = template;
-        foreach (var (key, value) in variables)
+        var result = new StringBuilder(template.Length);
+        var i = 0;
+        while (i < template.Length)
         {
-            result = result.Replace($"%{key}%", value ?? string.Empty);
+            var end = template[i] == '%'
+                        ? template.IndexOf('%', i + 1)
+                        : -1;
+
+            if (end > i + 1 && variables.TryGetValue(template[(i + 1)..end], out var value))
+            {
+                result.Append(encode(value ?? string.Empty));
+                i = end + 1;
+            }
+            else
+            {
+                result.Append(template[i]);
+                i++;
+            }
         }
-        return result;
+
+        return result.ToString();
     }
 }

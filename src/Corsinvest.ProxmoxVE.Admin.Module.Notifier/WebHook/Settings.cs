@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.Text.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Hooks;
 using Microsoft.Extensions.DependencyInjection;
 using OperationResult = FluentResults.Result;
@@ -15,32 +14,14 @@ public class Settings : NotifierConfiguration
 
     protected override async Task<OperationResult> SendImpAsync(NotifierMessage message, IServiceProvider serviceProvider)
     {
-        var hook = new Core.Hooks.WebHook
-        {
-            Url = WebHook.Url,
-            Method = WebHook.Method,
-            Headers = WebHook.Headers,
-            BodyType = WebHook.BodyType,
-            IgnoreSslCertificate = WebHook.IgnoreSslCertificate,
-            TimeoutSeconds = WebHook.TimeoutSeconds,
-            Auth = WebHook.Auth,
-            Body = string.IsNullOrEmpty(WebHook.Body)
-                ? """{"subject": "%subject%", "body": "%body%"}"""
-                : WebHook.Body
-        };
+        var hook = WebHook.Clone();
+        if (string.IsNullOrEmpty(hook.Body)) { hook.Body = """{"subject": "%subject%", "body": "%body%"}"""; }
 
-        // The values land inside the template as-is, so for a JSON body they are escaped first:
-        // a body carrying a quote or a line break — a job log, a list of UPS alerts — would
-        // otherwise produce a payload the receiver rejects as malformed. Left untouched for the
-        // other body types, where JSON escaping would be wrong.
-        string Encode(string? value) => hook.BodyType == WebHookBodyType.Json
-            ? JsonEncodedText.Encode(value ?? string.Empty).ToString()
-            : value ?? string.Empty;
-
+        // Raw values: the executor escapes each one for where it lands (URL, header, JSON or XML body)
         var variables = new Dictionary<string, string>
         {
-            ["subject"] = Encode(message.Subject),
-            ["body"] = Encode(message.Body),
+            ["subject"] = message.Subject ?? string.Empty,
+            ["body"] = message.Body ?? string.Empty,
             ["severity"] = message.Severity.ToString(),
         };
 

@@ -71,7 +71,8 @@ internal static class EndpointsExtensions
                          async (string key,
                                 IFusionCache fusionCache,
                                 IAdminService adminService,
-                                IPermissionService permissionService) =>
+                                IPermissionService permissionService,
+                                HttpContext httpContext) =>
         {
             var info = fusionCache.TryGet<PBSBackupRestorFileInfo>(key).Value;
 
@@ -98,6 +99,9 @@ internal static class EndpointsExtensions
 
                     var request = client.CreateHttpRequestMessage(HttpMethod.Get, url);
                     var response = await httpClient.SendAsync(request);
+                    // The stream is read after this handler returns, so both are released with the response
+                    httpContext.Response.RegisterForDispose(request);
+                    httpContext.Response.RegisterForDispose(response);
                     var stream = await response.Content.ReadAsStreamAsync();
 
                     var fileName = info.FileName;
@@ -231,8 +235,8 @@ internal static class EndpointsExtensions
         {
             var client = await adminService[clusterName].GetPveClientAsync();
             var httpClient = client.GetHttpClient();
-            var request = client.CreateHttpRequestMessage(HttpMethod.Get, $"{client.BaseAddress}/{resource}");
-            var response = await httpClient.SendAsync(request);
+            using var request = client.CreateHttpRequestMessage(HttpMethod.Get, $"{client.BaseAddress}/{resource}");
+            using var response = await httpClient.SendAsync(request);
 
             var stream = new MemoryStream();
             await response.Content.CopyToAsync(stream);

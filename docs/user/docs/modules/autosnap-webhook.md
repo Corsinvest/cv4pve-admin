@@ -74,7 +74,7 @@ Why webhooks when AutoSnap already runs on schedule?
 
 ## Reference
 
-Hooks fire at well-defined phases of the snapshot lifecycle and receive context via `%CV4PVE_AUTOSNAP_*%` placeholders that you can use in URL, body and header values.
+Hooks fire at well-defined phases of the snapshot lifecycle and receive context via `%CV4PVE_AUTOSNAP_*%` placeholders that you can use in URL, body and header values. Values are escaped for where they land: URL-encoded in the URL, JSON- or XML-escaped in a JSON or XML body, line breaks turned into spaces in headers.
 
 ??? note reference "All phases"
 
