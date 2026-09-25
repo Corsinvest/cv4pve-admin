@@ -1351,7 +1351,7 @@
 </tr>
 <tr>
 <td><strong>Body</strong></td>
-<td>Request body. Use <code>%subject%</code> and <code>%body%</code> as placeholders. Leave empty for default JSON payload.</td>
+<td>Request body (not sent with <code>GET</code>). Use <code>%subject%</code>, <code>%body%</code> and <code>%severity%</code> as placeholders. Leave empty for default JSON payload.</td>
 </tr>
 <tr>
 <td><strong>Auth Type</strong></td>
@@ -1370,7 +1370,7 @@
 </details>
 <details class="note reference">
 <summary>Show placeholders and default payload</summary>
-<p><strong>Placeholders</strong> are replaced at runtime in the URL, headers and body:</p>
+<p><strong>Placeholders</strong> are replaced at runtime in the URL, headers and body. Values are escaped for where they land: URL-encoded in the URL, JSON- or XML-escaped in a JSON or XML body, line breaks turned into spaces in headers. In a JSON body keep placeholders inside quotes, for example <code>"%subject%"</code>.</p>
 <table>
 <thead>
 <tr>
@@ -1386,6 +1386,10 @@
 <tr>
 <td><code>%body%</code></td>
 <td>Notification message content</td>
+</tr>
+<tr>
+<td><code>%severity%</code></td>
+<td>Notification severity: <code>Success</code>, <code>Info</code>, <code>Warning</code>, <code>Error</code></td>
 </tr>
 </tbody>
 </table>

@@ -1234,7 +1234,7 @@
 </div>
 </div>
 <h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
-<p>Hooks fire at well-defined phases of the snapshot lifecycle and receive context via <code>%CV4PVE_AUTOSNAP_*%</code> placeholders that you can use in URL, body and header values.</p>
+<p>Hooks fire at well-defined phases of the snapshot lifecycle and receive context via <code>%CV4PVE_AUTOSNAP_*%</code> placeholders that you can use in URL, body and header values. Values are escaped for where they land: URL-encoded in the URL, JSON- or XML-escaped in a JSON or XML body, line breaks turned into spaces in headers.</p>
 <details class="note reference">
 <summary>All phases</summary>
 <table>
