@@ -4,63 +4,43 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid @ref="@DataGridRef"
-                TItem="ClusterNodeSettings"
-                Data="@Model.Nodes"
-                AllowFiltering="true"
-                AllowColumnResize="true"
-                AllowAlternatingRows="false"
-                AllowSorting="true"
-                Style="@Style"
-                PagerHorizontalAlign="HorizontalAlign.Left"
-                FilterPopupRenderMode="PopupRenderMode.OnDemand"
-                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                EditMode="DataGridEditMode.Single"
-                RowRender="RowRender"
-                RowCreate="@OnCreateRow">
-    <HeaderTemplate>
-        <CrudToolbar OnAdd="InsertRowAsync" AddDisabled="@InEdit" Disabled="@Disabled">
-            <RadzenButton Variant="Variant.Text"
-                          Size="ButtonSize.Small"
-                          Text="@L["Discover Nodes"]"
-                          Disabled="@(Disabled || !Model.Nodes.Any() || InEdit)"
-                          Click="DiscoverAsync"
-                          ButtonStyle="ButtonStyle.Success"
-                          Icon="travel_explore" />
-        </CrudToolbar>
-    </HeaderTemplate>
+<RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+    @L["These addresses are used for both the Proxmox VE API and SSH. For the API, nodes are tried in this order until one responds."]
+</RadzenText>
 
-    <Columns>
-        <RadzenDataGridColumn TItem="ClusterNodeSettings" Sortable="false" Filterable="false" Width="40px" Title="" TextAlign="TextAlign.Center">
-            <Template>
-                <RadzenIcon Icon="drag_indicator" style="cursor:grab; color: var(--rz-text-disabled-color);" />
-            </Template>
-        </RadzenDataGridColumn>
+<ListEditor TItem="ClusterNodeSettings"
+            Items="@Model.Nodes"
+            NewItem="@(() => new ClusterNodeSettings())"
+            AllowReorder="true"
+            Disabled="@Disabled"
+            AddText="@L["Add node"]">
+    <ToolbarContent>
+        <RadzenButton Variant="Variant.Text"
+                      Size="ButtonSize.Small"
+                      Text="@L["Discover Nodes"]"
+                      Disabled="@(Disabled || !Model.Nodes.Any())"
+                      Click="DiscoverAsync"
+                      ButtonStyle="ButtonStyle.Success"
+                      Icon="travel_explore" />
+    </ToolbarContent>
 
-        <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.IPAddress)" Sortable="true" Title="@L["IP Address/Host"]" Width="200px">
-            <EditTemplate Context="ctx">
-                <RadzenTextBox @ref="@IPAddressRef"
-                               Name="@nameof(ctx.IPAddress)"
-                               @bind-Value="@ctx.IPAddress"
-                               Immediate="true"
-                               @onkeydown="@(async (e) => await SaveRowOnEnterAsync(e, ctx))"
-                               class="rz-w-100" />
-                <RadzenDataAnnotationValidator Component="@nameof(ctx.IPAddress)" />
-            </EditTemplate>
-        </RadzenDataGridColumn>
+    <ItemTemplate Context="node">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="0" class="rz-w-100">
+            <RadzenTextBox Name="@FieldName(node, nameof(node.IPAddress))"
+                           @bind-Value="@node.IPAddress"
+                           Placeholder="@L["IP Address/Host"]"
+                           Disabled="@Disabled"
+                           title="@L["IP Address/Host"]"
+                           class="rz-w-100" />
+            <RadzenDataAnnotationValidator Component="@FieldName(node, nameof(node.IPAddress))" />
+        </RadzenStack>
 
-        <RadzenDataGridColumn Property="@nameof(ClusterNodeSettings.ApiPort)" Sortable="true" Title="@L["API Port"]" Width="120px">
-            <EditTemplate Context="ctx">
-                <RadzenNumeric Name="@nameof(ctx.ApiPort)" @bind-Value="@ctx.ApiPort" Min="1" Max="65535" />
-                <RadzenDataAnnotationValidator Component="@nameof(ctx.ApiPort)" />
-            </EditTemplate>
-        </RadzenDataGridColumn>
-
-        <CommandEditInlineColumn TItem="ClusterNodeSettings"
-                                 CancelEdit="@CancelEdit"
-                                 DeleteRow="@DeleteRowAsync"
-                                 EditRow="@EditRowAsync"
-                                 Disabled="@Disabled"
-                                 SaveRow="@SaveRowAsync" />
-    </Columns>
-</RadzenDataGrid>
+        <RadzenNumeric Name="@FieldName(node, nameof(node.ApiPort))"
+                       @bind-Value="@node.ApiPort"
+                       Min="1"
+                       Max="65535"
+                       Disabled="@Disabled"
+                       title="@L["API Port"]"
+                       Style="width:7rem;flex-shrink:0;" />
+    </ItemTemplate>
+</ListEditor>

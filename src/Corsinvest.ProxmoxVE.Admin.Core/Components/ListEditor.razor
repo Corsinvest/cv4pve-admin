@@ -1,0 +1,60 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@typeparam TItem
+
+<RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+    @for (var i = 0; i < Items.Count; i++)
+    {
+        var index = i;
+        var item = Items[index];
+
+        <RadzenStack @key="item" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.5rem">
+            @if (AllowReorder)
+            {
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="flex-shrink:0;">
+                    <RadzenButton Icon="arrow_upward"
+                                  Variant="Variant.Text"
+                                  ButtonStyle="ButtonStyle.Base"
+                                  Size="ButtonSize.Small"
+                                  Disabled="@(Disabled || index == 0)"
+                                  Click="@(() => MoveAsync(index, -1))"
+                                  title="@L["Move up"]"
+                                  aria-label="@L["Move up"]" />
+                    <RadzenButton Icon="arrow_downward"
+                                  Variant="Variant.Text"
+                                  ButtonStyle="ButtonStyle.Base"
+                                  Size="ButtonSize.Small"
+                                  Disabled="@(Disabled || index == Items.Count - 1)"
+                                  Click="@(() => MoveAsync(index, 1))"
+                                  title="@L["Move down"]"
+                                  aria-label="@L["Move down"]" />
+                </RadzenStack>
+            }
+
+            @ItemTemplate(item)
+
+            <RadzenButton Icon="delete"
+                          Variant="Variant.Text"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Size="ButtonSize.Small"
+                          Disabled="@Disabled"
+                          Click="@(() => RemoveAsync(item))"
+                          Style="flex-shrink:0;"
+                          title="@L["Remove"]"
+                          aria-label="@L["Remove"]" />
+        </RadzenStack>
+    }
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+        <RadzenButton Icon="add"
+                      Text="@(AddText ?? L["Add"])"
+                      ButtonStyle="ButtonStyle.Light"
+                      Size="ButtonSize.Small"
+                      Disabled="@Disabled"
+                      Click="@AddAsync" />
+        @ToolbarContent
+    </RadzenStack>
+</RadzenStack>
