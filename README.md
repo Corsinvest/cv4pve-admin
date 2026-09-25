@@ -34,22 +34,28 @@ Built from real-world experience to solve real problems: multi-cluster visibilit
 ## Key Features
 
 ### 🎯 Multi-Cluster Management
+
 Centralized dashboard for all your Proxmox VE clusters. One control plane, unlimited clusters.
 
 ### 📊 Proactive Monitoring
+
 Know if backups work BEFORE you need to restore. Find problems BEFORE they become critical.
 
 ### 🔄 Workflow Automation (EE)
+
 Visual workflow designer for complex automation scenarios. Drag-and-drop builder, custom activities, enterprise scheduling.
 
 ### 📋 Compliance & Reporting
+
 Automated diagnostics, backup analytics, audit reports. No manual work required.
 
 ### 🏗️ External Architecture
+
 Runs completely outside Proxmox VE, communicating exclusively via REST API.
 No installation on nodes. No system modifications. No dependencies.
 
 ### 🐳 Docker Ready
+
 Deploy anywhere - container, VM, separate server. Production-ready Docker Compose included.
 
 ---
@@ -112,6 +118,7 @@ For a complete feature comparison between **Community Edition (CE)** and **Enter
 - **[CE vs EE Comparison](https://corsinvest.github.io/cv4pve-admin/editions/)** - Choose the right edition
 
 ### Additional Resources
+
 - [Docker Compose Deployment](src/docker/README.md) - Complete Docker setup guide
 - [MCP Bridge for Claude Desktop](src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md) - AI assistant integration (pre-built binaries for Windows, Linux, macOS)
 
