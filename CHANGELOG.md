@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostic — PDF cover page**: the PDF report opens with a cover page, as the Excel file does: report information and a table of contents with the page number of each section, clickable to jump there. The sections also appear in the bookmarks panel of the PDF viewer.
 
+- **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
+
 #### Changed
 
 - **Help menu**: the version, edition and update check share a single line at the top.
@@ -34,6 +36,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Containers show the IP they actually have, like in Resources.
   - VM trunk ports appear in the network sheet and in the diagram; Cluster Access reports the disabled two-factor entries.
   - Rows always come in the same order, with numbers sorted as numbers (`105` before `1000`), so two reports of an unchanged cluster differ only in live values.
+
+- **WebHook — placeholders**: values are escaped for where they are placed: URL-encoded in the address, JSON- or XML-escaped in the body, line breaks removed in headers. A message with quotes or line breaks no longer breaks an XML payload, and a placeholder in the address is no longer JSON-escaped. A value that itself contains a placeholder name is no longer replaced a second time.
+
+- **WebHook — errors**: when the receiver refuses the call, the error shows its answer (the first 500 characters) along with the HTTP status. The log shows only the receiver's host, since Slack, Discord and Teams put the secret in the address.
+
+- **WebHook — GET requests**: the body fields are hidden, since a GET request is sent without a body.
 
 #### Fixed
 
@@ -55,6 +63,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Guest details**: NVMe disks show their wearout like SSDs; the guest agent is recognised also when enabled with the `enabled=1` form; VM trunk ports are shown; options left at their Proxmox VE default (memory, swap, CPU type, OS type, …) show that default instead of an empty or zero value.
 
+- **WebHook — stored secrets**: passwords, tokens and API keys of webhooks are stored encrypted, like the other credentials. Values saved before are kept and encrypted on the next save.
+
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
@@ -65,11 +75,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Compliance — four new standards**, for a total of 18: ACN (Italian NIS2 measures), NIS2 Implementing Regulation (EU) 2024/2690, ISO 22301 (business continuity) and BSI IT-Grundschutz (Germany). They appear in the Compliance view and in the PDF and Excel reports.
 
+- **AutoSnap — hook test**: a *Test* button in the hook editor sends the request right away, with sample values for the selected phase, and shows the answer.
+
 #### Fixed
 
 - **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
 
 - **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
+
+- **NodeProtect — Git credentials**: the username and password changed in the Git settings are now saved; before, the change was lost. The password, like the secrets of AutoSnap hooks, is now stored encrypted; values saved before are kept and encrypted on the next save.
 
 ## [2.3.0] - 2026-09-24
 

@@ -59,19 +59,20 @@ Send an HTTP request to any URL when a notification is triggered.
     | **URL** | Endpoint to call |
     | **Method** | HTTP method: `GET`, `POST`, `PUT`, `PATCH`, `DELETE` |
     | **Body Type** | Format: `JSON`, `XML`, `Text`, or `None` |
-    | **Body** | Request body. Use `%subject%` and `%body%` as placeholders. Leave empty for default JSON payload. |
+    | **Body** | Request body (not sent with `GET`). Use `%subject%`, `%body%` and `%severity%` as placeholders. Leave empty for default JSON payload. |
     | **Auth Type** | `None`, `Basic`, `Bearer`, `ApiKey` |
     | **Timeout** | Request timeout in seconds (1–300) |
     | **Ignore SSL Certificate** | Skip SSL validation (useful for self-signed certificates) |
 
 ??? note reference "Show placeholders and default payload"
 
-    **Placeholders** are replaced at runtime in the URL, headers and body:
+    **Placeholders** are replaced at runtime in the URL, headers and body. Values are escaped for where they land: URL-encoded in the URL, JSON- or XML-escaped in a JSON or XML body, line breaks turned into spaces in headers. In a JSON body keep placeholders inside quotes, for example `"%subject%"`.
 
     | Placeholder | Description |
     |---|---|
     | `%subject%` | Notification subject / title |
     | `%body%` | Notification message content |
+    | `%severity%` | Notification severity: `Success`, `Info`, `Warning`, `Error` |
 
     **Default payload** — if **Body** is left empty, the following JSON is sent automatically:
 

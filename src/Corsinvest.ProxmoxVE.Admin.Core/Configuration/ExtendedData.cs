@@ -9,6 +9,12 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Configuration;
 
 public class ExtendedData : Dictionary<string, string>
 {
+    /// <summary>
+    /// Options for complex values. Set at startup to the application options so that [Encrypt]
+    /// properties of a stored object are protected; the defaults apply until then.
+    /// </summary>
+    public static JsonSerializerOptions? JsonOptions { get; set; }
+
     public string Get(string key, string defaultValue = "") => TryGetValue(key, out var value) ? value : defaultValue;
 
     public T Get<T>(string key, T defaultValue = default!)
@@ -25,7 +31,7 @@ public class ExtendedData : Dictionary<string, string>
             if (t == typeof(double)) { return (T)(object)double.Parse(value, CultureInfo.InvariantCulture); }
             return t == typeof(DateTime)
                 ? (T)(object)DateTime.Parse(value, CultureInfo.InvariantCulture)
-                : JsonSerializer.Deserialize<T>(value) ?? defaultValue;
+                : JsonSerializer.Deserialize<T>(value, JsonOptions) ?? defaultValue;
         }
         catch
         {
@@ -48,7 +54,7 @@ public class ExtendedData : Dictionary<string, string>
             string s => s,
             int or bool or double or DateTime =>
                 Convert.ToString(value, CultureInfo.InvariantCulture)!,
-            _ => JsonSerializer.Serialize(value)
+            _ => JsonSerializer.Serialize(value, JsonOptions)
         };
     }
 }

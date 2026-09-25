@@ -21,6 +21,11 @@ public class EncryptJsonConverter(IDataProtector protector, ILogger<EncryptJsonC
         }
         catch (Exception ex)
         {
+            // Every Data Protection payload starts with the magic header 0x09F0C9F0, "CfDJ8" in base64url.
+            // A value without it was saved before the field became encrypted: it is returned as-is and
+            // gets encrypted on the next save, so marking an existing field [Encrypt] loses nothing.
+            if (!encryptedValue.StartsWith("CfDJ8", StringComparison.Ordinal)) { return encryptedValue; }
+
             logger?.LogWarning(ex, "Failed to decrypt a protected field — data may have been encrypted with a different key. The field will be reset to null. Re-save the settings to re-encrypt with the current key.");
             return null;
         }

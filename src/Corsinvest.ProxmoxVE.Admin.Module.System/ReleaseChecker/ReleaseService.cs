@@ -146,7 +146,7 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", WatchtowerToken);
             }
 
-            var response = await client.GetAsync($"{WatchtowerUrl}/v1/update", cancellationToken);
+            using var response = await client.GetAsync($"{WatchtowerUrl}/v1/update", cancellationToken);
             if (response.IsSuccessStatusCode)
             {
                 logger.LogInformation("Update triggered successfully via Watchtower");

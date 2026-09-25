@@ -504,7 +504,7 @@ public partial class Maintenance(IAdminService adminService,
                 var sw = Stopwatch.StartNew();
                 try
                 {
-                    var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                    using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                     sw.Stop();
                     return (Url: url, Success: response.IsSuccessStatusCode, ElapsedMs: sw.ElapsedMilliseconds, Error: (string?)null);
                 }
