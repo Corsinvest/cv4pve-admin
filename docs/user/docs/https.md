@@ -13,7 +13,7 @@ cv4pve-admin runs on HTTP by default. For HTTPS, place a reverse proxy in front 
     Internal services (Watchtower, postgres) continue to communicate via `appnet` and are not affected.
 
 !!! info "Forwarded headers"
-    The Docker Compose files already include `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`, so the application correctly handles HTTPS termination at the proxy level. No extra configuration needed.
+    The container image already enables forwarded-header handling (`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host` from any proxy), so the application correctly handles HTTPS termination at the proxy level. No extra configuration needed.
 
 ---
 
@@ -82,8 +82,11 @@ services:
       traefik.http.routers.cv4pve-admin.tls: "true"
       traefik.http.routers.cv4pve-admin.tls.certresolver: "letsencrypt"
       traefik.http.services.cv4pve-admin.loadbalancer.server.port: "8080"
-      traefik.docker.network: "publicnet"
+      traefik.docker.network: "<project>_publicnet"
 ```
+
+!!! note "Network name"
+    Docker Compose prefixes network names with the project name (by default the directory name, e.g. `cv4pve-admin-docker_publicnet` for an installer setup). Use the full name in `traefik.docker.network`, or uncomment `name:` at the top of `docker-compose.yaml` to pin a fixed project name.
 
 ---
 

@@ -39,7 +39,7 @@ The installer will ask which edition (CE or EE) and which version to install. Th
     ```
 
 !!! success "Installation Complete"
-    After installation completes, open your browser to **http://localhost:8080**
+    After installation completes, run `cd cv4pve-admin-docker && docker compose up -d`, then open your browser to **http://localhost:8080**
 
 ### Change version after installation
 
@@ -55,7 +55,7 @@ docker compose down && docker compose up -d
 
 1. Open **http://localhost:8080**
 2. Login: `admin@local` / `Password123!`
-3. **You will be prompted to change the default password** — this is required before you can proceed
+3. **Change the default password** — a persistent security warning is shown until you do
 4. Configure your first Proxmox cluster — the setup dialog opens automatically
 
 ### Proxmox VE API Credentials
@@ -72,7 +72,7 @@ When connecting a Proxmox cluster, assign the **`PVEAdmin`** role at path `/` to
     For advanced least-privilege setups, see [:octicons-arrow-right-24: PVE Permissions](configuration/pve-permissions.md).
 
 !!! info "First Login Password Change"
-    On first login with the default `admin@local / Password123!` credentials, the application will automatically prompt you to set a new password before you can continue.
+    While the default `admin@local / Password123!` credentials are in use, a persistent security warning is shown — change the password immediately via the **Change password now** link.
 
 ---
 

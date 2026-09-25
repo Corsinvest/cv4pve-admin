@@ -34,7 +34,7 @@ Automated snapshot scheduling and management for Proxmox VE virtual machines.
 
     ---
 
-    Jobs target VM IDs / tags / groups — never a specific node. When a VM migrates (manual or HA failover), the next scheduled snapshot just runs on its new home with no reconfiguration.
+    Jobs target VM IDs, ranges, name wildcards, pools or tags (with optional exclusions) — unless you use `@node-…`, they are not tied to a node. When a VM migrates (manual or HA failover), the next scheduled snapshot just runs on its new home with no reconfiguration.
 
 - <span class="ee"></span> :material-webhook:{ .lg .middle } **Web API Hook**
 
@@ -69,7 +69,7 @@ Proxmox can already take snapshots — why use a module for it?
 
 <div markdown>
 !!! info "Follows the VM, not the node"
-    Jobs target VM IDs / tags. When a VM migrates to another node, the next snapshot just runs there — no reconfiguration needed.
+    Jobs target VM IDs / pools / tags, not a node (unless you use `@node-…`). When a VM migrates to another node, the next snapshot just runs there — no reconfiguration needed.
 </div>
 
 <div markdown>
@@ -91,10 +91,10 @@ Proxmox can already take snapshots — why use a module for it?
 
 ## Sections
 
-- **Jobs** — manage AutoSnap jobs: target VMs, schedule, retention, name template, optional Web API Hook
+- **Jobs** — manage AutoSnap jobs: target VMs, schedule, label, retention, include RAM, only while running, max parallel, optional Web API Hook <span class="ee"></span>. Per job, **Snap** takes the snapshots immediately and **Purge Snapshots** deletes all the snapshots with the job's label on its VMs
 - **Time line** — visual timeline of snapshots created across jobs and VMs
 - **Errors** — history of failed snapshot operations with the underlying error message
-- **Status** — current snapshot inventory across the cluster with per-VM counts and last successful run
+- **Status** — inventory of AutoSnap snapshots, grouped by label and VM with counts and size; selected snapshots can be deleted
 
 ## Settings
 

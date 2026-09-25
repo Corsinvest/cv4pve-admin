@@ -66,23 +66,23 @@ Choose the edition that fits your needs: free and open source Community Edition 
 | Module | CE | EE | Category | Description | EE Enhancements |
 |--------|:--:|:--:|----------|-------------|-----------------|
 | **[Admin Area](configuration/admin-area/index.md)** | ✅ | ✅ | System | Cluster management and administration (CE: Single user `admin@local`, no user management) | <ul><li>User management with roles and permissions</li><li>Appearance settings</li><li>System Logs</li><li>Enhanced Audit Logs</li><li>Subscription management</li></ul> |
-| **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server for AI integration with 33 tools for clusters, VMs, nodes, storage, backups, ISO/template management, replications and historical metrics | <ul><li>2 additional SQL-like query tools (`GetQuerySchema`, `ExecuteQuery`) on cluster data with filters, grouping, aggregates</li></ul> |
-| **[AutoSnap](modules/autosnap.md)** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li></ul> |
-| **[Backup Analytics](modules/backup-analytics.md)** | ✅ | ✅ | Health | Backup job analysis and monitoring | |
+| **[AI Server (MCP)](modules/ai-server.md)** | ✅ | ✅ | Utilities | Model Context Protocol server for AI integration with 29 tools for clusters, VMs, nodes, storage, backups, ISO/template management, replications and historical metrics | <ul><li>2 additional SQL-like query tools (`GetQuerySchema`, `ExecuteQuery`) on cluster data with filters, grouping, aggregates</li></ul> |
+| **[AutoSnap](modules/autosnap.md)** | ✅ | ✅ | Protection | Automated snapshot scheduling with retention policies | <ul><li>Web API Hook: trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete)</li><li>Daily Status widget (successful/failed snapshots per day, last 14 days)</li></ul> |
+| **[Backup Analytics](modules/backup-analytics.md)** | ✅ | ✅ | Health | Backup job analysis and monitoring | <ul><li>Daily Status widget (successful/failed backups per day, last 14 days)</li></ul> |
 | **[Bots](modules/bots.md)** | ✅ | ✅ | Control | Remote cluster management via Telegram | |
-| **[Command Palette](modules/command-palette.md)** | ✅ | ✅ | Core | Quick access to commands and navigation (Ctrl+K / Cmd+K) | <ul><li>Additional enterprise commands for user management, subscriptions, and workflow</li></ul> |
+| **[Command Palette](modules/command-palette.md)** | ✅ | ✅ | Core | Quick access to commands and navigation (Ctrl+K / Cmd+K) | |
 | **[Dashboard](modules/dashboard.md)** | ✅ | ✅ | Core | Customizable dashboards with widgets and metrics | <ul><li>Additional widgets from Enterprise modules</li></ul> |
-| **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics, health checks and report export (PDF + Excel) | <ul><li>Executive Summary on PDF (counts per gravity + top critical issues)</li></ul> |
+| **[Diagnostics](modules/diagnostics.md)** | ✅ | ✅ | Health | Infrastructure diagnostics, health checks and report export (PDF + Excel) | <ul><li>Executive Summary on PDF (counts per gravity + top critical issues)</li><li>Compliance mapping to 18 standards (ISO 27001, NIS2, DORA, …) in PDF / Excel reports and in the scan detail</li></ul> |
 | **[Metrics Exporter](modules/metrics-exporter.md)** | ✅ | ✅ | Health | Exposes Proxmox VE metrics for monitoring systems (Prometheus) | |
-| **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li></ul> |
+| **[Node Protect](modules/node-protect.md)** | ✅ | ✅ | Protection | Node configuration backup | <ul><li>Git provider integration with automatic push</li><li>Daily Status widget (last 14 days) and Git repository size widget</li></ul> |
 | **[Notifier](configuration/admin-area/notifier.md)** | ✅ | ✅ | Core | Notification system (CE: SMTP + WebHook only) | <ul><li>140+ services (Telegram, Discord, Slack, Teams, and more...)</li></ul> |
 | **[Profile](configuration/profile.md)** | ✅ | ✅ | Core | User profile management | <ul><li>Two-factor authentication (2FA)</li><li>Audit Logs</li></ul> |
-| **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | |
-| **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Additional columns: hostname, OS info</li></ul> |
-| **[System Report](modules/system-report.md)** | ✅ | ✅ | Utilities | Comprehensive cluster/VM/node/storage reports | |
+| **[Replication Analytics](modules/replication-analytics.md)** | ✅ | ✅ | Health | Replication job monitoring and analysis | <ul><li>Daily Status widget (successful/failed replications per day, last 14 days)</li></ul> |
+| **[Resources](modules/resources.md)** | ✅ | ✅ | Health | Real-time cluster and resource monitoring | <ul><li>Snapshot size calculation and snapshot usage view</li></ul> |
+| **[System Report](modules/system-report.md)** | ✅ | ✅ | Utilities | Comprehensive cluster/VM/node/storage reports | <ul><li>Daily Status widget (successful/failed reports per day, last 14 days)</li></ul> |
 | **[Update Manager](modules/update-manager.md)** | ✅ | ✅ | Health | System update management with parallel scan and report export (PDF + Excel) | |
 | **[UPS Monitor](modules/ups-monitor.md)** | ❌ | ✅ | Protection | Network UPS monitoring via SNMP | |
-| **[VM Performance](modules/vm-performance.md)** | ❌ | ✅ | Health | Real-time VM performance tracking with IOPS, latency, bandwidth metrics | |
+| **[VM Performance](modules/vm-performance.md)** | ❌ | ✅ | Health | VM performance tracking with per-disk IOPS and throughput | |
 
 ### Addon Modules (Enterprise Only)
 
@@ -91,7 +91,7 @@ These are optional add-on modules available exclusively for Enterprise Edition.
 | Addon Module | Status | Category | Description |
 |--------------|:------:|----------|-------------|
 | **[Portal](modules/portal.md)** | ✅ | Management | Multi-tenant MSP portal with role-based access control (RBAC) for service providers |
-| **[Workflow](modules/workflow.md)** | ✅ | Automation | Visual workflow designer with 40+ Proxmox-specific activities (guests, nodes, storage, HA, snapshots) for advanced automation |
+| **[Workflow](modules/workflow.md)** | ✅ | Automation | Visual workflow designer with 25+ Proxmox-specific activities (guests, nodes, storage, HA, snapshots) for advanced automation |
 | **DDR** | 📐 | Protection | Disaster Recovery orchestration with Ceph RBD Mirror support (Alpha) |
 
 ---

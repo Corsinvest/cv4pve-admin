@@ -30,12 +30,6 @@ Customizable dashboards with widgets and metrics for centralised Proxmox VE infr
 
     Configure an automatic refresh interval (in seconds) to keep all widget data up to date without manual interaction.
 
-- :material-monitor:{ .lg .middle } **Screen Resolution Preview**
-
-    ---
-
-    Preview how the dashboard looks at different screen resolutions (Full HD, HD+, WXGA+, and more) while editing.
-
 - :material-export:{ .lg .middle } **Import / Export**
 
     ---
@@ -78,10 +72,10 @@ Click the **Edit** button to enter edit mode. In edit mode you can:
 
 - **Add widgets** — select a widget from the module widget menu and it is placed automatically in the first free position on the grid.
 - **Move and resize** — drag widgets to reposition them; drag the resize handle to change size.
-- **Configure** — open the widget settings dialog to customize title, CSS classes, and widget-specific options.
+- **Configure** — open the widget settings dialog to customize title (empty = hidden), title/body CSS styles, and widget-specific options.
 - **Clone** — duplicate a widget with the same settings.
 - **Remove** — delete a widget from the dashboard.
-- **Save / Cancel** — save persists all changes to the database; cancel discards unsaved changes (with confirmation if changes exist).
+- **Save / Cancel** — save persists all changes to the database; cancel discards unsaved changes. Leaving the page while in edit mode asks for confirmation.
 
 ## Widgets
 

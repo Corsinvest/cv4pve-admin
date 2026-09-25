@@ -1,6 +1,6 @@
 # :material-check-decagram: Resources <span class="scope" data-scope="per-cluster"></span>
 
-Real-time, cross-cluster inventory and operations on every kind of Proxmox VE resource: clusters, nodes, guests, storage, networks, disks, partitions and snapshots.
+Real-time inventory and operations, for the selected cluster, on every kind of Proxmox VE resource: clusters, nodes, guests, storage, networks, disks, partitions and snapshots.
 
 ## Features
 
@@ -10,13 +10,13 @@ Real-time, cross-cluster inventory and operations on every kind of Proxmox VE re
 
     ---
 
-    Search box on Guests, Snapshots and other grids — filters across name, description, IP, hostname, tags simultaneously.
+    Search box on Guests, Snapshots and other grids — filters across name, description, tags and the other text columns simultaneously (hostname too when **Show OS Info** is on).
 
 - :material-view-grid:{ .lg .middle } **Card View**
 
     ---
 
-    On Guests and Storages, switch from grid to card layout for a glance-at-everything overview. Cards show health score, status badges, key metrics and the same quick actions as the grid.
+    On Nodes, Guests and Storages, switch from grid to card layout for a glance-at-everything overview. Cards show health score, status badges, key metrics and the same quick actions as the grid.
 
 - :material-speedometer:{ .lg .middle } **Health Score**
 
@@ -28,7 +28,7 @@ Real-time, cross-cluster inventory and operations on every kind of Proxmox VE re
 
     ---
 
-    Start, stop, restart, shutdown, snapshot or open a console directly from any row — without leaving the page.
+    Start, shutdown, reboot, stop, reset, pause, unlock or open a console directly from any row — without leaving the page. Snapshots are managed from the row's expanded detail.
 
 - :material-console:{ .lg .middle } **Console Access**
 
@@ -46,7 +46,7 @@ Real-time, cross-cluster inventory and operations on every kind of Proxmox VE re
 
     ---
 
-    The Networks → Diagram tab renders an interactive SVG topology of nodes, bridges, VNets and guests (powered by [`cv4pve-report`](https://github.com/Corsinvest/cv4pve-report)) — savable for documentation.
+    The Networks → Diagram tab renders an interactive SVG topology of nodes, bridges, VNets and guests (powered by [`cv4pve-api-dotnet`](https://github.com/Corsinvest/cv4pve-api-dotnet)) — savable for documentation.
 
 </div>
 
@@ -57,18 +57,18 @@ Why this view when PVE already shows resources per cluster?
 <div class="why-grid" markdown>
 
 <div markdown>
-!!! tip "Every cluster at once"
-    PVE's UI is per-cluster. Resources lists VMs, nodes, storage and snapshots from **every** configured cluster in one filterable grid.
+!!! tip "The whole cluster at once"
+    Resources lists VMs, nodes, storage and snapshots of the **whole** selected cluster in one filterable grid.
 </div>
 
 <div markdown>
 !!! success "Filter, sort, group, search"
-    RadzenDataGrid gives multi-column sort, grouping, column picker and free-text search — find that one VM with `prod` in tags across 200 across clusters.
+    RadzenDataGrid gives multi-column sort, grouping, column picker and free-text search — find that one VM with `prod` in tags among 200.
 </div>
 
 <div markdown>
 !!! info "Quick actions from the list"
-    Start, stop, snapshot, open console without ever opening the per-VM page — straight from the row.
+    Start, stop, open console without ever opening the per-VM page — straight from the row.
 </div>
 
 <div markdown>
@@ -83,21 +83,19 @@ Why this view when PVE already shows resources per cluster?
 - **Overview** — high-level dashboard of clusters, nodes, guests and storage
 - **Cluster** — per-cluster summary with node counts, guest counts and resource roll-ups
 - **Nodes** — all cluster nodes with CPU/Memory/Disk usage, status, kernel, uptime, hostname
-- **Guests** — VMs and containers from every cluster, with running/stopped state, owner node, tags, IPs, lock state and quick actions (start/stop/console/snapshot)
+- **Guests** — VMs and containers of the cluster, with running/stopped state, owner node, tags, lock state and quick actions (start/stop/console); the **Show OS Info** toggle adds hostname and OS family/version (read via QEMU Guest Agent)
 - **Storages** — storage definitions across the cluster, type, status, usage
 - **Networks** — tabbed view: **Nodes** (bridges/bonds) · **Guests** (per-VM NIC config) · **SDN** (zones, VNets) · **Diagram** (interactive SVG topology)
-- **Disks** — physical disks per node with model, size, S.M.A.R.T. health, vendor, **Kind** column (HDD / SSD / NVMe), wearout
+- **Disks** — virtual disks of every VM/CT, grouped by guest: kind, storage, file, size, cache, backup flag, unused, mount point, passthrough, format
 - **Partitions** — partitions and mount points (read via QEMU Guest Agent)
-- **Snapshots** — all snapshots in the cluster with creation date, description, parent, optional **size on disk**
+- **Snapshots** — all snapshots in the cluster with host, VM ID, name and date; with snapshot size calculation <span class="ee"></span> also storage, disk, **size on disk**, replication flag and a **Trends** tab
 
 ## <span class="ee"></span> Enterprise Additions
 
-Enterprise enables extra columns and detail data on Guests and other grids:
+Enterprise enables snapshot size data on Resources:
 
-- **Hostname** — collected via QEMU Guest Agent, useful when the VM name and the in-guest hostname differ
-- **OS Info** — OS family, distribution and version
+- **Snapshot size** — size on disk in the Snapshots grid and in a guest's Snapshots tab, the **Snapshots Usage** card on Cluster and the snapshot gauge in the cluster summary
 - **Orphan snapshots** — see below
-- Additional widgets in the [Dashboard](dashboard.md) feeding from Resources data
 
 ### Orphan snapshots
 

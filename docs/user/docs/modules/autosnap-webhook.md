@@ -40,7 +40,7 @@ Trigger HTTP requests at specific phases of the [AutoSnap](autosnap.md) snapshot
 
     ---
 
-    A non-2xx response or network error stops execution for that phase and surfaces in the job log — no silent failures.
+    A non-2xx response or network error stops the remaining hooks of that phase, surfaces in the job log and marks the run as failed — no silent failures.
 
 </div>
 
@@ -108,7 +108,7 @@ Hooks fire at well-defined phases of the snapshot lifecycle and receive context 
 
 ??? note reference "All hook fields"
 
-    Configured per-job in the **Hooks** tab of the job editor.
+    Configured per-job in the **Web API Hook** tab of the job editor.
 
     | Field | Description |
     |-------|-------------|
@@ -161,6 +161,7 @@ Hooks fire at well-defined phases of the snapshot lifecycle and receive context 
 
 !!! info "How execution works"
     - Hooks within the same phase run **sequentially** in the configured order.
-    - A non-2xx HTTP response or network error **stops execution** and writes an error to the job log.
+    - A non-2xx HTTP response or network error **stops the remaining hooks of that phase** and writes an error to the job log.
+    - The snapshot operation itself is not aborted; the run is marked as failed.
     - The hook result (HTTP status code) is written to the job execution log.
     - Hooks with **Enabled = false** are skipped silently.

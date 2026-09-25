@@ -7,9 +7,12 @@ Enterprise management layer for Proxmox VE clusters.
 
 *An enterprise approach tailored for IT to solve daily problems.*
 
+[![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://corsinvest.github.io/cv4pve-admin/)
 [![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Docker Pulls CE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin?label=docker%20pulls%20CE)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
 [![Docker Pulls EE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin-ee?label=docker%20pulls%20EE)](https://hub.docker.com/r/corsinvest/cv4pve-admin-ee)
+
+**📖 [Documentation](https://corsinvest.github.io/cv4pve-admin/)** · **🚀 [Getting Started](https://corsinvest.github.io/cv4pve-admin/getting-started/)** · **🧩 [Modules](https://corsinvest.github.io/cv4pve-admin/modules/)** · **⚖️ [CE vs EE](https://corsinvest.github.io/cv4pve-admin/editions/)** · **📝 [Changelog](CHANGELOG.md)**
 
 ![Home Dashboard](docs/user/docs/images/home-computerscreen.png)
 *Professional Proxmox VE management interface*
@@ -31,22 +34,28 @@ Built from real-world experience to solve real problems: multi-cluster visibilit
 ## Key Features
 
 ### 🎯 Multi-Cluster Management
+
 Centralized dashboard for all your Proxmox VE clusters. One control plane, unlimited clusters.
 
 ### 📊 Proactive Monitoring
+
 Know if backups work BEFORE you need to restore. Find problems BEFORE they become critical.
 
-### 🔄 Workflow Automation
+### 🔄 Workflow Automation (EE)
+
 Visual workflow designer for complex automation scenarios. Drag-and-drop builder, custom activities, enterprise scheduling.
 
 ### 📋 Compliance & Reporting
+
 Automated diagnostics, backup analytics, audit reports. No manual work required.
 
 ### 🏗️ External Architecture
+
 Runs completely outside Proxmox VE, communicating exclusively via REST API.
 No installation on nodes. No system modifications. No dependencies.
 
 ### 🐳 Docker Ready
+
 Deploy anywhere - container, VM, separate server. Production-ready Docker Compose included.
 
 ---
@@ -61,6 +70,11 @@ curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/instal
 **Windows PowerShell:**
 ```powershell
 irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
+```
+
+Then start the stack:
+```bash
+cd cv4pve-admin-docker && docker compose up -d
 ```
 
 Access the web interface at `http://localhost:8080` with default credentials: `admin@local` / `Password123!`
@@ -90,8 +104,7 @@ For a complete feature comparison between **Community Edition (CE)** and **Enter
 ## Requirements
 
 - Proxmox VE 6.2 or later
-- Docker (recommended for deployment)
-- Or Linux/Windows server for binary deployment
+- Docker with Docker Compose (the application ships as a Linux container image)
 
 ---
 
@@ -105,6 +118,7 @@ For a complete feature comparison between **Community Edition (CE)** and **Enter
 - **[CE vs EE Comparison](https://corsinvest.github.io/cv4pve-admin/editions/)** - Choose the right edition
 
 ### Additional Resources
+
 - [Docker Compose Deployment](src/docker/README.md) - Complete Docker setup guide
 - [MCP Bridge for Claude Desktop](src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md) - AI assistant integration (pre-built binaries for Windows, Linux, macOS)
 
@@ -155,7 +169,8 @@ Not a replacement - a completion. Automation, visibility, compliance, and contro
 ## Support
 
 - **Documentation**: [corsinvest.github.io/cv4pve-admin](https://corsinvest.github.io/cv4pve-admin)
-- **Issues**: [GitLab Issues](https://gitlab.com/Corsinvest/cv4pve-admin/-/issues)
+- **Issues**: [GitHub Issues](https://github.com/Corsinvest/cv4pve-admin/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Corsinvest/cv4pve-admin/discussions)
 - **Website**: [www.corsinvest.it](https://www.corsinvest.it/cv4pve-admin)
 
 ---

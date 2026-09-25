@@ -16,13 +16,13 @@ Monitors Proxmox VE replication jobs across the cluster: status, trends, error p
 
     ---
 
-    Track replication speed, duration, and failure patterns.
+    Track replication size, duration, and failure patterns.
 
-- :material-monitor-eye:{ .lg .middle } **Analysis Reports**
+- :material-monitor-eye:{ .lg .middle } **On-demand or scheduled scan**
 
     ---
 
-    Generate reports for replication job monitoring with on-demand or scheduled analysis using cron expression.
+    Collect replication run history on demand or on a schedule using a cron expression.
 
 - :material-link-variant:{ .lg .middle } **Proxmox VE Integration**
 
@@ -57,12 +57,12 @@ Why a dedicated view when PVE has its Replication tab?
 
 <div markdown>
 !!! success "Trends, not just current state"
-    Charts over time show duration drift, recurring failures, and bandwidth pressure — info that PVE doesn't keep anywhere.
+    Charts over time show size and duration drift — info that PVE doesn't keep anywhere.
 </div>
 
 <div markdown>
 !!! info "Spot the silent failure"
-    A job that started failing last week without anyone noticing — the trends graph turns it into an obvious red line.
+    A job that started failing last week without anyone noticing — the run history keeps every failed run with its status and error.
 </div>
 
 <div markdown>
@@ -74,9 +74,9 @@ Why a dedicated view when PVE has its Replication tab?
 
 ## Sections
 
-- **Replications** — configured replications with source/target node, schedule, last sync time and error info
-- **Scheduled** — view when each replication is scheduled to run next
-- **Trends** — charts of replication duration and reliability over time
+- **Replications** — history of collected replication runs with start/end, duration, size, status, source/target node, error and log
+- **Scheduled** — configured replication jobs with schedule, rate limit, last sync and next sync
+- **Trends** — charts of replication size and duration over time
 
 ## Settings
 

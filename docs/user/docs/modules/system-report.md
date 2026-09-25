@@ -10,13 +10,13 @@ Snapshots the state of a Proxmox VE cluster (configuration, resources, audit dat
 
     ---
 
-    Export as **Xlsx** (single workbook with one sheet per section), **Html** (browsable static site) or **Json** (multi-file, one per section). Html and Json formats are packaged as a single `.zip`.
+    Export as **Xlsx** (single workbook with one sheet per section), **Html** (browsable static site) or **Json** (multi-file, one per section). Every report is downloaded as a single `.zip`.
 
 - :material-tune-variant:{ .lg .middle } **Presets & Fine-grained Settings**
 
     ---
 
-    Pick a preset — **Fast** (structure only, no heavy data), **Standard** (default), **Full** (RRD on week timeframe, syslog, firewall log, S.M.A.R.T.) — or toggle every individual section yourself.
+    Pick a preset — **Fast** (structure only, no heavy data; default for a new report), **Standard** (all except S.M.A.R.T.), **Full** (RRD on week timeframe, syslog, firewall log, S.M.A.R.T.) — or toggle every individual section yourself.
 
 - :material-toggle-switch-outline:{ .lg .middle } **What's Included**
 
@@ -34,7 +34,7 @@ Snapshots the state of a Proxmox VE cluster (configuration, resources, audit dat
 
     ---
 
-    Generate reports manually from the Reports page — each run is persisted with the format and settings you chose. The history grid lets you download any past report or re-run it.
+    Generate reports manually from the Reports page — each run is persisted with the format and settings you chose. The history grid lets you download or delete any past report and view the settings it was generated with.
 
 - :material-bolt:{ .lg .middle } **Parallel Fetching**
 
@@ -74,7 +74,7 @@ Why automate reports when PVE already shows everything in its UI?
 
 ## Sections
 
-- **Reports** — browse the history of generated reports, download a previous report, trigger a new one with custom settings or one of the presets (Fast / Standard / Full)
+- **Reports** — browse the history of generated reports, download or delete a previous report, trigger a new one with custom settings or one of the presets (Fast / Standard / Full)
 
 ## Settings
 

@@ -42,7 +42,7 @@ The Log fieldset at the bottom shows live progress, with a Copy button for shari
 | Button | What it deletes | Retention |
 |--------|-----------------|-----------|
 | **Cleanup Audit Logs** | Audit log rows older than `N` days | Default: 180 days, editable in the toolbar (1–3650) |
-| **Cleanup System Logs** | Application log rows older than `N` days | Default: 30 days |
+| <span class="ee"></span> **Cleanup System Logs** | Application log rows older than `N` days | Default: 30 days |
 | **Cleanup Task History** | Background task history rows older than `N` days | Default: 90 days |
 | **Cleanup Failed Jobs** | Hangfire failed jobs across all queues | No retention — purges everything |
 | **Clear Memory Cache** | In-memory caches: PVE state, permissions, settings, localizations | Immediate |

@@ -34,7 +34,7 @@ Visual designer for event-driven automation against Proxmox VE — built on [Els
 
     ---
 
-    Every workflow run is recorded with status, inputs and timing — replay or inspect from the History tab.
+    Every workflow run is recorded with status, inputs and timing — inspect it from the History tab.
 
 - :material-account-group:{ .lg .middle } **Multi-tenant**
 
@@ -93,7 +93,7 @@ Why a workflow engine when scripts and cron already work?
 
     | Activity | What it does |
     |----------|--------------|
-    | `PowerAction` | Start / Stop / Shutdown / Reset / Suspend |
+    | `PowerAction` | Start / Stop / Shutdown / Reset / Suspend / Resume / Reboot |
     | `Backup` | Trigger vzdump backup with compression and mode |
     | `Migrate` | Live or offline migration to another node |
     | `Clone` | Clone a VM/CT |
