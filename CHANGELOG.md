@@ -45,6 +45,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **WebHook — GET requests**: the body fields are hidden, since a GET request is sent without a body.
 
+- **AutoSnap (review your jobs)**:
+  - A job that selects no VM/CT, or whose guests are on an offline node, now ends as failed and the guests are listed in the log. Before, it ended OK without taking any snapshot. With *On Failure Only* a notification is sent.
+  - *Max percentage storage* is now applied: guests on a storage used above the limit (95% by default) are skipped. Before, the limit was never applied. The lowest value is now 1%.
+  - Guest selection: `text%` matches the names starting with the text and `%text` the names ending with it; they were inverted. An excluded range (`-200:299`) no longer adds guests, and pools combine with exclusions (`@all,-@pool-test`).
+  - Containers with a bind mount or a device mount point, and VMs with a physical disk, are skipped with a message: Proxmox VE cannot snapshot them, and the job failed on them every time.
+  - The timestamp format (settings) and the label (job) are checked when saved: a snapshot name longer than 40 characters, or a format that cannot be sorted in time order, is refused with the reason. Before, the job failed when it ran.
+  - Selecting guests by pool on Proxmox VE 9 needs `Pool.Audit` instead of `Pool.Allocate`.
+
+- **Metrics Exporter (review your alerts)**: `cv4pve_replication_failed_total` is replaced by `cv4pve_replication_fail_count`. Proxmox VE reports the failed attempts in a row, back to 0 at the first success, so the value now goes down when replication recovers. Alert on `cv4pve_replication_fail_count > 0`.
+
+- **Diagnostic, codes**: the first letter of a code is now always the severity of the finding. Checks with a warning and a critical threshold report the critical level with its own `C` code, with the same number as the `W` code (`WN0027` and `CN0027`). Some codes changed number, and a problem that was reported under two codes is now reported once. Older scans keep the codes they were saved with.
+
+- **Report**:
+  - VMs and Containers have new columns with the total size of the disks, the unused disks and, for VMs with the guest agent, the guest partitions.
+  - JSON output: the size and the percentage of the same measure no longer share a key (`memoryUsage` is the percentage, `memoryUsageBytes` the size; the same for disk usage), and four misspelled keys are renamed (`smartData`, `ip`, `position`, `uris`).
+
+- **Node Protect**:
+  - On Linux the backup archives are readable only by the user running the application, since they contain password hashes and keys.
+  - When the backup of a node fails, the old backups are kept: retention is applied only after a run where every node was backed up, so good backups are never deleted to make room for an incomplete one. A run that saved no archive leaves no empty folder.
+
 #### Fixed
 
 - **Grids**: a group, once expanded, can be collapsed again.
@@ -69,6 +89,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **WebHook — stored secrets**: passwords, tokens and API keys of webhooks are stored encrypted, like the other credentials. Values saved before are kept and encrypted on the next save.
 
+- **Metrics Exporter**: metrics of objects that no longer exist (a deleted or renamed guest, a removed storage, an offline node) are no longer exported forever; guest disk and network counters restart after the guest restarts or migrates; HA node states are reported; SAS disks with a healthy S.M.A.R.T. status are no longer exported as unhealthy.
+
+- **Bots (Telegram)**: VM, container and node commands answer with the error of Proxmox VE when the action is refused, instead of answering as if it had worked. The built-in migrate and node shutdown aliases now work.
+
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
@@ -82,6 +106,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **AutoSnap — hook test**: a *Test* button in the hook editor sends the request right away, with sample values for the selected phase, and shows the answer.
 
 #### Fixed
+
+- **AutoSnap, hooks**: with parallel snapshots, the lines of a hook stay in the log block of their VM/CT instead of mixing with the other guests.
 
 - **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
 

@@ -77,6 +77,8 @@ internal static class FolderHelper
 
                 taskScope.Log($"Online nodes: {nodes.Count} ({string.Join(", ", nodes.Select(n => n.Node))})");
 
+                var failedNodes = new List<string>();
+
                 foreach (var node in nodes)
                 {
                     var targetFile = Path.Combine(directoryWork, $"{node.Node}{ProtectEngine.FileNameSuffix}");
@@ -96,6 +98,7 @@ internal static class FolderHelper
                     {
                         logger.LogError(ex, "Backup failed for node {Node}", node.Node);
                         logs = ex.Message;
+                        failedNodes.Add(node.Node);
                         taskScope.Log($"[{node.Node}] {ex.Message}", LogLevel.Error);
                     }
 
@@ -114,23 +117,35 @@ internal static class FolderHelper
                     await db.SaveChangesAsync();
                 }
 
-                foreach (var item in Directory.EnumerateDirectories(baseDir).OrderDescending().Skip(settings.Folder.Keep).ToArray())
+                // A good backup is never deleted to make room for an incomplete run.
+                if (failedNodes.Count > 0)
                 {
-                    taskScope.Log($"Removing old backup: {Path.GetFileName(item)}");
-                    Directory.Delete(item, true);
+                    // A run with no archive must not count as a backup for the retention.
+                    if (!Directory.EnumerateFileSystemEntries(directoryWork).Any()) { Directory.Delete(directoryWork); }
+
+                    taskScope.Log($"Backup failed for {failedNodes.Count} of {nodes.Count} node(s): {string.Join(", ", failedNodes)}. Retention not applied.",
+                                  LogLevel.Warning);
                 }
+                else
+                {
+                    foreach (var item in ProtectHelper.GetBackupsToDelete(Directory.EnumerateDirectories(baseDir), settings.Folder.Keep).ToArray())
+                    {
+                        taskScope.Log($"Removing old backup: {Path.GetFileName(item)}");
+                        Directory.Delete(item, true);
+                    }
 
-                var maxDate = db.FolderTaskResults
-                                .FromClusterName(clusterName)
-                                .Select(a => a.Start)
-                                .Distinct()
-                                .OrderDescending()
-                                .Skip(settings.Folder.Keep)
-                                .FirstOrDefault();
+                    var maxDate = db.FolderTaskResults
+                                    .FromClusterName(clusterName)
+                                    .Select(a => a.Start)
+                                    .Distinct()
+                                    .OrderDescending()
+                                    .Skip(settings.Folder.Keep)
+                                    .FirstOrDefault();
 
-                await db.FolderTaskResults.FromClusterName(clusterName)
-                                    .Where(a => a.Start < maxDate)
-                                    .ExecuteDeleteAsync();
+                    await db.FolderTaskResults.FromClusterName(clusterName)
+                                        .Where(a => a.Start < maxDate)
+                                        .ExecuteDeleteAsync();
+                }
             }
             catch (Exception ex)
             {

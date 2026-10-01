@@ -33,7 +33,7 @@
         <RadzenTextBox Name="@nameof(Model.TimestampFormat)" @bind-Value="@Model.TimestampFormat" Placeholder="yyMMddHHmmss" />
     </ChildContent>
     <Helper>
-        <RadzenRequiredValidator Component="@nameof(Model.TimestampFormat)" s />
+        <RadzenDataAnnotationValidator Component="@nameof(Model.TimestampFormat)" />
     </Helper>
 </RadzenFormField>
 
@@ -54,7 +54,7 @@
         <RadzenIcon Icon="percent" />
     </Start>
     <ChildContent>
-        <RadzenNumeric Name="@nameof(Model.MaxPercentageStorage)" @bind-Value="@Model.MaxPercentageStorage" Min="0" Max="100" />
+        <RadzenNumeric Name="@nameof(Model.MaxPercentageStorage)" @bind-Value="@Model.MaxPercentageStorage" Min="1" Max="100" />
     </ChildContent>
     <Helper>
         <RadzenDataAnnotationValidator Component="@nameof(Model.MaxPercentageStorage)" />

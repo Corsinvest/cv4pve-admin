@@ -195,7 +195,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                         {
                             statusEventOk = false;
                             logger.LogError(ex, ex.Message);
-                            log.WriteLine($"  Error '{ex.Message}'");
+                            // The writer of the guest keeps the line in its block, also with parallel snapshots.
+                            (e.Out ?? log).WriteLine($"  Error '{ex.Message}'");
                         }
                     };
                 }

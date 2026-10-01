@@ -1,7 +1,7 @@
 <Project>
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.NodeProtect.Api" Version="2.1.1" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Report" Version="2.6.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.NodeProtect.Api" Version="2.2.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Report" Version="2.8.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.12" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
@@ -28,7 +28,7 @@
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="11.4.3" />
+    <PackageVersion Include="Radzen.Blazor" Version="12.0.2" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.6.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -48,7 +48,7 @@
     <PackageVersion Include="SixLabors.ImageSharp" Version="[3.1.12]" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.4" />
-    <PackageVersion Include="MailKit" Version="4.18.0" />
+    <PackageVersion Include="MailKit" Version="4.18.1" />
     <PackageVersion Include="System.CommandLine" Version="2.0.12" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->
@@ -61,11 +61,11 @@
   </ItemGroup>
   <!-- Proxmox VE -->
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.2.3" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="1.9.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="2.0.0" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.1.1" />
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.6.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Extension" Version="9.2.4" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.TelegramBot.Api" Version="2.0.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Metrics.Exporter.Api" Version="2.1.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.AutoSnap.Api" Version="2.2.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Diagnostic.Api" Version="2.7.0" />
   </ItemGroup>
   <!-- Development and Code Quality -->
   <ItemGroup>
