@@ -35,7 +35,8 @@ public class Settings : IModuleSettings, INotifierConfigurationsSettings
 
     public bool OnRemoveJobRemoveSnapshots { get; set; } = true;
 
-    [Range(0, 100)]
+    // 0 would skip every guest on a storage that is not empty.
+    [Range(1, 100)]
     public int MaxPercentageStorage { get; set; } = 95;
 
     public IEnumerable<string> NotifierConfigurations { get; set; } = [];
