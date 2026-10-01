@@ -42,7 +42,7 @@ These are the permissions included in the built-in `PVEAuditor` role — equival
 | **Metrics Exporter** | — |
 | **Diagnostics** | — |
 | **System Report** | — |
-| **AutoSnap** | • `VM.Snapshot`<br>• `VM.Snapshot.Rollback`<br>• `Datastore.AllocateSpace`<br>• `Pool.Allocate`<br>• `VM.PowerMgmt` _(only if Include RAM is enabled)_ |
+| **AutoSnap** | • `VM.Snapshot`<br>• `VM.Snapshot.Rollback`<br>• `Datastore.AllocateSpace`<br>• `Pool.Allocate` _(only to select guests by pool on Proxmox VE 8 and earlier; Proxmox VE 9 reads pools with the base `Pool.Audit`)_<br>• `VM.PowerMgmt` _(only if Include RAM is enabled)_ |
 | **Node Protect** | Base only — uses SSH to operate on nodes |
 | **Update Manager** | Base only — uses SSH to operate on nodes/VMs |
 | **UPS Monitor** | — _(SNMP only, no PVE API)_ |
@@ -64,10 +64,11 @@ VM.Snapshot.Rollback
 Datastore.Audit
 Datastore.AllocateSpace
 Pool.Audit
-Pool.Allocate
 ```
 
 Assign at path `/` to your cv4pve-admin user or API token.
+
+On Proxmox VE 8 and earlier add `Pool.Allocate` if AutoSnap jobs select guests by pool.
 
 !!! warning
     Features that lack required permissions will show errors or empty data — other features will continue to work normally.
