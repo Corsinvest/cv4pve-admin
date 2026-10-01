@@ -23,7 +23,15 @@ public class Settings : IModuleSettings, INotifierConfigurationsSettings
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public SearchMode SearchMode { get; set; } = SearchMode.Managed;
 
+    [Required, CustomValidation(typeof(Settings), nameof(ValidateTimestampFormat))]
     public string TimestampFormat { get; set; } = AutoSnapEngine.DefaultTimestampFormat;
+
+    // The engine refuses a format it cannot read back, on every snap, clean and status:
+    // checked here, so it is refused when saved and not when the job runs.
+    public static ValidationResult? ValidateTimestampFormat(string? value, ValidationContext context)
+        => AutoSnapEngine.ValidateLabelAndTimestampFormat(string.Empty, value ?? string.Empty) is { } error
+            ? new ValidationResult(error, [context.MemberName!])
+            : ValidationResult.Success;
 
     public bool OnRemoveJobRemoveSnapshots { get; set; } = true;
 

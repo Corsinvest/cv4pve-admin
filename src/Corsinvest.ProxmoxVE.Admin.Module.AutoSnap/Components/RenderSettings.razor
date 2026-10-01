@@ -33,7 +33,7 @@
         <RadzenTextBox Name="@nameof(Model.TimestampFormat)" @bind-Value="@Model.TimestampFormat" Placeholder="yyMMddHHmmss" />
     </ChildContent>
     <Helper>
-        <RadzenRequiredValidator Component="@nameof(Model.TimestampFormat)" s />
+        <RadzenDataAnnotationValidator Component="@nameof(Model.TimestampFormat)" />
     </Helper>
 </RadzenFormField>
 

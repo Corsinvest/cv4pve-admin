@@ -47,6 +47,7 @@
                     </ChildContent>
                     <Helper>
                         <RadzenDataAnnotationValidator Component="@nameof(Model.Label)" />
+                        <RadzenCustomValidator Component="@nameof(Model.Label)" Validator="@(() => LabelError == null)" Text="@LabelError" />
                     </Helper>
                 </RadzenFormField>
 
