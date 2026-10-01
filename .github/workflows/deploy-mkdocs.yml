@@ -14,11 +14,20 @@ on:
     # Allow manual trigger
 
 permissions:
-  contents: write
+  contents: read
+
+# One deployment at a time: two pushes to gh-pages at once would reject one of them.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The site is pushed to the gh-pages branch.
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,7 +57,7 @@ jobs:
           mkdocs build --strict
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/user/site
