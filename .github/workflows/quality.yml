@@ -1,6 +1,9 @@
 name: Quality
 
 on:
+  # On main too: CodeQL compares a pull request with the analysis of its base branch.
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:

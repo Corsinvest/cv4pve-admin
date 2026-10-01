@@ -21,8 +21,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # A manual run builds the tag it was asked for, not the branch it was started from.
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -31,14 +34,16 @@ jobs:
 
       - name: Extract and validate version
         id: version
+        # The tag typed in a manual run reaches the script as a variable, never as script text.
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
           PROJECT_PATH="src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj"
           PROJECT_VERSION=$(dotnet msbuild $PROJECT_PATH -getProperty:Version -nologo | tr -d '[:space:]')
           echo "Project version: $PROJECT_VERSION"
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TAG_VERSION="${{ github.event.inputs.tag }}"
-            TAG_VERSION="${TAG_VERSION#v}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG_VERSION="${INPUT_TAG#v}"
           else
             TAG_VERSION="${GITHUB_REF#refs/tags/v}"
           fi
@@ -56,21 +61,15 @@ jobs:
 
       - name: Extract changelog section
         id: changelog
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
           NOTES=$(awk "/^## \[$VERSION\]/{found=1; next} /^## \[/{found=0} found{print}" CHANGELOG.md)
           echo "notes<<EOF" >> $GITHUB_OUTPUT
           echo "$NOTES" >> $GITHUB_OUTPUT
           echo "" >> $GITHUB_OUTPUT
           echo "[Website](https://corsinvest.it/cv4pve-admin) | [Docker Hub CE](https://hub.docker.com/r/corsinvest/cv4pve-admin) | [Docker Hub EE](https://hub.docker.com/r/corsinvest/cv4pve-admin-ee)" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          registry: registry.hub.docker.com
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Download assets
         run: pwsh -ExecutionPolicy Bypass -File admin.ps1 -Command download-assets
@@ -88,13 +87,6 @@ jobs:
           cd docs/user
           mkdocs build --clean --strict
 
-      - name: Build and push Docker image
-        run: |
-          dotnet publish src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj \
-            /t:PublishContainer \
-            -c Release \
-            /p:ContainerRegistry=registry.hub.docker.com
-
       - name: Build MCP Bridge binaries
         run: |
           MCP_PROJECT="src/Corsinvest.ProxmoxVE.Admin.McpBridge/Corsinvest.ProxmoxVE.Admin.McpBridge.csproj"
@@ -103,6 +95,22 @@ jobs:
             echo "➡ Building for $rid..."
             dotnet publish "$MCP_PROJECT" -c Release -r "$rid" -o publish/mcp-bridge -p:AssemblyName="cv4pve-mcp-bridge-$rid"
           done
+
+      # Nothing is published until everything has been built: the image goes to Docker Hub
+      # only when the release assets are ready, so a failed build leaves no image without a release.
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          dotnet publish src/Corsinvest.ProxmoxVE.Admin/Corsinvest.ProxmoxVE.Admin.csproj \
+            /t:PublishContainer \
+            -c Release \
+            /p:ContainerRegistry=registry.hub.docker.com
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
