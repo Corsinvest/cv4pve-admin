@@ -1366,7 +1366,7 @@
 </tr>
 <tr>
 <td><strong>AutoSnap</strong></td>
-<td>• <code>VM.Snapshot</code><br>• <code>VM.Snapshot.Rollback</code><br>• <code>Datastore.AllocateSpace</code><br>• <code>Pool.Allocate</code><br>• <code>VM.PowerMgmt</code> <em>(only if Include RAM is enabled)</em></td>
+<td>• <code>VM.Snapshot</code><br>• <code>VM.Snapshot.Rollback</code><br>• <code>Datastore.AllocateSpace</code><br>• <code>Pool.Allocate</code> <em>(only to select guests by pool on Proxmox VE 8 and earlier; Proxmox VE 9 reads pools with the base <code>Pool.Audit</code>)</em><br>• <code>VM.PowerMgmt</code> <em>(only if Include RAM is enabled)</em></td>
 </tr>
 <tr>
 <td><strong>Node Protect</strong></td>
@@ -1411,9 +1411,9 @@
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Datastore.Audit
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>Datastore.AllocateSpace
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>Pool.Audit
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>Pool.Allocate
 </span></code></pre></div>
 <p>Assign at path <code>/</code> to your cv4pve-admin user or API token.</p>
+<p>On Proxmox VE 8 and earlier add <code>Pool.Allocate</code> if AutoSnap jobs select guests by pool.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Features that lack required permissions will show errors or empty data — other features will continue to work normally.</p>
