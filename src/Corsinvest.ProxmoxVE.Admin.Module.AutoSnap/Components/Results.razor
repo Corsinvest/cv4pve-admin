@@ -24,6 +24,7 @@
     <HeaderTemplate>
         <CrudToolbar OnDelete="DeleteAsync"
                      DeleteDisabled="!SelectedItems.Any()"
+                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"autosnap-histories-{ClusterName}", L["Histories"]))"
                      Permissions="Module.Permissions.Results.Data"
                      PermissionDelete="Module.Permissions.Results.Delete" />
     </HeaderTemplate>

@@ -10,6 +10,7 @@ public partial class UnprotectedDisks(IAdminService adminService) : IClusterName
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
+    private RadzenDataGrid<Data> DataGridRef { get; set; } = default!;
     private IEnumerable<Data> Items { get; set; } = [];
     private bool IsLoading { get; set; }
 

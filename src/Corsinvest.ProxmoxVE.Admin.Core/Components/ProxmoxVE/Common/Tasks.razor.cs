@@ -17,6 +17,7 @@ public partial class Tasks(DialogService dialogService,
     private bool IsLoading { get; set; }
     private bool ForNode => !string.IsNullOrEmpty(Node);
     private bool ForVm => VmId > 0;
+    private RadzenDataGrid<NodeTask> DataGridRef { get; set; } = default!;
     private IEnumerable<NodeTask> Items { get; set; } = default!;
     private IList<NodeTask> SelectedItems { get; set; } = [];
 

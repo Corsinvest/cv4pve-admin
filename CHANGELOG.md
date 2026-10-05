@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostic — PDF cover page**: the PDF report opens with a cover page, as the Excel file does: report information and a table of contents with the page number of each section, clickable to jump there. The sections also appear in the bookmarks panel of the PDF viewer.
 
+- **Excel export of the lists**: an export button in the toolbar of the lists (resources, networks, disks, snapshots, cluster and node views, tasks, AutoSnap, backups, replications and, in *(EE)*, users, roles, tokens, audit log, system logs, UPS readings and VM performance) saves them as an Excel file. Every row matching the current filter and sort is exported, not only the ones on screen, and dates are written in local time.
+
 - **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
 
 #### Changed

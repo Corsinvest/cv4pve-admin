@@ -35,7 +35,7 @@
                     @bind-Settings:after="OnDataGridSettingsChanged"
                     @attributes="AdditionalAttributes">
         <HeaderTemplate>
-            <CrudToolbar OnRefresh="RefreshDataAsync">
+            <CrudToolbar OnRefresh="RefreshDataAsync" OnExport="ExportCallback">
                 <TemplateAfter>
                     @if (ShowSearchBox)
                     {

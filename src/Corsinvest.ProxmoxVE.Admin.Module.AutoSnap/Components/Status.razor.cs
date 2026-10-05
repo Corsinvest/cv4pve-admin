@@ -21,6 +21,7 @@ public partial class Status(IAdminService adminService,
     [Parameter] public string VmIds { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
 
+    private RadzenDataGrid<AutoSnapInfo> DataGridRef { get; set; } = default!;
     private IEnumerable<AutoSnapInfo> Items { get; set; } = default!;
     private bool IsLoading { get; set; }
     private IList<AutoSnapInfo> SelectedItems { get; set; } = [];

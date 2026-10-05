@@ -13,6 +13,7 @@ public partial class Disks(IAdminService adminService) : IRefreshableData, INode
     [Parameter] public string Style { get; set; } = default!;
     [Parameter] public bool ShowSmartAttribute { get; set; } = true;
 
+    private RadzenDataGrid<NodeDiskList> DataGridRef { get; set; } = default!;
     private IEnumerable<NodeDiskList> Items { get; set; } = default!;
     private bool IsLoading { get; set; }
     private readonly SemaphoreSlim _refreshLock = new(1, 1);

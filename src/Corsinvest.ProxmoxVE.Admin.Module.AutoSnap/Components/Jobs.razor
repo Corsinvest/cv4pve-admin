@@ -28,6 +28,7 @@
                      OnDelete="DeleteAsync"
                      DeleteDisabled="!SelectedItems.Any()"
                      OnRefresh="RefreshDataAsync"
+                     OnExport="ExportAsync"
                      Permissions="Module.Permissions.Job.Data">
             <PermissionView PermissionKey="@Module.Permissions.Job.Snap.Key" Path="*">
                 <RadzenButton Variant="Variant.Text"

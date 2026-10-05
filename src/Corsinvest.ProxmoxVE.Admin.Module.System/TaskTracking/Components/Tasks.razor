@@ -27,7 +27,8 @@
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshAsync">
+        <CrudToolbar OnRefresh="RefreshAsync"
+                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync("tasks", L["Tasks"]))">
             <TemplateAfter>
                 <SearchTextBox @ref="SearchTextBox"
                                TItem="TaskItemInfo"

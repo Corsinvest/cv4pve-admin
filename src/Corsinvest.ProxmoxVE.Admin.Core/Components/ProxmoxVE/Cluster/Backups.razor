@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid TItem="ClusterBackup"
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="ClusterBackup"
                 Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
@@ -14,6 +15,10 @@
                 AllowVirtualization="true"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <HeaderTemplate>
+        <CrudToolbar OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"cluster-backups-{ClusterName}", L["Backups"]))" />
+    </HeaderTemplate>
+
     <Columns>
         <BoolIconColumn Property="@nameof(ClusterBackup.Enabled)" Title="@L["Enabled"]" IconFalse="" />
         <RadzenDataGridColumn Property="@nameof(ClusterBackup.Mode)" Title="@L["Mode"]" />

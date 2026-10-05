@@ -23,7 +23,8 @@
                 ShowMultiColumnSortingIndex="true"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshDataAsync" />
+        <CrudToolbar OnRefresh="RefreshDataAsync"
+                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"disks-{ClusterName}", L["Disks"]))" />
     </HeaderTemplate>
 
     <GroupHeaderTemplate>

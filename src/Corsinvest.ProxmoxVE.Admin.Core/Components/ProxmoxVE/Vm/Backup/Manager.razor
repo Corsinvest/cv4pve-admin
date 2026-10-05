@@ -24,6 +24,7 @@
         <CrudToolbar OnAdd="AddAsync"
                      AddDisabled="!CanBackup"
                      OnRefresh="RefreshDataAsync"
+                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"backups-{ClusterName}-{Vm.VmId}", L["Backups"]))"
                      OnDelete="DeleteAsync"
                      DeleteDisabled="!CanDelete || !SelectedItems.Any()">
 

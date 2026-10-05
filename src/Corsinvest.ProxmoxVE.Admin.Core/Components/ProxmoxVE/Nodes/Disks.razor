@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid Data="@Items"
+<RadzenDataGrid @ref="DataGridRef"
+                Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="false"
@@ -15,6 +16,10 @@
                 RowRender="RowRender"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <HeaderTemplate>
+        <CrudToolbar OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"disks-{ClusterName}-{Node}", L["Disks"]))" />
+    </HeaderTemplate>
+
     <Columns>
         <RadzenDataGridColumn Property="@nameof(NodeDiskList.DevPath)" Title="@L["Dev Path"]" />
         <RadzenDataGridColumn Property="@nameof(NodeDiskList.Type)" Title="@L["Type"]" />

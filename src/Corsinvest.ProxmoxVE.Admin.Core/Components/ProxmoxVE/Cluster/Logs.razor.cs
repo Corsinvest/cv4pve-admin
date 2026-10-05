@@ -11,6 +11,7 @@ public partial class Logs(IAdminService adminService) : IRefreshableData, IClust
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
 
+    private RadzenDataGrid<ClusterLog> DataGridRef { get; set; } = default!;
     private IEnumerable<ClusterLog> Items { get; set; } = [];
     private bool IsLoading { get; set; }
 

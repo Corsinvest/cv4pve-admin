@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid TItem="ClusterReplication"
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="ClusterReplication"
                 Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
@@ -15,6 +16,10 @@
                 AllowColumnPicking="true"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <HeaderTemplate>
+        <CrudToolbar OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"cluster-replication-{ClusterName}", L["Replication"]))" />
+    </HeaderTemplate>
+
     <Columns>
         <BoolIconColumn Property="@nameof(ClusterReplication.Disable)" Title="@L["Enabled"]" IconFalse="" Inverted="true" />
         <RadzenDataGridColumn Property="@nameof(ClusterReplication.Guest)" Title="@L["Guest"]" />

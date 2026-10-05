@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid TItem="NodeTask"
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="NodeTask"
                 Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
@@ -21,7 +22,8 @@
                 RowSelect="RowSelectAsync"
                 @bind-Value="@SelectedItems">
     <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshDataAsync" />
+        <CrudToolbar OnRefresh="RefreshDataAsync"
+                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"tasks-{ClusterName}", L["Tasks"]))" />
     </HeaderTemplate>
 
     <Columns>
