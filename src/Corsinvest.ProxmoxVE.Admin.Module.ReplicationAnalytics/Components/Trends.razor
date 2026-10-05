@@ -10,28 +10,14 @@
         @if (MinDate.HasValue && MaxDate.HasValue)
         {
             <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenFormField Text="@L["From"]" AllowFloatingLabel="false">
-                    <RadzenDatePicker @bind-Value="Start"
-                                      @bind-Value:after="LoadSourcesAsync"
-                                      ShowTime="false"
-                                      AllowClear="true"
-                                      Min="MinDate.Value.AddDays(-1)"
-                                      Max="MaxDate.Value"
-                                      ShowCalendarWeek="true"
-                                      Disabled="MinDate is null"
-                                      DateFormat="d" />
-                </RadzenFormField>
-
-                <RadzenFormField Text="@L["To"]" AllowFloatingLabel="false">
-                    <RadzenDatePicker @bind-Value="End"
-                                      @bind-Value:after="LoadSourcesAsync"
-                                      ShowTime="false"
-                                      AllowClear="true"
-                                      Min="Start.HasValue? Start!.Value.AddDays(-1) : null"
-                                      Max="MaxDate.Value.AddDays(1)"
-                                      ShowCalendarWeek="true"
-                                      Disabled="Start is null"
-                                      DateFormat="d" />
+                <RadzenFormField Text="@L["Period"]" AllowFloatingLabel="false" Style="min-width: 280px;">
+                    <RadzenDateRangePicker @bind-Value="Range"
+                                           @bind-Value:after="LoadSourcesAsync"
+                                           AllowClear="true"
+                                           Min="MinDate.Value.Date"
+                                           Max="MaxDate.Value"
+                                           ShowCalendarWeek="true"
+                                           DateFormat="d" />
                 </RadzenFormField>
 
                 <RadzenFormField Text="@L["Node"]" AllowFloatingLabel="false">
