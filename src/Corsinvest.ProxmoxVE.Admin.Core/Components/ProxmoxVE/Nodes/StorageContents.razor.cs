@@ -8,6 +8,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes;
 
 public partial class StorageContents<TItem> where TItem : NodeStorageContent
 {
+    private RadzenDataGrid<TItem> DataGridRef { get; set; } = default!;
+
     [Parameter] public string Style { get; set; } = default!;
     [Parameter] public bool IsLoading { get; set; }
     [Parameter] public IEnumerable<TItem> Items { get; set; } = [];

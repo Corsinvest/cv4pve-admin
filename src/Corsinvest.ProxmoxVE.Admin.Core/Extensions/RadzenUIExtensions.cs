@@ -21,6 +21,20 @@ public static class RadzenUIExtensions
         }
     }
 
+    // Every row that matches the current filter and sort, not only the ones loaded on screen.
+    public static Task ExportToExcelAllAsync<TItem>(this RadzenDataGrid<TItem> grid, string name)
+        where TItem : notnull
+        => grid.ExportToExcelAllAsync(name, name);
+
+    public static Task ExportToExcelAllAsync<TItem>(this RadzenDataGrid<TItem> grid, string name, string title)
+        where TItem : notnull
+        => grid.ExportToExcelAsync($"{name}.xlsx",
+                                   new()
+                                   {
+                                       Scope = DataGridExportScope.All,
+                                       Title = title
+                                   });
+
     // A wash of the accent colour rather than the colour itself: DangerLight (#d29396) and
     // WarningDark (#e6b409) are solid colours meant for icons and badges, and a whole row of
     // either drowns out the text it is supposed to draw attention to.

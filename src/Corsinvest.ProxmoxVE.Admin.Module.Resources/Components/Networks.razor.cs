@@ -28,6 +28,8 @@ public partial class Networks(IAdminService adminService,
     private bool IsLoadingGuests { get; set; }
     private bool IsLoadingSdn { get; set; }
     private RadzenDataGrid<VmNetwork> DataGridRef { get; set; } = default!;
+    private RadzenDataGrid<NodeNetwork> DataGridNodesRef { get; set; } = default!;
+    private RadzenDataGrid<SdnVnet> DataGridSdnRef { get; set; } = default!;
     private int SelectedTab { get; set; }
     private bool _nodesLoaded;
     private bool _guestsLoaded;

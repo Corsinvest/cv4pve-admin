@@ -8,7 +8,8 @@
     <RadzenTabs @bind-SelectedIndex="SelectedTab" Change="OnTabChangeAsync">
         <Tabs>
             <RadzenTabsItem Text="@L["Nodes"]" Icon="@PveAdminUIHelper.Icons.Node">
-                <RadzenDataGrid Data="@NodeNetworks"
+                <RadzenDataGrid @ref="@DataGridNodesRef"
+                                Data="@NodeNetworks"
                                 AllowFiltering="true"
                                 AllowColumnResize="true"
                                 AllowAlternatingRows="false"
@@ -24,7 +25,8 @@
                                 ShowMultiColumnSortingIndex="true"
                                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
                     <HeaderTemplate>
-                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                        <CrudToolbar OnRefresh="RefreshDataAsync"
+                                     OnExport="@(() => DataGridNodesRef.ExportToExcelAllAsync($"networks-nodes-{ClusterName}", L["Nodes"]))" />
                     </HeaderTemplate>
 
                     <Columns>
@@ -70,7 +72,8 @@
                                 ShowMultiColumnSortingIndex="true"
                                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
                     <HeaderTemplate>
-                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                        <CrudToolbar OnRefresh="RefreshDataAsync"
+                                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"networks-guests-{ClusterName}", L["Guests"]))" />
                     </HeaderTemplate>
 
                     <GroupHeaderTemplate>
@@ -112,7 +115,8 @@
             </RadzenTabsItem>
 
             <RadzenTabsItem Text="SDN" Icon="hub">
-                <RadzenDataGrid Data="@SdnVnets"
+                <RadzenDataGrid @ref="@DataGridSdnRef"
+                                Data="@SdnVnets"
                                 AllowFiltering="true"
                                 AllowColumnResize="true"
                                 AllowAlternatingRows="false"
@@ -122,7 +126,8 @@
                                 AllowColumnPicking="true"
                                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
                     <HeaderTemplate>
-                        <CrudToolbar OnRefresh="RefreshDataAsync" />
+                        <CrudToolbar OnRefresh="RefreshDataAsync"
+                                     OnExport="@(() => DataGridSdnRef.ExportToExcelAllAsync($"networks-sdn-{ClusterName}", "SDN"))" />
                     </HeaderTemplate>
 
                     <Columns>

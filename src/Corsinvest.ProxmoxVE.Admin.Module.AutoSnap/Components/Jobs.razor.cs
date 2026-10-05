@@ -104,6 +104,14 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private void CellClick(DataGridCellMouseEventArgs<Data> e)
         => _validColumnClick = new[] { nameof(Data.Id), nameof(Data.Label) }.Contains(e.Column!.Property);
 
+    private Task ExportAsync()
+        => DataGridRef.ExportToExcelAsync($"autosnap-jobs-{ClusterName}.xlsx",
+                                          new()
+                                          {
+                                              Scope = DataGridExportScope.All,
+                                              Title = L["Jobs"]
+                                          });
+
     private async Task PurgeAsync()
     {
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Clean selected row"], false))

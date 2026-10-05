@@ -54,6 +54,14 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
         else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
 
+    private Task ExportAsync()
+        => DataGridRef.ExportToExcelAsync($"replications-{ClusterName}.xlsx",
+                                          new()
+                                          {
+                                              Scope = DataGridExportScope.All,
+                                              Title = L["Replications"]
+                                          });
+
     private async Task LoadDataAsync(LoadDataArgs args)
     {
         if (_loader is null) { return; }

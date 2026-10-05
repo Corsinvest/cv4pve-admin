@@ -11,6 +11,7 @@ public partial class Replication(IAdminService adminService) : IRefreshableData,
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
 
+    private RadzenDataGrid<ClusterReplication> DataGridRef { get; set; } = default!;
     private IEnumerable<ClusterReplication> Items { get; set; } = default!;
     private bool IsLoading { get; set; }
     private readonly SemaphoreSlim _refreshLock = new(1, 1);

@@ -79,6 +79,14 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
 
+    private Task ExportAsync()
+        => DataGridRef.ExportToExcelAsync($"backups-{ClusterName}.xlsx",
+                                          new()
+                                          {
+                                              Scope = DataGridExportScope.All,
+                                              Title = L["Backups"]
+                                          });
+
     private async Task LoadDataAsync(LoadDataArgs args)
     {
         if (_loader is null) { return; }

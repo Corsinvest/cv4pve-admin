@@ -41,6 +41,14 @@ public partial class ResourcesView(IAdminService adminService) : IRefreshableDat
     [Parameter] public EventCallback<ResourcesViewType> ViewTypeChanged { get; set; }
     [Parameter] public bool ShowViewTypeSelector { get; set; }
 
+    // File name of the Excel export, without extension. Empty, as in the pickers and the widgets, hides the button.
+    [Parameter] public string? ExportName { get; set; }
+
+    private EventCallback<MouseEventArgs> ExportCallback
+        => string.IsNullOrEmpty(ExportName)
+            ? default
+            : EventCallback.Factory.Create<MouseEventArgs>(this, () => DataGridRef!.ExportToExcelAllAsync(ExportName));
+
     private int _refreshInterval;
     [Parameter]
     public int RefreshInterval

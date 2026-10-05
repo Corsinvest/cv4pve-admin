@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid TItem="ClusterLog"
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="ClusterLog"
                 Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
@@ -15,6 +16,10 @@
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 Density="Density.Compact">
+    <HeaderTemplate>
+        <CrudToolbar OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"cluster-logs-{ClusterName}", L["Logs"]))" />
+    </HeaderTemplate>
+
     <Columns>
         <RadzenDataGridColumn Property="@nameof(ClusterLog.TimeDate)"
                               Sortable="true"

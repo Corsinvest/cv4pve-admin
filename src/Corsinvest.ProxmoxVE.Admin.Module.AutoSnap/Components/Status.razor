@@ -4,7 +4,8 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenDataGrid TItem="AutoSnapInfo"
+<RadzenDataGrid @ref="DataGridRef"
+                TItem="AutoSnapInfo"
                 Data="@Items"
                 AllowFiltering="true"
                 AllowColumnResize="true"
@@ -28,6 +29,7 @@
     <HeaderTemplate>
         <CrudToolbar OnDelete="DeleteAsync"
                      OnRefresh="RefreshDataAsync"
+                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"autosnap-status-{ClusterName}", L["Status"]))"
                      DeleteDisabled="!SelectedItems.Any()"
                      Permissions="Module.Permissions.Status.Data"
                      PermissionDelete="Module.Permissions.Status.Delete" />
