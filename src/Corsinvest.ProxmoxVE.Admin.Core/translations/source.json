@@ -343,6 +343,8 @@
   "VM Performance": "",
   "Readings": "",
   "Tenant Users": "",
+  "Capacity Planning": "",
+  "Average and peak usage of guests and nodes, storage growth and days to full. Each table needs the RRD Data of its section (Node, Guest, Storage) and uses its time frame.": "",
   "0 = 500. Ignored when the period has a start date.": "",
   "Storages": "",
   "VM / CT": "",

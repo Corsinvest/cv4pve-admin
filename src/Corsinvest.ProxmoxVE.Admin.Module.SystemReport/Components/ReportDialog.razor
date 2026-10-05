@@ -122,6 +122,11 @@
             <RadzenAccordionItem Text="@L["Firewall"]" Icon="security">
                 @RenderFirewall(S.Firewall)
             </RadzenAccordionItem>
+
+            <RadzenAccordionItem Text="@L["Capacity Planning"]" Icon="query_stats">
+                <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.CapacityPlanning.Enabled" Label="@L["Capacity Planning"]" ReadOnly="@ReadOnly" />
+                <small>@L["Average and peak usage of guests and nodes, storage growth and days to full. Each table needs the RRD Data of its section (Node, Guest, Storage) and uses its time frame."]</small>
+            </RadzenAccordionItem>
         </Items>
     </RadzenAccordion>
 </div>
