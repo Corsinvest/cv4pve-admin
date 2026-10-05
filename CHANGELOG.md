@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Excel export of the lists**: an export button in the toolbar of the lists (resources, networks, disks, snapshots, cluster and node views, tasks, AutoSnap, backups, replications and, in *(EE)*, users, roles, tokens, audit log, system logs, UPS readings and VM performance) saves them as an Excel file. Every row matching the current filter and sort is exported, not only the ones on screen, and dates are written in local time.
 
+- **Report, Capacity Planning**: a new section with one row per guest, node and storage: what is allocated, what is used on average and at the peak, how fast each storage fills up and the days left before it is full. Nodes also show the vCPUs and memory assigned to the running guests and their ratio to the node. It is built on the RRD data, so each table needs the RRD data of its section. Off by default, on with the *Full* preset.
+
 - **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
 
 #### Changed

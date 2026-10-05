@@ -16,13 +16,13 @@ Snapshots the state of a Proxmox VE cluster (configuration, resources, audit dat
 
     ---
 
-    Pick a preset — **Fast** (structure only, no heavy data; default for a new report), **Standard** (all except S.M.A.R.T.), **Full** (RRD on week timeframe, syslog, firewall log, S.M.A.R.T.) — or toggle every individual section yourself.
+    Pick a preset: **Fast** (structure only, no heavy data; default for a new report), **Standard** (all except S.M.A.R.T.), **Full** (RRD on week timeframe, syslog, firewall log, S.M.A.R.T., capacity planning), or toggle every individual section yourself.
 
 - :material-toggle-switch-outline:{ .lg .middle } **What's Included**
 
     ---
 
-    Cluster (overview, audit log, tasks) · Nodes (detail, APT updates, replication, RRD, syslog, S.M.A.R.T.) · Guests (snapshots, disks, partitions, QEMU agent, RRD) · Storage (content, backups, RRD) · Firewall (rules, aliases, ipsets, log).
+    Cluster (overview, audit log, tasks) · Nodes (detail, APT updates, replication, RRD, syslog, S.M.A.R.T.) · Guests (snapshots, disks, partitions, QEMU agent, RRD) · Storage (content, backups, RRD) · Firewall (rules, aliases, ipsets, log) · Capacity Planning (average and peak usage of guests and nodes, storage growth and days to full; needs the RRD data of each section).
 
 - :material-filter-variant:{ .lg .middle } **Resource Filters**
 
