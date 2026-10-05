@@ -8,8 +8,9 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
-    private DateTime? Start { get; set; }
-    private DateTime? End { get; set; }
+    private DateRange? Range { get; set; }
+    private DateTime? Start => Range?.Start;
+    private DateTime? End => Range?.End;
     private DateTime? MinDate { get; set; }
     private DateTime? MaxDate { get; set; }
     private string SelectedSource { get; set; } = default!;
@@ -43,7 +44,8 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
                                     : DateTime.MinValue,
                                 DateTimeKind.Utc);
 
-    private DateTime EndUtc => DateTime.SpecifyKind(End!.Value, DateTimeKind.Utc);
+    // The last day of the range is included.
+    private DateTime EndUtc => DateTime.SpecifyKind(End!.Value.Date.AddDays(1), DateTimeKind.Utc);
 
     private async Task LoadSourcesAsync()
     {

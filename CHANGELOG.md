@@ -28,6 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Help menu**: the version, edition and update check share a single line at the top.
 
+- **Date ranges**: the trends of Backup Analytics, Replication Analytics and UPS *(EE)*, and the syslog and firewall log filters of Report, pick the period in a single field instead of two separate dates. In the Backup and Replication trends the last day of the period is now included.
+
 - **Cluster settings — nodes**: the node list is edited directly, with no edit/save step per row. The order, which sets the node tried first for the API, is changed with up/down buttons instead of drag and drop, and a note explains that the same addresses are used for SSH.
 
 - **Diagnostic**: resource links in the results (and in the Compliance view *(EE)*) open in a new tab, so the report stays open.

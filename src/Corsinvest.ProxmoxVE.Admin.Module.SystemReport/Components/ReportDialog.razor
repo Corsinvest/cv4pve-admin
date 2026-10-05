@@ -161,24 +161,13 @@
                     </RadzenFormField>
                 </RadzenColumn>
 
-                <RadzenColumn Size="4">
-                    <RadzenFormField Text="@L["Since"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <RadzenDatePicker TValue="DateOnly?"
-                                          @bind-Value="@fw.Since"
-                                          ShowTime="false"
-                                          AllowClear="true"
-                                          DateFormat="d"
-                                          ReadOnly="@ReadOnly" />
-                    </RadzenFormField>
-                </RadzenColumn>
-                <RadzenColumn Size="4">
-                    <RadzenFormField Text="@L["Until"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <RadzenDatePicker TValue="DateOnly?"
-                                          @bind-Value="@fw.Until"
-                                          ShowTime="false"
-                                          AllowClear="true"
-                                          DateFormat="d"
-                                          ReadOnly="@ReadOnly" />
+                <RadzenColumn Size="8">
+                    <RadzenFormField Text="@L["Period"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <RadzenDateRangePicker Value="@ToRange(fw.Since, fw.Until)"
+                                               ValueChanged="@(v => (fw.Since, fw.Until) = (ToDateOnly(v?.Start), ToDateOnly(v?.End)))"
+                                               AllowClear="true"
+                                               DateFormat="d"
+                                               ReadOnly="@ReadOnly" />
                     </RadzenFormField>
                 </RadzenColumn>
             </RadzenRow>
@@ -250,30 +239,18 @@
                             <RadzenNumeric @bind-Value="@syslog.MaxCount" Min="0" ReadOnly="@ReadOnly" />
                         </ChildContent>
                         <End>
-                            <InfoIcon>@L["0 = unlimited"]</InfoIcon>
+                            <InfoIcon>@L["0 = 500. Ignored when the period has a start date."]</InfoIcon>
                         </End>
                     </RadzenFormField>
                 </RadzenColumn>
 
-                <RadzenColumn Size="4">
-                    <RadzenFormField Text="@L["Since"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <RadzenDatePicker TValue="DateOnly?"
-                                          @bind-Value="@syslog.Since"
-                                          ShowTime="false"
-                                          AllowClear="true"
-                                          DateFormat="d"
-                                          ReadOnly="@ReadOnly" />
-                    </RadzenFormField>
-                </RadzenColumn>
-
-                <RadzenColumn Size="4">
-                    <RadzenFormField Text="@L["Until"]" AllowFloatingLabel="false" class="rz-w-100">
-                        <RadzenDatePicker TValue="DateOnly?"
-                                          @bind-Value="@syslog.Until"
-                                          ShowTime="false"
-                                          AllowClear="true"
-                                          DateFormat="d"
-                                          ReadOnly="@ReadOnly" />
+                <RadzenColumn Size="8">
+                    <RadzenFormField Text="@L["Period"]" AllowFloatingLabel="false" class="rz-w-100">
+                        <RadzenDateRangePicker Value="@ToRange(syslog.Since, syslog.Until)"
+                                               ValueChanged="@(v => (syslog.Since, syslog.Until) = (ToDateOnly(v?.Start), ToDateOnly(v?.End)))"
+                                               AllowClear="true"
+                                               DateFormat="d"
+                                               ReadOnly="@ReadOnly" />
                     </RadzenFormField>
                 </RadzenColumn>
             </RadzenRow>
