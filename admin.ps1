@@ -2,6 +2,8 @@
 # SPDX-FileCopyrightText: Copyright Corsinvest Srl
 # SPDX-License-Identifier: AGPL-3.0-only
 
+# A script run by hand in a terminal: its progress messages go to the host, in colour, on purpose.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Interactive helper script: coloured progress messages for the person running it.')]
 param(
     [Parameter(Mandatory = $false)]
     [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge", "docs-build")]
