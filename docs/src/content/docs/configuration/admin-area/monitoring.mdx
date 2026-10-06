@@ -1,0 +1,112 @@
+---
+title: "Monitoring"
+description: "Observability for the cv4pve-admin host itself (not the Proxmox VE cluster)."
+---
+
+import Tag from '~/components/Tag.astro';
+
+Observability for the cv4pve-admin host itself (not the Proxmox VE cluster).
+
+## Sections
+
+The pages are under **Admin Area → Monitoring**:
+
+- **System information**: version, runtime, process and host details of the application
+- **Background Jobs**: Hangfire dashboard for scheduled and queued jobs
+- **Tasks**: history and live progress of the operations started by the modules
+- <Tag kind="ee" /> **Logs**: searchable application log viewer
+
+## System information
+
+A read-only table of properties and values that describe the running cv4pve-admin instance, grouped as follows:
+
+| Group | Content |
+|-------|---------|
+| **App Info** | App version, edition, installation type (`Container (Docker)` or `Executable`), latest available version, whether auto-update is supported, .NET framework and runtime version, assembly location, command line arguments. |
+| **Environment Variables** | `ASPNETCORE_ENVIRONMENT`, `DOTNET_ENVIRONMENT`, `DOTNET_RUNNING_IN_CONTAINER`, `ASPNETCORE_URLS`, `ASPNETCORE_HTTP_PORTS`, `ASPNETCORE_HTTPS_PORTS`. |
+| **Container Info** | Whether the application runs in a container. |
+| **Memory Info** | Process working set, managed (GC) memory, garbage collection counters. |
+| **OS Info** | Operating system version, platform, description and architecture. |
+| **Process Info** | Process architecture, uptime, memory, CPU usage %, CPU time, processor count. |
+| **Machine & User** | Machine name, host name, user the process runs as. |
+| **Network Info** | IP addresses of the host. |
+| **Time** | Local time, UTC time, time zone and offset. |
+| **Path** | Current and base directory; images, temp and data paths with their size on disk. |
+
+The values are read when the page is opened: reload the page to refresh them.
+
+**Filing a bug report:** **Report a Bug** in the help menu (the **?** icon in the top bar) opens a new GitHub issue. Edition and version are already filled in, together with an environment block: name and Proxmox VE version of every enabled cluster, deployment type (`Docker` or `Native`), browser and platform. Add the relevant rows of this page by hand when they help.
+
+## Background Jobs
+
+cv4pve-admin uses [Hangfire](https://www.hangfire.io/) to schedule and execute background jobs (diagnostic scans, snapshot jobs, system reports, update scans, cleanups, …).
+
+The **Background Jobs** page shows the Hangfire dashboard embedded in the page. It requires the **Show dashboard Hangfire** permission. The dashboard groups jobs by state:
+
+| Tab | Meaning |
+|-----|---------|
+| **Enqueued** | Waiting for a worker. |
+| **Scheduled** | Will run at a future point in time. |
+| **Processing** | Currently running. |
+| **Succeeded** | Completed successfully. |
+| **Failed** | Threw an exception. Click to inspect the stack trace, *Requeue* or *Delete*. |
+| **Recurring** | Cron-based jobs (snapshot schedules, scheduled diagnostic scans, cleanups, etc.). |
+
+A failed job is not retried automatically. From [Maintenance → Cleanup Failed Jobs](../maintenance/#cleanup-operations) you can purge all failed jobs in one click.
+
+## Tasks
+
+The **Tasks** page lists the operations started by the modules, by a user or by a schedule, with their status and log. A running task updates live.
+
+You see the tasks of the modules you administer.
+
+| Column | Description |
+|--------|-------------|
+| **Task** | Title, progress (while running), elapsed time and the current phase or last log line. |
+| **Cluster** | Cluster the task ran on. |
+| **Module** | Module that started the task. |
+| **Status** | `Running`, `Completed`, `Failed`, `Cancelled` or `Abandoned`. |
+| **Started** | Start time. |
+| **Duration** | Elapsed time. |
+
+**Created By**, **Phase**, **Progress**, **Ended** and **Last Log** are hidden by default and can be added from the column picker.
+
+Actions:
+
+| Action | Description |
+|--------|-------------|
+| **Details** (info icon on the row) | Opens the full log of the task. |
+| **Open** (link icon on the row) | Opens the page the task belongs to, when the task has one. |
+| **Cancel task** (stop icon on the row) | Stops a running task. Shown only for tasks that can be cancelled and to users with the **Cancel running tasks** permission. |
+| **Search** | Searches title, cluster, module, phase, creator and last log. |
+| **Show chart** / **Hide chart** | Shows a stacked chart of the tasks of the last 30 days by status. The chart follows the filters of the grid. |
+| **Export** | Export the grid to Excel. |
+
+**Abandoned tasks:** A task that is still marked as running when cv4pve-admin starts was interrupted by a restart. At startup cv4pve-admin marks it `Abandoned`.
+
+Task history is deleted automatically according to [General Settings → Task Cleanup](../general-settings/#task-cleanup) (default: 30 days). To delete it on demand use [Maintenance → Cleanup Task History](../maintenance/#cleanup-operations).
+
+## Logs<Tag kind="ee" />
+
+The **Logs** page shows the application log stored in the database.
+
+| Column | Description |
+|--------|-------------|
+| **Timestamp** | Date and time of the entry. |
+| **Level** | `Verbose`, `Debug`, `Information`, `Warning`, `Error` or `Fatal`. Filter with the checkbox list of the column. |
+| **Message** | Log message (truncated in the grid, complete in the tooltip). |
+
+Expand a row to read the **Exception**, the **Message template** and the **Properties** of the entry, each with a copy button.
+
+Actions:
+
+| Action | Description |
+|--------|-------------|
+| **Search** | Free-text search in message, exception and message template. |
+| **Show chart** / **Hide chart** | Shows a stacked chart of the entries of the last 30 days by level. Drag the range selector under the chart to restrict the grid to a period. |
+| **Cleanup retention** | After confirmation, deletes the entries older than the retention configured in [General Settings → Log Cleanup](../general-settings/#log-cleanup). |
+| **Export** | Export the grid to Excel. |
+
+Old entries are also deleted automatically by the scheduled Log Cleanup job (default: 30 days, every day at 03:00).
+
+**Where the entries come from:** The page reads the table written by the PostgreSQL log sink, which is enabled by default in the Enterprise Edition. Which levels are recorded depends on the minimum level in the [Serilog configuration](../../appsettings-extra/#serilog-configuration). In both editions the log is also written to daily files under `data/logs/` and to the container output.

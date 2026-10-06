@@ -1,0 +1,7 @@
+import Tag from '~/components/Tag.astro';
+
+:::caution[Requirements]
+<Tag kind="ssh" /> SSH access to the cluster nodes is required. Configure it under **Admin Area → Proxmox VE Clusters → (cluster) → SSH Credentials**: see [SSH Configuration](../../configuration/admin-area/clusters/#ssh-configuration).
+
+A PAM user (e.g. `root@pam`) is needed only when the SSH auth method is `Same as WEB API`.
+:::

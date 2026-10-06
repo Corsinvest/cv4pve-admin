@@ -1,0 +1,159 @@
+---
+title: "Security & Access Control"
+description: "Fine-grained permission system that controls who can use which feature on which cluster."
+---
+
+import Tag from '~/components/Tag.astro';
+
+Fine-grained permission system that controls who can use which feature on which cluster.
+
+It runs on top of the Proxmox VE permission model and is independent from it. Proxmox VE permissions decide what the application can do *against* the Proxmox VE API. The permissions of this page decide what each user can do *inside* the application.
+
+## Sections
+
+The pages are under **Admin Area → Security**:
+
+- <Tag kind="ee" /> **Users**: create, edit and delete accounts, assign roles and permissions
+- <Tag kind="ee" /> **Roles**: named bundles of permissions, built-in or custom
+- <Tag kind="ee" /> **App Tokens**: credentials for programmatic access
+- <Tag kind="ee" /> **Audit Logs**: audit trail of logins and administrative actions
+- **Active Sessions**: list of the connected browser sessions (sending messages and forcing a logout are <Tag kind="ee" />)
+
+:::note[Community Edition]
+In the Community Edition the **Users**, **Roles**, **App Tokens** and **Audit Logs** pages show the Enterprise subscription notice. The application is used with the built-in `admin@local` account. Its password is changed from the [User Profile](../../profile/) or with the [CLI](../../../cli/).
+:::
+
+## Built-in accounts
+
+Two accounts are created on first startup and cannot be deleted:
+
+| Account | Purpose |
+|---------|---------|
+| `admin@local` | Administrator. Created with the default password `Password123!`. See [Getting Started](../../../getting-started/). |
+| `system` | Internal account used to run scheduled background jobs. It has no password and cannot log in. |
+
+While the default password of `admin@local` is in use, a persistent security warning with a **Change password now** link is shown after login.
+
+## Users<Tag kind="ee" />
+
+The **Users** grid shows **Photo**, **User Name**, **Display Name**, **Built In**, **Email confirmed**, **Is Active**, **Lockout enabled** and **Lockout end**.
+
+Toolbar actions:
+
+| Action | Description |
+|--------|-------------|
+| **Add** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
+| **Export** | Export the grid to Excel. |
+| **Reset password** | Set a new password for the selected user. The dialog asks for **Old password**, **New password** and **Confirm New password**. Not available for your own account: use the [User Profile](../../profile/). |
+| **Effective Permissions** | Show every permission the selected user ends up with, and where each one comes from (granted directly or through a role). The dialog has a **Flat** and a **Tree** view. |
+
+Click the **User Name** of a row to edit the user. The dialog has three tabs.
+
+### General
+
+| Field | Description |
+|-------|-------------|
+| **Photo** | Click the picture to upload an image (up to 2 MB, resized to 128x128) or to clear it. Without a photo, the Gravatar of the email address is used. |
+| **Email** | Email address. It is also the user name used to log in, and it must be unique. |
+| **Display Name** | Name shown in the UI. |
+| **Is Active** | When off, the user cannot log in. It is off by default for a new user: turn it on to let the user in. |
+| **Email Confirmed** | Whether the email address has been confirmed. A user with an unconfirmed email cannot log in. Read-only while creating a user. |
+| **Lockout Enabled** | When on, the account is locked for a while after too many failed logins. Thresholds are set in [appsettings.extra.json](../../appsettings-extra/#security-settings). |
+
+### Permissions
+
+Permissions granted directly to the user, in addition to the ones inherited from roles. See [Permissions editor](#permissions-editor).
+
+### Roles of the user
+
+Pick list with the available roles on the left and the **Selected Roles** on the right. Roles flagged as **Default** are always assigned and cannot be removed here.
+
+### How a new user gets access
+
+A new user is created with a random password that nobody knows. The user receives an email with a link to **confirm the email address**. After confirming, the user sets a password with **Forgot password?** on the login page, which sends a reset link by email.
+
+Both emails are sent through the SMTP server configured in [General Settings](../general-settings/#smtp-configuration), so configure it before creating users. If email cannot be delivered, an administrator can turn on **Email Confirmed** in the user dialog and set the password with the [CLI](../../../cli/).
+
+**Locked out accounts:** A locked account is unlocked automatically when **Lockout end** is reached. To unlock it immediately use the `user unlock` command of the [CLI](../../../cli/).
+
+## Roles<Tag kind="ee" />
+
+A role is a named bundle of permissions. The **Roles** grid shows **Name**, **Description**, **Built In** and **Default**. Click the **Name** to edit a role.
+
+| Field | Description |
+|-------|-------------|
+| **Name** | Required. Cannot be changed after the role is created. |
+| **Description** | Required. |
+| **Default** | A default role is added automatically to a user when the user is created or edited, and cannot be removed from the user's role list. |
+| **Permissions** | The permissions granted by the role. See [Permissions editor](#permissions-editor). |
+
+The application creates the built-in roles: the administrator role, the cluster roles and one or more roles per module. They cannot be deleted and are read-only: name, description, default flag and permissions cannot be changed. To customise access, create a new role.
+
+## Permissions editor
+
+The same editor is used for users, roles and app tokens. Each entry grants one permission and is made of:
+
+| Column | Meaning |
+|--------|---------|
+| **Cluster** | The cluster the permission applies to, or **All clusters**. |
+| **Permission** | The operation that is allowed. Permissions are grouped by module. The **Key** column (hidden by default) shows the technical key. |
+| **Path** | The resource path the permission applies to. |
+| **Propagated** | When on, the permission also applies to the paths below **Path**. |
+| **Built In** | Entries created by the application. They cannot be edited or removed. |
+
+The editor has three tabs that show the same entries in different ways:
+
+| Tab | Use it to |
+|-----|-----------|
+| **List** | Flat grid with **Add**, **Delete** and in-row editing of cluster, permission, path and propagation. |
+| **By Permission** | Tree of all permissions with one column per cluster. Tick a checkbox to grant a permission on a cluster, or tick a group to grant all the permissions below it. **Only set** hides the branches with no granted permission. |
+| **By Path** | One row per path and one column per cluster. Each granted permission is a badge: click it to remove it, use the **+** button to add one. |
+
+## App Tokens<Tag kind="ee" />
+
+App tokens are credentials for programmatic access, used instead of a user name and password. The [AI Server (MCP)](../../../modules/ai-server/) authenticates its clients with an app token.
+
+The **App Tokens** grid shows **Name**, **Owner**, **Is Active**, **Created At** and **Expires At**. Inactive and expired tokens are highlighted.
+
+| Field | Description |
+|-------|-------------|
+| **Name** | Required. Identifier for the token. |
+| **Owner** | Optional user the token is linked to. Empty means a system token. |
+| **Expires At** | Optional date and time after which the token is rejected. Empty means it never expires. |
+| **Is Active** | When off, the token is rejected. Default: on. |
+| **Permissions** / **Roles** | Same model as users: grant single permissions, assign roles, or both. |
+
+When you create a token the secret is shown **once** in a dialog: copy it immediately, it will not be shown again.
+
+Toolbar actions:
+
+| Action | Description |
+|--------|-------------|
+| **Regenerate** | Generates a new secret for the selected token and shows it once. The previous secret stops working immediately. |
+| **Effective Permissions** | Shows every permission the token ends up with, directly or through roles. |
+| **Export** | Export the grid to Excel. |
+
+## Active Sessions
+
+The **Active Sessions** page lists the browser sessions currently connected to the application. Columns: **UserName**, **Login**, **Ip Address**, **Device**, **Platform**, **Browser**, **Current Page** and **Last Activity**. **Platform Version**, **Browser Version** and **User Agent** are hidden by default and can be added from the column picker.
+
+| Action | Description |
+|--------|-------------|
+| <Tag kind="ee" /> **Send Message** | Sends a notification to the selected sessions. Fields: **Title**, **Message** (required) and **Severity** (`Info`, `Success`, `Warning`, `Error`). |
+| <Tag kind="ee" /> **Force logout** | After confirmation, terminates the selected sessions. The user sees the message "Your session has been terminated by an administrator". |
+
+Each user sees their own sessions in the [User Profile](../../profile/#active-sessions).
+
+## Audit Logs<Tag kind="ee" />
+
+The **Audit Logs** grid records logins (successful and failed) and administrative actions such as user, role and maintenance operations.
+
+Columns: **Timestamp**, **User Name**, **Success** (`Success` or `Failed`), **Action**, **IP Address** and **User Agent**. Expand a row to read the **Details** of the entry, with a button to copy them.
+
+- Every column can be filtered and sorted, and the grid can be grouped by column.
+- **Export** saves the grid to Excel.
+- **Delete** removes the selected entries.
+- Old entries are removed with [Maintenance → Cleanup Audit Logs](../maintenance/#cleanup-operations). There is no automatic cleanup.
+- Audit logs are stored in the `system` schema of the cv4pve-admin database, separately from Proxmox VE.
+
+Each user can read their own entries in the [User Profile](../../profile/).

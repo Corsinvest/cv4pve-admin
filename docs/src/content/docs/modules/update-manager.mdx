@@ -1,0 +1,131 @@
+---
+title: "Update Manager"
+description: "Scans the VM/CT of Proxmox VE to find the available updates, security patches included. The module is read-only: it shows the pending updates and changes nothing."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import Mdi from '~/components/Mdi.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import { featureCron, featureExportPdfExcel, featureNotifier, featureParallelScan } from '~/data/shared-features.js';
+import RequirementsSsh from '~/partials/requirements-ssh.mdx';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="update" size="lg" /><Tag kind="per-cluster" /></p>
+
+Scans the VM/CT of Proxmox VE to find the available updates, security patches included. The module is read-only: it shows the pending updates and changes nothing.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:security', title: "Security Patches", text: "Flag VMs and containers with pending security updates." },
+    { icon: 'mdi:package-variant', title: "Update Inventory", text: "Per VM/CT: pending normal updates, pending security updates, reboot required." },
+    featureCron,
+    { icon: 'mdi:shield-search', title: "Read-Only Scanning", text: "Check for updates without making system changes.", href: '#scanning' },
+    featureExportPdfExcel,
+    featureParallelScan,
+    featureNotifier,
+  ]}
+/>
+
+## Why
+
+Why centralise update checks when `apt list --upgradable` already exists?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:view-list', title: "One view, every VM", text: "See the pending updates of all running VMs and CTs of the cluster on a single page. You need no SSH session per host and no chain of scripts." },
+    { icon: 'mdi:shield-alert', title: "Security signal isolated", text: "Each row has separate Normal, Security and Reboot required flags, so the pending security updates are not hidden among the others." },
+    { icon: 'mdi:eye', title: "Read-only by design", text: "The module never installs an update. It is safe to schedule and leave running: you decide when and how to apply the updates." },
+    { icon: 'mdi:shield-check', title: "One broken VM doesn't break the run", text: "An SSH timeout, a missing agent or a parse error affects only that guest. The rest of the scan completes and the report shows the failure." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module and its dashboard widget
+- **Scans**: live grid of every running VM/CT, with its current scan status (InScan / Ok / InError / Cancelled), its available updates (Normal / Security) and its reboot required flag. From this page you start a new scan and download the report as PDF or Excel. See [Scanning](#scanning)
+
+## Scanning
+
+A scan covers the guests that are running when it starts: stopped guests are not listed. The module runs a search script inside each guest: the Linux script or the Windows script, depending on the guest. From the script it reads back whether normal updates, security updates or a reboot are pending. The default Linux script recognises the common package managers (`apt`, `dnf`, `yum`, `zypper`, `apk`, `pacman` and others).
+
+| Action | What it does |
+|--------|--------------|
+| **Scan** | Starts a scan immediately in the background. The grid updates while the guests are scanned |
+| **Download** | Split button: downloads the current result as **PDF** or **Excel**. Disabled until a result exists |
+
+The scan appears in the global Task Tracker and can be cancelled from there. When you cancel, the guests not scanned yet are marked `Cancelled`.
+
+A guest that fails is marked `InError`, with the message in the **Error** column. The scan continues with the other guests.
+
+**No scan history:** Only the result of the last scan is available. It is kept in the application cache for 8 hours and is not stored in the database. To see data again, run a new scan or wait for the scheduled one.
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Status** | Result of the last scan: number of guests up to date, with updates to install and in error, and the time of the scan |
+
+## Settings
+
+<Collapse title="Show all settings" kind="settings">
+
+**Enabled schedulation**
+
+Turns the scheduled scan on or off
+
+- **Default:** off
+
+**Cron Schedule**
+
+When the scheduled scan runs (default: every 12 hours)
+
+- **Default:** `0 */12 * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#0_*/12_*_*_*)
+
+**Max parallel requests**
+
+Maximum number of VM/CT scanned at the same time (1 = sequential, range 1-50). Lower it if the nodes get overloaded during a scan
+
+- **Default:** 5
+
+**Script Windows Search Update**
+
+Script run inside Windows guests to detect updates. The refresh button restores the default script
+
+- **Default:** bundled PowerShell
+
+**Script Linux Search Update**
+
+Script run inside Linux guests / LXC to detect updates. The refresh button restores the default script
+
+- **Default:** bundled bash
+
+**Notifier**
+
+[Notifier](../../configuration/admin-area/notifier/) configurations that receive the PDF report at the end of a scan. The notification is sent only when at least one guest has pending updates or needs a reboot
+
+</Collapse>
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+| Permission | Allows |
+|------------|--------|
+| **Update Manager** | Open the module and its **Overview** page |
+| **Scans** | Open the page with that name (one permission per page) |
+| **Status** | Use the dashboard widget |
+| **Edit Settings** | Change the module settings |
+
+**Scan** and **Download** have no dedicated permission: they are available to every user who can open the **Scans** page.
+
+<RequirementsSsh />
+
+:::note[Guest requirements]
+QEMU VMs must have the QEMU Guest Agent enabled and responding. Windows guests are scanned only when their OS type is `win10` or `win11`. LXC containers need no agent.
+:::
+
+<PvePrivileges module="update-manager" />

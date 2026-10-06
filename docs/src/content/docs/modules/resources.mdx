@@ -1,0 +1,165 @@
+---
+title: "Resources"
+description: "Real-time inventory and operations, for the selected cluster, on every kind of Proxmox VE resource: clusters, nodes, guests, storage, networks, disks, partitions and snapshots."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="verified" size="lg" /><Tag kind="per-cluster" /></p>
+
+Real-time inventory and operations, for the selected cluster, on every kind of Proxmox VE resource: clusters, nodes, guests, storage, networks, disks, partitions and snapshots.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:magnify', title: "Search", text: "The Nodes, Guests and Storages lists have a search box, in both list and card view. It filters on name, description, tags and the other text columns at the same time, and on hostname when **Show OS Info** is on. The other grids filter by column." },
+    { icon: 'mdi:view-grid', title: "Card View", text: "On Nodes, Guests and Storages, switch from **List** to **Card** layout to see all the resources at a glance. A card shows the status icon, the name, the health score, CPU / RAM / disk usage bars and the tags. Its arrow expands the same detail as the row of the list." },
+    { icon: 'mdi:speedometer', title: "Health Score", text: "One health score, shown as a badge or a gauge, computed from CPU, memory, disk usage and resource type. A tooltip explains the score. The score goes from 0 to 100: 80 and above is **Good**, 60 to 79 is **Warning**, below 60 is **Critical**." },
+    { icon: 'mdi:play-circle', title: "Quick Actions", text: "Start, shutdown, reboot, stop, reset, pause, resume, unlock or open a console without leaving the page. The buttons are in the **Summary** tab of a row's expanded detail. Snapshots are managed from the same expanded detail." },
+    { icon: 'mdi:console', title: "Console Access", text: "Open a NoVnc console for nodes, VMs and containers, or an Xterm.js console for nodes and containers, from the resource view.", href: '#console-limitations' },
+    { icon: 'mdi:link-variant', title: "Cross-references", text: "Click a node name, VM ID, storage or snapshot to jump to its detail page. The cluster context is kept." },
+    { icon: 'mdi:graph', title: "Network diagram", text: "The Networks → Diagram tab draws an interactive SVG topology of nodes, bridges, VNets and guests, built with [`cv4pve-api-dotnet`](https://github.com/Corsinvest/cv4pve-api-dotnet). You can save it for your documentation.", href: '#network-diagram' },
+    { icon: 'mdi:file-excel', title: "Excel export", text: "The **Export** button in the toolbar of the lists (nodes, guests, storages, networks, disks, partitions, snapshots, cluster logs) saves the list as an Excel file." },
+  ]}
+/>
+
+## Why
+
+Why this view when PVE already shows resources per cluster?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:view-list', title: "The whole cluster at once", text: "Resources lists VMs, nodes, storage and snapshots of the **whole** selected cluster in one filterable grid." },
+    { icon: 'mdi:filter', title: "Filter, sort, group, search", text: "The grids have multi-column sort, grouping, a column picker and free-text search. For example, find the one VM with `prod` in its tags among 200." },
+    { icon: 'mdi:flash', title: "Quick actions from the list", text: "Start, stop or open a console without opening the page of the VM: expand the row and use the buttons of its **Summary** tab." },
+    { icon: 'mdi:lan', title: "Network at a glance", text: "The Networks page shows bridges, bonds, SDN and the diagram in one place. PVE shows them split between the tabs of each node.", href: '#network-diagram' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module
+- **Cluster**: cluster summary (status, Ceph when present, node and storage counters, usage gauges, node list), plus the **Tasks** and **Logs** tabs of the cluster
+- **Nodes**: all cluster nodes with status, CPU / memory / disk usage, health score and uptime; refreshed every 10 seconds
+- **Guests**: VMs and containers of the cluster, with running/stopped state, type, owner node, CPU / memory / disk usage, share of host CPU and memory, health score and uptime; refreshed every 10 seconds. The **Show OS Info** toggle adds hostname and OS family/version (read via QEMU Guest Agent)
+- **Storages**, tabbed view: **Configuration** (storage definitions of the cluster) · **Storages** (storages per node with type, status, usage) · **Usage** (space used on each storage, **By Storage** or **By VMs**)
+- **Networks**, tabbed view: **Nodes** (bridges/bonds) · **Guests** (per-VM NIC config) · **SDN** (zones, VNets) · **Diagram** (interactive SVG topology)
+- **Disks**: virtual disks of every VM/CT, grouped by guest: kind, storage, file, size, cache, backup flag, unused, mount point, passthrough, format
+- **Partitions**: partitions and mount points of the running QEMU VMs (read via QEMU Guest Agent)
+- **Snapshots**: all snapshots in the cluster with host, VM ID, name and date. With snapshot size calculation <Tag kind="ee" /> the page adds storage, disk, **size on disk**, replication flag and a **Trends** tab
+
+More columns than the default ones are available from the column picker of each list (tags, pool, lock, disk and network I/O, assigned CPU and memory, a link to the same resource in Proxmox VE, and others).
+
+## Resource detail
+
+Expanding a row (or a card) on Nodes, Guests and Storages opens the detail of that resource, organised in tabs. Tabs and buttons that need a permission the user does not have are hidden.
+
+| Resource | Tabs |
+|----------|------|
+| **Node** | **Summary** · **Performance** · **Replication** · **Disks** · **Task History** |
+| **Guest** | **Summary** · **Config** · **Guest Info** (QEMU only) · **Performance** · **Task History** · **Backups** · **Replication** · **Snapshots** |
+| **Storage** | **Summary** · **Performance** |
+
+The buttons at the top of the **Summary** tab run the actions on the resource:
+
+**Guest**
+
+- **Play**, when the guest is stopped
+- **Resume**, when the guest is paused
+- **Shutdown**, when the guest is running. Its drop-down has **Reboot**, **Pause**, **Reset** and **Stop**
+- **Console**
+- **Unlock**, in the menu (three dots), only when the guest is locked
+
+**Node**
+
+- **Shutdown**, when the node is online. Its drop-down has **Reboot**
+- **Console**
+- **Memory Cleanup**, in the menu (three dots)
+
+Every action except starting a guest and opening a console asks for confirmation.
+
+**Memory Cleanup** flushes the page cache and compacts the memory of the node. It runs over SSH, so it needs the [SSH credentials](../../configuration/admin-area/clusters/#ssh-configuration) of the cluster.
+
+The **Snapshots** tab of a guest creates, deletes and rolls back snapshots.
+
+### Storage usage
+
+**Storages → Usage** shows the space used on each storage, by storage or by guest.
+
+**Sizes can differ from real disk usage:** On storages with compression or deduplication (PBS, ZFS, CEPH, Btrfs) the page shows uncompressed sizes, which can differ significantly from the disk space actually used.
+
+### Network diagram
+
+In **Networks → Diagram**, **Download** saves the diagram as `network-diagram-<cluster>.svg`.
+
+## Enterprise Additions<Tag kind="ee" />
+
+Enterprise enables snapshot size data on Resources:
+
+- **Snapshot size**: size on disk in the Snapshots grid and in a guest's Snapshots tab, the **Snapshots Usage** card on Cluster and the snapshot gauge in the cluster summary
+- **Snapshots Size** and **Snapshots Repl. Size** columns on the Nodes, Guests and Storages lists
+- **Trends** tab on Snapshots: pick hosts, storages and VM IDs to chart how much space their snapshots take
+- **Orphan snapshots**: see below
+
+Snapshot size calculation is switched on per cluster, in the **Feature** section of the [cluster settings](../../configuration/admin-area/clusters/). The sizes are read from these storage types: ZFS (`zfspool`), Ceph RBD (`rbd`), LVM-thin (`lvmthin`), Btrfs (`btrfs`) and CephFS (`cephfs`). The values are cached for 5 minutes.
+
+### Orphan snapshots
+
+A snapshot removed in Proxmox VE can stay on the underlying storage: the removal does not always reach the dataset, and the space stays occupied. Proxmox VE no longer lists the snapshot, so nothing in its UI shows it. The disk looks fuller than the snapshots explain.
+
+In Resources, the **Snapshots** tab of a guest lists these snapshots first, marked as orphans, with a warning that sums the space they hold. You cannot roll back, edit or delete them from here, because Proxmox VE has no snapshot to act on. To remove one, work on the storage directly, on the node. Snapshots created by storage replication are not reported as orphans.
+
+:::note[Requires SSH]
+Orphan detection compares what the storage holds against what Proxmox VE reports, so it needs the same [SSH credentials](../../configuration/admin-area/clusters/#ssh-configuration) as snapshot size calculation. Without them, neither is shown.
+:::
+
+Sizes are read per storage type. On ZFS the reported size is the space the snapshot actually occupies. On other backends it is currently an approximation.
+
+## Console Limitations
+
+**Node console requires a PAM user:** Node console (NoVnc, Xterm.js) requires the WEB API user to be a **PAM user** (e.g. `root@pam`). Users authenticated via other realms (PVE, LDAP, …) cannot open a node console because Proxmox VE requires OS-level authentication. The console button is disabled if the WEB API user is not a PAM user.
+
+**VM/CT console requires Credential authentication:** VM and container console (QEMU, LXC) requires the WEB API to use **Credential** authentication (username/password). The console button is disabled when the WEB API is configured with **API Token** authentication, because Proxmox VE requires a user session to open a VM console.
+
+## Widgets
+
+The module gives 8 widgets to the [Dashboard](../dashboard/):
+
+| Widget | Description |
+|--------|-------------|
+| **Resources Status** | Shows the status of cluster resources |
+| **Resources Usage** | Shows resource usage metrics |
+| **Cluster Usage Gauge** | Arc gauges side by side for the CPU, memory, storage and snapshot usage of a cluster (the first one selected) |
+| **Cluster Usage Gauge Stacked** | The same values as concentric rings in one gauge |
+| **Cluster Usage Grid** | Grid view of cluster usage metrics |
+| **Clusters Maps** | Geographic map with one pin per cluster |
+| **VM/CT Locked** | Shows VMs and containers in locked state |
+| **Nodes Status** | The offline nodes, with the number of nodes online |
+
+## Application permissions
+
+The module has no settings. Each page has its own permission:
+
+| Permission | Key | Grants |
+|------------|-----|--------|
+| **Resources** | `Status.Link` | Access to the module and to its **Overview** page |
+| **Cluster** | `Status.Link.cluster` | **Cluster** page |
+| **Nodes** | `Status.Link.nodes` | **Nodes** page |
+| **Guests** | `Status.Link.guests` | **Guests** page |
+| **Storages** | `Status.Link.storages` | **Storages** page |
+| **Networks** | `Status.Link.networks` | **Networks** page |
+| **Disks** | `Status.Link.disks` | **Disks** page |
+| **Partitions** | `Status.Link.partitions` | **Partitions** page |
+| **Snapshots** | `Status.Link.snapshots` | **Snapshots** page |
+
+The built-in role **Admin for module Resources** includes all of them, together with one permission per dashboard widget of the module (`Status.Widget.<widget>`).
+
+Inside the pages, the cluster permissions of the user decide which nodes, guests and storages are listed and which actions are offered on them (power management, console, snapshots, backups, replication, audit).
+
+Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
+
+<PvePrivileges module="resources" />

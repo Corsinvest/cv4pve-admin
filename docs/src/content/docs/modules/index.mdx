@@ -1,0 +1,52 @@
+---
+title: "Modules"
+description: "All cv4pve-admin modules, with their edition."
+---
+
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import ModulesFilter from '~/components/ModulesFilter.astro';
+
+{/* The colour of a card is the one of its category, the same as the chips of the filter (ModulesFilter.astro). */}
+export const CATEGORY = {
+  protection: '#2e7d32',
+  health: '#1976d2',
+  control: '#6d4c41',
+  automation: '#7b1fa2',
+  utilities: '#ef6c00',
+  management: '#c2185b',
+  features: '#00796b',
+};
+
+export const modules = [
+  { icon: 'ms:photo_camera', title: "AutoSnap", text: "Automated snapshot scheduling and management", href: './autosnap/', color: CATEGORY.protection },
+  { icon: 'ms:safety_check', title: "Node Protect", text: "Automated node configuration backup", href: './node-protect/', color: CATEGORY.protection },
+  { icon: 'ms:sync_alt', title: "Disaster Recovery", text: "Multi-site data replication and disaster recovery [[In design|note]]", color: CATEGORY.protection, ee: true },
+  { icon: 'ms:electric_bolt', title: "UPS Monitor", text: "UPS monitoring over SNMP with power alerts", href: './ups-monitor/', color: CATEGORY.protection, ee: true },
+  { icon: 'ms:backup', title: "Backup Analytics", text: "Backup job analysis and trend insights", href: './backup-analytics/', color: CATEGORY.health },
+  { icon: 'ms:sync', title: "Replication Analytics", text: "Replication job monitoring and analysis", href: './replication-analytics/', color: CATEGORY.health },
+  { icon: 'ms:stethoscope', title: "Diagnostics", text: "Automated cluster health checks, diagnostics and compliance checks", href: './diagnostics/', color: CATEGORY.health },
+  { icon: 'ms:verified', title: "Resources", text: "Real-time cluster and resource status monitoring", href: './resources/', color: CATEGORY.health },
+  { icon: 'ms:multiline_chart', title: "Metrics Exporter", text: "Exposes Proxmox VE metrics for Prometheus", href: './metrics-exporter/', color: CATEGORY.health },
+  { icon: 'ms:update', title: "Update Manager", text: "System updates scanning and management", href: './update-manager/', color: CATEGORY.health },
+  { icon: 'ms:display_settings', title: "VM Performance", text: "Per-disk I/O of running QEMU VMs: operations and throughput", href: './vm-performance/', color: CATEGORY.health, ee: true },
+  { icon: 'ms:smart_toy', title: "Bots", text: "Remote cluster management via Telegram chatbot", href: './bots/', color: CATEGORY.control },
+  { icon: 'ms:account_tree', title: "Workflow", text: "Visual workflow designer for automation", href: './workflow/', color: CATEGORY.automation, ee: true },
+  { icon: 'ms:hub', title: "AI Server", text: "Model Context Protocol server for AI integration", href: './ai-server/', color: CATEGORY.utilities },
+  { icon: 'ms:auto_awesome', title: "AI Assistant", text: "Built-in chat assistant integrated directly into cv4pve-admin [[In design|note]]", color: CATEGORY.utilities },
+  { icon: 'ms:description', title: "System Report", text: "Comprehensive cluster, VM, node and storage reports", href: './system-report/', color: CATEGORY.utilities },
+  { icon: 'ms:dns', title: "Portal", text: "Multi-tenant portal: tenants with their own VMs/CTs and users with per-VM permissions", href: './portal/', color: CATEGORY.management, ee: true },
+  { icon: 'ms:dashboard', title: "Dashboard", text: "Customizable dashboards with widgets and metrics: home page after login", href: './dashboard/', color: CATEGORY.features },
+  { icon: 'mdi:magnify', title: "Command Palette", text: "Quick access to commands and navigation [[Ctrl+K]]", href: './command-palette/', color: CATEGORY.features },
+];
+
+<ModulesFilter />
+
+<div class="cv-modules-grid">
+
+<FeatureGrid items={modules} />
+
+</div>
+
+---
+
+[Concepts](../concepts/) explains the edition badge on a card and the cluster scope shown under the title of each module page. [Configuration](../configuration/#modules) explains how to open the settings of a module.

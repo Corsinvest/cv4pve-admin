@@ -1,0 +1,85 @@
+---
+title: "Maintenance"
+description: "Housekeeping operations for the cv4pve-admin database, cache and background jobs."
+---
+
+import Tag from '~/components/Tag.astro';
+
+Housekeeping operations for the cv4pve-admin database, cache and background jobs.
+
+Open **Admin Area → Maintenance**. Every operation runs on demand when you click its button: nothing on this page is scheduled.
+
+## Sections
+
+- **Fix All**: one-click safe maintenance sequence
+- **Database Maintenance**: cleanup of Audit Logs, System Logs and Task History, plus Reindex, Optimize and Compact (per module schema)
+- **Cache Management**: Clear Memory Cache
+- **Job Management**: Cleanup Failed Jobs
+- **Connectivity Tests**: check that the application can reach the clusters and the internet
+- **Log**: live output of the operations
+
+## Fix All
+
+The big red button at the top runs the default safe sequence:
+
+1. Each module's own fix routine (applies pending database updates, re-initialises schedules, recreates missing data, etc.)
+2. **Cleanup Audit Logs**, using the **Keep last days** value currently set next to that button
+3. **Reindex**: `REINDEX SCHEMA <module>` for every module
+4. **Optimize**: `VACUUM (ANALYZE)` per table within each module's schema
+5. **Clear Memory Cache**: drops the cached cluster data, permissions, settings and translations
+6. **Cleanup Failed Jobs**: purges failed Hangfire jobs
+
+Step 1 starts as soon as the button is clicked. Steps 2 to 6 each ask for their own confirmation. Answer **No** to skip a step: the sequence continues with the next one.
+
+*Compact*, *Cleanup System Logs* and *Cleanup Task History* are **not** included in Fix All.
+
+## Database operations
+
+Three explicit buttons. Each one runs only on the **schema of each module**, never on the whole database:
+
+| Button | What it does | Locks? | When to run |
+|--------|--------------|:------:|-------------|
+| **Reindex** | `REINDEX SCHEMA <module>` per module | Short per-index lock | Routine maintenance, e.g. monthly. |
+| **Optimize** | `VACUUM (ANALYZE) <module>.<table>` per table | None | Routine maintenance; refreshes planner statistics. |
+| **Compact (full)** | `VACUUM (FULL, ANALYZE) <module>.<table>` per table | **`ACCESS EXCLUSIVE` per table**, the application blocks during the run | Only after large cleanups (audit logs, task history, old reports). Asks for explicit confirmation. |
+
+Each of the three operations asks for confirmation. For every module it writes the size of the schema before and after the run, followed by the total. *Compact* also reports the reclaimed space.
+
+:::caution[Compact locks the database]
+*Compact* runs `VACUUM FULL` which holds an **ACCESS EXCLUSIVE** lock on each table. While it runs, the application is effectively offline for the modules involved. The operation also needs temporary disk space roughly equal to your largest table. Use it after a large cleanup (e.g. just after deleting many months of audit logs), not as routine maintenance.
+:::
+
+## Cleanup operations
+
+Each cleanup button asks for confirmation before deleting.
+
+| Button | What it deletes | Retention |
+|--------|-----------------|-----------|
+| **Cleanup Audit Logs** | Audit log rows older than `N` days | **Keep last days** next to the button. Default: 180 days (1 to 3650). |
+| <Tag kind="ee" /> **Cleanup System Logs** | Application log rows older than `N` days | **Keep last days** next to the button. Default: 30 days (1 to 3650). |
+| **Cleanup Task History** | Task history rows older than `N` days | **Keep last days** next to the button. Default: 90 days (1 to 3650). |
+| **Cleanup Failed Jobs** | Hangfire failed jobs | No retention: purges all of them |
+| **Clear Memory Cache** | In-memory caches: cluster data, permissions, settings, translations | Immediate |
+
+The **Keep last days** values on this page are used only for the manual run and are not saved: they go back to the defaults when the page is reopened. The scheduled cleanups have their own retention in [General Settings](../general-settings/) (Task Cleanup, Log Cleanup <Tag kind="ee" />).
+
+**Community Edition:** Audit logs and database system logs are recorded only by the Enterprise Edition, so in the Community Edition **Cleanup Audit Logs** and **Cleanup System Logs** find nothing to delete.
+
+## Connectivity tests
+
+Two diagnostic buttons that do not modify anything: they only confirm that the application can reach its dependencies.
+
+- **Test Cluster Connections**: opens a Proxmox VE API connection to every enabled cluster, in parallel. It reports the elapsed time or the error of each one.
+- **Test Internet Connectivity**: sends an HTTP `GET` to `https://www.google.com`, `https://www.cloudflare.com` and `https://www.github.com` from the cv4pve-admin process, with a 10 second timeout. It reports the elapsed time or the error of each one.
+
+## Log
+
+The **Log** panel at the bottom shows the progress of the operations, newest line first. Lines that succeed start with `OK` (green), lines that fail start with `FAIL` (red). A badge next to the title counts the lines.
+
+- The copy button copies the whole log to the clipboard, for example to attach it to a support request.
+- **Clear** empties the log.
+- A progress bar is shown above the lines while an operation is running.
+
+While an operation is in progress, the buttons of the other operations are disabled, to avoid concurrent operations. The log exists only in the page: it is lost when you leave the page.
+
+<Tag kind="ee" /> Every operation of this page, with its outcome, is also recorded in the [Audit Logs](../security/#audit-logs).

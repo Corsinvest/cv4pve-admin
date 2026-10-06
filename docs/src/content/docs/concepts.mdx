@@ -1,0 +1,72 @@
+---
+title: "Concepts"
+description: "The ideas the rest of this documentation relies on: the scope of a module (one cluster or all clusters) and the badges for edition and SSH."
+---
+
+import Tag from '~/components/Tag.astro';
+
+A few ideas come back on every page of this documentation, shown as badges next to titles and features. This page explains them once.
+
+## Cluster scope
+
+cv4pve-admin manages several Proxmox VE clusters from one interface. Each module works in one of two ways, and its page says which with a badge next to the title.
+
+| Badge | The module works on | In the navigation menu | Data and settings |
+|-------|---------------------|------------------------|-------------------|
+| <Tag kind="per-cluster" /> | The cluster selected in the [cluster picker](../user_guide/#cluster-picker) | Only when a cluster is selected | Separate for each cluster |
+| <Tag kind="all-clusters" /> | No single cluster | Always | One for the whole application |
+
+### The cluster picker
+
+The picker in the header is where the scope becomes visible. How to use it is in the [User Guide](../user_guide/#cluster-picker).
+
+- With a cluster selected, the navigation menu lists the per-cluster modules next to the all-clusters ones, and every per-cluster page shows that cluster.
+- With no cluster selected, as on the Dashboard right after login, the menu lists only the all-clusters modules.
+
+
+### Per cluster
+
+Most modules are per cluster: AutoSnap, Backup Analytics, Diagnostics, Resources and the others each work on one cluster at a time.
+
+- To open one, choose a cluster in the picker at the top. The menu then lists the per-cluster modules, and the page shows the data of that cluster.
+- Choosing another cluster reloads the same module on the new cluster.
+- The settings of a per-cluster module are saved for each cluster. Enabling AutoSnap or changing a Diagnostics threshold on one cluster does not change the others. See [module settings](../configuration/#modules).
+
+### All clusters
+
+A few modules are not tied to a cluster and are always available:
+
+- [Dashboard](../modules/dashboard/): a widget can show one cluster or several.
+- [AI Server](../modules/ai-server/): one MCP server for every cluster.
+- [Portal](../modules/portal/) <Tag kind="ee" />: each tenant is bound to its own cluster.
+- [Admin Area](../configuration/admin-area/) and [User Profile](../configuration/profile/), reached from the profile menu.
+
+Their settings are saved once, for the whole application.
+
+### Both badges
+
+The [Command Palette](../modules/command-palette/) carries both badges, because part of it depends on the cluster and part does not:
+
+| In the palette | Scope |
+|----------------|-------|
+| Going to a module, the `logout` command | <Tag kind="all-clusters" /> always there |
+| Finding a VM or a node (`vm:`, `node:`, `ip:`), the commands `start`, `stop`, `restart`, `console`, `create snapshot` | <Tag kind="per-cluster" /> only with a cluster selected, and only on that cluster |
+
+The same reading applies wherever a page shows the two badges on single rows of a table: each row says when that item is available.
+
+## Edition badges
+
+cv4pve-admin comes in two editions. Everything in Community Edition is also in Enterprise Edition.
+
+| Badge | Meaning |
+|-------|---------|
+| <Tag kind="ee" /> | Available only in Enterprise Edition. Next to a page title it marks a whole module or page; next to a feature, a setting or a table row, only that item. |
+| <Tag kind="ce" /> | Marks what Community Edition offers, where a page compares the two. |
+
+The full comparison, module by module, is in [Community vs Enterprise](../editions/).
+
+## SSH badge
+
+cv4pve-admin talks to Proxmox VE through its REST API. A few features also need a shell on the nodes, and are marked <Tag kind="ssh" />: node configuration backup, update scans and snapshot size calculation <Tag kind="ee" />.
+
+SSH access is configured for each cluster, in [Proxmox VE Clusters](../configuration/admin-area/clusters/#ssh-configuration). Without it those features are skipped and the rest keeps working.

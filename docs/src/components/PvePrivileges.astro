@@ -1,0 +1,174 @@
+---
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * The Proxmox VE privileges from src/data/pve-privileges.js, written once and shown where the
+ * reader looks for them:
+ *   <PvePrivileges module="autosnap" />   in a module page: what the module needs beyond the base
+ *   <PvePrivileges tool="MigrateVm" />    inline, in the block of an AI Server tool
+ *   <PvePrivileges activity="PVE Migrate" />  inline, in the block of a Workflow activity
+ *   <PvePrivileges actions />             the actions on guests and nodes
+ *   <PvePrivileges table />               the summary of every module (Proxmox VE Permissions page)
+ * A name that is not in the data file stops the build, so a new module cannot be forgotten.
+ */
+import { pvePrivileges, guestActions, toolPrivileges, activityPrivileges } from '~/data/pve-privileges.js';
+
+interface Props {
+  /** Slug of the module page, a key of `pvePrivileges`. */
+  module?: string;
+  /** Name of an AI Server tool, a key of `toolPrivileges`. */
+  tool?: string;
+  /** Display name of a Workflow activity, a key of `activityPrivileges`. */
+  activity?: string;
+  /** The table of the actions on guests and nodes. */
+  actions?: boolean;
+  /** The summary table of every module. */
+  table?: boolean;
+}
+
+const { module, tool, activity, actions = false, table = false } = Astro.props;
+
+const lookup = (map: Record<string, unknown>, key: string | undefined, what: string) => {
+  if (key === undefined) return undefined;
+  if (!(key in map)) throw new Error(`PvePrivileges: ${what} "${key}" is not in src/data/pve-privileges.js.`);
+  return map[key];
+};
+const entry = lookup(pvePrivileges, module, 'module') as any;
+const inline = (lookup(toolPrivileges, tool, 'tool') ?? lookup(activityPrivileges, activity, 'activity')) as string[] | undefined;
+if (!entry && !inline && !actions && !table) throw new Error('PvePrivileges: pass module, tool, activity, actions or table.');
+
+// `code` and **bold** in the texts of the data file.
+const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const format = (text: string) =>
+  escape(text)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+const codes = (privileges: string[]) => privileges.map((p) => `<code>${escape(p)}</code>`).join(', ');
+
+// Module pages are two levels below the root (modules/<page>/), and so is the Proxmox VE
+// Permissions page (configuration/pve-permissions/): relative links work under both site bases.
+const PERMISSIONS = '../../configuration/pve-permissions/';
+const modulePage = (slug: string) => `../../modules/${slug}/`;
+const ID = 'pve-privileges';
+
+const rows = entry?.rows ?? (entry?.actions ? guestActions : undefined);
+const withoutColumn = rows?.some((row: any) => row.without);
+const summary = Object.entries(pvePrivileges)
+  .map(([slug, value]: [string, any]) => ({ slug, ...value }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+const beyond = (value: any) => [...new Set((value.rows ?? []).filter((row: any) => !row.base).flatMap((row: any) => row.privileges))] as string[];
+---
+
+{inline && <Fragment set:html={codes(inline)} />}
+
+{
+  entry && (
+    <div id={ID}>
+      {rows ? (
+        <Fragment>
+          <p>
+            <strong>Proxmox VE privileges:</strong> the base (<code>PVEAuditor</code>) plus the following
+            {entry.actions ? ', each one only for its action.' : '.'}
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Privilege</th>
+                <th>Used for</th>
+                {withoutColumn && <th>Without it</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row: any) => (
+                <tr>
+                  <td>
+                    <Fragment set:html={codes(row.privileges)} />
+                    {row.base && ' (base)'}
+                  </td>
+                  <td set:html={format(row.use)} />
+                  {withoutColumn && <td set:html={format(row.without ?? '')} />}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Fragment>
+      ) : entry.by ? (
+        <p>
+          <strong>Proxmox VE privileges:</strong> the base (<code>PVEAuditor</code>), plus the privilege of each {entry.by} used. It is
+          written in the block of each {entry.by}: see <a href={modulePage(entry.page)}>the list</a>.
+        </p>
+      ) : (
+        <p>
+          <strong>Proxmox VE privileges:</strong> the base (<code>PVEAuditor</code>) is enough. {entry.note}
+        </p>
+      )}
+      {(entry.notes ?? []).map((note: string) => (
+        <p set:html={format(note)} />
+      ))}
+      <p>
+        The base and the rules common to all modules are in <a href={PERMISSIONS}>Proxmox VE Permissions</a>.
+      </p>
+    </div>
+  )
+}
+
+{
+  actions && (
+    <table>
+      <thead>
+        <tr>
+          <th>Privilege</th>
+          <th>Used for</th>
+        </tr>
+      </thead>
+      <tbody>
+        {guestActions.map((row) => (
+          <tr>
+            <td set:html={codes(row.privileges)} />
+            <td set:html={format(row.use)} />
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+{
+  table && (
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Beyond the base</th>
+        </tr>
+      </thead>
+      <tbody>
+        {summary.map((row) => (
+          <tr>
+            <td>
+              <a href={`${modulePage(row.slug)}#${ID}`}>
+                <strong>{row.name}</strong>
+              </a>
+            </td>
+            <td>
+              {row.actions ? (
+                <Fragment>
+                  By action: see <a href="#actions-on-guests-and-nodes">Actions on guests and nodes</a>
+                </Fragment>
+              ) : row.by ? (
+                <Fragment>
+                  By {row.by}: see <a href={modulePage(row.page)}>the list</a>
+                </Fragment>
+              ) : beyond(row).length ? (
+                <Fragment set:html={codes(beyond(row))} />
+              ) : (
+                <Fragment>None. {row.note}</Fragment>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}

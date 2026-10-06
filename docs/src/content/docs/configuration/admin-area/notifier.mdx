@@ -1,0 +1,139 @@
+---
+title: "Notification Hub"
+description: "Configure notification channels to receive alerts from cv4pve-admin modules (job completion, errors, scheduled reports)."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+Configure notification channels to receive alerts from cv4pve-admin modules (job completion, errors, scheduled reports).
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:email', title: "SMTP", text: "Send notifications via email using any SMTP server.", href: '#smtp', ce: true },
+    { icon: 'mdi:webhook', title: "WebHook", text: "Send HTTP requests to any URL with customizable method, body and authentication.", href: '#webhook', ce: true },
+    { icon: 'mdi:bell-plus', title: "140+ Channels", text: "Telegram, Discord, Slack, Microsoft Teams and many more notification services through Apprise.", href: '#apprise', ee: true },
+  ]}
+/>
+
+---
+
+## Managing channels
+
+Open **Admin Area → Notifications**. The page has one tab per channel type: **SMTP**, **WebHook** and <Tag kind="ee" /> **Apprise**. Each tab holds a list of named configurations: you can create several of the same type, for example one SMTP configuration per recipient group.
+
+| Action | Description |
+|---|---|
+| **Add** | Create a configuration. Every configuration has a required **Name** and an **Enabled** switch (default: on), followed by the fields of its channel type. |
+| Click the **Name** | Edit the configuration. |
+| **Delete** | Remove the selected configuration, after confirmation. |
+| **Test** | Send a test notification through the selected configuration. See [Testing a channel](#testing-a-channel). |
+
+A configuration receives nothing on its own. Each module chooses which configurations to notify, with the **Notifier** field of its settings. A configuration with **Enabled** off is skipped when notifications are sent.
+
+Passwords, tokens and the Apprise service URLs are stored encrypted. The **URL** of a WebHook is stored as plain text, also when it carries a secret.
+
+### Testing a channel
+
+Select a configuration and click **Test**. The test is sent also when the configuration is not enabled, so you can try a channel before turning it on. cv4pve-admin sends a message with subject `<App Name> - Test notification`, severity `Success` and a small text attachment named `Test.txt`. This way the test also tells you whether attachments get through. The result is shown as a notification: **Test done successfully!** or the error returned by the channel.
+
+---
+
+## SMTP
+
+Send notifications via email using any SMTP server. Notifications are sent as plain text emails, with the attachments produced by the module (for example a report).
+
+<Collapse title="Show SMTP configuration fields" kind="settings">
+
+| Field | Description |
+|---|---|
+| **Host** | Required. SMTP server hostname or IP |
+| **Port** | SMTP port, 1 to 65535 (default: `587`) |
+| **SSL/TLS Options** | How the connection is secured: `None`, `Auto`, `SslOnConnect` (port 465), `StartTls` (port 587, default) or `StartTlsWhenAvailable` |
+| **Username** | SMTP authentication username. Leave empty to send without authentication |
+| **Password** | SMTP authentication password (if required) |
+| **From Address** | Required. Sender email address |
+| **From Display Name** | Sender name shown next to the address |
+| **To Addresses** | Required. Recipient addresses, separated by `,` `;` or `+` |
+
+</Collapse>
+
+These settings belong to the configuration and are independent from the SMTP server of [General Settings](../general-settings/#smtp-configuration), which is used only for account emails.
+
+---
+
+## WebHook
+
+Send an HTTP request to any URL when a notification is triggered.
+
+<Collapse title="Show WebHook configuration fields" kind="settings">
+
+| Field | Description |
+|---|---|
+| **URL** | Required. Endpoint to call |
+| **Method** | HTTP method: `Get`, `Post` (default), `Put`, `Patch`, `Delete` |
+| **Body Type** | Format: `Json` (default), `Xml`, `Text`, or `None`. Not shown with `Get` |
+| **Body** | Request body, with `%subject%`, `%body%` and `%severity%` as placeholders. Leave empty for the default JSON payload. Not shown with `Get`, not sent with **Body Type** `None` |
+| **Auth: Type** | `None` (default), `Basic` (**Username** and **Password**), `Bearer` (**Token**, sent in the `Authorization` header) or `API Key` (**Header Name** and **Header Value**, sent as a custom header) |
+| **Headers** | Additional request headers, as name and value pairs added with **Add header**. Rows without a name are ignored; if a name is repeated, the last row wins |
+| **Timeout (seconds)** | Request timeout in seconds, 1 to 300 (default: 30) |
+| **Ignore SSL Certificate** | Skip SSL validation (useful for self-signed certificates). Default: off |
+
+</Collapse>
+
+<Collapse title="Show placeholders and default payload" kind="reference">
+
+**Placeholders** are replaced at runtime in the URL, headers and body. Each value is escaped for the place where it is used: URL-encoded in the URL, JSON- or XML-escaped in a JSON or XML body, line breaks turned into spaces in headers. In a JSON body keep placeholders inside quotes, for example `"%subject%"`.
+
+| Placeholder | Description |
+|---|---|
+| `%subject%` | Notification subject / title |
+| `%body%` | Notification message content |
+| `%severity%` | Notification severity: `Success`, `Info`, `Warning`, `Error` |
+
+**Default payload**: if **Body** is left empty, cv4pve-admin sends the following JSON automatically:
+
+```json
+{"subject": "%subject%", "body": "%body%"}
+```
+
+</Collapse>
+
+---
+
+## WebHook Examples
+
+Ready-made configurations for Telegram, Microsoft Teams and Slack are in [WebHook Examples](../notifier-webhook-examples/).
+
+## Apprise<Tag kind="ee" />
+
+Send notifications to the services supported by [Apprise](https://github.com/caronc/apprise) (Telegram, Discord, Slack, Microsoft Teams, and many more) through an Apprise API server.
+
+The Enterprise Docker Compose file already includes an `apprise` service, reachable from cv4pve-admin at `http://apprise:8000`: nothing else has to be installed.
+
+| Field | Description |
+|---|---|
+| **Endpoint** | Required. URL of the Apprise API server (default: `http://apprise:8000`). In a Docker installation a new configuration is pre-filled with the address of the bundled `apprise` service |
+| **Content Format** | Format of the message body sent to Apprise: `Text` (default), `Markdown` or `Html` |
+| **Allowed Services** | Reference list of the services the Apprise server supports, loaded from the endpoint. It does not change the configuration: pick a service to see how to write its URL. The refresh button reloads the list |
+| **Configuration** | Required. One Apprise service URL per line. Each line is a separate notification service that is invoked. **URL Builder** opens the online Apprise URL builder in a new tab |
+
+When a service is selected in **Allowed Services**, the editor shows:
+
+| Element | Meaning |
+|---|---|
+| **Documentation** badge | Link to the setup documentation of the service |
+| **Service** badge | Link to the website of the service |
+| **TLS** / **No TLS** badge | Whether the service supports secure connections |
+| **Attachments** badge | Shown when the service supports sending attachments |
+| **Schema(s)** | The URL schemas of the service (the part before `://`) |
+| URL templates | The accepted formats of the service URL, to use as a model for the lines of **Configuration** |
+
+If the list cannot be loaded, an error is shown under the field: check that **Endpoint** points to the Apprise API and that the server is reachable from cv4pve-admin.
+
+In the list of configurations of the **Apprise** tab, the **Services** column shows the schemas found in **Configuration**.
+
+**Timeout:** cv4pve-admin gives up a call to the Apprise server after 30 seconds.
+
+**Severity and attachments:** The severity of a notification is passed to Apprise as message type: `Success` as `success`, `Info` as `info`, `Warning` as `warning`, `Error` as `failure`. Attachments are sent to the Apprise server together with the message.

@@ -75,18 +75,17 @@ jobs:
       - name: Download assets
         run: pwsh -ExecutionPolicy Bypass -File admin.ps1 -Command download-assets
 
-      # MkDocs site is embedded into the published app under /help/ via MkDocs.props.
-      # Build it before `dotnet publish` so the EnsureMkDocsBuilt target finds site/index.html.
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      # The documentation site is embedded into the published app under /help/ via Docs.props.
+      # Build it before `dotnet publish` so the EnsureDocsBuilt target finds docs/dist-help/index.html.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.x'
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
 
-      - name: Build MkDocs site
-        run: |
-          pip install mkdocs-material
-          cd docs/user
-          mkdocs build --clean --strict
+      - name: Build documentation site
+        run: pwsh -ExecutionPolicy Bypass -File admin.ps1 -Command docs-build
 
       - name: Build MCP Bridge binaries
         run: |

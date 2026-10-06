@@ -1,0 +1,103 @@
+---
+title: "Proxmox VE Permissions"
+description: "cv4pve-admin connects to Proxmox VE through the API. The permissions it needs depend on the modules and features you use."
+---
+
+import PvePrivileges from '~/components/PvePrivileges.astro';
+
+
+
+cv4pve-admin connects to Proxmox VE through the API. The permissions it needs depend on the modules and features you use.
+
+---
+
+## Recommended: PVEAdmin role
+
+The simplest and recommended setup is to assign the built-in **`PVEAdmin`** role at path `/` to the Proxmox VE user or API token used by cv4pve-admin.
+
+With this role every module has full functionality, with no further configuration.
+
+**Automatic API Token Creation:** cv4pve-admin can create a dedicated Proxmox VE user and API token for you automatically.
+[Learn more](../admin-area/clusters/#automatic-api-token-creation)
+
+---
+
+## Minimum permissions
+
+If you prefer a least-privilege setup, assign a **custom Proxmox VE role** at path `/` with only the permissions required for the features you use.
+
+### Base (required for all modules)
+
+These are the privileges of the built-in `PVEAuditor` role on Proxmox VE 9. Assigning that role is equivalent and simpler.
+
+| Privilege | Purpose |
+|-----------|---------|
+| `Sys.Audit` | Cluster status, node info, tasks, firewall, HA |
+| `VM.Audit` | VM/CT list, status, config |
+| `VM.GuestAgent.Audit` | Information read through the QEMU Guest Agent (host name, IP addresses) |
+| `Datastore.Audit` | Storage list, status, content |
+| `Pool.Audit` | Resource pool list |
+| `SDN.Audit` | SDN zones, VNets, subnets |
+| `Mapping.Audit` | Resource mappings |
+
+This page describes Proxmox VE 9. Earlier releases use other privileges for some reads, for example `VM.Monitor` for the QEMU Guest Agent and the monitor: on those releases assign `PVEAdmin`, or check the privileges in the Proxmox VE documentation.
+
+### How cv4pve-admin checks the privileges
+
+Before enabling an action on a VM/CT or on a node, cv4pve-admin reads the permissions of the Proxmox VE user or API token configured for the cluster. It then checks that the user or token holds the matching privilege. The privilege is accepted when it is granted on the object itself (`/vms/<vmid>` or `/nodes/<node>`), on `/vms` or `/nodes`, or on `/`. When it is missing, the button or tab is not available, even if the cv4pve-admin user has the application permission.
+
+| cv4pve-admin permission | Proxmox VE privilege |
+|-------------------------|----------------------|
+| VM: Audit | `VM.Audit` |
+| VM: Console | `VM.Console` |
+| VM: Power Management | `VM.PowerMgmt` |
+| VM: Snapshot manager | `VM.Snapshot` |
+| VM: Snapshot Rollback | `VM.Snapshot.Rollback` |
+| VM: Replication manager, Replication Schedule Now | `VM.Replicate` |
+| VM: Backup manager | `VM.Backup` |
+| VM: Backup Restore, Backup Restore File | `Datastore.AllocateSpace` |
+| VM: Migrate | `VM.Migrate` |
+| Node: Audit | `Sys.Audit` |
+| Node: Console | `Sys.Console` |
+| Node: Power Management | `Sys.PowerMgmt` |
+| Node: Replication manager, Replication Schedule Now | `VM.Replicate` |
+| Storage: Delete Content | `Datastore.Allocate` |
+
+The same checks apply in every module that offers these actions (Dashboard, Resources, Portal, Command Palette, AI Server, Workflow). In the web interface, migration and deletion of storage content are not available: they are used by AI Server tools and, for migration, by the Workflow activity. The storage privilege is not checked in advance. The Workflow activity that shuts down or reboots a node calls Proxmox VE directly, without these checks.
+
+### Privileges by module
+
+What each module needs beyond the base. **None** means the base is enough. The page of each module says what each privilege is used for and what happens without it: click the name of the module.
+
+<PvePrivileges table />
+
+#### Backup files
+
+Proxmox VE lists a backup file only to an account that has both `VM.Backup` on the guest and `Datastore.AllocateSpace` on the storage. Without them the list of backups is empty, with no error. This is why Backup Analytics, the **Backups** tab of a guest, the backup checks of Diagnostics and the backup sections of System Report need these two privileges only to read.
+
+#### Actions on guests and nodes
+
+Dashboard, Resources and Portal offer these actions. Each privilege is needed only for its action.
+
+<PvePrivileges actions />
+
+---
+
+## Example: monitoring + AutoSnap custom role
+
+```
+Sys.Audit
+VM.Audit
+VM.GuestAgent.Audit
+VM.Snapshot
+Datastore.Audit
+Pool.Audit
+SDN.Audit
+Mapping.Audit
+```
+
+Assign the role at path `/` to the Proxmox VE user or API token used by cv4pve-admin.
+
+On Proxmox VE 8 and earlier add `Pool.Allocate` if AutoSnap jobs select guests by pool.
+
+A feature that lacks a required privilege shows errors or empty data. The other features keep working normally.

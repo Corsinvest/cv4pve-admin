@@ -1,0 +1,68 @@
+---
+title: "VM Performance"
+description: "Per-disk I/O monitoring for running QEMU virtual machines: bytes read/written, operations and derived rates per second."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="display_settings" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
+
+Per-disk I/O monitoring for running QEMU virtual machines: bytes read/written, operations and derived rates per second.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:harddisk', title: "Per-device I/O", text: "Bytes read/written and read/write operations shown for each virtual disk device, not only for each VM." },
+    { icon: 'mdi:speedometer', title: "Derived Rates", text: "Read/Write bytes/sec and IOPS/sec computed from the difference between the current counters and the ones read when the page was opened." },
+    { icon: 'mdi:server', title: "Grouped View", text: "Results are grouped by Node and then by VM ID, so the busiest disk is quick to find." },
+    { icon: 'mdi:refresh', title: "On-demand Refresh", text: "Click **Refresh** to take a new sample and recompute the per-second rates. There is no automatic refresh." },
+  ]}
+/>
+
+## Why
+
+Why a separate VM I/O view when PVE already shows VM activity?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:harddisk', title: "Per-disk granularity", text: "PVE summarises VM I/O as a single number. This view splits it per virtual device (`scsi0`, `virtio1`, …) so you can tell which disk is the busiest." },
+    { icon: 'mdi:speedometer', title: "IOPS, not just bytes", text: "Both throughput (bytes per second) and operations per second are exposed. Latency is not measured." },
+    { icon: 'mdi:console', title: "QEMU Monitor direct", text: "Data comes straight from `info blockstats` on the QEMU Monitor. It bypasses the RRD aggregation window, so spikes are visible." },
+    { icon: 'mdi:play-circle', title: "QEMU running only", text: "The view lists running QEMU VMs. LXC containers and stopped VMs do not appear here: there is no `blockstats` source for them." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: short description of the module
+- **Status**: grid with one row for each block device of every running QEMU VM of the cluster, grouped by **Node** and then by **VmId**
+
+The module has no settings. It has two permissions: **VM Performance** gives access to the module and to its **Overview** page, **Status** gives access to the **Status** page.
+
+## Status
+
+| Column | Content |
+|--------|---------|
+| **Status** | Status icon of the VM |
+| **Device** | Block device name as reported by QEMU |
+| **Read Bytes**, **Write Bytes** | Cumulative bytes read and written (QEMU counters `rd_bytes` and `wr_bytes`) |
+| **Read IOPS**, **Write IOPS** | Cumulative number of read and write operations (QEMU counters `rd_operations` and `wr_operations`) |
+| **Read Bytes Sec**, **Write Bytes Sec** | Bytes per second |
+| **Read IOPS Sec**, **Write IOPS Sec** | Operations per second |
+| **Node**, **VmId**, **Name** | Hidden by default, can be shown from the column picker |
+
+The toolbar has **Refresh** and **Export** (Excel file with the list). The grid can be filtered, sorted and regrouped.
+
+Data is read when the page opens and each time you click **Refresh**: there is no automatic refresh. Each read runs the QEMU Monitor command `info blockstats` on every running VM, so it takes longer on clusters with many VMs.
+
+**How rates are computed:** The sample taken when the page opens is the baseline. At every **Refresh** the per-second columns are computed as `(current counter - baseline counter) / seconds since the baseline`, so they are the average rate since the page was opened. The cumulative columns keep showing the baseline values. Until the first **Refresh** the per-second columns are 0. Reopen the page to start from a new baseline.
+
+## Requirements
+
+The Proxmox VE user or API token of the cluster must be allowed to use the QEMU Monitor of the VMs.
+
+<PvePrivileges module="vm-performance" />

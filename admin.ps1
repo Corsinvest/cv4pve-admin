@@ -4,7 +4,7 @@
 
 param(
     [Parameter(Mandatory = $false)]
-    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge", "docs-start", "docs-stop", "docs-build")]
+    [ValidateSet("build", "publish", "run", "clean-assets", "download-assets", "build-mcp-bridge", "docs-build")]
     [string]$Command = "build",
 
     [Parameter(Mandatory = $false)]
@@ -188,31 +188,19 @@ switch ($Command) {
         }
     }
 
-    "docs-start" {
-        $docsPath = "$PSScriptRoot/docs/user"
-        docker compose -f $docsPath\docker-compose.yml down
-        Write-Host "Starting MkDocs (http://localhost:8000)..." -ForegroundColor Cyan
-        docker compose -f $docsPath\docker-compose.yml up -d
-        if ($LASTEXITCODE -ne 0) { Write-Host "Failed to start MkDocs!" -ForegroundColor Red; exit $LASTEXITCODE }
-        Write-Host "MkDocs running at http://localhost:8000" -ForegroundColor Green
-    }
-
-    "docs-stop" {
-        $docsPath = "$PSScriptRoot/docs/user"
-        Write-Host "Stopping MkDocs..." -ForegroundColor Cyan
-        docker compose -f $docsPath\docker-compose.yml down
-        if ($LASTEXITCODE -ne 0) { Write-Host "Failed to stop MkDocs (maybe not running?)" -ForegroundColor Yellow }
-    }
-
     "docs-build" {
-        # Builds the static MkDocs site into docs/user/site/ using the same Docker
-        # image that powers `docs-start`. Required before `dotnet publish`, which
-        # embeds site/ into the published app via MkDocs.props.
-        $docsPath = "$PSScriptRoot/docs/user"
-        Write-Host "Building MkDocs static site into $docsPath/site/..." -ForegroundColor Cyan
-        docker run --rm -v "${docsPath}:/docs" squidfunk/mkdocs-material:latest build --clean --strict
-        if ($LASTEXITCODE -ne 0) { Write-Host "MkDocs build failed!" -ForegroundColor Red; exit $LASTEXITCODE }
-        Write-Host "✓ MkDocs site built at $docsPath/site/" -ForegroundColor Green
+        # Builds the documentation site (Astro Starlight, needs Node.js) into docs/dist-help/ with the /help base path.
+        # Required before `dotnet publish`, which embeds it into the published app via Docs.props.
+        $docsPath = "$PSScriptRoot/docs"
+        Write-Host "Building documentation site into $docsPath/dist-help/..." -ForegroundColor Cyan
+        npm --prefix $docsPath ci
+        if ($LASTEXITCODE -ne 0) { Write-Host "npm ci failed!" -ForegroundColor Red; exit $LASTEXITCODE }
+        $env:DOCS_BASE = "help"
+        npm --prefix $docsPath run build:help
+        $buildExitCode = $LASTEXITCODE
+        Remove-Item Env:DOCS_BASE
+        if ($buildExitCode -ne 0) { Write-Host "Documentation build failed!" -ForegroundColor Red; exit $buildExitCode }
+        Write-Host "✓ Documentation site built at $docsPath/dist-help/" -ForegroundColor Green
     }
 
     "run" {

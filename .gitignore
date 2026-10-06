@@ -75,9 +75,6 @@ artifacts/
 .DS_Store
 Thumbs.db
 
-# MkDocs build output
-docs/user/site/
-
 .claude
 
 # Build output

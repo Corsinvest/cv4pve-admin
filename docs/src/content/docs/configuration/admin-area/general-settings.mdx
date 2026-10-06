@@ -1,0 +1,80 @@
+---
+title: "General Settings"
+description: "Settings for the whole application. They are stored in the database, not in appsettings.json, so they survive container updates."
+---
+
+import Tag from '~/components/Tag.astro';
+
+Settings for the whole application. They are stored in the database, not in `appsettings.json`, so they survive container updates.
+
+## Sections
+
+The pages are under **Admin Area → Settings**:
+
+- **General**
+    - **SMTP Configuration**: outbound email server for account emails
+    - <Tag kind="ee" /> **Log Cleanup**: automatic cleanup of the application log stored in the database
+    - **Task Cleanup**: automatic cleanup of the task history
+- <Tag kind="ee" /> **Appearance**: sign in page customisation
+
+Each section is a collapsible panel with its own **Save changes** button. A change takes effect only after you save the section it belongs to.
+
+## SMTP Configuration
+
+SMTP server used for the emails the application sends about accounts: email confirmation for new users and password reset links.
+
+| Field | Description |
+|-------|-------------|
+| **Host** | Required. SMTP server host name or IP address. |
+| **Port** | SMTP port, 1 to 65535 (default: 587). |
+| **SSL/TLS Options** | How the connection is secured (default: `StartTls`). See the table below. |
+| **Username** / **Password** | Credentials. Leave **Username** empty if the server accepts unauthenticated mail from the cv4pve-admin host. The password is stored encrypted. |
+| **From Address** | Required. Sender email address. |
+| **From Display Name** | Sender name shown next to the address. |
+
+| SSL/TLS Options | Meaning |
+|-----------------|---------|
+| `None` | No SSL/TLS encryption (not recommended). |
+| `Auto` | Automatically detect and use the best available encryption. |
+| `SslOnConnect` | Use SSL/TLS immediately on connection (port 465). |
+| `StartTls` | Upgrade the connection to TLS after connecting (port 587). |
+| `StartTlsWhenAvailable` | Use STARTTLS if available, plain connection otherwise. |
+
+A new installation is pre-filled with placeholder values (`smtp.example.com`, `noreplay@example.com`). Replace them with the values of your server.
+
+### Test SMTP Configuration
+
+The **Test SMTP Configuration** card under the form verifies the settings end to end. Enter a **Test Email Address** and click **Send**. The test uses the values currently in the form, even before you save them. If the message cannot be sent, the test reports the error returned by the server.
+
+**Not shared with the notification channels:** These settings are used only for account emails. Each SMTP channel of the [Notification Hub](../notifier/) has its own server settings.
+
+## Log Cleanup<Tag kind="ee" />
+
+Scheduled job that deletes old entries of the application log shown in [Monitoring → Logs](../monitoring/).
+
+| Field | Description |
+|-------|-------------|
+| **Retention Days** | Log entries older than this number of days are deleted. 1 to 3650 (default: 30). |
+| **Cron Schedule** | When the cleanup runs, as a cron expression (default: `0 3 * * *`, every day at 03:00). The editor shows the schedule in plain words and the next occurrence. |
+
+## Task Cleanup
+
+Scheduled job that deletes old entries of the task history shown in [Monitoring → Tasks](../monitoring/#tasks).
+
+| Field | Description |
+|-------|-------------|
+| **Retention Days** | Completed tasks older than this number of days are deleted. 1 to 3650 (default: 30). |
+| **Cron Schedule** | When the cleanup runs, as a cron expression (default: `0 4 * * *`, every day at 04:00). The editor shows the schedule in plain words and the next occurrence. |
+
+Cron schedules are evaluated in the time zone of the application (the `TZ` variable of the container). Saving a cleanup section reschedules its job immediately. Both cleanups can also be run on demand from [Maintenance](../maintenance/#cleanup-operations).
+
+## Appearance<Tag kind="ee" />
+
+Customise the sign in page shown to your users.
+
+| Field | Description |
+|-------|-------------|
+| **Sign in page: Title** | Required. Heading shown on the login page (default: `Welcome`). |
+| **Sign in page: Description (Markdown)** | Text below the heading, written in Markdown (default: `Take control of your Proxmox VE`). |
+
+Useful for MSPs and enterprises that want to brand the admin interface for their own customers.

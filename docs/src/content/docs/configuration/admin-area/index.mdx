@@ -1,0 +1,77 @@
+---
+title: "Admin Area"
+description: "System administration, security, monitoring and Proxmox VE cluster configuration, all under one menu."
+---
+
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+System administration, security, monitoring and Proxmox VE cluster configuration, all under one menu.
+
+## Access
+
+Open the **Admin Area** from the profile menu: click your avatar in the top right corner of the application. The Admin Area is not listed in the main menu on the left.
+
+The Admin Area applies to the whole application, not to the cluster selected in the top bar.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:dns', title: "Proxmox VE Clusters", text: "Connect and manage clusters: nodes, Web API credentials, SSH credentials, snapshot size calculation [EE].", href: './clusters/' },
+    { icon: 'mdi:security', title: "Security & Access Control", text: "Users, roles, permissions, App Tokens and audit logs. The list of active sessions is also available in the Community Edition.", href: './security/', ee: true },
+    { icon: 'mdi:monitor-eye', title: "Monitoring", text: "System information, background jobs (Hangfire dashboard), tasks and application logs [EE].", href: './monitoring/' },
+    { icon: 'mdi:wrench', title: "Maintenance", text: "Database operations (reindex, optimize, compact), cleanup of old data, cache management, connectivity tests.", href: './maintenance/' },
+    { icon: 'mdi:cog', title: "General Settings", text: "SMTP server for account emails, task cleanup, log cleanup [EE] and sign in page appearance [EE].", href: './general-settings/' },
+    { icon: 'mdi:bell', title: "Notification Hub", text: "Notification channels: SMTP and WebHook in both editions, 140+ services via Apprise [EE].", href: './notifier/' },
+  ]}
+/>
+
+## Menu reference
+
+Every page of the Admin Area menu, in the order it appears:
+
+| Menu | Page | Edition | Documentation |
+|------|------|:-------:|---------------|
+| **Overview** | Introduction to the Admin Area | | [Overview](#overview) |
+| **Proxmox VE Clusters** | Cluster list and cluster settings | | [Proxmox VE Clusters](clusters/) |
+| **Security** | **Users** | <Tag kind="ee" /> | [Users](security/#users) |
+| | **Roles** | <Tag kind="ee" /> | [Roles](security/#roles) |
+| | **App Tokens** | <Tag kind="ee" /> | [App Tokens](security/#app-tokens) |
+| | **Audit Logs** | <Tag kind="ee" /> | [Audit Logs](security/#audit-logs) |
+| | **Active Sessions** | | [Active Sessions](security/#active-sessions) |
+| **Monitoring** | **System information** | | [System information](monitoring/#system-information) |
+| | **Background Jobs** | | [Background Jobs](monitoring/#background-jobs) |
+| | **Tasks** | | [Tasks](monitoring/#tasks) |
+| | **Logs** | <Tag kind="ee" /> | [Logs](monitoring/#logs) |
+| **Maintenance** | Maintenance operations | | [Maintenance](maintenance/) |
+| **Settings** | **General** | | [General Settings](general-settings/) |
+| | **Appearance** | <Tag kind="ee" /> | [Appearance](general-settings/#appearance) |
+| **Notifications** | Notification channels | | [Notification Hub](notifier/) |
+| **Support** | Community and dedicated support | <Tag kind="ce" /> | [Support](#support) |
+
+In the Community Edition **Users**, **Roles**, **App Tokens**, **Audit Logs** and **Logs** are still listed in the menu and show the Enterprise subscription notice instead of their content. **Appearance** is not in the Community Edition menu.
+
+## Overview
+
+The first page of the Admin Area. It is a short introduction to what the area contains (infrastructure, access control, operations) and has no settings.
+
+## Support
+
+<Tag kind="ce" /> Shown in the Community Edition only. The page describes the two support options:
+
+- **Community Support**: link to the cv4pve-admin project on GitHub, where questions and discussions are welcome. A response is not guaranteed.
+- **Dedicated Support**: enterprise support included with the subscriptions, with a **See Pricing** button that opens the Corsinvest shop.
+
+In both editions the help menu (the **?** icon in the top bar) also has a **Support** entry that opens the GitHub issues of the project.
+
+## Why
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:server-network', title: "One control plane for all clusters", text: "Connect every Proxmox VE cluster you manage and operate them from a single UI, without switching between browser tabs." },
+    { icon: 'mdi:account-key', title: "Fine-grained access control", text: " [EE] Roles and permissions set the access per module and per cluster: read-only for the team, snapshot rights for operations, or full admin." },
+    { icon: 'mdi:clipboard-text-clock', title: "Audit trail by default", text: " [EE] Logins and administrative actions are recorded: who did what, when and from which IP address. Useful for compliance and post-incident review." },
+    { icon: 'mdi:broom', title: "Built-in housekeeping", text: "Maintenance routines are one click away: vacuum, reindex, cleanup of old data, cache flush. No `psql` shell required." },
+  ]}
+/>

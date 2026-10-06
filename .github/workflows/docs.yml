@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
+
+name: Docs
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "docs/**", ".github/workflows/docs.yml" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  docs:
+    uses: Corsinvest/.github/.github/workflows/cv4pve-tools-docs.yml@main

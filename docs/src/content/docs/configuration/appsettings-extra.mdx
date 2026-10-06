@@ -1,0 +1,337 @@
+---
+title: "Application Settings"
+description: "This document describes all configurable settings available in appsettings.extra.json."
+---
+
+import Tag from '~/components/Tag.astro';
+
+This document describes all configurable settings available in `appsettings.extra.json`.
+
+**Configuration File Location:** cv4pve-admin loads the `appsettings.extra.json` file from its `config/` directory. In Docker the directory is mounted as `/app/config/`. With the default `.env` the host path is `data/cv4pve-admin/config/appsettings.extra.json`. The file is optional: use it to override default settings without modifying the main `appsettings.json` file.
+
+- If the file does not exist, it is created at startup with an empty configuration (`{}`) and the application starts with default settings.
+- If the file contains invalid JSON, it is ignored: the application starts with default settings and writes a warning in the log.
+- Restart the application after editing the file, so that every setting is applied.
+
+**Merge behaviour:**
+
+- **Scalar and object properties**: merged. Only the keys you specify are overridden, the rest keep their default values.
+- **Precedence**: `appsettings.extra.json` is loaded last, so its values win over `appsettings.json` and also over environment variables. For example, a `ConnectionStrings:DefaultConnection` written in this file replaces the one that Docker Compose passes with `ConnectionStrings__DefaultConnection`.
+- **JSON arrays**: merged **by position**, not replaced. The first element you write overrides the first default element, the second overrides the second, and default elements at positions you do not write are kept. For an array such as `Serilog.WriteTo`, write the entries in the same order as the defaults and change only the values you need.
+
+Any setting can also be passed as an environment variable, replacing `:` with a double underscore: for example `CookieSettings__ExpireDays=7`.
+
+## Connection Strings
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=cv4pve_admin;Username=postgres;Password=yourpassword"
+  }
+}
+```
+
+| Setting | Description |
+|---------|-------------|
+| `DefaultConnection` | PostgreSQL connection string used by Entity Framework, Hangfire, and the Serilog PostgreSQL sink |
+
+There is no default value: the connection string must be provided. In a Docker installation the compose file already sets it from the `POSTGRES_*` variables of `.env`, so you normally do not need to write it here.
+
+## Cookie Settings
+
+```json
+{
+  "CookieSettings": {
+    "ExpireDays": 30
+  }
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `ExpireDays` | 30 | Number of days before the authentication cookie expires. The expiration is sliding: it is renewed while the user keeps using the application. |
+
+## Security Settings
+
+Password and lockout rules of the user accounts, in two sections: `PasswordOptions` and `LockoutOptions`. Each section is applied only if it is present in the configuration. Inside a section, the keys you omit keep the default shown in the table.
+
+```json
+{
+  "Security": {
+    "PasswordOptions": {
+      "RequiredLength": 6,
+      "RequireNonAlphanumeric": true,
+      "RequireDigit": true,
+      "RequireLowercase": true,
+      "RequireUppercase": true
+    }
+  }
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `RequiredLength` | 6 | Minimum password length |
+| `RequireNonAlphanumeric` | true | Require special characters (!@#$%^&* etc.) |
+| `RequireDigit` | true | Require at least one digit (0-9) |
+| `RequireLowercase` | true | Require at least one lowercase letter |
+| `RequireUppercase` | true | Require at least one uppercase letter |
+
+The rules are checked when a password is set or changed. Existing passwords are not affected.
+
+```json
+{
+  "Security": {
+    "LockoutOptions": {
+      "MaxFailedAccessAttempts": 5,
+      "AllowedForNewUsers": true,
+      "DefaultLockoutTimeSpan": "00:05:00"
+    }
+  }
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `MaxFailedAccessAttempts` | 5 | Number of failed login attempts before lockout |
+| `AllowedForNewUsers` | true | Enable lockout for new users |
+| `DefaultLockoutTimeSpan` | 00:05:00 | Duration of account lockout (format: HH:mm:ss). A value of `00:00:00` is replaced with 15 minutes. |
+
+Failed logins count towards the lockout only for accounts that have lockout enabled. A locked account can be unlocked before the time expires with the `user unlock` command of the [CLI](../../cli/).
+
+## Serilog Configuration
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "Microsoft.Hosting.Lifetime": "Warning",
+        "System": "Warning",
+        "System.Net.Http.HttpClient": "Warning",
+        "LibGit2Sharp": "Warning",
+        "ZiggyCreatures.Caching.Fusion": "Warning",
+        "Polly": "Warning",
+        "Corsinvest.ProxmoxVE.Api": "Warning"
+      }
+    },
+    "Properties": {
+      "Application": "cv4pve-admin"
+    },
+    "WriteTo": [...]
+  }
+}
+```
+
+### Log Levels
+
+- `Verbose` - Most detailed logging
+- `Debug` - Debugging information
+- `Information` - General information (default)
+- `Warning` - Warnings and potential issues
+- `Error` - Errors that need attention
+- `Fatal` - Critical failures
+
+To change only the log level, override the single key and leave the rest alone:
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug"
+    }
+  }
+}
+```
+
+The default `WriteTo` array contains, in this order: **File** (position 0), **Console** (position 1) and, in the Enterprise Edition, **PostgreSQL** (position 2).
+
+### File Sink
+
+```json
+{
+  "Name": "File",
+  "Args": {
+    "path": "./data/logs/log-.txt",
+    "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {ClientIp} {UserName}{NewLine}{Exception}",
+    "rollingInterval": "Day",
+    "retainedFileCountLimit": 30
+  }
+}
+```
+
+| Setting | Description |
+|---------|-------------|
+| `path` | Log file path (supports rolling with date placeholder) |
+| `outputTemplate` | Log message format |
+| `rollingInterval` | Rolling interval (Hour, Day, Month, Year) |
+| `retainedFileCountLimit` | Number of log files to retain |
+
+### Console Sink
+
+```json
+{
+  "Name": "Console",
+  "Args": {
+    "theme": "Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console",
+    "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {ClientIp} {UserName} <s:{SourceContext}>{NewLine}{Exception}"
+  }
+}
+```
+
+### PostgreSQL Sink<Tag kind="ee" />
+
+```json
+{
+  "Name": "PostgreSQL",
+  "Args": {
+    "connectionString": "DefaultConnection",
+    "tableName": "Logs",
+    "schemaName": "logs_serilog",
+    "needAutoCreateTable": true,
+    "needAutoCreateSchema": true,
+    "loggerColumnOptions": {
+      "Id": { "Name": "IdAutoIncrement" },
+      "Timestamp": { "Name": "Timestamp" },
+      "Level": { "Name": "Level" },
+      "Message": { "Name": "RenderedMessage" },
+      "MessageTemplate": { "Name": "Message" },
+      "Exception": { "Name": "Exception" },
+      "LogEvent": { "Name": "LogEvent" }
+    }
+  }
+}
+```
+
+| Setting | Description |
+|---------|-------------|
+| `connectionString` | Connection string name from ConnectionStrings section |
+| `tableName` | Database table name for logs |
+| `schemaName` | Database schema name |
+| `needAutoCreateTable` | Auto-create table if not exists |
+| `needAutoCreateSchema` | Auto-create schema if not exists |
+| `loggerColumnOptions` | Column mapping configuration |
+
+:::caution[Keep the PostgreSQL sink at position 2]
+The log viewer in [Monitoring → Logs](../admin-area/monitoring/#logs) reads the table and schema name from the third element of `Serilog.WriteTo`: `Serilog:WriteTo:2:Args:tableName` and `schemaName`. When they are missing, it falls back to `Logs` and `logs_serilog`. If you customise the sinks, keep the PostgreSQL sink in that position.
+:::
+
+## Container Settings
+
+Integration with the companion containers of the Docker Compose installation. The compose files set these values with environment variables (`Container__Watchtower__Url`, …), so you normally do not need to write them in `appsettings.extra.json`.
+
+```json
+{
+  "Container": {
+    "Watchtower": {
+      "Url": "http://watchtower:8080",
+      "Token": "your-watchtower-token"
+    },
+    "Apprise": {
+      "Url": "http://apprise:8000"
+    }
+  }
+}
+```
+
+**`Container:Watchtower:Url`**
+
+Address of the Watchtower HTTP API. When it is set, cv4pve-admin looks up new versions on Docker Hub. The **Update** button of the help menu can then trigger the update of the container (not available in pre-release builds). When it is empty, cv4pve-admin looks up new versions on GitHub and you update manually.
+
+- **Default:** (none)
+
+**`Container:Watchtower:Token`**
+
+Token sent to the Watchtower HTTP API. Must match `WATCHTOWER_HTTP_API_TOKEN` of the Watchtower container.
+
+- **Default:** (none)
+
+**`Container:Apprise:Url` <Tag kind="ee" />**
+
+Address of the Apprise API server. It pre-fills the **Endpoint** of a new Apprise configuration in the [Notification Hub](../admin-area/notifier/#apprise).
+
+- **Default:** (none)
+
+## Other Settings
+
+```json
+{
+  "DetailedErrors": true,
+  "AllowedHosts": "*"
+}
+```
+
+**`DetailedErrors`**
+
+Show detailed error messages (set to `false` in production for security)
+
+- **Default:** true
+
+**`AllowedHosts`**
+
+Allowed host headers (* for all)
+
+- **Default:** *
+
+**`Urls`**
+
+Addresses the web server listens on. The Docker image sets it with the `ASPNETCORE_URLS` environment variable. <Tag kind="ee" /> The Workflow module requires this setting to be present: without it the application does not start.
+
+- **Default:** `http://+:8080` in the Docker image
+
+**`OTEL_EXPORTER_OTLP_ENDPOINT`**
+
+Optional. When set, the OpenTelemetry data collected by the application is exported with the OTLP protocol to this endpoint. Usually passed as an environment variable.
+
+- **Default:** (none)
+
+## Example Complete Configuration
+
+```json
+{
+  "CookieSettings": {
+    "ExpireDays": 7
+  },
+  "Security": {
+    "PasswordOptions": {
+      "RequiredLength": 12,
+      "RequireNonAlphanumeric": true,
+      "RequireDigit": true,
+      "RequireLowercase": true,
+      "RequireUppercase": true
+    },
+    "LockoutOptions": {
+      "MaxFailedAccessAttempts": 3,
+      "AllowedForNewUsers": true,
+      "DefaultLockoutTimeSpan": "00:30:00"
+    }
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "retainedFileCountLimit": 90
+        }
+      }
+    ]
+  },
+  "DetailedErrors": false
+}
+```
+
+This example:
+
+- Shortens the login cookie to 7 days.
+- Makes passwords and lockout stricter.
+- Keeps 90 daily log files instead of 30. The File sink is the first element of `WriteTo`, the other sinks are untouched.
+- Hides detailed error messages.

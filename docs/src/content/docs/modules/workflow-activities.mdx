@@ -1,0 +1,234 @@
+---
+title: "Workflow: Activities"
+description: "The activities the Workflow module adds to the designer toolbox, with their inputs and outputs."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="account_tree" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
+
+Part of the [Workflow](../workflow/) module.
+
+The module adds 26 activities to the designer toolbox, next to the standard ones of Elsa Workflows. In the activity picker they are organised in a tree, under **Proxmox VE** and **Admin**. The names below are the ones shown in the designer.
+
+Activities that work on a guest have a **Vm Id** input with a picker listing the VMs and containers of the cluster. Node, storage, HA group and notifier inputs have pickers too.
+
+Activities that start a Proxmox VE task return its identifier in the `TaskUpid` output. They do not wait for the task to end: chain **PVE Wait For Task** when the next step depends on the result.
+
+## Proxmox VE / Guest / Inventory
+
+### PVE Get Guests
+
+Lists all VMs and containers with status, node, tags, pool, lock, CPU, memory and disk usage, uptime
+
+- **Inputs:** none
+- **Output:** `Vms` (list of `GuestInfo`)
+
+### PVE Get VM Config
+
+Reads the configuration of a VM/CT: name, description, pool, cores, sockets, memory, OS type, tags, start on boot, protection, template flag, disks, network interfaces
+
+- **Inputs:** Vm Id
+- **Output:** `Config` (`GuestConfigInfo`)
+
+### PVE Get Guest RRD Data
+
+Historical metrics of a VM/CT
+
+- **Inputs:** Vm Id, Time Frame (default `Day`), Consolidation (default `Average`)
+- **Output:** `Data` (list of `VmRrdData`)
+
+## Proxmox VE / Guest / Operations
+
+### PVE VM Power Action
+
+Start, Stop, Shutdown, Reset, Suspend, Resume or Reboot a VM/CT
+
+- **Inputs:** Vm Id, Action (default `Start`)
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE VM Power Action" />
+
+### PVE Backup
+
+Runs a vzdump backup of a VM/CT
+
+- **Inputs:** Vm Id, Node (the node where the VM/CT is located), Storage (backup storages only), Mode (`Snapshot`, `Suspend`, `Stop`; default `Snapshot`), Compress (`None`, `Lzo`, `Gzip`, `Zstd`; default `Zstd`), Notes
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Backup" />
+
+### PVE Migrate
+
+Migrates a VM/CT to another node
+
+- **Inputs:** Vm Id, Target Node, Online (default on), Target Storage (optional)
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Migrate" />
+
+### PVE Clone
+
+Clones a VM/CT
+
+- **Inputs:** Vm Id, New Vm Id, New Name, Target Node (optional), Target Storage (optional), Full Clone (default on; off = linked clone), Description
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Clone" />
+
+### PVE Convert to Template
+
+Converts a VM/CT to a template
+
+- **Inputs:** Vm Id
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Convert to Template" />
+
+### PVE Resize Disk
+
+Resizes a disk of a VM/CT
+
+- **Inputs:** Vm Id, Disk (for example `scsi0`, `virtio0`, `rootfs`, `mp0`), Size (increment such as `+10G`, or absolute such as `50G`)
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Resize Disk" />
+
+## Proxmox VE / Guest / Snapshot
+
+### PVE Create Snapshot
+
+Creates a snapshot
+
+- **Inputs:** Vm Id, Snapshot Name, Description, Include Vm State (QEMU only, default off)
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Create Snapshot" />
+
+### PVE Delete Snapshot
+
+Deletes a snapshot
+
+- **Inputs:** Vm Id, Snapshot Name, Force (default on)
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Delete Snapshot" />
+
+### PVE Rollback Snapshot
+
+Rolls a VM/CT back to a snapshot
+
+- **Inputs:** Vm Id, Snapshot Name
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Rollback Snapshot" />
+
+### PVE Get Snapshots
+
+Lists the snapshots of a VM/CT, newest first, with name, description, creation time, parent and VM state flag
+
+- **Inputs:** Vm Id
+- **Output:** `Snapshots` (list of `SnapshotInfo`)
+
+### PVE Update Snapshot
+
+Changes the description of a snapshot
+
+- **Inputs:** Vm Id, Snapshot Name, Description
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Update Snapshot" />
+
+## Proxmox VE / Node / Inventory
+
+### PVE Get Nodes
+
+Lists the cluster nodes with status and CPU, memory and disk usage (fractions from 0 to 1)
+
+- **Inputs:** none
+- **Output:** `Nodes` (list of `NodeInfo`)
+
+### PVE Get Node Replications
+
+Lists the replication jobs of a node with last sync, next sync, duration, fail count and error
+
+- **Inputs:** Node, Vm Id (optional filter)
+- **Output:** `Replications` (list of `ReplicationInfo`)
+
+### PVE Get Node RRD Data
+
+Historical metrics of a node
+
+- **Inputs:** Node, Time Frame (default `Day`), Consolidation (default `Average`)
+- **Output:** `Data` (list of `NodeRrdData`)
+
+## Proxmox VE / Node / Operations
+
+### PVE Node Shutdown/Reboot
+
+Reboots or shuts down a node
+
+- **Inputs:** Node, Action (`Reboot` or `Shutdown`; default `Reboot`)
+- **Output:** `TaskUpid`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Node Shutdown/Reboot" />
+
+## Proxmox VE / Storage / Inventory
+
+### PVE Get Storages
+
+Lists the storages with node, status, type, content types and usage (a fraction from 0 to 1)
+
+- **Inputs:** none
+- **Output:** `Storages` (list of `StorageInfo`)
+
+### PVE Get Storage Contents
+
+Lists the content of a storage (backups, ISO images, templates, disk images)
+
+- **Inputs:** Node, Storage
+- **Output:** `Contents` (list of `StorageContentInfo`)
+
+### PVE Get Storage RRD Data
+
+Historical used and total space of a storage
+
+- **Inputs:** Node, Storage, Time Frame (default `Day`), Consolidation (default `Average`)
+- **Output:** `Data` (list of `NodeStorageRrdData`)
+
+## Proxmox VE / Cluster
+
+### PVE Manage HA (Cluster / HA)
+
+Manages the High Availability resource of a VM/CT. `Enable` adds it to HA, `Disable` removes it, `Migrate` and `Relocate` move it to the target node
+
+- **Inputs:** Vm Id, Action (default `Enable`), Group (for `Enable`), State (for `Enable`: `Started`, `Stopped`, `Enabled`, `Disabled`, `Ignored`; default `Started`), Max Relocate and Max Restart (for `Enable`; default 1), Target Node (required for `Migrate` and `Relocate`)
+- **Output:** `Success`
+- **Proxmox VE privilege:** <PvePrivileges activity="PVE Manage HA" />
+
+### PVE Get Cluster Replications (Cluster / Inventory)
+
+Lists the replication jobs configured in the cluster: ID, guest, target, type, schedule, disabled flag, rate and comment. The state of the last sync is not included
+
+- **Inputs:** none
+- **Output:** `Replications` (list of `ReplicationInfo`)
+
+## Proxmox VE / Utils
+
+### PVE Wait For Task
+
+Waits for a Proxmox VE task to end
+
+- **Inputs:** Task Upid, Timeout Ms (default 300000, that is 5 minutes)
+- **Output:** `Success` (true when the task ended successfully)
+
+## Admin / Utils
+
+### Notify
+
+Sends a notification through the Notifier
+
+- **Inputs:** Subject (default `Workflow Notification`), Body, Context (default `Workflow`), Severity (default `Info`), Notifiers (one of the enabled notifier configurations, or a comma-separated list of names through an expression; empty = all the enabled ones)
+- **Output:** none
+
+### Filter Collection
+
+Filters a collection with a Dynamic LINQ expression on the fields of its items. An empty expression returns the collection unchanged
+
+- **Inputs:** Source, Expression
+- **Output:** `Result`
+
+## Data types
+
+The data types returned by the inventory activities are available as variable types in the designer: `GuestInfo`, `GuestConfigInfo`, `GuestDiskInfo`, `GuestNetworkInfo`, `NodeInfo`, `StorageInfo`, `StorageContentInfo`, `SnapshotInfo`, `ReplicationInfo`, `VmRrdData`, `NodeRrdData`, `NodeStorageRrdData`. All of them except `GuestConfigInfo` are also available as lists.

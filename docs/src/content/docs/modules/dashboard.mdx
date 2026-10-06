@@ -1,0 +1,128 @@
+---
+title: "Dashboard"
+description: "Customizable dashboards with widgets and metrics for centralised Proxmox VE infrastructure monitoring. Each dashboard is personal and fully customisable."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="dashboard" size="lg" /><Tag kind="all-clusters" /></p>
+
+Customizable dashboards with widgets and metrics for centralised Proxmox VE infrastructure monitoring. Each dashboard is personal and fully customisable.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:view-dashboard', title: "Multiple Dashboards", text: "Create, rename and delete as many dashboards as needed. Each dashboard is personal and independent.", href: '#managing-dashboards' },
+    { icon: 'mdi:widgets', title: "Widget Library", text: "Add widgets from any installed module (Resources, AutoSnap, Backup Analytics, Diagnostics, and more). You can resize and move each widget on the grid.", href: '#widgets' },
+    { icon: 'mdi:server-network', title: "Multi-Cluster Filter", text: "Turn on **Allow clusters select** on a dashboard to show a **Clusters** picker above the widgets and filter widget data by one or more clusters." },
+    { icon: 'mdi:refresh', title: "Auto Refresh", text: "Set an automatic refresh interval (in seconds) to keep all widget data up to date without manual interaction. `0` turns automatic refresh off." },
+    { icon: 'mdi:export', title: "Import / Export", text: "**Export** saves the current dashboard as a JSON file (`dashboard-<name>.json`). **Upload** loads a JSON file back as a new dashboard." },
+  ]}
+/>
+
+## Why
+
+Why a custom dashboard when PVE has its own summary?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:view-dashboard-edit', title: "What you care about, not what's default", text: "Compose the view: backup status + diagnostic alerts + cluster gauges + a Memo with the on-call rota. PVE shows the same thing to everyone." },
+    { icon: 'mdi:account', title: "Personal, not global", text: "Each user has their own dashboards. Changing yours does not affect your colleagues, and they change theirs without seeing yours." },
+    { icon: 'mdi:puzzle', title: "Aggregates from every module", text: "Widgets show data from Resources, AutoSnap, Backup Analytics, Replication Analytics, Diagnostics, Node Protect: every signal on one screen.", href: '#widgets' },
+    { icon: 'mdi:refresh', title: "Auto-refresh + export", text: "Set the refresh interval once. The dashboard stays current on a wall display. Export to JSON to keep a copy of a standard \"ops board\"." },
+  ]}
+/>
+
+## Managing dashboards
+
+The **Dashboards** drop-down at the top selects the dashboard to show (type in it to filter by name). The menu button (three dots) next to it lists the actions:
+
+| Action | What it does |
+|--------|--------------|
+| **Refresh** | Reloads the data of every widget of the current dashboard |
+| **New** | Starts an empty dashboard, directly in edit mode |
+| **Upload** | Imports a dashboard from a `.json` file |
+| **Clone** | Opens the current dashboard in edit mode |
+| **Create default dashboard** | Recreates the built-in dashboards (see [Default Dashboard](#default-dashboard)) |
+| **Edit** | Enters [edit mode](#edit-mode) on the current dashboard |
+| **Delete** | Deletes the current dashboard, after confirmation |
+| **Export** | Downloads the current dashboard as `dashboard-<name>.json` |
+
+**Upload:** if a dashboard with the same name exists, the date and time are appended to the imported name.
+
+**Clone** currently behaves like **Edit**. To duplicate a dashboard, **Export** it and **Upload** the file.
+
+:::note[Upload keeps the owner written in the file]
+The exported file records the user who owns the dashboard, and **Upload** keeps that value. A file uploaded by a different user is added to the dashboards of the original owner, not to those of the user who uploads it.
+:::
+
+## Edit Mode
+
+Open the menu (three dots) and choose **Edit** to enter edit mode. The toolbar then shows:
+
+| Control | Purpose |
+|---------|---------|
+| **Name** | Name of the dashboard. **Save** is disabled while it is empty |
+| **Save** / **Cancel** | **Save** stores all changes in the database. **Cancel** discards unsaved changes |
+| **Refresh interval (sec.)** | Automatic refresh of all widgets, in seconds. `0` = off |
+| **Allow clusters select** | Shows the **Clusters** picker on the dashboard, to filter widget data by one or more clusters |
+| **Add widget** | Menu of the widgets, grouped by module |
+| Grid button | Shows or hides the layout grid |
+
+In edit mode you can:
+
+- **Add widgets**: select a widget from the **Add widget** menu. It is placed in the first free position on the grid. The new widget is titled `<module> - <widget>`.
+- **Move and resize**: drag widgets to reposition them; drag the resize handle to change size. The grid has 24 columns and 24 rows.
+- **Configure**: open the widget settings dialog to customize title (empty = hidden), title/body CSS styles, and widget-specific options.
+- **Clone**: duplicate a widget with the same settings.
+- **Refresh**: reload the data of that widget only.
+- **Remove**: delete a widget from the dashboard.
+
+**Configure**, **Clone**, **Refresh** and **Remove** are in the menu (three dots) on the title bar of each widget. The menu is visible only in edit mode. If you leave the page while in edit mode, the application asks for confirmation.
+
+## Widgets
+
+The Dashboard has two generic widgets that are always available. Every other installed module adds its own widgets.
+
+The list of the 32 widgets, with the module each one comes from, is in [Widgets](../dashboard-widgets/).
+
+### Widget options
+
+Every widget has the common options of the **Configure** dialog: **Title (empty = hide)** and, under **Style**, **Title CSS** and **Body CSS**. These widgets add their own options:
+
+| Widget | Options |
+|--------|---------|
+| **Web Content** | **Type**: `Link` (default; **Url**, **Text**, **Icon**, opens in a new tab), `Iframe` (**Url** of an embeddable page) or `Html` (**HTML Content**, rendered as is) |
+| **Memo** | **Markdown Content** |
+| **Resources Status** | **Resource Type** (default `Vm`) and, when it is `Vm`, **VM Type** (default `Qemu`) |
+| **Resources Usage** | **Use ProgressBar for percentage value** (default on), **Description as link** (default on), **Property Icon Status** (default `None`), **Icon Status** (default `IconAndText`), plus the columns chosen in the widget grid |
+| **Check** (AutoSnap, Backup Analytics, Replication Analytics) | Each has its own options in the same dialog |
+
+## Default Dashboard
+
+When a user has no dashboard (on first access, or after deleting the last one), cv4pve-admin creates two default dashboards from a built-in template:
+
+| Dashboard | Content | Refresh interval | Clusters picker |
+|-----------|---------|------------------|-----------------|
+| **Home** | Resource status counters, cluster map, usage grids and the check widgets of AutoSnap, Backup Analytics, Replication Analytics and Diagnostic | 10 seconds | on |
+| **Status** | Status, size and info widgets of AutoSnap, Backup Analytics, Replication Analytics, Node Protect, Diagnostic and Update Manager | off | on |
+
+You can recreate them at any time using the **Create default dashboard** action. Existing dashboards named **Home** or **Status** are not deleted: they are renamed to `zzz_<name>-<date and time>` and the fresh defaults take their names.
+
+The **Status** default includes the **Git Size** widget of Node Protect, available only in the Enterprise edition <Tag kind="ee" />. In the Community edition that tile stays empty and can be removed in edit mode.
+
+## Application permissions
+
+| Permission | Key | Grants |
+|------------|-----|--------|
+| **Dashboard** | `Dashboard.Link` | Access to the Dashboard page |
+
+The built-in role **Admin for module Dashboard** includes it. A permission is also registered for each widget (`Dashboard.Widget.Web Content`, `Dashboard.Widget.Memo`, and `<module>.Widget.<widget>` for the widgets of the other modules). The Dashboard does not currently check these permissions when it lists or renders widgets.
+
+Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
+
+<PvePrivileges module="dashboard" />

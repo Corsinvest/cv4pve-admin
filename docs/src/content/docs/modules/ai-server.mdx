@@ -1,0 +1,209 @@
+---
+title: "AI Server"
+description: "Model Context Protocol (MCP) endpoint that lets AI assistants query the cluster, manage VMs and automate operations through natural language."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="hub" size="lg" /><Tag kind="all-clusters" /></p>
+
+Model Context Protocol (MCP) endpoint that lets AI assistants query the cluster, manage VMs and automate operations through natural language.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:robot', title: "AI Assistant Integration", text: "Manage Proxmox infrastructure through natural language via AI assistants." },
+    { icon: 'mdi:database-eye', title: "Data Access", text: "AI tools can query VM status, cluster health, and resource usage.", href: '#available-tools' },
+    { icon: 'mdi:auto-fix', title: "Automated Tasks", text: "AI assistants can perform VM management, snapshot creation, and monitoring." },
+    { icon: 'mdi:api', title: "MCP Protocol", text: "Uses Model Context Protocol for AI integration." },
+    { icon: 'mdi:link-variant', title: "AI Tool Connection", text: "Connect AI assistants to Proxmox environments.", href: '#connecting-ai-clients' },
+    { icon: 'mdi:shield-lock', title: "Access Control", text: "Controlled API exposure for secure AI interaction.", href: '#application-permissions' },
+  ]}
+/>
+
+## Why
+
+Why an MCP server when the PVE API is already there?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:message-text', title: "Talk to the cluster in English", text: "Ask \"which VMs use the most memory on pve01?\" instead of writing the API call. Lower the barrier for everyone on the team." },
+    { icon: 'mdi:database-check', title: "Cluster context already loaded", text: "The MCP server knows about every cluster you configured: the AI doesn't have to discover, authenticate or paginate the PVE API itself." },
+    { icon: 'mdi:lan-connect', title: "Multi-cluster from one connection", text: "One AI assistant reaches every cluster in cv4pve-admin on which its token has permissions. No separate token or hostname for each cluster." },
+    { icon: 'mdi:shield-check', title: "Permission-aware", text: "cv4pve-admin checks every tool call against the permissions of the AI Server token, per tool and per cluster. It refuses a tool the token is not granted.", href: '#application-permissions' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module
+- **API Access**: lists the tokens that can call the MCP tools (name, active flag, creation and expiry date). Select one to **Regenerate** its key or to see its **Effective Permissions**. The page shows a warning when the MCP server is disabled, and an alert when a call with an invalid key is rejected
+- **Bridge**: download the `cv4pve-mcp-bridge` binary for your platform (Windows x64, Linux x64 and ARM64, macOS Intel and Apple Silicon). The page also provides a ready-to-use `claude_desktop_config.json` for stdio-only clients (Claude Desktop)
+
+## Connecting AI Clients
+
+### First-time setup
+
+Before connecting any AI client, enable the endpoint and generate the API key:
+
+1. Open the **AI Server** module, open its settings and turn on **Enabled** (the endpoint is off by default)
+2. Go to the **API Access** tab
+3. Select the **AI Server** token, click **Regenerate** and confirm: the previous key stops working
+4. Copy the key: clients send it in the `X-API-Key` header (see below)
+
+**Copy the key now:** The API key is shown only once after generation. Copy it before closing the dialog.
+
+### MCP endpoint URL
+
+The MCP endpoint is exposed at:
+
+```
+https://<your-server>/mcp
+```
+
+Clients authenticate by sending the AI Server token (from the **API Access** tab) in the `X-API-Key` HTTP header. A missing or invalid key returns `401`; `503` means the AI Server module is disabled.
+
+### Native HTTP clients
+
+Clients that support MCP over HTTP/SSE natively (Cursor, Windsurf, Zed, Claude Code, etc.) connect directly with the URL above and the `X-API-Key` header. They need no additional software.
+
+### Claude Desktop and stdio-only clients
+
+Claude Desktop only supports stdio transport and cannot connect to HTTP MCP servers directly.
+Use **cv4pve-mcp-bridge** to proxy stdio ↔ HTTP. Download, options and the Claude Desktop configuration are in [MCP Bridge](../ai-server-bridge/).
+
+## Available Tools
+
+AI Server exposes 29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries. Every tool except `ListClusters` takes the name of the cluster to work on as `cluster_name`. `ListClusters` returns the names of the enabled clusters.
+
+The full list, with what each tool does and its parameters, is in [Tools](../ai-server-tools/).
+
+## Output Format
+
+The **Output Format** setting controls how the tables returned by the tools (lists of guests, nodes, storages, query results) are serialized before being sent to the AI model. Choosing the right format reduces the text the AI model has to read (counted in model tokens, not to be confused with the API tokens of this module) and improves response quality.
+
+These results are always JSON, whatever the setting:
+
+- A single object, such as a status or a configuration
+- The result of an action
+- The historical metrics (`ListVmRrdData`, `ListNodeRrdData`)
+- `ListBackupJobs`
+
+The table below shows the same request returned in each format, with approximate token counts as an example.
+
+| Format | Description | Approx. tokens* |
+|--------|-------------|-----------------|
+| **JsonCompact** | JSON with `headers` + `rows` arrays | ~360 (about 40% fewer than JsonNormal) |
+| **JsonNormal** | Standard JSON array of objects | ~600 |
+| **Toon** | Token-Oriented Object Notation (`data[23]{...}`) | ~270 (about 55% fewer than JsonNormal) |
+| **Csv** | Plain CSV with header row | ~250 |
+
+*Approximate values for the same response payload: actual token count depends on dataset size.
+
+The default is **`JsonCompact`**, which offers a good balance between token efficiency and compatibility with all AI models.
+
+**Choosing the right format:**
+
+- Use **Toon** or **Csv** to minimize token usage with large datasets.
+- Use **JsonNormal** if your AI client has trouble parsing compact formats.
+- Most AI models work well with the default **JsonCompact**.
+
+## Example Prompts
+
+Real prompts you can paste into your AI assistant once the MCP endpoint is connected. The assistant picks the right tool(s) and chains them automatically.
+
+### Read-only inspection
+
+> Which VMs in cluster `home-lab` are currently running and using more than 70% CPU?
+
+> Show me the snapshots older than 30 days across all clusters.
+
+> Summarise the health of cluster `prod`: nodes online/offline, VM status counts, free storage per pool.
+
+> List the last 20 failed tasks across the cluster, with user and duration.
+
+> For node `pve01`, show the CPU and memory pressure (PSI) over the last 24 hours.
+
+### Backup / storage management
+
+> List all backups for VM 101 and tell me the most recent one.
+
+> On node `pve01`, storage `local`, list the ISO images by size and propose which to delete.
+
+> Download the latest Debian 12 netinst ISO to storage `local` on node `pve01`.
+
+> Show me all backup jobs with their schedule and the guests each one covers.
+
+### Operations (write actions)
+
+> Create a snapshot of VM 200 called `pre-upgrade` with description "before kernel update", including RAM.
+
+> Migrate VM 105 from `pve01` to `pve02`, live migration if running.
+
+> Run a backup of VM 200 on storage `pbs-main` with zstd compression.
+
+> Reset VM 150 (it's hung).
+
+### Advanced queries
+
+<Fragment slot="badge"><Tag kind="ee" /></Fragment>
+
+Enterprise adds the `GetQuerySchema` + `ExecuteQuery` pair. Useful prompts:
+
+> What tables can I query against this cluster?
+
+> Group all guests by node and count how many are running vs stopped.
+
+> Find the top 5 VMs by memory usage, with their node.
+
+> List storages with more than 80% usage.
+
+:::caution[Permissions matter]
+Write tools (`ChangeVmState`, `CreateVmSnapshot`, `DeleteVmSnapshot`, `RollbackVmSnapshot`, `MigrateVm`, `BackupVm`, `Delete*`, `DownloadIso`) change or delete data on the cluster. The AI Server token is created with two roles: **AI Server Tools**, which already includes every tool except `DownloadIso` and `DeleteIso`, and the cluster **Admin** role. Both roles are re-applied at every startup. Review the role's permissions under **Admin Area → Security → Roles** before connecting an AI client.
+:::
+
+## Application permissions
+
+Each tool has its own permission, with the key `AIServer.Tools.<tool name>` (for example `AIServer.Tools.ListVms`). A tool runs only if the token that calls it holds that permission on the cluster named in the call. `ListClusters` has no permission and is always available.
+
+On top of the tool permission, the cluster permissions of the token filter the result. The nodes, guests and storages the token cannot see are left out of the lists, and an action on one of them is refused.
+
+Some tools do not follow this rule:
+
+- `ListBackupJobs` and the [Query](../ai-server-query/) tools do not apply this filter: they return what the cluster holds.
+- `ListTasks` and `ListReplications` are filtered by node only: they also return the tasks and the replication jobs of guests the token cannot see.
+
+| Role | Content |
+|------|---------|
+| **AI Server Tools** | Every tool permission except `DownloadIso` and `DeleteIso`. In the Enterprise edition <Tag kind="ee" /> also `GetQuerySchema` and `ExecuteQuery` |
+| **Admin for module AI Server** | The pages, the settings and the tools of the **AI Server Tools** role |
+
+`DownloadIso` and `DeleteIso` are in no role.
+
+Page and settings permissions:
+
+| Permission | Key | Grants |
+|------------|-----|--------|
+| **AI Server** | `AIServer.Link` | Access to the module and to its **Overview** page |
+| **API Access** | `AIServer.Link.api+access` | **API Access** page |
+| **Bridge** | `AIServer.Link.bridge` | **Bridge** page |
+| **Edit Settings** | `AIServer.EditOptions` | The settings button of the module |
+
+The **AI Server** token is created at the first start. At every start cv4pve-admin assigns it the **AI Server Tools** role and the cluster **Admin** role again. Roles and permissions are managed in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
+
+<PvePrivileges module="ai-server" />
+
+## Auditing
+
+Every request to the MCP endpoint is written to the audit log with the name of the token, the tool called and its arguments. A request with an invalid key is logged as a failed authentication, with a short fingerprint of the key, and raises the alert on the **API Access** page.
+
+## Settings
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled** | off | Master on/off switch for the MCP endpoint. While it is off the endpoint answers `503` |
+| **Output Format** | JsonCompact | How tool responses are serialised before being sent to the AI model: `JsonCompact` · `JsonNormal` · `Toon` · `Csv` |

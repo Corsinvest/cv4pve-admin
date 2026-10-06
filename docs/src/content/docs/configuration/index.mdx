@@ -1,0 +1,67 @@
+---
+title: "Configuration"
+description: "Everything you set up once, before (or while) using the modules."
+---
+
+import Mdi from '~/components/Mdi.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+Everything you set up once, before (or while) using the modules.
+
+## Administration
+
+Setup for the whole application. It requires admin privileges.
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:shield-crown', title: "Admin Area", text: "Proxmox VE clusters, security & access control [EE], monitoring, maintenance, general settings and notification channels.", href: './admin-area/' },
+    { icon: 'mdi:key-chain', title: "PVE Permissions", text: "Required Proxmox VE permissions for each module: a quick reference for least-privilege setups.", href: './pve-permissions/' },
+    { icon: 'mdi:file-code', title: "appsettings.extra.json", text: "Optional file for low-level overrides that have no UI control: database connection, password and lockout policies, login cookie, logging.", href: './appsettings-extra/' },
+  ]}
+/>
+
+## Modules
+
+Each module keeps its own settings, next to the module itself.
+
+- **Where**: the <Mdi name="cog" /> gear button (**Settings**) in the header of the module page.
+- **Who**: users with the **Edit Settings** permission of that module. Roles and permissions are managed in [Security & Access Control](admin-area/security/) <Tag kind="ee" />.
+- **For which cluster**: a module that works on one cluster saves its settings for each cluster, so open them with the right cluster selected. A module that works on all clusters saves them once. See [Cluster scope](../concepts/#cluster-scope).
+
+| Modules with settings | Modules without |
+|-----------------------|-----------------|
+| [AI Server](../modules/ai-server/#settings), [AutoSnap](../modules/autosnap/#settings), [Backup Analytics](../modules/backup-analytics/#settings), [Bots](../modules/bots/#settings), [Diagnostics](../modules/diagnostics/#settings), [Metrics Exporter](../modules/metrics-exporter/#settings), [Node Protect](../modules/node-protect/#settings), [Replication Analytics](../modules/replication-analytics/#settings), [Update Manager](../modules/update-manager/#settings), [UPS Monitor](../modules/ups-monitor/#settings) <Tag kind="ee" /> | Dashboard, Resources, System Report, Portal <Tag kind="ee" />, VM Performance <Tag kind="ee" />, Workflow <Tag kind="ee" /> |
+
+Some settings appear in several modules:
+
+| Setting | What it is |
+|---------|------------|
+| **Enabled** | Marks the module as in use on that cluster. What it switches on depends on the module, and its page says so. |
+| **Enabled schedulation** | Runs the module on a schedule, written as a cron expression. |
+| **Max days logs** | How many days of collected data the module keeps. |
+| **Max parallel requests** | How many requests a scan sends at the same time. |
+| Notifier | The [notification channels](admin-area/notifier/) the module sends its results to. |
+
+You write the cron expression in the built-in editor, which shows a readable description and the next run. The schedule follows the time zone of the container (`TZ`).
+
+The settings of each module, with their defaults, are in the **Settings** section of its page.
+
+## Personal
+
+Per-user preferences: every signed-in user can change their own.
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:account', title: "User Profile", text: "Language, password, two-factor authentication [EE], personal audit log [EE], active sessions, theme.", href: './profile/' },
+  ]}
+/>
+
+## Where settings live
+
+| Where | What |
+|-------|------|
+| **Database** | All UI-driven settings: cluster credentials, users, roles, notifier channels, module options. They survive container updates. |
+| **`appsettings.extra.json`** | Bootstrap configuration: database connection, log level, identity policies. Stored in `/app/config/` (Docker volume, `data/cv4pve-admin/config` on the host) and read at startup. |
+| **`/app/data/`** (Docker volume, `data/cv4pve-admin/data` on the host) | Persistent application state: logs, images, translations, temp files. The PostgreSQL database is stored in a separate volume (`data/postgres/data`). |
+| **`.env`** and environment variables | Container deployment settings: image tag, published port, database credentials, time zone (`TZ`), Watchtower token. See [Installation Guide](../docker/#installation-settings-env). |

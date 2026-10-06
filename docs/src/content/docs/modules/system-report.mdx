@@ -1,0 +1,148 @@
+---
+title: "System Report"
+description: "Saves the state of a Proxmox VE cluster (configuration, resources, audit data) at a point in time in a single file to download. Use it for compliance audits, customer hand-over, change tracking and capacity planning. It is built on the cv4pve-report library."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="description" size="lg" /><Tag kind="per-cluster" /></p>
+
+Saves the state of a Proxmox VE cluster (configuration, resources, audit data) at a point in time in a single file to download. Use it for compliance audits, customer hand-over, change tracking and capacity planning. It is built on the [`cv4pve-report`](https://github.com/Corsinvest/cv4pve-report) library.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:file-export', title: "Multiple Formats", text: "Export as **Xlsx** (single workbook with one sheet per section), **Html** (browsable static site) or **Json** (multi-file, one per section). Every report is downloaded as a single `.zip`." },
+    { icon: 'mdi:tune-variant', title: "Presets & Fine-grained Settings", text: "Pick a preset, or toggle every individual section yourself.\n\n- **Fast**: structure only, no heavy data. Default for a new report\n- **Standard**: the defaults. Everything except guest RRD data, audit log, syslog, S.M.A.R.T. and capacity planning\n- **Full**: RRD on week timeframe, guest RRD, audit log, syslog, firewall log of the last 3 days, S.M.A.R.T., capacity planning" },
+    { icon: 'mdi:toggle-switch-outline', title: "What's Included", text: "- Cluster: overview, audit log, tasks\n- Nodes: detail, APT updates, replication, RRD, syslog, S.M.A.R.T.\n- Guests: snapshots, disks, partitions, QEMU agent, RRD\n- Storage: content, backups, RRD\n- Firewall: rules, aliases, ipsets, log\n- Capacity Planning: average and peak usage of guests and nodes, storage growth and days to full. It needs the RRD data of each section" },
+    { icon: 'mdi:filter-variant', title: "Resource Filters", text: "Limit by node names (`@all`, comma-separated, wildcards) and by guest IDs." },
+    { icon: 'mdi:play-circle', title: "On-demand Generation", text: "Generate reports manually from the **Reports** page. Each report is saved with the format and settings you chose. In the history grid you can download or delete any past report and view the settings it was generated with.", href: '#reports' },
+    { icon: 'mdi:bolt', title: "Parallel Fetching", text: "**Max Parallel Requests** (default 5) speeds up data collection on large clusters. Set it to 1 for sequential mode." },
+  ]}
+/>
+
+## Why
+
+Why automate reports when PVE already shows everything in its UI?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:file-export', title: "One file you can hand off", text: "Auditors, customers and capacity planners want a self-contained file. Pick the format that fits the receiver: Xlsx, Html or Json." },
+    { icon: 'mdi:clock-check', title: "Snapshot a point in time", text: "Reports are saved with the settings you chose. Open a report from six months ago and see what the cluster looked like then.", href: '#reports' },
+    { icon: 'mdi:database-arrow-down', title: "Heavy data on demand", text: "S.M.A.R.T., syslog, firewall log, RRD over a week: include them only when you need them. The **Fast** preset stays light and quick." },
+    { icon: 'mdi:file-certificate', title: "Compliance ready", text: "PVE shows the live state. A System Report has a date and can be archived. It answers the question that auditors ask: \"what was running, where, when?\". The mapping of checks to standards (ISO 27001, NIS2 and others) is in [Diagnostics](../diagnostics/#compliance-reports) [EE]." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module
+- **Reports**: history of the generated reports with id, start, duration and format. See [Reports](#reports)
+
+## Reports
+
+| Action | What it does |
+|--------|--------------|
+| **New** | Opens the **New Report** panel: choose the format and the content (see [Report options](#report-options)), then save to start the generation in the background |
+| **Download** | Downloads the selected report as a `.zip` file. Disabled until the report is finished |
+| **Delete** | After confirmation, deletes the selected report and its file |
+| **Refresh** | Reloads the grid |
+
+Click the **Id** of a row to open, read-only, the options the report was generated with. Progress and log of a running report are in the global Task Tracker.
+
+Reports are generated on demand only: the module has no schedule and no retention, so old reports stay until you delete them.
+
+## Report options
+
+The **Fast**, **Standard** and **Full** buttons at the top of the panel load a ready-made set of values. The tables below show the **Standard** values. A new report starts with **Fast**.
+
+### General
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **Format** | Xlsx | `Xlsx`, `Html` or `Json` |
+| **Max Parallel Requests** | 5 | Max parallel requests when fetching data (1 = sequential) |
+| **API timeout (seconds)** | 0 | API timeout in seconds (0 = use the default) |
+
+### Cluster
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **Include** | on | Cluster overview |
+| **Tasks** | on | Cluster tasks |
+| **Audit Log** | off | Cluster log, with **Max Count** (0 = unlimited) |
+
+### Node
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **Names** | `@all` | Nodes to include |
+| **RRD Data** | on | Node metrics, with **Time frame** (`Hour`, `Day`, `Week`, `Month` or `Year`; default Day) and **Consolidation** (default Average) |
+| **Syslog** | off | Node syslog, with **Max Count** (default 500, ignored when the period has a start date) and **Period** (a single date range field) |
+| **Replication** | on | Replication jobs |
+| **Node Detail** | on | Enables the options below |
+| **APT** | on | Available APT updates |
+| **Disk Detail** | on | Disk details |
+| **S.M.A.R.T. Data** | off | S.M.A.R.T. attributes of the disks |
+| **Firewall Log** | on | Node firewall log |
+| **Tasks** | on | Node tasks, with **Only Errors** (off), **Max Count** (0 = unlimited) and **Source** (`all`, `local` or `active`; default `all`) |
+
+### Guest (VM / CT)
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **IDs** | `@all` | Guests to include |
+| **RRD Data** | off | Guest metrics, with **Time frame** and **Consolidation** |
+| **Snapshots** | on | Snapshots of each guest |
+| **Disks** | on | Disks of each guest |
+| **Partitions** | on | Partitions of each guest |
+| **QEMU Agent** | on | Data read through the QEMU Guest Agent, with **Agent Timeout sec.** (default 3) |
+| **Guest Detail** | on | Enables **Firewall Log** (on) and **Tasks** (on, same options as the node tasks) |
+
+### Storage
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **Content** | on | Storage content |
+| **Backups** | on | Backups on the storage |
+| **RRD Data** | on | Storage metrics, with **Time frame** and **Consolidation** |
+
+### Firewall
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **Firewall** | on | Firewall rules, aliases, ipsets and log, with **Max Count** (0 = unlimited) and **Period** (a single date range field) for the log |
+
+### Capacity Planning
+
+| Option | Standard | Purpose |
+|--------|----------|---------|
+| **Capacity Planning** | off | Average and peak usage of guests and nodes, storage growth and days to full. Each table needs the **RRD Data** of its section (Node, Guest, Storage) and uses its time frame |
+
+## Settings
+
+The module has no settings at module level: everything is chosen per report in [Report options](#report-options).
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Daily Status** <Tag kind="ee" /> | Successful and failed reports per day (last 14 days) |
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+| Permission | Allows |
+|------------|--------|
+| **System Report** | Open the module and its **Overview** page |
+| **Reports** | Open the page with that name (one permission per page) |
+| **Daily Status** <Tag kind="ee" /> | Use the dashboard widget |
+
+**New**, **Download** and **Delete** have no dedicated permission: they are available to every user who can open the **Reports** page.
+
+<PvePrivileges module="system-report" />
