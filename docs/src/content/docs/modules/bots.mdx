@@ -1,0 +1,136 @@
+---
+title: "Bots"
+description: "Remote Proxmox VE cluster management through a Telegram chatbot: execute commands and check status from any device."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="smart_toy" size="lg" /><Tag kind="per-cluster" /></p>
+
+Remote Proxmox VE cluster management through a Telegram chatbot: execute commands and check status from any device.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:remote', title: "Remote Control", text: "Execute commands and manage nodes through a Telegram bot.", href: '#bot-commands' },
+    { icon: 'mdi:bell-alert', title: "Messages", text: "Receive the replies to your commands. Receive also the messages sent manually from the **Telegram** page to one or all connected chats." },
+    { icon: 'mdi:lock', title: "Access Control", text: "Restrict the bot to a list of allowed Telegram chat IDs. The token is stored encrypted at rest.", href: '#access-control-and-log' },
+    { icon: 'mdi:cellphone', title: "Mobile Access", text: "Manage the cluster from any device with the Telegram app." },
+    { icon: 'mdi:flash', title: "Command Response", text: "Receive feedback on commands and system status." },
+    { icon: 'mdi:message-text', title: "Chat Interface", text: "Execute operations through chat-based commands.", href: '#bot-commands' },
+  ]}
+/>
+
+## Why
+
+Why a chatbot when the web UI is already there?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:cellphone', title: "Cluster status from your phone", text: "Check node uptime, VM state and last backup without a browser or a VPN connection. You reach the cluster wherever Telegram works." },
+    { icon: 'mdi:send', title: "Push, not pull", text: "Telegram delivers the replies to your commands and the messages sent from the **Telegram** page. There is no polling, no mail filter that hides a message and no email password to keep up to date." },
+    { icon: 'mdi:account-lock', title: "Authorised chats only", text: "Only the chat IDs you allow can talk to the bot. The token is stored encrypted at rest.", href: '#access-control-and-log' },
+    { icon: 'mdi:flash', title: "Quick fire-and-forget", text: "Send `/vmstart` to start VM 200 from your phone while you walk to the data centre. You need no laptop, no SSH and no web UI.", href: '#bot-commands' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module
+- **Telegram**: live bot log and a button that opens Telegram Web. Once at least one chat has written to the bot, the page also shows a **Users** picker and a **Message** box. Use them to send a message to all or one of the connected chats (press Enter to send)
+
+## Set Up Your Telegram Bot
+
+To connect the Bots module to Telegram, create a bot with **BotFather** and copy the generated token into the module settings.
+
+1. Open the Telegram app on your phone or computer.
+
+2. Search for the [**BotFather**](https://web.telegram.org/k/#@BotFather) bot: it is the official Telegram bot for creating and managing bots.
+
+3. Type `/newbot` to create a new bot. Follow the instructions:
+    - Choose a **display name** (e.g. `My PVE Bot`)
+    - Choose a **username**: must be unique and end in `bot` (e.g. `my_pve_bot`)
+
+4. BotFather generates an **API token** (e.g. `707587383:AAHD9D***************`).
+
+5. Copy the token and paste it into the **Token** field in the Bots module settings.
+
+The bot starts when **Telegram → Enabled** is on. Restrict who can use it with **Chats Id**. Both are described in [Settings](#settings).
+
+**Unique test usernames:** If you create a bot only for testing, prefix the username with your name to make it unique (e.g. `john_pve_bot`).
+
+## Bot commands
+
+Commands are sent to the bot as Telegram commands (`/name`). The bot answers a message that is not a command with the help, unless a previous command is waiting for an answer.
+
+The VM commands take no argument: the bot answers with the list of guests to choose from.
+
+| Command | Action |
+|---------|--------|
+| `/help` | Show help |
+| `/vmstart` | Start VM/CT |
+| `/vmstop` | Stop VM/CT |
+| `/vmshutdown` | Shutdown VM/CT |
+| `/vmreset` | Reset VM/CT |
+| `/nodereboot` | Reboot node |
+| `/nodeshutdown` | Shutdown node |
+| `/get` · `/set` · `/create` · `/delete` | Call the Proxmox VE API on a resource path; the result is sent back as a file |
+| `/usage` | Show the usage of an API resource |
+| `/alias` | Create alias commands |
+
+The bot also has built-in aliases for common API calls, for example `/top`, `/topn`, `/tops` and `/topv` (cluster resources, all or by node, storage, VM/CT) and `/nsts` (node status).
+
+:::caution[The bot acts with the cluster credentials]
+The bot talks to Proxmox VE through the connection configured for the cluster in cv4pve-admin, not with the permissions of a cv4pve-admin user. Anyone who can write to the bot from an allowed chat can run every command above, node shutdown and raw API calls included. Always restrict **Chats Id**.
+:::
+
+## Access control and log
+
+- Every message received is written to the log of the **Telegram** page with its chat ID, user name and text. To find the chat ID to allow, write to the bot and read it from the log.
+- A message from a chat that is not allowed is answered with a refusal and logged as a security line.
+- The log and the list of connected chats are kept in memory: they start empty when the application or the bot restarts.
+- Saving the settings restarts the bot.
+
+## Settings
+
+**Enabled**
+
+On/off switch of the module on the cluster. The bot does not depend on this switch: the bot starts when **Telegram → Enabled** is on
+
+- **Default:** off
+
+**Telegram → Enabled**
+
+Starts the Telegram bot for the cluster. The bot runs whenever this switch is on
+
+- **Default:** off
+
+**Telegram → Token**
+
+Token generated by BotFather, stored encrypted at rest
+
+- **Default:** empty (required)
+
+**Telegram → Chats Id**
+
+Numeric ID of the chat allowed to use the bot. When the field is empty there is no access control: every chat is accepted. The value is read one ID per line, but the field is a single-line text box
+
+- **Default:** empty
+
+## Application permissions
+
+| Permission | Key | Grants |
+|------------|-----|--------|
+| **Bots** | `Bots.Link` | Access to the module and to its **Overview** page |
+| **Telegram** | `Bots.Link.telegram` | **Telegram** page |
+| **Edit Settings** | `Bots.EditOptions` | The settings button of the module |
+
+The built-in role **Admin for module Bots** includes all of them. Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
+
+These permissions apply to the web pages only. Who can use the bot from Telegram is decided by **Chats Id**.
+
+<PvePrivileges module="bots" />

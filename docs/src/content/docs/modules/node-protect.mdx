@@ -1,0 +1,164 @@
+---
+title: "Node Protect"
+description: "Periodic backup of selected configuration files of the Proxmox VE nodes (/etc, /var/lib/pve-cluster, crontabs, SSH keys, custom scripts). Use it to recover from a failed node or an accidental misconfiguration."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import Mdi from '~/components/Mdi.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import { featureCron, featureTaskTracker } from '~/data/shared-features.js';
+import RequirementsSsh from '~/partials/requirements-ssh.mdx';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="safety_check" size="lg" /><Tag kind="per-cluster" /></p>
+
+Periodic backup of selected configuration files of the Proxmox VE nodes (`/etc`, `/var/lib/pve-cluster`, crontabs, SSH keys, custom scripts). Use it to recover from a failed node or an accidental misconfiguration.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:folder-multiple', title: "Targeted path list", text: "Choose which files and directories to back up. The defaults cover the essentials (`/etc/.`, `/var/lib/pve-cluster/.`, `/root/.ssh`, …) and you can add your own paths." },
+    featureCron,
+    { icon: 'mdi:folder-zip', title: "Local folder destination", text: "Each run is stored as a separate version in a local folder. The Folder setting **Number which should will keep** limits how many runs are kept: older runs are deleted automatically.", href: '#folder-destination' },
+    { icon: 'mdi:source-branch', title: "Git destination", text: "Push every backup as a Git commit to a remote repository. You get the full configuration history, with diffs, blame, code review and the other Git tools.", href: '#git-destination', ee: true },
+    { icon: 'mdi:chart-line', title: "Size widgets on the Dashboard", text: "Add the **Folder Size** widget (CE), or the additional **Git Size** widget (EE), to any Dashboard to track backup growth per node.", href: '#widgets' },
+    featureTaskTracker,
+  ]}
+/>
+
+## Why
+
+Why a config backup module when you already do disk / VM backups?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:file-restore', title: "Recover a node, not a whole disk image", text: "To restore a single hook in `/etc/pve` or one SSH key, take it from the latest backup. You do not mount a full Proxmox Backup Server (PBS) dump or boot a recovery image." },
+    { icon: 'mdi:backup-restore', title: "Survive a node reinstall", text: "After you wipe a node and start fresh, copy back `/etc`, `/var/lib/pve-cluster`, your crontabs and SSH keys. You are back online in minutes, not hours." },
+    { icon: 'mdi:compare', title: "Know what changed, when", text: "With the Git destination, every run is a commit that you can diff in your Git tools. Find out when `corosync.conf` changed, and notice when the nodes drift apart.", href: '#git-destination' },
+    { icon: 'mdi:shield-plus', title: "Catches what PBS doesn't", text: "PBS is made for VMs, not for the configuration of a node. Node Protect covers the gap that PBS leaves open on purpose." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module and its dashboard widgets
+- **Folder**: backups stored in the local folder destination, one row per node and run, with start, end, duration, file name, status and size. See [Folder destination](#folder-destination)
+- <Tag kind="ee" /> **Git**: commits of the local Git repository with author, size and changed files. See [Git destination](#git-destination). In the Community Edition the page shows that a subscription is required
+
+## How a backup works
+
+Node Protect connects over SSH to every online node of the cluster and packs the configured paths with `tar`. `tar` stays on the file system of each path and skips the files that cannot be read. Offline nodes are skipped.
+
+A backup has two possible destinations: the [Folder destination](#folder-destination) and the [Git destination](#git-destination) (Enterprise Edition). The paths are the same for both destinations: one path per line in **Directory or file to backup**.
+
+Both destinations follow the same schedule. With **Enabled schedulation** on, each destination that is itself enabled runs at the **Cron Schedule**.
+
+## Folder destination
+
+Each run creates a folder in the application data directory, named after the run time (`yyyy-MM-dd-HH-mm-ss`). The folder holds one archive per node, named `<node>-config.tar.gz`.
+
+| Action | What it does |
+|--------|--------------|
+| **Backup** | Starts a backup immediately in the background. The button is disabled until the Folder destination is enabled in the settings |
+| **Delete** | After confirmation, deletes the selected archives and their records |
+| **Download** (per row) | Downloads the archive of that node |
+| **Show log** (per row) | Opens the log of the backup of that node |
+| **Refresh** | Reloads the grid |
+
+**Retention:** the Folder setting **Number which should will keep** says how many runs to keep. After a run in which every node succeeded, only that number of newest runs is kept and the older ones are deleted. If the backup of at least one node fails, retention is not applied for that run. This way a good backup is never deleted to make room for an incomplete one.
+
+## Git destination
+
+<Tag kind="ee" /> Each run does three things, in this order:
+
+1. It rebuilds the working copy of a local Git repository: one folder per node, plus the `.gitignore` from the settings.
+2. It creates a commit named `auto-commit at` followed by the date.
+3. It pushes the commit to the configured remote branch.
+
+:::caution[The push is forced]
+The remote branch is overwritten with the local history. Use a repository and a branch dedicated to Node Protect.
+:::
+
+The **Push** button is a split button, disabled until the Git destination is enabled. **Sync form remote** and **Open remote repository** appear only when **Remote Url** is set:
+
+| Action | What it does |
+|--------|--------------|
+| **Push** | Runs backup, commit and push immediately in the background |
+| **Reset** | After confirmation, deletes the local repository and starts an empty one. The remote is not touched until the next push |
+| **Sync form remote** | After confirmation, deletes the local repository and clones the remote branch again |
+| **Open remote repository** | Opens the **Remote Url** in a new browser tab |
+| **Download** (per row) | Downloads the files of that commit as a `.tar.gz` archive |
+
+Expanding a commit row lists the changed files with their status and path.
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Folder Size** | Size of the folder backups over time, with the date of the last run |
+| **Git Size** <Tag kind="ee" /> | Size of the Git repository over time, with the date of the last run |
+| **Daily Status** <Tag kind="ee" /> | Successful and failed folder backups per day (last 14 days) |
+
+## Settings
+
+<Collapse title="Show all settings" kind="settings">
+
+**General**
+
+**Enabled schedulation**
+
+Turns the scheduled backup on or off
+
+- **Default:** off
+
+**Cron Schedule**
+
+When the scheduled backup runs (default: 06:00 daily)
+
+- **Default:** `0 6 * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#0_6_*_*_*)
+
+**Directory or file to backup**
+
+Required. One path per line. Default: `/etc/.`, `/var/lib/pve-cluster/.`, `/var/lib/ceph/.`, `/var/spool/cron/crontabs`, `/root/.ssh`, `/root/scripts`, `/root/backup`, `/root/.bashrc`, `/root/.profile`. Edit to suit your node layout
+
+- **Default:** preset list
+
+**Folder** tab
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled** | off | Enable local folder backup destination |
+| **Number which should will keep** | 30 | Maximum number of past backups to retain in the folder (minimum 1) |
+
+**Git** tab <Tag kind="ee" />
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled** | off | Enable the Git destination: each scheduled backup commits and pushes the protected files |
+| **Remote Url** | - | Required. URL of the remote Git repository |
+| **Remote Branch Name** | - | Required. Branch of the remote that receives the commits |
+| **Display Name** / **Email** | - | Required. Author identity recorded on every commit |
+| **Username** / **Password** | - | Required. Credentials used to authenticate with the remote |
+| **.gitignore file** | `*/etc/pve/nodes/*/lrm_status`<br />`*/etc/pve/.rrd` | Content of the `.gitignore` written to the repository: paths matching these patterns are not committed |
+
+</Collapse>
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+| Permission | Allows |
+|------------|--------|
+| **Node Protect** | Open the module and its **Overview** page |
+| **Folder**, **Git** | Open the page with that name (one permission per page) |
+| **Folder Size**, **Git Size** <Tag kind="ee" />, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
+| **Edit Settings** | Change the module settings |
+
+The actions of the pages (**Backup**, **Delete**, **Download**, **Push**, **Reset**, **Sync form remote**) have no dedicated permission: they are available to every user who can open the page.
+
+<RequirementsSsh />
+
+<PvePrivileges module="node-protect" />

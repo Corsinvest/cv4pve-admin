@@ -1,0 +1,48 @@
+---
+title: "Dashboard: Widgets"
+description: "The widgets that can be added to a dashboard, with the module each one comes from."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="dashboard" size="lg" /><Tag kind="all-clusters" /></p>
+
+Part of [Dashboard](../dashboard/).
+
+This page lists the 32 widgets that can be added to a dashboard. How to add and configure one is in [Widgets](../dashboard/#widgets).
+
+| Module | Widget | Description |
+|--------|--------|-------------|
+| **Dashboard** (built-in) | Web Content | Displays a link (icon + label), an iframe, or raw HTML content |
+| **Dashboard** (built-in) | Memo | Markdown note pad: write formatted notes inside the widget |
+| Resources | Resources Status | Shows the status of cluster resources |
+| Resources | Resources Usage | Shows resource usage metrics |
+| Resources | Cluster Usage Gauge | Arc gauges side by side for the CPU, memory, storage and snapshot usage of a cluster (the first one selected) |
+| Resources | Cluster Usage Gauge Stacked | The same values as concentric rings in one gauge |
+| Resources | Cluster Usage Grid | Grid view of cluster usage metrics |
+| Resources | Clusters Maps | Geographic map with one pin per cluster |
+| Resources | VM/CT Locked | Shows VMs and containers in locked state |
+| Resources | Nodes Status | The offline nodes, with the number of nodes online |
+| AutoSnap | Status | AutoSnap job status overview |
+| AutoSnap | Size | Snapshot size over time chart. Empty on the clusters where the snapshot size calculation is off |
+| AutoSnap | Check | Failed snapshots alert |
+| AutoSnap | Info | Snapshot statistics and insights |
+| AutoSnap | Daily Status | <Tag kind="ee" /> Successful and failed snapshots per day, last 14 days |
+| Backup Analytics | Status | Backup job status overview |
+| Backup Analytics | Size | Backup size chart |
+| Backup Analytics | Check | Failed backups alert |
+| Backup Analytics | Info | Backup statistics |
+| Backup Analytics | Daily Status | <Tag kind="ee" /> Successful and failed backups per day, last 14 days |
+| Diagnostic | Status | Diagnostic check status |
+| Diagnostic | Check | Diagnostic issues list |
+| Replication Analytics | Status | Replication status overview |
+| Replication Analytics | Size | Replication size chart |
+| Replication Analytics | Check | Replication check alerts |
+| Replication Analytics | Info | Replication analytics overview |
+| Replication Analytics | Daily Status | <Tag kind="ee" /> Successful and failed replications per day, last 14 days |
+| Node Protect | Folder Size | Node Protect backup folder size |
+| Node Protect | Git Size | <Tag kind="ee" /> Node Protect Git repository size |
+| Node Protect | Daily Status | <Tag kind="ee" /> Successful and failed folder tasks per day, last 14 days |
+| System Report | Daily Status | <Tag kind="ee" /> Successful and failed reports per day, last 14 days |
+| Update Manager | Status | Update Manager status overview |

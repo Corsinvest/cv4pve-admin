@@ -1,0 +1,43 @@
+<Project>
+  <!--
+    Embeds the documentation site (docs/, Astro Starlight) into the published app under
+    a `help/` folder next to wwwroot, so the running container can serve it offline on /help/.
+
+    This file does NOT build the site: that's the caller's job, and it needs Node.js.
+    The embedded copy is a separate build with the /help base path, written to docs/dist-help/
+    (docs/dist/ is the build for GitHub Pages and has another base path):
+      - CI (GitHub Actions) and local dev: `./admin.ps1 -Command docs-build`
+      - By hand, in docs/: `npm ci`, then `npm run build:help` with DOCS_BASE=help in the environment
+
+    Before invoking `dotnet publish`, make sure docs/dist-help/ exists. The
+    EnsureDocsBuilt target below fails the publish with a clear error if
+    you forgot to build it.
+
+    Hooks into PrepareForPublish only: runs on `dotnet publish` but NOT during
+    a regular `dotnet build` or F5 in the IDE.
+  -->
+
+  <PropertyGroup>
+    <DocsRoot>$(MSBuildThisFileDirectory)docs</DocsRoot>
+    <DocsSiteDir>$(DocsRoot)\dist-help</DocsSiteDir>
+  </PropertyGroup>
+
+  <Target Name="EnsureDocsBuilt" BeforeTargets="PrepareForPublish">
+    <Error Condition="!Exists('$(DocsSiteDir)\index.html')"
+           Text="Documentation site not found at $(DocsSiteDir). Build it first: `./admin.ps1 -Command docs-build`. See ce/Docs.props for details." />
+    <Message Text="Embedding documentation site from $(DocsSiteDir) into the published app" Importance="high" />
+  </Target>
+
+  <!--
+    Copy to `help/` next to wwwroot, NOT into wwwroot/help/, because the .NET 10
+    MapStaticAssets() middleware builds its file manifest at compile time and
+    won't pick up files added by PrepareForPublish. We serve them via a separate
+    UseStaticFiles + PhysicalFileProvider middleware (see UseAdminCoreHelpDocs).
+  -->
+  <ItemGroup>
+    <Content Include="$(DocsSiteDir)\**\*"
+             Link="help\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToPublishDirectory="PreserveNewest"
+             CopyToOutputDirectory="Never" />
+  </ItemGroup>
+</Project>

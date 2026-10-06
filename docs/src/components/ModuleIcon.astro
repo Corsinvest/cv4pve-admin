@@ -1,0 +1,26 @@
+---
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Material Symbols icon (https://fonts.google.com/icons), inlined as SVG at build time: the icon set
+ * the application itself uses. `name` is written as in the code (`Icon = "account_tree"` in a
+ * module's Module.cs), so a module has the same icon here and in the application menu.
+ * An unknown name fails the build.
+ */
+import { icons } from '@iconify-json/material-symbols';
+
+interface Props {
+  name: string;
+  size?: 'lg';
+}
+
+const { name, size } = Astro.props;
+const key = name.replaceAll('_', '-');
+const find = (k: string) => icons.icons[k] ?? icons.icons[icons.aliases?.[k]?.parent ?? ''];
+// The application draws the outlined style; a few icons exist in one style only.
+const icon = find(`${key}-outline`) ?? find(key);
+if (!icon) throw new Error(`ModuleIcon: unknown icon "${name}"`);
+---
+
+<svg class:list={['cv-mdi', size && `cv-mdi-${size}`]} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" set:html={icon.body} />

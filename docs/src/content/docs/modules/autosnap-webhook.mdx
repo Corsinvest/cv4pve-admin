@@ -1,0 +1,142 @@
+---
+title: "AutoSnap: Web API Hook"
+description: "Trigger HTTP requests at specific phases of the AutoSnap snapshot lifecycle: integrate with monitoring platforms, orchestration tools, CI/CD pipelines or any HTTP-capable service."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="photo_camera" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
+
+Trigger HTTP requests at specific phases of the [AutoSnap](../autosnap/) snapshot lifecycle: integrate with monitoring platforms, orchestration tools, CI/CD pipelines or any HTTP-capable service.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:pulse', title: "Phase-bound triggers", text: "Bind a hook to one phase of the snapshot lifecycle (`SnapCreatePre`, `SnapCreatePost`, `SnapRemovePre`, …). The hook fires at that phase." },
+    { icon: 'mdi:arrange-send-backward', title: "Multiple hooks per phase", text: "Configure several hooks on the same phase. They run one after the other, in the **Order** you set." },
+    { icon: 'mdi:code-json', title: "JSON / XML / Text / GET bodies", text: "POST, PUT or PATCH with a `JSON`, `XML` or `Text` body, or a GET with query parameters: choose what the receiver expects." },
+    { icon: 'mdi:key-variant', title: "Built-in authentication", text: "None, Basic, Bearer or API Key. Set the credentials once per hook: you do not write the authentication headers yourself." },
+    { icon: 'mdi:tag-multiple', title: "Variable placeholders", text: "Use `%CV4PVE_AUTOSNAP_*%` placeholders in the URL, body or headers. They hold the current VM ID, name, type, snapshot name, duration or success state." },
+    { icon: 'mdi:alert-octagon', title: "Fail-fast on errors", text: "A non-2xx response or a network error stops the remaining hooks of that phase. The error is written to the job log and the run is marked as failed." },
+  ]}
+/>
+
+## Why
+
+Why webhooks when AutoSnap already runs on schedule?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:pause-circle', title: "Quiesce before snapshot", text: "Call your app's `/freeze` endpoint on `SnapCreatePre` so the snapshot captures a consistent state, and `/thaw` on `SnapCreatePost` to resume." },
+    { icon: 'mdi:heart-pulse', title: "Tell monitoring you're alive", text: "Ping a status page or PagerDuty on `SnapJobEnd`: when the ping stops, you know the snapshots stopped." },
+    { icon: 'mdi:source-branch', title: "Wire snapshots into CI/CD", text: "Trigger a deploy on `SnapCreatePost`: every release of the pipeline has a tagged rollback point." },
+    { icon: 'mdi:clipboard-text-clock', title: "Audit trail outside PVE", text: "Send every snapshot event to your SIEM or log pipeline: an independent record of what was snapshotted, and when." },
+  ]}
+/>
+
+## Reference
+
+A hook fires at one phase of the snapshot lifecycle. It receives the context of the run through `%CV4PVE_AUTOSNAP_*%` placeholders, which you can use in the URL, the body and the header values.
+
+Each value is escaped for the place where it is used:
+
+- in the URL: URL-encoded
+- in a JSON or XML body: JSON-escaped or XML-escaped
+- in headers: line breaks turned into spaces
+
+### All phases
+
+| Phase | When |
+|-------|------|
+| `SnapJobStart` | before the entire snapshot job begins |
+| `SnapJobEnd` | after the entire snapshot job completes |
+| `SnapCreatePre` | before creating a snapshot on a specific VM |
+| `SnapCreatePost` | after a snapshot has been successfully created |
+| `SnapCreateAbort` | when snapshot creation fails or is aborted |
+| `CleanJobStart` | before the cleanup (retention) job begins |
+| `CleanJobEnd` | after the cleanup job completes |
+| `SnapRemovePre` | before removing an expired snapshot |
+| `SnapRemovePost` | after an expired snapshot has been removed |
+| `SnapRemoveAbort` | when snapshot removal fails or is aborted |
+
+### Variable placeholders
+
+| Placeholder | Value |
+|-------------|-------|
+| `%CV4PVE_AUTOSNAP_PHASE%` | current phase name (e.g. `snap-create-pre`) |
+| `%CV4PVE_AUTOSNAP_VMID%` | VM or container ID |
+| `%CV4PVE_AUTOSNAP_VMNAME%` | VM or container name |
+| `%CV4PVE_AUTOSNAP_VMTYPE%` | `qemu` or `lxc` |
+| `%CV4PVE_AUTOSNAP_LABEL%` | snapshot label defined in the job |
+| `%CV4PVE_AUTOSNAP_KEEP%` | number of snapshots to keep |
+| `%CV4PVE_AUTOSNAP_SNAP_NAME%` | full snapshot name |
+| `%CV4PVE_AUTOSNAP_VMSTATE%` | `1` if VM state is saved, `0` otherwise |
+| `%CV4PVE_AUTOSNAP_DURATION%` | duration of the operation in seconds |
+| `%CV4PVE_AUTOSNAP_STATE%` | `1` if operation succeeded, `0` if failed |
+
+### All hook fields
+
+You configure the hooks per job, in the **Web API Hook** tab of the job editor. The tab lists the hooks of the job: add, edit (click the description) or delete them there. The hooks are saved together with the job.
+
+| Field | Default | Description |
+|-------|---------|-------------|
+| **Enabled** | off | Hooks that are not enabled are skipped |
+| **Description** | - | Required. Label that identifies the hook in the list and in the job log |
+| **Phase** | `CleanJobStart` | The snapshot lifecycle phase that triggers this hook |
+| **Order** | 0 | Execution order when multiple hooks share the same phase (lowest first) |
+| **Variables** | - | Helper list of the placeholders: pick one and copy it to the clipboard. The **Docs** link under the field opens [Variable placeholders](#variable-placeholders) |
+| **URL** | - | Required. Target HTTP endpoint (supports placeholders) |
+| **Method** | `Post` | `Get`, `Post`, `Put`, `Patch`, `Delete` |
+| **Body Type** | `JSON` | `None`, `JSON`, `XML`, `Text`. Not shown with `Get` |
+| **Body** | - | Request body (supports placeholders). Not shown with `Get` |
+| **Auth → Type** | `None` | `None`, `Basic` (**Username**, **Password**), `Bearer` (**Token**), `API Key` (**Header Name**, **Header Value**) |
+| **Headers** | - | Custom HTTP headers as name/value pairs (values support placeholders) |
+| **Timeout (seconds)** | 30 | Request timeout, 1 to 300 seconds |
+| **Ignore SSL Certificate** | off | Skip SSL certificate validation |
+
+The **Test** button sends the request immediately and shows the HTTP status and the response time. The request uses sample values for the selected phase (VM `100`, name `test-vm`, type `qemu`, label `test`). The button is available as soon as the URL is filled in.
+
+## Examples
+
+### Notify a monitoring system after snapshot creation
+
+- **Phase:** `SnapCreatePost`
+- **Method:** `POST`
+- **URL:** `https://monitoring.example.com/api/events`
+- **Body Type:** `JSON`
+- **Body:**
+
+```json
+{
+  "event": "snapshot_created",
+  "vmid": "%CV4PVE_AUTOSNAP_VMID%",
+  "vmname": "%CV4PVE_AUTOSNAP_VMNAME%",
+  "snapshot": "%CV4PVE_AUTOSNAP_SNAP_NAME%",
+  "duration": "%CV4PVE_AUTOSNAP_DURATION%"
+}
+```
+
+### Call a webhook with Bearer token authentication
+
+- **Phase:** `SnapJobEnd`
+- **Method:** `POST`
+- **URL:** `https://api.example.com/hooks/autosnap`
+- **Auth:** `Bearer` → set your token
+- **Body:** *(empty or custom payload)*
+
+### Trigger a GET request with query parameters
+
+- **Phase:** `SnapCreatePre`
+- **Method:** `GET`
+- **URL:** `https://example.com/notify?vm=%CV4PVE_AUTOSNAP_VMID%&label=%CV4PVE_AUTOSNAP_LABEL%`
+
+**How execution works:**
+
+- Hooks within the same phase run **sequentially** in the configured order.
+- A non-2xx HTTP response or network error **stops the remaining hooks of that phase** and writes an error to the job log.
+- The snapshot operation itself is not aborted; the run is marked as failed.
+- The hook result (HTTP status code) is written to the job execution log.
+- Hooks with **Enabled = false** are skipped silently.

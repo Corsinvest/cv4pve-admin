@@ -1,0 +1,99 @@
+---
+title: "User Guide"
+description: "How the cv4pve-admin interface is organised: header, cluster picker, search box and Command Palette, active tasks, help menu, profile menu and navigation."
+---
+
+import Tag from '~/components/Tag.astro';
+
+Every page of cv4pve-admin shares the same frame: a header at the top, the navigation menu on the left and the selected module in the centre.
+
+## Header
+
+From left to right the header contains:
+
+| Element | What it does |
+|---------|--------------|
+| Menu button | Collapses and expands the navigation menu |
+| Application title | Shows the product name and the edition. It is a link that opens the application address in a new tab |
+| **Search...** box | Opens the [Command Palette](#command-palette). Same as pressing `Ctrl+K` |
+| Cluster picker | Selects the cluster to work on (see [Cluster picker](#cluster-picker)) |
+| **Active Tasks** (bell) | Lists the running tasks (see [Active tasks](#active-tasks)) |
+| **Help** (question mark) | Opens the [help menu](#help-menu) |
+| User name and picture | Opens the [profile menu](#profile-menu) |
+
+### Cluster picker
+
+The picker shows the cluster currently selected, or **Select Cluster...** when none is. Open it to choose among the enabled clusters. Each entry carries a badge with its type. The **Type to search...** box filters the list by name.
+
+Choosing a cluster reloads the current module on that cluster and updates the navigation menu. Some modules work on one cluster at a time: the menu lists them only when a cluster is selected. This documentation marks them <Tag kind="per-cluster" /> (see [Concepts](../concepts/#cluster-scope)).
+
+The picker is shown only to users who have the **Select cluster** permission.
+
+### Active tasks
+
+The bell lists the active tasks of cv4pve-admin (background jobs and other long operations).
+
+- While tasks are running, a badge on the bell shows how many.
+- When a task failed or was abandoned, the badge turns red and counts the failures not seen yet. Opening the list marks them as seen.
+- **View all tasks** opens the complete task list.
+
+### Help menu
+
+The first row of the menu shows the application name, the running version and the edition.
+
+| Entry | What it does |
+|-------|--------------|
+| **Check for updates** (refresh icon) | Checks now for a newer release and reports the result in a notification |
+| **Update available** badge | Shown when a newer release exists. Opens the release page. A red dot on the help icon signals the same thing without opening the menu |
+| **Update** | Shown next to the badge where automatic update is supported, to users with the **Upgrade Application** permission. Asks for confirmation, then starts the update |
+| **Documentation** | Opens the documentation shipped with the application (details under the table) |
+| **Release notes** | Shows the changes of the running version, with a **View Full Changelog** link |
+| **Support** | Opens the issue tracker of the project |
+| **Keyboard Shortcuts** | Lists the keyboard shortcuts of the application |
+| **Report a Bug** | Opens a new bug report with the environment details already filled in (list under the table) |
+| **Request a Feature** | Opens the feature request page |
+| **Provide Feedback** | Opens the feedback page |
+| **Who is using cv4pve-admin?** | Copies a summary of your clusters to the clipboard and opens the public thread where you can paste it |
+
+**Documentation:** inside a module the entry becomes **Documentation - module name** and opens the page of that module. The cloud icon on the right opens the online version instead.
+
+The documentation shipped with the application is this same site, served by cv4pve-admin itself under `/help/`. It needs no Internet access, so it also works on an isolated network. It opens without signing in.
+
+**Report a Bug:** the environment details are the edition and version of cv4pve-admin, the configured clusters with their Proxmox VE version, the type of deployment (Docker or native), the browser and the platform.
+
+### Profile menu
+
+Click your name or picture, on the right of the header:
+
+| Entry | What it does |
+|-------|--------------|
+| Name and e-mail | The user you are signed in as |
+| **Dark** / **Light** | Switches the theme |
+| **Admin Area** | Opens the [Admin Area](../configuration/admin-area/), if you have access to it |
+| **Profile** | Opens your [profile](../configuration/profile/): preferences, password, sessions |
+| **Sign Out** | Ends the session |
+
+The picture is the profile image of the user or, when there is none, the Gravatar of the e-mail address.
+
+**Default password:** While the signed-in user still has the default password, a security warning stays on screen with a **Change password now** link.
+
+## Navigation menu
+
+The menu on the left lists, in this order:
+
+1. **Home**
+2. The modules that belong to no category, such as [Dashboard](../modules/dashboard/)
+3. The categories, in alphabetical order, each with its modules: **Automation**, **Control**, **Health**, **Management**, **Protection**, **Utilities**. Automation and Management hold only Enterprise modules, so they appear only in the Enterprise Edition
+4. **Tools & Libraries**: a page that lists the Corsinvest command line tools and API libraries for Proxmox VE. It is shown to users with the **Upgrade Application** permission
+
+A module is listed only if you have the permission to open it. See [Modules](../modules/) for what each one does.
+
+Inside a module, a second menu lists its pages. The **Settings** button (gear icon) at the top right opens the settings of the module. The button is shown only for modules that have settings, to users with the **Edit Settings** permission of that module.
+
+## Command Palette
+
+Press `Ctrl+K`, or click the **Search...** box in the header, to open the Command Palette from anywhere in the application.
+
+The Command Palette provides fast access to navigation, search, and commands, without using the mouse.
+
+The full reference is in the [Command Palette](../modules/command-palette/) page. It lists the shortcuts, the search prefixes (`vm:`, `node:`, `ip:`) and the commands (`>`), with the permissions each one needs.

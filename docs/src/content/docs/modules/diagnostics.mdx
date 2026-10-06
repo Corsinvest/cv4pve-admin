@@ -1,0 +1,107 @@
+---
+title: "Diagnostics"
+description: "Automated health checks and infrastructure diagnostics for Proxmox VE, built on the cv4pve-diag library. Each issue is reported with a gravity (Info / Warning / Critical), a context (cluster, node, storage, qemu, lxc) and a sub-context that pinpoints what to look at."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import { featureCron, featureExportPdfExcel, featureNotifier, featureParallelScan } from '~/data/shared-features.js';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="stethoscope" size="lg" /><Tag kind="per-cluster" /></p>
+
+In the menus of the application the module is named **Diagnostic**.
+
+Automated health checks and infrastructure diagnostics for Proxmox VE, built on the [`cv4pve-diag`](https://github.com/Corsinvest/cv4pve-diag) library. Each issue is reported with a gravity (`Info` / `Warning` / `Critical`), a context (cluster, node, storage, qemu, lxc) and a sub-context that pinpoints what to look at.
+
+## Features
+
+<FeatureGrid
+  items={[
+    featureCron,
+    { icon: 'mdi:alert-circle', title: "Issue Detection", text: "Detects misconfigurations, hardware problems, end-of-life software, snapshot/backup hygiene and resource pressure across **cluster, nodes, storage, QEMU VMs and LXC containers**." },
+    { icon: 'mdi:tune-variant', title: "Tunable Thresholds", text: "Per-context thresholds (CPU, Memory, Network, Health Score, PSI pressure) editable from the settings UI, with separate values for Node, Qemu, Lxc and Storage. Optional checks for S.M.A.R.T. disk attributes (temperature, SSD wearout), ZFS pool detail and LVM-thin metadata.", href: '#settings' },
+    { icon: 'mdi:camera-burst', title: "Snapshot & Backup Hygiene", text: "Per-VM checks for snapshot count and age, backup recency (RPO violation) and stale backup files that waste storage. Each check can be turned off, and its thresholds can be changed." },
+    { icon: 'mdi:shield-bug', title: "CVE Tracking", text: "Optional NVD lookup for Proxmox VE specific CVEs via CPE filter. Filter by minimum CVSS v3 score (default 7.0 = HIGH + CRITICAL only)." },
+    { icon: 'mdi:block-helper', title: "Ignored Issues", text: "Hide known or accepted issues from the active result. They still appear in a dedicated section at the bottom of the report, so they stay traceable.", href: '#ignored-issues' },
+    featureParallelScan,
+    featureExportPdfExcel,
+    { icon: 'mdi:link-variant', title: "Help Links", text: "Each issue can link to the relevant Proxmox documentation page (e.g. QEMU Guest Agent, VirtIO drivers, end-of-life OS tracking)." },
+    { icon: 'mdi:chart-box', title: "Executive Summary", text: "The Enterprise PDF adds an Executive Summary block at the top of the report, right after the cover page. The block shows the issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues. Useful for management or MSP customer reports.", ee: true },
+    { icon: 'mdi:shield-check', title: "Compliance Reports", text: "Each diagnostic check carries its mapping to normative controls across **18 standards** (ISO 27001, ISO 22301, NIS2, DORA, GDPR, PCI DSS, AgID, ACN, ENS, BSI C5, BSI IT-Grundschutz and more). The Enterprise PDF appends one section per standard. Each section is a new page that starts with a summary table (control, title, findings by gravity, status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard, with the same data flattened for filtering and pivoting.", href: '#compliance-reports', ee: true },
+    featureNotifier,
+  ]}
+/>
+
+## Why
+
+Why scan automatically when you can check things by hand?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:file-document', title: "Whole cluster in one report", text: "A scan covers every node, storage, QEMU VM and LXC container of the cluster. You do not need to open the PVE UI of each node.", href: '#scans' },
+    { icon: 'mdi:tag-multiple', title: "Every issue tagged for triage", text: "Each issue has a gravity (Info / Warning / Critical), a context and a sub-context. Sort by gravity, filter by context, and fix the right things first." },
+    { icon: 'mdi:filter', title: "Accept the noise, keep the signal", text: "Known false positives go to the Ignored Issues list. They still show in the report (audit trail) but no longer clutter the active scan.", href: '#ignored-issues' },
+    { icon: 'mdi:file-certificate', title: "Compliance hand-off", text: "Stored scan history plus PDF and Excel reports: give them to auditors or customers, with no need for screenshots of the UI. For a dated inventory of the whole cluster see [System Report](../system-report/).", href: '#compliance-reports' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module and its dashboard widgets
+- **Scans**: the history of scans. Expand a row to see the scan detail: an **Issues** tab with the detail of each issue, and a **Compliance** tab <Tag kind="ee" /> with the findings grouped by standard and control. From this page you also download the report as PDF or Excel and start a new on-demand scan. Both reports open with a cover page: report information and a table of contents. In the PDF the table of contents has page numbers, is clickable and is listed in the bookmarks panel of the viewer
+- **Ignored Issues**: the issues hidden from the active results (they are still shown in the report's Ignored section). See [Ignored issues](#ignored-issues)
+
+## Scans
+
+The grid lists the stored scans with the number of **Info**, **Warning** and **Critical** issues, start, end and duration. Ignored issues are not counted.
+
+| Action | What it does |
+|--------|--------------|
+| **Scan** | Starts a scan immediately in the background. Progress and log are in the global Task Tracker |
+| **Download** | Split button: downloads the report of the selected scan as **PDF** or **Excel**. Disabled until a scan is selected |
+| **Delete** | After confirmation, deletes the selected scan |
+| **Refresh** | Reloads the grid |
+
+Expanding a scan shows two tabs: **Issues** and **Compliance** <Tag kind="ee" />. The **Issues** tab lists gravity, code, resource id (a link that opens the resource), context, sub-context and description of each issue. The **Ignore Issue** button on an issue row adds it to the ignored issues.
+
+Two things happen at the end of every scan, scheduled or started by hand. The oldest scans beyond the **Number which should will keep** setting are deleted, and the notification is sent (see [Settings](#settings)).
+
+## Ignored issues
+
+An ignored issue is a rule with **Id Resource**, **Gravity**, **Context**, **Sub Context** and **Description**. It is created with the **Ignore Issue** button of a scan, which copies the values of that issue. On the **Ignored Issues** page click the **Id Resource** of a row to edit the rule, or select rows and use **Delete** to remove them.
+
+The rules are applied when a scan runs: an issue is marked as ignored when its resource id, sub-context and description contain the text of the rule. Changing the list does not change the scans already stored.
+
+## Compliance reports<Tag kind="ee" />
+
+Each check in the `cv4pve-diag` library declares which normative controls it covers, and the Enterprise PDF and Excel reports add one section per standard. The standards covered, the layout of those sections and the limits of the mapping are in [Compliance Reports](../diagnostics-compliance/).
+
+## Settings
+
+The settings of the module (9 groups, from the general options to the thresholds and the snapshot, backup and CVE checks) are in [Settings](../diagnostics-settings/).
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Status** | Diagnostic status, with the date of the last scan |
+| **Check** | Critical issues of the last scan of each cluster, grouped by resource, with a link to the scan |
+
+**Check** covers only the clusters where **Enabled schedulation** is on, otherwise it shows "Module not configured!".
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+| Permission | Allows |
+|------------|--------|
+| **Diagnostic** | Open the module and its **Overview** page |
+| **Scans**, **Ignored Issues** | Open the page with that name (one permission per page) |
+| **Status**, **Check** | Use the dashboard widget with that name (one permission per widget) |
+| **Edit Settings** | Change the module settings |
+
+**Scan**, **Download**, **Delete** and **Ignore Issue** have no dedicated permission: they are available to every user who can open the page.
+
+<PvePrivileges module="diagnostics" />

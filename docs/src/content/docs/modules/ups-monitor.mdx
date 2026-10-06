@@ -1,0 +1,201 @@
+---
+title: "UPS Monitor"
+description: "Reads UPS battery levels, power status, load conditions and runtime estimates at every scheduled scan. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import Mdi from '~/components/Mdi.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="electric_bolt" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
+
+Reads UPS battery levels, power status, load conditions and runtime estimates at every scheduled scan. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:pulse', title: "Status Monitoring", text: "Each scan reads battery charge and voltage, input/output voltage, load percentage, temperature and power source." },
+    { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or shutdown threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
+    { icon: 'mdi:timer-sand', title: "Runtime Estimation", text: "Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold." },
+    { icon: 'mdi:lan-connect', title: "SNMP-based Polling", text: "Reads UPS devices via SNMP v2c, on a configurable scan schedule. Device profiles for the major brands." },
+    { icon: 'mdi:bell-ring', title: "Notifier Integration", text: "Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../../configuration/admin-area/notifier/) configuration." },
+  ]}
+/>
+
+## Why
+
+Why integrate UPS into cv4pve-admin instead of NUT alone?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:database', title: "Every reading kept", text: "Each scan stores status, battery, voltages, load, temperature and runtime. Expand a device to see its reading history, kept for the number of days set in **Max days logs**.", href: '#reading-history' },
+    { icon: 'mdi:swap-horizontal', title: "Multi-vendor via SNMP", text: "Device profiles cover the major UPS brands: one module for the whole fleet, no per-vendor agent on every PVE node.", href: '#profiles' },
+    { icon: 'mdi:bell-alert', title: "Alerts before the silence", text: "On battery, battery low, runtime dropping: Notifier sends the alert on any configured channel before the power goes out.", href: '#alerts' },
+    { icon: 'mdi:battery-alert', title: "Trends spot a dying battery", text: "Battery health degrades slowly. Charts of battery charge, load, input voltage and temperature over time show when a UPS will not last another outage.", href: '#trends' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: short description of the module
+- **Dashboard**: one status card for each enabled UPS device
+- **Devices**: UPS device configuration, on-demand scan, connection test and reading history
+- **Trends**: charts of the readings over time
+
+Devices, readings and settings are separate for each cluster.
+
+:::caution[Monitoring and alerts only]
+The module reads the UPS and sends notifications. It does not shut down or stop nodes, VMs or containers: the settings named **Shutdown ... Threshold** are alert thresholds.
+:::
+
+## Requirements
+
+- The UPS (or its network card) must answer **SNMP v2c** queries from the cv4pve-admin server on the configured port (default UDP 161) with the configured community.
+- **Host** must be an IP address.
+- A request that gets no answer within 3 seconds is treated as a failed reading.
+
+## Dashboard
+
+Each enabled device has a card with:
+
+- name, detected brand, status badge, manufacturer and model, location
+- **Battery** gauge: red up to 20%, yellow up to 50%, green above
+- **Load** gauge: green below 50%, yellow from 50%, red from 80%
+- **Input Voltage**, **Runtime** (minutes), **Temperature** and **Last Scan**
+
+The cards show the last reading and are updated when a scan ends.
+
+### Status values
+
+| Status | Meaning |
+|--------|---------|
+| **Online** | Output supplied by mains power |
+| **On Battery** | Output supplied by the battery, charge above the shutdown battery threshold |
+| **Low Battery** | The UPS reports a low battery while not running on battery |
+| **Critical** | The UPS reports a depleted battery. Or it runs on battery and either reports a low battery or has a charge at or below the shutdown battery threshold |
+| **Offline** | The last scan got no answer from the device |
+| **Unknown** | The device answered but its state is none of the above, for example bypass or voltage regulation active |
+
+## Devices
+
+The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Profile**, **Detected Brand**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
+
+Each UPS device is configured with:
+
+| Field | Description |
+|-------|-------------|
+| **Enabled** | Include the device in the scheduled scan and in the Dashboard (default: on) |
+| **Name** | Friendly name for the UPS device (required) |
+| **Host** | IP address of the UPS SNMP agent (required) |
+| **Port** | SNMP port (default: 161) |
+| **Community** | SNMP v2c community string (default: `public`) |
+| **Profile** | SNMP device profile (`auto` = detect the brand from the device, or pick one explicitly) |
+| **Location** | Physical location label |
+| **Description** | Free-text notes |
+| **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes): informational |
+| **Identification** | Manufacturer, Model, Firmware Version, Serial Number: filled from the device with **Retrieve Info**, or typed by hand |
+
+**Retrieve Info** reads the identification values from the device with the selected profile and writes them in the four fields. It needs the **Host** to be filled in. The values are saved with the device.
+
+Per-device actions (select a row first):
+
+- **Scan**: queues an immediate scan of the selected device. The result appears in the grid and in the reading history when the scan ends
+- **Test Connection**: queries the device and shows the profile selected from its SNMP system description. It answers "Connection successful!" also when the device does not respond, so it is not a reachability check
+
+To check that readings really arrive, run **Scan** and look at the reading history: a device that does not answer produces an **Offline** reading with the error text.
+
+### Profiles
+
+With `auto` the brand is detected at every scan from the SNMP system description of the device, and shown in **Detected Brand**. When no brand is recognised the **Generic RFC 1628** profile (standard UPS MIB) is used. The generic profile is also the first one tried, and it matches any description that contains "UPS" or "Battery". So with `auto` the generic profile is the one usually selected: pick the brand explicitly to use its profile.
+
+<Collapse title="Show all profiles" kind="reference">
+
+- Generic RFC 1628
+- APC / Schneider Electric
+- Eaton / Dell / ABB
+- CyberPower / FSP / PowerWalker
+- Riello
+- Vertiv / Liebert / Emerson
+- Socomec
+- Delta
+- Tripp Lite
+- Legrand
+- Huawei
+- Phoenix Contact
+- HPE / HP
+- Salicru
+- Gamatronic
+- Powerware / Exide
+- MGE / Pulsar
+- Mitsubishi
+- GE / General Electric
+- Chloride
+- Piller
+- Mach Power / NetAgent / Ablerex / Tecnoware
+- Zigor
+- NetVision
+- Borri
+
+</Collapse>
+
+### Reading history
+
+Expand a device row to see its readings, newest first: **Timestamp**, **Status**, **Battery (%)**, **Input (V)**, **Load (%)**, **Temp (C)**, **Runtime (min)** and **Error**. **Export** saves the list as an Excel file.
+
+Every scan stores one reading for each device, also when the device does not answer. Readings older than **Max days logs** are deleted at the end of each scheduled scan.
+
+## Trends
+
+Pick the **Period**: a single date-range field, limited to the dates that have readings. Then pick one or more **Devices** among those with readings in that period. The page draws four line charts with one line for each device: **Battery (%)**, **Input Voltage (V)**, **Load (%)** and **Temperature (C)**. Charts can be zoomed and panned. Offline readings are left out.
+
+## Alerts
+
+After each successful reading the module checks the values against the thresholds of the cluster settings. If at least one notifier is selected in the settings, it sends one notification that lists the alerts found:
+
+| Condition | Severity |
+|-----------|----------|
+| Battery charge at or below **Default Shutdown Battery Threshold (%)** | Error |
+| Battery charge at or below **Default Battery Low Threshold (%)** (and above the shutdown threshold) | Warning |
+| Runtime reported by the UPS above 0 and at or below **Default Shutdown Time Threshold (minutes)** | Error |
+| Status **Critical** | Error |
+| Status **On Battery** | Warning |
+
+The notification reports device, status, battery charge and runtime. Its severity is Error when at least one alert is an error, otherwise Warning.
+
+- The notification is sent again at every scan while the condition lasts.
+- No notification is sent when the device does not answer (status **Offline**) or its state is **Unknown**.
+
+## Settings
+
+Settings are separate for each cluster.
+
+<Collapse title="Show all settings" kind="settings">
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled schedulation** | off | Master on/off switch for the scheduled scan |
+| **Cron Schedule** | `*/5 * * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#*/5_*_*_*_*) | When the scheduled scan runs |
+| **Max days logs** | 30 | How many days of historical readings to retain |
+| **Default Battery Low Threshold (%)** | 20 | Warning alert when the battery charge is at or below this level (0 to 100) |
+| **Default Shutdown Battery Threshold (%)** | 10 | Error alert when the battery charge is at or below this level (0 to 100). When the UPS also runs on battery, the device status becomes **Critical** |
+| **Default Shutdown Time Threshold (minutes)** | 5 | Error alert when the estimated runtime is at or below this value (1 to 60) |
+| **Notifier** | - | [Notifier](../../configuration/admin-area/notifier/) configurations that receive the alerts. With none selected no alert is sent |
+
+</Collapse>
+
+## Permissions
+
+| Permission | Description |
+|------------|-------------|
+| **UPS Monitor** | Open the module and its **Overview** page |
+| **Dashboard**, **Devices**, **Trends** | Open the page with that name (one permission per page) |
+| **Edit Settings** | Change the module settings |
+| **Device: Read, Create, Edit, Delete, Export** | UPS devices. **Create**, **Edit** and **Delete** enable the matching actions of the **Devices** page |
+| **Device: Scan Now** | Shows the **Scan** button |
+| **Device: Test Connection** | Shows the **Test Connection** button |
+
+<PvePrivileges module="ups-monitor" />

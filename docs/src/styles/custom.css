@@ -1,0 +1,80 @@
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Styles of the cv4pve-admin pages, on top of the shared cv4pve theme: edition and scope badges,
+ * the page header and screenshots.
+ */
+
+/* EE / CE / SSH / scope labels (Tag.astro): standard Starlight badges, only spaced from the text. */
+.ee, .ce, .ssh, .scope {
+  vertical-align: middle;
+  margin: 0 0.2em;
+}
+/* After a heading the label is written right against the title (so the anchor stays the title
+   alone): a wider gap keeps it apart from the larger text. */
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) :is(.ee, .ce, .ssh, .scope) {
+  margin-inline-start: 0.5rem;
+}
+
+/* Material Design icons (Mdi.astro). */
+.cv-mdi {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.2em;
+}
+.cv-mdi-lg {
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: -0.35em;
+}
+
+/* Icon, edition and scope under the page title. */
+.cv-page-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--sl-color-accent);
+  font-size: var(--sl-text-xl);
+}
+
+/* Screenshots: contained, centred, with a subtle frame. */
+.cv-screenshot img {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  margin: 1rem auto;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.06);
+}
+.cv-screenshots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.sl-markdown-content .cv-screenshots > * {
+  margin-top: 0;
+}
+.cv-screenshots img {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 4px;
+}
+
+/* Small centred closing line. */
+.cv-center-note {
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+  text-align: center;
+}
+
+/* Lists inside table cells (edition comparison): compact, no outer margin. */
+.sl-markdown-content td ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.sl-markdown-content td li + li {
+  margin-top: 0.25rem;
+}

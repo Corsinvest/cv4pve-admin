@@ -1,0 +1,132 @@
+---
+title: "Docker Deployment"
+description: "What the installer creates, the settings in .env, the adminctl helper, updates and the security checklist of a cv4pve-admin Docker installation."
+---
+
+import Tag from '~/components/Tag.astro';
+
+This page describes how a cv4pve-admin installation made with the [installer](../getting-started/#first-cluster) is laid out, and how to manage it.
+
+## What gets installed
+
+The installation directory contains:
+
+| File | Purpose |
+|------|---------|
+| `.env` | Installation settings (see below). |
+| `docker-compose.yaml` | The compose file in use, a copy of the one of the chosen edition. |
+| `docker-compose-ce.yaml`, `docker-compose-ee.yaml` | Reference compose files of the two editions. |
+| `adminctl` | Management helper script. |
+| `README.md` | Quick reference. |
+
+`docker compose up -d` starts these services:
+
+| Service | Purpose |
+|---------|---------|
+| `cv4pve-admin-init` | Runs once before the application: creates the data and configuration folders with the right owner. |
+| `cv4pve-admin` | The application, published on port `8080`. |
+| `postgres` | PostgreSQL 17 database. |
+| `watchtower` | Updates the application container when you trigger an update from the web UI. |
+| `apprise` <Tag kind="ee" /> | Apprise API server used by the [Notification Hub](../configuration/admin-area/notifier/#apprise). |
+| `pgweb` (optional) | Web client for the database. Not started by default: start it with `./adminctl admin start`. |
+
+Data is stored under `data/` in the installation directory:
+
+- `data/postgres/data`: the database.
+- `data/cv4pve-admin/data`: the application data, logs included.
+- `data/cv4pve-admin/config`: the optional [appsettings.extra.json](../configuration/appsettings-extra/).
+
+The compose file also mounts `data/postgres/backups` and, for `pgweb`, `data/pgweb`.
+
+## Installation settings (.env)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `POSTGRES_DB` | `cv4pve-admin-db` | Database name. |
+| `POSTGRES_USER` | `postgres` | Database user. |
+| `POSTGRES_PASSWORD` | `cv4pve-admin` | Database password, set by the installer. |
+| `DATA_DIR` | `./data` | Where persistent data is stored. |
+| `CV4PVE_ADMIN_TAG` | `latest` | Docker image tag (version) of cv4pve-admin. |
+| `CV4PVE_ADMIN_PORT` | `8080` | Host port of the web UI. |
+| `PGWEB_PORT` | `8082` | Host port of PgWeb, when started. |
+| `TZ` | `Europe/Rome` | Time zone of the container. Scheduled jobs follow it: set it to your time zone. |
+| `BACKUP_DIR` | `./backups` | Where `adminctl backup` stores backups. |
+| `WATCHTOWER_HTTP_API_TOKEN` | `mySecretToken123` | Token cv4pve-admin uses to ask Watchtower for an update. |
+
+:::caution[Change the default secrets]
+Before exposing the installation, replace the default `POSTGRES_PASSWORD` and `WATCHTOWER_HTTP_API_TOKEN` with your own values. Use letters and digits only. The `.env` file suggests `openssl rand -base64 32` to generate them, but its output can contain `/`: remove the characters that are not letters or digits. A `/` or `&` in the PostgreSQL password breaks the Linux and macOS installer. A space in a value of `.env` breaks `adminctl`. If you change the database password after the first start, you must also change it inside PostgreSQL.
+:::
+
+## Change version after installation
+
+Edit `CV4PVE_ADMIN_TAG` in `.env` (e.g. `nano .env` or `notepad .env`), then restart:
+
+```bash
+docker compose down && docker compose up -d
+```
+
+A pre-release build such as `rc`, `beta` or `alpha` (e.g. `2.3.0-rc1`) is meant for testing. It stops accepting logins two months after its build date. Move to a newer version before then.
+
+## adminctl
+
+The installer downloads an `adminctl` script into the installation directory. It is a Bash script that wraps the most common `docker compose` operations:
+
+| Command | Description |
+|---------|-------------|
+| `./adminctl start` / `stop` / `restart` | Start, stop or restart all services. |
+| `./adminctl status` | Show the status of the services. |
+| `./adminctl logs [SERVICE]` | Follow the logs of all services, or of one (for example `./adminctl logs cv4pve-admin`). |
+| `./adminctl admin start` / `admin stop` | Start or stop the admin tools (PgWeb). |
+| `./adminctl backup db create` / `list` | Create or list database backups. |
+| `./adminctl backup data create` / `list` | Create or list application data backups. |
+| `./adminctl backup all create` / `list` | Create or list full backups (database and data). |
+| `./adminctl self-update` | Update `adminctl` and the compose files from GitHub. See [Refresh adminctl and the compose files](#refresh-adminctl-and-the-compose-files). |
+| `./adminctl help` | Show all commands. |
+
+**Windows:** the installer downloads `adminctl` on Windows too, but the script needs a Bash shell to run (for example WSL or Git Bash).
+
+**Stop:** `stop` removes the containers (`docker compose down`). The data stays.
+
+**Backup:** the `backup` commands need the containers running. They write under `backups/db`, `backups/data` and `backups/all`. There is no restore command. `backup db` and `backup data` print the command to restore the backup. `backup all` only says to restore the database and the data separately.
+
+## Updating
+
+When a new version is available, the help menu (the **?** icon in the top bar) shows a red dot and an **Update available** badge. In a Docker installation, users with the upgrade permission also get an **Update** button. The button asks Watchtower to pull the new image and restart the container. Pre-release builds do not offer the button: change `CV4PVE_ADMIN_TAG` instead.
+
+The application checks for new versions every 12 hours. The refresh button of the help menu checks immediately.
+
+### Refresh adminctl and the compose files
+
+`adminctl` itself and the `docker-compose-{ce,ee}.yaml` files can fall behind over time. To pull the latest copy from GitHub `main`:
+
+```bash
+./adminctl self-update
+```
+
+The command:
+
+- Downloads the latest `adminctl` and `docker-compose-{ce,ee}.yaml`
+- Snapshots the current files into `self-update-backups/<timestamp>/` so a rollback is always possible
+- Regenerates the active `docker-compose.yaml` to match the detected edition (CE or EE)
+- Leaves `.env`, `data/`, and `backups/` untouched
+
+A customized `docker-compose.yaml` (one that differs from both `docker-compose-ce.yaml` and `docker-compose-ee.yaml`) is **not** rewritten. The command shows a warning. You can merge the changes manually by comparing your file with the updated `docker-compose-{ce,ee}.yaml`.
+
+After the command, recreate the containers to apply the changes:
+
+```bash
+docker compose up -d
+# or, to pull new container images at the same time:
+docker compose pull && docker compose up -d
+```
+
+`./adminctl restart` only restarts the running containers: it does not apply a changed compose file.
+
+## Security best practices
+
+- Change default password in `.env` before first start
+- Use strong, random `WATCHTOWER_HTTP_API_TOKEN`
+- Use reverse proxy (Nginx/Traefik/Caddy) for HTTPS in production: see [HTTPS Setup](../https/)
+- Backup database regularly
+- Keep containers updated via web UI or manual pull
+- Limit access to ports 8080/8082 via firewall

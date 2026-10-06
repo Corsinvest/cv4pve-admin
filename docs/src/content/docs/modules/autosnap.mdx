@@ -1,0 +1,188 @@
+---
+title: "AutoSnap"
+description: "Automated snapshot scheduling and management for Proxmox VE virtual machines and containers."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import Mdi from '~/components/Mdi.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="photo_camera" size="lg" /><Tag kind="per-cluster" /></p>
+
+Automated snapshot scheduling and management for Proxmox VE virtual machines and containers.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:auto-fix', title: "Scheduled Snapshots", text: "Create snapshots automatically on a cron schedule, with retention policies." },
+    { icon: 'mdi:clock-check', title: "Retention Policies", text: "Define how many snapshots to keep per VM, with automatic cleanup of expired ones." },
+    { icon: 'mdi:briefcase-check', title: "Job Management", text: "Configure snapshot jobs with cron schedule, VM selection, execution history and status monitoring.", href: '#jobs' },
+    { icon: 'mdi:database-check', title: "Multi-VM Support", text: "Apply a single job to multiple VMs and containers using filters or explicit selection." },
+    { icon: 'mdi:swap-horizontal', title: "Node-independent", text: "A job targets VM IDs, ranges, name wildcards, pools or tags, with optional exclusions. It is not tied to a node unless you use `@node-…`. When a VM migrates (manually or by HA failover), the next scheduled snapshot runs on the new node with no reconfiguration." },
+    { icon: 'mdi:webhook', title: "Web API Hook", text: "Trigger HTTP webhooks on snapshot phase events (before/after create, before/after delete). Configure per-job HTTP endpoints with custom headers and body templates.", href: '../autosnap-webhook/', ee: true },
+  ]}
+/>
+
+## Why
+
+Proxmox can already take snapshots: why use a module for it?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:camera-timer', title: "Snapshots actually happen", text: "Snapshots run on a schedule **you** choose. Nobody has to remember to take one before the next risky operation." },
+    { icon: 'mdi:select-group', title: "Manage 50 VMs as one set", text: "One job targets a group of VMs by tags, wildcards or an explicit list. You do not repeat the configuration for each VM." },
+    { icon: 'mdi:calendar-multiple', title: "Different schedules per workload", text: "Hourly for the database, nightly for dev VMs, weekly for templates: each job runs on its own cron, side by side on the same cluster." },
+    { icon: 'mdi:transit-connection-variant', title: "Follows the VM, not the node", text: "A job targets VM IDs, pools or tags, not a node (unless you use `@node-…`). When a VM migrates to another node, the next snapshot runs there with no reconfiguration." },
+    { icon: 'mdi:delete-clock', title: "Retention without thinking", text: "Set **Retention** to 7 once; when the 8th snapshot is created, the module deletes the oldest one for you. Proxmox VE alone keeps every snapshot until someone deletes it." },
+    { icon: 'mdi:harddisk', title: "Storage-safe by default", text: "**Max percentage storage** skips the snapshot when the target storage is too full, so scheduled snapshots never fill your storage." },
+    { icon: 'mdi:history', title: "Auditable history", text: "Every run is logged in the Jobs grid, the Time line page and the Errors page. You know what was snapshotted, when, and what failed.", href: '#jobs' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module and its dashboard widgets
+- **Jobs**: manage AutoSnap jobs (see [Jobs](#jobs)). Expanding a job row shows two tabs: **Histories** (past runs of the job) and **Status** (the snapshots currently present on the guests of the job)
+- **Time line**: the last 10 days in which the jobs of the cluster ran, with the runs of each day
+- **Errors**: the failed runs only, with start, end, duration and status. Selected rows can be deleted or exported to Excel
+- **Status**: inventory of AutoSnap snapshots, grouped by label and VM with counts and size; selected snapshots can be deleted
+
+:::note[Snapshot size]
+The **Size** column and the size totals in **Status** and **Time line** are shown only when snapshot size calculation is enabled for the cluster. The calculation requires SSH: see [SSH Configuration](../../configuration/admin-area/clusters/#ssh-configuration).
+:::
+
+## Jobs
+
+A job defines which guests to snapshot, when, and how many snapshots to keep. Click the **Label** of a row to edit the job.
+
+A run skips three kinds of guests:
+
+- templates
+- guests on a node that is offline
+- guests that Proxmox VE cannot snapshot: those with a passthrough device or, for containers, a bind mount
+
+The log of the run says which guests were skipped and why.
+
+<Collapse title="Job fields" kind="settings">
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| **Enabled** | off | Schedule the job. A disabled job is not run by the scheduler, but can still be run with **Snap** |
+| **Include RAM** | off | Save the memory state of the VM in the snapshot |
+| **While VM/CT Running** | off | Take the snapshot only on guests that are running |
+| **Max Parallel** | 1 | Number of guests processed at the same time (1 to 10) |
+| **Label** | - | Required. Letters and digits only. It becomes part of the snapshot name and identifies the snapshots of the job |
+| **Retention** | - | Required. Number of snapshots to keep per guest (1 to 100); older snapshots with the same label are removed |
+| **Description** | - | Required. Free text shown in the grid |
+| **Cron Schedule** | `*/15 * * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#*/15_*_*_*_*) | When the job runs (default: every 15 minutes) |
+| **Vm Ids** | - | Required. Guests to snapshot: IDs, ranges, name wildcards, pools, tags, `@all`, with optional exclusions |
+| **Web API Hook** <Tag kind="ee" /> | - | Second tab of the editor: HTTP calls fired on the snapshot phases. See [Web API Hook](../autosnap-webhook/) |
+
+</Collapse>
+
+The snapshot name is `auto` + label + timestamp and cannot exceed 40 characters. The editor refuses a label that is too long for the **Timestamp Format** of the cluster.
+
+The timeout of each snapshot is 30 seconds. It is shown in the **Timeout** column and cannot be changed from the editor.
+
+Actions on the selected job:
+
+| Action | What it does |
+|--------|--------------|
+| **Snap** | Runs the job immediately in the background, without waiting for the schedule |
+| **Purge Snapshots** | After confirmation, deletes every snapshot with the job's label on the guests of the job. The job itself is kept |
+| **Delete** | Deletes the job. When **On remove job remove snapshots in Proxmox VE** is on (default), its snapshots are purged first |
+| **Export** | Downloads the jobs grid as an Excel file |
+
+Every run, purge and delete is tracked in the global Task Tracker with its log.
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Status** | AutoSnap status |
+| **Size** | Snapshot size over time. Empty on the clusters where the snapshot size calculation is off |
+| **Check** | Failed snapshots in the last days |
+| **Info** | Snapshot statistics and insights |
+| **Daily Status** <Tag kind="ee" /> | Successful and failed snapshots per day (last 14 days) |
+
+The **Check** widget has one widget setting, **Days to analyze** (default 60). It covers only the clusters where the module setting **Enabled** is on.
+
+## Settings
+
+<Collapse title="Show all settings" kind="settings">
+
+**Enabled**
+
+Marks the module as in use on the cluster. The **Check** widget covers only the clusters where this setting is on. The setting does not start or stop the jobs: each job has its own **Enabled** switch
+
+- **Default:** off
+
+**Search Mode**
+
+Which guests the **Status** page scans. `Managed`: only the guests targeted by the jobs. `All`: every guest of the cluster
+
+- **Default:** Managed
+
+**Timestamp Format**
+
+Date format of the timestamp at the end of the snapshot name. A format that does not sort in time order is refused. Use fixed-width specifiers (`yyyy`, `yy`, `MM`, `dd`, `HH`, `mm`, `ss`), with the largest unit first. Use `HH` and not `hh`, and no quoted text
+
+- **Default:** `yyMMddHHmmss`
+
+**Keep history maintain after deletion snapshot in Proxmox VE**
+
+Number of extra run results kept in the history of a job. The history holds the job's **Retention** plus this number of past runs
+
+- **Default:** 10
+- **Minimum:** 0
+
+**Max percentage storage (default 95%)**
+
+Skip snapshot creation if the target storage is more full than this percentage (1 to 100)
+
+- **Default:** 95
+
+**On remove job remove snapshots in Proxmox VE**
+
+Delete the snapshots created by a job when the job itself is deleted
+
+- **Default:** on
+
+**Notify**
+
+When to send a notification at the end of a run: `None` (never), `Always`, `On Failure Only`. Nothing is sent if no Notifier configuration is selected
+
+- **Default:** None
+
+**Notifier**
+
+[Notifier](../../configuration/admin-area/notifier/) configurations that receive the notifications
+
+</Collapse>
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+<Collapse title="Module permissions" kind="reference">
+
+| Permission | Allows |
+|------------|--------|
+| **AutoSnap** | Open the module and its **Overview** page |
+| **Jobs**, **Time line**, **Errors**, **Status** | Open the page with that name (one permission per page) |
+| **Job: Read / Export** | View the jobs grid, export it |
+| **Job: Create / Edit / Delete** | Add, change and delete jobs |
+| **Job: Snap** | Use the **Snap** button |
+| **Job: Purge Snapshots** | Use the **Purge Snapshots** button |
+| **Status: Read / Export / Delete** | View and export the snapshot inventory, delete the selected snapshots |
+| **Results: Read / Export / Delete** | View, export and delete run results (**Histories** tab and **Errors** page) |
+| **Status**, **Size**, **Check**, **Info**, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
+| **Edit Settings** | Change the module settings |
+
+</Collapse>
+
+<PvePrivileges module="autosnap" />

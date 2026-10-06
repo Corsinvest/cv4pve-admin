@@ -1,0 +1,78 @@
+---
+title: "CLI Reference"
+description: "cv4pve-admin includes a built-in command-line interface for administrative tasks that can be performed without accessing the web UI."
+---
+
+cv4pve-admin includes a built-in command-line interface for administrative tasks that can be performed without accessing the web UI.
+
+## Usage
+
+Run the commands from the installation directory: they run in the container of the application. Use `--help` to list all available commands:
+
+```bash
+docker compose run --rm cv4pve-admin --help
+```
+
+Each command also supports `--help` for details on its options:
+
+```bash
+docker compose run --rm cv4pve-admin user --help
+docker compose run --rm cv4pve-admin user reset-password --help
+```
+
+`--version` prints the version of the application.
+
+A command first initialises the application: the database must be reachable, and the initialisation applies pending database updates. The command then runs, prints its result and exits without starting the web server. The exit code is `0` on success and `1` on error.
+
+Run a command when no operation is in progress. Otherwise the tasks still running in the web application are marked `Abandoned`.
+
+## User commands
+
+| Option | Applies to | Required | Description |
+|--------|------------|----------|-------------|
+| `-u`, `--username <username>` | all user commands | no, default `admin@local` | User the command works on |
+| `-p`, `--password <password>` | `reset-password` | yes | New password |
+
+The new password must satisfy the password rules of the application. Otherwise `reset-password` lists what is wrong and changes nothing.
+
+| Command | Description |
+|---------|-------------|
+| `user reset-password -u <user> -p <password>` | Set a new password for the user |
+| `user enable -u <user>` | Enable a disabled user account: the user can sign in again |
+| `user disable -u <user>` | Disable a user account: the user can no longer sign in |
+| `user unlock -u <user>` | Unlock a locked out user account and reset its count of failed sign-in attempts |
+
+A user name that does not exist is reported as `Error: User '<name>' not found`. The built-in system users cannot be modified from the command line.
+
+## Troubleshooting
+
+### Reset a forgotten admin password
+
+If you are locked out of the web UI, reset the password via CLI.
+
+```bash
+docker compose run --rm cv4pve-admin user reset-password -u admin@local -p NewPassword123!
+```
+
+Use a strong password and change it again from the web UI after recovering access.
+
+### Unlock a locked out account
+
+After too many failed login attempts, the account is locked. To unlock it:
+
+```bash
+docker compose run --rm cv4pve-admin user unlock -u admin@local
+```
+
+### Disable and enable an account
+
+Disable an account to block its sign-in without deleting the user, and enable it again later.
+
+```bash
+docker compose run --rm cv4pve-admin user disable -u john@local
+docker compose run --rm cv4pve-admin user enable -u john@local
+```
+
+:::caution
+`user disable` without `-u` works on `admin@local`. Do not disable the only administrator: you would need the command line again to enable it.
+:::

@@ -2,7 +2,7 @@
 
 Quick reference for managing your cv4pve-admin Docker installation.
 
-📖 **[Full Documentation](https://corsinvest.github.io/cv4pve-admin/)** | 🚀 **[Installation Guide](https://corsinvest.github.io/cv4pve-admin/getting-started/)**
+**[Full Documentation](https://corsinvest.github.io/cv4pve-admin/)** | **[Installation Guide](https://corsinvest.github.io/cv4pve-admin/getting-started/)** | **[Docker Deployment](https://corsinvest.github.io/cv4pve-admin/docker/)**
 
 ---
 
@@ -18,8 +18,8 @@ Quick reference for managing your cv4pve-admin Docker installation.
 
 ## Updates
 
-When a new version is available, a badge **🆕 vX.Y.Z** appears in the top navigation bar.
-Click it to trigger an immediate update via Watchtower (requires `WATCHTOWER_HTTP_API_TOKEN` in `.env`).
+When a new version is available, the help menu (the **?** icon in the top bar) shows a red dot and an **Update available vX.Y.Z** badge that links to the release page.
+Next to it, the **Update** button triggers an immediate update via Watchtower (requires `WATCHTOWER_HTTP_API_TOKEN` in `.env` and the upgrade permission).
 
 The application checks for new versions every 12 hours.
 
@@ -39,15 +39,17 @@ This:
 - Regenerates the active `docker-compose.yaml` to match the detected edition (CE or EE)
 - Leaves `.env`, `data/`, and `backups/` untouched
 
-If your `docker-compose.yaml` is customized (differs from both `docker-compose-ce.yaml` and `docker-compose-ee.yaml`), it is **not** rewritten — you will see a warning and can merge the changes manually by comparing with the updated `docker-compose-{ce,ee}.yaml`.
+If your `docker-compose.yaml` is customized (differs from both `docker-compose-ce.yaml` and `docker-compose-ee.yaml`), it is **not** rewritten: you will see a warning and can merge the changes manually by comparing with the updated `docker-compose-{ce,ee}.yaml`.
 
-After running, restart the stack to apply changes:
+After running, recreate the containers to apply the changes:
 
 ```bash
-./adminctl restart
-# or, to pull new container images at the same time:
 docker compose up -d
+# or, to pull new container images at the same time:
+docker compose pull && docker compose up -d
 ```
+
+`./adminctl restart` only restarts the running containers: it does not apply a changed compose file.
 
 ---
 
@@ -55,7 +57,7 @@ docker compose up -d
 
 To test RC or specific versions, edit `CV4PVE_ADMIN_TAG` in `.env` then restart.
 
-📖 **[Testing Pre-Release Versions](https://corsinvest.github.io/cv4pve-admin/getting-started/#change-version-after-installation)**
+**[Testing Pre-Release Versions](https://corsinvest.github.io/cv4pve-admin/docker/#change-version-after-installation)**
 
 ---
 
@@ -63,7 +65,7 @@ To test RC or specific versions, edit `CV4PVE_ADMIN_TAG` in `.env` then restart.
 
 For advanced configuration overrides using `appsettings.extra.json`, see the full documentation:
 
-📖 **[Configuration Guide](https://corsinvest.github.io/cv4pve-admin/configuration/)**
+**[Configuration Guide](https://corsinvest.github.io/cv4pve-admin/configuration/)**
 
 ---
 

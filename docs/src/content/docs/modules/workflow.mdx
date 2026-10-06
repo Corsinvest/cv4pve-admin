@@ -1,0 +1,74 @@
+---
+title: "Workflow"
+description: "Visual designer for automation against Proxmox VE, built on Elsa Workflows. A reusable workflow is made of activities, each one a step such as a snapshot, a backup, a migration, a power action or a notification."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="account_tree" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
+
+Visual designer for automation against Proxmox VE, built on [Elsa Workflows](https://elsa-workflows.github.io/). A reusable workflow is made of activities, each one a step such as a snapshot, a backup, a migration, a power action or a notification.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:cursor-pointer', title: "Drag-and-drop Designer", text: "Build workflows visually in Elsa Studio, embedded in cv4pve-admin: no external tool." },
+    { icon: 'mdi:server-network', title: "PVE Activities", text: "Pre-built activities for guests (power, backup, snapshot, migrate, clone, resize), nodes (shutdown/reboot, inventory, RRD), storages (inventory, content, RRD), HA (manage state) and replications.", href: '#available-activities' },
+    { icon: 'mdi:bell-ring', title: "Admin Activities", text: "`Notify` sends a message through the configured [Notifier](../../configuration/admin-area/notifier/) channels. `Filter Collection` filters the output of an inventory activity with an expression.", href: '#available-activities' },
+    { icon: 'mdi:code-tags', title: "C# and JavaScript", text: "Inline expressions in C# or JavaScript anywhere a value is accepted: branching, filtering, formatting." },
+    { icon: 'mdi:clipboard-list', title: "History & Audit", text: "Every workflow run is recorded with status, inputs and timing: inspect it from the History tab." },
+    { icon: 'mdi:account-group', title: "Multi-tenant", text: "Workflows are isolated per cluster (tenant): a workflow designed in one cluster is not listed in another." },
+  ]}
+/>
+
+## Why
+
+Why a workflow engine when scripts and cron already work?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:script-text', title: "No scripts to maintain", text: "Drag-and-drop, no Bash, no PowerShell, no SDK. Tasks that used to live in a wiki page become a workflow." },
+    { icon: 'mdi:source-branch', title: "Branching and error paths", text: "Conditions, loops, retries, error handling, without writing a state machine. The designer makes the control flow obvious." },
+    { icon: 'mdi:server-network', title: "Cluster-aware activities", text: "Activities know your nodes, VMs, storages and HA groups: the pickers are filled from the live cluster, with no IDs to copy and paste.", href: '#available-activities' },
+    { icon: 'mdi:history', title: "Auditable runs", text: "Every run is recorded with inputs, outputs and timing: answer \"when did this happen and what did it do?\" without digging through logs." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: short description of the module
+- **Workflows**: the list of workflow definitions of the current cluster. Open a definition to edit it in the designer. **Back to List** returns to the list. When you run a workflow from the designer, the page switches to the view of that run. **Back to editor** returns to the designer
+- **History**: the list of workflow runs (instances). Open a run to see its status and the detail of each step. **Back to List** returns to the list. From a run you can open its definition in the designer and come back with **Back to View Instance**
+
+Workflows belong to the cluster selected in the cluster picker. Definitions and runs of one cluster are not listed in another. The activities of a workflow always act on the cluster the workflow was created in.
+
+## Requirements
+
+- Configure the `Urls` setting of the application. The embedded designer calls the workflow engine of the same application at the first address listed there, under `/api/elsa`. Without `Urls` the application does not start.
+- Expressions can be written in **C#** or **JavaScript**.
+- The Proxmox VE user or API token of the cluster needs the privileges for the operations the workflows run. See [Proxmox VE Permissions](../workflow-activities/).
+
+## Available Activities
+
+The module adds 26 activities to the designer toolbox, next to the standard ones of Elsa Workflows. They are organised under **Proxmox VE** and **Admin**. The full list, with inputs and outputs, is in [Activities](../workflow-activities/).
+
+## Permissions
+
+The module defines these application permissions. All of them are included in the module administrator role.
+
+| Permission | Description |
+|------------|-------------|
+| **Workflow** | Open the module and its **Overview** page |
+| **Workflows**, **History** | Open the page with that name (one permission per page) |
+| **Workflow: Read, Create, Edit, Delete, Export** | Workflow definitions |
+| **Workflow: Execute Workflow** | Run a workflow |
+| **History: Read, Export** | Workflow runs |
+| **History: Delete** | Delete workflow runs |
+
+**Persistence:** Workflow definitions and runtime state are stored in the `workflow_elsa` Postgres schema, separate from the cv4pve-admin schema.
+
+<PvePrivileges module="workflow" />

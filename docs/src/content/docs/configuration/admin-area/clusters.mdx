@@ -1,0 +1,165 @@
+---
+title: "Proxmox VE Clusters"
+description: "Configure the Proxmox VE clusters that cv4pve-admin will manage."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import Tag from '~/components/Tag.astro';
+
+Configure the Proxmox VE clusters that cv4pve-admin will manage.
+
+Open **Admin Area → Proxmox VE Clusters**. The grid lists the configured clusters with the columns **Enabled**, **Name**, **PVE Name**, **Description** and **Nodes** (number of nodes). Use **Add** to create a cluster. Click the **Name** or **PVE Name** of a row to edit the cluster. To remove a cluster, select its row and use **Delete**.
+
+On a new installation with no enabled cluster, the **New Cluster Settings** dialog opens automatically after login.
+
+## Sections
+
+The cluster dialog is made of these parts:
+
+- **General**: enabled flag, name, description, location
+- **Nodes**: addresses of the Proxmox VE nodes and node discovery
+- **WEB API Access**: credentials cv4pve-admin uses to connect to Proxmox VE
+- **SSH**: credentials cv4pve-admin uses for features that need SSH
+- **Feature**: snapshot size calculation <Tag kind="ee" />
+
+## General
+
+| Field | Description |
+|-------|-------------|
+| **Enabled** | When off, the cluster is kept in the configuration but is not used, and no connection test runs on save. Default: on. |
+| **Name** | Required and unique. Only letters, digits, `_` and `-` are accepted. This is the name used inside cv4pve-admin (cluster selector, URLs, permissions). |
+| **Description** | Required. Free text that identifies the cluster, shown in the tooltip of the cluster selector. |
+| **Location** | **Latitude** (-90 to 90) and **Longitude** (-180 to 180) of the site. Used to place the cluster on the map widget of the [Resources](../../../modules/resources/) module. |
+
+**PVE Name** is not editable: it is the cluster name read from Proxmox VE when the connection is verified. When it differs from **Name**, the cluster is shown as `Name (PVE Name)`.
+
+## Nodes
+
+List the nodes of the cluster. Each row has:
+
+| Field | Description |
+|-------|-------------|
+| **IP Address/Host** | Required. IP address or host name of the node. |
+| **API Port** | Port of the Proxmox VE API (default: 8006). |
+
+The addresses are used for both the Proxmox VE API and SSH. For the API, nodes are tried in the listed order until one responds, so put the preferred node first. Rows can be reordered, added with **Add node** and removed.
+
+### Discover Nodes
+
+You do not need to type every node. Enter one reachable node and the **WEB API Access** credentials, then click **Discover Nodes**. cv4pve-admin connects to the cluster, reads the cluster name and type (cluster or single node) and adds the nodes that are missing from the list. If **Name** is empty, cv4pve-admin fills it with the Proxmox VE cluster name.
+
+The button is available once at least one node is in the list. The same discovery runs automatically when an enabled cluster is saved.
+
+**Minimum Proxmox VE version:** cv4pve-admin refuses the connection if the cluster runs a Proxmox VE version older than 6.4.
+
+## WEB API Access
+
+Configure the Proxmox VE API credentials used to connect to the cluster.
+
+<Collapse title="Show Web API credential fields" kind="settings">
+
+| Field | Description |
+|-------|-------------|
+| **Access Type** | `Credential` (username and password) or `API Token`. Default: `Credential`. |
+| **Timeout (msec)** | HTTP request timeout in milliseconds (default: 1000). |
+| **Username** | Only with `Credential`. Proxmox VE user in the format `USER@REALM` (for example `root@pam`). |
+| **Password** | Only with `Credential`. Password of the user. |
+| **API Token** | Only with `API Token`. Token in the format `user@realm!tokenid=secret`. |
+| **Validate SSL Certificate** | Verify the TLS certificate of the Proxmox VE nodes. Default: off. |
+
+</Collapse>
+
+Passwords, API tokens, SSH private keys and passphrases are stored encrypted.
+
+### Automatic API Token Creation
+
+cv4pve-admin can create the API token for you, so you do not create it manually in Proxmox VE. Select the `API Token` access type and use the key button (**Create API Token automatically**) next to the **API Token** field. At least one node must already be in the **Nodes** list.
+
+A dialog asks for:
+
+- **Username**: a Proxmox VE user with sufficient privileges (for example `root@pam`)
+- **Password**: used only during this operation, never stored
+- **Token Name**: identifier for the token (default: `cv4pve-admin`)
+
+The following steps are performed automatically on the Proxmox VE cluster:
+
+1. Creates a dedicated Proxmox VE user `cv4pve-admin@pve`
+2. Assigns the `PVEAdmin` role on path `/` (with propagation)
+3. Creates the API token `cv4pve-admin@pve!{token-name}` with `privsep=0` (inherits the `PVEAdmin` role)
+4. Fills the **API Token** field with the generated value (`cv4pve-admin@pve!{token-name}=secret`)
+5. Shows a one-time dialog to copy the token: **it will not be shown again**
+
+The username and password are used only during this wizard and are **never saved**.
+
+**Run it once per cluster:** The wizard always starts by creating the user `cv4pve-admin@pve`. If Proxmox VE refuses one of the steps, for example because the user already exists, the wizard stops and shows the error returned by Proxmox VE. No token is created.
+
+### Web API Access Type: feature limitations
+
+The choice of **Access Type** affects which features are available:
+
+| Feature | Credential (PAM user) | Credential (non-PAM) | API Token |
+|---------|:---------------------:|:--------------------:|:---------:|
+| **SSH: Same as WEB API** | ✅ | ❌ PAM only | ❌ |
+| **Node console** (NoVnc, Xterm.js) | ✅ | ❌ PAM only | ❌ |
+| **VM/LXC console** (NoVnc; Xterm.js for containers) | ✅ | ✅ | ❌ |
+
+**Why PAM for node console and SSH Same as Web API?** Node consoles (NoVnc, Xterm.js) and SSH require OS-level credentials, that is, a Linux system user.
+Only PAM users (`@pam` realm, or username without realm) map to actual Linux users on the Proxmox VE nodes.
+Users from other realms (PVE, LDAP, etc.) exist only in the internal database of Proxmox VE and have no corresponding SSH/OS account.
+
+**Why not API Token for console?** Proxmox VE requires an active **user session** (ticket) to open a VM or node console via NoVnc or Xterm.js.
+API Tokens do not create a session ticket, so console access is not possible when using API Token authentication.
+
+## SSH Configuration
+
+Several features require SSH access to the Proxmox VE nodes, including snapshot size calculation, node configuration backup (Node Protect) and parallel update scans (Update Manager).
+
+SSH is configured per cluster in the **SSH** panel of the cluster dialog. Connections always use port 22 and the node addresses of the **Nodes** list.
+
+<Collapse title="Show SSH credential fields" kind="settings">
+
+| Field | Description |
+|-------|-------------|
+| **Auth Method** | `None`, `Password`, `Private Key`, or `Same as WEB API`. Default: `None`. |
+| **Timeout (msec)** | Connection timeout in milliseconds (default: 5000). Shown when the method is not `None`. |
+| **Username** | SSH user (typically `root`). Used with `Password` and `Private Key`. |
+| **Password** | Used when Auth Method is `Password` |
+| **Private Key** | Private key content, used when Auth Method is `Private Key`. Paste it or load it with the upload button. |
+| **Passphrase (optional)** | Passphrase of the private key. Enter it before uploading an encrypted key file. |
+
+The upload button accepts `.pem`, `.key` and `.ppk` files, up to 100 KB. A file that is not a valid private key is rejected.
+
+</Collapse>
+
+### SSH Auth Methods
+
+| Method | Description |
+|--------|-------------|
+| **None** | SSH disabled: features requiring SSH will be skipped |
+| **Password** | Authenticate with username and password |
+| **Private Key** | Authenticate with a private key (recommended) |
+| **Same as WEB API** | Reuse WEB API credentials (username without `@realm`, same password) |
+
+:::caution[Same as WEB API: PAM users only]
+The `Same as WEB API` method is only valid for **PAM users** (e.g. `root@pam`). Users authenticated via other realms (PVE, LDAP, etc.) do not have corresponding SSH credentials. If the WEB API user is not a PAM user, cv4pve-admin shows a warning and SSH does not work. The method also requires the `Credential` access type with username and password: it cannot be used with an API token.
+:::
+
+**Use Private Key:** Use **Private Key** authentication for better security. You can upload the key file directly from the UI.
+
+**Timeout scope:** The SSH timeout applies only to the **connection phase** (handshake), not to command execution duration.
+
+## Feature
+
+| Field | Description |
+|-------|-------------|
+| <Tag kind="ee" /> **Calculating the snapshot size may take some time (requires SSH).** | Enables the calculation of the disk space used by snapshots. The switch can be turned on only when SSH is configured for the cluster. |
+
+## What happens on save
+
+When an **enabled** cluster is saved, cv4pve-admin:
+
+1. Connects to Proxmox VE with the Web API credentials, checks the version, reads the cluster name and adds the missing nodes (same as **Discover Nodes**).
+2. If SSH is configured, opens an SSH connection to every node of the list.
+3. Checks that **Name** is not already used by another cluster.
+
+If one of these checks fails, a notification explains why and the dialog stays open. A disabled cluster is saved without connecting.

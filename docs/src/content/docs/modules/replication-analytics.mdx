@@ -1,0 +1,103 @@
+---
+title: "Replication Analytics"
+description: "Monitors Proxmox VE replication jobs across the cluster: status, trends, error patterns."
+---
+
+import Mdi from '~/components/Mdi.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="sync" size="lg" /><Tag kind="per-cluster" /></p>
+
+Monitors Proxmox VE replication jobs across the cluster: status, trends, error patterns.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:shield-check', title: "Replication Status", text: "Monitor VM and CT replication job execution and success rates." },
+    { icon: 'mdi:chart-line', title: "Performance Metrics", text: "Track replication size, duration, and failure patterns." },
+    { icon: 'mdi:monitor-eye', title: "On-demand or scheduled scan", text: "Collect replication run history on demand or on a schedule using a cron expression.", href: '#collecting-data' },
+    { icon: 'mdi:link-variant', title: "Proxmox VE Integration", text: "Works with Proxmox VE replication jobs via API." },
+    { icon: 'mdi:timeline-clock', title: "Historical Data", text: "View replication trends over time for optimization." },
+    { icon: 'mdi:tools', title: "Failure Logs", text: "Access detailed logs and error information for failed replication jobs." },
+  ]}
+/>
+
+## Why
+
+Why a dedicated view when PVE has its Replication tab?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:server-network', title: "Cluster-wide, not per-node", text: "The Replication tab of PVE is per node. This module shows every replication of the cluster on one page." },
+    { icon: 'mdi:chart-line', title: "Trends, not just current state", text: "Charts over time show how size and duration change: data that PVE does not keep anywhere." },
+    { icon: 'mdi:alert-circle', title: "Spot the silent failure", text: "The run history keeps the failed runs it collects, with status and error. You see a job that started failing last week without anyone noticing." },
+    { icon: 'mdi:message-alert', title: "Failure context, not just status", text: "Each failed run has its error message. You find out why it failed without an SSH session on the source node." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module and its dashboard widgets
+- **Replications**: history of the replication runs collected by the scans. The columns are start, end, duration, size, status, source and target node, and error. On each row, **Show log** opens the log of the run. See [Collecting data](#collecting-data) for the scans and the toolbar actions
+- **Scheduled**: configured replication jobs with schedule, rate limit, last sync and next sync
+- **Trends**: line charts of replication **Size** and **Duration** over time, one line per guest. Choose the **Period**, then the **Node**, then the **VM / CT** to plot. **Period** is a single date range field, limited to the dates for which data exists
+
+## Collecting data
+
+**Replications**, **Trends** and the dashboard widgets work on data that a scan copies from Proxmox VE into the module database. **Scheduled** reads the cluster live and needs no scan.
+
+A scan reads the replication jobs of every online node. For each job, it stores the last run with its log, if that run is not in the database yet. It then deletes the records older than **Max days logs**.
+
+:::caution[Runs between two scans are not recorded]
+A scan reads only the last run of each replication job. If a job replicates more often than the scan runs, the runs in between are missing from the history. Keep the scan schedule at least as frequent as the most frequent replication job.
+:::
+
+Toolbar of the **Replications** page:
+
+| Action | What it does |
+|--------|--------------|
+| **Scan** | Starts a scan immediately in the background. Progress and log are in the global Task Tracker |
+| **Delete all data** | After confirmation, deletes every collected record of the cluster from the module database. Replication jobs and replicated data in Proxmox VE are not touched |
+| **Refresh** | Reloads the grid |
+| **Export** | Downloads the grid as an Excel file |
+
+The toolbar also shows the state of the schedule configured in the settings.
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Status** | Replication status |
+| **Size** | Replication size |
+| **Check** | Failed replications in the last days |
+| **Info** | Replication overview |
+| **Daily Status** <Tag kind="ee" /> | Successful and failed replications per day (last 14 days) |
+
+The **Check** widget has one widget setting, **Days to analyze** (default 60). It covers only the clusters where **Enabled schedulation** is on.
+
+## Settings
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled schedulation** | off | Turns the scheduled scan on or off |
+| **Cron Schedule** | `*/5 * * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#*/5_*_*_*_*) | When the scheduled scan runs (default: every 5 minutes) |
+| **Max days logs** | 30 | How many days of collected replication data to keep (minimum 1). Older records are deleted at the end of each scan |
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+| Permission | Allows |
+|------------|--------|
+| **Replication Analytics** | Open the module and its **Overview** page |
+| **Replications**, **Scheduled**, **Trends** | Open the page with that name (one permission per page) |
+| **Status**, **Size**, **Check**, **Info**, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
+| **Edit Settings** | Change the module settings |
+
+**Scan** and **Delete all data** have no dedicated permission: they are available to every user who can open the **Replications** page.
+
+<PvePrivileges module="replication-analytics" />

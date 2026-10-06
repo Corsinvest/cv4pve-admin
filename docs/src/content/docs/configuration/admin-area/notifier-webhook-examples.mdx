@@ -1,0 +1,111 @@
+---
+title: "Notification Hub: WebHook Examples"
+description: "Ready-made WebHook channel configurations for Telegram, Microsoft Teams, Slack."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Part of [Notification Hub](../notifier/#webhook).
+
+<Tabs>
+<TabItem label="Telegram">
+
+Send messages to a Telegram chat via Bot API.
+
+**Prerequisites:**
+
+1. Open Telegram and search for **@BotFather**
+2. Send `/newbot` and follow the instructions to get your **bot token**
+3. Send any message to your bot, then open in a browser:
+   ```
+   https://api.telegram.org/bot<TOKEN>/getUpdates
+   ```
+4. Find `"chat":{"id": 123456789}`: that number is your **chat_id**
+
+**Configuration:**
+
+| Field | Value |
+|---|---|
+| URL | `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage` |
+| Method | `Post` |
+| Body Type | `Json` |
+| Auth: Type | `None` |
+
+**Body:**
+
+```json
+{
+  "chat_id": "YOUR_CHAT_ID",
+  "text": "%subject%\n\n%body%"
+}
+```
+
+The message is sent as plain text. Do not add `parse_mode: "HTML"`: the placeholders are not escaped for HTML, so a `<` or `&` in a notification would be read as markup.
+
+</TabItem>
+<TabItem label="Microsoft Teams">
+
+Send messages to a Teams channel via Incoming Webhook.
+
+**Prerequisites:**
+
+1. In Teams open the channel → **...** → **Connectors**
+2. Add **Incoming Webhook**, set a name and copy the generated URL
+
+Microsoft is migrating Teams connectors to **Power Automate workflows**. If the classic connector is unavailable, create a workflow in Teams with an HTTP trigger and use that URL instead.
+
+**Configuration:**
+
+| Field | Value |
+|---|---|
+| URL | `https://outlook.office.com/webhook/<YOUR_WEBHOOK_URL>` |
+| Method | `Post` |
+| Body Type | `Json` |
+| Auth: Type | `None` |
+
+**Body:**
+
+```json
+{
+  "@type": "MessageCard",
+  "@context": "http://schema.org/extensions",
+  "summary": "%subject%",
+  "themeColor": "0076D7",
+  "sections": [
+    {
+      "activityTitle": "%subject%",
+      "activityText": "%body%"
+    }
+  ]
+}
+```
+
+</TabItem>
+<TabItem label="Slack">
+
+Send messages to a Slack channel via Incoming Webhook.
+
+**Prerequisites:**
+
+1. Go to [api.slack.com/apps](https://api.slack.com/apps) → **Create App** → **Incoming Webhooks**
+2. Activate and copy the Webhook URL
+
+**Configuration:**
+
+| Field | Value |
+|---|---|
+| URL | `https://hooks.slack.com/services/YOUR/WEBHOOK/URL` |
+| Method | `Post` |
+| Body Type | `Json` |
+| Auth: Type | `None` |
+
+**Body:**
+
+```json
+{
+  "text": "*%subject%*\n%body%"
+}
+```
+
+</TabItem>
+</Tabs>

@@ -121,7 +121,7 @@ public static class ServiceCollectionExtensions
             RequestPath = "/data-images"
         });
 
-        // Embedded MkDocs help site under /help/.
+        // Embedded documentation site under /help/.
         var helpRoot = Path.Combine(app.Environment.ContentRootPath, "help");
         if (Directory.Exists(helpRoot))
         {

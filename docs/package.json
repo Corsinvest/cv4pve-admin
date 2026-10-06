@@ -1,0 +1,19 @@
+{
+  "name": "cv4pve-admin-docs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:help": "astro build --outDir dist-help",
+    "check": "astro build && node scripts/check.mjs",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "@astrojs/starlight": "^0.42.4",
+    "@corsinvest/cv4pve-docs-theme": "github:Corsinvest/cv4pve-docs-theme#semver:^2.0.0",
+    "@iconify-json/material-symbols": "^1.2.94",
+    "@iconify-json/mdi": "^1.2.3",
+    "astro": "^7.3.5"
+  }
+}

@@ -1,0 +1,67 @@
+---
+title: "Diagnostics: Compliance Reports"
+description: "How the Diagnostics scans map their findings to normative controls, the standards covered and the layout of the compliance sections in the PDF and Excel reports."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="stethoscope" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
+
+Part of the [Diagnostics](../diagnostics/) module.
+
+Each check in the `cv4pve-diag` library declares which normative controls it covers. A single check can satisfy more than one control, even across different standards. This mapping is stored with the scan, so old reports stay consistent even when the catalog changes.
+
+## PDF report
+
+After the standard issues section, the Enterprise PDF report has **one section per standard** that produced at least one mapped finding. Each section starts on a new page and contains:
+
+- A compact **disclaimer** at the top. It is in every section, so any single page extracted in isolation still carries the audit-scope notice.
+- A **summary table** with one row per control: `Control` · `Title` · `Critical` · `Warning` · `Info` · `Ok` · `Status`. The numeric columns count the findings mapped to that control, by gravity. `Status` summarises the worst gravity present: `Fail` for any Critical, `Warning` if no Critical, `Info` if only Info, `Pass` if only Ok results.
+- A **detail block** for each control, listing the underlying findings with `Code`, `Context`, `Resource`, `Description`, `Status`.
+
+## Excel report
+
+Excel exports get **one extra sheet per standard** with two tables:
+
+- `Summary`: one row per control, identical to the PDF summary
+- `Details`: one row per finding × control mapping, flattened for filtering and pivoting
+
+Each sheet starts with the same disclaimer note.
+
+Gravity / Status cells use the same pastel colours in PDF and Excel (Critical/Fail red, Warning orange, Info blue, Ok/Pass green). In Excel the colours are a conditional rule on any column named `Gravity` or `Status`, so they stay when you sort or filter.
+
+Sections only appear for standards with actual mappings: empty standards are skipped.
+
+## Supported standards
+
+Currently supported standards:
+
+| Standard | Scope |
+|----------|-------|
+| **ISO/IEC 27001:2022** | Information security management systems |
+| **ISO/IEC 27017** | Security controls for cloud services |
+| **ISO/IEC 27018:2019** | Protection of personal data in public clouds |
+| **ISO 22301:2019** | Business continuity management systems |
+| **EU NIS2** | Network and Information Security Directive |
+| **NIS2 Implementing Regulation (EU) 2024/2690** | Detailed NIS2 requirements for cloud, data centre, managed service providers and other digital providers |
+| **EU DORA** | Digital Operational Resilience Act |
+| **EU GDPR** | General Data Protection Regulation |
+| **PCI DSS v4.0** | Payment Card Industry Data Security Standard |
+| **NIST CSF 2.0** | NIST Cybersecurity Framework |
+| **NIST SP 800-53 rev.5** | Security and Privacy Controls (Moderate baseline subset) |
+| **CIS Controls v8** | Center for Internet Security |
+| **SOC 2** | AICPA Trust Services Criteria |
+| **AgID** | Misure minime di sicurezza ICT per le Pubbliche Amministrazioni (Italy) |
+| **ACN** | NIS2 security measures for Italian essential and important entities (Determinazione ACN n. 379907/2025) |
+| **ENS** | Esquema Nacional de Seguridad (Spain, Real Decreto 311/2022) |
+| **BSI C5:2020** | Cloud Computing Compliance Criteria Catalogue (Germany) |
+| **BSI IT-Grundschutz** | IT-Grundschutz-Kompendium, Edition 2023 (Germany) |
+
+## Audit mode
+
+Enable **Include OK results (audit mode)** in the module settings to also emit a result with gravity `Ok` for every check that succeeds. Useful when auditors want evidence that controls were *verified*, not only when they failed.
+
+:::caution[Disclaimer]
+The compliance mapping is automated and technical only: it covers the subset of each standard that can be verified from the Proxmox VE state. Policies, training, supplier management, physical security and other organisational controls are out of scope. A passing check confirms only that the specific automated rule passed; full conformity usually requires manual evidence (policies, procedures, evidence of operation). This report does not constitute a formal audit or certification.
+:::

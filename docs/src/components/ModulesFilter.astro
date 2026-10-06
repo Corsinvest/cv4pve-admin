@@ -1,0 +1,199 @@
+---
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Filter of the Modules page: free text, category chips and edition chips, applied to the cards
+ * (FeatureGrid) inside the `cv-modules-grid` that follows. The category of a card comes from the
+ * page its title links to (CATEGORIES in the script, the only place to edit); the edition from its
+ * EE badge.
+ * Drawn with Starlight's own look: the text box as the site search button, the chips as badges.
+ * The border of a category chip is the colour of its cards (the same values as in modules/index.mdx).
+ */
+import { Icon } from '@astrojs/starlight/components';
+
+const categories = [
+  { id: 'protection', label: 'Protection', color: '#2e7d32' },
+  { id: 'health', label: 'Health', color: '#1976d2' },
+  { id: 'control', label: 'Control', color: '#6d4c41' },
+  { id: 'automation', label: 'Automation', color: '#7b1fa2' },
+  { id: 'utilities', label: 'Utilities', color: '#ef6c00' },
+  { id: 'management', label: 'Management', color: '#c2185b' },
+  { id: 'features', label: 'Features', color: '#00796b' },
+];
+---
+
+<div class="cv-modules-filter not-content">
+  <label class="cv-filter-search">
+    <Icon name="magnifier" />
+    <input type="search" placeholder="Filter modules" aria-label="Filter modules by name or description" />
+  </label>
+  <div class="cv-chips cv-chips-category" role="group" aria-label="Category">
+    <button type="button" data-cat="all" class="active">All</button>
+    {
+      categories.map((c) => (
+        <button type="button" data-cat={c.id} style={`--cv-chip: ${c.color}`}>
+          {c.label}
+        </button>
+      ))
+    }
+  </div>
+  <div class="cv-chips cv-chips-edition" role="group" aria-label="Edition">
+    <button type="button" data-edition="all" class="active">All</button>
+    <button type="button" data-edition="ce">CE</button>
+    <button type="button" data-edition="ee">EE</button>
+  </div>
+</div>
+
+<script>
+  const CATEGORIES: Record<string, string[]> = {
+    protection: ['autosnap', 'node-protect', 'ups-monitor', 'disaster-recovery'],
+    health: ['backup-analytics', 'replication-analytics', 'diagnostics', 'resources', 'metrics-exporter', 'update-manager', 'vm-performance'],
+    control: ['bots'],
+    automation: ['workflow'],
+    utilities: ['ai-server', 'ai-assistant', 'system-report'],
+    management: ['portal'],
+    features: ['dashboard', 'command-palette'],
+  };
+
+  const filter = document.querySelector<HTMLElement>('.cv-modules-filter');
+  const grid = document.querySelector<HTMLElement>('.cv-modules-grid');
+
+  if (filter && grid) {
+    const cards = [...grid.querySelectorAll<HTMLElement>('.cv-feature')];
+    const search = filter.querySelector<HTMLInputElement>('input[type="search"]')!;
+
+    // Slug of the page the title links to; a card without link (a module not released yet) uses its title, without the badges after it.
+    const slugOf = (card: HTMLElement) => {
+      const href = card.querySelector('h3 a')?.getAttribute('href') ?? '';
+      const fromLink = href.match(/([^/]+)\/?$/)?.[1];
+      return fromLink ?? (card.querySelector('h3')?.firstChild?.textContent ?? '').trim().toLowerCase().replace(/\s+/g, '-');
+    };
+
+    for (const card of cards) {
+      const slug = slugOf(card);
+      const cat = Object.keys(CATEGORIES).find((key) => CATEGORIES[key].includes(slug));
+      if (cat) card.dataset.cat = cat;
+    }
+
+    const apply = () => {
+      const cat = filter.querySelector<HTMLElement>('[data-cat].active')?.dataset.cat ?? 'all';
+      const edition = filter.querySelector<HTMLElement>('[data-edition].active')?.dataset.edition ?? 'all';
+      const text = search.value.trim().toLowerCase();
+
+      for (const card of cards) {
+        const hasEe = [...card.querySelectorAll('h3 .sl-badge')].some((b) => b.textContent?.trim() === 'EE');
+        const catOk = cat === 'all' || card.dataset.cat === cat;
+        const textOk = !text || (card.textContent ?? '').toLowerCase().includes(text);
+        const editionOk = edition === 'all' || (edition === 'ee' ? hasEe : !hasEe);
+        card.hidden = !(catOk && textOk && editionOk);
+      }
+    };
+
+    for (const attr of ['data-cat', 'data-edition']) {
+      const chips = filter.querySelectorAll<HTMLElement>(`[${attr}]`);
+      chips.forEach((chip) =>
+        chip.addEventListener('click', () => {
+          chips.forEach((c) => {
+            c.classList.remove('active');
+            c.setAttribute('aria-pressed', 'false');
+          });
+          chip.classList.add('active');
+          chip.setAttribute('aria-pressed', 'true');
+          apply();
+        })
+      );
+    }
+    search.addEventListener('input', apply);
+  }
+</script>
+
+<style>
+  /* The text box and the chips; it wraps on a narrow page. */
+  .cv-modules-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin: 1rem 0 1.5rem;
+  }
+
+  /* The text box, as the search button in the header of the site. */
+  .cv-filter-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: min(100%, 14rem);
+    padding: 0 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-black);
+    color: var(--sl-color-gray-2);
+  }
+  .cv-filter-search:hover,
+  .cv-filter-search:focus-within {
+    border-color: var(--sl-color-gray-2);
+    color: var(--sl-color-white);
+  }
+  .cv-filter-search input {
+    flex: 1;
+    min-width: 0;
+    height: 2.25rem;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+  }
+  .cv-filter-search input::placeholder {
+    color: var(--sl-color-gray-3);
+  }
+
+  .cv-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  /* First row: the text box and, at the end, the editions. Second row: the categories. */
+  .cv-chips-edition {
+    margin-inline-start: auto;
+  }
+  .cv-chips-category {
+    order: 1;
+    flex-basis: 100%;
+  }
+
+  /* A chip, as a Starlight badge: thin border in its colour, small monospace text. The chosen one
+     is filled. */
+  .cv-chips button {
+    --cv-chip: var(--sl-color-text-accent);
+    padding: 0.3rem 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--cv-chip) 65%, var(--sl-color-gray-5));
+    border-radius: 0.25rem;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    font-family: var(--sl-font-system-mono);
+    font-size: var(--sl-text-xs);
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .cv-chips button:hover {
+    border-color: var(--cv-chip);
+    color: var(--sl-color-white);
+  }
+  .cv-chips button.active {
+    border-color: var(--cv-chip);
+    background: color-mix(in srgb, var(--cv-chip) 22%, transparent);
+    color: var(--sl-color-white);
+  }
+  /* The edition chips, in the colours of the edition badges (caution for EE, note for CE). */
+  .cv-chips button[data-edition='ee'] {
+    --cv-chip: var(--sl-color-orange);
+  }
+  .cv-chips button[data-edition='ce'] {
+    --cv-chip: var(--sl-color-blue);
+  }
+</style>

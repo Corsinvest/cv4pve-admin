@@ -1,0 +1,21 @@
+---
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Material Design icon by name (https://pictogrammers.com/library/mdi/), inlined as SVG at build
+ * time. An unknown name fails the build, so a typo never ships as a missing icon.
+ */
+import { icons } from '@iconify-json/mdi';
+
+interface Props {
+  name: string;
+  size?: 'lg';
+}
+
+const { name, size } = Astro.props;
+const icon = icons.icons[name] ?? icons.icons[icons.aliases?.[name]?.parent ?? ''];
+if (!icon) throw new Error(`Mdi: unknown icon "${name}"`);
+---
+
+<svg class:list={['cv-mdi', size && `cv-mdi-${size}`]} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" set:html={icon.body} />

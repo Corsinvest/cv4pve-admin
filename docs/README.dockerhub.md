@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/instal
 irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
 ```
 
-Access at `http://localhost:8080` — default: `admin@local` / `Password123!`
+Access at `http://localhost:8080`, or `http://<server-ip>:8080` from another machine. Default: `admin@local` / `Password123!`
 
 ## Links
 

@@ -1,0 +1,132 @@
+---
+title: "Diagnostics: Settings"
+description: "The settings of the Diagnostics module: general options, profiles, API, thresholds and the snapshot, backup and CVE checks."
+---
+
+import Mdi from '~/components/Mdi.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="stethoscope" size="lg" /><Tag kind="per-cluster" /></p>
+
+Part of [Diagnostics](../diagnostics/).
+
+## General
+
+### Enabled schedulation
+
+Master on/off switch for the scheduled scan
+
+- **Default:** off
+
+### Cron Schedule
+
+When the scheduled scan runs
+
+- **Default:** `0 6 * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#0_6_*_*_*)
+
+### Number which should will keep
+
+Max number of past scan results to retain (minimum 1)
+
+- **Default:** 30
+
+### Notifier
+
+[Notifier](../../configuration/admin-area/notifier/) configurations that receive the report at the end of every scan (scheduled or manual). Nothing is sent when both attachment switches below are off
+
+### Attach PDF report
+
+Attach the PDF report to the notification
+
+- **Default:** on
+
+### Attach Excel report
+
+Attach the Excel workbook to the notification
+
+- **Default:** off
+
+## Profiles
+
+The **Fast**, **Standard** and **Full** buttons at the top of the settings load a ready-made set of values (thresholds go back to their defaults):
+
+| Profile | What it does |
+|---------|--------------|
+| **Fast** | Skips the slowest reads (backup content, snapshots, LVM-thin metadata) for a quick scan of large clusters |
+| **Standard** | The defaults |
+| **Full** | Turns on every optional check (S.M.A.R.T. details, ZFS pool details, NVD CVE lookup, OK results) for audits |
+
+## API
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Max parallel requests** | 5 | Max parallel requests when fetching data (1 = sequential) |
+| **API timeout (seconds)** | 0 | API timeout in seconds (0 = use the default) |
+| **Include OK results (audit mode)** | off | Also emit a result for every check that passes (Gravity = Ok). Useful for audit-style reports proving controls were verified, not only violated |
+
+## Threshold: Node / Qemu / Lxc
+
+Each of the three contexts (Node, Qemu, Lxc) has its own **RRD Data** and **Thresholds**. Node has extra checks, listed below.
+
+| RRD Data | Default | Purpose |
+|----------|---------|---------|
+| **Time frame** | Day | Period of the metrics analysed: `Hour`, `Day` (last 24 hours), `Week` (last 7 days), `Month` or `Year` |
+| **Consolidation** | Average | `Average` = smoothed trend over the period, `Maximum` = peak detection, catches short spikes |
+
+| Threshold | Warning | Critical |
+|-----------|---------|----------|
+| **CPU** (%) | 70 | 85 |
+| **Memory** (%) | 70 | 85 |
+| **Network** (%) | 0 | 0 |
+| **Health Score**, Node | 70 | 50 |
+| **Health Score**, Qemu / Lxc | 60 | 40 |
+| **PSI Pressure (PVE 9.0+)**: **CPU (some)** (%), Qemu / Lxc | 50 | 80 |
+| **PSI Pressure (PVE 9.0+)**: **CPU (some)** (%), Node | 40 | 70 |
+| **PSI Pressure (PVE 9.0+)**: **I/O (full)** (%), Qemu / Lxc | 20 | 50 |
+| **PSI Pressure (PVE 9.0+)**: **I/O (full)** (%), Node | 10 | 30 |
+| **PSI Pressure (PVE 9.0+)**: **Memory (full)** (%), Qemu / Lxc | 10 | 30 |
+| **PSI Pressure (PVE 9.0+)**: **Memory (full)** (%), Node | 5 | 15 |
+
+## Node-only thresholds
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Max vCPU Ratio** | 4.0 | Warn when total vCPUs / physical CPUs exceeds this ratio |
+| **Consolidation CPU (%)** | 10 | Below this, the node is considered underutilised |
+| **Consolidation Memory (%)** | 20 | Below this, the node is considered underutilised |
+| **IOWait (%)** | Warn 10 / Crit 25 | Average CPU time spent waiting for I/O over the RRD time frame; sustained high values point to a storage bottleneck |
+| **S.M.A.R.T.** | off | Per-disk SMART attribute scan (1 API call per disk per node) |
+| **S.M.A.R.T.** → **Temperature (°C)** | Warn 55 / Crit 65 | Disk temperature thresholds (set Warning to 0 to disable) |
+| **S.M.A.R.T.** → **SSD Wearout (%)** | Warn 70 / Crit 85 | Percentage of SSD life consumed before warning |
+| **ZFS detail checks** | off | Deeper ZFS pool status check |
+| **LVM-thin metadata check** | on | LVM-thin metadata usage check (full metadata pool causes data corruption) |
+
+## Storage thresholds
+
+| Threshold | Warning | Critical |
+|-----------|---------|----------|
+| **Usage** (%) | 70 | 85 |
+
+## Snapshot checks
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enable** | on | Toggle the per-VM/CT snapshot scan (skip the API call when off) |
+| **Max Count** | 10 | Warn when a VM/CT has more than this many snapshots (0 = disabled) |
+| **Max Age (days)** | 30 | Warn when the oldest snapshot exceeds this age in days (0 = disabled) |
+
+## Backup checks
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enable** | on | Toggle backup hygiene checks (skip API calls when off) |
+| **Max Age (days)** | 60 | Warn about backups older than this on storage (0 = disabled) |
+| **Recent Days** | 7 | Warn when no backup exists within this window (RPO violation, 0 = disabled) |
+
+## CVE checks
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **NVD checks for Proxmox VE specific CVE** | off | Lookup NVD for Proxmox VE specific CVEs (CPE filter) |
+| **Min CVSS score** | 7.0 | Report only CVEs at or above this score (0 = report all) |

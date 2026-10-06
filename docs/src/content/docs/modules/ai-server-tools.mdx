@@ -1,0 +1,225 @@
+---
+title: "AI Server: Tools"
+description: "The MCP tools that AI Server exposes to an AI assistant, with what each one does and its parameters."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="hub" size="lg" /><Tag kind="all-clusters" /></p>
+
+Part of [AI Server](../ai-server/).
+
+AI Server exposes 29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries. Every tool except `ListClusters` takes the name of the cluster to work on as `cluster_name`. `ListClusters` returns the names of the enabled clusters.
+
+A tool that cannot run answers with a JSON object carrying an `error` field, for example `Permission denied`, `Cluster '<name>' not found` or `VM <id> not found`.
+
+## Cluster
+
+### ListClusters
+
+List the enabled clusters with name and description
+
+- **Parameters:** none
+
+### GetClusterStatus
+
+Cluster health summary: quorum, node count (total and online), VM count (running/stopped/paused)
+
+- **Parameters:** `cluster_name`
+
+### GetClusterOptions
+
+Cluster options: migration type and network, console type, keyboard layout, MAC prefix, description
+
+- **Parameters:** `cluster_name`
+
+## Virtual Machines
+
+### ListVms
+
+List VMs and containers with status and resource usage. Supports filters by status and type, and the Minimal or Full detail level
+
+- **Parameters:** `cluster_name`, `status` (optional: running, stopped, paused), `type` (optional: qemu, lxc), `detail_level` (Minimal, default, or Full)
+
+### ListSnapshots
+
+List VM snapshots with dates and, optionally, the disk size. The Full detail level adds description and parent. IDs that are not found are skipped
+
+- **Parameters:** `cluster_name`, `vmids` (array of VM IDs), `detail_level` (Minimal, default, or Full), `include_size` (default false, slower)
+
+### GetVmConfig
+
+VM/LXC configuration: CPU, memory, OS type, start on boot and startup order, protection, description, tags. For a VM also BIOS, KVM, ACPI and guest agent. Disks and network interfaces are not included
+
+- **Parameters:** `cluster_name`, `vmid`
+
+### ChangeVmState
+
+Change VM power state: Start, Stop (force), Shutdown (graceful), Reboot, Reset, Suspend, Resume
+
+- **Parameters:** `cluster_name`, `vmid`, `action` (Start, Stop, Shutdown, Reboot, Reset, Suspend, Resume)
+- **Proxmox VE privilege:** <PvePrivileges tool="ChangeVmState" />
+
+### CreateVmSnapshot
+
+Create a VM/LXC snapshot, with optional description and RAM state (QEMU only)
+
+- **Parameters:** `cluster_name`, `vmid`, `snapshot_name`, `description` (optional), `include_vm_state` (default false)
+- **Proxmox VE privilege:** <PvePrivileges tool="CreateVmSnapshot" />
+
+### DeleteVmSnapshot
+
+Delete a VM/LXC snapshot
+
+- **Parameters:** `cluster_name`, `vmid`, `snapshot_name`
+- **Proxmox VE privilege:** <PvePrivileges tool="DeleteVmSnapshot" />
+
+### RollbackVmSnapshot
+
+Rollback a VM/LXC to a snapshot
+
+- **Parameters:** `cluster_name`, `vmid`, `snapshot_name`
+- **Proxmox VE privilege:** <PvePrivileges tool="RollbackVmSnapshot" />
+
+### MigrateVm
+
+Migrate VM/LXC to another node, with optional live migration and target storage
+
+- **Parameters:** `cluster_name`, `vmid`, `target_node`, `online` (default false), `target_storage` (optional)
+- **Proxmox VE privilege:** <PvePrivileges tool="MigrateVm" />
+
+### BackupVm
+
+Create a VM/LXC backup via vzdump with optional storage, mode, compression, protection flag, bandwidth limit
+
+- **Parameters:** `cluster_name`, `vmid`, and optionally `storage`, `mode` (snapshot, suspend, stop), `compress` (0, 1, gzip, lzo, zstd), `protected_backup`, `bwlimit` (KiB/s)
+- **Proxmox VE privilege:** <PvePrivileges tool="BackupVm" />
+
+### ListVmRrdData
+
+Historical metrics (CPU, Memory, Disk, Network, Pressure PSI) for one or more VMs. An ID that is not found gets an `error` entry in the result
+
+- **Parameters:** `cluster_name`, `vmids` (array of VM IDs), `time_frame` (Hour, Day, Week, Month, Year), `consolidation` (Average or Maximum), `metrics` (Cpu, Memory, Disk, Network, Pressure, or All)
+
+## Nodes
+
+### ListNodes
+
+List cluster nodes with status and CPU, memory and disk usage. The Full detail level adds uptime, totals and the network traffic counters
+
+- **Parameters:** `cluster_name`, `detail_level` (Minimal, default, or Full)
+
+### GetNodeStatus
+
+Detailed node status: PVE version, kernel, CPU model, memory, swap, load average, root fs
+
+- **Parameters:** `cluster_name`, `node`
+
+### ListReplications
+
+List cluster replications with schedule, sync status and error info
+
+- **Parameters:** `cluster_name`
+
+### ListNodeRrdData
+
+Historical metrics (CPU, Load avg, Memory, Swap, Disk, Network, Pressure PSI) for nodes
+
+- **Parameters:** `cluster_name`, `nodes` (optional array, all nodes if empty), `time_frame`, `consolidation`, `metrics` (same values as `ListVmRrdData`)
+
+### ListTasks
+
+List cluster tasks (active and recent) with status, type, user and duration
+
+- **Parameters:** `cluster_name`, `status` (optional: running, stopped), `type` (optional task type, for example vzdump or qmstart), `limit` (default 50)
+
+## Storage & Backup
+
+### ListStorage
+
+List cluster storage with type, status and usage, at the Minimal or Full detail level
+
+- **Parameters:** `cluster_name`, `type` (optional storage type, for example dir, lvm, lvmthin, zfs, cephfs), `detail_level` (Minimal, default, or Full)
+
+### ListPools
+
+List cluster resource pools with descriptions
+
+- **Parameters:** `cluster_name`
+
+### ListBackups
+
+List backups on a specific node and storage, with optional VM ID filter
+
+- **Parameters:** `cluster_name`, `node`, `storage`, `vmid` (optional)
+- **Proxmox VE privilege:** <PvePrivileges tool="ListBackups" />
+
+### ListStorageContent
+
+List storage content (ISO, templates, images, backups) on a specific node and storage. Optional content type filter
+
+- **Parameters:** `cluster_name`, `storage`, `node`, `content_type` (optional: iso, vztmpl, backup, images)
+
+### ListIsos
+
+List ISO images available on a node storage
+
+- **Parameters:** `cluster_name`, `node`, `storage`
+
+### ListTemplates
+
+List CT templates available on a node storage
+
+- **Parameters:** `cluster_name`, `node`, `storage`
+
+### ListBackupJobs
+
+List cluster backup jobs with schedule, storage, compression and VM list
+
+- **Parameters:** `cluster_name`, `vmid` (optional)
+
+### DownloadIso
+
+Download an ISO image to a node storage from a URL
+
+- **Parameters:** `cluster_name`, `node`, `storage`, `url`, `filename`
+- **Proxmox VE privilege:** <PvePrivileges tool="DownloadIso" />
+
+### DeleteBackup
+
+Delete a backup from storage (use `ListBackups` to get the volid)
+
+- **Parameters:** `cluster_name`, `node`, `storage`, `volid`
+- **Proxmox VE privilege:** <PvePrivileges tool="DeleteBackup" />
+
+### DeleteIso
+
+Delete an ISO image from storage (use `ListIsos` to get the volid)
+
+- **Parameters:** `cluster_name`, `node`, `storage`, `volid`
+- **Proxmox VE privilege:** <PvePrivileges tool="DeleteIso" />
+
+### DeleteStorageContent
+
+Delete content from storage: ISO / template / image / backup (use `ListStorageContent` to get the volid)
+
+- **Parameters:** `cluster_name`, `node`, `storage`, `volid`
+- **Proxmox VE privilege:** <PvePrivileges tool="DeleteStorageContent" />
+
+## Query<Tag kind="ee" />
+
+### GetQuerySchema
+
+Get detailed schema (fields and types) for Proxmox VE query tables
+
+- **Parameters:** `cluster_name`
+
+### ExecuteQuery
+
+Execute SQL-like queries on cluster data (guests, nodes, storages, snapshots, …) with filters, grouping, aggregates (COUNT/SUM/AVERAGE/MIN/MAX) and ordering
+
+- **Parameters:** `cluster_name`, `query_json`
+
+What can be asked, with examples of input and output, is in [Query](../ai-server-query/).

@@ -1,0 +1,106 @@
+---
+title: "Backup Analytics"
+description: "Track and analyze backup job performance across Proxmox VE clusters. It shows success rates, duration patterns, storage consumption and, most important, what is not being backed up."
+---
+
+import Mdi from '~/components/Mdi.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="backup" size="lg" /><Tag kind="per-cluster" /></p>
+
+Track and analyze backup job performance across Proxmox VE clusters. It shows success rates, duration patterns, storage consumption and, most important, what is **not** being backed up.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:chart-bar', title: "Job Status", text: "Monitor backup job execution and completion status across cluster nodes." },
+    { icon: 'mdi:speedometer', title: "Performance Metrics", text: "Track backup duration, throughput, and resource usage patterns." },
+    { icon: 'mdi:shield-alert', title: "RPO Blind Spots", text: "Dedicated pages for guests and disks **not** covered by any backup job: find the gaps before they cause a problem." },
+    { icon: 'mdi:history', title: "Historical Data", text: "View backup trends and patterns over time for capacity planning." },
+    { icon: 'mdi:file-search', title: "Failure Logs", text: "Access detailed logs and error information for failed backup jobs." },
+    { icon: 'mdi:database-cog', title: "Storage Metrics", text: "Monitor backup storage consumption and growth trends." },
+  ]}
+/>
+
+## Why
+
+Why analytics when PVE already shows backup jobs?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:shield-off', title: "What you're NOT backing up", text: "The **Unprotected Guests** and **Unprotected Disks** pages list the guests and disks that no job covers: the real reason silent data loss happens." },
+    { icon: 'mdi:view-dashboard', title: "One view per cluster", text: "Backups, schedule, timeline and trends of all nodes and storages are shown together. You do not search the UI node by node." },
+    { icon: 'mdi:chart-line', title: "Trends, not snapshots", text: "Charts over time show whether duration is growing, storage is filling, or a job started failing weeks ago without anybody noticing." },
+    { icon: 'mdi:alert-circle', title: "Failure context, not just rows", text: "Failed runs link to their logs and error messages. You find out why one VM keeps failing without an SSH session on the node." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module and its dashboard widgets
+- **Backups**: backup history collected by the scans, one row per guest and backup run. The columns are start, end, duration, size, transfer speed, status, node, storage and error. Failed rows are highlighted. On each row, **Show VM log** opens the log of that guest and **Show Job log** opens the log of the whole backup task. See [Collecting data](#collecting-data) for the scans and the toolbar actions
+- **Scheduled**: configured backup jobs with schedule, target storage and selection
+- **Unprotected Guests**: guests (templates excluded) whose ID is not listed in any enabled backup job
+- **Unprotected Disks**: disks excluded from backup (e.g. `backup=0`)
+- **Backup in line**: backup files currently on the storages, grouped by storage and VM, with size, date, format, verified/encrypted flags
+- **Trends**: line charts of backup **Size**, **Speed** and **Duration** over time, one line per guest. Choose the **Period**, then the **Storages**, then the **VM / CT** to plot. **Period** is a single date range field, limited to the dates for which data exists
+
+:::caution[Unprotected Guests: how coverage is evaluated]
+The page compares only the guest IDs listed explicitly in the enabled backup jobs. It ignores a job that selects guests by pool, so the guests of that job are listed as unprotected. The page is empty when an enabled job is set to back up all guests, and also when no enabled job lists guests by ID.
+:::
+
+## Collecting data
+
+**Backups**, **Trends** and the dashboard widgets work on data that a scan copies from Proxmox VE into the module database. **Scheduled**, **Unprotected Guests**, **Unprotected Disks** and **Backup in line** read the cluster live and need no scan.
+
+A scan reads the `vzdump` tasks of every online node together with their logs (the first 10000 lines of each). It stores the tasks that are not in the database yet. It then deletes the records older than **Max days logs**.
+
+Toolbar of the **Backups** page:
+
+| Action | What it does |
+|--------|--------------|
+| **Scan** | Starts a scan immediately in the background. Progress and log are in the global Task Tracker |
+| **Delete all data** | After confirmation, deletes every collected record of the cluster from the module database. Backups on the Proxmox VE storages are not touched |
+| **Refresh** | Reloads the grid |
+| **Export** | Downloads the grid as an Excel file |
+
+The toolbar also shows the state of the schedule configured in the settings.
+
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Status** | Backup status |
+| **Size** | Backup size |
+| **Check** | Failed backups per guest in the last days |
+| **Info** | Backup statistics |
+| **Daily Status** <Tag kind="ee" /> | Successful and failed backups per day (last 14 days) |
+
+The **Check** widget has one widget setting, **Days to analyze** (default 60). It covers only the clusters where **Enabled schedulation** is on. Otherwise it shows "Module not configured!".
+
+## Settings
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled schedulation** | off | Turns the scheduled scan on or off |
+| **Cron Schedule** | `0 */1 * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#0_*/1_*_*_*) | When the scheduled scan runs (default: hourly) |
+| **Max days logs** | 30 | How many days of collected backup data to keep (minimum 1). Older records are deleted at the end of each scan |
+
+## Permissions
+
+Assign these to a role under [Security](../../configuration/admin-area/security/#permissions).
+
+| Permission | Allows |
+|------------|--------|
+| **Backup Analytics** | Open the module and its **Overview** page |
+| **Backups**, **Scheduled**, **Unprotected Guests**, **Unprotected Disks**, **Backup in line**, **Trends** | Open the page with that name (one permission per page) |
+| **Status**, **Size**, **Check**, **Info**, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
+| **Edit Settings** | Change the module settings |
+
+**Scan** and **Delete all data** have no dedicated permission: they are available to every user who can open the **Backups** page.
+
+<PvePrivileges module="backup-analytics" />

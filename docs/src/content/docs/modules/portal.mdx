@@ -1,0 +1,124 @@
+---
+title: "Portal"
+description: "Multi-tenant management portal for Proxmox VE environments, designed for managed service providers (MSP) and IT teams. Create, assign and isolate virtual environments for clients, departments or groups while keeping centralised control over the cluster."
+---
+
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="dns" size="lg" /><Tag kind="ee" /><Tag kind="all-clusters" /></p>
+
+Multi-tenant management portal for Proxmox VE environments, designed for managed service providers (MSP) and IT teams. Create, assign and isolate virtual environments for clients, departments or groups while keeping centralised control over the cluster.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:account-group', title: "Isolated Tenant Management", text: "Each tenant has its own guests and its own users.", href: '#tenants' },
+    { icon: 'mdi:hub', title: "Centralized Control", text: "Assign guests and users to the tenants from a single point." },
+    { icon: 'mdi:trending-up', title: "Easy Scalability", text: "Add new tenants without impacting the existing infrastructure." },
+    { icon: 'mdi:monitor-dashboard', title: "Intuitive Interface", text: "Clear and well-organised frontend for administrators and tenants." },
+    { icon: 'mdi:shield-lock', title: "Secure and Segmented Access", text: "Tenant users get their own cv4pve-admin accounts with per-VM permissions.", href: '#permissions' },
+    { icon: 'mdi:link-variant', title: "Native Proxmox Integration", text: "Fully compatible with existing infrastructure: no invasive changes required." },
+  ]}
+/>
+
+## Why
+
+Why a portal layer when PVE has its own users and roles?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:eye', title: "Customers see only their VMs", text: "Tenant users log into cv4pve-admin and are granted permissions only on the VMs assigned to their tenant." },
+    { icon: 'mdi:domain', title: "One tenant, one cluster", text: "Each tenant is bound to a single cluster. Its VMs/CTs are picked from that cluster's resources.", href: '#tenants' },
+    { icon: 'mdi:account-key', title: "cv4pve-admin permissions, not PVE ACLs", text: "Access is granted through cv4pve-admin's own per-VM permissions: no users or ACLs to create on the Proxmox VE cluster.", href: '#permissions' },
+    { icon: 'mdi:shield-account', title: "The Tenants page is for administrators", text: "The **Tenants** page lists every tenant, whatever the tenant of the signed-in user. Give access to the Portal module only to the people who manage tenants.", href: '#tenants' },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: short description of the module
+- **Tenants**: create and manage tenants with their assigned VMs/CTs and users
+
+The module is available whatever cluster is selected in the cluster picker: each tenant stores the cluster it belongs to.
+
+## Tenants
+
+A tenant groups VMs and containers of one cluster with the users who work on them.
+
+The grid lists the tenants with **Enabled**, **Name** and **Description**. The toolbar has **New**, **Delete**, **Refresh** and **Export** (Excel file with the list). Click the name of a tenant to edit it.
+
+| Field | Description |
+|-------|-------------|
+| **Enabled** | Marks the tenant as enabled (default: off). The value is shown in the grid |
+| **Name** | Name of the tenant (required) |
+| **Description** | Free text |
+| **Cluster Name** | The cluster the tenant belongs to (required), picked among the enabled clusters |
+
+Expand a tenant row to manage its content in two tabs: **Vms** and **Users**. The **Users** tab is shown only to users with the read permission on tenant users.
+
+### Vms
+
+List of the VMs and containers assigned to the tenant, with their live status.
+
+- **New** opens the **Select VM/CT** picker. It lists the guests of the tenant's cluster that are not yet in the tenant. You can select more than one.
+- **Delete** removes the selected guest from the tenant. The guest itself is not touched on Proxmox VE.
+- Expand a guest row to open its detail panel: summary, configuration, performance, backups, replication, snapshots. What the panel shows depends on the permissions of the signed-in user.
+
+:::caution[Removing a VM does not revoke permissions]
+Removing a VM from a tenant does not remove the permissions already granted to the tenant users on that VM. Clear them in the user dialog before removing the VM.
+:::
+
+### Users
+
+Tenant users are regular cv4pve-admin accounts linked to the tenant. The grid shows **User Name**, **Is Active**, **Is Tenant Admin**, **Lockout End** and **VMs** (for each VM of the tenant, the permissions granted to the user). The toolbar has **New**, **Delete**, **Refresh** and **Export**. Click the user name to edit.
+
+| Field | Description |
+|-------|-------------|
+| **User Name** | Email address of the user (required). It cannot be changed after the user is added |
+| **Display Name** | Name shown in the application, set when the account is created. When empty, the user name is used |
+| **Is Admin** | Marks the user as administrator of the tenant (shown as **Is Tenant Admin** in the grid) |
+| Permission table | One row for each VM/CT of the tenant and one checkbox for each permission: Read, Audit, Console, Power Management, Replication manager, Replication Schedule Now, Snapshot manager, Snapshot Rollback, Backup manager, Backup Restore, Backup Restore File |
+
+While **Is Admin** is on, the per-VM checkboxes are disabled. **Is Admin** grants no permission by itself.
+
+How accounts are handled:
+
+- If no account with that user name exists, cv4pve-admin creates a new active account with a random password and the same address as email. It sends a confirmation email to that address.
+- If the account already exists, it is linked to the tenant and keeps its password.
+- The checked permissions are granted to the user only on that VM of the tenant's cluster. Unchecked ones are removed.
+- **Delete** removes the user from the tenant together with the permissions on the tenant's VMs. The account is not deleted.
+- When the tenant has no VMs the dialog shows **No VMs assigned to this tenant.** Assign the VMs first, then set the permissions of the users.
+
+No user or ACL is created on the Proxmox VE cluster.
+
+### Roles
+
+The module defines three roles. The **Users** tab does not assign them: assign them to users from [Admin Area: Security](../../configuration/admin-area/security/) like any other role.
+
+| Role | Description |
+|------|-------------|
+| **Admin for module Portal** | All the permissions of the module |
+| **Portal Tenant Admin** | The permissions of the **Cluster VM User** role (read, audit, console, power management, replication, snapshots, backups and migration of VMs) plus read, create, edit, delete and export of tenants |
+| **Portal Tenant User** | Access to the pages of the module (**Overview** and **Tenants**) |
+
+### Permissions
+
+| Permission | Description |
+|------------|-------------|
+| **Portal** | Open the module and its **Overview** page |
+| **Tenants** | Open the page with that name (one permission per page) |
+| **Tenants: Read, Create, Edit, Delete, Export** | Tenants list and tenant dialog |
+| **Vms: Read, Create, Edit, Delete, Export** | VMs/CTs assigned to a tenant. **Create** and **Delete** enable the **New** and **Delete** buttons of the **Vms** tab |
+| **Users: Read, Create, Edit, Delete, Export** | Tenant users. **Read** shows the **Users** tab |
+
+<PvePrivileges module="portal" />
+
+## Use Cases
+
+- **MSP / Service Providers**: separate environments per customer with isolated access
+- **Enterprise IT**: department-level resource isolation on a shared cluster
+- **Education**: assign lab environments to student groups

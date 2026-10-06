@@ -6,8 +6,8 @@
   <!-- Docker configuration -->
   <Import Project="..\..\Docker.props" />
 
-  <!-- Embed MkDocs documentation into the published app on publish -->
-  <Import Project="..\..\MkDocs.props" />
+  <!-- Embed the documentation site into the published app on publish -->
+  <Import Project="..\..\Docs.props" />
 
   <PropertyGroup>
     <ContainerRepository>corsinvest/cv4pve-admin</ContainerRepository>

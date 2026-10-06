@@ -1,0 +1,102 @@
+---
+title: "Install cv4pve-admin and add a Proxmox VE cluster"
+description: "Install cv4pve-admin with Docker: one guided command, then start the containers, log in and add the first Proxmox VE cluster."
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+cv4pve-admin runs **outside the cluster**, in Docker containers on a machine of yours. Nothing is installed on the nodes.
+
+:::caution[v2 is not compatible with v1]
+cv4pve-admin v2 is a **complete rewrite** and is not compatible with v1.
+There is currently no migration path from v1 to v2: a fresh installation is required.
+:::
+
+---
+
+## Prerequisites
+
+Before installing cv4pve-admin, ensure you have:
+
+- **Docker** 24.0 or later ([Install Docker](https://docs.docker.com/get-docker/))
+- **Docker Compose** 2.20 or later (included with Docker Desktop)
+- **Proxmox VE** 6.4 or later to manage
+
+---
+
+## First cluster
+
+The installation is guided: one command asks three questions, then downloads and prepares everything by itself. Press Enter at a question to accept its default.
+
+<Steps>
+
+1. **Run the installer**
+
+   <Tabs>
+   <TabItem label="Linux / macOS" icon="linux">
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.sh | bash
+   ```
+
+   </TabItem>
+   <TabItem label="Windows PowerShell" icon="seti:windows">
+
+   ```powershell
+   irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
+   ```
+
+   </TabItem>
+   </Tabs>
+
+   The installer asks:
+
+   - **Edition**: Community Edition (default) or Enterprise Edition.
+   - **Docker image tag**: the version to install. The default is `latest`, the stable release. Enter a specific version if you need one (e.g. `2.3.0-rc1`, `2.3.0`).
+   - **PostgreSQL password**: at least 8 characters. The default is `cv4pve-admin`. Change it in `.env` before going to production.
+
+   The installer then creates the `cv4pve-admin-docker` directory in the current folder. If the directory already exists, the installer stops. It downloads the configuration files into the directory and prepares `docker-compose.yaml` for the chosen edition. It does not start the containers.
+
+2. **Start the containers**
+
+   ```bash
+   cd cv4pve-admin-docker && docker compose up -d
+   ```
+
+3. **Open `http://<server-ip>:8080`**
+
+   Open the address in your browser and log in with `admin@local` / `Password123!`. On the machine of the installation, the address is **http://localhost:8080**.
+
+4. **Change the default password**
+
+   While the default `admin@local / Password123!` credentials are in use, cv4pve-admin shows a persistent security warning. Change the password immediately with the **Change password now** link.
+
+5. **Add your first Proxmox VE cluster**
+
+   The setup dialog opens automatically. See [Proxmox VE Clusters](../configuration/admin-area/clusters/).
+
+</Steps>
+
+[Docker Deployment](../docker/) describes what the installer creates, the settings in `.env`, how to change version, the `adminctl` helper and the updates. Change the default secrets in `.env` before exposing the installation.
+
+---
+
+## Proxmox VE API Credentials
+
+When connecting a Proxmox cluster, assign the **`PVEAdmin`** role at path `/` to the Proxmox user or API token used by cv4pve-admin.
+
+cv4pve-admin can create that dedicated Proxmox user and API token for you: see [Automatic API Token Creation](../configuration/admin-area/clusters/#automatic-api-token-creation).
+
+A role with only a subset of privileges (e.g. `Sys.Audit` alone) causes permission errors at runtime. Always assign `PVEAdmin` at path `/` to ensure full functionality. For advanced least-privilege setups, see [PVE Permissions](../configuration/pve-permissions/).
+
+---
+
+## Next Steps
+
+After the installation, continue with these pages:
+
+- **[Docker Deployment](../docker/)** - Files, settings, `adminctl`, updates and security checklist
+- **[Configuration](../configuration/)** - Customize application settings, security, and logging
+- **[HTTPS with Reverse Proxy](../https/)** - Enable HTTPS in production
+- **[Modules](../modules/)** - Explore available modules and features
+- **[Troubleshooting](../troubleshooting/)** - Common issues and solutions

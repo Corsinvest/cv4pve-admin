@@ -1,0 +1,191 @@
+---
+title: "Metrics Exporter"
+description: "Exposes Proxmox VE metrics over a Prometheus-compatible HTTP endpoint, ready to be scraped and shown in Grafana or any compatible monitoring stack. Each enabled cluster has its own scrape endpoint. Each collector is a switch with its own cache, and collectors run in parallel."
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import PvePrivileges from '~/components/PvePrivileges.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="multiline_chart" size="lg" /><Tag kind="per-cluster" /></p>
+
+Exposes Proxmox VE metrics over a Prometheus-compatible HTTP endpoint, ready to be scraped and shown in Grafana or any compatible monitoring stack. Each enabled cluster has its own scrape endpoint. Each collector is a switch with its own cache, and collectors run in parallel.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:toggle-switch', title: "Two-level Enable", text: "The module has a master **Enabled** switch, and the Prometheus tab has its own **Enabled** switch. When either one is off, scrapes get a `503` response." },
+    { icon: 'mdi:key-variant', title: "Per-cluster Token", text: "Each cluster has its own token. It is stored encrypted at rest and validated with `CryptographicOperations.FixedTimeEquals` at every scrape. You can change it at any time from the settings page." },
+    { icon: 'mdi:tune-variant', title: "Presets", text: "Three presets, one click each: **Fast** (essentials only, low API impact), **Standard** (sensible default), **Full** (everything on). After a preset is loaded, each collector can still be changed." },
+    { icon: 'mdi:bolt', title: "Parallel Collection", text: "**Max parallel requests** (default 5) sets how many per-node and per-guest fetches run at the same time. Lower it on small or slow clusters. Raise it on big clusters with fast APIs." },
+    { icon: 'mdi:cached', title: "Per-collector Cache", text: "Every collector has its own **Cache seconds** TTL. Slow collectors such as S.M.A.R.T. or Subscription can be cached for minutes, while fast ones (Node Status) stay fresh.", href: '#collectors' },
+    { icon: 'mdi:monitor-dashboard', title: "API Instrumentation", text: "Optional. Exports counters and histograms about the calls from cv4pve-admin to the PVE API (latency, errors). Useful to spot a cluster that misbehaves." },
+  ]}
+/>
+
+**Hot reload:** Saving the settings clears the cached engines of all clusters and resets the request counters of the **Status** page. The next scrape rebuilds the engine with the new configuration, so no service restart is needed. The counters are kept in memory: they also restart from zero when the application restarts.
+
+## Why
+
+Why this exporter when PVE already has metrics?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:target', title: "Cluster-wide in one scrape", text: "One endpoint covers the cluster, every node and every guest. Prometheus does not need to query each PVE node.", href: '#endpoint' },
+    { icon: 'mdi:toggle-switch', title: "Opt-in collectors, no surprises", text: "Disk SMART, replication, HA, balloon memory: each is a switch with its own cache TTL. You pay for what you actually scrape.", href: '#collectors' },
+    { icon: 'mdi:key', title: "Auth without certificates", text: "Each cluster has its own token, validated in constant time. Your Prometheus configuration holds no PVE API token, and there are no certificates to rotate." },
+    { icon: 'mdi:chart-areaspline', title: "Drop-in for Grafana", text: "Standard Prometheus text format with `# HELP` and `# TYPE` lines on every metric: your existing dashboards keep working." },
+  ]}
+/>
+
+## Sections
+
+- **Overview**: introduction to the module
+- **Status**: health check for the current cluster. It shows the **Open metrics** link to the scrape URL (token included), how many requests have been served (**Request**) and when the last one happened (**Last**). When the module or the Prometheus exporter is disabled, the page says so instead
+
+## Endpoint
+
+```text
+GET /module/*/metrics-exporter/prometheus/<clusterName>?token=<TOKEN>
+```
+
+- **`<clusterName>`**: name of the configured Proxmox VE cluster
+- **`<TOKEN>`**: per-cluster token defined in the module settings
+
+| Response | Meaning |
+|----------|---------|
+| `503` | The module or the Prometheus exporter is disabled |
+| `401` | The token is wrong |
+| `400` | The cluster name is unknown or disabled, or no token is configured |
+
+**Grab the URL from the UI:** The **Open metrics** link in the **Status** page points to the scrape URL of the current cluster, token included. Copy the link address from there instead of building it by hand.
+
+## Collectors
+
+Collectors are grouped by scope. Each collector has its own switch and its own cache TTL.
+
+Some metrics are always exported, whatever the collectors:
+
+- cluster status (`cv4pve_cluster_*`)
+- the online state of the cluster and of every node, guest and storage (`cv4pve_up`, with the labels `id` and `type`)
+- the guest and storage metrics read from the cluster resource list (`cv4pve_guest_*`, `cv4pve_storage_*`)
+- the metrics about the scrape itself (`cv4pve_scrape_duration_seconds`, `cv4pve_scrape_errors_total`)
+
+### Cluster
+
+| Collector | What it exposes |
+|-----------|------------------|
+| **High Availability** | HA state of cluster manager, groups and resources |
+| **Backup info** | Guests not covered by any backup job |
+
+### Node
+
+| Collector | What it exposes |
+|-----------|------------------|
+| **Status** | Memory, swap, load average, uptime, root file system, CPU cores and memory assigned to running guests, node version |
+| **Subscription** | License status and tier per node (Community / Basic / Standard / Premium / None) |
+| **Replication** | Per-VM replication jobs, sync status and lag |
+| **Disk S.M.A.R.T.** | S.M.A.R.T. attributes per physical disk (one more API call per node: keep cached) |
+
+### Guest
+
+| Collector | What it exposes |
+|-----------|------------------|
+| **QEMU balloon memory** | Current balloon size: memory actually assigned to the guest |
+
+The balloon size is read from the QEMU monitor `info balloon`, only on QEMU VMs with the balloon driver enabled.
+
+## Connecting Prometheus
+
+Minimal `prometheus.yml` scrape job:
+
+```yaml
+scrape_configs:
+  - job_name: cv4pve-admin
+    metrics_path: "/module/*/metrics-exporter/prometheus/my-cluster"
+    params:
+      token: ['REPLACE_WITH_YOUR_TOKEN']
+    static_configs:
+      - targets: ['cv4pve-admin.example.com']
+```
+
+**Quote the metrics_path:** The literal `*` in the URL is a wildcard for the "all clusters" routing context and must be kept as it is. Quote `metrics_path`: without quotes some YAML parsers treat `*` as a special character.
+
+If you have multiple clusters, add one scrape job per cluster (or a single job with `__metrics_path__` relabeling from a static list).
+
+## Metric Naming
+
+All metrics are prefixed with `cv4pve_` and grouped by scope. Examples:
+
+- `cv4pve_cluster_quorate`, `cv4pve_cluster_nodes`
+- `cv4pve_node_cpu_assigned_cores`, `cv4pve_node_memory_total_bytes`, `cv4pve_node_disk_health`, `cv4pve_node_disk_wearout`
+- `cv4pve_guest_cpu_usage_ratio`, `cv4pve_guest_memory_usage_bytes`, `cv4pve_guest_disk_size_bytes`, `cv4pve_guest_uptime_seconds`, `cv4pve_guest_network_receive_bytes_total`
+- `cv4pve_ha_state`, `cv4pve_ha_node_state`, `cv4pve_ha_quorate`
+- `cv4pve_guests_not_backed_up`
+- `cv4pve_api_request_duration_seconds`, `cv4pve_api_request_errors_total` (when **API instrumentation** is on)
+
+For the full and current catalogue, scrape the endpoint above: every metric carries its own `# HELP` and `# TYPE` line in the response.
+
+## Settings
+
+The default preset on a new module is **Fast**. Each collector has its own switch and **Cache seconds** TTL (0 = no cache, collect at every scrape).
+
+The **Fast**, **Standard** and **Full** buttons in the **Prometheus** tab replace every Prometheus setting with the values of the preset, including **Enabled** (on) and **Max parallel requests** (5). The settings can only be saved with a **Token**.
+
+<Collapse title="Show all settings" kind="settings">
+
+**Module**
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled** | off | Master on/off switch for the module on the cluster |
+| **Token** | empty (required) | Per-cluster token (stored encrypted, validated with constant-time compare) |
+
+**Prometheus (Fast preset)**
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled** | on | Enable the Prometheus scrape endpoint |
+| **Max parallel requests** | 5 | Max concurrent per-node / per-guest fetches (1 = sequential) |
+| **API instrumentation** | off in Fast (on in Standard / Full) | Export counters and histograms about the underlying PVE API calls (latency, errors) |
+
+**Cluster collectors**
+
+| Collector | Default in Fast | Default in Standard | Default in Full |
+|-----------|-----------------|---------------------|-----------------|
+| **High Availability** (`Ha`) | on, cache 0s | on, cache 0s | on, cache 30s |
+| **Backup info** | on, cache 0s | on, cache 600s | on, cache 600s |
+
+**Node collectors**
+
+| Collector | Default in Fast | Default in Standard | Default in Full |
+|-----------|-----------------|---------------------|-----------------|
+| **Status** (memory, swap, load, uptime) | off | on, cache 0s | on, cache 0s |
+| **Subscription** | off | on, cache 3600s | on, cache 3600s |
+| **Replication** | off | on, cache 0s | on, cache 60s |
+| **Disk S.M.A.R.T.** | off | off | on, cache 600s |
+
+**Guest collectors**
+
+| Collector | Default in Fast | Default in Standard | Default in Full |
+|-----------|-----------------|---------------------|-----------------|
+| **QEMU balloon memory** | off | off | on, cache 0s |
+
+</Collapse>
+
+## Application permissions
+
+| Permission | Key | Grants |
+|------------|-----|--------|
+| **Metrics Exporter** | `MetricsExporter.Link` | Access to the module and to its **Overview** page |
+| **Status** | `MetricsExporter.Link.status` | **Status** page |
+| **Edit Settings** | `MetricsExporter.EditOptions` | The settings button of the module |
+
+The built-in role **Admin for module Metrics Exporter** includes all of them. Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
+
+The scrape endpoint does not use these permissions: it is protected by the per-cluster token only.
+
+<PvePrivileges module="metrics-exporter" />

@@ -1,0 +1,76 @@
+---
+title: "AI Assistant"
+draft: true
+---
+
+import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="auto_awesome" size="lg" /><Tag kind="per-cluster" /></p>
+
+:::caution[Coming soon]
+AI Assistant is not yet released. This page is a preview of the planned feature and may change before the module ships.
+:::
+
+Chat assistant built into cv4pve-admin. You open it from the main header, without leaving the application.
+
+## Features
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:chat', title: "In-app Chat", text: "Chat panel reachable from the main header: ask questions about the cluster without switching to a separate tool." },
+    { icon: 'mdi:cloud', title: "Hosted API", text: "Talks to a Corsinvest-hosted AI endpoint by default (`cv4pve-admin.corsinvest.it/api`): bring your own key." },
+    { icon: 'mdi:format-list-bulleted', title: "Multi-format Output", text: "Responses can be rendered as HTML or Markdown with optional value decoration (emojis on thresholds for at-a-glance status)." },
+    { icon: 'mdi:table', title: "CSV Export", text: "Tabular replies can be exported as CSV with a configurable separator." },
+  ]}
+/>
+
+## Why
+
+Why an in-app assistant when AI Server already exposes MCP?
+
+<FeatureGrid
+  items={[
+    { icon: 'mdi:chat-processing', title: "No external client", text: "For occasional questions, no MCP client or external chat app is needed: open the panel, type, read." },
+    { icon: 'mdi:account-check', title: "Same session, same context", text: "The assistant lives inside the application you already have open: answers refer to the cluster you are currently on." },
+    { icon: 'mdi:puzzle', title: "Complement to AI Server", text: "AI Server is for external assistants (Claude Desktop, Cursor, …) over MCP. AI Assistant is for in-app, casual questions.", href: '../ai-server/' },
+  ]}
+/>
+
+## Settings
+
+<Collapse title="Show all settings" kind="settings">
+
+**General**
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Enabled** | off | Master on/off switch for the assistant |
+| **Api key** | - | Key used to authenticate against the AI API |
+| **Url Api Service** | `https://cv4pve-admin.corsinvest.it/api` | Endpoint of the AI service backing the assistant |
+
+**CSV**
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Separator** | `;` | Column separator used when exporting tabular replies as CSV |
+
+**HTML**
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Decorate value with emoji** | on | Add emoji indicators based on warning/critical thresholds |
+| **Warning** | 80 | Value at or above which the warning indicator is used |
+| **Critical** | 90 | Value at or above which the critical indicator is used |
+
+**Markdown**
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| **Decorate value with emoji** | on | Add emoji indicators based on warning/critical thresholds |
+| **Warning** | 80 | Value at or above which the warning indicator is used |
+| **Critical** | 90 | Value at or above which the critical indicator is used |
+
+</Collapse>

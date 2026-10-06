@@ -1,0 +1,131 @@
+---
+title: "AI Server: Query"
+description: "The Enterprise tools that let an AI assistant query a Proxmox VE cluster as if it were a database: you ask a question, you get a table back."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="hub" size="lg" /><Tag kind="ee" /><Tag kind="all-clusters" /></p>
+
+With the Query tools the assistant treats a Proxmox VE cluster as a database. You ask a question in plain language. The assistant turns it into a query (filter, group, count, sum, sort, take the first rows) and gets a table back.
+
+The other [tools of AI Server](../ai-server/#available-tools) answer one fixed question each: list the guests, show a configuration, read the tasks. With Query a question needs no dedicated tool.
+
+The tools only read: a query never changes anything on the cluster. You never write a query: the assistant does. Every call it makes is recorded in the [audit log](../ai-server/#auditing).
+
+## What can be queried
+
+- Nodes: status, uptime, CPU and memory usage
+- Virtual machines and containers: status, node, pool, tags, CPU, memory, disk and network usage
+- Configuration of virtual machines and of containers
+- Storages: type, content, space used and available
+- Storage content: backups, disk images, ISO images, templates
+- Snapshots of the guests
+- Replication jobs and their state
+
+## Input and output
+
+The input is your question. The output is a table, one row per result, that the assistant reads and reports to you.
+
+The values in the outputs below are only an illustration.
+
+**Input:** "How many guests does each node run?"
+
+**Output:** the first tab is how an assistant typically shows the result. The other tabs are the same table as cv4pve-admin returns it, in each of the four formats of the [Output Format](../ai-server/#output-format) setting.
+
+<Tabs>
+<TabItem label="Answer">
+
+| NodeName | Total |
+|----------|-------|
+| pve01 | 12 |
+| pve02 | 9 |
+
+</TabItem>
+<TabItem label="JsonCompact">
+
+```json
+{"data":{"headers":["NodeName","Total"],"rows":[["pve01",12],["pve02",9]]}}
+```
+
+</TabItem>
+<TabItem label="JsonNormal">
+
+```json
+{
+  "data": [
+    {
+      "NodeName": "pve01",
+      "Total": 12
+    },
+    {
+      "NodeName": "pve02",
+      "Total": 9
+    }
+  ]
+}
+```
+
+</TabItem>
+<TabItem label="Toon">
+
+```text
+data[2]{NodeName,Total}:
+  pve01,12
+  pve02,9
+```
+
+</TabItem>
+<TabItem label="Csv">
+
+```text
+NodeName,Total
+pve01,12
+pve02,9
+```
+
+</TabItem>
+</Tabs>
+
+`JsonCompact` is the default. `JsonNormal` is indented here to make it readable: cv4pve-admin sends it on one line, without spaces. The format changes only how much text travels to the assistant, not the content of the table.
+
+**Input:** "Count how many VMs are running"
+
+**Output:**
+
+| Total |
+|-------|
+| 14 |
+
+**Input:** "Which five guests use the most CPU?"
+
+**Output:**
+
+| Id | Name | NodeName |
+|----|------|----------|
+| 104 | db-prod | pve01 |
+| 110 | web-01 | pve02 |
+| 121 | mail | pve01 |
+| 107 | build-agent | pve02 |
+| 133 | monitoring | pve01 |
+
+**Input:** "Which backups are not verified?"
+
+**Output:**
+
+| GuestId | StorageName | FileName |
+|---------|-------------|----------|
+| 104 | pbs-main | vm/104/2026-10-05T01:00:02Z |
+| 121 | pbs-main | vm/121/2026-10-05T01:12:40Z |
+
+When a question cannot be answered, the assistant receives an error instead of a table:
+
+- `Permission denied` when its token lacks the permission on that cluster
+- `Cluster '<name>' not found`
+- A message that says what is wrong in the query
+
+## Permissions
+
+Each of the two tools, `GetQuerySchema` and `ExecuteQuery`, has its own permission, checked on the cluster named in the call. Both permissions are in the **AI Server Tools** role of the Enterprise Edition: see [Application permissions](../ai-server/#application-permissions).

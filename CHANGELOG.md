@@ -220,7 +220,7 @@ This release focuses on **stability and interface polish**: pages no longer cras
 
 - **Status badges**. The **Tasks** page status column now shows a coloured pill with an icon (Running / Completed / Failed / Cancelled / Abandoned), matching the level badges already used on the *(EE)* **Logs** page.
 
-- **`adminctl self-update`** command refreshes your local `adminctl` script and the docker-compose YAML to match a chosen release without touching your data or `.env` configuration. By default it bumps to the latest release; you can also target a specific version. Existing files are backed up under `_backup/<timestamp>/` before being overwritten.
+- **`adminctl self-update`** command refreshes your local `adminctl` script and the docker-compose YAML to match a chosen release without touching your data or `.env` configuration. It takes the latest files from the main branch. Existing files are backed up under `self-update-backups/<timestamp>/` before being overwritten.
 
 - **Diagnostic**
   - PDF and Excel reports are now available in the free edition (used to be Enterprise-only). The PDF lists every issue colour-coded by severity and a separate section with the issues you have chosen to ignore. The Excel workbook opens on a cover sheet and the data sheet has the autofilter already on.

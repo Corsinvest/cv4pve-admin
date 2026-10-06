@@ -1,197 +1,76 @@
-# cv4pve-admin
+# <img src="icon.png" alt="" height="36" align="top"> cv4pve-admin
 
-![cv4pve-admin Logo](docs/user/docs/images/logo.png)
+```
+     ______                _                      __
+    / ____/___  __________(_)___ _   _____  _____/ /_
+   / /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
+  / /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
+  \____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
 
-**Manage, Monitor, Decide.**
-Enterprise management layer for Proxmox VE clusters.
+Admin for Proxmox VE (Made in Italy)
+```
 
-*An enterprise approach tailored for IT to solve daily problems.*
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-admin.svg?style=flat-square)](LICENSE)
+[![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-admin.svg?style=flat-square)](https://github.com/Corsinvest/cv4pve-admin/releases/latest)
+[![Docker Pulls CE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin?style=flat-square&label=docker%20pulls%20CE)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
+[![Docker Pulls EE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin-ee?style=flat-square&label=docker%20pulls%20EE)](https://hub.docker.com/r/corsinvest/cv4pve-admin-ee)
 
-[![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://corsinvest.github.io/cv4pve-admin/)
-[![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
-[![Docker Pulls CE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin?label=docker%20pulls%20CE)](https://hub.docker.com/r/corsinvest/cv4pve-admin)
-[![Docker Pulls EE](https://img.shields.io/docker/pulls/corsinvest/cv4pve-admin-ee?label=docker%20pulls%20EE)](https://hub.docker.com/r/corsinvest/cv4pve-admin-ee)
+> **Web administration for Proxmox VE clusters**: one interface for all your clusters, running outside the nodes and using only the API.
+>
+> **[Documentation](https://corsinvest.github.io/cv4pve-admin/)**
 
-**📖 [Documentation](https://corsinvest.github.io/cv4pve-admin/)** · **🚀 [Getting Started](https://corsinvest.github.io/cv4pve-admin/getting-started/)** · **🧩 [Modules](https://corsinvest.github.io/cv4pve-admin/modules/)** · **⚖️ [CE vs EE](https://corsinvest.github.io/cv4pve-admin/editions/)** · **📝 [Changelog](CHANGELOG.md)**
-
-![Home Dashboard](docs/user/docs/images/home-computerscreen.png)
-*Professional Proxmox VE management interface*
-
----
-
-## By IT Managers, for IT Managers
-
-Proxmox VE manages the hypervisor. **cv4pve-admin manages your infrastructure.**
-
-Built from real-world experience to solve real problems: multi-cluster visibility, proactive monitoring, compliance reporting, and enterprise automation.
-
-**cv4pve-admin doesn't replace Proxmox VE** — it extends it to new frontiers. While Proxmox VE excels at managing individual nodes and VMs, cv4pve-admin addresses the operational challenges IT managers face daily: automated snapshot management across clusters, backup status verification and analytics, replication monitoring, infrastructure diagnostics, compliance reporting, and much more that enterprises need at scale.
-
-**Because infrastructure management shouldn't require manual work cluster by cluster, node by node.**
+![cv4pve-admin dashboard](docs/src/assets/images/home-computerscreen.png)
 
 ---
 
-## Key Features
+## Why
 
-### 🎯 Multi-Cluster Management
+The Proxmox VE web interface works on one cluster at a time, and it answers questions about one object. It does not tell you which VMs no backup job covers, which disks are excluded from backup, whether last night's replications ran, or which guests wait for security updates and a reboot. With several clusters you repeat each check by hand on every one of them.
 
-Centralized dashboard for all your Proxmox VE clusters. One control plane, unlimited clusters.
+cv4pve-admin is a web application that sits beside your clusters and does that work: scheduled snapshots, backup and replication analysis, health checks, inventory reports, node configuration backup and more, [one module each](https://corsinvest.github.io/cv4pve-admin/modules/). It doesn't replace Proxmox VE: you keep using it.
 
-### 📊 Proactive Monitoring
-
-Know if backups work BEFORE you need to restore. Find problems BEFORE they become critical.
-
-### 🔄 Workflow Automation (EE)
-
-Visual workflow designer for complex automation scenarios. Drag-and-drop builder, custom activities, enterprise scheduling.
-
-### 📋 Compliance & Reporting
-
-Automated diagnostics, backup analytics, audit reports. No manual work required.
-
-### 🏗️ External Architecture
-
-Runs completely outside Proxmox VE, communicating exclusively via REST API.
-No installation on nodes. No system modifications. No dependencies.
-
-### 🐳 Docker Ready
-
-Deploy anywhere - container, VM, separate server. Production-ready Docker Compose included.
+It **runs outside the nodes and uses only the Proxmox VE REST API**: nothing to install on the cluster, no system modifications.
 
 ---
 
-## Quick Start
+## Quick start with Docker
 
-**Linux/Mac:**
+cv4pve-admin ships as a Docker image. The installer downloads the Docker Compose files and asks which edition you want.
+
 ```bash
+# Docker installer, Linux / macOS
 curl -fsSL https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.sh | bash
-```
 
-**Windows PowerShell:**
-```powershell
+# Docker installer, Windows PowerShell
 irm https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/install.ps1 | iex
-```
 
-Then start the stack:
-```bash
+# Start the containers
 cd cv4pve-admin-docker && docker compose up -d
 ```
 
-Access the web interface at `http://localhost:8080` with default credentials: `admin@local` / `Password123!`
-
-**→ [Complete Installation Guide](https://corsinvest.github.io/cv4pve-admin/getting-started/)**
-
-> **Looking for v1?** The previous version is available at the [v1.3.1 tag](https://github.com/Corsinvest/cv4pve-admin/tree/v1.3.1). Note: v2 is a complete rewrite and is not compatible with v1.
-
----
-
-## Features & Modules
-
-cv4pve-admin includes **15+ modules** covering monitoring, automation, health checks, backup analytics, and more.
-
-For a complete feature comparison between **Community Edition (CE)** and **Enterprise Edition (EE)**, including:
-- ✅ Module availability matrix
-- 🚀 Feature roadmap and status
-- 📊 Detailed capabilities comparison
-- 🎯 Enterprise enhancements
-
-**→ See the full documentation at [corsinvest.github.io/cv4pve-admin](https://corsinvest.github.io/cv4pve-admin)**
-
-**📋 [Feature Comparison CE vs EE →](https://corsinvest.github.io/cv4pve-admin/editions/)**
-
----
-
-## Requirements
-
-- Proxmox VE 6.2 or later
-- Docker with Docker Compose (the application ships as a Linux container image)
+Open `http://localhost:8080` (or `http://<server-ip>:8080` from another machine) and sign in with the default credentials `admin@local` / `Password123!`. Requirements and every other detail: [Getting Started](https://corsinvest.github.io/cv4pve-admin/getting-started/).
 
 ---
 
 ## Documentation
 
-**📖 [Complete Documentation →](https://corsinvest.github.io/cv4pve-admin/)**
+Everything else is in the [documentation](https://corsinvest.github.io/cv4pve-admin/):
 
-- **[Getting Started](https://corsinvest.github.io/cv4pve-admin/getting-started/)** - Installation and setup
-- **[Configuration](https://corsinvest.github.io/cv4pve-admin/configuration/)** - Application settings and customization
-- **[Modules](https://corsinvest.github.io/cv4pve-admin/modules/)** - Available features and modules
-- **[CE vs EE Comparison](https://corsinvest.github.io/cv4pve-admin/editions/)** - Choose the right edition
+- [Modules](https://corsinvest.github.io/cv4pve-admin/modules/): what each module does
+- [Community vs Enterprise](https://corsinvest.github.io/cv4pve-admin/editions/): what each edition includes
+- [Configuration](https://corsinvest.github.io/cv4pve-admin/configuration/): clusters, users, notifications, settings
+- [Changelog](CHANGELOG.md)
 
-### Additional Resources
-
-- [Docker Compose Deployment](src/docker/README.md) - Complete Docker setup guide
-- [MCP Bridge for Claude Desktop](src/Corsinvest.ProxmoxVE.Admin.McpBridge/README.md) - AI assistant integration (pre-built binaries for Windows, Linux, macOS)
+> **Looking for v1?** The previous version is at the [v1.3.1 tag](https://github.com/Corsinvest/cv4pve-admin/tree/v1.3.1). v2 is a complete rewrite and is not compatible with v1.
 
 ---
 
-## Architecture
+**By sysadmins, for sysadmins.**
 
-**External Layer**: cv4pve-admin adds the management layer Proxmox VE is missing.
+Part of [cv4pve](https://www.corsinvest.it/en/cv4pve/) suite | Made with ❤️ in Italy by [Corsinvest](https://www.corsinvest.it)
 
-```
-┌─────────────────────────────────────┐
-│      cv4pve-admin (External)        │  ← Management Layer
-│  Dashboard │ Workflows │ Analytics  │
-└─────────────────────────────────────┘
-                  ↕ REST API
-┌─────────────────────────────────────┐
-│         Proxmox VE Clusters         │  ← Hypervisor Layer
-│   Cluster A │ Cluster B │ Cluster C │
-└─────────────────────────────────────┘
-```
+Community Edition: AGPL-3.0, see [LICENSE](LICENSE).
 
-Not a replacement - a completion. Automation, visibility, compliance, and control.
+Proxmox® is a registered trademark of Proxmox Server Solutions GmbH. cv4pve is developed by Corsinvest and is not a Proxmox product.
 
----
-
-## Screenshots
-
-![Login Screen](docs/user/docs/images/login.png)
-
-![Backup Analytics](docs/user/docs/images/screenshot-backup-analytics.png)
-
-![Resources Nodes](docs/user/docs/images/screenshot-resources-nodes.png)
-
-![Resources Vms](docs/user/docs/images/screenshot-resources-vms.png)
-
-![Resources Storages](docs/user/docs/images/screenshot-resources-storages.png)
-
-![Resources Storages](docs/user/docs/images/screenshot-resources-storages2.png)
-
-**→ See more screenshots in the [User Guide](https://corsinvest.github.io/cv4pve-admin/user_guide/)**
-
----
-
-**Proxmox® is a registered trademark of Proxmox Server Solutions GmbH.**
-
----
-
-## Support
-
-- **Documentation**: [corsinvest.github.io/cv4pve-admin](https://corsinvest.github.io/cv4pve-admin)
-- **Issues**: [GitHub Issues](https://github.com/Corsinvest/cv4pve-admin/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Corsinvest/cv4pve-admin/discussions)
-- **Website**: [www.corsinvest.it](https://www.corsinvest.it/cv4pve-admin)
-
----
-
-## License
-
-AGPL-3.0 License - see [LICENSE](LICENSE) file for details.
-
-
----
-
-## About Corsinvest
-
-cv4pve-admin is developed by [Corsinvest](https://www.corsinvest.it), specialists in Proxmox VE solutions.
-
-**Real infrastructure management for real IT managers.**
-
----
-
-<div align="center">
-
-**Made with ❤️ by [Corsinvest](https://www.corsinvest.it) - We love Open Source**
-
-</div>
+Copyright © Corsinvest Srl

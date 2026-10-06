@@ -1,0 +1,27 @@
+---
+/*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Edition, SSH and scope labels, drawn with the standard Starlight badge so they follow the theme
+ * in light and dark mode. The class (`ee`, `ce`, `ssh`, `scope`) is kept on the badge: the Modules
+ * filter reads `.ee` and custom.css places the badge inside the cards.
+ */
+import { Badge } from '@astrojs/starlight/components';
+
+const KINDS = {
+  ee: { text: 'EE', variant: 'caution', class: 'ee' },
+  ce: { text: 'CE', variant: 'note', class: 'ce' },
+  ssh: { text: 'SSH', variant: 'default', class: 'ssh' },
+  'per-cluster': { text: 'Per cluster', variant: 'default', class: 'scope' },
+  'all-clusters': { text: 'All clusters', variant: 'tip', class: 'scope' },
+} as const;
+
+interface Props {
+  kind: keyof typeof KINDS;
+}
+
+const tag = KINDS[Astro.props.kind];
+---
+
+<Badge text={tag.text} variant={tag.variant} size="small" class={tag.class} />

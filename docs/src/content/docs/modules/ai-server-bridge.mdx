@@ -1,0 +1,125 @@
+---
+title: "AI Server: MCP Bridge"
+description: "cv4pve-mcp-bridge connects MCP clients that only speak stdio, such as Claude Desktop, to the MCP endpoint of cv4pve-admin."
+---
+
+import { Tabs, TabItem, LinkButton } from '@astrojs/starlight/components';
+import Mdi from '~/components/Mdi.astro';
+import ModuleIcon from '~/components/ModuleIcon.astro';
+import Tag from '~/components/Tag.astro';
+
+<p class="cv-page-meta"><ModuleIcon name="hub" size="lg" /><Tag kind="all-clusters" /></p>
+
+**cv4pve-mcp-bridge** is a stdio ↔ HTTP bridge that connects MCP clients that only speak stdio (e.g. Claude Desktop) to the MCP endpoint of [AI Server](../ai-server/). It reads JSON-RPC messages from **stdin**, forwards them to the MCP server using the MCP Streamable HTTP transport, and writes the responses back to **stdout**.
+
+Clients that support MCP over HTTP natively do not need it: see [Native HTTP clients](../ai-server/#native-http-clients).
+
+## From the Bridge tab
+
+Use the **Bridge** tab in the AI Server module to download the binary for your platform and generate a ready-to-use `claude_desktop_config.json` pre-filled with your server URL. Fill in **App Token** and **Binary path**, then **Download** the file or **Copy to clipboard**.
+
+When cv4pve-admin is reached over plain HTTP, the generated configuration adds `--insecure`. This option disables certificate validation: do not use it in production.
+
+## Download
+
+Pre-built binaries are available on the GitHub Releases page:
+
+<LinkButton href="https://github.com/Corsinvest/cv4pve-admin/releases" target="_blank" rel="noopener noreferrer">Download from GitHub Releases <Mdi name="download" /></LinkButton>
+
+| File | Platform |
+|------|----------|
+| `cv4pve-mcp-bridge-win-x64.exe` | Windows x64 |
+| `cv4pve-mcp-bridge-linux-x64` | Linux x64 |
+| `cv4pve-mcp-bridge-linux-arm64` | Linux ARM64 (Raspberry Pi, etc.) |
+| `cv4pve-mcp-bridge-osx-x64` | macOS Intel |
+| `cv4pve-mcp-bridge-osx-arm64` | macOS Apple Silicon (M1/M2/M3) |
+
+On Linux and macOS, make the binary executable after download:
+
+```bash
+chmod +x cv4pve-mcp-bridge-linux-x64
+```
+
+## Options
+
+```text
+cv4pve-mcp-bridge [options]
+
+Options:
+  -u, --url <url>        MCP server endpoint URL. Env: MCP_URL
+  -k, --api-key <key>    API key for authentication. Env: MCP_API_KEY
+  -i, --insecure         Disable SSL certificate validation. Env: MCP_INSECURE
+```
+
+Set the options with command-line arguments or with environment variables. Arguments take priority over environment variables.
+
+| Variable | Description |
+|----------|-------------|
+| `MCP_URL` | MCP server endpoint URL |
+| `MCP_API_KEY` | API key for authentication |
+| `MCP_INSECURE` | Set to `1` or `true` to disable SSL validation (dev only) |
+
+The URL is the [MCP endpoint](../ai-server/#mcp-endpoint-url) of your installation. The API key is the one generated in the **API Access** tab: see [First-time setup](../ai-server/#first-time-setup). Without a URL or an API key the bridge writes an error and exits.
+
+:::caution[--insecure disables certificate validation]
+With `--insecure` (or `MCP_INSECURE`) the bridge accepts any certificate and prints a warning at startup. Use it only for tests, never in production.
+:::
+
+## Claude Desktop integration
+
+Add the following to your `claude_desktop_config.json`:
+
+<Tabs>
+<TabItem label="With arguments">
+
+```json
+{
+  "mcpServers": {
+    "cv4pve-admin": {
+      "command": "/path/to/cv4pve-mcp-bridge-linux-x64",
+      "args": [
+        "--url", "https://your-cv4pve-admin/mcp",
+        "--api-key", "your-app-token"
+      ]
+    }
+  }
+}
+```
+
+</TabItem>
+<TabItem label="With environment variables">
+
+```json
+{
+  "mcpServers": {
+    "cv4pve-admin": {
+      "command": "/path/to/cv4pve-mcp-bridge-linux-x64",
+      "env": {
+        "MCP_URL": "https://your-cv4pve-admin/mcp",
+        "MCP_API_KEY": "your-app-token"
+      }
+    }
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## How it works
+
+```text
+Claude Desktop
+     │  stdin (JSON-RPC)
+     ▼
+cv4pve-mcp-bridge
+     │  Streamable HTTP + X-API-Key
+     ▼
+cv4pve-admin MCP endpoint
+     │  Streamable HTTP response
+     ▼
+cv4pve-mcp-bridge
+     │  stdout (JSON-RPC)
+     ▼
+Claude Desktop
+```

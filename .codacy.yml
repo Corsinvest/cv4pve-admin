@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Codacy analyses the code of the application, not the documentation site: docs/ is an Astro
+# Starlight project (pages, a config file, data, a check script) with a package-lock.json
+# written by npm, and the default rules report their formatting as issues.
+---
+exclude_paths:
+  - "docs/**"

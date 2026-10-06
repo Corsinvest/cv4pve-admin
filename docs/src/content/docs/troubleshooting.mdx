@@ -1,0 +1,141 @@
+---
+title: "Troubleshooting"
+description: "Where to look when cv4pve-admin does not behave as expected: logs, login, Proxmox VE clusters, configuration, notifications, updates, tasks and HTTPS."
+---
+
+## Where to look first
+
+| Source | How to read it |
+|--------|----------------|
+| Container output | `./adminctl logs cv4pve-admin` or `docker compose logs -f cv4pve-admin` from the installation directory. |
+| Log files | One file per day in `data/cv4pve-admin/data/logs/` (`log-YYYYMMDD.txt`). The last 30 files are kept. |
+| Log viewer (Enterprise Edition) | **Admin Area → Monitoring → Logs**. See [Monitoring](../configuration/admin-area/monitoring/). |
+| Tasks | **Admin Area → Monitoring → Tasks** shows the log of every operation started by a module. |
+| Health endpoint | `http://<server-ip>:8080/health` answers `Healthy` when the application is up. It does not test the database. |
+| Connectivity tests | **Admin Area → Maintenance** has **Test Cluster Connections** and **Test Internet Connectivity**. See [Maintenance](../configuration/admin-area/maintenance/#connectivity-tests). |
+
+To get more detail in the logs, raise the log level in [appsettings.extra.json](../configuration/appsettings-extra/#serilog-configuration) and restart the container.
+
+## Login
+
+### Reset a Forgotten Password
+
+If you are locked out of the web UI, reset the admin password via CLI:
+
+```bash
+docker compose run --rm cv4pve-admin user reset-password -u admin@local -p NewPassword123!
+```
+
+The new password must satisfy the password policy. By default: at least 6 characters, with a digit, a lowercase letter, an uppercase letter and a special character.
+
+For all available CLI commands, see [CLI Reference](../cli/).
+
+### "This account has been locked out"
+
+After too many failed logins, cv4pve-admin locks the account for a period of time. The defaults are 5 failed attempts and 5 minutes: see [Lockout Options](../configuration/appsettings-extra/#security-settings). Wait, or unlock the account immediately:
+
+```bash
+docker compose run --rm cv4pve-admin user unlock -u admin@local
+```
+
+### "This account is not allowed"
+
+The account is not active, or its email address is not confirmed. An administrator can turn on **Is Active** and **Email Confirmed** in **Admin Area → Security → Users** (Enterprise Edition). An inactive account can also be enabled via CLI:
+
+```bash
+docker compose run --rm cv4pve-admin user enable -u user@example.com
+```
+
+### "Testing Version Expired" instead of the login form
+
+A pre-release version (`rc`, `beta`, `alpha`) stops accepting logins two months after its build date. Install a newer version: set `CV4PVE_ADMIN_TAG` in `.env` to a current tag and restart (see [Change version after installation](../docker/#change-version-after-installation)).
+
+### The security warning about the default password does not go away
+
+The warning appears when the application is opened while the account still uses the default password `Password123!`. Use its **Change password now** link, or the **Password** page of the [User Profile](../configuration/profile/#password).
+
+### A new user cannot log in
+
+A user created in **Admin Area → Security → Users** can log in when all of these are true:
+
+- the account is **active**;
+- the user has confirmed the email address with the link received by email;
+- the user has then set a password with **Forgot password?** on the login page.
+
+The confirmation email and the password email both need a working SMTP server. Check it with **Test SMTP Configuration** in [General Settings](../configuration/admin-area/general-settings/#test-smtp-configuration). See [How a new user gets access](../configuration/admin-area/security/#how-a-new-user-gets-access).
+
+## Proxmox VE clusters
+
+### The cluster cannot be saved or does not connect
+
+When an enabled cluster is saved, cv4pve-admin connects to it and shows the reason of a failure in a notification.
+
+| Message | What to check |
+|---------|---------------|
+| `Credential or host not valid!` | Node address and **API Port** (default 8006), user name with realm (for example `root@pam`), password or API token. |
+| `Proxmox VE version not valid! Required 6.4` | The cluster runs a Proxmox VE version older than 6.4, which is not supported. |
+| `Name not unique!` | Another cluster already uses the same **Name**. |
+| Timeout or connection errors | The cv4pve-admin container must reach the nodes on the API port. The default **Timeout (msec)** of the Web API is 1000: raise it for slow or remote links. |
+| Certificate errors | **Validate SSL Certificate** is on and the nodes use a certificate that the container does not trust (for example the default self-signed one). Turn it off or install a trusted certificate on the nodes. |
+
+After the cluster is saved, **Test Cluster Connections** in **Maintenance** checks all the enabled clusters at once.
+
+### "SSH Warning" when saving a cluster
+
+When SSH is configured, saving a cluster opens an SSH connection on port 22 to every node of the list. cv4pve-admin reports the nodes that fail. Check that:
+
+- every node address in the **Nodes** list is reachable from the cv4pve-admin container on port 22;
+- the user, password or private key are valid on all the nodes;
+- with **Same as WEB API**, the Web API access type is `Credential` and the user is a PAM user (for example `root@pam`).
+
+See [SSH Configuration](../configuration/admin-area/clusters/#ssh-configuration).
+
+### Console does not open
+
+Node consoles and VM/LXC consoles are not available when the cluster is connected with an API token. Node consoles also require a PAM user. See the [feature matrix](../configuration/admin-area/clusters/#web-api-access-type-feature-limitations).
+
+## Configuration
+
+### Changes in appsettings.extra.json have no effect
+
+- Restart the container after editing the file.
+- If the file contains invalid JSON, the application ignores it and starts with the default settings. At startup the application writes a warning that names the file and the JSON error: look for it in the container output.
+- The file must be in the `config` directory of the application: `data/cv4pve-admin/config/appsettings.extra.json` in a Docker installation.
+- Array settings such as `Serilog.WriteTo` are merged by position. See [Merge behaviour](../configuration/appsettings-extra/).
+
+### Scheduled jobs run at the wrong time
+
+Cron schedules are evaluated in the time zone of the container. Set `TZ` in `.env` (for example `TZ=Europe/Rome`) and restart.
+
+## Notifications
+
+### A notification channel does not deliver
+
+Open **Admin Area → Notifications**, select the configuration and click **Test**. The screen shows the error returned by the mail server, the webhook or Apprise. Also check that the configuration is **Enabled** and that it is selected in the **Notifier** field of the module settings. See [Notification Hub](../configuration/admin-area/notifier/).
+
+## Updates
+
+### The Update button is missing
+
+The help menu offers the **Update** button only when all of these are true:
+
+- the application runs with the Watchtower integration configured, as in the provided Docker Compose files;
+- the running version is not a pre-release;
+- a newer version exists (use the refresh button of the help menu to check now);
+- your user has the permission to upgrade the application.
+
+Otherwise update manually: set `CV4PVE_ADMIN_TAG` in `.env` if you pin a version, then run `docker compose pull && docker compose up -d`.
+
+## Tasks
+
+### Tasks marked "Abandoned"
+
+A task that was still running when cv4pve-admin was restarted is marked `Abandoned` at the next startup. Start the operation again if it is still needed.
+
+## HTTPS / Reverse Proxy
+
+To expose cv4pve-admin over HTTPS, use a reverse proxy (Caddy, Nginx Proxy Manager, Traefik, or Nginx).
+
+**[HTTPS Setup Guide](../https/)**
+
+If the UI loads behind a proxy but does not respond or keeps reconnecting, check that the proxy forwards WebSocket connections (`Upgrade` and `Connection` headers).
