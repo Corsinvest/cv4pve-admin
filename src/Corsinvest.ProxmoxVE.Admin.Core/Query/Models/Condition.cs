@@ -7,9 +7,9 @@ using System.Text.Json;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Query.Models;
 
 /// <summary>
-/// Represents a single condition or nested conditions in WHERE clause
+/// Represents a single condition in WHERE clause
 /// </summary>
-public class Condition : WhereClause
+public class Condition : WhereNode
 {
     public string Field { get; set; } = default!;
     public string Operator { get; set; } = default!;
@@ -21,11 +21,9 @@ public class Condition : WhereClause
         set => _value = value?.Select(ConvertValue).ToList() ?? [];
     }
 
-    public new Condition Clone()
+    public override Condition Clone()
         => new()
         {
-            Logic = Logic,
-            Conditions = [.. Conditions.Select(c => c.Clone())],
             Field = Field,
             Operator = Operator,
             Value = [.. Value]

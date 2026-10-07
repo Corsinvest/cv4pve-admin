@@ -74,9 +74,6 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {
-            await using var db = await dbContextFactory.CreateDbContextAsync();
-            await db.Jobs.DeleteAsync(SelectedItems[0].Id);
-
             backgroundJobService.Enqueue<Job>(a => a.DeleteAsync(SelectedItems[0].Id));
             notificationService.Info(L["Delete started!"]);
 

@@ -5,14 +5,14 @@
 namespace Corsinvest.ProxmoxVE.Admin.Core.Query.Models;
 
 /// <summary>
-/// Represents a WHERE clause with conditions and logic operator
+/// Represents a WHERE clause, or a nested group, with conditions and logic operator
 /// </summary>
-public class WhereClause
+public class WhereClause : WhereNode
 {
-    public string Logic { get; set; } = "and";
-    public List<Condition> Conditions { get; set; } = [];
+    public LogicOperator Logic { get; set; } = LogicOperator.And;
+    public List<WhereNode> Conditions { get; set; } = [];
 
-    public WhereClause Clone()
+    public override WhereClause Clone()
         => new()
         {
             Logic = Logic,
