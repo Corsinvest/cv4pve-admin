@@ -91,7 +91,6 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         if (_disposed) { return; }
 
         StopTimer();
-        WidgetItems.Clear();
 
         if (SelectedItem == null)
         {
@@ -104,14 +103,20 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
             StartTimer();
         }
 
-        // Convert widgets to tile items
+        LoadWidgetItems();
+        _widgetId = 0;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    // Convert widgets to tile items
+    private void LoadWidgetItems()
+    {
+        WidgetItems.Clear();
         foreach (var widget in CurrentDashboard.Widgets)
         {
             WidgetItems.Add(CreateWidgetItem(widget));
         }
-        _widgetId = 0;
-
-        await InvokeAsync(StateHasChanged);
     }
 
     private Task SetClusterNames() => RefreshDataAsync();
@@ -165,7 +170,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         foreach (var item in Models.Dashboard.GetDefaults())
         {
             var newName = $"zzz_{item.Name}-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
-            await db.Dashboards.Where(a => a.Name == item.Name)
+            await db.Dashboards.Where(a => a.Name == item.Name && a.UserId == currentUserService.UserId)
                                .ExecuteUpdateAsync(a => a.SetProperty(b => b.Name, newName));
 
             item.UserId = currentUserService.UserId;
@@ -229,11 +234,9 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
 
     private async Task NewAsync()
     {
-        StopTimer();
+        EnterEditMode();
         CurrentDashboard = new();
         WidgetItems.Clear();
-        InEditing = true;
-        ShowGrid = true;
         await InvokeAsync(StateHasChanged);
     }
 
@@ -242,17 +245,25 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         CurrentDashboard.Name = string.Empty;
         CurrentDashboard.Id = 0;
         foreach (var item in CurrentDashboard.Widgets) { item.Id = _widgetId--; }
-        await StartEditAsync();
+
+        // The clone exists only in memory: StartEditAsync would reload the original from the database
+        EnterEditMode();
+        LoadWidgetItems();
+        await InvokeAsync(StateHasChanged);
     }
     #endregion
 
     #region Edit Mode
-    private async Task StartEditAsync()
+    private void EnterEditMode()
     {
         StopTimer();
         InEditing = true;
         ShowGrid = true;
+    }
 
+    private async Task StartEditAsync()
+    {
+        EnterEditMode();
         await RefreshDataAsync();
     }
 
@@ -393,8 +404,10 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
                 using var reader = new StreamReader(stream);
                 var item = JsonSerializer.Deserialize<Models.Dashboard>(await reader.ReadToEndAsync())!;
 
+                item.UserId = currentUserService.UserId;
+
                 await using var db = await dbContextFactory.CreateDbContextAsync();
-                item.Name += await db.Dashboards.AnyAsync(a => a.Name == item.Name)
+                item.Name += await db.Dashboards.AnyAsync(a => a.Name == item.Name && a.UserId == item.UserId)
                             ? $"-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}"
                             : string.Empty;
 

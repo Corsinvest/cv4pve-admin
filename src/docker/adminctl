@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: Copyright Corsinvest Srl
 # SPDX-License-Identifier: AGPL-3.0-only
 
-set -e
+set -eo pipefail
 cd "$(dirname "$0")"
 
 # Load configuration

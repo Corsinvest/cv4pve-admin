@@ -144,11 +144,13 @@ public static class ServiceCollectionExtensions
     {
         var moduleService = host.Services.GetRequiredService<IModuleService>();
 
+        var applicationStateService = host.Services.GetRequiredService<ApplicationStateService>();
+        applicationStateService.IsCliCommand = IsCliCommand(args);
+
         using var scope = host.Services.CreateScope();
         foreach (var item in moduleService.Modules) { await item.InitializeAsync(scope); }
         foreach (var item in moduleService.Modules) { await item.RunAsync(scope); }
 
-        var applicationStateService = host.Services.GetRequiredService<ApplicationStateService>();
         applicationStateService.IsStartupComplete = true;
         applicationStateService.IsReady = true;
 
@@ -179,12 +181,15 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    private static bool IsCliCommand(string[] args)
+        => args.Length > 0
+            && (!args[0].StartsWith("--")
+                || args[0] == "--help"
+                || args[0] == "--version");
+
     private static async Task TryExecuteCliCommandAsync(this IHost host, string[] args)
     {
-        if (args.Length == 0
-            || (args[0].StartsWith("--")
-                && args[0] != "--help"
-                && args[0] != "--version")) { return; }
+        if (!IsCliCommand(args)) { return; }
 
         var rootCommand = new System.CommandLine.RootCommand("cv4pve-admin - Corsinvest Proxmox VE Admin")
         {
