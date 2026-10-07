@@ -46,7 +46,7 @@
 
                             @if (VmTypes.Count > 1)
                             {
-                                <span style="width:1px; height:16px; background:var(--rz-grid-cell-border-color, var(--rz-border-color)); margin:0 4px;"></span>
+                                <span style="width:1px; height:16px; background:var(--rz-base-200); margin:0 4px;"></span>
                                 @foreach (var vt in VmTypes)
                                 {
                                     <RadzenToggleButton Value="@(CardVmTypeFilter == vt)"
@@ -60,7 +60,7 @@
 
                             @if (StatusTypes.Count > 1)
                             {
-                                <span style="width:1px; height:16px; background:var(--rz-grid-cell-border-color, var(--rz-border-color)); margin:0 4px;"></span>
+                                <span style="width:1px; height:16px; background:var(--rz-base-200); margin:0 4px;"></span>
                                 @foreach (var st in StatusTypes)
                                 {
                                     <RadzenToggleButton Value="@(CardStatusFilter == st)"

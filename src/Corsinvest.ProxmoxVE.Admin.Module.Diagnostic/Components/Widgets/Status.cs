@@ -44,7 +44,7 @@ public class Status(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
         Set("Info", totalInfo, Colors.Info);
         Set("Warning", totalWarning, Colors.Warning);
-        Set("Critical", totalCritical, "var(--rz-error)");
+        Set("Critical", totalCritical, Colors.Danger);
 
         LastExecution = results.OrderByDescending(a => a.Start).FirstOrDefault()?.Start;
         MakeFooterText($"{L["Last"]}: {(LastExecution.HasValue ? LastExecution.Value.ToLocalTime().ToString("g") : string.Empty)}");

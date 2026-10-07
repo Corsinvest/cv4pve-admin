@@ -89,7 +89,7 @@
                         style="cursor:pointer; color:var(--rz-text-secondary-color);"
                         @onclick="@(() => _expanded = !_expanded)" />
 
-            @* <div style="display:flex; justify-content:center; border-top:1px solid var(--rz-border-color); padding-top:4px; margin-top:2px;">
+            @* <div style="display:flex; justify-content:center; border-top:var(--rz-border-normal); padding-top:4px; margin-top:2px;">
                 <RadzenIcon Icon="@(_expanded ? "expand_less" : "expand_more")"
                             style="cursor:pointer; color:var(--rz-text-secondary-color);"
                             @onclick="@(() => _expanded = !_expanded)" />
@@ -97,7 +97,7 @@
 
             @if (_expanded)
             {
-                <div style="border-top:1px solid var(--rz-border-color); padding-top:6px; margin-top:2px;">
+                <div style="border-top:var(--rz-border-normal); padding-top:6px; margin-top:2px;">
                     @Template(Resource)
                 </div>
             }

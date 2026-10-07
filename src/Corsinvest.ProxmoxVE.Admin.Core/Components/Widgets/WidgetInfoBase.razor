@@ -28,7 +28,7 @@
     <RadzenRow>
         <RadzenColumn Size="12" SizeSM="6">
             <RadzenCard Style="height: 100%">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: 1px solid var(--rz-divider)">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: var(--rz-border-normal)">
                     <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["ALERTS / WARNINGS"]" />
                     @if (IsLoadingAlerts)
                     {
@@ -56,7 +56,7 @@
 
         <RadzenColumn Size="12" SizeSM="6">
             <RadzenCard Style="height: 100%">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: 1px solid var(--rz-divider)">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: var(--rz-border-normal)">
                     <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["AGE DISTRIBUTION"]" />
                     @if (IsLoadingDistribution)
                     {
