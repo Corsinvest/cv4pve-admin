@@ -5,6 +5,7 @@
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Components;
 
 public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
+                            NotificationService notificationService,
                             DialogService dialogService) : IClusterName, IRefreshableData, IDisposable
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
@@ -72,6 +73,17 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                                     : EditDialogMode.Edit,
                                                                 item) != null)
         {
+            // A rule with every field empty would hide every finding
+            if (string.IsNullOrEmpty(item.IdResource)
+                && string.IsNullOrEmpty(item.ErrorCode)
+                && string.IsNullOrEmpty(item.SubContext)
+                && string.IsNullOrEmpty(item.Description))
+            {
+                notificationService.Warning(L["Fill at least one of Id Resource, Error Code, Sub Context and Description"]);
+                await DataGridRef.Reload();
+                return;
+            }
+
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.AddOrUpdateAsync(item);
 

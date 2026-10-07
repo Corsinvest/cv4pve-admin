@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Net.Mime;
-using System.Text.RegularExpressions;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
@@ -33,19 +32,13 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 taskScope.Item.Phase = "Loading ignored issues";
                 taskScope.Log($"Loading ignored issues for cluster {clusterName}");
 
-                var ignoredIssues = db.IgnoredIssues
-                                      .FromClusterName(clusterName)
-                                      .Select(a => new DiagnosticResult
-                                      {
-                                          Context = a.Context,
-                                          Description = Regex.Escape(a.Description!),
-                                          Gravity = a.Gravity,
-                                          SubContext = Regex.Escape(a.SubContext!),
-                                          Id = Regex.Escape(a.IdResource!)
-                                      })
-                                      .ToList();
+                var ignoreRules = (await db.IgnoredIssues
+                                           .FromClusterName(clusterName)
+                                           .AsNoTracking()
+                                           .ToListAsync())
+                                           .ConvertAll(a => a.ToRule());
 
-                taskScope.Log($"Loaded {ignoredIssues.Count} ignored issue(s)");
+                taskScope.Log($"Loaded {ignoreRules.Count} ignored issue(s)");
 
                 var now = DateTime.UtcNow;
 
@@ -55,7 +48,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 var client = await scope.GetClusterClient(clusterName).GetPveClientAsync();
                 var analyzeStart = DateTime.UtcNow;
                 var details = (await new DiagnosticEngine(client, settings.ApiSettings, httpClientFactory.CreateClient())
-                                        .AnalyzeAsync(ignoredIssues))
+                                        .AnalyzeAsync(ignoreRules))
                                         .Select(a => new JobDetail
                                         {
                                             IdResource = a.Id,

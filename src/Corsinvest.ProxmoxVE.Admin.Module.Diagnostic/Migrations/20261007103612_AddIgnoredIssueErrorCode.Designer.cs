@@ -3,6 +3,7 @@ using System;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Migrations
 {
     [DbContext(typeof(ModuleDbContext))]
-    partial class ModuleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261007103612_AddIgnoredIssueErrorCode")]
+    partial class AddIgnoredIssueErrorCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +40,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Migrations
                         .HasColumnType("text")
                         .UseCollation("case_insensitive");
 
-                    b.Property<int?>("Context")
+                    b.Property<int>("Context")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
@@ -48,7 +51,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Migrations
                         .HasColumnType("text")
                         .UseCollation("case_insensitive");
 
-                    b.Property<int?>("Gravity")
+                    b.Property<int>("Gravity")
                         .HasColumnType("integer");
 
                     b.Property<string>("IdResource")
