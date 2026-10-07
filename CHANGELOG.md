@@ -105,6 +105,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Dashboard**: cloning a dashboard creates a copy instead of overwriting the original; an imported dashboard belongs to the user who imports it, also when the file was exported by someone else; creating the default dashboards no longer renames the Home and Status dashboards of the other users.
 
+- **Backup Analytics**: the scan imports every backup task of the retention period; before, only the last 50 of each node were read, so the first scan and busy nodes missed the older ones.
+
 - **Tasks**: Maintenance *Fix All* and the command line no longer mark as abandoned the tasks that are still running.
 
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
