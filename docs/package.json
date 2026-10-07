@@ -15,5 +15,8 @@
     "@iconify-json/material-symbols": "^1.2.94",
     "@iconify-json/mdi": "^1.2.3",
     "astro": "^7.3.5"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^7.1.6"
   }
 }
