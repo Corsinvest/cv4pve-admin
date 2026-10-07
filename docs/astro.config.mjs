@@ -24,6 +24,9 @@ export default defineConfig({
       plugins: [
         corsinvestTheme({
           repo: 'cv4pve-admin',
+          // End of the <title> of the pages, in place of the site name: what people search for.
+          // A page with its own <title> in the frontmatter keeps it.
+          titleSuffix: 'cv4pve-admin for Proxmox VE',
           branch: 'main',
           // Product icon: favicon and header, dark variant for the dark theme.
           icon: { light: '/icon.svg', dark: '/icon-dark.svg' },
