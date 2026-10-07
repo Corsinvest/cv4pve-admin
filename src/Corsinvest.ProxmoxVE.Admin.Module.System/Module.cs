@@ -212,13 +212,18 @@ public class Module : ModuleBase
     public override IModuleMaintenance GetMaintenance(IServiceScope scope)
         => new PostgreSqlModuleMaintenance(scope.GetRequiredService<ModuleDbContext>());
 
-    public override Task FixAsync(IServiceScope scope) => RunAsync(scope);
+    // Running tasks are stale only when the server starts: a CLI command runs next to a live server,
+    // and Maintenance "Fix All" runs inside it
+    public override Task FixAsync(IServiceScope scope) => SetupAsync(scope, false);
 
-    protected override async Task RunAsync(IServiceScope scope)
+    protected override Task RunAsync(IServiceScope scope)
+        => SetupAsync(scope, !scope.GetRequiredService<ApplicationStateService>().IsCliCommand);
+
+    private static async Task SetupAsync(IServiceScope scope, bool abandonStaleTasks)
     {
         await scope.MigrateDbAsync<ModuleDbContext>();
         await scope.InitializeSecurityAsync();
-        await scope.AbandonStaleTasksAsync();
+        if (abandonStaleTasks) { await scope.AbandonStaleTasksAsync(); }
         scope.InitializeTaskCleanupJob();
     }
 

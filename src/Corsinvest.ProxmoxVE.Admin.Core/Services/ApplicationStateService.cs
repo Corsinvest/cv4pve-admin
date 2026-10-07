@@ -8,4 +8,5 @@ public class ApplicationStateService
 {
     public bool IsStartupComplete { get; set; }
     public bool IsReady { get; set; }
+    public bool IsCliCommand { get; set; }
 }
