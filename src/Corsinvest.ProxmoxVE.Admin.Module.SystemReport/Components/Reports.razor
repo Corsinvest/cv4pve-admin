@@ -26,24 +26,29 @@
         <CrudToolbar OnAdd="AddAsync"
                      OnDelete="DeleteAsync"
                      OnRefresh="RefreshDataAsync"
-                     DeleteDisabled="!SelectedItems.Any()">
+                     DeleteDisabled="!SelectedItems.Any()"
+                     Permissions="Module.Permissions.Report.Data">
             <TemplateAfter>
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Text="@L["Download"]"
-                              Icon="download"
-                              Click="DownloadAsync"
-                              Disabled="!SelectedItems.Any() || !SelectedItems[0].End.HasValue"
-                              IsBusy="InDownload" />
+                <PermissionView PermissionKey="@Module.Permissions.Report.Download.Key" Path="*">
+                    <RadzenButton Variant="Variant.Text"
+                                  Size="ButtonSize.Small"
+                                  Text="@L["Download"]"
+                                  Icon="download"
+                                  Click="DownloadAsync"
+                                  Disabled="!SelectedItems.Any() || !SelectedItems[0].End.HasValue"
+                                  IsBusy="InDownload" />
+                </PermissionView>
             </TemplateAfter>
         </CrudToolbar>
     </HeaderTemplate>
 
     <EmptyTemplate>
-        <EmptyExecuteAction Text="@L["Execute your first report"]"
-                            Click="AddAsync"
-                            Icon="play_arrow"
-                            Style="--rz-icon-fill: 1;" />
+        <PermissionView PermissionKey="@Module.Permissions.Report.Data.Create.Key" Path="*">
+            <EmptyExecuteAction Text="@L["Execute your first report"]"
+                                Click="AddAsync"
+                                Icon="play_arrow"
+                                Style="--rz-icon-fill: 1;" />
+        </PermissionView>
     </EmptyTemplate>
 
     <Columns>

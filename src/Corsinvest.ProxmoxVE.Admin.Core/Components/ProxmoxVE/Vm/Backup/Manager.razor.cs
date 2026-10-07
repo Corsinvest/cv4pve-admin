@@ -31,9 +31,11 @@ public partial class Manager(DialogService dialogService,
 
     protected override async Task OnInitializedAsync()
     {
-        CanBackup = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Backup, Vm.VmId);
-        CanDelete = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Backup, Vm.VmId);
-        CanEdit = CanDelete;
+        var hasBackup = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Backup, Vm.VmId);
+
+        CanBackup = hasBackup;
+        CanEdit = hasBackup;
+        CanDelete = hasBackup;
         CanRestore = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.BackupRestore, Vm.VmId);
         CanRestoreFile = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.BackupRestoreFile, Vm.VmId);
 

@@ -26,16 +26,18 @@
             </ChildContent>
         </RadzenFormField>
 
-        <RadzenFormField Text="@L["Message"]" AllowFloatingLabel="false" class="rz-w-100" Visible="Chats.Count() > 1">
-            <Start><RadzenIcon Icon="chat" /></Start>
-            <ChildContent>
-                <RadzenTextBox @bind-Value="@Message"
-                               @onkeyup="KeyUpAsync"
-                               class="rz-w-100"
-                               type="search"
-                               Placeholder="@L["Enter your message..."]" />
-            </ChildContent>
-        </RadzenFormField>
+        <PermissionView PermissionKey="@Module.Permissions.Chat.SendMessage.Key" Path="*">
+            <RadzenFormField Text="@L["Message"]" AllowFloatingLabel="false" class="rz-w-100" Visible="Chats.Count() > 1">
+                <Start><RadzenIcon Icon="chat" /></Start>
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="@Message"
+                                   @onkeyup="KeyUpAsync"
+                                   class="rz-w-100"
+                                   type="search"
+                                   Placeholder="@L["Enter your message..."]" />
+                </ChildContent>
+            </RadzenFormField>
+        </PermissionView>
     </RadzenStack>
 </RadzenStack>
 

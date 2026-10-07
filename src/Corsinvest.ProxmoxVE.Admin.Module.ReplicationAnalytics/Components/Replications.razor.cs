@@ -54,13 +54,17 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
         else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
 
-    private Task ExportAsync()
-        => DataGridRef.ExportToExcelAsync($"replications-{ClusterName}.xlsx",
-                                          new()
-                                          {
-                                              Scope = DataGridExportScope.All,
-                                              Title = L["Replications"]
-                                          });
+    private async Task ExportAsync()
+    {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.Data.Export)) { return; }
+
+        await DataGridRef.ExportToExcelAsync($"replications-{ClusterName}.xlsx",
+                                             new()
+                                             {
+                                                 Scope = DataGridExportScope.All,
+                                                 Title = L["Replications"]
+                                             });
+    }
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
@@ -96,6 +100,8 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
 
     private async Task RemoveAllDataAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.DeleteAll)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete all data"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
@@ -105,8 +111,10 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
         }
     }
 
-    private void Scan()
+    private async Task ScanAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.Scan)) { return; }
+
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
     }

@@ -25,22 +25,26 @@
         <HeaderTemplate>
             <CrudToolbar OnRefresh="RefreshDataAsync">
                 <TemplateBefore>
-                    <RadzenButton Variant="Variant.Text"
-                                  Size="ButtonSize.Small"
-                                  Text="@L["Backup"]"
-                                  Click="Backup"
-                                  Icon="play_arrow"
-                                  Style="--rz-icon-fill: 1;"
-                                  ButtonStyle="ButtonStyle.Success"
-                                  Disabled="!Settings.Folder.Enabled" />
+                    <PermissionView PermissionKey="@Module.Permissions.FolderBackup.Backup.Key" Path="*">
+                        <RadzenButton Variant="Variant.Text"
+                                      Size="ButtonSize.Small"
+                                      Text="@L["Backup"]"
+                                      Click="BackupAsync"
+                                      Icon="play_arrow"
+                                      Style="--rz-icon-fill: 1;"
+                                      ButtonStyle="ButtonStyle.Success"
+                                      Disabled="!Settings.Folder.Enabled" />
+                    </PermissionView>
 
-                    <RadzenButton Variant="Variant.Text"
-                                  Size="ButtonSize.Small"
-                                  Text="@L["Delete"]"
-                                  Icon="delete"
-                                  Click="DeleteAsync"
-                                  Disabled="!SelectedItems.Any()"
-                                  ButtonStyle="ButtonStyle.Danger" />
+                    <PermissionView PermissionKey="@Module.Permissions.FolderBackup.Delete.Key" Path="*">
+                        <RadzenButton Variant="Variant.Text"
+                                      Size="ButtonSize.Small"
+                                      Text="@L["Delete"]"
+                                      Icon="delete"
+                                      Click="DeleteAsync"
+                                      Disabled="!SelectedItems.Any()"
+                                      ButtonStyle="ButtonStyle.Danger" />
+                    </PermissionView>
                 </TemplateBefore>
 
                 <TemplateAfter>
@@ -50,10 +54,12 @@
         </HeaderTemplate>
 
         <EmptyTemplate>
-            <EmptyExecuteAction Text="@L["Execute your first backup"]"
-                                Click="Backup"
-                                Icon="play_arrow"
-                                Style="--rz-icon-fill: 1;" />
+            <PermissionView PermissionKey="@Module.Permissions.FolderBackup.Backup.Key" Path="*">
+                <EmptyExecuteAction Text="@L["Execute your first backup"]"
+                                    Click="BackupAsync"
+                                    Icon="play_arrow"
+                                    Style="--rz-icon-fill: 1;" />
+            </PermissionView>
         </EmptyTemplate>
 
         <GroupHeaderTemplate>
@@ -91,13 +97,15 @@
                                   Groupable="false"
                                   Width="110px">
                 <Template Context="ctx">
-                    <RadzenButton Variant="Variant.Text"
-                                  Size="ButtonSize.Small"
-                                  Icon="download"
-                                  Click="@(() => DownloadAsync(ctx))"
-                                  IsBusy="InDownload"
-                                  title="@L["Download"]"
-                                  aria-label="@L["Download"]" />
+                    <PermissionView PermissionKey="@Module.Permissions.FolderBackup.Download.Key" Path="*">
+                        <RadzenButton Variant="Variant.Text"
+                                      Size="ButtonSize.Small"
+                                      Icon="download"
+                                      Click="@(() => DownloadAsync(ctx))"
+                                      IsBusy="InDownload"
+                                      title="@L["Download"]"
+                                      aria-label="@L["Download"]" />
+                    </PermissionView>
 
                     <RadzenButton Variant="Variant.Text"
                                   Size="ButtonSize.Small"

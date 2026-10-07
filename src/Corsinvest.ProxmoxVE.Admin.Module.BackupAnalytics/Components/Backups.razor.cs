@@ -79,13 +79,17 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
     }
 
-    private Task ExportAsync()
-        => DataGridRef.ExportToExcelAsync($"backups-{ClusterName}.xlsx",
-                                          new()
-                                          {
-                                              Scope = DataGridExportScope.All,
-                                              Title = L["Backups"]
-                                          });
+    private async Task ExportAsync()
+    {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Backup.Data.Export)) { return; }
+
+        await DataGridRef.ExportToExcelAsync($"backups-{ClusterName}.xlsx",
+                                             new()
+                                             {
+                                                 Scope = DataGridExportScope.All,
+                                                 Title = L["Backups"]
+                                             });
+    }
 
     private async Task LoadDataAsync(LoadDataArgs args)
     {
@@ -137,6 +141,8 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
 
     private async Task RemoveAllDataAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Backup.DeleteAll)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete all data"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
@@ -147,8 +153,10 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         }
     }
 
-    private void Scan()
+    private async Task ScanAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Backup.Scan)) { return; }
+
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
     }

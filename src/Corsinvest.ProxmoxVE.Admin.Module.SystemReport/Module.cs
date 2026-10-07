@@ -5,6 +5,7 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Module.SystemReport.Persistence;
 using Microsoft.Extensions.Configuration;
 
@@ -42,10 +43,27 @@ public class Module : ModuleBase
             Render = NavBar.ToList()[0].Render
         };
 
+        Roles =
+        [
+            new(Permissions.Report.Data.Permissions
+                                       .CombineWith(Permissions.Report.Download))
+        ];
+
         Directory.CreateDirectory(PathData);
     }
 
-    protected override string PermissionBaseKey { get; } = "SystemReport";
+    protected override string PermissionBaseKey => Permissions.BaseName;
+
+    public static class Permissions
+    {
+        public static string BaseName { get; } = "SystemReport";
+
+        public static class Report
+        {
+            public static PermissionsCrud Data { get; } = new(BaseName, nameof(Report), nameof(Data));
+            public static Permission Download { get; } = new(Data.Prefix, nameof(Download), "Download");
+        }
+    }
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
        => services.AddDbContextFactoryPostgreSql<ModuleDbContext>("system_reports");

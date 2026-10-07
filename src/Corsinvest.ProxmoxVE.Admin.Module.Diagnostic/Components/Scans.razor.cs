@@ -101,6 +101,8 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task DeleteAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Delete)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
@@ -120,6 +122,8 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Data.Export)) { return; }
+
         var format = item?.Value switch
         {
             nameof(ReportFormat.Excel) => ReportFormat.Excel,
@@ -147,8 +151,10 @@ public partial class Scans(IBrowserService browserService,
         InDownload = false;
     }
 
-    private void Scan()
+    private async Task ScanAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Run)) { return; }
+
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
     }

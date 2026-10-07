@@ -69,14 +69,18 @@
                         @onclick="@(() => { OnAfterAction.InvokeAsync(); })" />
         }
 
-        @if (CanStop && Item.Status == TaskItemStatus.Running && Item.IsCancellable)
+        @if (Item.Status == TaskItemStatus.Running && Item.IsCancellable)
         {
-            <RadzenButton Icon="stop_circle"
-                          ButtonStyle="ButtonStyle.Danger"
-                          Variant="Variant.Text"
-                          Size="ButtonSize.ExtraSmall"
-                          title="@L["Cancel task"]"
-                          Click="CancelTaskAsync" />
+            <PermissionView PermissionKey="@Permissions.Stop.Key"
+                            PermissionClusterName="@ApplicationHelper.AllClusterName"
+                            Path="*">
+                <RadzenButton Icon="stop_circle"
+                              ButtonStyle="ButtonStyle.Danger"
+                              Variant="Variant.Text"
+                              Size="ButtonSize.ExtraSmall"
+                              title="@L["Cancel task"]"
+                              Click="CancelTaskAsync" />
+            </PermissionView>
         }
     </RadzenStack>
 

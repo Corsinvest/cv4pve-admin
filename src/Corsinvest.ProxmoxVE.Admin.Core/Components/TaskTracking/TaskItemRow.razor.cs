@@ -13,11 +13,6 @@ public partial class TaskItemRow(ITaskTrackerService taskTracker,
     [Parameter] public TaskItemInfo Item { get; set; } = default!;
     [Parameter] public EventCallback OnAfterAction { get; set; }
 
-    private bool CanStop { get; set; }
-
-    protected override async Task OnInitializedAsync()
-        => CanStop = await HasPermissionAsync(Permissions.Stop);
-
     private string Icon => Item.Status switch
     {
         TaskItemStatus.Running => "sync",
@@ -42,7 +37,7 @@ public partial class TaskItemRow(ITaskTrackerService taskTracker,
 
     private async Task CancelTaskAsync()
     {
-        if (!CanStop) { return; }
+        if (!await HasPermissionAsync(Permissions.Stop)) { return; }
 
         await taskTracker.CancelAsync(Item.Id);
         await OnAfterAction.InvokeAsync();

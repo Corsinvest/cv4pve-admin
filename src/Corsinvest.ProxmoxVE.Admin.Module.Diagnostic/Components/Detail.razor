@@ -72,14 +72,16 @@
                     <RadzenLink Icon="info" Target="_blank" Path="@helpUrl" />
                 }
 
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Icon="visibility_off"
-                              ButtonStyle="ButtonStyle.Primary"
-                              Click="@(() => IgnoreIssueAsync(ctx))"
-                              @onclick:stopPropagation="true"
-                              title="@L["Ignore Issue"]"
-                              aria-label="@L["Ignore Issue"]" />
+                <PermissionView PermissionKey="@Module.Permissions.IgnoredIssue.Data.Create.Key" Path="*">
+                    <RadzenButton Variant="Variant.Text"
+                                  Size="ButtonSize.Small"
+                                  Icon="visibility_off"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  Click="@(() => IgnoreIssueAsync(ctx))"
+                                  @onclick:stopPropagation="true"
+                                  title="@L["Ignore Issue"]"
+                                  aria-label="@L["Ignore Issue"]" />
+                </PermissionView>
             </Template>
         </RadzenDataGridColumn>
     </Columns>

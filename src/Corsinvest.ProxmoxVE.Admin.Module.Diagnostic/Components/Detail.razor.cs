@@ -99,12 +99,11 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task IgnoreIssueAsync(JobDetail item)
     {
-        await using var db = await dbContextFactory.CreateDbContextAsync();
-        var clusterName = (await db.JobResults.Where(a => a.Id == ResultId)
-                                             .Select(a => a.ClusterName)
-                                             .FirstOrDefaultAsync())!;
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Create)) { return; }
 
-        if (await db.IgnoredIssues.FromClusterName(clusterName)
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+
+        if (await db.IgnoredIssues.FromClusterName(ClusterName)
                                   .Where(a => a.IdResource == item.IdResource
                                                 && a.ErrorCode == item.ErrorCode
                                                 && a.Context == item.Context
@@ -119,7 +118,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
         {
             await db.IgnoredIssues.AddAsync(new()
             {
-                ClusterName = clusterName,
+                ClusterName = ClusterName,
                 IdResource = item.IdResource,
                 ErrorCode = item.ErrorCode,
                 Context = item.Context,

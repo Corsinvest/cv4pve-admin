@@ -21,22 +21,26 @@
                 RowRender="RowRender"
                 AllowColumnPicking="true">
     <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshDataAsync" OnExport="ExportAsync">
+        <CrudToolbar OnRefresh="RefreshDataAsync" OnExport="ExportAsync" Permissions="Module.Permissions.Backup.Data">
             <TemplateBefore>
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Text="@L["Scan"]"
-                              Click="Scan"
-                              Icon="play_arrow"
-                              Style="--rz-icon-fill: 1;"
-                              ButtonStyle="ButtonStyle.Success" />
+                <PermissionView PermissionKey="@Module.Permissions.Backup.Scan.Key" Path="*">
+                    <RadzenButton Variant="Variant.Text"
+                                  Size="ButtonSize.Small"
+                                  Text="@L["Scan"]"
+                                  Click="ScanAsync"
+                                  Icon="play_arrow"
+                                  Style="--rz-icon-fill: 1;"
+                                  ButtonStyle="ButtonStyle.Success" />
+                </PermissionView>
 
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Text="@L["Delete all data"]"
-                              Click="RemoveAllDataAsync"
-                              Icon="delete"
-                              ButtonStyle="ButtonStyle.Danger" />
+                <PermissionView PermissionKey="@Module.Permissions.Backup.DeleteAll.Key" Path="*">
+                    <RadzenButton Variant="Variant.Text"
+                                  Size="ButtonSize.Small"
+                                  Text="@L["Delete all data"]"
+                                  Click="RemoveAllDataAsync"
+                                  Icon="delete"
+                                  ButtonStyle="ButtonStyle.Danger" />
+                </PermissionView>
             </TemplateBefore>
 
             <TemplateAfter>
@@ -46,10 +50,12 @@
     </HeaderTemplate>
 
     <EmptyTemplate>
-        <EmptyExecuteAction Text="@L["Execute your first scan"]"
-                            Click="Scan"
-                            Icon="play_arrow"
-                            Style="--rz-icon-fill: 1;" />
+        <PermissionView PermissionKey="@Module.Permissions.Backup.Scan.Key" Path="*">
+            <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                                Click="ScanAsync"
+                                Icon="play_arrow"
+                                Style="--rz-icon-fill: 1;" />
+        </PermissionView>
     </EmptyTemplate>
 
     <GroupHeaderTemplate>

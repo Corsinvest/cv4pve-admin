@@ -5,6 +5,7 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Microsoft.Extensions.Configuration;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics;
@@ -84,9 +85,16 @@ public class Module : ModuleBase
                 Height = 8
             }
         ];
+
+        Roles =
+        [
+            new(Permissions.Replication.Data.Permissions
+                                            .CombineWith(Permissions.Replication.Scan)
+                                            .CombineWith(Permissions.Replication.DeleteAll))
+        ];
     }
 
-    protected override string PermissionBaseKey { get; } = "ReplicationAnalytics";
+    protected override string PermissionBaseKey => Permissions.BaseName;
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services)
@@ -121,6 +129,18 @@ public class Module : ModuleBase
                                              settings.CronExpression,
                                              settings.Enabled,
                                              settings.ClusterName);
+        }
+    }
+
+    public static class Permissions
+    {
+        public static string BaseName { get; } = "ReplicationAnalytics";
+
+        public static class Replication
+        {
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Replication), nameof(Data));
+            public static Permission Scan { get; } = new(Data.Prefix, nameof(Scan), "Scan");
+            public static Permission DeleteAll { get; } = new(Data.Prefix, nameof(DeleteAll), "Delete all data");
         }
     }
 }
