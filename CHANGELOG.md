@@ -129,6 +129,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Tasks**: Maintenance *Fix All* and the command line no longer mark as abandoned the tasks that are still running.
 
+- **Widgets**: in the *Status* widget of Diagnostic and of Update Manager the *Critical* and *In error* slices are red again; before, they had no colour of their own. The thin separators of the resource cards, of the *Info* widgets and of the issue list of the health widgets are now drawn.
+
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
 
 #### Internal
