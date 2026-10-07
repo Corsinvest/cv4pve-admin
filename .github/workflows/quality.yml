@@ -4,9 +4,20 @@ on:
   # On main too: CodeQL compares a pull request with the analysis of its base branch.
   push:
     branches: [ "main" ]
+  # A pull request that changes only the documentation has no code to analyze.
   pull_request:
     branches: [ "main" ]
+    paths-ignore: [ "docs/**", "**.md" ]
+  # Weekly: CodeQL queries are updated over time, so main is analyzed even when nothing is merged.
+  schedule:
+    - cron: '17 4 * * 1'
   workflow_dispatch:
+
+# A new push to a pull request cancels the analysis of the previous one.
+# Every other run has its own group: each commit of main is analyzed, none is cancelled or skipped.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
