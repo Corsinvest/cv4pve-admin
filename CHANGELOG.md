@@ -101,6 +101,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Bots (Telegram)**: VM, container and node commands answer with the error of Proxmox VE when the action is refused, instead of answering as if it had worked. The built-in migrate and node shutdown aliases now work.
 
+- **AutoSnap, deleting a job**: with *On remove job remove snapshots in Proxmox VE* enabled, deleting a job now removes its snapshots and shows the operation among the tasks; before, the snapshots were left in place. The job stays in the list until the removal ends.
+
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
@@ -120,6 +122,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
 
 - **NodeProtect — Git credentials**: the username and password changed in the Git settings are now saved; before, the change was lost. The password, like the secrets of AutoSnap hooks, is now stored encrypted; values saved before are kept and encrypted on the next save.
+
+- **AI Server, queries**: the filters of a query are now applied; before, they were ignored and every row was returned. A malformed filter or a misspelled property now returns an error instead of being skipped.
+
+- **Workflow, guest actions**: the power action, migrate and snapshot (create, delete, rollback, update) activities now run their action; before, they never reached Proxmox VE.
 
 ## [2.3.0] - 2026-09-24
 
