@@ -82,9 +82,9 @@ After the cluster is saved, **Test Cluster Connections** in **Maintenance** chec
 
 ### "SSH Warning" when saving a cluster
 
-When SSH is configured, saving a cluster opens an SSH connection on port 22 to every node of the list. cv4pve-admin reports the nodes that fail. Check that:
+When SSH is configured, saving a cluster opens an SSH connection to every node of the list, on the **SSH Port** of the node (default 22). cv4pve-admin reports the nodes that fail. Check that:
 
-- every node address in the **Nodes** list is reachable from the cv4pve-admin container on port 22;
+- every node address in the **Nodes** list is reachable from the cv4pve-admin container on its **SSH Port**;
 - the user, password or private key are valid on all the nodes;
 - with **Same as WEB API**, the Web API access type is `Credential` and the user is a PAM user (for example `root@pam`).
 

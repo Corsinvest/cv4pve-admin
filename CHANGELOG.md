@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **Cluster settings, SSH port**: each node of a cluster has its own SSH port (default 22), next to the API port, for nodes where SSH does not listen on the standard port. Existing clusters keep port 22.
+
 - **Check for updates**: a button in the Help menu looks for a new version right away, instead of waiting for the periodic check (up to 12 hours).
 
 - **Diagnostic — profiles**: *Fast*, *Standard* and *Full* buttons in the settings, as in Report. *Fast* skips the slowest reads (backup content, snapshots, LVM-thin metadata) for a quick scan of large clusters; *Full* turns on every optional check (S.M.A.R.T., ZFS details, CVE lookup, OK results) for audits.

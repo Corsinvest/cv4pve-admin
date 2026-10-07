@@ -25,22 +25,31 @@
     </ToolbarContent>
 
     <ItemTemplate Context="node">
-        <RadzenStack Orientation="Orientation.Vertical" Gap="0" class="rz-w-100">
-            <RadzenTextBox Name="@FieldName(node, nameof(node.IPAddress))"
-                           @bind-Value="@node.IPAddress"
-                           Placeholder="@L["IP Address/Host"]"
-                           Disabled="@Disabled"
-                           title="@L["IP Address/Host"]"
-                           class="rz-w-100" />
-            <RadzenDataAnnotationValidator Component="@FieldName(node, nameof(node.IPAddress))" />
-        </RadzenStack>
+        <RadzenFormField Text="@L["IP Address/Host"]" AllowFloatingLabel="false" class="rz-w-100">
+            <ChildContent>
+                <RadzenTextBox Name="@FieldName(node, nameof(node.IPAddress))"
+                               @bind-Value="@node.IPAddress"
+                               Disabled="@Disabled" />
+            </ChildContent>
+            <Helper>
+                <RadzenDataAnnotationValidator Component="@FieldName(node, nameof(node.IPAddress))" />
+            </Helper>
+        </RadzenFormField>
 
-        <RadzenNumeric Name="@FieldName(node, nameof(node.ApiPort))"
-                       @bind-Value="@node.ApiPort"
-                       Min="1"
-                       Max="65535"
-                       Disabled="@Disabled"
-                       title="@L["API Port"]"
-                       Style="width:7rem;flex-shrink:0;" />
+        <RadzenFormField Text="@L["API Port"]" AllowFloatingLabel="false" Style="width:7rem;flex-shrink:0;">
+            <RadzenNumeric Name="@FieldName(node, nameof(node.ApiPort))"
+                           @bind-Value="@node.ApiPort"
+                           Min="1"
+                           Max="65535"
+                           Disabled="@Disabled" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="@L["SSH Port"]" AllowFloatingLabel="false" Style="width:7rem;flex-shrink:0;">
+            <RadzenNumeric Name="@FieldName(node, nameof(node.SshPort))"
+                           @bind-Value="@node.SshPort"
+                           Min="1"
+                           Max="65535"
+                           Disabled="@Disabled" />
+        </RadzenFormField>
     </ItemTemplate>
 </ListEditor>
