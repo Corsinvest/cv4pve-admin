@@ -109,6 +109,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped.
 
+- **Sign-in**: after the login you are sent back only to a page of this installation; before, a crafted link could send you to another site.
+
+- **Permissions**: the settings of a module can be opened and saved only with the *Edit Settings* permission, also from the *Activate schedulation* button; AutoSnap *Snap* and *Purge*, stopping a task and starting the application update now check their permission when they run, not only when the button is shown. The AutoSnap *Errors* page shows the errors of the current cluster only.
+
+- **Profile, language**: changing the language reloads the page in the new language; before, the page lost the connection.
+
 - **Tasks**: Maintenance *Fix All* and the command line no longer mark as abandoned the tasks that are still running.
 
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
@@ -136,6 +142,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **AI Server, queries**: the filters of a query are now applied; before, they were ignored and every row was returned. A malformed filter or a misspelled property now returns an error instead of being skipped.
 
 - **Workflow, guest actions**: the power action, migrate and snapshot (create, delete, rollback, update) activities now run their action; before, they never reached Proxmox VE.
+
+- **Users, Roles and App Tokens**: clicking a row selects it and opens the editor again; the *Roles* tab of an app token no longer drops the connection.
+
+- **Permissions**: resetting a user password, regenerating an app token, UPS *Scan now* and creating a Portal tenant now check their permission when they run, not only when the button is shown.
+
+- **Portal**: removing a guest from a tenant no longer removes it from the other tenants.
+
+- **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
 
 ## [2.3.0] - 2026-09-24
 
