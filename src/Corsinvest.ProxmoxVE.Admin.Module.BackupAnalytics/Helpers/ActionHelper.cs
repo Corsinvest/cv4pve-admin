@@ -147,8 +147,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                                                         TaskScope? taskScope = null)
     {
         const string KEY_STORAGE = "--storage ";
+        const int maxTasks = 10000;
         var taskCount = 0;
         var jobCount = 0;
+
+        // Proxmox VE returns 50 tasks by default: ask for the whole retention window instead
+        var since = (int)new DateTimeOffset(DateTime.UtcNow.AddDays(-settings.MaxDaysLogs)).ToUnixTimeSeconds();
 
         var nodes = (await client.GetNodesAsync()).Where(a => a.IsOnline).ToList();
         var nodeIndex = 0;
@@ -158,8 +162,14 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             taskScope?.LogProgress(nodeIndex, nodes.Count, $"[{nodeIndex}/{nodes.Count}] Scanning node {node.Node}", phase: $"Scanning {node.Node}");
 
             //list task backup
-            var taskItems = await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "vzdump"); //, limit: 9999
-            taskScope?.Log($"  {node.Node}: {taskItems.Count()} vzdump task(s) found");
+            var taskItems = (await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "vzdump", since: since, limit: maxTasks)).ToList();
+            taskScope?.Log($"  {node.Node}: {taskItems.Count} vzdump task(s) found");
+            if (taskItems.Count >= maxTasks)
+            {
+                taskScope?.Log($"  {node.Node}: reached the limit of {maxTasks} tasks, older ones are not imported", LogLevel.Warning);
+            }
+
+            var nodeTaskCount = 0;
 
             // Batch optimization: Load all existing tasks for this node in one query
             var taskIds = taskItems.Select(t => t.UniqueTaskId).ToList();
@@ -223,6 +233,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                     await db.TaskResults.AddAsync(task);
                     taskCount++;
+                    nodeTaskCount++;
                     jobCount += task.Jobs.Count;
                 }
                 catch (Exception ex)
@@ -232,7 +243,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             }
 
             await db.SaveChangesAsync();
-            taskScope?.Log($"  {node.Node}: imported {taskItems.Count()} task(s)");
+            taskScope?.Log($"  {node.Node}: imported {nodeTaskCount} task(s)");
         }
 
         //remove old logs
