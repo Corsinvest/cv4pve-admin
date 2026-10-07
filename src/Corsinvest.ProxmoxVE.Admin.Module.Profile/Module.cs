@@ -55,7 +55,7 @@ public class Module : ModuleBase
                     Description = "Select your preferred language for the user interface",
                     Icon = "translate",
                     ComponentType = typeof(Components.CulturePreferences),
-                    OnSavedAsync = OnSavedPreferencesAsync
+                    GetRedirectUrl = GetSetCultureUrl
                 }],true),
             },
 
@@ -113,11 +113,8 @@ public class Module : ModuleBase
         ];
     }
 
-    private async Task OnSavedPreferencesAsync(IServiceScope scope, UserSettings settings)
-    {
-        var navigationManager = scope.GetRequiredService<NavigationManager>();
-        navigationManager.NavigateTo($"/set-culture?culture={settings.Culture}&redirectUri={navigationManager.Uri}", forceLoad: true);
-    }
+    private static string GetSetCultureUrl(UserSettings settings, string currentUrl)
+        => $"/set-culture?culture={Uri.EscapeDataString(settings.Culture)}&redirectUri={Uri.EscapeDataString(currentUrl)}";
 
     protected override string PermissionBaseKey { get; } = "Profile";
 

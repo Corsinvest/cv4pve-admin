@@ -6,6 +6,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Settings;
 
 public partial class SettingsAccordion<TSettings>(ISettingsService settingsService,
                                                   NotificationService notificationService,
+                                                  NavigationManager navigationManager,
                                                   IServiceScopeFactory serviceScopeFactory)
 {
     [Parameter] public IEnumerable<SettingSection<TSettings>> Sections { get; set; } = [];
@@ -36,6 +37,12 @@ public partial class SettingsAccordion<TSettings>(ISettingsService settingsServi
         {
             await using var scope = serviceScopeFactory.CreateAsyncScope();
             await section.OnSavedAsync(scope, Settings);
+        }
+
+        if (section.GetRedirectUrl != null)
+        {
+            var currentUrl = $"/{navigationManager.ToBaseRelativePath(navigationManager.Uri)}";
+            navigationManager.NavigateTo(section.GetRedirectUrl(Settings, currentUrl), forceLoad: true);
         }
     }
 }
