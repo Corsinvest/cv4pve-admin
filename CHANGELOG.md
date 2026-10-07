@@ -73,6 +73,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - On Linux the backup archives are readable only by the user running the application, since they contain password hashes and keys.
   - When the backup of a node fails, the old backups are kept: retention is applied only after a run where every node was backed up, so good backups are never deleted to make room for an incomplete one. A run that saved no archive leaves no empty folder.
 
+- **Permissions (review your custom roles)**: the actions of these pages now have their own permission, which hides the button and is checked again when the action runs. Before, opening the page was enough to run them.
+  - Backup Analytics and Replication Analytics: *Scan*, *Delete all data* and the export.
+  - Diagnostic: *Scan*, deleting and downloading a scan, creating, editing and deleting the ignore rules.
+  - Node Protect: *Backup*, delete and download; in *(EE)* also the Git *Push*, *Reset*, *Sync from remote* and download.
+  - System Report: new report, delete and download.
+  - Update Manager: *Scan* and download.
+  - Bots: sending a message.
+
+  The built-in roles of each module include the new permissions. Custom roles do not: their users no longer see these buttons until an administrator assigns the permissions.
+
 #### Fixed
 
 - **Grids**: a group, once expanded, can be collapsed again.
