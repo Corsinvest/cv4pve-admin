@@ -109,6 +109,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped.
 
+- **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones with the same text. The check code is shown in the list of the rules. Rules created before keep working; some findings hidden by mistake may become visible again.
+
 - **Sign-in**: after the login you are sent back only to a page of this installation; before, a crafted link could send you to another site.
 
 - **Permissions**: the settings of a module can be opened and saved only with the *Edit Settings* permission, also from the *Activate schedulation* button; AutoSnap *Snap* and *Purge*, stopping a task and starting the application update now check their permission when they run, not only when the button is shown. The AutoSnap *Errors* page shows the errors of the current cluster only.
