@@ -107,11 +107,8 @@ public partial class QueryExecutor(IDataProvider dataProvider)
     {
         foreach (var node in where.Conditions)
         {
-            switch (node)
-            {
-                case Condition condition: condition.Field = FixFieldName(condition.Field, tableName); break;
-                case WhereClause group: FixConditions(group, tableName); break;
-            }
+            if (node is Condition condition) { condition.Field = FixFieldName(condition.Field, tableName); }
+            else if (node is WhereClause group) { FixConditions(group, tableName); }
         }
     }
 
