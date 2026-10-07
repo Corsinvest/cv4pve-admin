@@ -7,17 +7,52 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "docs/**", ".github/workflows/docs.yml" ]
+  pull_request:
+    branches: [ "main" ]
+    paths: [ "docs/**", ".github/workflows/docs.yml" ]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
 
 jobs:
+  # Pull requests: build the site and verify pages and internal links. Nothing is published.
+  check:
+    name: Check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: docs-check-${{ github.ref }}
+      cancel-in-progress: true
+    defaults:
+      run:
+        working-directory: docs
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: npm
+        cache-dependency-path: docs/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build and check
+      run: npm run check
+
   docs:
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     uses: Corsinvest/.github/.github/workflows/cv4pve-tools-docs.yml@main
