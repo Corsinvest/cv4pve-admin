@@ -66,18 +66,18 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
             foreach (var job in jobs)
             {
-                var rows = (await client.Nodes[node.Node].Replication[job.Id].Log.ReadJobLog())
-                            .ToEnumerable()
-                            .OrderBy(a => a.n)
-                            .Select(a => a.t as string)
-                            .ToArray();
-
                 var lastSync = DateTimeOffset.FromUnixTimeSeconds(job.LastSync).UtcDateTime;
 
                 if (!existingJobs.Contains((job.Id, lastSync)))
                 {
                     try
                     {
+                        var rows = (await client.Nodes[node.Node].Replication[job.Id].Log.ReadJobLog())
+                                    .ToEnumerable()
+                                    .OrderBy(a => a.n)
+                                    .Select(a => a.t as string)
+                                    .ToArray();
+
                         var status = string.IsNullOrWhiteSpace(job.Error);
                         await db.JobResults.AddAsync(new()
                         {
@@ -114,15 +114,13 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         await db.SaveChangesAsync();
 
         //remove old logs
-        var maxDate = db.JobResults
-                        .FromClusterName(settings.ClusterName)
-                        .Select(a => a.Start)
-                        .Max()
-                        .AddDays(-settings.MaxDaysLogs);
+        var minDate = DateTime.UtcNow.AddDays(-settings.MaxDaysLogs);
 
-        await db.JobResults.FromClusterName(settings.ClusterName)
-                           .Where(a => a.Start < maxDate)
-                           .ExecuteDeleteAsync();
+        taskScope?.Log($"Cleaning logs older than {settings.MaxDaysLogs} day(s)");
+        var deleted = await db.JobResults.FromClusterName(settings.ClusterName)
+                                         .Where(a => a.Start < minDate)
+                                         .ExecuteDeleteAsync();
+        if (deleted > 0) { taskScope?.Log($"Deleted {deleted} old job result(s)"); }
 
         return (jobCount, successCount, failureCount);
     }
