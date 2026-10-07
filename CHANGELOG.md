@@ -107,6 +107,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Backup Analytics**: the scan imports every backup task of the retention period; before, only the last 50 of each node were read, so the first scan and busy nodes missed the older ones.
 
+- **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped.
+
 - **Tasks**: Maintenance *Fix All* and the command line no longer mark as abandoned the tasks that are still running.
 
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
