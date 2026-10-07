@@ -113,7 +113,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                 && a.Gravity == item.Gravity)
                                   .AnyAsync())
         {
-            notificationService.Info(L["Issue already exists!"]);
+            notificationService.Warning(L["Issue already exists!"]);
         }
         else
         {

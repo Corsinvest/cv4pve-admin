@@ -13,15 +13,15 @@ public class IgnoredIssue : IClusterName, IId
     [Required] public string ClusterName { get; set; } = default!;
     public string? IdResource { get; set; }
     public string? ErrorCode { get; set; }
-    public DiagnosticResultGravity Gravity { get; set; }
-    public DiagnosticResultContext Context { get; set; }
+    public DiagnosticResultGravity? Gravity { get; set; }
+    public DiagnosticResultContext? Context { get; set; }
     public string? SubContext { get; set; }
     public string? Description { get; set; }
 
     // The engine reads the text fields as regular expressions, found anywhere in the value.
-    // An empty field matches any value. Id, error code and sub context are anchored, to match
-    // one value only; the description is not, because many descriptions carry values that
-    // change at every scan
+    // An empty field, gravity and context included, matches any value. Id, error code and sub
+    // context are anchored, to match one value only; the description is not, because many
+    // descriptions carry values that change at every scan
     public DiagnosticIgnoreRule ToRule()
         => new()
         {

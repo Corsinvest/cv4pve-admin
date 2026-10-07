@@ -30,7 +30,14 @@
 <RadzenFormField Text="@L["Gravity"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start><RadzenIcon Icon="priority_high" /></Start>
     <ChildContent>
-        <EnumDropDown @bind-Value="@Model.Gravity" Name="@nameof(Model.Gravity)" />
+        <RadzenDropDown TValue="DiagnosticResultGravity?"
+                        @bind-Value="@Model.Gravity"
+                        Data="@(Enum.GetValues<DiagnosticResultGravity>())"
+                        AllowClear="true"
+                        Placeholder="@L["Any"]"
+                        Name="@nameof(Model.Gravity)">
+            <Template>@L[$"{context}"]</Template>
+        </RadzenDropDown>
     </ChildContent>
     <End>
         <InfoIcon>
@@ -46,8 +53,14 @@
 <RadzenFormField Text="@L["Context"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start><RadzenIcon Icon="category" /></Start>
     <ChildContent>
-        <EnumDropDown @bind-Value="@Model.Context"
-                      Name="@nameof(Model.Context)" />
+        <RadzenDropDown TValue="DiagnosticResultContext?"
+                        @bind-Value="@Model.Context"
+                        Data="@(Enum.GetValues<DiagnosticResultContext>())"
+                        AllowClear="true"
+                        Placeholder="@L["Any"]"
+                        Name="@nameof(Model.Context)">
+            <Template>@L[$"{context}"]</Template>
+        </RadzenDropDown>
     </ChildContent>
     <End>
         <InfoIcon>
