@@ -93,10 +93,10 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
 
     public async Task<ConnectionInfo> GetSshConnectionInfoAsync(string node, bool resolveHost)
     {
-        var host = resolveHost
-                    ? await GetNodeIpAsync(node)
-                    : node;
-        return new(host, SshCredential.DefaultPort, GetSshUsername(), GetSshAuthMethod())
+        var (host, nodeSettings) = resolveHost
+                                    ? await GetNodeIpAsync(node)
+                                    : (node, Settings.GetNodeSettings(node, node) ?? throw new AdminException("Host not found!"));
+        return new(host, nodeSettings.SshPort, GetSshUsername(), GetSshAuthMethod())
         {
             Timeout = TimeSpan.FromMilliseconds(Settings.SshCredential.Timeout)
         };
@@ -141,12 +141,13 @@ public class ClusterClient(IPveClientFactory pveClientFactory,
         }
     }
 
-    private async Task<string> GetNodeIpAsync(string node)
+    private async Task<(string IpAddress, ClusterNodeSettings NodeSettings)> GetNodeIpAsync(string node)
     {
         var client = await GetPveClientAsync();
         var (host, ipAddress) = (await client.GetHostAndIpAsync()).FirstOrDefault(a => a.Key == node);
-        if (Settings.GetNodeSettings(ipAddress, host) == null) { throw new AdminException("Host not found!"); }
-        return ipAddress;
+        var nodeSettings = Settings.GetNodeSettings(ipAddress, host)
+                            ?? throw new AdminException("Host not found!");
+        return (ipAddress, nodeSettings);
     }
 
     public async Task<FluentResults.Result<string>> TestSshAsync()

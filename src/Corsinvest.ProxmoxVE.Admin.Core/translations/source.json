@@ -123,6 +123,7 @@
   "Validate SSL Certificate": "",
   "IP Address/Host": "",
   "API Port": "",
+  "SSH Port": "",
   "Access Type": "",
   "Timeout (msec)": "",
   "Username": "",

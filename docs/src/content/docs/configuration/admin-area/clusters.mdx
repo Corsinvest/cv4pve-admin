@@ -41,6 +41,7 @@ List the nodes of the cluster. Each row has:
 |-------|-------------|
 | **IP Address/Host** | Required. IP address or host name of the node. |
 | **API Port** | Port of the Proxmox VE API (default: 8006). |
+| **SSH Port** | Port of the SSH service of the node (default: 22). Used only when SSH is configured for the cluster. |
 
 The addresses are used for both the Proxmox VE API and SSH. For the API, nodes are tried in the listed order until one responds, so put the preferred node first. Rows can be reordered, added with **Add node** and removed.
 
@@ -114,7 +115,7 @@ API Tokens do not create a session ticket, so console access is not possible whe
 
 Several features require SSH access to the Proxmox VE nodes, including snapshot size calculation, node configuration backup (Node Protect) and parallel update scans (Update Manager).
 
-SSH is configured per cluster in the **SSH** panel of the cluster dialog. Connections always use port 22 and the node addresses of the **Nodes** list.
+SSH is configured per cluster in the **SSH** panel of the cluster dialog. Connections use the node addresses of the **Nodes** list, each with its own **SSH Port** (default: 22).
 
 <Collapse title="Show SSH credential fields" kind="settings">
 

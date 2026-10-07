@@ -10,4 +10,6 @@ public class ClusterNodeSettings
     public string IPAddress { get; set; } = default!;
 
     public int ApiPort { get; set; } = 8006;
+
+    public int SshPort { get; set; } = SshCredential.DefaultPort;
 }
