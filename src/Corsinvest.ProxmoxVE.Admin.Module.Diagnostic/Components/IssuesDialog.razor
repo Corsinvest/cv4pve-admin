@@ -17,6 +17,16 @@
     </Helper>
 </RadzenFormField>
 
+<RadzenFormField Text="@L["Error Code"]" AllowFloatingLabel="false">
+    <Start><RadzenIcon Icon="pin" /></Start>
+    <ChildContent>
+        <RadzenTextBox Name="@nameof(Model.ErrorCode)" @bind-Value="@Model.ErrorCode" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.ErrorCode)" />
+    </Helper>
+</RadzenFormField>
+
 <RadzenFormField Text="@L["Gravity"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start><RadzenIcon Icon="priority_high" /></Start>
     <ChildContent>

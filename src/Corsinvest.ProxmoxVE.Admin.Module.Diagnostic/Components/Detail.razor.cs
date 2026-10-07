@@ -106,6 +106,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
         if (await db.IgnoredIssues.FromClusterName(clusterName)
                                   .Where(a => a.IdResource == item.IdResource
+                                                && a.ErrorCode == item.ErrorCode
                                                 && a.Context == item.Context
                                                 && a.Description == item.Description
                                                 && a.SubContext == item.SubContext
@@ -120,6 +121,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
             {
                 ClusterName = clusterName,
                 IdResource = item.IdResource,
+                ErrorCode = item.ErrorCode,
                 Context = item.Context,
                 Description = item.Description,
                 SubContext = item.SubContext,
