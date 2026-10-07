@@ -1,6 +1,10 @@
 ---
 title: "Metrics Exporter"
 description: "Exposes Proxmox VE metrics over a Prometheus-compatible HTTP endpoint, ready to be scraped and shown in Grafana or any compatible monitoring stack. Each enabled cluster has its own scrape endpoint. Each collector is a switch with its own cache, and collectors run in parallel."
+head:
+  # Search results and browser tab: the words people search for, in place of "title | site"
+  - tag: title
+    content: "Prometheus metrics for Proxmox VE | cv4pve-admin"
 ---
 
 import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
