@@ -58,7 +58,7 @@ public class Status(IAdminService adminService,
 
         Set("Updated", totalUpdated, Colors.Success);
         Set("To update", totalToUpdate, Colors.Warning);
-        Set("In error", totalInError, "var(--rz-error)");
+        Set("In error", totalInError, Colors.Danger);
 
         LastExecution = lastScan;
         MakeFooterText($"{L["Last"]}: {(LastExecution.HasValue ? LastExecution.Value.ToLocalTime().ToString("g") : string.Empty)}");

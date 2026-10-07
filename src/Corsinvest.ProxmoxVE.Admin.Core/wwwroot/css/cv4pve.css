@@ -59,7 +59,7 @@
 
 .cv4pve-side-dialog-resizer > .rz-resize {
     height: var(--rz-dialog-resize-bar-handle-size, 40px) !important;
-    border: 1px solid var(--rz-dialog-resize-bar-color, var(--rz-border-color)) !important;
+    border: 1px solid var(--rz-dialog-resize-bar-color, var(--rz-base-200)) !important;
     border-radius: 1px;
 }
 
@@ -213,7 +213,7 @@
 .cv4pve-thumb-widget-popup {
     padding: 0;
     background: var(--rz-panel-background-color);
-    border: 1px solid var(--rz-panel-border-color);
+    border: var(--rz-border-normal);
     border-radius: var(--rz-border-radius);
     box-shadow: var(--rz-panel-shadow);
 }
