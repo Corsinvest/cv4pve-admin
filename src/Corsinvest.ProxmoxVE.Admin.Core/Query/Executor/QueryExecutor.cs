@@ -78,7 +78,7 @@ public partial class QueryExecutor(IDataProvider dataProvider)
         {
             query.Select = [.. query.Select.Select(f => FixFieldName(f, query.From))];
             query.GroupBy = [.. query.GroupBy.Select(f => FixFieldName(f, query.From))];
-            FixConditions(query.Where.Conditions, query.From);
+            FixConditions(query.Where, query.From);
 
             foreach (var item in query.OrderBy)
             {
@@ -103,15 +103,16 @@ public partial class QueryExecutor(IDataProvider dataProvider)
         return query;
     }
 
-    private static void FixConditions(List<Condition> conditions, string tableName)
+    private static void FixConditions(WhereClause where, string tableName)
     {
-        foreach (var condition in conditions)
+        foreach (var node in where.Conditions)
         {
-            if (!string.IsNullOrEmpty(condition.Field))
+            switch (node)
             {
-                condition.Field = FixFieldName(condition.Field, tableName);
+                case Condition condition: condition.Field = FixFieldName(condition.Field, tableName); break;
+                case WhereClause group: FixConditions(group, tableName); break;
+                default: break;
             }
-            FixConditions(condition.Conditions, tableName);
         }
     }
 
@@ -122,12 +123,16 @@ public partial class QueryExecutor(IDataProvider dataProvider)
     {
         if (where.Conditions == null || where.Conditions.Count == 0) { return "true"; }
 
-        var conditionStrings = where.Conditions.ConvertAll(c => c.Logic == null
-                                                            ? FormatCondition(c)
-                                                            : $"({BuildWhereClause(c)})");
+        var conditionStrings = where.Conditions.ConvertAll(node => node switch
+        {
+            Condition condition => FormatCondition(condition),
+            WhereClause group => $"({BuildWhereClause(group)})",
+            _ => throw new ArgumentException("Invalid where condition")
+        });
 
-        var result = string.Join(where.Logic == "or" ? " || " : " && ", conditionStrings);
-        return where.Logic == "or" ? $"({result})" : result;
+        var isOr = where.Logic == LogicOperator.Or;
+        var result = string.Join(isOr ? " || " : " && ", conditionStrings);
+        return isOr ? $"({result})" : result;
     }
 
     private static string FormatCondition(Condition condition)
