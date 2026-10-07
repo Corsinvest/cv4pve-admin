@@ -29,6 +29,8 @@ public partial class ModuleSettingsDialog(ISettingsService settingsService,
 
     private async Task OnSubmitAsync(object model)
     {
+        if (!await Module.HasPermissionEditorSettingsAsync(PermissionService, ClusterName)) { return; }
+
         await settingsService.SetAsync(Module, ClusterName, Settings);
 
         using var scope = scopeFactory.CreateScope();
