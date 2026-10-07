@@ -111,7 +111,6 @@ public partial class QueryExecutor(IDataProvider dataProvider)
             {
                 case Condition condition: condition.Field = FixFieldName(condition.Field, tableName); break;
                 case WhereClause group: FixConditions(group, tableName); break;
-                default: break;
             }
         }
     }
