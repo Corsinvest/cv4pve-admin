@@ -70,6 +70,8 @@ public partial class Scans(IAdminService adminService,
 
     private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Data.Export)) { return; }
+
         var format = item?.Value switch
         {
             nameof(ReportFormat.Excel) => ReportFormat.Excel,
@@ -105,8 +107,10 @@ public partial class Scans(IAdminService adminService,
         }
     }
 
-    private void Scan()
+    private async Task ScanAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Run)) { return; }
+
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
     }

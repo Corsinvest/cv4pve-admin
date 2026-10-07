@@ -68,6 +68,8 @@ public partial class Render(IServiceScopeFactory serviceScopeFactory,
 
     private async Task SendMessageAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Chat.SendMessage)) { return; }
+
         if (!string.IsNullOrWhiteSpace(Message))
         {
             if (ChatId == 0)

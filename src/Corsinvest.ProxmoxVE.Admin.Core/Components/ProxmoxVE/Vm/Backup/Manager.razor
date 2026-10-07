@@ -33,7 +33,7 @@
                           Text="@L["Restore"]"
                           Icon="history"
                           Click="RestoreAsync"
-                          Disabled="!CanRestoreFile || !SelectedItems.Any()"
+                          Disabled="!CanRestore || !SelectedItems.Any()"
                           ButtonStyle="ButtonStyle.Danger" />
 
             <RadzenButton Variant="Variant.Text"
@@ -78,7 +78,10 @@
     </HeaderTemplate>
 
     <EmptyTemplate>
-        <EmptyExecuteAction Text="@L["Create your first backup"]" Click="AddAsync" />
+        @if (CanBackup)
+        {
+            <EmptyExecuteAction Text="@L["Create your first backup"]" Click="AddAsync" />
+        }
     </EmptyTemplate>
 
     <Columns>

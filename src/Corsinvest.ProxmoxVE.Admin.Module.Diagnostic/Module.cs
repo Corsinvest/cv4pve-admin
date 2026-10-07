@@ -5,6 +5,7 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Module.Diagnostic.Services;
 using Microsoft.Extensions.Configuration;
 
@@ -64,9 +65,34 @@ public class Module : ModuleBase
                 Height = 5
             }
         ];
+
+        Roles =
+        [
+            new(Permissions.Scan.Data.Permissions
+                                     .CombineWith(Permissions.Scan.Run)
+                                     .CombineWith(Permissions.Scan.Delete)
+                                     .CombineWith(Permissions.IgnoredIssue.Data))
+        ];
     }
 
-    protected override string PermissionBaseKey { get; } = "Diagnostic";
+    protected override string PermissionBaseKey => Permissions.BaseName;
+
+    public static class Permissions
+    {
+        public static string BaseName { get; } = "Diagnostic";
+
+        public static class Scan
+        {
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Scan), nameof(Data));
+            public static Permission Run { get; } = new(Data.Prefix, nameof(Run), "Scan");
+            public static Permission Delete { get; } = new(Data.Prefix, nameof(Delete), "Delete");
+        }
+
+        public static class IgnoredIssue
+        {
+            public static PermissionsCrud Data { get; } = new(BaseName, nameof(IgnoredIssue), nameof(Data));
+        }
+    }
 
     /// <summary>
     /// Component used to render the Compliance tab inside scan details.

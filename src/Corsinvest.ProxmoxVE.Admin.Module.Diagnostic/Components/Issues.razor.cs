@@ -44,7 +44,10 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task RowSelectAsync(IgnoredIssue item)
     {
-        if (_validColumnClick) { await ShowEditorAsync(item); }
+        if (!_validColumnClick) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Edit)) { return; }
+
+        await ShowEditorAsync(item);
     }
 
     private void CellClick(DataGridCellMouseEventArgs<IgnoredIssue> e)
@@ -52,6 +55,8 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task DeleteAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Delete)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();

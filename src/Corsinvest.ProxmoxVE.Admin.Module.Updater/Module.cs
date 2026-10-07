@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Module.Updater.Services;
 using Microsoft.Extensions.Configuration;
 
@@ -55,9 +56,26 @@ public class Module : ModuleBase
                 Height = 5
             }
         ];
+
+        Roles =
+        [
+            new(Permissions.Scan.Data.Permissions
+                                     .CombineWith(Permissions.Scan.Run))
+        ];
     }
 
-    protected override string PermissionBaseKey { get; } = "UpdateManager";
+    protected override string PermissionBaseKey => Permissions.BaseName;
+
+    public static class Permissions
+    {
+        public static string BaseName { get; } = "UpdateManager";
+
+        public static class Scan
+        {
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Scan), nameof(Data));
+            public static Permission Run { get; } = new(Data.Prefix, nameof(Run), "Scan");
+        }
+    }
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services)

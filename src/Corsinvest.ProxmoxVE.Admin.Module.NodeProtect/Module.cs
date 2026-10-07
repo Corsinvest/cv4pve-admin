@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Folder.Helpers;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Models;
 using Corsinvest.ProxmoxVE.Admin.Module.NodeProtect.Persistence;
@@ -54,12 +55,48 @@ public class Module : ModuleBase
                 Height = 5
             }
         ];
+
+        Roles =
+        [
+            new(Permissions.FolderBackup.Data.Permissions
+                                             .CombineWith(Permissions.FolderBackup.Backup)
+                                             .CombineWith(Permissions.FolderBackup.Delete)
+                                             .CombineWith(Permissions.FolderBackup.Download)
+                                             .CombineWith(Permissions.Git.Data)
+                                             .CombineWith(Permissions.Git.Push)
+                                             .CombineWith(Permissions.Git.Reset)
+                                             .CombineWith(Permissions.Git.Sync)
+                                             .CombineWith(Permissions.Git.Download))
+        ];
     }
 
     public ModuleLinkBase? GetLinkByProvider(string name)
         => NavBar.FirstOrDefault(a => a.Text.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
-    protected override string PermissionBaseKey { get; } = "NodeProtect";
+    protected override string PermissionBaseKey => Permissions.BaseName;
+
+    public static class Permissions
+    {
+        public static string BaseName { get; } = "NodeProtect";
+
+        public static class FolderBackup
+        {
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(FolderBackup), nameof(Data));
+            public static Permission Backup { get; } = new(Data.Prefix, nameof(Backup), "Backup");
+            public static Permission Delete { get; } = new(Data.Prefix, nameof(Delete), "Delete");
+            public static Permission Download { get; } = new(Data.Prefix, nameof(Download), "Download");
+        }
+
+        // Checked by the Git provider of the Enterprise edition
+        public static class Git
+        {
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Git), nameof(Data));
+            public static Permission Push { get; } = new(Data.Prefix, nameof(Push), "Push");
+            public static Permission Reset { get; } = new(Data.Prefix, nameof(Reset), "Reset repository");
+            public static Permission Sync { get; } = new(Data.Prefix, nameof(Sync), "Sync from remote");
+            public static Permission Download { get; } = new(Data.Prefix, nameof(Download), "Download");
+        }
+    }
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Module.Bots.Telegram;
 using Microsoft.Extensions.Configuration;
 
@@ -39,9 +40,21 @@ public class Module : ModuleBase
             Icon = "smart_toy",
             Render = NavBar.ToList()[0].Render
         };
+
+        Roles = [new([Permissions.Chat.SendMessage])];
     }
 
-    protected override string PermissionBaseKey { get; } = "Bots";
+    protected override string PermissionBaseKey => Permissions.BaseName;
+
+    public static class Permissions
+    {
+        public static string BaseName { get; } = "Bots";
+
+        public static class Chat
+        {
+            public static Permission SendMessage { get; } = new($"{BaseName}.{nameof(Chat)}", nameof(SendMessage), "Send message");
+        }
+    }
 
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         => AddSettings<Settings, Components.RenderSettings>(services)

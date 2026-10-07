@@ -97,6 +97,8 @@ public partial class Reports(IBrowserService browserService,
 
     private async Task DeleteAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Report.Data.Delete)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
@@ -119,6 +121,8 @@ public partial class Reports(IBrowserService browserService,
 
     private async Task DownloadAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Report.Download)) { return; }
+
         InDownload = true;
         try
         {
@@ -144,6 +148,8 @@ public partial class Reports(IBrowserService browserService,
 
     private async Task AddAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Report.Data.Create)) { return; }
+
         var item = new JobResult
         {
             ClusterName = ClusterName,

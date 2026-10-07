@@ -25,26 +25,30 @@
             <CrudToolbar>
                 @*OnRefresh="RefreshDataAsync"*@
                 <TemplateBefore>
-                    <RadzenButton Variant="Variant.Text"
-                                  Size="ButtonSize.Small"
-                                  Text="@L["Scan"]"
-                                  Click="Scan"
-                                  Icon="play_arrow"
-                                  Style="--rz-icon-fill: 1;"
-                                  ButtonStyle="ButtonStyle.Success" />
+                    <PermissionView PermissionKey="@Module.Permissions.Scan.Run.Key" Path="*">
+                        <RadzenButton Variant="Variant.Text"
+                                      Size="ButtonSize.Small"
+                                      Text="@L["Scan"]"
+                                      Click="ScanAsync"
+                                      Icon="play_arrow"
+                                      Style="--rz-icon-fill: 1;"
+                                      ButtonStyle="ButtonStyle.Success" />
+                    </PermissionView>
 
-                    <RadzenSplitButton Variant="Variant.Text"
-                                       Size="ButtonSize.Small"
-                                       Text="@L["Download"]"
-                                       Icon="download"
-                                       Disabled="!Items.Any()"
-                                       IsBusy="InDownload"
-                                       Click="@(args => DownloadAsync(args))">
-                        <ChildContent>
-                            <RadzenSplitButtonItem Text="PDF" Icon="picture_as_pdf" Value="@nameof(ReportFormat.Pdf)" />
-                            <RadzenSplitButtonItem Text="Excel" Icon="table_view" Value="@nameof(ReportFormat.Excel)" />
-                        </ChildContent>
-                    </RadzenSplitButton>
+                    <PermissionView PermissionKey="@Module.Permissions.Scan.Data.Export.Key" Path="*">
+                        <RadzenSplitButton Variant="Variant.Text"
+                                           Size="ButtonSize.Small"
+                                           Text="@L["Download"]"
+                                           Icon="download"
+                                           Disabled="!Items.Any()"
+                                           IsBusy="InDownload"
+                                           Click="@(args => DownloadAsync(args))">
+                            <ChildContent>
+                                <RadzenSplitButtonItem Text="PDF" Icon="picture_as_pdf" Value="@nameof(ReportFormat.Pdf)" />
+                                <RadzenSplitButtonItem Text="Excel" Icon="table_view" Value="@nameof(ReportFormat.Excel)" />
+                            </ChildContent>
+                        </RadzenSplitButton>
+                    </PermissionView>
                 </TemplateBefore>
 
                 <TemplateAfter>
@@ -54,10 +58,12 @@
         </HeaderTemplate>
 
         <EmptyTemplate>
-            <EmptyExecuteAction Text="@L["Execute your first scan"]"
-                                Click="Scan"
-                                Icon="play_arrow"
-                                Style="--rz-icon-fill: 1;" />
+            <PermissionView PermissionKey="@Module.Permissions.Scan.Run.Key" Path="*">
+                <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                                    Click="ScanAsync"
+                                    Icon="play_arrow"
+                                    Style="--rz-icon-fill: 1;" />
+            </PermissionView>
         </EmptyTemplate>
 
         <Columns>

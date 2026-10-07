@@ -24,7 +24,10 @@
                 Count="ResultLoadData.TotalCount"
                 @bind-Value="@SelectedItems">
     <HeaderTemplate>
-        <CrudToolbar OnDelete="DeleteAsync" DeleteDisabled="!SelectedItems.Any()" OnRefresh="RefreshDataAsync" />
+        <CrudToolbar OnDelete="DeleteAsync"
+                     DeleteDisabled="!SelectedItems.Any()"
+                     OnRefresh="RefreshDataAsync"
+                     Permissions="Module.Permissions.IgnoredIssue.Data" />
     </HeaderTemplate>
 
     <Columns>

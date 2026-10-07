@@ -74,6 +74,8 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task DeleteAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.FolderBackup.Delete)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected backup"], true))
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
@@ -95,6 +97,8 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task DownloadAsync(Data item)
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.FolderBackup.Download)) { return; }
+
         InDownload = true;
         if (File.Exists(item.GetPath(ClusterName)))
         {
@@ -104,8 +108,10 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
         InDownload = false;
     }
 
-    private void Backup()
+    private async Task BackupAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.FolderBackup.Backup)) { return; }
+
         backgroundJobService.Enqueue<Job>(a => a.BackupAsync(ClusterName));
         notificationService.Info(L["Backup started!"]);
     }
