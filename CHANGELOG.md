@@ -131,6 +131,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Widgets**: in the *Status* widget of Diagnostic and of Update Manager the *Critical* and *In error* slices are red again; before, they had no colour of their own. The thin separators of the resource cards, of the *Info* widgets and of the issue list of the health widgets are now drawn.
 
+- **Small fixes**: in the Cluster Usage grid the memory tooltip shows the memory figure (it showed the storage one); the disk usage tooltip of the resource lists ends with `%`; a disabled Metrics Exporter always answers with status 503; the default sender address of a new installation is `noreply@example.com`.
+
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
 
 #### Internal
@@ -158,6 +160,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Workflow, guest actions**: the power action, migrate and snapshot (create, delete, rollback, update) activities now run their action; before, they never reached Proxmox VE.
 
 - **Users, Roles and App Tokens**: clicking a row selects it and opens the editor again; the *Roles* tab of an app token no longer drops the connection.
+
+- **App Tokens**: editing a token no longer clears its owner. A new token opens with *Is Active* on, and turning it off before saving is now applied.
+
+- **Audit log**: a failed creation or change of a user or a role is recorded as failed; before, it was recorded as successful.
+
+- **Small fixes**: the photo picker of a user shows only images; the *Docs* link of an AutoSnap hook opens the right page; Node Protect Git shows *Sync from remote*.
 
 - **Permissions**: resetting a user password, regenerating an app token, UPS *Scan now* and creating a Portal tenant now check their permission when they run, not only when the button is shown.
 
