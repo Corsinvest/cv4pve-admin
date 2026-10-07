@@ -363,7 +363,7 @@
 
                             <RadzenProgressBar ProgressBarStyle="@PveAdminUIHelper.ToProgressBarStyle(PveAdminUIHelper.GetColorRange(context.DiskUsagePercentage * 100))"
                                                Value="@(Math.Round(context.DiskUsagePercentage * 100, 1))"
-                                               title="@(L["Disk: {0}&", Math.Round(context.DiskUsagePercentage * 100, 1)])"
+                                               title="@(L["Disk: {0}%", Math.Round(context.DiskUsagePercentage * 100, 1)])"
                                                class="rz-w-100" />
                         </RadzenStack>
                     </Template>

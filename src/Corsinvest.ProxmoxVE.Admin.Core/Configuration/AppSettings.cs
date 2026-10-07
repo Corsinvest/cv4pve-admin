@@ -15,7 +15,7 @@ public sealed class AppSettings
     public SmtpEmailConfig SmtpEmailConfig { get; set; } = new()
     {
         Host = "smtp.example.com",
-        FromAddress = "noreplay@example.com",
+        FromAddress = "noreply@example.com",
         FromDisplayName = "cv4pve-Admin",
     };
 
