@@ -92,26 +92,37 @@ public static class EndpointRouteBuilderExtensions
             return Results.NotFound();
         }).RequireAuthorization();
 
-        static string FixReturnUrl(string value)
+        static string FixReturnUrl(string value, HttpRequest request)
         {
             var returnUrl = value + string.Empty;
+
+            // RedirectToLogin sends the absolute address of the page: keep its local part,
+            // and only when it points to this host
+            if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var uri)
+                && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            {
+                returnUrl = string.Equals(uri.Authority, request.Host.Value, StringComparison.OrdinalIgnoreCase)
+                                ? uri.PathAndQuery + uri.Fragment
+                                : string.Empty;
+            }
+
             if (returnUrl.StartsWith("NotFound", StringComparison.InvariantCultureIgnoreCase)
                 || returnUrl.StartsWith("/NotFound", StringComparison.InvariantCultureIgnoreCase))
             {
                 returnUrl = string.Empty;
             }
 
-            if (string.IsNullOrWhiteSpace(returnUrl)) { returnUrl = "/"; }
-            return returnUrl;
+            return SanitizeReturnUrl(returnUrl);
         }
 
         accountGroup.MapPost("/Login2fa", async ([FromServices] SignInManager<ApplicationUser> signInManager,
                                                         [FromServices] IAuditService auditService,
                                                         IFusionCache fusionCache,
+                                                        HttpContext httpContext,
                                                         [FromForm] InputLogin2fa model) =>
         {
             var url = string.Empty;
-            var tmpReturnUrl = FixReturnUrl(model.ReturnUrl!);
+            var tmpReturnUrl = FixReturnUrl(model.ReturnUrl!, httpContext.Request);
 
             var key = $"Key2FA:{model.Key2FA}";
             var userName = await fusionCache.TryGetAsync<string>(key);
@@ -160,7 +171,7 @@ public static class EndpointRouteBuilderExtensions
                                                      [FromQuery] string? returnUrl) =>
         {
             var url = string.Empty;
-            var tmpReturnUrl = FixReturnUrl(returnUrl!);
+            var tmpReturnUrl = FixReturnUrl(returnUrl!, httpContext.Request);
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true

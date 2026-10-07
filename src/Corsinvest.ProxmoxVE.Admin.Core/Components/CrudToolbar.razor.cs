@@ -56,17 +56,16 @@ public partial class CrudToolbar(ContextMenuService contextMenuService)
                     CanDelete = await HasPermissionAsync(permissionClusterName, crud.Delete);
                 }
             }
-            else
-            {
-                if (PermissionDelete != null)
-                {
-                    CanDelete = await HasPermissionAsync(permissionClusterName, PermissionDelete);
-                }
 
-                if (PermissionCreate != null)
-                {
-                    CanCreate = await HasPermissionAsync(permissionClusterName, PermissionCreate);
-                }
+            // Also with Permissions set: a PermissionsRead carries no Delete or Create of its own
+            if (PermissionDelete != null)
+            {
+                CanDelete = await HasPermissionAsync(permissionClusterName, PermissionDelete);
+            }
+
+            if (PermissionCreate != null)
+            {
+                CanCreate = await HasPermissionAsync(permissionClusterName, PermissionCreate);
             }
         }
     }

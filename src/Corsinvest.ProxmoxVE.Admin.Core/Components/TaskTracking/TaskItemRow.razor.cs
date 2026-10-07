@@ -42,6 +42,8 @@ public partial class TaskItemRow(ITaskTrackerService taskTracker,
 
     private async Task CancelTaskAsync()
     {
+        if (!CanStop) { return; }
+
         await taskTracker.CancelAsync(Item.Id);
         await OnAfterAction.InvokeAsync();
     }

@@ -34,6 +34,7 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
         await using var db = await dbContextFactory.CreateDbContextAsync();
         ResultLoadData = await _loader.LoadAsync(db.Results
                                                    .Where(a => a.Job.Id == JobId, JobId != null)
+                                                   .Where(a => a.Job.ClusterName == ClusterName, JobId == null)
                                                    .Where(a => !a.Status, ShowOnlyError),
                                                  args,
                                                  a => new Data
