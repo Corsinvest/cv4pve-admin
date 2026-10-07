@@ -12,5 +12,10 @@ public static class HttpResponseExtensions
     public static void AppendCultureCookie(this HttpResponse response, string culture)
         => response.Cookies.Append(ApplicationHelper.CookieCultureName,
                                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                                   new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), SameSite = SameSiteMode.Lax });
+                                   new CookieOptions
+                                   {
+                                       Expires = DateTimeOffset.UtcNow.AddYears(1),
+                                       SameSite = SameSiteMode.Lax,
+                                       Secure = response.HttpContext.Request.IsHttps
+                                   });
 }
