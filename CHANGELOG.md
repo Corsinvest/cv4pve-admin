@@ -103,6 +103,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **AutoSnap, deleting a job**: with *On remove job remove snapshots in Proxmox VE* enabled, deleting a job now removes its snapshots and shows the operation among the tasks; before, the snapshots were left in place. The job stays in the list until the removal ends.
 
+- **Dashboard**: cloning a dashboard creates a copy instead of overwriting the original; an imported dashboard belongs to the user who imports it, also when the file was exported by someone else; creating the default dashboards no longer renames the Home and Status dashboards of the other users.
+
+- **Tasks**: Maintenance *Fix All* and the command line no longer mark as abandoned the tasks that are still running.
+
+- **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
+
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
