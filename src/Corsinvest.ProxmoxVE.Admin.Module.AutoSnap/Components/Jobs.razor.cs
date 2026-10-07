@@ -111,6 +111,8 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task PurgeAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Job.Purge)) { return; }
+
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Clean selected row"], false))
         {
             backgroundJobService.Enqueue<Job>(a => a.PurgeAsync(SelectedItems[0].Id));
@@ -118,8 +120,10 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
         }
     }
 
-    private void Snap()
+    private async Task SnapAsync()
     {
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Job.Snap)) { return; }
+
         backgroundJobService.Enqueue<Job>(a => a.SnapAsync(SelectedItems[0].Id));
         notificationService.Info(L["Job started!"]);
     }

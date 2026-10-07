@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Microsoft.AspNetCore.Components.Routing;
 using Toolbelt.Blazor.HotKeys2;
 using Wangkanai.Detection.Services;
@@ -142,6 +143,8 @@ public partial class HelpMenu(ISettingsService settingsService,
 
     private async Task TriggerUpdateAsync()
     {
+        if (!await HasPermissionAsync(ApplicationPermissions.Upgrade)) { return; }
+
         var confirmed = await dialogService.ConfirmAsync(
             L["Are you sure you want to trigger the automatic update? The application will be updated to version {0}.", NewRelease?.Version ?? ""],
             L["Confirm Update"],
