@@ -129,6 +129,24 @@ public static class ServiceCollectionExtensions
         var systemUser = await userManager.FindByNameAsync(SystemUser.UserName);
         if (systemUser == null)
         {
+            // Renamed by the user editor, which used to rewrite the user name from the email
+            systemUser = await userManager.FindByEmailAsync(SystemUser.Email);
+            if (systemUser != null)
+            {
+                var renamed = await userManager.SetUserNameAsync(systemUser, SystemUser.UserName);
+                if (renamed.Succeeded)
+                {
+                    logger.LogInformation("System account renamed back to '{UserName}'", SystemUser.UserName);
+                }
+                else
+                {
+                    logger.LogError("System account could not be renamed back to '{UserName}': {Error}", SystemUser.UserName, renamed);
+                }
+            }
+        }
+
+        if (systemUser == null)
+        {
             systemUser = new ApplicationUser
             {
                 UserName = SystemUser.UserName,
@@ -142,7 +160,11 @@ public static class ServiceCollectionExtensions
             };
 
             //no password: cannot log in
-            await userManager.CreateAsync(systemUser);
+            var created = await userManager.CreateAsync(systemUser);
+            if (!created.Succeeded)
+            {
+                logger.LogError("System account could not be created: {Error}. Scheduled jobs will run without a valid user.", created);
+            }
         }
         SystemUser.Id = systemUser.Id;
 

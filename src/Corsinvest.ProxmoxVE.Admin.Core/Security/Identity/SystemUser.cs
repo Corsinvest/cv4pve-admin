@@ -16,4 +16,8 @@ public static class SystemUser
     public const string DisplayName = "System";
     public const string Email = "system@cv4pve-admin.invalid";
     public static string Id { get; set; } = string.Empty;
+
+    // Also by email: the user editor used to rewrite the user name from the email
+    public static bool Is(string? userName, string? email)
+        => userName == UserName || string.Equals(email, Email, StringComparison.OrdinalIgnoreCase);
 }

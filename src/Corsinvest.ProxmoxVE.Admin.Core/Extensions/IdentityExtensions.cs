@@ -225,7 +225,12 @@ public static class IdentityExtensions
         var code = await userManager.GeneratePasswordResetTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         return navigationManager.GetUriWithQueryParameters(navigationManager.ToAbsoluteUri("/ResetPassword").AbsoluteUri,
-                                                           new Dictionary<string, object?> { ["code"] = code });
+
+                                                           new Dictionary<string, object?>
+                                                           {
+                                                               ["userId"] = user.Id,
+                                                               ["code"] = code
+                                                           });
     }
 
     public static async Task SendPasswordResetAsync(this UserManager<ApplicationUser> userManager,
@@ -245,12 +250,11 @@ public static class IdentityExtensions
                                                    NavigationManager navigationManager,
                                                    IEmailSender<ApplicationUser> emailSender)
     {
-        var userId = await userManager.GetUserIdAsync(user);
         var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         var link = navigationManager.GetUriWithQueryParameters(
             navigationManager.ToAbsoluteUri("/ConfirmEmail").AbsoluteUri,
-            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
+            new Dictionary<string, object?> { ["userId"] = user.Id, ["code"] = code });
         await emailSender.SendConfirmationLinkAsync(user, user.Email!, link);
     }
 }
