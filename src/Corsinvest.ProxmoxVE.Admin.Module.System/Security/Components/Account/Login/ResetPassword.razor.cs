@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Text;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;
 
 public partial class ResetPassword(NavigationManager navigationManager,
-                                   UserManager<ApplicationUser> UserManager)
+                                   UserManager<ApplicationUser> UserManager,
+                                   IAuditService auditService)
 {
     private InputModel Input { get; set; } = new();
 
@@ -80,10 +82,19 @@ public partial class ResetPassword(NavigationManager navigationManager,
         var result = await UserManager.ResetPasswordAsync(user, _token!, Input.Password);
         if (result.Succeeded)
         {
+            // Opening the link proves the mailbox, and an unconfirmed account could not sign in with the new password
+            if (!user.EmailConfirmed)
+            {
+                user.EmailConfirmed = true;
+                await UserManager.UpdateAsync(user);
+            }
+
+            await auditService.LogAsync("ResetPassword", true, $"User '{user.UserName}' set a new password from a reset link");
             navigationManager.NavigateTo("/ResetPasswordConfirmation");
             return;
         }
 
+        await auditService.LogAsync("ResetPassword", false, $"User '{user.UserName}': {result}");
         Message = string.Join(", ", result.Errors.Select(a => a.Description));
     }
 }

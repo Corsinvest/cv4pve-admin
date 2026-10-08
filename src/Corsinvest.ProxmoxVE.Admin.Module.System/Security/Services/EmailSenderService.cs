@@ -10,7 +10,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
 
 internal sealed class EmailSenderService(ISettingsService settingsService,
                                          IEmailSender emailSender,
-                                         IOptions<DataProtectionTokenProviderOptions> tokenOptions) : IEmailSender<ApplicationUser>
+                                         IOptions<DataProtectionTokenProviderOptions> tokenOptions) : IAccountEmailSender
 {
     private const string ColorBrand = "#1a4269";
     private const string ColorLink = "#2a6fae";
@@ -64,6 +64,19 @@ internal sealed class EmailSenderService(ISettingsService settingsService,
                                  <p style="margin:24px 0; padding:14px 16px; background:#f4f7fa; border-radius:6px; font-family:Consolas,monospace; font-size:14px; word-break:break-all;">{Encode(resetCode)}</p>
                                  """,
                                  $"This code expires in {Lifespan} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged."));
+
+    public Task SendTwoFactorDisabledAsync(ApplicationUser user, bool byAdministrator)
+        => SendEmailAsync(user.Email!,
+                          "Two-factor authentication disabled",
+                          Layout("Two-factor authentication disabled",
+                                 user,
+                                 $"""
+                                 <p style="margin:0 0 16px;">{(byAdministrator
+                                                                ? "An administrator turned off two-factor authentication for your account."
+                                                                : "Two-factor authentication has been turned off for your account.")}</p>
+                                 <p style="margin:0 0 24px;">You now sign in with your password only. To protect the account again, set up two-factor authentication from your profile.</p>
+                                 """,
+                                 "If you did not ask for this change, contact your administrator and change your password."));
 
     private static string Button(string link, string text)
         => $"""

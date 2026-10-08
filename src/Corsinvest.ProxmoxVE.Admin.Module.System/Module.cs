@@ -60,6 +60,7 @@ public class Module : ModuleBase
 
         Roles = [new(Security.Permissions.Users.Data.Permissions
                              .CombineWith(Security.Permissions.Users.ResetPassword)
+                             .CombineWith(Security.Permissions.Users.DisableTwoFactor)
                              .CombineWith(Security.Permissions.Users.Permissions)
                              .CombineWith(Security.Permissions.Roles.Data)
                              .CombineWith(Security.Permissions.Roles.Permissions)

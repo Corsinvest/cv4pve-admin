@@ -87,7 +87,10 @@
 
                         <HelpMenu HotKeysContext="@HotKeysContext" />
 
-                        <ProfileMenu Links="@ProfileMenuLinks" />
+                        @if (IsUserVerified)
+                        {
+                            <ProfileMenu Links="@ProfileMenuLinks" />
+                        }
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>

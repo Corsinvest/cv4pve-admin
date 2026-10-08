@@ -18,6 +18,8 @@ public static class EndpointRouteBuilderExtensions
 {
     //public const string LinkLoginCallbackAction = "LinkLoginCallback";
     public const string LoginCallbackAction = "LoginCallback";
+    private const string MessageLockedOut = "This account has been locked out, please try again later";
+    private const string MessageNotAllowed = "This account is not allowed to sign in, contact your administrator";
 
     public static string GetUserProfileUrl(string email) => $"/profile-image/{email}";
 
@@ -65,6 +67,20 @@ public static class EndpointRouteBuilderExtensions
         public bool RememberMe { get; set; } = default!;
         public string ReturnUrl { get; set; } = default!;
     }
+
+    private static string BuildTwoFactorUrl(string key2FA, string returnUrl, bool rememberMe, bool recovery = false, string? errorMessage = null)
+    {
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        query["Key2FA"] = key2FA;
+        query["returnUrl"] = returnUrl;
+        query["rememberMe"] = rememberMe.ToString();
+        if (recovery) { query["recovery"] = bool.TrueString; }
+        if (errorMessage != null) { query["error"] = errorMessage; }
+        return $"/LoginWith2fa?{query}";
+    }
+
+    private static void AppendCultureCookie(HttpContext httpContext, ISettingsService settingsService)
+        => httpContext.Response.AppendCultureCookie(settingsService.Get<UserSettings>(forCurrentUser: true).Culture);
 
     // These endpoints are required by the Identity Razor components defined in the /Components/Pages directory of this project.
     public static IEndpointConventionBuilder MapAdditionalIdentityEndpoints(this IEndpointRouteBuilder endpoints)
@@ -117,49 +133,49 @@ public static class EndpointRouteBuilderExtensions
 
         accountGroup.MapPost("/Login2fa", async ([FromServices] SignInManager<ApplicationUser> signInManager,
                                                         [FromServices] IAuditService auditService,
+                                                        [FromServices] ISettingsService settingsService,
                                                         IFusionCache fusionCache,
                                                         HttpContext httpContext,
                                                         [FromForm] InputLogin2fa model) =>
         {
-            var url = string.Empty;
             var tmpReturnUrl = FixReturnUrl(model.ReturnUrl!, httpContext.Request);
 
             var key = $"Key2FA:{model.Key2FA}";
             var userName = await fusionCache.TryGetAsync<string>(key);
-            if (userName.HasValue)
-            {
-                await fusionCache.RemoveAsync(key);
-            }
-            else
-            {
-                return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, "Invalid data"));
-            }
+            if (!userName.HasValue) { return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, "Invalid data")); }
 
-            var authenticatorCode = model.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
-            var result = await signInManager.TwoFactorAuthenticatorSignInExAsync(userName.Value, authenticatorCode, model.RememberMe, model.RememberMachine);
+            // An authenticator code is 6 digits, a recovery code is longer and keeps its dash
+            var code = (model.TwoFactorCode + string.Empty).Replace(" ", string.Empty);
+            var authenticatorCode = code.Replace("-", string.Empty);
+            var isRecoveryCode = authenticatorCode.Length != 6;
+            var action = isRecoveryCode ? "Login-RecoveryCode" : "Login-TwoFactor";
+
+            var result = isRecoveryCode
+                            ? await signInManager.TwoFactorRecoveryCodeSignInExAsync(userName.Value, code)
+                            : await signInManager.TwoFactorAuthenticatorSignInExAsync(userName.Value, authenticatorCode, model.RememberMe, model.RememberMachine);
 
             if (result.Succeeded)
             {
-                await auditService.LogAsync("Login-TwoFactor", true, $"User '{userName.Value}' logged in");
-                url = tmpReturnUrl;
-            }
-            else if (result.IsLockedOut)
-            {
-                await auditService.LogAsync("Login-TwoFactor", false, $"Account locked out for user '{userName.Value}'");
-                url = BuildErrorUrl(tmpReturnUrl, "This account has been locked out, please try again later");
-            }
-            else if (result.IsNotAllowed)
-            {
-                await auditService.LogAsync("Login-TwoFactor", false, $"Account not allowed for user '{userName.Value}'");
-                url = BuildErrorUrl(tmpReturnUrl, "This account is not allowed, please try again later");
-            }
-            else
-            {
-                await auditService.LogAsync("Login-TwoFactor", false, $"Invalid authenticator code for user '{userName.Value}'");
-                url = BuildErrorUrl(tmpReturnUrl, "Invalid authenticator code entered");
+                await fusionCache.RemoveAsync(key);
+                await auditService.LogAsync(action, true, $"User '{userName.Value}' logged in");
+                AppendCultureCookie(httpContext, settingsService);
+                return TypedResults.Redirect(tmpReturnUrl);
             }
 
-            return TypedResults.Redirect(url);
+            if (result.IsLockedOut || result.IsNotAllowed)
+            {
+                await fusionCache.RemoveAsync(key);
+                await auditService.LogAsync(action, false, $"Account {(result.IsLockedOut ? "locked out" : "not allowed")} for user '{userName.Value}'");
+                return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, result.IsLockedOut ? MessageLockedOut : MessageNotAllowed));
+            }
+
+            // The key stays valid, so a typing mistake does not send the user back to the password
+            await auditService.LogAsync(action, false, $"Invalid code for user '{userName.Value}'");
+            return TypedResults.Redirect(BuildTwoFactorUrl(model.Key2FA,
+                                                           tmpReturnUrl,
+                                                           model.RememberMe,
+                                                           isRecoveryCode,
+                                                           isRecoveryCode ? "Invalid recovery code entered" : "Invalid authenticator code entered"));
         });
 
         accountGroup.MapPost("/Login", async ([FromServices] SignInManager<ApplicationUser> signInManager,
@@ -180,8 +196,7 @@ public static class EndpointRouteBuilderExtensions
             {
                 await auditService.LogAsync("Login-Password", true, $"User '{model.UserName}' logged in");
 
-                var userSettings = settingsService.Get<UserSettings>(forCurrentUser: true);
-                httpContext.Response.AppendCultureCookie(userSettings.Culture);
+                AppendCultureCookie(httpContext, settingsService);
 
                 url = tmpReturnUrl;
             }
@@ -190,21 +205,17 @@ public static class EndpointRouteBuilderExtensions
                 var key = $"{Guid.NewGuid():N}";
                 await fusionCache.SetAsync($"Key2FA:{key}", model.UserName, TimeSpan.FromMinutes(3));
 
-                var query = HttpUtility.ParseQueryString(string.Empty);
-                query["Key2FA"] = key;
-                query["returnUrl"] = tmpReturnUrl;
-                query["rememberMe"] = model.RememberMe.ToString();
-                url = $"/LoginWith2fa?{query}";
+                url = BuildTwoFactorUrl(key, tmpReturnUrl, model.RememberMe);
             }
             else if (result.IsLockedOut)
             {
                 await auditService.LogAsync("Login-Password", false, $"Account locked out for user '{model.UserName}'");
-                url = BuildErrorUrl(tmpReturnUrl, "This account has been locked out, please try again later");
+                url = BuildErrorUrl(tmpReturnUrl, MessageLockedOut);
             }
             else if (result.IsNotAllowed)
             {
                 await auditService.LogAsync("Login-Password", false, $"Account not allowed for user '{model.UserName}'");
-                url = BuildErrorUrl(tmpReturnUrl, "This account is not allowed, please try again later");
+                url = BuildErrorUrl(tmpReturnUrl, MessageNotAllowed);
             }
             else
             {
@@ -227,6 +238,28 @@ public static class EndpointRouteBuilderExtensions
 
             return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
         });
+
+        // Changing the password or the 2FA setup changes the security stamp: without a new cookie the session
+        // that made the change is closed at the next validation. A cookie is written only from an HTTP response.
+        accountGroup.MapGet("/RefreshSignIn", async (HttpContext context,
+                                                            [FromServices] SignInManager<ApplicationUser> signInManager,
+                                                            [FromQuery] string? returnUrl) =>
+        {
+            var user = await signInManager.UserManager.GetUserAsync(context.User);
+            if (user != null) { await signInManager.RefreshSignInAsync(user); }
+
+            return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
+        }).RequireAuthorization();
+
+        accountGroup.MapGet("/ForgetTwoFactorBrowser", async ([FromServices] SignInManager<ApplicationUser> signInManager,
+                                                                     [FromServices] IAuditService auditService,
+                                                                     [FromQuery] string? returnUrl) =>
+        {
+            await signInManager.ForgetTwoFactorClientAsync();
+            await auditService.LogAsync("TwoFactor.ForgetBrowser", true);
+
+            return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
+        }).RequireAuthorization();
 
         accountGroup.MapPost("/PerformExternalLogin", (HttpContext context,
                                                               [FromServices] SignInManager<ApplicationUser> signInManager,

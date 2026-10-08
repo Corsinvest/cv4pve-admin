@@ -18,7 +18,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSecurityAdmin(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IEmailSender<ApplicationUser>, EmailSenderService>();
+        services.AddScoped<IAccountEmailSender, EmailSenderService>();
+        services.AddScoped<IEmailSender<ApplicationUser>>(a => a.GetRequiredService<IAccountEmailSender>());
         services.AddScoped<IAppTokenService, AppTokenService>();
 
         services.AddCascadingAuthenticationState();

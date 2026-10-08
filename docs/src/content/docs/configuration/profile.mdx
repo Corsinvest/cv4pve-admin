@@ -41,7 +41,7 @@ English is currently the only language available.
 
 ## Password
 
-Enter the **Old Password**, the **New Password** and repeat it in **Confirm Password**, then click **Update password**.
+Enter the **Old Password**, the **New Password** and repeat it in **Confirm Password**, then click **Update password**. After the confirmation the page reloads and you stay signed in.
 
 The new password must satisfy the password policy of the installation. By default: at least 6 characters, with at least one digit, one lowercase letter, one uppercase letter and one special character. An administrator can change the policy in [appsettings.extra.json](../appsettings-extra/#security-settings).
 
@@ -64,7 +64,9 @@ Recovery codes are meant for the case where the authenticator device is not avai
 
 ### Logging in with 2FA
 
-After user name and password, the login asks for the authenticator code.
+After user name and password, the login asks for the authenticator code. A wrong code can be typed again on the same page, until the account is locked for too many failed attempts.
+
+If the authenticator device is not available, click **log in with a recovery code** on the same page and enter one of the saved recovery codes. The code is consumed: it cannot be used a second time.
 
 **Remember Machine** skips the code on that browser for the following logins. The 2FA page shows a remembered browser as **This browser is remembered for 30 days**. Its **Forget** button makes the login ask for the code again.
 
@@ -73,14 +75,18 @@ After user name and password, the login asks for the authenticator code.
 | Action | Description |
 |--------|-------------|
 | **Generate Recovery Codes** | Creates ten new recovery codes and shows them once, with **Download Codes**. All the previous codes stop working immediately. |
-| **Reset Authenticator** | Replaces the secret key of the authenticator: the current entry in your authenticator app stops working. |
-| **Disable 2FA** | Turns 2FA off. Requires the 6-digit code from the authenticator app, plus a confirmation. |
+| **Reset Authenticator** | Turns 2FA off and starts the setup again with a new QR code: the current entry in your authenticator app stops working. Use it to move 2FA to another device. |
+| **Disable 2FA** | Turns 2FA off. Requires the 6-digit code from the authenticator app or one of the recovery codes, plus a confirmation. |
 | **Forget** | Removes the "remembered browser" state of the current browser. |
+
+Turning 2FA off sends you an email, so a change you did not make does not go unnoticed.
+
+**Lost device and recovery codes:** ask an administrator to use **Disable 2FA** in [Security](../admin-area/security/#users), or use the [CLI](../../cli/) on the server. A password reset does not turn 2FA off.
 
 When three or fewer recovery codes are left, the page shows a warning with a **Generate new codes** button.
 
 :::caution[Reset Authenticator]
-**Reset Authenticator** leaves 2FA enabled and does not show a new QR code. After it, the codes of the existing entry in your authenticator app are no longer accepted. To move 2FA to another device, use **Disable 2FA** while the current app still works. Then use **Enable 2FA** again: it shows a new QR code.
+After **Reset Authenticator** 2FA stays off until the new setup is completed. If you close the setup before entering the code, the account is protected by the password only.
 :::
 
 ## Audit Logs<Tag kind="ee" />

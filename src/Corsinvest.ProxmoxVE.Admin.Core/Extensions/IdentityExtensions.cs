@@ -24,32 +24,35 @@ public static class IdentityExtensions
         return item;
     }
 
-    public static async Task<SignInResult> TwoFactorAuthenticatorSignInExAsync(this SignInManager<ApplicationUser> signInManager,
-                                                                               string userName,
-                                                                               string authenticatorCode,
-                                                                               bool rememberMe,
-                                                                               bool rememberMachine)
-    {
-        var user = await signInManager.UserManager.FindByNameAsync(userName);
-        return user == null
-            ? SignInResult.Failed
-            : !user.IsActive
-                ? SignInResult.NotAllowed
-                : await signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, rememberMachine);
-    }
+    public static Task<SignInResult> TwoFactorAuthenticatorSignInExAsync(this SignInManager<ApplicationUser> signInManager,
+                                                                         string userName,
+                                                                         string authenticatorCode,
+                                                                         bool rememberMe,
+                                                                         bool rememberMachine)
+        => signInManager.SignInIfActiveAsync(userName, () => signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, rememberMachine));
 
-    public static async Task<SignInResult> PasswordSignInExAsync(this SignInManager<ApplicationUser> signInManager,
-                                                                 string userName,
-                                                                 string password,
-                                                                 bool isPersistent,
-                                                                 bool lockoutOnFailure)
+    public static Task<SignInResult> TwoFactorRecoveryCodeSignInExAsync(this SignInManager<ApplicationUser> signInManager,
+                                                                        string userName,
+                                                                        string recoveryCode)
+        => signInManager.SignInIfActiveAsync(userName, () => signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode));
+
+    public static Task<SignInResult> PasswordSignInExAsync(this SignInManager<ApplicationUser> signInManager,
+                                                           string userName,
+                                                           string password,
+                                                           bool isPersistent,
+                                                           bool lockoutOnFailure)
+        => signInManager.SignInIfActiveAsync(userName, () => signInManager.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure));
+
+    private static async Task<SignInResult> SignInIfActiveAsync(this SignInManager<ApplicationUser> signInManager,
+                                                                string userName,
+                                                                Func<Task<SignInResult>> signIn)
     {
         var user = await signInManager.UserManager.FindByNameAsync(userName);
         return user == null
             ? SignInResult.Failed
             : !user.IsActive
                 ? SignInResult.NotAllowed
-                : await signInManager.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure);
+                : await signIn();
     }
 
     public static async Task<ApplicationRole> CreateAsync(this RoleManager<ApplicationRole> roleManager,
@@ -240,6 +243,19 @@ public static class IdentityExtensions
     {
         var link = await userManager.GeneratePasswordResetLinkAsync(user, navigationManager);
         await emailSender.SendPasswordResetLinkAsync(user, user.Email!, link);
+    }
+
+    // Key and recovery codes go too: the next setup starts from nothing
+    public static async Task<IdentityResult> DisableTwoFactorExAsync(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+    {
+        var result = await userManager.SetTwoFactorEnabledAsync(user, false);
+        if (!result.Succeeded) { return result; }
+
+        result = await userManager.ResetAuthenticatorKeyAsync(user);
+        if (!result.Succeeded) { return result; }
+
+        await userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 0);
+        return IdentityResult.Success;
     }
 
     public static string GenerateRandomPassword()

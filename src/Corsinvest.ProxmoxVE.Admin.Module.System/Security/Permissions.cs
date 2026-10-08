@@ -14,6 +14,7 @@ public static class Permissions
     {
         public static PermissionsCrud Data { get; } = new(BaseName, nameof(Users), nameof(Data));
         public static Permission ResetPassword { get; } = new(Data.Prefix, nameof(ResetPassword), "Reset Password");
+        public static Permission DisableTwoFactor { get; } = new(Data.Prefix, nameof(DisableTwoFactor), "Disable 2FA");
         public static PermissionsCrud Permissions { get; } = new(Data.Prefix, nameof(Permissions));
     }
 

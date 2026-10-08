@@ -41,6 +41,7 @@ The new password must satisfy the password rules of the application. Otherwise `
 | `user enable -u <user>` | Enable a disabled user account: the user can sign in again |
 | `user disable -u <user>` | Disable a user account: the user can no longer sign in |
 | `user unlock -u <user>` | Unlock a locked out user account and reset its count of failed sign-in attempts |
+| `user disable-2fa -u <user>` | Turn off two-factor authentication for the user, who then signs in with the password only |
 
 A user name that does not exist is reported as `Error: User '<name>' not found`. The built-in system users cannot be modified from the command line.
 
@@ -63,6 +64,18 @@ After too many failed login attempts, the account is locked. To unlock it:
 ```bash
 docker compose run --rm cv4pve-admin user unlock -u admin@local
 ```
+
+### Lost authenticator device and recovery codes
+
+A user who has lost both cannot complete the login. Turn two-factor authentication off, then the user signs in with the password and sets it up again from the profile:
+
+```bash
+docker compose run --rm cv4pve-admin user disable-2fa -u admin@local
+```
+
+The authenticator key and the recovery codes of the user are discarded: the next setup starts from a new QR code. A user without two-factor authentication is reported as such and nothing changes. No email is sent to the user.
+
+For any other user an administrator can do the same from the web UI, with **Disable 2FA** in [Security](../configuration/admin-area/security/#users). The command line is the way out when the locked out user is the only administrator.
 
 ### Disable and enable an account
 

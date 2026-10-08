@@ -26,6 +26,8 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
 
     private bool SidebarExpanded { get; set; } = true;
     private bool HasRendered { get; set; }
+    private bool IsUserVerified { get; set; }
+    private bool _disposed;
     private IEnumerable<ModuleLinkBase> NavBarLinks { get; set; } = [];
     private IEnumerable<ModuleLinkBase> ProfileMenuLinks { get; set; } = [];
     private IEnumerable<ModuleLinkBase> HeaderLinks { get; set; } = [];
@@ -48,6 +50,8 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
             return;
         }
 
+        IsUserVerified = true;
+
         HotKeysContext = HotKeys.CreateContext()
             .Add(ModCode.Ctrl, Code.K, OpenCommandPalette, new HotKeyOptions { Description = "Open Command Palette" });
     }
@@ -63,7 +67,11 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
             CurrentClusterService.ClusterName = ClusterName;
 
             var user = await CurrentUserService.GetUserAsync();
-            if (user != null && await UserManager.CheckPasswordAsync(user, ApplicationHelper.DefaultUserPassword))
+
+            // The session can end, or the page can be closed, while the user is being read
+            if (user == null || _disposed) { return; }
+
+            if (await UserManager.CheckPasswordAsync(user, ApplicationHelper.DefaultUserPassword))
             {
                 NotifyDefaultPassword();
             }
@@ -162,6 +170,7 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
 
     public void Dispose()
     {
+        _disposed = true;
         NavigationManager.LocationChanged -= OnLocationChanged;
         GC.SuppressFinalize(this);
     }
