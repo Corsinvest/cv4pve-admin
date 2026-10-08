@@ -139,6 +139,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Cluster selector**: the search ignores upper and lower case, and a search without results shows *No results found!* instead of hiding the selector.
 
+- **Bots, Chats Id**: the field takes one chat ID per line; before, it was a single-line box and only one ID could be entered. A value already saved keeps working.
+
+- **Metrics Exporter**: scrapes arriving at the same time for the same cluster no longer interfere with each other.
+
+- **Installer**: a PostgreSQL password containing `/`, `&` or `|` no longer breaks the `.env` file.
+
+- **adminctl**: a value with spaces in `.env` is read correctly; after `self-update` the suggested command is the one that applies a changed compose file; the help shows the documentation address.
+
+- **Node Protect**: the paths to back up are read one per line whatever line ending the setting was saved with.
+
 - **AI Server**: the descriptions the assistant reads for eight tools now match what the tools return and accept.
 
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
@@ -174,6 +184,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Audit log**: a failed creation or change of a user or a role is recorded as failed; before, it was recorded as successful.
 
 - **Small fixes**: the photo picker of a user shows only images; the *Docs* link of an AutoSnap hook opens the right page; Node Protect Git shows *Sync from remote*.
+
+- **Apprise**: the addresses are read one per line whatever line ending the setting was saved with.
 
 - **Permissions**: resetting a user password, regenerating an app token, UPS *Scan now* and creating a Portal tenant now check their permission when they run, not only when the button is shown.
 
