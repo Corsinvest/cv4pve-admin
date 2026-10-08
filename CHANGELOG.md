@@ -28,6 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
 
+- **Command line, `user disable-2fa`**: turns off two-factor authentication for a user who lost both the authenticator device and the recovery codes. It is the way out when that user is the only administrator.
+
 #### Changed
 
 - **Help menu**: the version, edition and update check share a single line at the top.
@@ -82,6 +84,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Bots: sending a message.
 
   The built-in roles of each module include the new permissions. Custom roles do not: their users no longer see these buttons until an administrator assigns the permissions.
+
+- **Account emails**: the emails for the password reset and the email confirmation have a new layout, and the expiry they state is the real one.
+
+- **Remembered browser at the two-factor login** *(EE)*: it is trusted for the days set in `CookieSettings:ExpireDays` (30 by default), like the sign-in itself. Before it was 14 days, while the profile page said 30.
 
 #### Fixed
 
@@ -159,6 +165,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
 
+- **Forgot password**: the reset link opens a page that asks only for the new password. A link that is incomplete, altered, expired or already used shows a page that offers to request a new one, instead of an error. Setting the password from the link also confirms the email address: before, a user with an unconfirmed address could set the password and still not sign in.
+
+- **Two-factor login** *(EE)*: a recovery code can be used at the login; before, the link led to a page that did not exist. A wrong code can be typed again without starting over from the password, and the language of the user is applied.
+
+- **Remember me**: a user who did not come back for more than 14 days was signed out, whatever the number of days in the settings. The session now lasts as long as configured.
+
+- **Password change**: changing the password, or the two-factor setup *(EE)*, no longer signs you out a few minutes later.
+
+- **Email confirmation**: the link shows its result also when you are not signed in; before, it sent you to the login page. An altered link shows a message instead of an error.
+
+- **Scheduled jobs**: the *system* account is put back in place at startup when its name had been changed by the user editor.
+
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
@@ -170,6 +188,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Compliance — four new standards**, for a total of 18: ACN (Italian NIS2 measures), NIS2 Implementing Regulation (EU) 2024/2690, ISO 22301 (business continuity) and BSI IT-Grundschutz (Germany). They appear in the Compliance view and in the PDF and Excel reports.
 
 - **AutoSnap — hook test**: a *Test* button in the hook editor sends the request right away, with sample values for the selected phase, and shows the answer.
+
+- **Users, two-factor authentication**: a *2FA* column shows who uses it, and *Disable 2FA* turns it off for a user who lost both the authenticator device and the recovery codes. The user is informed by email. The action has its own permission, included in the built-in role: custom roles need it assigned.
+
+- **Two-factor authentication turned off**: the user receives an email, whoever turned it off.
+
+#### Changed
+
+- **Users, Reset password**: sends the user a link to set a new password and also shows it, so it can be delivered another way. Before, the administrator had to know the current password of the user.
 
 #### Fixed
 
@@ -200,6 +226,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Portal**: removing a guest from a tenant no longer removes it from the other tenants.
 
 - **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
+
+- **Profile, two-factor authentication**:
+  - *Reset Authenticator* turns two-factor authentication off and starts the setup again. Before, it left it on with no way to configure the app again, and the next login could not be completed.
+  - *Disable 2FA* accepts a recovery code, as the page says.
+  - A remembered browser is shown, with the days it is remembered for, and *Forget* works.
+
+- **Audit log**: failed logins are recorded; before, none was. Password changes, password resets and every change to the two-factor setup are recorded too.
+
+- **Users**: a built-in account can no longer be deactivated from the editor.
 
 ## [2.3.0] - 2026-09-24
 
