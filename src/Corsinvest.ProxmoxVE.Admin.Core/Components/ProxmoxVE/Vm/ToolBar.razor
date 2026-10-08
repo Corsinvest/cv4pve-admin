@@ -101,7 +101,7 @@
     }
 }
 
-@if (Utility.Any(a => a.IsVIsible(Vm)))
+@if (AllowedUtilities.Any(a => a.IsVIsible(Vm)))
 {
     <RadzenButton Variant="Variant.Text"
                   Size="ButtonSize.ExtraSmall"
@@ -114,7 +114,7 @@
 {
     private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
         @<RadzenMenu Click="@(() => ds.Close())">
-            @foreach (var item in Utility.Where(a => a.IsVIsible(Vm)))
+            @foreach (var item in AllowedUtilities.Where(a => a.IsVIsible(Vm)))
             {
                     <RadzenMenuItem Text="@L[item.Text]"
                                     Style="--rz-icon-fill: 1;"

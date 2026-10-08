@@ -5,6 +5,7 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Node;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 
@@ -15,7 +16,7 @@ public partial class ToolBar(IBrowserService browserService,
                              DialogService dialogService,
                              ContextMenuService contextMenuService,
                              IUiCommandExecutor uiExecutor,
-                             IEnumerable<IToolBarUtility<IClusterResourceNode>> Utility) : IRefreshableData, IClusterName
+                             IEnumerable<ToolBarUtility<IClusterResourceNode>> Utility) : IRefreshableData, IClusterName
 {
     [EditorRequired, Parameter] public IClusterResourceNode Node { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
@@ -27,6 +28,7 @@ public partial class ToolBar(IBrowserService browserService,
     private bool CanConsole { get; set; }
     private bool CanChangeStatus { get; set; }
     private bool SpiceEnabled { get; set; }
+    private List<ToolBarUtility<IClusterResourceNode>> AllowedUtilities { get; } = [];
     private bool IsPam => adminService[ClusterName].Settings.WebApi.IsPam;
 
     protected override async Task OnInitializedAsync()
@@ -36,6 +38,11 @@ public partial class ToolBar(IBrowserService browserService,
 
         CanConsole = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.Console, Node.Node);
         CanChangeStatus = await PermissionService.HasNodeAsync(ClusterName, ClusterPermissions.Node.PowerManagement, Node.Node);
+
+        foreach (var item in Utility)
+        {
+            if (await item.HasPermissionAsync(ClusterName, Node)) { AllowedUtilities.Add(item); }
+        }
         await RefreshDataAsync();
     }
 
@@ -74,7 +81,7 @@ public partial class ToolBar(IBrowserService browserService,
         }
     }
 
-    private async Task OnClickUtilityMenu(IToolBarUtility<IClusterResourceNode> item)
+    private async Task OnClickUtilityMenu(ToolBarUtility<IClusterResourceNode> item)
     {
         var execute = true;
         if (item.RequireConfirm)

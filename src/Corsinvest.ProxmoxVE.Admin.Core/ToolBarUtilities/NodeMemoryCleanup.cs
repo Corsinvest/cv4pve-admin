@@ -2,21 +2,30 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 
 public class NodeMemoryCleanup(IAdminService adminService,
+                               IPermissionService permissionService,
+                               IAuditService auditService,
                                IStringLocalizer<NodeMemoryCleanup> L,
-                               NotificationService notificationService) : IToolBarUtility<IClusterResourceNode>
+                               NotificationService notificationService) : ToolBarUtility<IClusterResourceNode>(auditService)
 {
-    public string Icon { get; } = "cleaning_services";
-    public string Text { get; } = "Memory Cleanup";
-    public ToolBarUtilityType Type { get; } = ToolBarUtilityType.Node;
-    public bool RequireConfirm { get; } = true;
-    public bool IsVIsible(IClusterResourceNode item) => true;
+    public override string Icon { get; } = "cleaning_services";
+    public override string Text { get; } = "Memory Cleanup";
 
-    public async Task ExecuteAsync(string clusterName, IClusterResourceNode item)
+    protected override string AuditAction { get; } = "Node.MemoryCleanup";
+
+    protected override string GetAuditContext(string clusterName, IClusterResourceNode item)
+        => $"Cluster: {clusterName} Node: {item.Node}";
+
+    public override Task<bool> HasPermissionAsync(string clusterName, IClusterResourceNode item)
+        => permissionService.HasNodeAsync(clusterName, ClusterPermissions.Node.PowerManagement, item.Node);
+
+    protected override async Task<bool> ExecuteCoreAsync(string clusterName, IClusterResourceNode item)
     {
         var command = "sync && echo 3 > /proc/sys/vm/drop_caches && echo 1 > /proc/sys/vm/compact_memory";
         var result = await adminService[clusterName].SshExecuteAsync(item.Node, true, [command]);
@@ -32,5 +41,7 @@ public class NodeMemoryCleanup(IAdminService adminService,
         {
             notificationService.Error(result[0].StdErr);
         }
+
+        return result[0].IsSuccess;
     }
 }
