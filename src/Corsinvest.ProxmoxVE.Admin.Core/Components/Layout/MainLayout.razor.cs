@@ -89,10 +89,8 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
 
     private void CheckExistCluster()
     {
-        if (!SettingsService.GetEnabledClustersSettings().Any())
-        {
-            NavigationManager.NavigateTo(UrlHelper.NewPveConfigUrl);
-        }
+        HasNoClusters = !SettingsService.GetEnabledClustersSettings().Any();
+        if (HasNoClusters) { NavigationManager.NavigateTo(UrlHelper.NewPveConfigUrl); }
     }
 
     private async Task OpenCommandPalette()

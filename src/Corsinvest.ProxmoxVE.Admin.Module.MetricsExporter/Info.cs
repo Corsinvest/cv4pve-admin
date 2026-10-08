@@ -19,7 +19,6 @@ internal class Info
     public long CountRequest => Interlocked.Read(ref _countRequest);
     public CollectorRegistry Registry { get; set; } = default!;
 
-    // Scrapes of the same cluster can overlap
     public void RegisterRequest()
     {
         Interlocked.Exchange(ref _lastRequestTicks, DateTime.Now.Ticks);

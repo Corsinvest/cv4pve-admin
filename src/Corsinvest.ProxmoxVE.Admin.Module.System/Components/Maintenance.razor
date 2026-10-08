@@ -30,17 +30,19 @@
                 </RadzenFormField>
             </RadzenStack>
 
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.75rem">
-                <RadzenButton Icon="delete_sweep"
-                              Text="@L["Cleanup System Logs"]"
-                              ButtonStyle="ButtonStyle.Danger"
-                              Click="CleanupSystemLogsAsync"
-                              IsBusy="IsCleanupSystemLogsBusy"
-                              Disabled="@(IsAnyBusy && !IsCleanupSystemLogsBusy)" />
-                <RadzenFormField Text="@L["Keep last days"]" AllowFloatingLabel="false">
-                    <RadzenNumeric @bind-Value="SystemLogsRetentionDays" Min="1" Max="3650" Style="width:90px;" />
-                </RadzenFormField>
-            </RadzenStack>
+            <SubscriptionGate Size="SubscriptionGateSize.Compact">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.75rem">
+                    <RadzenButton Icon="delete_sweep"
+                                  Text="@L["Cleanup System Logs"]"
+                                  ButtonStyle="ButtonStyle.Danger"
+                                  Click="CleanupSystemLogsAsync"
+                                  IsBusy="IsCleanupSystemLogsBusy"
+                                  Disabled="@(IsAnyBusy && !IsCleanupSystemLogsBusy)" />
+                    <RadzenFormField Text="@L["Keep last days"]" AllowFloatingLabel="false">
+                        <RadzenNumeric @bind-Value="SystemLogsRetentionDays" Min="1" Max="3650" Style="width:90px;" />
+                    </RadzenFormField>
+                </RadzenStack>
+            </SubscriptionGate>
 
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.75rem">
                 <RadzenButton Icon="history"
