@@ -68,7 +68,7 @@ After user name and password, the login asks for the authenticator code. A wrong
 
 If the authenticator device is not available, click **log in with a recovery code** on the same page and enter one of the saved recovery codes. The code is consumed: it cannot be used a second time.
 
-**Remember Machine** skips the code on that browser for the following logins. The 2FA page shows a remembered browser as **This browser is remembered for 30 days**. Its **Forget** button makes the login ask for the code again.
+**Remember Machine** skips the code on that browser for the following logins. The browser is remembered for the number of days set in [`CookieSettings:ExpireDays`](../appsettings-extra/) (default 30), then the login asks for the code again. The 2FA page shows a remembered browser as **This browser is remembered for 30 days**, with the number of days in use. Its **Forget** button makes the login ask for the code again at once.
 
 ### Managing 2FA
 

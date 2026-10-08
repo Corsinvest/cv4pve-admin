@@ -36,6 +36,11 @@ public static class ServiceCollectionExtensions
         //.AddScheme<AppTokenAuthenticationOptions, AppTokenAuthenticationHandler>(
         //    AppTokenAuthenticationHandler.SchemeName, _ => { });
 
+        var cookieLifetime = TimeSpan.FromDays(configuration.GetValue("CookieSettings:ExpireDays", 14));
+
+        services.Configure<CookieAuthenticationOptions>(IdentityConstants.TwoFactorRememberMeScheme,
+                                                        options => options.ExpireTimeSpan = cookieLifetime);
+
         services.ConfigureApplicationCookie(options =>
         {
             options.LoginPath = "/Login";
@@ -47,7 +52,7 @@ public static class ServiceCollectionExtensions
             options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             options.Cookie.SameSite = SameSiteMode.Strict;
             options.SlidingExpiration = true;
-            options.ExpireTimeSpan = TimeSpan.FromDays(configuration.GetValue("CookieSettings:ExpireDays", 14));
+            options.ExpireTimeSpan = cookieLifetime;
             options.SessionStore = services.BuildServiceProvider().GetRequiredService<ITicketStore>();
         });
 
