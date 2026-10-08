@@ -28,6 +28,9 @@ export default defineConfig({
           // A page with its own <title> in the frontmatter keeps it.
           titleSuffix: 'cv4pve-admin for Proxmox VE',
           branch: 'main',
+          // Visits, without cookies. Only on the public site: the copy embedded in the application
+          // (DOCS_BASE set) sends nothing.
+          matomo: process.env.DOCS_BASE ? undefined : { url: 'https://matomo.corsinvest.it/', siteId: 16 },
           // Product icon: favicon and header, dark variant for the dark theme.
           icon: { light: '/icon.svg', dark: '/icon-dark.svg' },
           // Steps panel in the home hero: the same steps, in the same order and words, as
