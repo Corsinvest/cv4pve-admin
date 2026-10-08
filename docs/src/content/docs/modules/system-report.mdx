@@ -145,8 +145,10 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 |------------|--------|
 | **System Report** | Open the module and its **Overview** page |
 | **Reports** | Open the page with that name (one permission per page) |
+| **Report: Create / Delete** | Start a **New** report, delete a report |
+| **Report: Download** | Download a report |
 | **Daily Status** <Tag kind="ee" /> | Use the dashboard widget |
 
-**New**, **Download** and **Delete** have no dedicated permission: they are available to every user who can open the **Reports** page.
+The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
 
 <PvePrivileges module="system-report" />

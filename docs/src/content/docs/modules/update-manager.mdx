@@ -118,9 +118,13 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 | **Update Manager** | Open the module and its **Overview** page |
 | **Scans** | Open the page with that name (one permission per page) |
 | **Status** | Use the dashboard widget |
+| **Scan: Scan** | Use the **Scan** button |
+| **Scan: Export** | **Download** the scan as PDF or Excel |
 | **Edit Settings** | Change the module settings |
 
-**Scan** and **Download** have no dedicated permission: they are available to every user who can open the **Scans** page.
+The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
+
+These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
 
 <RequirementsSsh />
 

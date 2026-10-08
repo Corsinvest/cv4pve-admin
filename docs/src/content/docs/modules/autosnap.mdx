@@ -178,15 +178,17 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 |------------|--------|
 | **AutoSnap** | Open the module and its **Overview** page |
 | **Jobs**, **Time line**, **Errors**, **Status** | Open the page with that name (one permission per page) |
-| **Job: Read / Export** | View the jobs grid, export it |
+| **Job: Export** | Export the jobs grid |
 | **Job: Create / Edit / Delete** | Add, change and delete jobs |
 | **Job: Snap** | Use the **Snap** button |
 | **Job: Purge Snapshots** | Use the **Purge Snapshots** button |
-| **Status: Read / Export / Delete** | View and export the snapshot inventory, delete the selected snapshots |
-| **Results: Read / Export / Delete** | View, export and delete run results (**Histories** tab and **Errors** page) |
+| **Status: Export / Delete** | Export the snapshot inventory, delete the selected snapshots |
+| **Results: Export / Delete** | Export and delete run results (**Histories** tab and **Errors** page) |
 | **Status**, **Size**, **Check**, **Info**, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
 | **Edit Settings** | Change the module settings |
 
 </Collapse>
+
+These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
 
 <PvePrivileges module="autosnap" />

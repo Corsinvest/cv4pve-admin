@@ -82,6 +82,8 @@ The buttons at the top of the **Summary** tab run the actions on the resource:
 
 Every action except starting a guest and opening a console asks for confirmation.
 
+**Unlock** and **Memory Cleanup** need the **Power Management** permission on that guest or node, and each run is recorded in the audit log.
+
 **Memory Cleanup** flushes the page cache and compacts the memory of the node. It runs over SSH, so it needs the [SSH credentials](../../configuration/admin-area/clusters/#ssh-configuration) of the cluster.
 
 The **Snapshots** tab of a guest creates, deletes and rolls back snapshots.

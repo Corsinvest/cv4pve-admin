@@ -104,8 +104,14 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 | **Diagnostic** | Open the module and its **Overview** page |
 | **Scans**, **Ignored Issues** | Open the page with that name (one permission per page) |
 | **Status**, **Check** | Use the dashboard widget with that name (one permission per widget) |
+| **Scan: Scan** | Use the **Scan** button |
+| **Scan: Export** | **Download** the report of a scan |
+| **Scan: Delete** | Delete a scan |
+| **IgnoredIssue: Create / Edit / Delete** | **Ignore Issue** on a result (Create); change and delete the rules of the **Ignored Issues** page (Edit, Delete) |
 | **Edit Settings** | Change the module settings |
 
-**Scan**, **Download**, **Delete** and **Ignore Issue** have no dedicated permission: they are available to every user who can open the page.
+The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
+
+These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
 
 <PvePrivileges module="diagnostics" />

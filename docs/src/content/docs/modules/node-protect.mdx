@@ -159,9 +159,13 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 | **Node Protect** | Open the module and its **Overview** page |
 | **Folder**, **Git** | Open the page with that name (one permission per page) |
 | **Folder Size**, **Git Size** <Tag kind="ee" />, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
+| **FolderBackup: Backup / Delete / Download** | Use the button with that name on the **Folder** page (one permission per button) |
+| **Git: Push / Reset repository / Sync from remote / Download** <Tag kind="ee" /> | Use the entry with that name on the **Git** page (one permission per entry). **Reset** and **Sync from remote** are entries of the **Push** button, so they also need **Push** |
 | **Edit Settings** | Change the module settings |
 
-The actions of the pages (**Backup**, **Delete**, **Download**, **Push**, **Reset**, **Sync from remote**) have no dedicated permission: they are available to every user who can open the page.
+The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
+
+These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
 
 <RequirementsSsh />
 
