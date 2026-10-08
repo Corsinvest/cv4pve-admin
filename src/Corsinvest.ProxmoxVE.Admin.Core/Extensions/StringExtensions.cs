@@ -11,6 +11,10 @@ public static class StringExtensions
     private static readonly string[] separator = ["\r\n", "\r", "\n"];
     public static string[] SplitNewLine(this string value) => value.Split(separator, StringSplitOptions.None);
 
+    /// <summary>The non-empty lines of a text, trimmed, whatever line ending it was saved with.</summary>
+    public static string[] SplitLines(this string? value)
+        => (value ?? string.Empty).Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
     public static string EnsureEndsWith(this string str, char toEndWith) => EnsureEndsWith(str, toEndWith.ToString());
 
     public static string SplitCamelCase(this string input)

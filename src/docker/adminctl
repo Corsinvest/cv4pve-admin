@@ -7,11 +7,24 @@ cd "$(dirname "$0")"
 
 # Load configuration
 if [ -f .env ]; then
-    # Export variables from .env (skip comments and empty lines)
-    export $(grep -v '^#' .env | grep -v '^$' | xargs)
+    # Export variables from .env (skip comments and empty lines).
+    # Read line by line: a value may hold spaces or characters the shell would expand.
+    while IFS= read -r line || [ -n "$line" ]; do
+        line="${line%$'\r'}"
+        case "$line" in ''|'#'*) continue ;; esac
+        key="${line%%=*}"
+        value="${line#*=}"
+        [ "$key" = "$line" ] && continue
+        # One pair of surrounding quotes is not part of the value, as for docker compose
+        case "$value" in
+            \"*\") value="${value#\"}"; value="${value%\"}" ;;
+            \'*\') value="${value#\'}"; value="${value%\'}" ;;
+        esac
+        export "$key=$value"
+    done < .env
 else
     echo "Error: .env file not found"
-    echo "Copy .env.example to .env and configure it"
+    echo "It is created by the installer next to this script: see https://corsinvest.github.io/cv4pve-admin/docker/"
     exit 1
 fi
 
@@ -52,6 +65,8 @@ Examples:
 
 Note: You can also use 'docker compose' commands directly if you prefer.
       See README.md for more information.
+
+Documentation: https://corsinvest.github.io/cv4pve-admin/docker/
 EOF
 }
 
@@ -337,7 +352,7 @@ case "${1:-}" in
         echo "Self-update complete."
         echo "   Snapshot kept at: ${SNAPSHOT_DIR}/"
         echo ""
-        echo "Next step: review changes, then './adminctl restart' (or 'docker compose up -d' to pull new images)."
+        echo "Next step: review changes, then 'docker compose up -d' to apply them (or 'docker compose pull && docker compose up -d' to pull new images too)."
         ;;
 
     help|--help|-h|"")

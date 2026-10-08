@@ -65,7 +65,7 @@ internal static class FolderHelper
                 var directoryWork = Path.Combine(baseDir, taskId);
                 Directory.CreateDirectory(directoryWork);
 
-                var paths = settings.PathsToBackup.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+                var paths = settings.PathsToBackup.SplitLines();
                 var start = DateTime.Now;
 
                 taskScope.Log($"Paths to backup: {paths.Length}");
@@ -160,7 +160,7 @@ internal static class FolderHelper
                 await auditService.LogAsync("NodeProtect.Folder.Backup",
                                             success,
                                             $"Cluster: {clusterName}, " +
-                                            $"Paths: {settings.PathsToBackup.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length} items");
+                                            $"Paths: {settings.PathsToBackup.SplitLines().Length} items");
             }
 
             await scope.GetEventNotificationService().PublishAsync(new DataChangedNotification());

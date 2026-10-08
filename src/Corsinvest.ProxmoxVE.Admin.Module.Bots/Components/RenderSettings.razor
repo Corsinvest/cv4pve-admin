@@ -21,7 +21,7 @@
             <RadzenFormField Text="@L["Chats Id"]" AllowFloatingLabel="false" class="rz-w-100">
                 <Start><RadzenIcon Icon="chat" /></Start>
                 <ChildContent>
-                    <RadzenTextBox Name="@nameof(Model.Telegram.ChatsId)" @bind-Value="@Model.Telegram.ChatsId" />
+                    <RadzenTextArea Name="@nameof(Model.Telegram.ChatsId)" @bind-Value="@Model.Telegram.ChatsId" Rows="3" class="rz-w-100" />
                 </ChildContent>
                 <Helper>
                     <RadzenDataAnnotationValidator Component="@nameof(Model.Telegram.ChatsId)" />

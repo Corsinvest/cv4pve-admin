@@ -24,11 +24,14 @@ public class Settings : IModuleSettings
         [Encrypt]
         public string Token { get; set; } = default!;
 
-        [Display(Name = "Chats Id (new line separator). Empty non control access.")]
+        [Display(Name = "Chats Id (one per line). Empty non control access.")]
         public string ChatsId { get; set; } = default!;
 
+        // A value saved by the old single-line field has no line break: commas, semicolons and spaces separate too
+        private static readonly char[] _chatsIdSeparators = ['\r', '\n', ',', ';', ' '];
+
         public long[] GetChatsId()
-           => [.. (ChatsId ?? string.Empty).Split(Environment.NewLine)
+           => [.. (ChatsId ?? string.Empty).Split(_chatsIdSeparators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                                            .Select(a => new
                                            {
                                              Valid = long.TryParse(a, out var chatId),

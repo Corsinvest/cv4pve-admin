@@ -122,14 +122,23 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     if [ "$TAG" != "latest" ]; then
         sed -i '' "s/^CV4PVE_ADMIN_TAG=.*/CV4PVE_ADMIN_TAG=$TAG/" .env
     fi
-    sed -i '' "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/" .env
 else
     # Linux
     if [ "$TAG" != "latest" ]; then
         sed -i "s/^CV4PVE_ADMIN_TAG=.*/CV4PVE_ADMIN_TAG=$TAG/" .env
     fi
-    sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/" .env
 fi
+
+# The password is written without sed: any character is kept as typed
+ENV_TMP=$(mktemp)
+while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+        POSTGRES_PASSWORD=*) printf 'POSTGRES_PASSWORD=%s\n' "$POSTGRES_PASSWORD" ;;
+        *) printf '%s\n' "$line" ;;
+    esac
+done < .env > "$ENV_TMP"
+cat "$ENV_TMP" > .env
+rm -f "$ENV_TMP"
 echo "Configuration updated in .env"
 
 # Make adminctl executable
