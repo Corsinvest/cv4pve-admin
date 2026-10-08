@@ -16,7 +16,7 @@ public static class Permissions
         public static Permission ListVms { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.ListVms), "List VMs");
         public static Permission ListSnapshots { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.ListSnapshots), "List VM snapshots");
         public static Permission GetVmConfig { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.GetVmConfig), "Get VM configuration");
-        public static Permission ChangeVmState { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.ChangeVmState), "Change VM power state (start/stop/shutdown/reset)");
+        public static Permission ChangeVmState { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.ChangeVmState), "Change VM power state (start/stop/shutdown/reboot/reset/suspend/resume)");
         public static Permission CreateVmSnapshot { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.CreateVmSnapshot), "Create VM snapshot");
         public static Permission DeleteVmSnapshot { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.DeleteVmSnapshot), "Delete VM snapshot");
         public static Permission RollbackVmSnapshot { get; } = new(BaseName, nameof(AIServer.Tools.VmTools.RollbackVmSnapshot), "Rollback VM to snapshot");
@@ -46,6 +46,6 @@ public static class Permissions
 
         // Cluster tools
         public static Permission GetClusterStatus { get; } = new(BaseName, nameof(AIServer.Tools.ClusterTools.GetClusterStatus), "Get cluster health summary");
-        public static Permission GetClusterOptions { get; } = new(BaseName, nameof(AIServer.Tools.ClusterTools.GetClusterOptions), "Get cluster options (migration, bandwidth, HA)");
+        public static Permission GetClusterOptions { get; } = new(BaseName, nameof(AIServer.Tools.ClusterTools.GetClusterOptions), "Get cluster options (migration, console, keyboard)");
     }
 }

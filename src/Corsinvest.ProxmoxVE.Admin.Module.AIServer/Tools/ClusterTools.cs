@@ -26,7 +26,7 @@ internal static class ClusterTools
         return aiServerService.SerializeTable(clusters);
     }
 
-    [McpServerTool, Description("Get health summary of a cluster: node count (online/offline), VM count (running/stopped/paused), storage count")]
+    [McpServerTool, Description("Get health summary of a cluster: quorum, node count (total and online), VM count (running/stopped/paused)")]
     public static async Task<string> GetClusterStatus([Description("Cluster name")] string cluster_name,
                                                       IAiServerService aiServerService)
     {
@@ -64,7 +64,7 @@ internal static class ClusterTools
         });
     }
 
-    [McpServerTool, Description("Get cluster options: migration type, network, bandwidth limit, HA settings, console type")]
+    [McpServerTool, Description("Get cluster options: migration type and network, console type, keyboard layout, MAC prefix, description")]
     public static async Task<string> GetClusterOptions([Description("Cluster name")] string cluster_name,
                                                        IAiServerService aiServerService)
     {

@@ -161,7 +161,7 @@ internal static class VmTools
         return aiServerService.SerializeTable(rows);
     }
 
-    [McpServerTool, Description("Get detailed configuration of a VM or LXC container (CPU, memory, disks, network, agent, boot options)")]
+    [McpServerTool, Description("Get configuration of a VM or LXC container: CPU, memory, OS type, start on boot and startup order, protection, description, tags; for a VM also BIOS, KVM, ACPI and guest agent. Disks and network interfaces are not included")]
     public static async Task<string> GetVmConfig([Description("Cluster name")] string cluster_name,
                                                  [Description("VM ID")] int vmid,
                                                  IAiServerService aiServerService)
@@ -235,10 +235,10 @@ internal static class VmTools
         }
     }
 
-    [McpServerTool, Description("Change the power state of a VM or LXC container. Actions: Start, Stop (force), Shutdown (graceful), Reset")]
+    [McpServerTool, Description("Change the power state of a VM or LXC container. Actions: Start, Stop (force), Shutdown (graceful), Reboot, Reset, Suspend, Resume")]
     public static async Task<string> ChangeVmState([Description("Cluster name")] string cluster_name,
                                                    [Description("VM ID")] int vmid,
-                                                   [Description("Action: Start, Stop, Shutdown, Reset")] VmStatus action,
+                                                   [Description("Action: Start, Stop, Shutdown, Reboot, Reset, Suspend, Resume")] VmStatus action,
                                                    IAiServerService aiServerService,
                                                    IPermissionService permissionService,
                                                    ICommandExecutor commandExecutor)
@@ -429,9 +429,9 @@ internal static class VmTools
     [McpServerTool, Description("Get historical metrics data (CPU, Memory, Network, Disk I/O) for VMs")]
     public static async Task<string> ListVmRrdData([Description("Cluster name")] string cluster_name,
                                                    [Description("Array of VM IDs to get RRD data for")] int[] vmids,
-                                                   [Description("Time frame: Hour, Day (default), Week, Month, Year (optional)")] RrdDataTimeFrame time_frame,
-                                                   [Description("Consolidation method: Average (default), Maximum (optional)")] RrdDataConsolidation consolidation,
-                                                   [Description("Metric categories: Cpu, Memory, Disk, Network, Pressure (PSI, PVE 9.0+), All (default) (optional)")] RrdMetricCategory metrics,
+                                                   [Description("Time frame: Hour, Day, Week, Month, Year")] RrdDataTimeFrame time_frame,
+                                                   [Description("Consolidation method: Average, Maximum")] RrdDataConsolidation consolidation,
+                                                   [Description("Metric categories: Cpu, Memory, Disk, Network, Pressure (PSI, PVE 9.0+), All")] RrdMetricCategory metrics,
                                                    IAiServerService aiServerService)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListVmRrdData))
