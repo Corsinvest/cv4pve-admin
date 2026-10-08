@@ -54,8 +54,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISearchProvider, ModuleSearchProvider>();
         services.AddScoped<ISearchProvider, SystemSearchProvider>();
 
-        services.AddScoped<IToolBarUtility<IClusterResourceNode>, NodeMemoryCleanup>();
-        services.AddScoped<IToolBarUtility<IClusterResourceVm>, VmUnlock>();
+        services.AddScoped<ToolBarUtility<IClusterResourceNode>, NodeMemoryCleanup>();
+        services.AddScoped<ToolBarUtility<IClusterResourceVm>, VmUnlock>();
 
         services.AddCommands(typeof(ServiceCollectionExtensions).Assembly);
 

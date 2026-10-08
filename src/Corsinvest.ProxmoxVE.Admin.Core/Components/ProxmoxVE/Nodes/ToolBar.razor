@@ -50,7 +50,7 @@
     </RadzenSplitButton>
 }
 
-@if (Utility.Any(a => a.IsVIsible(Node)))
+@if (AllowedUtilities.Any(a => a.IsVIsible(Node)))
 {
     <RadzenButton Variant="Variant.Text"
                   Size="ButtonSize.ExtraSmall"
@@ -63,7 +63,7 @@
 {
     private void ShowMoreMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
     @<RadzenMenu Click="@(() => ds.Close())">
-        @foreach (var item in Utility.Where(a => a.IsVIsible(Node)))
+        @foreach (var item in AllowedUtilities.Where(a => a.IsVIsible(Node)))
         {
                 <RadzenMenuItem Text="@L[item.Text]"
                                 Style="--rz-icon-fill: 1;"

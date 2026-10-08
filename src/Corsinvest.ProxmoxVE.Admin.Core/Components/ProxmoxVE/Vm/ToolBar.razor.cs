@@ -5,6 +5,7 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Commands;
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Common;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
@@ -16,7 +17,7 @@ public partial class ToolBar(IBrowserService browserService,
                              DialogService dialogService,
                              ContextMenuService contextMenuService,
                              IUiCommandExecutor uiExecutor,
-                             IEnumerable<IToolBarUtility<IClusterResourceVm>> Utility) : IRefreshableData, IClusterName
+                             IEnumerable<ToolBarUtility<IClusterResourceVm>> Utility) : IRefreshableData, IClusterName
 {
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
@@ -28,6 +29,7 @@ public partial class ToolBar(IBrowserService browserService,
     private bool UseApiTokenAuth => adminService[ClusterName].Settings.WebApi.AccessType == ClusterAccessType.ApiToken;
     private WebConsoleType DefaultWebConsoleType { get; set; } = WebConsoleType.NoVnc;
     private bool SpiceEnabled { get; set; }
+    private List<ToolBarUtility<IClusterResourceVm>> AllowedUtilities { get; } = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,6 +38,11 @@ public partial class ToolBar(IBrowserService browserService,
 
         CanConsole = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.Console, Vm.VmId);
         CanChangeStatus = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.PowerManagement, Vm.VmId);
+
+        foreach (var item in Utility)
+        {
+            if (await item.HasPermissionAsync(ClusterName, Vm)) { AllowedUtilities.Add(item); }
+        }
         await RefreshDataAsync();
     }
 
@@ -70,7 +77,7 @@ public partial class ToolBar(IBrowserService browserService,
                             ? VmStatus.Shutdown
                             : Enum.Parse<VmStatus>(item.Value!));
 
-    private async Task OnClickUtilityMenu(IToolBarUtility<IClusterResourceVm> item)
+    private async Task OnClickUtilityMenu(ToolBarUtility<IClusterResourceVm> item)
     {
         var execute = true;
         if (item.RequireConfirm)
