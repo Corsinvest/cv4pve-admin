@@ -103,8 +103,13 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 | **Backup Analytics** | Open the module and its **Overview** page |
 | **Backups**, **Scheduled**, **Unprotected Guests**, **Unprotected Disks**, **Backup in line**, **Trends** | Open the page with that name (one permission per page) |
 | **Status**, **Size**, **Check**, **Info**, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
+| **Backup: Export** | Export the list of the **Backups** page |
+| **Backup: Scan** | Use the **Scan** button |
+| **Backup: Delete all data** | Use the **Delete all data** button |
 | **Edit Settings** | Change the module settings |
 
-**Scan** and **Delete all data** have no dedicated permission: they are available to every user who can open the **Backups** page.
+The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
+
+These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
 
 <PvePrivileges module="backup-analytics" />
