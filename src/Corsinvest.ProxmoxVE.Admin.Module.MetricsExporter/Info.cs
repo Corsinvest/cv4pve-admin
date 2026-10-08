@@ -8,7 +8,21 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.MetricsExporter;
 
 internal class Info
 {
-    public DateTime? LastRequest { get; set; }
-    public long CountRequest { get; set; }
+    private long _countRequest;
+    private long _lastRequestTicks;
+
+    public DateTime? LastRequest
+        => Interlocked.Read(ref _lastRequestTicks) is var ticks and > 0
+            ? new DateTime(ticks, DateTimeKind.Local)
+            : null;
+
+    public long CountRequest => Interlocked.Read(ref _countRequest);
     public CollectorRegistry Registry { get; set; } = default!;
+
+    // Scrapes of the same cluster can overlap
+    public void RegisterRequest()
+    {
+        Interlocked.Exchange(ref _lastRequestTicks, DateTime.Now.Ticks);
+        Interlocked.Increment(ref _countRequest);
+    }
 }

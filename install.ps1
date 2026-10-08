@@ -125,7 +125,10 @@ $envContent = Get-Content .env
 if ($Tag -ne "latest") {
     $envContent = $envContent -replace '^CV4PVE_ADMIN_TAG=.*', "CV4PVE_ADMIN_TAG=$Tag"
 }
-$envContent = $envContent -replace '^POSTGRES_PASSWORD=.*', "POSTGRES_PASSWORD=$PostgresPassword"
+# Not with -replace: a "$" in the password would be read as a regex substitution
+$envContent = $envContent | ForEach-Object {
+    if ($_ -like 'POSTGRES_PASSWORD=*') { "POSTGRES_PASSWORD=$PostgresPassword" } else { $_ }
+}
 $envContent | Set-Content .env
 Write-Host "Configuration updated in .env"
 

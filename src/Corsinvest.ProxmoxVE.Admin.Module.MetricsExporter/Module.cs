@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
 using Corsinvest.ProxmoxVE.Admin.Core.Extensions;
@@ -18,7 +19,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.MetricsExporter;
 
 public class Module : ModuleBase
 {
-    internal static IDictionary<string, Info> Infos { get; } = new Dictionary<string, Info>();
+    internal static ConcurrentDictionary<string, Info> Infos { get; } = new();
+    private static readonly Lock _infosLock = new();
     private static string PrometheusExporterUrl { get; set; } = string.Empty;
 
     public Module()
@@ -73,10 +75,34 @@ public class Module : ModuleBase
 
     protected override void Map(WebApplication app) => MapExporterPrometheusMetrics(app);
 
+    private static Info CreateInfo(string clusterName,
+                                   Settings settings,
+                                   IServiceScopeFactory scopeFactory,
+                                   ILogger<Module> logger,
+                                   ILogger<PrometheusMetricsEngine> engineLogger)
+    {
+        var registry = Prometheus.Metrics.NewCustomRegistry();
+        var engine = new PrometheusMetricsEngine(settings.ApiSettings.Prometheus, registry, engineLogger);
+
+        registry.AddBeforeCollectCallback(async () =>
+        {
+            using var scope = scopeFactory.CreateScope();
+            try
+            {
+                var client = await scope.GetAdminService()[clusterName].GetPveClientAsync();
+                await engine.CollectAsync(client);
+            }
+            catch (Exception ex) { logger.LogError(ex, ex.Message); }
+        });
+
+        return new() { Registry = registry };
+    }
+
     private static void MapExporterPrometheusMetrics(WebApplication app)
         => app.MapGet(PrometheusExporterUrl + "/{clusterName}", async (string clusterName,
                                                              HttpContext context,
                                                              ILogger<Module> logger,
+                                                             ILogger<PrometheusMetricsEngine> engineLogger,
                                                              IServiceScopeFactory scopeFactory) =>
         {
             using var outerScope = scopeFactory.CreateScope();
@@ -99,32 +125,19 @@ public class Module : ModuleBase
                 var expectedBytes = Encoding.UTF8.GetBytes(settings.Token);
                 if (!CryptographicOperations.FixedTimeEquals(tokenBytes, expectedBytes)) { return Results.Unauthorized(); }
 
-                if (!Infos.TryGetValue(clusterName, out var info))
+                Info? info;
+                // Two scrapes arriving together must not build two registries for the same cluster
+                lock (_infosLock)
                 {
-                    var registry = Prometheus.Metrics.NewCustomRegistry();
-                    var engine = new PrometheusMetricsEngine(settings.ApiSettings.Prometheus,
-                                                             registry,
-                                                             scopeFactory.CreateScope().ServiceProvider.GetRequiredService<ILogger<PrometheusMetricsEngine>>());
-
-                    registry.AddBeforeCollectCallback(async () =>
+                    if (!Infos.TryGetValue(clusterName, out info))
                     {
-                        using var scope = scopeFactory.CreateScope();
-                        try
-                        {
-                            var client = await scope.GetAdminService()[clusterName].GetPveClientAsync();
-                            await engine.CollectAsync(client);
-                        }
-                        catch (Exception ex) { logger.LogError(ex, ex.Message); }
-                    });
-
-                    info = new() { Registry = registry };
-                    Infos.Add(clusterName, info);
+                        info = CreateInfo(clusterName, settings, scopeFactory, logger, engineLogger);
+                        Infos[clusterName] = info;
+                    }
                 }
 
                 //update statistic
-                info.LastRequest = DateTime.Now;
-                if (long.MaxValue == info.CountRequest) { info.CountRequest = 0; }
-                info.CountRequest++;
+                info.RegisterRequest();
 
                 //execute and return data
                 await using var ms = new MemoryStream();
