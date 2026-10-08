@@ -57,7 +57,14 @@ public static class UserCommands
         userCommand.Add(resetPasswordCommand);
         userCommand.Add(enableCommand);
         userCommand.Add(disableCommand);
+        var disableTwoFactorCommand = new Command("disable-2fa", "Disable two-factor authentication of a user account")
+        {
+            usernameOption
+        };
+        disableTwoFactorCommand.SetAction(action => DisableTwoFactorAsync(services, action.GetRequiredValue(usernameOption)));
+
         userCommand.Add(unlockCommand);
+        userCommand.Add(disableTwoFactorCommand);
 
         return userCommand;
     }
@@ -66,7 +73,8 @@ public static class UserCommands
     {
         try
         {
-            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            await using var scope = services.CreateAsyncScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             var user = await userManager.FindByNameAsync(username);
             if (user == null)
@@ -109,7 +117,8 @@ public static class UserCommands
     {
         try
         {
-            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            await using var scope = services.CreateAsyncScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var user = await userManager.FindByNameAsync(username);
             if (user == null)
             {
@@ -142,11 +151,49 @@ public static class UserCommands
         }
     }
 
+    private static async Task<int> DisableTwoFactorAsync(IServiceProvider services, string username)
+    {
+        try
+        {
+            await using var scope = services.CreateAsyncScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                Console.WriteLine($"Error: User '{username}' not found");
+                return 1;
+            }
+
+            if (!await userManager.GetTwoFactorEnabledAsync(user))
+            {
+                Console.WriteLine($"User '{username}' has no two-factor authentication enabled");
+                return 0;
+            }
+
+            var result = await userManager.DisableTwoFactorExAsync(user);
+            if (result.Succeeded)
+            {
+                Console.WriteLine($"✓ Two-factor authentication for user '{username}' has been disabled successfully");
+                return 0;
+            }
+
+            Console.WriteLine("Error disabling two-factor authentication:");
+            foreach (var error in result.Errors) { Console.WriteLine($"  - {error.Description}"); }
+            return 1;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return 1;
+        }
+    }
+
     private static async Task<int> SetUserEnabledAsync(IServiceProvider services, string username, bool enabled)
     {
         try
         {
-            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            await using var scope = services.CreateAsyncScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var user = await userManager.FindByNameAsync(username);
             if (user == null)
             {

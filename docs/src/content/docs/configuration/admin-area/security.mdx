@@ -36,7 +36,7 @@ While the default password of `admin@local` is in use, a persistent security war
 
 ## Users<Tag kind="ee" />
 
-The **Users** grid shows **Photo**, **User Name**, **Display Name**, **Built In**, **Email confirmed**, **Is Active**, **Lockout enabled** and **Lockout end**.
+The **Users** grid shows **Photo**, **User Name**, **Display Name**, **Built In**, **Email confirmed**, **Is Active**, **2FA**, **Lockout enabled** and **Lockout end**. **2FA** marks the users who protect their login with two-factor authentication.
 
 Toolbar actions:
 
@@ -44,10 +44,11 @@ Toolbar actions:
 |--------|-------------|
 | **Add** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
 | **Export** | Export the grid to Excel. |
-| **Reset password** | Set a new password for the selected user. The dialog asks for **Old password**, **New password** and **Confirm New password**. Not available for your own account: use the [User Profile](../../profile/). |
+| **Reset password** | Send the selected user a link to set a new password, after confirmation. The link is sent by email and is also shown, so it can be copied and delivered another way. It opens the same page as **Forgot password?** on the sign-in page and expires after one day. Not available for your own account: use the [User Profile](../../profile/). |
+| **Disable 2FA** | Turn off two-factor authentication for the selected user, after confirmation. Use it when a user has lost both the authenticator device and the recovery codes. The user signs in with the password only and is informed by email; the authenticator key and the recovery codes are discarded, so the next setup starts from a new QR code. Not available on your own account: use your [profile](../../profile/#two-factor-authentication-2fa). Requires the **Disable 2FA** permission. |
 | **Effective Permissions** | Show every permission the selected user ends up with, and where each one comes from (granted directly or through a role). The dialog has a **Flat** and a **Tree** view. Shown only with the **Read** permission on users. |
 
-Click the **User Name** of a row to edit the user. The dialog has three tabs. The **system** account, used by the scheduled jobs, cannot be edited.
+Click the **User Name** of a row to edit the user. A built-in account cannot be deactivated. The dialog has three tabs. The **system** account, used by the scheduled jobs, cannot be edited.
 
 ### General
 
@@ -57,7 +58,7 @@ Click the **User Name** of a row to edit the user. The dialog has three tabs. Th
 | **Email** | Email address. It is also the user name used to log in, and it must be unique. |
 | **Display Name** | Name shown in the UI. |
 | **Is Active** | When off, the user cannot log in. It is off by default for a new user: turn it on to let the user in. |
-| **Email Confirmed** | Whether the email address has been confirmed. A user with an unconfirmed email cannot log in. Read-only while creating a user. |
+| **Email Confirmed** | Whether the email address has been confirmed. A user with an unconfirmed email cannot log in. Setting a password from a reset link also confirms the address. Read-only while creating a user. |
 | **Lockout Enabled** | When on, the account is locked for a while after too many failed logins. Thresholds are set in [appsettings.extra.json](../../appsettings-extra/#security-settings). |
 
 ### Permissions

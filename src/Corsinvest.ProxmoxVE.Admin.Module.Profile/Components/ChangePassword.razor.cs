@@ -2,10 +2,16 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Microsoft.AspNetCore.Components;
+
 namespace Corsinvest.ProxmoxVE.Admin.Module.Profile.Components;
 
 public partial class ChangePassword(UserManager<ApplicationUser> userManager,
                                     ICurrentUserService currentUserService,
+                                    IAuditService auditService,
+                                    DialogService dialogService,
+                                    NavigationManager navigationManager,
                                     NotificationService notificationService)
 {
     private string? Error { get; set; }
@@ -32,18 +38,20 @@ public partial class ChangePassword(UserManager<ApplicationUser> userManager,
         var result = await userManager.ChangePasswordAsync(user, Model.OldPassword, Model.NewPassword);
         if (result.Succeeded)
         {
-            await userManager.UpdateSecurityStampAsync(user);
+            await auditService.LogAsync("ChangePassword", true, $"User '{user.UserName}' changed the password");
 
             // Leave nothing behind on screen: clear the fields and put any revealed password
             // back under the dots.
             Model = new();
             ShowPasswords = false;
 
-            notificationService.Success(L["Your password has been changed"]);
+            await dialogService.Alert(L["Your password has been changed"], L["Password"]);
+            navigationManager.RefreshSignIn();
         }
         else
         {
             Error = result.Errors.Select(a => a.Description).JoinAsString(",");
+            await auditService.LogAsync("ChangePassword", false, $"User '{user.UserName}': {Error}");
             notificationService.Error("Error", Error);
             return;
         }

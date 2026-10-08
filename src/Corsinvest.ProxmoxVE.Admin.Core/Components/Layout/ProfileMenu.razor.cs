@@ -21,9 +21,11 @@ public partial class ProfileMenu(ThemeService themeService,
         themeService.ThemeChanged += OnThemeChanged;
 
         var user = await currentUserService.GetUserAsync();
-        DisplayName = user!.DisplayName!;
-        Email = user!.Email!;
-        ProfileImageUrl = user!.ProfileImageUrl;
+        if (user == null) { return; }
+
+        DisplayName = user.DisplayName!;
+        Email = user.Email!;
+        ProfileImageUrl = user.ProfileImageUrl;
 
         //await RefreshDataAsync();
     }

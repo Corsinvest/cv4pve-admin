@@ -12,9 +12,11 @@ public partial class LoginWith2fa(NavigationManager navigationManager,
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
     [SupplyParameterFromQuery] private bool RememberMe { get; set; }
     [SupplyParameterFromQuery] private string Key2FA { get; set; } = default!;
+    [SupplyParameterFromQuery] private string? Error { get; set; }
+    [SupplyParameterFromQuery] private bool Recovery { get; set; }
 
     private InputModel Input { get; set; } = new();
-    private RadzenSecurityCode SecurityCodeRef { get; set; } = default!;
+    private RadzenSecurityCode? SecurityCodeRef { get; set; } = default;
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,14 +28,19 @@ public partial class LoginWith2fa(NavigationManager navigationManager,
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender) { await SecurityCodeRef.FocusAsync(); }
+        if (firstRender && SecurityCodeRef != null) { await SecurityCodeRef.FocusAsync(); }
     }
+
+    private string GetUrl(bool recovery)
+        => navigationManager.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            [nameof(Recovery)] = recovery ? true : null,
+            [nameof(Error)] = null
+        });
 
     private sealed class InputModel
     {
         [Required]
-        [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Text)]
         public string TwoFactorCode { get; set; } = string.Empty;
 
         [Display(Name = "Remember this machine")]

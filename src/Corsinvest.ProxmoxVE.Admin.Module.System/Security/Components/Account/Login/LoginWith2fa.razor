@@ -8,13 +8,23 @@
 <PageTitle>@L["Two-factor authentication"]</PageTitle>
 
 <RadzenText Text="@L["Two-factor authentication"]" TextStyle="TextStyle.H5" />
-<RadzenText Text="@L["Your login is protected with an authenticator app. Enter your authenticator code below."]" TextStyle="TextStyle.H6" />
+<RadzenText Text="@(Recovery
+                        ? L["Enter one of the recovery codes you saved when you turned on two-factor authentication. Each code works only once."]
+                        : L["Your login is protected with an authenticator app. Enter your authenticator code below."])"
+            TextStyle="TextStyle.H6" />
 
 <RadzenTemplateForm TItem="InputModel"
                     Data="@Input"
                     Action="@($"/Login2fa?returnUrl={ReturnUrl}")"
                     Method="post">
     <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenAlert Shade="Shade.Lighter"
+                     Variant="Variant.Flat"
+                     Size="AlertSize.Small"
+                     AlertStyle="AlertStyle.Danger"
+                     AllowClose="false"
+                     Visible="@(!string.IsNullOrEmpty(Error))"
+                     Text="@Error" />
 
         <AntiforgeryToken />
 
@@ -22,20 +32,36 @@
         <input type="hidden" name="@nameof(ReturnUrl)" value="@ReturnUrl" />
         <input type="hidden" name="@nameof(RememberMe)" value="@RememberMe.ToString().ToLower()" />
 
-        <RadzenSecurityCode @ref="@SecurityCodeRef"
-                            @bind-Value="@Input.TwoFactorCode"
-                            Type="SecurityCodeType.String"
-                            Count="6"
-                            Name="@nameof(Input.TwoFactorCode)" />
+        @if (Recovery)
+        {
+            <RadzenFormField Text="@L["Recovery code"]" class="rz-w-100">
+                <End>
+                    <RadzenIcon Icon="key" />
+                </End>
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="@Input.TwoFactorCode"
+                                   Name="@nameof(Input.TwoFactorCode)"
+                                   AutoCompleteType="AutoCompleteType.Off" />
+                </ChildContent>
+            </RadzenFormField>
+        }
+        else
+        {
+            <RadzenSecurityCode @ref="@SecurityCodeRef"
+                                @bind-Value="@Input.TwoFactorCode"
+                                Type="SecurityCodeType.String"
+                                Count="6"
+                                Name="@nameof(Input.TwoFactorCode)" />
+
+            <br />
+
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenSwitch Name="@nameof(Input.RememberMachine)" @bind-Value="@Input.RememberMachine" />
+                <RadzenLabel Text="@L["Remember Machine"]" Component="@nameof(Input.RememberMachine)" />
+            </RadzenStack>
+        }
 
         <RadzenDataAnnotationValidator Component="@nameof(Input.TwoFactorCode)" />
-
-        <br />
-
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-            <RadzenSwitch Name="@nameof(Input.RememberMachine)" @bind-Value="@Input.RememberMachine" />
-            <RadzenLabel Text="@L["Remember Machine"]" Component="@nameof(Input.RememberMachine)" />
-        </RadzenStack>
 
         <br />
 
@@ -48,5 +74,12 @@
 
 <br />
 
-<RadzenText Text="@L["Don't have access to your authenticator device? You can"]" TextStyle="TextStyle.Body1" />
-<RadzenLink Path="@($"/LoginWithRecoveryCode?ReturnUrl={@ReturnUrl}")" Text="@L["log in with a recovery code"]" />
+@if (Recovery)
+{
+    <RadzenLink Path="@GetUrl(false)" Text="@L["Use the authenticator app"]" />
+}
+else
+{
+    <RadzenText Text="@L["Don't have access to your authenticator device? You can"]" TextStyle="TextStyle.Body1" />
+    <RadzenLink Path="@GetUrl(true)" Text="@L["log in with a recovery code"]" />
+}

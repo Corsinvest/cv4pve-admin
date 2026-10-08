@@ -5,7 +5,7 @@
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Pages;
+namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;
 
 public partial class ConfirmEmail(UserManager<ApplicationUser> userManager,
                                   NavigationManager navigationManager)
@@ -25,14 +25,14 @@ public partial class ConfirmEmail(UserManager<ApplicationUser> userManager,
         }
 
         var user = await userManager.FindByIdAsync(UserId);
-        if (user is null)
+        var code = DecodeCode();
+        if (user is null || code is null)
         {
             _message = L["Invalid confirmation link."];
             _alertStyle = AlertStyle.Danger;
             return;
         }
 
-        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
         var result = await userManager.ConfirmEmailAsync(user, code);
 
         if (result.Succeeded)
@@ -44,6 +44,18 @@ public partial class ConfirmEmail(UserManager<ApplicationUser> userManager,
         {
             _message = L["Error confirming your email."];
             _alertStyle = AlertStyle.Danger;
+        }
+    }
+
+    private string? DecodeCode()
+    {
+        try
+        {
+            return Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code!));
+        }
+        catch (FormatException)
+        {
+            return null;
         }
     }
 }

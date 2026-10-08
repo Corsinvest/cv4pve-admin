@@ -15,7 +15,7 @@ public class ApplicationUser : IdentityUser, IBuiltIn
     public bool BuiltIn { get; set; }
 
     [NotMapped]
-    public bool IsSystem => UserName == SystemUser.UserName;
+    public bool IsSystem => SystemUser.Is(UserName, Email);
 
     public static string GetUserProfileImagePath(string email) => Path.Combine(ApplicationHelper.UserProfileImagesPath, $"{email}.jpg");
     public virtual ICollection<UserPermission> UserPermissions { get; set; } = [];

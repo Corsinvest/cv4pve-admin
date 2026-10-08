@@ -18,7 +18,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSecurityAdmin(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IEmailSender<ApplicationUser>, EmailSenderService>();
+        services.AddScoped<IAccountEmailSender, EmailSenderService>();
+        services.AddScoped<IEmailSender<ApplicationUser>>(a => a.GetRequiredService<IAccountEmailSender>());
         services.AddScoped<IAppTokenService, AppTokenService>();
 
         services.AddCascadingAuthenticationState();
@@ -35,6 +36,11 @@ public static class ServiceCollectionExtensions
         //.AddScheme<AppTokenAuthenticationOptions, AppTokenAuthenticationHandler>(
         //    AppTokenAuthenticationHandler.SchemeName, _ => { });
 
+        var cookieLifetime = TimeSpan.FromDays(configuration.GetValue("CookieSettings:ExpireDays", 14));
+
+        services.Configure<CookieAuthenticationOptions>(IdentityConstants.TwoFactorRememberMeScheme,
+                                                        options => options.ExpireTimeSpan = cookieLifetime);
+
         services.ConfigureApplicationCookie(options =>
         {
             options.LoginPath = "/Login";
@@ -46,7 +52,7 @@ public static class ServiceCollectionExtensions
             options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             options.Cookie.SameSite = SameSiteMode.Strict;
             options.SlidingExpiration = true;
-            options.ExpireTimeSpan = TimeSpan.FromDays(configuration.GetValue("CookieSettings:ExpireDays", 14));
+            options.ExpireTimeSpan = cookieLifetime;
             options.SessionStore = services.BuildServiceProvider().GetRequiredService<ITicketStore>();
         });
 
@@ -129,6 +135,24 @@ public static class ServiceCollectionExtensions
         var systemUser = await userManager.FindByNameAsync(SystemUser.UserName);
         if (systemUser == null)
         {
+            // Renamed by the user editor, which used to rewrite the user name from the email
+            systemUser = await userManager.FindByEmailAsync(SystemUser.Email);
+            if (systemUser != null)
+            {
+                var renamed = await userManager.SetUserNameAsync(systemUser, SystemUser.UserName);
+                if (renamed.Succeeded)
+                {
+                    logger.LogInformation("System account renamed back to '{UserName}'", SystemUser.UserName);
+                }
+                else
+                {
+                    logger.LogError("System account could not be renamed back to '{UserName}': {Error}", SystemUser.UserName, renamed);
+                }
+            }
+        }
+
+        if (systemUser == null)
+        {
             systemUser = new ApplicationUser
             {
                 UserName = SystemUser.UserName,
@@ -142,7 +166,11 @@ public static class ServiceCollectionExtensions
             };
 
             //no password: cannot log in
-            await userManager.CreateAsync(systemUser);
+            var created = await userManager.CreateAsync(systemUser);
+            if (!created.Succeeded)
+            {
+                logger.LogError("System account could not be created: {Error}. Scheduled jobs will run without a valid user.", created);
+            }
         }
         SystemUser.Id = systemUser.Id;
 
