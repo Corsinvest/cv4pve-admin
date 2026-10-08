@@ -135,6 +135,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Small fixes**: in the Cluster Usage grid the memory tooltip shows the memory figure (it showed the storage one); the disk usage tooltip of the resource lists ends with `%`; a disabled Metrics Exporter always answers with status 503; the default sender address of a new installation is `noreply@example.com`.
 
+- **Command Palette**: the `vm:` and `ip:` filters list containers too, *create snapshot* offers every guest and not only the running ones, and the guest picker of the commands shows only the guests you are allowed to see.
+
+- **Cluster selector**: the search ignores upper and lower case, and a search without results shows *No results found!* instead of hiding the selector.
+
+- **AI Server**: the descriptions the assistant reads for eight tools now match what the tools return and accept.
+
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
 
 #### Internal
