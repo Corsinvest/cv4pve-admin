@@ -86,8 +86,7 @@ public class Module : ModuleBase
                 var settings = settingsService.GetForModule<Module, Settings>(clusterName);
                 if (!settings.Enabled || !settings.ApiSettings.Prometheus.Enabled)
                 {
-                    context.Response.StatusCode = 503;
-                    return Results.Problem("Metrics Exporter is disabled");
+                    return Results.Problem("Metrics Exporter is disabled", statusCode: StatusCodes.Status503ServiceUnavailable);
                 }
 
                 if (string.IsNullOrWhiteSpace(settings.Token))

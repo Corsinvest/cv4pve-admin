@@ -86,13 +86,13 @@ Each run creates a folder in the application data directory, named after the run
 The remote branch is overwritten with the local history. Use a repository and a branch dedicated to Node Protect.
 :::
 
-The **Push** button is a split button, disabled until the Git destination is enabled. **Sync form remote** and **Open remote repository** appear only when **Remote Url** is set:
+The **Push** button is a split button, disabled until the Git destination is enabled. **Sync from remote** and **Open remote repository** appear only when **Remote Url** is set:
 
 | Action | What it does |
 |--------|--------------|
 | **Push** | Runs backup, commit and push immediately in the background |
 | **Reset** | After confirmation, deletes the local repository and starts an empty one. The remote is not touched until the next push |
-| **Sync form remote** | After confirmation, deletes the local repository and clones the remote branch again |
+| **Sync from remote** | After confirmation, deletes the local repository and clones the remote branch again |
 | **Open remote repository** | Opens the **Remote Url** in a new browser tab |
 | **Download** (per row) | Downloads the files of that commit as a `.tar.gz` archive |
 
@@ -161,7 +161,7 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 | **Folder Size**, **Git Size** <Tag kind="ee" />, **Daily Status** <Tag kind="ee" /> | Use the dashboard widget with that name (one permission per widget) |
 | **Edit Settings** | Change the module settings |
 
-The actions of the pages (**Backup**, **Delete**, **Download**, **Push**, **Reset**, **Sync form remote**) have no dedicated permission: they are available to every user who can open the page.
+The actions of the pages (**Backup**, **Delete**, **Download**, **Push**, **Reset**, **Sync from remote**) have no dedicated permission: they are available to every user who can open the page.
 
 <RequirementsSsh />
 

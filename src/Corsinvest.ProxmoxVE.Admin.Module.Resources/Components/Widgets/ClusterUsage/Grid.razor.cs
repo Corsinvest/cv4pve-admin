@@ -72,7 +72,7 @@ public partial class Grid(IAdminService adminService) : IModuleWidget<object>, I
             row.CpuUsage = usage[0].Usage / 100.0;
             row.CpuInfo = usage[0].Info;
             row.MemoryUsage = usage[1].Usage / 100.0;
-            row.MemoryInfo = usage[2].Info;
+            row.MemoryInfo = usage[1].Info;
             row.DiskUsage = usage[2].Usage / 100.0;
             row.DiskInfo = usage[2].Info;
             row.Link = (await clusterClient.GetPveClientAsync()).BaseAddress;

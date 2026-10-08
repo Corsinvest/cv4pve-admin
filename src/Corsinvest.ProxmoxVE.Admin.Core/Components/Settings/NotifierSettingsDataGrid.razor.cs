@@ -35,7 +35,7 @@ public partial class NotifierSettingsDataGrid<TSettings>(INotifierService notifi
         await DataGridRef.Reload();
     }
 
-    private void Save() => notifierService.SetAsync(typeof(TSettings), Items);
+    private Task SaveAsync() => notifierService.SetAsync(typeof(TSettings), Items);
 
     private async Task RowSelectAsync(TSettings item)
     {
@@ -52,7 +52,7 @@ public partial class NotifierSettingsDataGrid<TSettings>(INotifierService notifi
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete"], true))
         {
             Items.Remove(SelectedItems[0]);
-            Save();
+            await SaveAsync();
             await DataGridRef.Reload();
         }
     }
@@ -104,7 +104,7 @@ public partial class NotifierSettingsDataGrid<TSettings>(INotifierService notifi
                 Items.Add(item);
                 await DataGridRef.Reload();
             }
-            Save();
+            await SaveAsync();
         }
     }
 }
