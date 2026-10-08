@@ -125,7 +125,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Permissions**: the settings of a module can be opened and saved only with the *Edit Settings* permission, also from the *Activate schedulation* button; AutoSnap *Snap* and *Purge*, stopping a task and starting the application update now check their permission when they run, not only when the button is shown. The AutoSnap *Errors* page shows the errors of the current cluster only.
 
-- **Resources, Memory Cleanup and Unlock**: the two entries of the node and guest menu are shown and run only with the *Power Management* permission on that node or guest, and each run is recorded in the audit log. Before, any user who could see the resource could run them.
+- **Resources, Memory Cleanup and Unlock**: the two entries of the node and guest menu are shown and run only with the *Power Management* permission on that node or guest, and each run is recorded in the audit log. Before, any user who could see the resource could run them. *Schedule Now* of a replication checks its permission also when it runs.
 
 - **Profile, language**: changing the language reloads the page in the new language; before, the page lost the connection.
 
@@ -171,7 +171,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Permissions**: resetting a user password, regenerating an app token, UPS *Scan now* and creating a Portal tenant now check their permission when they run, not only when the button is shown.
 
-- **Users**: the *system* account, used by the scheduled jobs, can no longer be edited from the user list. *Effective Permissions* is shown only to who can read the users.
+- **Users**: the *system* account, used by the scheduled jobs, can no longer be edited from the user list. *Effective Permissions* is shown only to who can read the users. The same button of the app tokens needs the read permission on tokens.
 
 - **Portal**: removing a guest from a tenant no longer removes it from the other tenants.
 
