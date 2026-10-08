@@ -26,9 +26,11 @@ public partial class ClusterSelector(ISettingsService settingsService) : ICluste
     private string SearchString { get; set; } = default!;
     private RadzenTextBox SearchBoxRef { get; set; } = default!;
 
+    private bool HasClusters => settingsService.GetEnabledClustersSettings().Any();
+
     private IEnumerable<ClusterSettings> Data
         => settingsService.GetEnabledClustersSettings()
-                          .Where(a => a.FullDisplayName.Contains(SearchString), !string.IsNullOrWhiteSpace(SearchString));
+                          .Where(a => a.FullDisplayName.Contains(SearchString, StringComparison.OrdinalIgnoreCase), !string.IsNullOrWhiteSpace(SearchString));
 
     private void RefreshData()
     {

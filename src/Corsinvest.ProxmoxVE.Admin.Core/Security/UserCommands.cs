@@ -17,9 +17,8 @@ public static class UserCommands
         // reset-password subcommand
         var usernameOption = new Option<string>(name: "--username", "-u")
         {
-            Description = "Username to reset password for",
-            DefaultValueFactory = _ => ApplicationHelper.DefaultAdminUsername,
-            Required = true
+            Description = "Username of the account",
+            DefaultValueFactory = _ => ApplicationHelper.DefaultAdminUsername
         };
 
         var passwordOption = new Option<string>("--password", "-p")

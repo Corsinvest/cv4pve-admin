@@ -23,6 +23,7 @@ public class PveSearchProvider : ISearchProvider
 
     private readonly ParameterMetadata _vmParamVmStopped;
     private readonly ParameterMetadata _vmParamVmRunning;
+    private readonly ParameterMetadata _vmParamVm;
     private readonly ParameterMetadata _nameParam;
     private readonly ParameterMetadata _descriptionParam;
     private readonly ParameterMetadata _vmStateParam;
@@ -48,6 +49,14 @@ public class PveSearchProvider : ISearchProvider
                                                   null,
                                                   new ParameterOptions(DataSource: ctx => GetDataSourceAsync(DataSourceType.VmRunning, ctx), Placeholder: "e.g. 100, debian12"));
 
+        _vmParamVm = new ParameterMetadata("vm",
+                                           "VM/CT",
+                                           "Select VM or Container",
+                                           ParameterType.Select,
+                                           true,
+                                           null,
+                                           new ParameterOptions(DataSource: ctx => GetDataSourceAsync(DataSourceType.Vms, ctx), Placeholder: "e.g. 100, debian12"));
+
         _nameParam = new ParameterMetadata("name", "Name", "Snapshot name", ParameterType.Text, true, null, new ParameterOptions(Placeholder: "e.g. snap-backup-01"));
         _descriptionParam = new ParameterMetadata("description", "Description", "Optional description", ParameterType.Text, false, null, null);
         _vmStateParam = new ParameterMetadata("vmstate", "Include RAM", "Save memory state", ParameterType.Bool, false, false, null);
@@ -68,7 +77,7 @@ public class PveSearchProvider : ISearchProvider
         new("stop", "Stop", "Stop VM/Container", "stop", [_vmParamVmRunning], StopAsync, ClusterPermissions.Vm.PowerManagement.Key),
         new("restart", "Restart", "Restart VM/Container", "restart_alt", [_vmParamVmRunning], RestartAsync, ClusterPermissions.Vm.PowerManagement.Key),
         new("console", "Console", "Open console", "terminal", [_vmParamVmRunning], OpenConsoleAsync, ClusterPermissions.Vm.Console.Key),
-        new("create snapshot", "Create Snapshot", "Create VM/CT snapshot", "add_a_photo", [_vmParamVmRunning, _nameParam, _descriptionParam, _vmStateParam], SnapshotAsync, ClusterPermissions.Vm.Snapshot.Key),
+        new("create snapshot", "Create Snapshot", "Create VM/CT snapshot", "add_a_photo", [_vmParamVm, _nameParam, _descriptionParam, _vmStateParam], SnapshotAsync, ClusterPermissions.Vm.Snapshot.Key),
     ];
 
     #region Command Implementations
@@ -169,7 +178,7 @@ public class PveSearchProvider : ISearchProvider
             else if (context.TryGetFilter(VmFilter, out _) || context.TryGetFilter(IpFilter, out _))
             {
                 var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
-                                .Where(a => a.ResourceType == ClusterResourceType.Vm && a.VmType == VmType.Qemu);
+                                .Where(a => a.ResourceType == ClusterResourceType.Vm);
 
                 vms = await _permissionService.FilterAsync(context.ClusterName, vms);
 
@@ -312,7 +321,7 @@ public class PveSearchProvider : ISearchProvider
         if (ApplicationHelper.IsAllCluster(context.ClusterName)) { return DataSourceResult.Empty; }
 
         var clusterClient = _adminService[context.ClusterName];
-        var resources = await clusterClient.CachedData.GetResourcesAsync(false);
+        var resources = await _permissionService.FilterAsync(context.ClusterName, await clusterClient.CachedData.GetResourcesAsync(false));
 
         DataSourceResult GetVms(Func<ClusterResource, bool> where)
         {
