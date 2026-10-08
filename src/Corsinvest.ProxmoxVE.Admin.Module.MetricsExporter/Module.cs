@@ -126,7 +126,6 @@ public class Module : ModuleBase
                 if (!CryptographicOperations.FixedTimeEquals(tokenBytes, expectedBytes)) { return Results.Unauthorized(); }
 
                 Info? info;
-                // Two scrapes arriving together must not build two registries for the same cluster
                 lock (_infosLock)
                 {
                     if (!Infos.TryGetValue(clusterName, out info))

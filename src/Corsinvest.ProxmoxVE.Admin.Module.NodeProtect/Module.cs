@@ -87,7 +87,6 @@ public class Module : ModuleBase
             public static Permission Download { get; } = new(Data.Prefix, nameof(Download), "Download");
         }
 
-        // Checked by the Git provider of the Enterprise edition
         public static class Git
         {
             public static PermissionsRead Data { get; } = new(BaseName, nameof(Git), nameof(Data));

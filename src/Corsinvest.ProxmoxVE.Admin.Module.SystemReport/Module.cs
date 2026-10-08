@@ -75,31 +75,4 @@ public class Module : ModuleBase
 
     protected override Task RunAsync(IServiceScope scope)
         => scope.MigrateDbAsync<ModuleDbContext>();
-
-    //protected override async Task RefreshSettingsAsync(IServiceScope scope)
-    //{
-    //    await scope.GetEventNotificationService().PublishAsync(new DataChangedNotification());
-    //    InitializeJob(scope);
-    //}
-
-    //protected override async Task FixAsync(IServiceScope scope)
-    //{
-    //    InitializeJob(scope);
-    //    await Task.CompletedTask;
-    //}
-
-    //private static void InitializeJob(IServiceScope scope)
-    //{
-    //    var backgroundJobService = scope.GetJobService();
-    //    var settingsService = scope.GetSettingsService();
-
-    //    foreach (var item in settingsService.GetEnabledClustersSettings().Select(a => a.Name))
-    //    {
-    //        var settings = settingsService.GetForModule<Module, Settings>(item);
-    //        backgroundJobService.ScheduleOrRemove<Job>(a => a.ScanAsync(settings.ClusterName),
-    //                                         settings.CronExpression,
-    //                                         settings.Enabled,
-    //                                         settings.ClusterName);
-    //    }
-    //}
 }

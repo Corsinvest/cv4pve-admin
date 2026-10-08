@@ -6,10 +6,6 @@ using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 
-/// <summary>
-/// Checks the permission and writes the audit entry around the action, so a utility only says
-/// which permission it needs and what it does.
-/// </summary>
 public abstract class ToolBarUtility<T>(IAuditService auditService)
 {
     public abstract string Icon { get; }
@@ -22,7 +18,6 @@ public abstract class ToolBarUtility<T>(IAuditService auditService)
 
     public abstract Task<bool> HasPermissionAsync(string clusterName, T item);
 
-    /// <summary>Runs the action and returns whether it succeeded.</summary>
     protected abstract Task<bool> ExecuteCoreAsync(string clusterName, T item);
 
     public async Task ExecuteAsync(string clusterName, T item)

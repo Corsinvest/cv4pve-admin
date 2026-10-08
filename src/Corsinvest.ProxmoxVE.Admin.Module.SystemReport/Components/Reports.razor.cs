@@ -116,7 +116,7 @@ public partial class Reports(IBrowserService browserService,
     {
         if (SelectedItems.Any() && e.IsForDelete()) { await DeleteAsync(); }
         else if (SelectedItems.Any() && e.IsForEdit()) { }
-        else if (e.IsForNew()) { }
+        else if (e.IsForNew()) { await AddAsync(); }
     }
 
     private async Task DownloadAsync()
