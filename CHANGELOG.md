@@ -139,6 +139,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Cluster selector**: the search ignores upper and lower case, and a search without results shows *No results found!* instead of hiding the selector.
 
+- **Add cluster**: the button in the top bar is back when no cluster is configured, also on the pages that do not redirect to the cluster settings.
+
+- **Maintenance**: in the Community Edition *Cleanup System Logs* is shown as an Enterprise feature; before, it ran and reported zero deleted records.
+
+- **System Report**: the keyboard shortcut for a new item opens the new report dialog.
+
 - **Bots, Chats Id**: the field takes one chat ID per line; before, it was a single-line box and only one ID could be entered. A value already saved keeps working.
 
 - **Metrics Exporter**: scrapes arriving at the same time for the same cluster no longer interfere with each other.
