@@ -95,6 +95,8 @@ public partial class Replication(IAdminService adminService,
 
     private async Task ScheduleNowAsync()
     {
+        if (!CanScheduleNow) { return; }
+
         var client = await adminService[ClusterName].GetPveClientAsync();
         await client.Nodes[SelectedItem.Node]
                     .Replication[SelectedItem.Id]
