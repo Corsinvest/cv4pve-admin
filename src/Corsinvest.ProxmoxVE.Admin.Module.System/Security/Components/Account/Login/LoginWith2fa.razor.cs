@@ -16,7 +16,7 @@ public partial class LoginWith2fa(NavigationManager navigationManager,
     [SupplyParameterFromQuery] private bool Recovery { get; set; }
 
     private InputModel Input { get; set; } = new();
-    private RadzenSecurityCode? SecurityCodeRef { get; set; }
+    private RadzenSecurityCode? SecurityCodeRef { get; set; } = default;
 
     protected override async Task OnInitializedAsync()
     {
