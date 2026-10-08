@@ -143,7 +143,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Metrics Exporter**: scrapes arriving at the same time for the same cluster no longer interfere with each other.
 
-- **Installer**: a PostgreSQL password containing `/`, `&` or `|` no longer breaks the `.env` file.
+- **Installer**: a PostgreSQL password containing `/` or `&` no longer stops the Linux and macOS installer, and one containing `$` is no longer saved altered by the Windows installer.
 
 - **adminctl**: a value with spaces in `.env` is read correctly; after `self-update` the suggested command is the one that applies a changed compose file; the help shows the documentation address.
 
