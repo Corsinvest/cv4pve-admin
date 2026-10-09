@@ -185,6 +185,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **UPS, SNMP v3**: a UPS can be read with SNMP v3 instead of v2c: a user of the device, authentication (SHA-256, SHA-384, SHA-512, SHA-1, MD5) and, if wanted, encryption (AES-128, AES-192, AES-256). In the device choose the connection *SNMP v3*. The passwords are stored encrypted. Existing devices stay on SNMP v2c.
+
 - **UPS, NUT connection**: a UPS without a network card, connected by USB or serial cable to another machine, can be read from the NUT server (Network UPS Tools) of that machine. In the device choose the connection *NUT*, the address and port of the server (3493 by default) and the name of the UPS. The connection only reads: it never sends a command to the UPS. Stale data from the server are treated as no reading. No user is needed on the server.
 
 - **Compliance — four new standards**, for a total of 18: ACN (Italian NIS2 measures), NIS2 Implementing Regulation (EU) 2024/2690, ISO 22301 (business continuity) and BSI IT-Grundschutz (Germany). They appear in the Compliance view and in the PDF and Excel reports.
