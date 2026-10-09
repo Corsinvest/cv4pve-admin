@@ -21,7 +21,7 @@ Reads UPS battery levels, power status, load conditions and runtime estimates at
     { icon: 'mdi:pulse', title: "Status Monitoring", text: "Each scan reads battery charge and voltage, input/output voltage, load percentage, temperature and power source." },
     { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or shutdown threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
     { icon: 'mdi:timer-sand', title: "Runtime Estimation", text: "Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold." },
-    { icon: 'mdi:lan-connect', title: "SNMP-based Polling", text: "Reads UPS devices via SNMP v2c, on a configurable scan schedule. Device profiles for the major brands." },
+    { icon: 'mdi:lan-connect', title: "SNMP-based Polling", text: "Reads UPS devices via SNMP v2c, on a configurable scan schedule. Profiles for the standard UPS MIB and for the major brands." },
     { icon: 'mdi:bell-ring', title: "Notifier Integration", text: "Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../../configuration/admin-area/notifier/) configuration." },
   ]}
 />
@@ -33,7 +33,7 @@ Why integrate UPS into cv4pve-admin instead of NUT alone?
 <FeatureGrid
   items={[
     { icon: 'mdi:database', title: "Every reading kept", text: "Each scan stores status, battery, voltages, load, temperature and runtime. Expand a device to see its reading history, kept for the number of days set in **Max days logs**.", href: '#reading-history' },
-    { icon: 'mdi:swap-horizontal', title: "Multi-vendor via SNMP", text: "Device profiles cover the major UPS brands: one module for the whole fleet, no per-vendor agent on every PVE node.", href: '#profiles' },
+    { icon: 'mdi:swap-horizontal', title: "Multi-vendor via SNMP", text: "The standard UPS MIB covers most network cards, with dedicated profiles for the major brands: one module for the whole fleet, no per-vendor agent on every PVE node.", href: '#profiles' },
     { icon: 'mdi:bell-alert', title: "Alerts before the silence", text: "On battery, battery low, runtime dropping: Notifier sends the alert on any configured channel before the power goes out.", href: '#alerts' },
     { icon: 'mdi:battery-alert', title: "Trends spot a dying battery", text: "Battery health degrades slowly. Charts of battery charge, load, input voltage and temperature over time show when a UPS will not last another outage.", href: '#trends' },
   ]}
@@ -82,7 +82,7 @@ The cards show the last reading and are updated when a scan ends.
 
 ## Devices
 
-The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Profile**, **Detected Brand**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
+The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
 
 Each UPS device is configured with:
 
@@ -104,9 +104,7 @@ Each UPS device is configured with:
 Per-device actions (select a row first):
 
 - **Scan**: queues an immediate scan of the selected device. The result appears in the grid and in the reading history when the scan ends
-- **Test Connection**: queries the device. When it answers, the message shows the profile that `auto` would choose and the SNMP system description the device declares. When it does not, the message gives the reason: no answer within 3 seconds, or a host name that cannot be resolved. A missing answer usually means a wrong address, port or community, or SNMP v2c turned off on the device
-
-To check that the values of the selected profile really arrive, run **Scan** and look at the reading history: a failed scan produces an **Offline** reading with the error text.
+- **Test Connection**: queries the device. When it answers, a dialog shows the SNMP system description the device declares, the profile used and one row for each value of the profile: where it is read from and the value received, or **Missing** when the device does not have it. The power source and the battery state are shown with their meaning next to the number. A warning says which alert thresholds cannot fire because the device has no charge or no runtime value. When the device does not answer, a message gives the reason: no answer within 3 seconds, or a host name that cannot be resolved. A missing answer usually means a wrong address, port or community, or SNMP v2c turned off on the device
 
 ### Profiles
 
@@ -114,36 +112,40 @@ With `auto` the profile is chosen at every scan by asking the device which value
 
 1. the profile of the manufacturer the device declares (its SNMP object identifier), when the device has the values of that brand;
 2. otherwise **Generic RFC 1628**, the standard UPS MIB, when the device has it. It is the case of most third-party SNMP cards;
-3. otherwise any other brand whose values the device has.
+3. otherwise any other verified brand whose values the device has.
 
 The text of the system description is not used: it is written by the SNMP card and often names no brand. When the device answers but has none of these values, the scan and **Test Connection** fail with a message saying so: the device is not a UPS, or its SNMP card does not publish the values.
 
 With a profile picked explicitly, a device that has none of its main values (battery status, charge, output source) fails the scan with a message that says the profile is probably the wrong one.
 
-**Generic RFC 1628** follows a published standard. The brand profiles have not all been tried on a real device: if the readings of a brand profile look wrong, select **Generic RFC 1628**.
+A verified profile is written from the published definitions (MIB) of the standard or of the manufacturer: every value, its unit and the meaning of each state. Verified profiles have been tried against a simulator, not on a real device of each brand: if the readings look wrong, run **Test Connection** and compare the values with the display of the device, or select **Generic RFC 1628**.
 
-<Collapse title="Show all profiles" kind="reference">
+| Profile | Source | Notes |
+|---|---|---|
+| **Generic RFC 1628** | Standard UPS MIB | The standard has no serial number |
+| **APC / Schneider Electric** | PowerNet MIB | Self-test, boost, trim, ECO and standby states count as on mains. No manufacturer value |
+| **CyberPower** | CPS MIB | No manufacturer value |
+| **Delta** | DeltaUPS MIB | No serial number |
+| **Eaton / Powerware** | XUPS MIB | No battery-low state and no serial number |
+| **HPE / HP** | CPQPOWER MIB | No battery-low state and no serial number. The MIB does not give the unit of the battery voltage: tenths of volt are assumed |
+| **Mach Power / NetAgent / Ablerex / Tecnoware** | XPPC MIB (NetAgent cards) | No manufacturer value, no output power |
+| **MGE / Pulsar** | MG-SNMP-UPS MIB | The MIB says "on battery: yes or no": bypass is not told apart from mains. The MIB gives no units: tenths of volt and of hertz, runtime in seconds are assumed |
+| **Riello** | RIELLOUPS MIB | Same structure as the standard. The MIB gives no units: those of the standard are assumed. No serial number |
+| **Tripp Lite** | TRIPPLITE-PRODUCTS MIB | Reads the first device of the card |
 
-- Generic RFC 1628
-- APC / Schneider Electric
-- Eaton / Dell / ABB
-- CyberPower / FSP / PowerWalker
-- Riello
-- Vertiv / Liebert / Emerson
-- Socomec
-- Delta
-- Tripp Lite
-- Huawei
-- Phoenix Contact
-- HPE / HP
-- Gamatronic
-- Powerware / Exide
-- MGE / Pulsar
-- GE / General Electric
-- Chloride
-- Mach Power / NetAgent / Ablerex / Tecnoware
+A value the brand does not define is read from the standard MIB, when the device has it.
 
-</Collapse>
+These profiles are **not verified**: `auto` never chooses them, they work only when picked by hand, and the editor shows a note when one is selected.
+
+| Profile | State |
+|---|---|
+| **Socomec** | Values taken from the Network UPS Tools driver for Net Vision cards, not from a Socomec MIB. Only the mains state is known: on battery the status is **Unknown** |
+| **Huawei** | Values taken from the Network UPS Tools driver, not from a Huawei MIB |
+| **Chloride**, **GE / General Electric**, **Phoenix Contact** | No definition found to check them against |
+
+A brand that is not in the lists is read with **Generic RFC 1628**, which most network cards publish. A device saved with a profile that is no longer in the lists is read as `auto`.
+
+A state of the device that is neither mains nor battery (bypass, output off, a state the profile does not know) gives the status **Unknown** and no alert.
 
 ### Reading history
 
