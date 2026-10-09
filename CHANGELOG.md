@@ -197,6 +197,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Users, Reset password**: sends the user a link to set a new password and also shows it, so it can be delivered another way. Before, the administrator had to know the current password of the user.
 
+- **UPS, continuous reading (review your settings)**: the devices are read continuously instead of on a schedule: every 30 seconds, every 8 seconds while a UPS runs on battery. The *Cron Schedule* setting is gone, replaced by *Reading interval*, *Reading interval on battery* and *Unreachable after (missed readings)*; *Enabled schedulation* is now *Monitoring enabled* and keeps its value. A change of the settings is applied at once. The reading history keeps every reading during a power failure and at every change of status, otherwise one a minute. Run a single instance of the application: two would both send the alerts.
+
+- **UPS, dashboard**: redesigned. Counters of the devices by status, cards ordered by how much attention they need, battery and load with a bar and a small chart of the last three hours, input and output voltage, and a notice saying for how long a device has been on battery or has not answered.
+
 - **UPS, alerts (review your notifications)**: a notification is sent when the alerts of a device change, not at every scan: when the UPS goes on battery, when the charge then drops below a threshold, and so on. Before, the same alert was repeated at every scan, every 5 minutes by default. A *back to normal* notification is sent when no alert is active any more.
 
 - **UPS, device profile**: with *auto* the profile is chosen by asking the device which values it has, not from the text of its description. The profile of the manufacturer is used when the device has its values, otherwise the standard one (RFC 1628). Seven profiles that could not work are removed (Legrand, Salicru, Mitsubishi, Piller, Zigor, NetVision, Borri): a device set to one of them uses the standard profile.
@@ -246,7 +250,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **UPS**:
   - *Test Connection* said "Connection successful!" also when the device did not answer. It now reports the failure and its reason.
-  - A device that does not answer raises an alert at the second scan in a row without a reading; before, nothing was sent.
+  - A device that does not answer becomes *Offline* and raises an alert after three readings in a row without an answer (the number is in the settings); before, nothing was sent.
   - With *auto* the standard profile was always chosen, whatever the brand.
   - A host name can be used in *Host*; before, only an IP address worked.
   - A wrong profile is reported as such, instead of a reading with all values at zero.
