@@ -77,7 +77,7 @@ The cards show the last reading and are updated when a scan ends.
 | **On Battery** | Output supplied by the battery, charge above the shutdown battery threshold |
 | **Low Battery** | The UPS reports a low battery while not running on battery |
 | **Critical** | The UPS reports a depleted battery. Or it runs on battery and either reports a low battery or has a charge at or below the shutdown battery threshold |
-| **Offline** | The last scan got no answer from the device |
+| **Offline** | The last scan got no reading from the device: it did not answer, its name could not be resolved, or it has none of the values of the selected profile. The reading history shows the reason |
 | **Unknown** | The device answered but its state is none of the above, for example bypass or voltage regulation active |
 
 ## Devices
@@ -90,7 +90,7 @@ Each UPS device is configured with:
 |-------|-------------|
 | **Enabled** | Include the device in the scheduled scan and in the Dashboard (default: on) |
 | **Name** | Friendly name for the UPS device (required) |
-| **Host** | IP address of the UPS SNMP agent (required) |
+| **Host** | IP address or host name of the UPS SNMP agent (required) |
 | **Port** | SNMP port (default: 161) |
 | **Community** | SNMP v2c community string (default: `public`) |
 | **Profile** | SNMP device profile (`auto` = detect the brand from the device, or pick one explicitly) |
@@ -104,13 +104,23 @@ Each UPS device is configured with:
 Per-device actions (select a row first):
 
 - **Scan**: queues an immediate scan of the selected device. The result appears in the grid and in the reading history when the scan ends
-- **Test Connection**: queries the device and shows the profile selected from its SNMP system description. It answers "Connection successful!" also when the device does not respond, so it is not a reachability check
+- **Test Connection**: queries the device. When it answers, the message shows the profile that `auto` would choose and the SNMP system description the device declares. When it does not, the message gives the reason: no answer within 3 seconds, or a host name that cannot be resolved. A missing answer usually means a wrong address, port or community, or SNMP v2c turned off on the device
 
-To check that readings really arrive, run **Scan** and look at the reading history: a device that does not answer produces an **Offline** reading with the error text.
+To check that the values of the selected profile really arrive, run **Scan** and look at the reading history: a failed scan produces an **Offline** reading with the error text.
 
 ### Profiles
 
-With `auto` the brand is detected at every scan from the SNMP system description of the device, and shown in **Detected Brand**. When no brand is recognised the **Generic RFC 1628** profile (standard UPS MIB) is used. The generic profile is also the first one tried, and it matches any description that contains "UPS" or "Battery". So with `auto` the generic profile is the one usually selected: pick the brand explicitly to use its profile.
+With `auto` the profile is chosen at every scan by asking the device which values it has, and shown in **Detected Brand**:
+
+1. the profile of the manufacturer the device declares (its SNMP object identifier), when the device has the values of that brand;
+2. otherwise **Generic RFC 1628**, the standard UPS MIB, when the device has it. It is the case of most third-party SNMP cards;
+3. otherwise any other brand whose values the device has.
+
+The text of the system description is not used: it is written by the SNMP card and often names no brand. When the device answers but has none of these values, the scan and **Test Connection** fail with a message saying so: the device is not a UPS, or its SNMP card does not publish the values.
+
+With a profile picked explicitly, a device that has none of its main values (battery status, charge, output source) fails the scan with a message that says the profile is probably the wrong one.
+
+**Generic RFC 1628** follows a published standard. The brand profiles have not all been tried on a real device: if the readings of a brand profile look wrong, select **Generic RFC 1628**.
 
 <Collapse title="Show all profiles" kind="reference">
 
@@ -123,22 +133,15 @@ With `auto` the brand is detected at every scan from the SNMP system description
 - Socomec
 - Delta
 - Tripp Lite
-- Legrand
 - Huawei
 - Phoenix Contact
 - HPE / HP
-- Salicru
 - Gamatronic
 - Powerware / Exide
 - MGE / Pulsar
-- Mitsubishi
 - GE / General Electric
 - Chloride
-- Piller
 - Mach Power / NetAgent / Ablerex / Tecnoware
-- Zigor
-- NetVision
-- Borri
 
 </Collapse>
 
@@ -154,7 +157,7 @@ Pick the **Period**: a single date-range field, limited to the dates that have r
 
 ## Alerts
 
-After each successful reading the module checks the values against the thresholds of the cluster settings. If at least one notifier is selected in the settings, it sends one notification that lists the alerts found:
+After each scan the module checks the reading against the thresholds of the cluster settings. If at least one notifier is selected in the settings, it sends one notification that lists the alerts found:
 
 | Condition | Severity |
 |-----------|----------|
@@ -163,11 +166,14 @@ After each successful reading the module checks the values against the threshold
 | Runtime reported by the UPS above 0 and at or below **Default Shutdown Time Threshold (minutes)** | Error |
 | Status **Critical** | Error |
 | Status **On Battery** | Warning |
+| No reading from the device for two scans in a row | Error |
 
 The notification reports device, status, battery charge and runtime. Its severity is Error when at least one alert is an error, otherwise Warning.
 
-- The notification is sent again at every scan while the condition lasts.
-- No notification is sent when the device does not answer (status **Offline**) or its state is **Unknown**.
+- A notification is sent when the alerts change, not at every scan: when the UPS goes on battery, when the charge then drops below a threshold, and so on. While nothing changes no further notification is sent.
+- When no alert is active any more, one **back to normal** notification closes the episode.
+- A single scan without a reading sends nothing: SNMP runs over UDP and one lost answer is common. The alert starts at the second failed scan in a row, so with the default schedule after about 10 minutes.
+- No notification is sent while the state is **Unknown**.
 
 ## Settings
 
