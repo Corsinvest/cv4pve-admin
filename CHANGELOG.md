@@ -201,6 +201,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **UPS, device profile**: with *auto* the profile is chosen by asking the device which values it has, not from the text of its description. The profile of the manufacturer is used when the device has its values, otherwise the standard one (RFC 1628). Seven profiles that could not work are removed (Legrand, Salicru, Mitsubishi, Piller, Zigor, NetVision, Borri): a device set to one of them uses the standard profile.
 
+- **UPS, profiles checked against the manufacturers' definitions (review your devices)**: every profile was compared, value by value, with the published definitions of the standard and of each manufacturer, and rewritten where it read the wrong value. Ten profiles are verified and chosen by *auto*: Generic RFC 1628, APC, CyberPower, Eaton / Powerware, NetAgent cards (Mach Power, Ablerex, Tecnoware), Delta, HPE / HP, MGE, Tripp Lite, Riello. Socomec, Huawei, Chloride, GE and Phoenix Contact could not be verified: they work only when picked by hand and the editor says so. Vertiv / Liebert and Gamatronic are removed. A device set to a profile that no longer exists, or renamed (*Eaton / Dell / ABB*, *CyberPower / FSP / PowerWalker*, *Powerware / Exide*), is read with *auto*. Readings and status of existing devices can change: run *Test Connection* on each device.
+
+- **UPS, Test Connection**: the result is shown in a dialog with the profile used and one row for each value: where it is read from and what the device answered, or *Missing*. A warning says which alert thresholds cannot fire because the device gives no charge or no runtime.
+
 #### Fixed
 
 - **AutoSnap, hooks**: with parallel snapshots, the lines of a hook stay in the log block of their VM/CT instead of mixing with the other guests.
@@ -246,6 +250,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - With *auto* the standard profile was always chosen, whatever the brand.
   - A host name can be used in *Host*; before, only an IP address worked.
   - A wrong profile is reported as such, instead of a reading with all values at zero.
+  - An APC device on battery was shown as *Online* with no alert, and one on mains as *Unknown*: each brand now uses its own meaning of the power states. A periodic self-test of the UPS is no longer taken for a power failure.
+  - Wrong values in several profiles: battery voltage ten times too high on the standard profile, APC frequency ten times too low, battery voltage, runtime and temperature swapped on CyberPower and NetAgent, and others. Firmware, serial number and output power of the standard profile read the wrong value.
 
 ## [2.3.0] - 2026-09-24
 
