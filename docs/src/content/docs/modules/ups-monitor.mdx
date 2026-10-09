@@ -21,7 +21,7 @@ Reads UPS battery levels, power status, load conditions and runtime estimates co
     { icon: 'mdi:pulse', title: "Status Monitoring", text: "Each reading takes battery charge and voltage, input/output voltage, load percentage, temperature and power source." },
     { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or shutdown threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
     { icon: 'mdi:timer-sand', title: "Runtime Estimation", text: "Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold." },
-    { icon: 'mdi:lan-connect', title: "SNMP and NUT", text: "Reads UPS devices via SNMP v2c, or from a NUT server for a UPS on a USB or serial cable, at a configurable interval, shorter while a UPS runs on battery. Profiles for the standard UPS MIB and for the major brands." },
+    { icon: 'mdi:lan-connect', title: "SNMP and NUT", text: "Reads UPS devices via SNMP v2c or v3, or from a NUT server for a UPS on a USB or serial cable, at a configurable interval, shorter while a UPS runs on battery. Profiles for the standard UPS MIB and for the major brands." },
     { icon: 'mdi:bell-ring', title: "Notifier Integration", text: "Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../../configuration/admin-area/notifier/) configuration." },
   ]}
 />
@@ -54,7 +54,8 @@ The module reads the UPS and sends notifications. It does not shut down or stop 
 
 ## Requirements
 
-- **SNMP** connection: the UPS (or its network card) must answer **SNMP v2c** queries from the cv4pve-admin server on the configured port (default UDP 161) with the configured community.
+- **SNMP v2c** connection: the UPS (or its network card) must answer SNMP v2c queries from the cv4pve-admin server on the configured port (default UDP 161) with the configured community.
+- **SNMP v3** connection: the same, with a user of the device instead of the community. See [SNMP v3](#snmp-v3).
 - **NUT** connection: a NUT server (Network UPS Tools, `upsd`) must accept connections from the cv4pve-admin server on the configured port (default TCP 3493). See [NUT connection](#nut-connection).
 - **Host** is an IP address or a host name that the cv4pve-admin server can resolve.
 - A request that gets no answer within 3 seconds is treated as a failed reading.
@@ -97,11 +98,12 @@ Each UPS device is configured with:
 |-------|-------------|
 | **Enabled** | Read the device and show it in the Dashboard (default: on) |
 | **Name** | Friendly name for the UPS device (required) |
-| **Connection** | **SNMP v2c** (default) or **NUT (Network UPS Tools)**. Changing it also changes the port, while the port is still the default of the connection left |
+| **Connection** | **SNMP v2c** (default), **SNMP v3** or **NUT (Network UPS Tools)**. Changing it also changes the port, while the port is still the default of the connection left |
 | **Host** | IP address or host name of the UPS SNMP agent, or of the NUT server (required) |
-| **Port** | Default: 161 for SNMP, 3493 for NUT |
-| **Community** | SNMP only: SNMP v2c community string (default: `public`) |
-| **Profile** | SNMP only: device profile (`auto` = detect the brand from the device, or pick one explicitly) |
+| **Port** | Default: 161 for SNMP v2c and v3, 3493 for NUT |
+| **Community** | SNMP v2c only: community string (default: `public`) |
+| **User**, **Security level**, **Authentication**, **Privacy** and their passwords | SNMP v3 only: see [SNMP v3](#snmp-v3) |
+| **Profile** | SNMP v2c and v3: device profile (`auto` = detect the brand from the device, or pick one explicitly) |
 | **UPS name** | NUT only: the name of the UPS on the NUT server (default: `ups`) |
 | **Location** | Physical location label |
 | **Description** | Free-text notes |
@@ -155,6 +157,26 @@ These profiles are **not verified**: `auto` never chooses them, they work only w
 A brand that is not in the lists is read with **Generic RFC 1628**, which most network cards publish. A device saved with a profile that is no longer in the lists is read as `auto`.
 
 A state of the device that is neither mains nor battery (bypass, output off, a state the profile does not know) gives the status **Unknown** and no alert.
+
+### SNMP v3
+
+SNMP v2c sends the community in clear text and does not authenticate who asks. SNMP v3 uses a user of the device, with authentication and, if wanted, encryption. The profiles and the values read are the same as with v2c.
+
+| Field | Description |
+|---|---|
+| **User** | The SNMP v3 user configured on the device |
+| **Security level** | **Authentication and privacy** (default): requests are authenticated and encrypted. **Authentication only**: authenticated, the values travel in clear text |
+| **Authentication** and its password | SHA-256 (default), SHA-384, SHA-512, SHA-1 or MD5. The password has at least 8 characters |
+| **Privacy** and its password | AES-128 (default), AES-192 or AES-256. Shown with **Authentication and privacy**. The password has at least 8 characters |
+
+- The algorithms and the passwords must be the ones set for that user on the device.
+- SHA-1 and MD5 are weak: the editor says so. Use them only when the device offers nothing else.
+- The passwords are stored encrypted.
+- The community of v2c and the settings of v3 are both kept: changing the connection and coming back loses nothing.
+
+When the reading fails the message says why: user unknown to the device, authentication failed (password or algorithm), security level not accepted by the device or not allowed to that user. A wrong privacy password or algorithm usually gives no answer at all, because the device drops what it cannot decrypt: the message for a missing answer mentions it.
+
+Tried against a Net-SNMP agent: every authentication algorithm with AES-128, SHA-256 with AES-192 and AES-256, and authentication only. Not tried on the network card of a real UPS. AES-192 and AES-256 have more than one variant among manufacturers: if a device refuses them, use AES-128. 3DES and DES are not available.
 
 ### NUT connection
 
