@@ -18,7 +18,16 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private bool IsAuthorized { get; set; }
+    private (string? ClusterName, string PermissionKey, string Path)? _evaluated;
 
+    // Checked when the parameters change, not at every render of the parent: a render started by a background
+    // notification runs without the current user, and the check would answer no
     protected override async Task OnParametersSetAsync()
-        => IsAuthorized = await PermissionService.HasAsync(PermissionClusterName ?? CascadedClusterName!, PermissionKey, Path);
+    {
+        var current = (PermissionClusterName ?? CascadedClusterName, PermissionKey, Path);
+        if (_evaluated == current) { return; }
+
+        _evaluated = current;
+        IsAuthorized = await PermissionService.HasAsync(current.Item1!, PermissionKey, Path);
+    }
 }
