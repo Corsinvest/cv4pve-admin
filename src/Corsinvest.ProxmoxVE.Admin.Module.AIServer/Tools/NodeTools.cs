@@ -15,8 +15,8 @@ internal static class NodeTools
 {
     [McpServerTool, Description("List cluster nodes with status and CPU, memory and disk usage. The Full detail level adds uptime, totals and the network traffic counters")]
     public static async Task<string> ListNodes([Description("Cluster name")] string cluster_name,
-                                               [Description("Detail level: Minimal (default) or Full (optional)")] VmTools.DetailLevel detail_level,
-                                               IAiServerService aiServerService)
+                                               IAiServerService aiServerService,
+                                               [Description("Detail level: Minimal (default) or Full (optional)")] VmTools.DetailLevel detail_level = VmTools.DetailLevel.Minimal)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListNodes))
         {
@@ -165,11 +165,11 @@ internal static class NodeTools
 
     [McpServerTool, Description("Get historical metrics data (CPU, Memory, Network, etc.) for cluster nodes")]
     public static async Task<string> ListNodeRrdData([Description("Cluster name")] string cluster_name,
-                                                     [Description("Array of node names to get RRD data for (optional, all nodes if empty)")] string[]? nodes,
                                                      [Description("Time frame: Hour, Day, Week, Month, Year")] RrdDataTimeFrame time_frame,
                                                      [Description("Consolidation method: Average, Maximum")] RrdDataConsolidation consolidation,
                                                      [Description("Metric categories: Cpu (LoadAvg,iowait), Memory (Swap), Disk, Network, Pressure (PSI, PVE 9.0+), All")] VmTools.RrdMetricCategory metrics,
-                                                     IAiServerService aiServerService)
+                                                     IAiServerService aiServerService,
+                                                     [Description("Array of node names to get RRD data for (optional, all nodes if empty)")] string[]? nodes = null)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListNodeRrdData))
         {
@@ -250,10 +250,10 @@ internal static class NodeTools
 
     [McpServerTool, Description("List cluster tasks (active and recent)")]
     public static async Task<string> ListTasks([Description("Cluster name")] string cluster_name,
-                                               [Description("Status filter: running, stopped (optional, all if omitted)")] string? status,
-                                               [Description("Task type filter: vzdump, qmstart, qmstop, etc. (optional)")] string? type,
-                                               [Description("Maximum number of tasks to return (default: 50)")] int limit,
-                                               IAiServerService aiServerService)
+                                               IAiServerService aiServerService,
+                                               [Description("Status filter: running, stopped (optional, all if omitted)")] string? status = null,
+                                               [Description("Task type filter: vzdump, qmstart, qmstop, etc. (optional)")] string? type = null,
+                                               [Description("Maximum number of tasks to return (default: 50)")] int limit = 50)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListTasks))
         {
