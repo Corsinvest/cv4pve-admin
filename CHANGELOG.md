@@ -125,6 +125,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped. A replication that fails is now stored in the run history, with its error: before, the history kept showing the last successful run and the failure never appeared. A job that keeps failing gives one record for each try a scan finds.
 
+- **AI Server, permissions (review your tokens)**: five tools returned more than the token is allowed to see. The list of the clusters now shows only the clusters the token can work on; tasks, replication jobs and backup jobs are shown only for the guests and the nodes the token can see, and a backup job lists only the guests the token can see. A token with limited cluster permissions sees less than before.
+
 - **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones with the same text. The check code is shown in the list of the rules. To make a rule wider, clear its fields: gravity and context can be left empty to match any value. Rules created before keep working; some findings hidden by mistake may become visible again.
 
 - **Sign-in**: after the login you are sent back only to a page of this installation; before, a crafted link could send you to another site.
@@ -254,6 +256,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Users**: the *system* account, used by the scheduled jobs, can no longer be edited from the user list. *Effective Permissions* is shown only to who can read the users. The same button of the app tokens needs the read permission on tokens.
 
 - **Portal**: removing a guest from a tenant no longer removes it from the other tenants. It also removes the permissions the tenant users were given on that guest: before, they kept their access and the Portal no longer showed it. A user who is also in another tenant that has the same guest keeps them. Adding a guest that is already in another tenant now asks for a confirmation that names that tenant.
+
+- **AI Server**: in the Enterprise Edition every request to the endpoint failed with an error, also with a valid key. Requests are now served and written to the audit log with the name of the token. The query tools see only the nodes, guests and storages the token can see.
+
+- **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run as the built-in *system* user, and a command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity now checks permissions and writes the audit log like the others.
 
 - **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
 
