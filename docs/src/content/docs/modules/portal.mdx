@@ -69,12 +69,14 @@ Expand a tenant row to manage its content in two tabs: **Vms** and **Users**. Th
 List of the VMs and containers assigned to the tenant, with their live status.
 
 - **New** opens the **Select VM/CT** picker. It lists the guests of the tenant's cluster that are not yet in the tenant. You can select more than one.
-- **Delete** removes the selected guest from the tenant. The guest itself is not touched on Proxmox VE.
+- A guest can be in more than one tenant. When a guest you select is already in another tenant, a confirmation names that tenant before the guest is added.
+- **Delete** removes the selected guest from the tenant, and removes from the tenant users the permissions they were given on it. The guest itself is not touched on Proxmox VE.
 - Expand a guest row to open its detail panel: summary, configuration, performance, backups, replication, snapshots. What the panel shows depends on the permissions of the signed-in user.
 
-:::caution[Removing a VM does not revoke permissions]
-Removing a VM from a tenant does not remove the permissions already granted to the tenant users on that VM. Clear them in the user dialog before removing the VM.
-:::
+The permissions are of the user and of the guest, not of the tenant:
+
+- a user who also belongs to another tenant that has the same guest keeps the permissions on it;
+- a permission on that guest given to a tenant user outside the Portal, in the user's own permissions, is removed with the others.
 
 ### Users
 
