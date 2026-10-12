@@ -66,3 +66,30 @@ public class VmDeleteBackupCommandHandler(IServiceProvider serviceProvider) : Pv
         return PveTaskResult.Success(result, command.ClusterName);
     }
 }
+
+public record VmUpdateBackupCommand(string ClusterName,
+                                    long VmId,
+                                    string Storage,
+                                    string VolId,
+                                    string? Notes,
+                                    bool Protected) : ICommand<PveTaskResult>
+{
+    public Permission RequiredPermission => ClusterPermissions.Vm.Backup;
+    public string Context => $"Cluster {ClusterName}, VmId {VmId}, Storage {Storage}, VolId {VolId}, Protected {Protected}";
+    public Task<bool> HasPermissionAsync(IPermissionService permissionService)
+        => permissionService.HasVmAsync(ClusterName, RequiredPermission, VmId);
+}
+
+public class VmUpdateBackupCommandHandler(IServiceProvider serviceProvider) : PveCommandHandlerBase<VmUpdateBackupCommand>(serviceProvider)
+{
+    protected override async Task<PveTaskResult> ExecuteAsync(VmUpdateBackupCommand command, CancellationToken cancellationToken)
+    {
+        var vm = await GetVmAsync(command.ClusterName, command.VmId);
+        var client = await GetPveClientAsync(command.ClusterName);
+        var result = await client.Nodes[vm.Node]
+                                 .Storage[command.Storage]
+                                 .Content[command.VolId]
+                                 .Updateattributes(notes: command.Notes, protected_: command.Protected);
+        return PveTaskResult.Success(result, command.ClusterName);
+    }
+}

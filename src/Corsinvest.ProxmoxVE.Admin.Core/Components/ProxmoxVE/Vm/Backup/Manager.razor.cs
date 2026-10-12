@@ -18,7 +18,6 @@ public partial class Manager(DialogService dialogService,
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
     [Parameter] public string Style { get; set; } = default!;
 
-    private bool CanRestore { get; set; }
     private bool CanRestoreFile { get; set; }
     private bool CanDelete { get; set; }
     private bool CanEdit { get; set; }
@@ -39,7 +38,6 @@ public partial class Manager(DialogService dialogService,
         CanBackup = hasBackup;
         CanEdit = hasBackup;
         CanDelete = hasBackup;
-        CanRestore = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.BackupRestore, Vm.VmId);
         CanRestoreFile = await PermissionService.HasVmAsync(ClusterName, ClusterPermissions.Vm.BackupRestoreFile, Vm.VmId);
 
         var client = await adminService[ClusterName].GetPveClientAsync();
@@ -112,13 +110,12 @@ public partial class Manager(DialogService dialogService,
     {
         if (await dialogService.OpenSideEditAsync<EditDialog>(L["Edit"], EditDialogMode.Edit, item) != null)
         {
-            var client = await adminService[ClusterName].GetPveClientAsync();
-
-            await client.Nodes[Vm.Node]
-                        .Storage[item.Storage]
-                        .Content[item.Volume]
-                        .Updateattributes(notes: item.Notes, protected_: item.Protected);
-
+            await uiExecutor.ExecuteAndNotifyAsync(new VmUpdateBackupCommand(ClusterName,
+                                                                             Vm.VmId,
+                                                                             item.Storage,
+                                                                             item.Volume,
+                                                                             item.Notes,
+                                                                             item.Protected));
             await RefreshDataAsync();
         }
     }
@@ -138,16 +135,22 @@ public partial class Manager(DialogService dialogService,
     private async Task AddAsync()
     {
         if (!CanBackup) { return; }
-        await dialogService.Alert("Not available");
 
-        await Task.CompletedTask;
-    }
+        var item = new BackupModel
+        {
+            Storage = StorageName,
+            Storages = [.. Storages.Select(a => a.Storage)]
+        };
 
-    private async Task RestoreAsync()
-    {
-        if (!CanRestore) { return; }
-        await dialogService.Alert("Not available");
-
-        await Task.CompletedTask;
+        if (await dialogService.OpenSideEditAsync<NewDialog>(L["New backup"], EditDialogMode.Create, item) != null)
+        {
+            await uiExecutor.ExecuteAndNotifyAsync(new VmBackupCommand(ClusterName,
+                                                                       Vm.VmId,
+                                                                       item.Storage,
+                                                                       item.Mode,
+                                                                       item.Compress,
+                                                                       item.Protected,
+                                                                       string.IsNullOrWhiteSpace(item.Notes) ? null : item.Notes));
+        }
     }
 }

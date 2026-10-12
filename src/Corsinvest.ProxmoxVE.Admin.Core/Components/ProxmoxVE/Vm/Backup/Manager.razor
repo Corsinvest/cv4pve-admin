@@ -30,14 +30,6 @@
 
             <RadzenButton Variant="Variant.Text"
                           Size="ButtonSize.Small"
-                          Text="@L["Restore"]"
-                          Icon="history"
-                          Click="RestoreAsync"
-                          Disabled="!CanRestore || !SelectedItems.Any()"
-                          ButtonStyle="ButtonStyle.Danger" />
-
-            <RadzenButton Variant="Variant.Text"
-                          Size="ButtonSize.Small"
                           Text="@L["Restore File"]"
                           Icon="download"
                           Click="RestoreFileAsync"

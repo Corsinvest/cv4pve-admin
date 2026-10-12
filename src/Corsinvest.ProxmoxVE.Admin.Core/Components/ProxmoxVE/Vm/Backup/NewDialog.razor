@@ -1,0 +1,70 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+@implements IModelParameter<BackupModel>
+
+<RadzenFormField Text="@L["Storage"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="storage" />
+    </Start>
+    <ChildContent>
+        <RadzenDropDown @bind-Value="@Model.Storage" Data="@Model.Storages" Name="@nameof(Model.Storage)" />
+    </ChildContent>
+    <Helper>
+        <RadzenDataAnnotationValidator Component="@nameof(Model.Storage)" />
+    </Helper>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Mode"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="tune" />
+    </Start>
+    <ChildContent>
+        <RadzenDropDown @bind-Value="@Model.Mode" Data="@Modes" Name="@nameof(Model.Mode)" />
+    </ChildContent>
+</RadzenFormField>
+
+<RadzenFormField Text="@L["Compression"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="compress" />
+    </Start>
+    <ChildContent>
+        <RadzenDropDown @bind-Value="@Model.Compress"
+                        Data="@Compressions"
+                        TextProperty="Value"
+                        ValueProperty="Key"
+                        Name="@nameof(Model.Compress)" />
+    </ChildContent>
+</RadzenFormField>
+
+<SwitchField @bind-Value="@Model.Protected"
+             Label="@L["Protected"]"
+             Name="@nameof(Model.Protected)"
+             class="rz-w-100" />
+
+<RadzenFormField Text="@L["Notes"]" AllowFloatingLabel="false">
+    <Start>
+        <RadzenIcon Icon="notes" />
+    </Start>
+    <ChildContent>
+        <RadzenTextArea @bind-Value="@Model.Notes" Rows="5" />
+    </ChildContent>
+</RadzenFormField>
+
+@code
+{
+    [Parameter] public BackupModel Model { get; set; } = default!;
+
+    private static readonly string[] Modes = ["snapshot", "suspend", "stop"];
+
+    private Dictionary<string, string> Compressions => new()
+    {
+        ["0"] = L["None"],
+        ["zstd"] = "ZSTD",
+        ["gzip"] = "GZIP",
+        ["lzo"] = "LZO"
+    };
+}
