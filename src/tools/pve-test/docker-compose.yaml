@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
+# Repository: https://github.com/Corsinvest/cv4pve-admin
+
+# Proxmox VE nodes in containers, to try the commands that cannot be tried on a real cluster: see README.md
+name: cv4pve-admin-pve-test
+
+# restart "no": a node that was shut down must stay off until it is started by hand
+x-pve: &pve
+  image: ghcr.io/longqt-sea/proxmox-ve@sha256:72a125deea1b4392ce616519164a66d378d0da565c3dca3ba4c1957a0c9214ef
+  restart: "no"
+  stdin_open: true
+  tty: true
+  cgroup: private
+  device_cgroup_rules:
+    - "a *:* rwm"
+  cap_add:
+    - ALL
+  security_opt:
+    - seccomp=unconfined
+    - apparmor=unconfined
+    - systempaths=unconfined
+  environment:
+    PASSWORD: "proxmox123"
+
+services:
+  # One node on its own
+  pve-single:
+    <<: *pve
+    container_name: pve-single
+    hostname: pve-single
+    networks:
+      pve:
+        ipv4_address: 10.0.99.10
+    ports:
+      - "127.0.0.1:18006:8006"
+
+  # Three nodes, made into the cluster "cvtest" by create-cluster.ps1
+  pve-1:
+    <<: *pve
+    container_name: pve-1
+    hostname: pve-1
+    networks:
+      pve:
+        ipv4_address: 10.0.99.1
+    ports:
+      - "127.0.0.1:18011:8006"
+
+  pve-2:
+    <<: *pve
+    container_name: pve-2
+    hostname: pve-2
+    networks:
+      pve:
+        ipv4_address: 10.0.99.2
+    ports:
+      - "127.0.0.1:18012:8006"
+
+  pve-3:
+    <<: *pve
+    container_name: pve-3
+    hostname: pve-3
+    networks:
+      pve:
+        ipv4_address: 10.0.99.3
+    ports:
+      - "127.0.0.1:18013:8006"
+
+networks:
+  pve:
+    ipam:
+      config:
+        - subnet: 10.0.99.0/24
+          gateway: 10.0.99.99
