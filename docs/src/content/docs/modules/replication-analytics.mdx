@@ -54,7 +54,7 @@ Why a dedicated view when PVE has its Replication tab?
 
 **Replications**, **Trends** and the dashboard widgets work on data that a scan copies from Proxmox VE into the module database. **Scheduled** reads the cluster live and needs no scan.
 
-A scan reads the replication jobs of every online node. For each job, it stores the last run with its log, if that run is not in the database yet. It then deletes the records older than **Max days logs**.
+A scan reads the replication jobs of every online node. For each job, it stores the last run with its log, if that run is not in the database yet. A run that failed is stored too, with its error: a job that keeps failing gives one record for each try a scan finds. It then deletes the records older than **Max days logs**.
 
 :::caution[Runs between two scans are not recorded]
 A scan reads only the last run of each replication job. If a job replicates more often than the scan runs, the runs in between are missing from the history. Keep the scan schedule at least as frequent as the most frequent replication job.
