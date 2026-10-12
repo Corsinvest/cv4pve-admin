@@ -16,9 +16,9 @@ internal static class StorageTools
 {
     [McpServerTool, Description("List cluster storage with usage statistics and type")]
     public static async Task<string> ListStorage([Description("Cluster name")] string cluster_name,
-                                                 [Description("Storage type filter: dir, lvm, lvmthin, zfs, cephfs, etc. (optional)")] string? type,
-                                                 [Description("Detail level: Minimal (default) or Full (optional)")] VmTools.DetailLevel detail_level,
-                                                 IAiServerService aiServerService)
+                                                 IAiServerService aiServerService,
+                                                 [Description("Storage type filter: dir, lvm, lvmthin, zfs, cephfs, etc. (optional)")] string? type = null,
+                                                 [Description("Detail level: Minimal (default) or Full (optional)")] VmTools.DetailLevel detail_level = VmTools.DetailLevel.Minimal)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListStorage))
         {
@@ -93,8 +93,8 @@ internal static class StorageTools
     public static async Task<string> ListBackups([Description("Cluster name")] string cluster_name,
                                                  [Description("Node name")] string node,
                                                  [Description("Storage name")] string storage,
-                                                 [Description("VM ID filter (optional)")] int? vmid,
-                                                 IAiServerService aiServerService)
+                                                 IAiServerService aiServerService,
+                                                 [Description("VM ID filter (optional)")] int? vmid = null)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListBackups))
         {
@@ -148,8 +148,8 @@ internal static class StorageTools
     public static async Task<string> ListStorageContent([Description("Cluster name")] string cluster_name,
                                                         [Description("Storage name")] string storage,
                                                         [Description("Node name")] string node,
-                                                        [Description("Content type filter: iso, vztmpl, backup, images (optional)")] string? content_type,
-                                                        IAiServerService aiServerService)
+                                                        IAiServerService aiServerService,
+                                                        [Description("Content type filter: iso, vztmpl, backup, images (optional)")] string? content_type = null)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListStorageContent))
         {
@@ -211,8 +211,8 @@ internal static class StorageTools
 
     [McpServerTool, Description("List backup jobs and their schedule configuration")]
     public static async Task<string> ListBackupJobs([Description("Cluster name")] string cluster_name,
-                                                    [Description("Filter by VM ID (optional)")] int? vmid,
-                                                    IAiServerService aiServerService)
+                                                    IAiServerService aiServerService,
+                                                    [Description("Filter by VM ID (optional)")] int? vmid = null)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListBackupJobs))
         {

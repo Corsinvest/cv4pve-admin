@@ -35,10 +35,10 @@ internal static class VmTools
 
     [McpServerTool, Description("List all virtual machines and containers in the Proxmox VE cluster")]
     public static async Task<string> ListVms([Description("Cluster name")] string cluster_name,
-                                             [Description("VM status filter: running, stopped, paused (optional)")] string? status,
-                                             [Description("VM type filter: qemu, lxc (optional)")] string? type,
-                                             [Description("Detail level: Minimal (default) or Full (optional)")] DetailLevel detail_level,
-                                             IAiServerService aiServerService)
+                                             IAiServerService aiServerService,
+                                             [Description("VM status filter: running, stopped, paused (optional)")] string? status = null,
+                                             [Description("VM type filter: qemu, lxc (optional)")] string? type = null,
+                                             [Description("Detail level: Minimal (default) or Full (optional)")] DetailLevel detail_level = DetailLevel.Minimal)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListVms))
         {
@@ -96,9 +96,9 @@ internal static class VmTools
     [McpServerTool, Description("List VM snapshots with creation dates. Full detail includes description and parent snapshot. include_size adds size on disk in bytes (slower).")]
     public static async Task<string> ListSnapshots([Description("Cluster name")] string cluster_name,
                                                    [Description("Array of VM IDs to get snapshots for")] int[] vmids,
-                                                   [Description("Detail level: Minimal (default) or Full (optional)")] DetailLevel detail_level,
-                                                   [Description("Include size on disk in bytes — requires reading disk data, slower (optional, default false)")] bool include_size,
-                                                   IAiServerService aiServerService)
+                                                   IAiServerService aiServerService,
+                                                   [Description("Detail level: Minimal (default) or Full (optional)")] DetailLevel detail_level = DetailLevel.Minimal,
+                                                   [Description("Include size on disk in bytes — requires reading disk data, slower (optional, default false)")] bool include_size = false)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.ListSnapshots))
         {
@@ -272,11 +272,11 @@ internal static class VmTools
     public static async Task<string> CreateVmSnapshot([Description("Cluster name")] string cluster_name,
                                                       [Description("VM ID")] int vmid,
                                                       [Description("Snapshot name")] string snapshot_name,
-                                                      [Description("Snapshot description (optional)")] string? description,
-                                                      [Description("Include VM RAM state — QEMU only (optional, default false)")] bool include_vm_state,
                                                       IAiServerService aiServerService,
                                                       IPermissionService permissionService,
-                                                      ICommandExecutor commandExecutor)
+                                                      ICommandExecutor commandExecutor,
+                                                      [Description("Snapshot description (optional)")] string? description = null,
+                                                      [Description("Include VM RAM state — QEMU only (optional, default false)")] bool include_vm_state = false)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.CreateVmSnapshot))
         {
@@ -358,11 +358,11 @@ internal static class VmTools
     public static async Task<string> MigrateVm([Description("Cluster name")] string cluster_name,
                                                [Description("VM ID")] int vmid,
                                                [Description("Target node name")] string target_node,
-                                               [Description("Live migration — keep VM running during migration (optional, default false)")] bool online,
-                                               [Description("Target storage for disks (optional)")] string? target_storage,
                                                IAiServerService aiServerService,
                                                IPermissionService permissionService,
-                                               ICommandExecutor commandExecutor)
+                                               ICommandExecutor commandExecutor,
+                                               [Description("Live migration — keep VM running during migration (optional, default false)")] bool online = false,
+                                               [Description("Target storage for disks (optional)")] string? target_storage = null)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.MigrateVm))
         {
@@ -392,14 +392,14 @@ internal static class VmTools
     [McpServerTool, Description("Create a backup of a VM or LXC container via vzdump")]
     public static async Task<string> BackupVm([Description("Cluster name")] string cluster_name,
                                               [Description("VM ID")] int vmid,
-                                              [Description("Target storage ID (optional)")] string? storage,
-                                              [Description("Backup mode: snapshot, suspend, stop (optional)")] string? mode,
-                                              [Description("Compression: 0, 1, gzip, lzo, zstd (optional)")] string? compress,
-                                              [Description("Mark backup as protected (optional)")] bool? protected_backup,
-                                              [Description("Limit I/O bandwidth in KiB/s (optional)")] int? bwlimit,
                                               IAiServerService aiServerService,
                                               IPermissionService permissionService,
-                                              ICommandExecutor commandExecutor)
+                                              ICommandExecutor commandExecutor,
+                                              [Description("Target storage ID (optional)")] string? storage = null,
+                                              [Description("Backup mode: snapshot, suspend, stop (optional)")] string? mode = null,
+                                              [Description("Compression: 0, 1, gzip, lzo, zstd (optional)")] string? compress = null,
+                                              [Description("Mark backup as protected (optional)")] bool? protected_backup = null,
+                                              [Description("Limit I/O bandwidth in KiB/s (optional)")] int? bwlimit = null)
     {
         if (!await aiServerService.CanExecuteToolAsync(cluster_name, Permissions.Tools.BackupVm))
         {
