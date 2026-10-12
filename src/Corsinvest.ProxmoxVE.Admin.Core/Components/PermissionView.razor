@@ -2,7 +2,9 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@using System.Security.Claims
 @using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IPermissionService PermissionService
 
 @if (IsAuthorized)
@@ -16,18 +18,27 @@
     [Parameter, EditorRequired] public string PermissionKey { get; set; } = default!;
     [Parameter] public string Path { get; set; } = default!;
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     private bool IsAuthorized { get; set; }
     private (string? ClusterName, string PermissionKey, string Path)? _evaluated;
 
-    // Checked when the parameters change, not at every render of the parent: a render started by a background
-    // notification runs without the current user, and the check would answer no
+    // Checked when the parameters change, and for the user of this session rather than the ambient one.
+    // A render started by a background notification runs without a current user, or as the system user:
+    // asked that way the check answers no to everybody, or yes to everybody.
     protected override async Task OnParametersSetAsync()
     {
         var current = (PermissionClusterName ?? CascadedClusterName, PermissionKey, Path);
         if (_evaluated == current) { return; }
 
         _evaluated = current;
-        IsAuthorized = await PermissionService.HasAsync(current.Item1!, PermissionKey, Path);
+
+        var userId = AuthenticationState == null
+                        ? null
+                        : (await AuthenticationState).User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        IsAuthorized = string.IsNullOrEmpty(userId)
+                        ? await PermissionService.HasAsync(current.Item1!, PermissionKey, Path)
+                        : await PermissionService.HasAsync(userId, current.Item1!, PermissionKey, Path);
     }
 }
