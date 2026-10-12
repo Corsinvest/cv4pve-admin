@@ -171,6 +171,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **AI Server**: the descriptions the assistant reads for eight tools now match what the tools return and accept.
 
+- **AI Server, optional parameters**: the filters and options that the tools describe as optional, such as the status, the type, the detail level and the number of tasks, had to be sent on every call, and a call without them failed. They can now be left out and take the value their description states.
+
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
 
 - **Forgot password**: the reset link opens a page that asks only for the new password. A link that is incomplete, altered, expired or already used shows a page that offers to request a new one, instead of an error. Setting the password from the link also confirms the email address: before, a user with an unconfirmed address could set the password and still not sign in.
