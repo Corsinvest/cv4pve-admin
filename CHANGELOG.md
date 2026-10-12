@@ -185,6 +185,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **UPS, shutdown simulation**: on a power failure the module can say which nodes it would shut down, in which order and why, without shutting anything down. Each device has a new setting, *On power failure*: *Nothing (alerts only)*, the default, or *Dry-run (simulate the shutdown)*. With Dry-run, when a shutdown condition is met the nodes are recorded in Tasks and in the audit log and a notification is sent for the power failure, the condition met, the simulated shutdown and the return of the mains. No command is sent to a node: this version only simulates. Existing devices stay on *Nothing*.
+
+- **UPS, shutdown conditions and nodes**: new settings, separate from the alert thresholds. A device on battery meets a condition after a time on battery (600 seconds), below a runtime (10 minutes), below a charge (30%) or when the UPS reports battery low or depleted. For each node of the cluster: the order, and with more than one UPS whether all of them or any one must be in condition. The whole cluster can be treated as one, and the node that hosts the application is kept for last: set *Where this application runs*.
+
+- **UPS, Test shutdown and Simulate power failure**: two buttons in the dashboard. *Test shutdown* shows the nodes that would be shut down now, their order, the estimated time and the warnings, and changes nothing. *Simulate power failure* runs the whole sequence as a test, with its entry in Tasks and a notification marked TEST. During a real power failure the dashboard shows a strip with the nodes already recorded and *Close episode*.
+
+- **UPS, new permissions**: *Change shutdown action*, *Test shutdown*, *Simulate power failure* and *Close episode*. The administrator role of the module has them.
+
 - **UPS, SNMP v3**: a UPS can be read with SNMP v3 instead of v2c: a user of the device, authentication (SHA-256, SHA-384, SHA-512, SHA-1, MD5) and, if wanted, encryption (AES-128, AES-192, AES-256). In the device choose the connection *SNMP v3*. The passwords are stored encrypted. Existing devices stay on SNMP v2c.
 
 - **UPS, NUT connection**: a UPS without a network card, connected by USB or serial cable to another machine, can be read from the NUT server (Network UPS Tools) of that machine. In the device choose the connection *NUT*, the address and port of the server (3493 by default) and the name of the UPS. The connection only reads: it never sends a command to the UPS. Stale data from the server are treated as no reading. No user is needed on the server.
@@ -200,6 +208,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 #### Changed
 
 - **Users, Reset password**: sends the user a link to set a new password and also shows it, so it can be delivered another way. Before, the administrator had to know the current password of the user.
+
+- **UPS, settings (review your settings)**: the settings are in four tabs: *Monitoring*, *Alerts*, *Shutdown* and *Nodes*. The three alert thresholds have new names, because they only send alerts and never shut anything down: *Default Battery Low Threshold* is now *Battery low alert*, *Default Shutdown Battery Threshold* is *Battery critical alert*, *Default Shutdown Time Threshold* is *Runtime critical alert*. Their values are kept.
+
+- **UPS, dashboard on large screens**: three, four or six cards in a row, according to the width of the screen. Each card shows what the device does on a power failure.
 
 - **UPS, continuous reading (review your settings)**: the devices are read continuously instead of on a schedule: every 30 seconds, every 8 seconds while a UPS runs on battery. The *Cron Schedule* setting is gone, replaced by *Reading interval*, *Reading interval on battery* and *Unreachable after (missed readings)*; *Enabled schedulation* is now *Monitoring enabled* and keeps its value. A change of the settings is applied at once. The reading history keeps every reading during a power failure and at every change of status, otherwise one a minute. Run a single instance of the application: two would both send the alerts.
 
