@@ -104,7 +104,7 @@ Every widget has the common options of the **Configure** dialog: **Title (empty 
 
 ## Default Dashboard
 
-When a user has no dashboard (on first access, or after deleting the last one), cv4pve-admin creates two default dashboards from a built-in template:
+When a user has no dashboard (on first access, or after deleting the last one), cv4pve-admin creates two default dashboards from a built-in template, with only the widgets the user can see:
 
 | Dashboard | Content | Refresh interval | Clusters picker |
 |-----------|---------|------------------|-----------------|
@@ -127,7 +127,7 @@ A widget is shown for a cluster when the user holds the permission of the widget
 
 - The **Add widget** menu lists only the widgets the user can see on at least one cluster.
 - A widget reads only the clusters it is allowed on, also when no cluster is picked.
-- A widget the user cannot see on any cluster stays in its place and shows **You do not have permission to see this widget.** It can be removed in edit mode. This is what a user finds in a default dashboard for the modules the user cannot open.
+- A widget the user cannot see on any cluster stays in its place and shows **You do not have permission to see this widget.** It can be removed in edit mode. It appears in a dashboard made before the permissions changed, or uploaded from a file.
 - The **Clusters** picker lists only the clusters the user can select.
 
 Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
