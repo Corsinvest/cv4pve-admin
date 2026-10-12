@@ -18,9 +18,7 @@ public partial class ApiAccess(IModuleService moduleService,
         module.SettingsUpdated += SettingsUpdated;
         eventNotificationService.Subscribe<McpAuthFailedNotification>(HandleMcpAuthFailedAsync);
 
-        ToolPermissions = [.. module.AllRoles
-                                    .Where(r => r.Key == Module.RoleName)
-                                    .SelectMany(r => r.Permissions)];
+        ToolPermissions = [.. module.ToolPermissions];
         LoadSettings();
     }
 

@@ -155,6 +155,12 @@ public abstract class ModuleBase
 
     public Permission PermissionEditSettings => field ??= new(PermissionBaseKey, "EditOptions", "Edit Settings");
     public IEnumerable<Role> AllRoles => new[] { RoleAdmin }.Union(Roles).Where(a => !string.IsNullOrWhiteSpace(a.Key));
+
+    // Permissions that no role holds: they are given one by one
+    protected virtual IEnumerable<Permission> ExtraPermissions => [];
+
+    public IEnumerable<Permission> AllPermissions
+        => AllRoles.SelectMany(a => a.Permissions).Concat(ExtraPermissions).DistinctBy(a => a.Key);
     #endregion
 
     protected void AddAttribute(string key, object value)
