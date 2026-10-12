@@ -108,7 +108,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 //send notification
                 taskScope.Item.Phase = "Sending notifications";
-                if (settings.NotifierConfigurations?.Any() is true && (settings.NotifyPdf || settings.NotifyExcel))
+                if (settings.NotifierConfigurations?.Any() is true)
                 {
                     taskScope.Log($"Sending notification (PDF={settings.NotifyPdf}, Excel={settings.NotifyExcel})");
                     var diagnosticService = scope.GetRequiredService<IDiagnosticService>();
@@ -157,8 +157,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                         // anyone opens it at all.
                         var body = critical + warning + info == 0
                             ? L["No issues found on cluster '{0}'.", clusterName]
-                            : L["Cluster '{0}': {1} critical, {2} warning, {3} info. See the attached report for details.",
-                                clusterName, critical, warning, info];
+                            : attachments.Count > 0
+                                ? L["Cluster '{0}': {1} critical, {2} warning, {3} info. See the attached report for details.",
+                                    clusterName, critical, warning, info]
+                                : L["Cluster '{0}': {1} critical, {2} warning, {3} info.",
+                                    clusterName, critical, warning, info];
 
                         await scope.GetNotifierService().SendAsync(settings.NotifierConfigurations, new()
                         {
