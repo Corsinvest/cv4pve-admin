@@ -123,7 +123,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Backup Analytics**: the scan imports every backup task of the retention period; before, only the last 50 of each node were read, so the first scan and busy nodes missed the older ones.
 
-- **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped.
+- **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped. A replication that fails is now stored in the run history, with its error: before, the history kept showing the last successful run and the failure never appeared. A job that keeps failing gives one record for each try a scan finds.
 
 - **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones with the same text. The check code is shown in the list of the rules. To make a rule wider, clear its fields: gravity and context can be left empty to match any value. Rules created before keep working; some findings hidden by mistake may become visible again.
 
