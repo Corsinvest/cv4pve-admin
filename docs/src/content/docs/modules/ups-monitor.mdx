@@ -1,6 +1,6 @@
 ---
 title: "UPS Monitor"
-description: "Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds."
+description: "Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds. Simulates the shutdown of the nodes on a power failure."
 ---
 
 import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
@@ -12,16 +12,17 @@ import Tag from '~/components/Tag.astro';
 
 <p class="cv-page-meta"><ModuleIcon name="electric_bolt" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
 
-Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds.
+Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds. On a power failure it can simulate the shutdown of the nodes: it says which nodes it would shut down, in which order and why, without shutting anything down.
 
 ## Features
 
 <FeatureGrid
   items={[
     { icon: 'mdi:pulse', title: "Status Monitoring", text: "Each reading takes battery charge and voltage, input/output voltage, load percentage, temperature and power source." },
-    { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or shutdown threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
+    { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or critical threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
     { icon: 'mdi:timer-sand', title: "Runtime Estimation", text: "Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold." },
     { icon: 'mdi:lan-connect', title: "SNMP and NUT", text: "Reads UPS devices via SNMP v2c or v3, or from a NUT server for a UPS on a USB or serial cable, at a configurable interval, shorter while a UPS runs on battery. Profiles for the standard UPS MIB and for the major brands." },
+    { icon: 'mdi:power-plug-off', title: "Shutdown Simulation", text: "On a power failure, records and notifies which nodes would be shut down, in which order and why. Nothing is shut down.", href: '#power-failure-and-shutdown-simulation' },
     { icon: 'mdi:bell-ring', title: "Notifier Integration", text: "Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../../configuration/admin-area/notifier/) configuration." },
   ]}
 />
@@ -49,7 +50,7 @@ Why integrate UPS into cv4pve-admin instead of NUT alone?
 Devices, readings and settings are separate for each cluster.
 
 :::caution[Monitoring and alerts only]
-The module reads the UPS and sends notifications. It does not shut down or stop nodes, VMs or containers: the settings named **Shutdown ... Threshold** are alert thresholds.
+The module reads the UPS and sends notifications. It does not shut down or stop nodes, VMs or containers. A device set to **Dry-run** simulates the shutdown: it records and notifies which nodes would be shut down, and sends no command. See [Power failure and shutdown simulation](#power-failure-and-shutdown-simulation).
 :::
 
 ## Requirements
@@ -67,7 +68,9 @@ At the top, four counters: devices **Online**, **On Battery** (with those on low
 Below, each enabled device has a card. The devices that need attention come first: critical, on battery, low battery, offline, then the others by name. A card shows:
 
 - name and status badge, manufacturer and model, detected brand, location. The left edge of the card has the colour of the status
+- a badge with what the device does on a power failure: **Alerts only** or **Dry-run**
 - a notice while the device runs on battery (**On battery for** and how long) or does not answer (**No answer for** and how long)
+- for a device on **Dry-run** that runs on battery, the time at which its shutdown condition is expected (**Shutdown condition at**) or the condition met (**Shutdown condition met**)
 - **Battery** with its value, a bar and a small chart of the last three hours: red up to 20%, yellow up to 50%, green above
 - **Load** with its value, a bar and a small chart of the last three hours: green below 50%, yellow from 50%, red from 80%
 - **Input** and **Output** voltage, **Runtime** and **Temperature**
@@ -77,20 +80,24 @@ A value the device does not give is shown as `-`. An offline device keeps its la
 
 The cards show the last reading. An open page is updated every few seconds, at once when the status of a device changes.
 
+On large screens the cards are three, four or six in a row.
+
+The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** it shows a warning while **Where this application runs** is not set, and a strip for the power failure in progress. See [Power failure and shutdown simulation](#power-failure-and-shutdown-simulation).
+
 ### Status values
 
 | Status | Meaning |
 |--------|---------|
 | **Online** | Output supplied by mains power |
-| **On Battery** | Output supplied by the battery, charge above the shutdown battery threshold |
+| **On Battery** | Output supplied by the battery, charge above **Battery critical alert (%)** |
 | **Low Battery** | The UPS reports a low battery while not running on battery |
-| **Critical** | The UPS reports a depleted battery. Or it runs on battery and either reports a low battery or has a charge at or below the shutdown battery threshold |
+| **Critical** | The UPS reports a depleted battery. Or it runs on battery and either reports a low battery or has a charge at or below **Battery critical alert (%)** |
 | **Offline** | The device gave no reading for the number of readings in a row set in **Unreachable after**: it did not answer, its name could not be resolved, or it has none of the values of the selected profile. The reading history shows the reason |
 | **Unknown** | The device answered but its state is none of the above, for example bypass or voltage regulation active |
 
 ## Devices
 
-The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
+The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **Last Status**, **Last Scan**, **On power failure**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
 
 Each UPS device is configured with:
 
@@ -107,7 +114,8 @@ Each UPS device is configured with:
 | **UPS name** | NUT only: the name of the UPS on the NUT server (default: `ups`) |
 | **Location** | Physical location label |
 | **Description** | Free-text notes |
-| **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes): informational |
+| **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes). They decide which nodes the shutdown simulation covers |
+| **On power failure** | **Nothing (alerts only)** (default) or **Dry-run (simulate the shutdown)**. Changing it needs the permission **Change shutdown action** and is written in the audit log. See [Power failure and shutdown simulation](#power-failure-and-shutdown-simulation) |
 | **Identification** | Manufacturer, Model, Firmware Version, Serial Number: filled from the device with **Retrieve Info**, or typed by hand |
 
 **Retrieve Info** reads the identification values from the device (with the selected profile for SNMP, from the NUT server for NUT) and writes them in the four fields. It needs the **Host** to be filled in. The values are saved with the device.
@@ -229,9 +237,9 @@ After each reading the module checks the values against the thresholds of the cl
 
 | Condition | Severity |
 |-----------|----------|
-| Battery charge at or below **Default Shutdown Battery Threshold (%)** | Error |
-| Battery charge at or below **Default Battery Low Threshold (%)** (and above the shutdown threshold) | Warning |
-| Runtime reported by the UPS above 0 and at or below **Default Shutdown Time Threshold (minutes)** | Error |
+| Battery charge at or below **Battery critical alert (%)** | Error |
+| Battery charge at or below **Battery low alert (%)** (and above the critical one) | Warning |
+| Runtime reported by the UPS above 0 and at or below **Runtime critical alert (minutes)** | Error |
 | Status **Critical** | Error |
 | Status **On Battery** | Warning |
 | No reading from the device for the number of readings in a row set in **Unreachable after** | Error |
@@ -244,6 +252,83 @@ The notification reports device, status, battery charge and runtime. Its severit
 - A UPS on battery is read at the shorter interval, also when it stops answering after going on battery.
 - No notification is sent while the state is **Unknown**.
 
+These thresholds only send alerts. What a device does on a power failure is decided by other settings, the shutdown conditions.
+
+## Power failure and shutdown simulation
+
+:::caution[Nothing is shut down]
+This version only simulates. No command is sent to a node, a VM or a container, whatever the settings. The simulation shows what an automatic shutdown would do with your devices and your settings, so that they can be checked over real power failures before a real shutdown exists.
+:::
+
+### What a device does on a power failure
+
+Each device has its own **On power failure** setting:
+
+| Value | Meaning |
+|---|---|
+| **Nothing (alerts only)** | Readings and alerts only. The default |
+| **Dry-run (simulate the shutdown)** | When a shutdown condition is met, records and notifies which nodes would be shut down, without shutting anything down |
+
+### Shutdown conditions
+
+They are in the **Shutdown** tab of the settings and are separate from the alert thresholds. They count only while a UPS runs on battery, and one is enough:
+
+| Condition | Default |
+|---|---|
+| **On battery for more than (seconds)** | on, 600 |
+| **Estimated runtime below (minutes)** | on, 10 |
+| **Battery charge below (%)** | on, 30 |
+| **The UPS reports battery low or depleted** | on |
+
+- A condition that is met stays met until the device is back on mains and answering: a charge that goes back above the limit does not cancel it.
+- A UPS on battery that stops answering is judged on the time on battery only, counted from when it went on battery.
+- A UPS that stops answering while on mains raises the alert and is not taken for a power failure, unless **Treat a UPS that stops answering as a power failure after (minutes)** is filled in. Leaving it empty is recommended.
+- **Time needed to shut everything down (minutes)** is how long your nodes need to stop their guests and switch off. It has no default: measure it on your installation. It gives the estimated time of the plan, and a warning when **Estimated runtime below (minutes)** leaves less time than that.
+
+### Nodes
+
+The **Nodes** tab of the settings lists the nodes of the cluster, each with the UPS devices that feed it, taken from **Managed Nodes** of each device. A device with no managed nodes feeds all of them.
+
+- **Order**: the commands go from the first row to the last. Move a node with the arrows.
+- **Rule**, for a node fed by more than one UPS: **All its UPS in condition** (redundant power supplies, the default) or **Any one of its UPS**.
+- A node whose devices include one set to **Nothing (alerts only)** is left on, and the plan says so.
+- **Shut down the whole cluster together** (default: on): when one node has to stop, all the nodes do, also those with no UPS device.
+- **Where this application runs**: **Outside this cluster**, **In a guest of this cluster** or **Not set**. Inside the cluster, the node that runs cv4pve-admin has to be the last one: after that command nothing else can be sent. With **In a guest of this cluster** select the **Guest that hosts this application**: the guest is chosen, not the node, because it can be migrated. While the value is **Not set** the Dashboard shows a warning.
+
+### Test shutdown
+
+**Test shutdown**, in the Dashboard, shows what would happen now if every device with an action met a shutdown condition: the nodes, the step of each one, the action and the reason. It also shows the estimated time, the warnings of the plan, and a notice when the cluster has high availability resources or uses Ceph, which need steps of their own that are not done. It changes nothing and records nothing.
+
+### Simulate power failure
+
+**Simulate power failure**, in the Dashboard, asks for a confirmation and then runs the whole sequence as a test: a power failure marked as a test, one entry in **Tasks** with the nodes in order, the entries of the audit log and one notification marked **TEST**. It is refused while a real power failure is in progress.
+
+### During a power failure
+
+When a device on **Dry-run** goes on battery, a power failure starts for the cluster and the Dashboard shows a strip with its start time and the nodes already recorded.
+
+1. A device meets a shutdown condition.
+2. The nodes of the plan are recorded once, each with its order and the reason, in **Tasks** and in the audit log. A node recorded is not recorded again in the same power failure.
+3. When every device is back on mains and answering, the strip shows the time the mains came back. After five minutes of stable mains the power failure is closed.
+4. If the power fails again before that, it is the same power failure: the nodes already recorded stay so.
+
+**Close episode** closes the power failure by hand and clears the conditions met. If a UPS is still on battery a new one starts at the next reading.
+
+A restart of the application during a power failure keeps it: a condition met before the restart counts again only after a reading confirms that the device is still on battery.
+
+### Notifications
+
+With at least one notifier selected in the settings, one notification is sent for each of these events, once:
+
+| Event | Severity |
+|---|---|
+| Power failure: the devices on battery | Warning |
+| Shutdown condition met: the devices and the condition of each one | Error |
+| Shutdown simulated: the nodes in order, with the reason. The text says that no command was sent and nothing was shut down | Error |
+| Mains back | Success |
+
+They are sent in addition to the [alerts](#alerts) of each device, which do not change.
+
 ## Settings
 
 Settings are separate for each cluster.
@@ -254,6 +339,8 @@ A change of the settings, a new device or an edited one is applied within a few 
 The readings run inside the application. Run a single instance of it: two instances reading the same devices would both send the alerts.
 :::
 
+The settings are in four tabs: **Monitoring**, **Alerts**, **Shutdown** and **Nodes**.
+
 <Collapse title="Show all settings" kind="settings">
 
 | Setting | Default | Purpose |
@@ -263,10 +350,19 @@ The readings run inside the application. Run a single instance of it: two instan
 | **Reading interval on battery (seconds)** | 8 | How often a device is read while it runs on battery (5 to 300) |
 | **Unreachable after (missed readings)** | 3 | Readings missed in a row before the device becomes **Offline** and the alert is sent (1 to 20) |
 | **Max days logs** | 30 | How many days of historical readings to retain |
-| **Default Battery Low Threshold (%)** | 20 | Warning alert when the battery charge is at or below this level (0 to 100) |
-| **Default Shutdown Battery Threshold (%)** | 10 | Error alert when the battery charge is at or below this level (0 to 100). When the UPS also runs on battery, the device status becomes **Critical** |
-| **Default Shutdown Time Threshold (minutes)** | 5 | Error alert when the estimated runtime is at or below this value (1 to 60) |
-| **Notifier** | - | [Notifier](../../configuration/admin-area/notifier/) configurations that receive the alerts. With none selected no alert is sent |
+| **Battery low alert (%)** | 20 | Warning alert when the battery charge is at or below this level (0 to 100) |
+| **Battery critical alert (%)** | 10 | Error alert when the battery charge is at or below this level (0 to 100). When the UPS also runs on battery, the device status becomes **Critical** |
+| **Runtime critical alert (minutes)** | 5 | Error alert when the estimated runtime is at or below this value (1 to 60) |
+| **Notifier** | - | [Notifier](../../configuration/admin-area/notifier/) configurations that receive the alerts and the notifications of a power failure. With none selected nothing is sent |
+| **On battery for more than (seconds)** | on, 600 | Shutdown condition: time on battery (10 to 86400) |
+| **Estimated runtime below (minutes)** | on, 10 | Shutdown condition: runtime reported by the UPS (1 to 1440) |
+| **Battery charge below (%)** | on, 30 | Shutdown condition: battery charge (1 to 100) |
+| **The UPS reports battery low or depleted** | on | Shutdown condition: the state reported by the UPS |
+| **Time needed to shut everything down (minutes)** | empty | How long the nodes need to stop their guests and switch off (1 to 1440) |
+| **Treat a UPS that stops answering as a power failure after (minutes)** | empty | Empty: a UPS that does not answer while on mains is never taken for a power failure (1 to 1440) |
+| **Shut down the whole cluster together** | on | When one node has to stop, all of them do |
+| Table of the nodes | - | **Order** and **Rule** of each node |
+| **Where this application runs** | Not set | **Outside this cluster** or **In a guest of this cluster**, with the **Guest that hosts this application** |
 
 </Collapse>
 
@@ -280,5 +376,11 @@ The readings run inside the application. Run a single instance of it: two instan
 | **Device: Create, Edit, Delete, Export** | UPS devices. **Create**, **Edit** and **Delete** enable the matching actions of the **Devices** page |
 | **Device: Scan Now** | Shows the **Scan** button |
 | **Device: Test Connection** | Shows the **Test Connection** button |
+| **Device: Change shutdown action** | Change **On power failure** of a device. Without it the field is read-only |
+| **Shutdown: Test shutdown** | Shows the **Test shutdown** button |
+| **Shutdown: Simulate power failure** | Shows the **Simulate power failure** button |
+| **Shutdown: Close episode** | Shows the **Close episode** button |
+
+The administrator role of the module includes the new permissions.
 
 <PvePrivileges module="ups-monitor" />
