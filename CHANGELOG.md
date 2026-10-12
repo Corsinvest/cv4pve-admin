@@ -173,7 +173,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **AI Server, optional parameters**: the filters and options that the tools describe as optional, such as the status, the type, the detail level and the number of tasks, had to be sent on every call, and a call without them failed. They can now be left out and take the value their description states.
 
-- **Dashboard, permissions (review your roles)**: the Dashboard showed every widget of every module, on every cluster, to whoever could open it. A widget is now shown for the clusters where the user holds the permission of the widget or can open its module, and reads only those clusters. The *Add widget* menu and the *Clusters* picker list only what the user can see. A widget the user cannot see stays in its place with a notice and can be removed.
+- **Dashboard, permissions (review your roles)**: the Dashboard showed every widget of every module, on every cluster, to whoever could open it. A widget is now shown for the clusters where the user holds the permission of the widget or can open its module, and reads only those clusters. The *Add widget* menu and the *Clusters* picker list only what the user can see. In a dashboard that already exists, a widget the user cannot see stays in its place with a notice and can be removed. The default dashboards are created with only the widgets the user can see.
 
 - **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
 
