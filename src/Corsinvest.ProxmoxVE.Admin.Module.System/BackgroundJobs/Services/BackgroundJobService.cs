@@ -4,6 +4,7 @@
  */
 using System.Linq.Expressions;
 using Hangfire;
+using Hangfire.Storage;
 using BackgroundJobHelper = Hangfire.BackgroundJob;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.BackgroundJobs.Services;
@@ -84,6 +85,31 @@ internal class BackgroundJobService : IBackgroundJobService
     }
 
     public void RemoveIfExists<T>(string clusterName, params object?[] args) => RemoveIfExists(MakeJobId<T>(clusterName, args));
+
+    // An identifier is "type-cluster" or "type-cluster-arguments", see MakeJobId. The jobs of no cluster use NoClusterName.
+    // A cluster whose name starts with the name of another one and a dash cannot be told from an argument: its jobs are kept.
+    public int RemoveForMissingClusters(IEnumerable<string> clusterNames)
+    {
+        var valid = clusterNames.Append(NoClusterName).ToList();
+
+        using var connection = JobStorage.Current.GetConnection();
+        var count = 0;
+        foreach (var id in connection.GetRecurringJobs().Select(a => a.Id))
+        {
+            var index = id.IndexOf('-');
+            if (index < 0) { continue; }
+
+            var owner = id[(index + 1)..];
+            if (valid.Any(a => owner == a || owner.StartsWith($"{a}-", StringComparison.Ordinal))) { continue; }
+
+            RemoveIfExists(id);
+            count++;
+        }
+
+        return count;
+    }
+
+    private const string NoClusterName = "_";
 
     public int DeleteFails()
     {

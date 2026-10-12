@@ -127,11 +127,14 @@ public class Module : ModuleBase
         var backgroundJobService = scope.GetBackgroundJobService();
         using var db = scope.GetDbContext<ModuleDbContext>();
 
+        // The jobs of a cluster that was deleted or disabled stay in the table
+        var clusterNames = scope.GetSettingsService().GetEnabledClustersSettings().Select(a => a.Name).ToHashSet();
+
         foreach (var item in db.Jobs)
         {
             backgroundJobService.ScheduleOrRemove<Job>(a => a.SnapAsync(item.Id),
                                              item.CronExpression,
-                                             item.Enabled,
+                                             item.Enabled && clusterNames.Contains(item.ClusterName),
                                              item.ClusterName,
                                              item.Id);
         }

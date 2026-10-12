@@ -151,6 +151,9 @@ public static class ServiceCollectionExtensions
         foreach (var item in moduleService.Modules) { await item.InitializeAsync(scope); }
         foreach (var item in moduleService.Modules) { await item.RunAsync(scope); }
 
+        scope.GetBackgroundJobService()
+             .RemoveForMissingClusters(scope.GetSettingsService().GetEnabledClustersSettings().Select(a => a.Name));
+
         applicationStateService.IsStartupComplete = true;
         applicationStateService.IsReady = true;
 
