@@ -25,7 +25,9 @@ public static class ServiceCollectionExtensions
 
         services.AddCascadingAuthenticationState();
         services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-        services.AddSingleton<ITicketStore, FusionCacheTicketStore>();
+        services.AddSingleton<DbTicketStore>();
+        services.AddSingleton<ITicketStore>(a => a.GetRequiredService<DbTicketStore>());
+        services.AddSingleton<ISessionStore>(a => a.GetRequiredService<DbTicketStore>());
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddAuthentication(options =>

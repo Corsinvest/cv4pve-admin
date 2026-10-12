@@ -41,7 +41,9 @@ English is currently the only language available.
 
 ## Password
 
-Enter the **Old Password**, the **New Password** and repeat it in **Confirm Password**, then click **Update password**. After the confirmation the page reloads and you stay signed in.
+Enter the **Old Password**, the **New Password** and repeat it in **Confirm Password**, then click **Update password**. After the confirmation the page reloads and you stay signed in. Every other browser signed in with your account is signed out at once. The same happens when the password is set from a reset link. After a reset from the command line they are signed out within two minutes.
+
+A sign-in survives a restart or an update of the application: you do not have to sign in again.
 
 The new password must satisfy the password policy of the installation. By default: at least 6 characters, with at least one digit, one lowercase letter, one uppercase letter and one special character. An administrator can change the policy in [appsettings.extra.json](../appsettings-extra/#security-settings).
 

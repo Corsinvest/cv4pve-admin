@@ -4,13 +4,15 @@
  */
 using System.Text;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;
 
 public partial class ResetPassword(NavigationManager navigationManager,
                                    UserManager<ApplicationUser> UserManager,
-                                   IAuditService auditService)
+                                   IAuditService auditService,
+                                   ISessionStore sessionStore)
 {
     private InputModel Input { get; set; } = new();
 
@@ -88,6 +90,9 @@ public partial class ResetPassword(NavigationManager navigationManager,
                 user.EmailConfirmed = true;
                 await UserManager.UpdateAsync(user);
             }
+
+            // Whoever was signed in with the old password is out
+            await sessionStore.RemoveForUserAsync(user.Id);
 
             await auditService.LogAsync("ResetPassword", true, $"User '{user.UserName}' set a new password from a reset link");
             navigationManager.NavigateTo("/ResetPasswordConfirmation");
