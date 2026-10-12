@@ -19,7 +19,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations
             modelBuilder
                 .HasDefaultSchema("system")
                 .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -507,6 +507,36 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations
                     b.ToTable("UserPermissions", "system");
                 });
 
+            modelBuilder.Entity("Corsinvest.ProxmoxVE.Admin.Core.Security.Identity.UserSession", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("Ticket")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserSessions", "system");
+                });
+
             modelBuilder.Entity("Corsinvest.ProxmoxVE.Admin.Core.TaskTracking.TaskItem", b =>
                 {
                     b.Property<int>("Id")
@@ -750,6 +780,17 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Migrations
                 {
                     b.HasOne("Corsinvest.ProxmoxVE.Admin.Core.Security.Identity.ApplicationUser", "User")
                         .WithMany("UserPermissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Corsinvest.ProxmoxVE.Admin.Core.Security.Identity.UserSession", b =>
+                {
+                    b.HasOne("Corsinvest.ProxmoxVE.Admin.Core.Security.Identity.ApplicationUser", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

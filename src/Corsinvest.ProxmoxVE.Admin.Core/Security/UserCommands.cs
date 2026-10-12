@@ -95,6 +95,9 @@ public static class UserCommands
 
             if (result.Succeeded)
             {
+                var sessionStore = scope.ServiceProvider.GetService<ISessionStore>();
+                if (sessionStore != null) { await sessionStore.RemoveForUserAsync(user.Id); }
+
                 Console.WriteLine($"✓ Password for user '{username}' has been reset successfully");
                 return 0;
             }

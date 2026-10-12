@@ -241,12 +241,18 @@ public static class EndpointRouteBuilderExtensions
 
         // Changing the password or the 2FA setup changes the security stamp: without a new cookie the session
         // that made the change is closed at the next validation. A cookie is written only from an HTTP response.
+        // The other sessions of the user are closed at once, and this one gets a new ticket.
         accountGroup.MapGet("/RefreshSignIn", async (HttpContext context,
                                                             [FromServices] SignInManager<ApplicationUser> signInManager,
+                                                            [FromServices] ISessionStore sessionStore,
                                                             [FromQuery] string? returnUrl) =>
         {
             var user = await signInManager.UserManager.GetUserAsync(context.User);
-            if (user != null) { await signInManager.RefreshSignInAsync(user); }
+            if (user != null)
+            {
+                await sessionStore.RemoveForUserAsync(user.Id);
+                await signInManager.RefreshSignInAsync(user);
+            }
 
             return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
         }).RequireAuthorization();

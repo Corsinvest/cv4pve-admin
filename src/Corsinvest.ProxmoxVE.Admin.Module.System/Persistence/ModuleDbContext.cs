@@ -23,6 +23,7 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
     public DbSet<AppToken> AppTokens { get; set; } = default!;
     public DbSet<AppTokenRole> AppTokenRoles { get; set; } = default!;
     public DbSet<AppTokenPermission> AppTokenPermissions { get; set; } = default!;
+    public DbSet<UserSession> UserSessions { get; set; } = default!;
     public DbSet<SystemSettings> Settings { get; set; } = default!;
     public DbSet<AuditLog> AuditLogs { get; set; } = default!;
     public DbSet<TaskItem> TaskItems { get; set; } = default!;
@@ -35,6 +36,16 @@ public class ModuleDbContext(DbContextOptions<ModuleDbContext> options)
         modelBuilder.ApplyPostgreSqlCaseInsensitiveCollation();
 
         modelBuilder.Entity<SystemSettings>().HasIndex(a => new { a.Context, a.Section, a.Key });
+
+        modelBuilder.Entity<UserSession>(entity =>
+        {
+            entity.HasIndex(a => a.UserId);
+            entity.HasIndex(a => a.ExpiresAt);
+            entity.HasOne(a => a.User)
+                  .WithMany()
+                  .HasForeignKey(a => a.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
 
         modelBuilder.Entity<UserPermission>(entity =>
         {
