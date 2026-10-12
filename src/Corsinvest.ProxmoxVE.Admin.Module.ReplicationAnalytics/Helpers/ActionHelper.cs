@@ -26,6 +26,10 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
         static DateTime ParseDateTime(string value) => DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", null);
 
+        // The last try, not the last sync: the last sync stays still while a job fails, and its failures would never be stored.
+        // For a successful run the two are the same.
+        static DateTime RunAt(long lastTry, long lastSync) => DateTimeOffset.FromUnixTimeSeconds(lastTry > 0 ? lastTry : lastSync).UtcDateTime;
+
         var nodes = (await client.GetNodesAsync()).Where(a => a.IsOnline).ToList();
         var nodeIndex = 0;
         foreach (var node in nodes)
@@ -40,7 +44,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             var jobKeys = jobs.Select(j => new
             {
                 JobId = j.Id,
-                LastSync = DateTimeOffset.FromUnixTimeSeconds(j.LastSync).UtcDateTime
+                LastSync = RunAt(j.LastTry, j.LastSync)
             }).ToList();
 
             var existingJobs = new HashSet<(string JobId, DateTime LastSync)>();
@@ -66,7 +70,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
             foreach (var job in jobs)
             {
-                var lastSync = DateTimeOffset.FromUnixTimeSeconds(job.LastSync).UtcDateTime;
+                var lastSync = RunAt(job.LastTry, job.LastSync);
 
                 if (!existingJobs.Contains((job.Id, lastSync)))
                 {
@@ -79,6 +83,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                     .ToArray();
 
                         var status = string.IsNullOrWhiteSpace(job.Error);
+                        if (!status) { taskScope?.Log($"  {job.Id}: failed, {job.FailCount} time(s) in a row: {job.Error}", LogLevel.Warning); }
+
+                        // A run that left no log is still a run: its time is the time of the try
+                        var start = rows.Length > 0 ? DateTime.SpecifyKind(ParseDateTime(rows[0]![..19]), DateTimeKind.Local).ToUniversalTime() : lastSync;
+                        var end = rows.Length > 0 ? DateTime.SpecifyKind(ParseDateTime(rows[^1]![..19]), DateTimeKind.Local).ToUniversalTime() : lastSync;
                         await db.JobResults.AddAsync(new()
                         {
                             ClusterName = settings.ClusterName,
@@ -91,8 +100,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                             Target = job.Target,
                             Status = status,
                             //Duration = job.Duration,
-                            Start = DateTime.SpecifyKind(ParseDateTime(rows[0]![..19]), DateTimeKind.Local).ToUniversalTime(),
-                            End = DateTime.SpecifyKind(ParseDateTime(rows[^1]![..19]), DateTimeKind.Local).ToUniversalTime(),
+                            Start = start,
+                            End = end,
                             Size = rows.Where(a => a!.Contains(KEY_SIZE))
                                        .Sum(a => ByteSize.Parse(a![(a!.IndexOf(KEY_SIZE) + KEY_SIZE.Length)..]
                                                                     .EnsureEndsWith(ByteSize.ByteSymbol)

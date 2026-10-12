@@ -34,6 +34,7 @@ public class JobResult : IClusterName, IId
     //public string SizeString => FormatHelper.FromBytes(Size);
 
     public string Logs { get; set; } = default!;
+    // Time of the run the row is about: the last try of the job, which for a successful run is its last sync
     public DateTime LastSync { get; set; }
     public string? Error { get; set; }
     public bool Status { get; set; }
