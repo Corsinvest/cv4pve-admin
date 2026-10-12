@@ -24,9 +24,10 @@ public class Module : ModuleBase
     // Every permission a tool asks for: those of the role, with what an edition adds to it, and the two the role leaves out
     public IEnumerable<Permission> ToolPermissions
         => Roles.SelectMany(a => a.Permissions)
-                .Append(Permissions.Tools.DownloadIso)
-                .Append(Permissions.Tools.DeleteIso)
+                .Concat(ExtraPermissions)
                 .DistinctBy(a => a.Key);
+
+    protected override IEnumerable<Permission> ExtraPermissions => [Permissions.Tools.DownloadIso, Permissions.Tools.DeleteIso];
     private const string HeaderApiKey = "X-API-Key";
 
     public Module()

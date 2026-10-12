@@ -33,8 +33,7 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
         await using var db = await dbContextFactory.CreateDbContextAsync();
 
         var allPermissions = moduleService.Modules
-                                          .SelectMany(a => a.AllRoles)
-                                          .SelectMany(a => a.Permissions)
+                                          .SelectMany(a => a.AllPermissions)
                                           .DistinctBy(a => a.Key)
                                           .ToDictionary(p => p.Key, p => p.Description);
 
@@ -97,8 +96,7 @@ public partial class PermissionsSummaryDialog(IModuleService moduleService,
     private Dictionary<string, TreeNode> BuildNodeMap()
     {
         var allPermissions = moduleService.Modules
-                                          .SelectMany(a => a.AllRoles)
-                                          .SelectMany(a => a.Permissions)
+                                          .SelectMany(a => a.AllPermissions)
                                           .DistinctBy(a => a.Key)
                                           .ToDictionary(p => p.Key, p => p.Description);
 
