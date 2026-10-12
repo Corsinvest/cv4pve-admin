@@ -211,7 +211,7 @@ Lists the replication jobs configured in the cluster: ID, guest, target, type, s
 Waits for a Proxmox VE task to end
 
 - **Inputs:** Task Upid, Timeout Ms (default 300000, that is 5 minutes)
-- **Output:** `Success` (true when the task ended successfully)
+- **Outputs:** `Success` (true when the task ended within the timeout with exit status `OK`), `ExitStatus` (`OK`, or the error text of the task; empty when the timeout expired)
 
 ## Admin / Utils
 

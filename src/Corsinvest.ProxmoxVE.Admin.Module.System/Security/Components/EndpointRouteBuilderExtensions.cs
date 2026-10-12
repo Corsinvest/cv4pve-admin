@@ -189,8 +189,6 @@ public static class EndpointRouteBuilderExtensions
             var url = string.Empty;
             var tmpReturnUrl = FixReturnUrl(returnUrl!, httpContext.Request);
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
             var result = await signInManager.PasswordSignInExAsync(model.UserName, model.Password, model.RememberMe, true);
             if (result.Succeeded)
             {

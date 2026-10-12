@@ -21,7 +21,7 @@ Per-disk I/O monitoring for running QEMU virtual machines: bytes read/written, o
 <FeatureGrid
   items={[
     { icon: 'mdi:harddisk', title: "Per-device I/O", text: "Bytes read/written and read/write operations shown for each virtual disk device, not only for each VM." },
-    { icon: 'mdi:speedometer', title: "Derived Rates", text: "Read/Write bytes/sec and IOPS/sec computed from the difference between the current counters and the ones read when the page was opened." },
+    { icon: 'mdi:speedometer', title: "Derived Rates", text: "Read/Write bytes/sec and IOPS/sec computed from the difference between the current counters and the ones of the previous reading." },
     { icon: 'mdi:server', title: "Grouped View", text: "Results are grouped by Node and then by VM ID, so the busiest disk is quick to find." },
     { icon: 'mdi:refresh', title: "On-demand Refresh", text: "Click **Refresh** to take a new sample and recompute the per-second rates. There is no automatic refresh." },
   ]}
@@ -63,7 +63,7 @@ The toolbar has **Refresh** and **Export** (Excel file with the list). The grid 
 
 Data is read when the page opens and each time you click **Refresh**: there is no automatic refresh. Each read runs the QEMU Monitor command `info blockstats` on every running VM, so it takes longer on clusters with many VMs.
 
-**How rates are computed:** The sample taken when the page opens is the baseline. At every **Refresh** the per-second columns are computed as `(current counter - baseline counter) / seconds since the baseline`, so they are the average rate since the page was opened. The cumulative columns keep showing the baseline values. Until the first **Refresh** the per-second columns are 0. Reopen the page to start from a new baseline.
+**How rates are computed:** At every **Refresh** the per-second columns are computed as `(current counter - previous counter) / seconds since the previous reading`, so they are the average rate between the last two readings. The cumulative columns show the counters of the last reading. Until the first **Refresh** the per-second columns are 0. A VM that is no longer running, or a disk that is no longer there, leaves the list at the next **Refresh**.
 
 ## Requirements
 
