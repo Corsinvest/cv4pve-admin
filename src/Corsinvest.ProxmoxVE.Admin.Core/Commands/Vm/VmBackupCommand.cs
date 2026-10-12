@@ -42,3 +42,27 @@ public class VmBackupCommandHandler(IServiceProvider serviceProvider) : PveComma
         return PveTaskResult.Success(result, command.ClusterName);
     }
 }
+
+// The backups of a guest are managed with the permission on the guest, creation and deletion alike:
+// who may back it up may delete its backups, without the permission on the whole storage
+public record VmDeleteBackupCommand(string ClusterName,
+                                    long VmId,
+                                    string Storage,
+                                    string VolId) : ICommand<PveTaskResult>
+{
+    public Permission RequiredPermission => ClusterPermissions.Vm.Backup;
+    public string Context => $"Cluster {ClusterName}, VmId {VmId}, Storage {Storage}, VolId {VolId}";
+    public Task<bool> HasPermissionAsync(IPermissionService permissionService)
+        => permissionService.HasVmAsync(ClusterName, RequiredPermission, VmId);
+}
+
+public class VmDeleteBackupCommandHandler(IServiceProvider serviceProvider) : PveCommandHandlerBase<VmDeleteBackupCommand>(serviceProvider)
+{
+    protected override async Task<PveTaskResult> ExecuteAsync(VmDeleteBackupCommand command, CancellationToken cancellationToken)
+    {
+        var vm = await GetVmAsync(command.ClusterName, command.VmId);
+        var client = await GetPveClientAsync(command.ClusterName);
+        var result = await client.Nodes[vm.Node].Storage[command.Storage].Content[command.VolId].Delete();
+        return PveTaskResult.Success(result, command.ClusterName);
+    }
+}

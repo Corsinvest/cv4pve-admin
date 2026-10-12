@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Commands;
+using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
@@ -9,7 +11,8 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Vm.Backup;
 
 public partial class Manager(DialogService dialogService,
-                             IAdminService adminService) : IRefreshableData, IClusterName
+                             IAdminService adminService,
+                             IUiCommandExecutor uiExecutor) : IRefreshableData, IClusterName
 {
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [EditorRequired, Parameter] public IClusterResourceVm Vm { get; set; } = default!;
@@ -83,11 +86,7 @@ public partial class Manager(DialogService dialogService,
         if (!CanDelete) { return; }
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected backup"], true))
         {
-            var client = await adminService[ClusterName].GetPveClientAsync();
-            await client.Nodes[Vm.Node]
-                        .Storage[SelectedItem.Storage]
-                        .Content[SelectedItem.Volume]
-                        .Delete();
+            await uiExecutor.ExecuteAndNotifyAsync(new VmDeleteBackupCommand(ClusterName, Vm.VmId, SelectedItem.Storage, SelectedItem.Volume));
 
             SelectedItems.Clear();
             await DataGridRef.Reload();
