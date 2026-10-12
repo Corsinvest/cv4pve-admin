@@ -1,6 +1,6 @@
 ---
 title: "UPS Monitor"
-description: "Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds. Simulates the shutdown of the nodes on a power failure."
+description: "Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds. On a power failure it can shut the nodes down, or simulate it."
 ---
 
 import Collapse from '@corsinvest/cv4pve-docs-theme/components/Collapse.astro';
@@ -12,7 +12,7 @@ import Tag from '~/components/Tag.astro';
 
 <p class="cv-page-meta"><ModuleIcon name="electric_bolt" size="lg" /><Tag kind="ee" /><Tag kind="per-cluster" /></p>
 
-Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds. On a power failure it can simulate the shutdown of the nodes: it says which nodes it would shut down, in which order and why, without shutting anything down.
+Reads UPS battery levels, power status, load conditions and runtime estimates continuously, every few seconds. Sends alerts when the UPS runs on battery, or when its charge or runtime drops below the configured thresholds. On a power failure it can shut the nodes of the cluster down in order, or simulate it: say which nodes it would shut down, in which order and why, without shutting anything down.
 
 ## Features
 
@@ -22,7 +22,7 @@ Reads UPS battery levels, power status, load conditions and runtime estimates co
     { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or critical threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
     { icon: 'mdi:timer-sand', title: "Runtime Estimation", text: "Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold." },
     { icon: 'mdi:lan-connect', title: "SNMP and NUT", text: "Reads UPS devices via SNMP v2c or v3, or from a NUT server for a UPS on a USB or serial cable, at a configurable interval, shorter while a UPS runs on battery. Profiles for the standard UPS MIB and for the major brands." },
-    { icon: 'mdi:power-plug-off', title: "Shutdown Simulation", text: "On a power failure, records and notifies which nodes would be shut down, in which order and why. Nothing is shut down.", href: '#power-failure-and-shutdown-simulation' },
+    { icon: 'mdi:power-plug-off', title: "Automatic Shutdown", text: "On a power failure, shuts the nodes down in order when a condition is met, the node that hosts the application last. With Dry-run it only records and notifies what it would do.", href: '#power-failure-and-automatic-shutdown' },
     { icon: 'mdi:bell-ring', title: "Notifier Integration", text: "Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../../configuration/admin-area/notifier/) configuration." },
   ]}
 />
@@ -49,8 +49,8 @@ Why integrate UPS into cv4pve-admin instead of NUT alone?
 
 Devices, readings and settings are separate for each cluster.
 
-:::caution[Monitoring and alerts only]
-The module reads the UPS and sends notifications. It does not shut down or stop nodes, VMs or containers. A device set to **Dry-run** simulates the shutdown: it records and notifies which nodes would be shut down, and sends no command. See [Power failure and shutdown simulation](#power-failure-and-shutdown-simulation).
+:::caution[A device set to Shutdown shuts nodes down]
+By default a device only reads the UPS and sends notifications. Set to **Dry-run** it simulates the shutdown and sends no command. Set to **Shutdown** it shuts down the nodes it covers when a shutdown condition is met: try your settings with **Dry-run** first. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown).
 :::
 
 ## Requirements
@@ -68,9 +68,9 @@ At the top, four counters: devices **Online**, **On Battery** (with those on low
 Below, each enabled device has a card. The devices that need attention come first: critical, on battery, low battery, offline, then the others by name. A card shows:
 
 - name and status badge, manufacturer and model, detected brand, location. The left edge of the card has the colour of the status
-- a badge with what the device does on a power failure: **Alerts only** or **Dry-run**
+- a badge with what the device does on a power failure: **Alerts only**, **Dry-run** or **Shutdown**
 - a notice while the device runs on battery (**On battery for** and how long) or does not answer (**No answer for** and how long)
-- for a device on **Dry-run** that runs on battery, the time at which its shutdown condition is expected (**Shutdown condition at**) or the condition met (**Shutdown condition met**)
+- for a device on **Dry-run** or **Shutdown** that runs on battery, the time at which its shutdown condition is expected (**Shutdown condition at**) or the condition met (**Shutdown condition met**)
 - **Battery** with its value, a bar and a small chart of the last three hours: red up to 20%, yellow up to 50%, green above
 - **Load** with its value, a bar and a small chart of the last three hours: green below 50%, yellow from 50%, red from 80%
 - **Input** and **Output** voltage, **Runtime** and **Temperature**
@@ -82,7 +82,7 @@ The cards show the last reading. An open page is updated every few seconds, at o
 
 On large screens the cards are three, four or six in a row.
 
-The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** it shows a warning while **Where this application runs** is not set, and a strip for the power failure in progress. See [Power failure and shutdown simulation](#power-failure-and-shutdown-simulation).
+The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** or **Shutdown** it shows a warning while **Where this application runs** is not set, and a strip for the power failure in progress. With a device on **Shutdown** it also warns when the time needed to shut everything down is not set, and when the credentials of the cluster may not shut the nodes down. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown).
 
 ### Status values
 
@@ -114,8 +114,8 @@ Each UPS device is configured with:
 | **UPS name** | NUT only: the name of the UPS on the NUT server (default: `ups`) |
 | **Location** | Physical location label |
 | **Description** | Free-text notes |
-| **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes). They decide which nodes the shutdown simulation covers |
-| **On power failure** | **Nothing (alerts only)** (default) or **Dry-run (simulate the shutdown)**. Changing it needs the permission **Change shutdown action** and is written in the audit log. See [Power failure and shutdown simulation](#power-failure-and-shutdown-simulation) |
+| **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes). They decide which nodes the shutdown, real or simulated, covers |
+| **On power failure** | **Nothing (alerts only)** (default), **Dry-run (simulate the shutdown)** or **Shutdown (shut the nodes down)**. Changing it needs the permission **Change shutdown action** and is written in the audit log. Choosing **Shutdown** asks for a confirmation that names the nodes. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown) |
 | **Identification** | Manufacturer, Model, Firmware Version, Serial Number: filled from the device with **Retrieve Info**, or typed by hand |
 
 **Retrieve Info** reads the identification values from the device (with the selected profile for SNMP, from the NUT server for NUT) and writes them in the four fields. It needs the **Host** to be filled in. The values are saved with the device.
@@ -254,9 +254,9 @@ The notification reports device, status, battery charge and runtime. Its severit
 
 These thresholds only send alerts. What a device does on a power failure is decided by other settings, the shutdown conditions.
 
-## Power failure and shutdown simulation
+## Power failure and automatic shutdown
 
-**Nothing is shut down.** This version only simulates: no command is sent to a node, a VM or a container, whatever the settings. The simulation shows what an automatic shutdown would do with your devices and your settings, so that they can be checked over real power failures before a real shutdown exists.
+Nothing is shut down unless a device is set to **Shutdown**. Start with **Dry-run**: it shows what the shutdown would do with your devices and your settings, over real power failures, before anything is switched off.
 
 ### What a device does on a power failure
 
@@ -266,6 +266,23 @@ Each device has its own **On power failure** setting:
 |---|---|
 | **Nothing (alerts only)** | Readings and alerts only. The default |
 | **Dry-run (simulate the shutdown)** | When a shutdown condition is met, records and notifies which nodes would be shut down, without shutting anything down |
+| **Shutdown (shut the nodes down)** | When a shutdown condition is met, sends the shutdown command to the nodes the device covers |
+
+A node fed by more than one device takes the most cautious of their values: with one on **Dry-run** and one on **Shutdown** it is simulated.
+
+### How the nodes are shut down
+
+- The command is the shutdown of the node of Proxmox VE, sent through the API of the cluster with the credentials of the cluster settings. Nothing is installed on the nodes and SSH is not used. The node stops its own guests, as with the **Shutdown** button of the node.
+- The credentials need the privilege `Sys.PowerMgmt` on the nodes. It is checked once a day for the clusters with a device on **Shutdown**: when it is missing a notification is sent and the Dashboard says so.
+- The nodes are commanded in the order of the **Nodes** tab, those with the same order together. A step starts when the commands of the one before were sent, without waiting for those nodes to be off.
+- A command that fails is tried again at the following readings, three times in all. When the node the application was connected to is already off, the application connects to another node of the cluster and sends the command again. After the third failure a notification says so, and the other nodes are commanded all the same.
+- A node that is already off is skipped.
+- The node that hosts the application is commanded last, when nothing else is left to try. What happened until then is written and notified before its command, then one more notification says it is the last.
+- A node that was sent the command is not commanded again until the power failure is closed.
+- Guests are not stopped one by one, and nothing is switched on again when the mains are back.
+- High availability and Ceph need steps of their own before the nodes stop: they are not done. **Test shutdown** warns when the cluster has them.
+
+Tried against Proxmox VE 9.2 nodes that run in containers, with a simulated UPS: a single node, a cluster of three, a node that is already off, credentials without the privilege, the node that hosts the application. Not tried with guests running on the nodes, nor with a real UPS during a real power failure.
 
 ### Shutdown conditions
 
@@ -303,10 +320,10 @@ The **Nodes** tab of the settings lists the nodes of the cluster, each with the 
 
 ### During a power failure
 
-When a device on **Dry-run** goes on battery, a power failure starts for the cluster and the Dashboard shows a strip with its start time and the nodes already recorded.
+When a device on **Dry-run** or **Shutdown** goes on battery, a power failure starts for the cluster and the Dashboard shows a strip with its start time and the nodes already recorded.
 
 1. A device meets a shutdown condition.
-2. The nodes of the plan are recorded once, each with its order and the reason, in **Tasks** and in the audit log. A node recorded is not recorded again in the same power failure.
+2. The nodes of the plan are commanded, or only recorded for **Dry-run**, each with its order, the outcome and the reason, in **Tasks** and in the audit log. A node recorded is not recorded again in the same power failure, except to try a failed command again.
 3. When every device is back on mains and answering, the strip shows the time the mains came back. After five minutes of stable mains the power failure is closed.
 4. If the power fails again before that, it is the same power failure: the nodes already recorded stay so.
 
@@ -323,7 +340,12 @@ With at least one notifier selected in the settings, one notification is sent fo
 | Power failure: the devices on battery | Warning |
 | Shutdown condition met: the devices and the condition of each one | Error |
 | Shutdown simulated: the nodes in order, with the reason. The text says that no command was sent and nothing was shut down | Error |
+| Shutdown started: the nodes that were sent the command, with the outcome and the reason | Error |
+| Shutdown, last node: the command is being sent to the node that hosts the application | Error |
+| Shutdown failed: the nodes whose command failed three times, with the reason | Error |
 | Mains back | Success |
+
+Once a day, for a cluster with a device on **Shutdown**: a notification when the credentials may not shut the nodes down.
 
 They are sent in addition to the [alerts](#alerts) of each device, which do not change.
 
@@ -374,7 +396,7 @@ The settings are in four tabs: **Monitoring**, **Alerts**, **Shutdown** and **No
 | **Device: Create, Edit, Delete, Export** | UPS devices. **Create**, **Edit** and **Delete** enable the matching actions of the **Devices** page |
 | **Device: Scan Now** | Shows the **Scan** button |
 | **Device: Test Connection** | Shows the **Test Connection** button |
-| **Device: Change shutdown action** | Change **On power failure** of a device. Without it the field is read-only |
+| **Device: Change shutdown action** | Change **On power failure** of a device, **Shutdown** included. Without it the field is read-only |
 | **Shutdown: Test shutdown** | Shows the **Test shutdown** button |
 | **Shutdown: Simulate power failure** | Shows the **Simulate power failure** button |
 | **Shutdown: Close episode** | Shows the **Close episode** button |
