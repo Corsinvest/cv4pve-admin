@@ -125,6 +125,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped. A replication that fails is now stored in the run history, with its error: before, the history kept showing the last successful run and the failure never appeared. A job that keeps failing gives one record for each try a scan finds.
 
+- **Sign-in sessions**: a sign-in now survives a restart or an update of the application: before, every restart signed everyone out, also with *Remember me*. When a password is changed or reset, the other browsers signed in with that account are signed out at once instead of within 30 minutes. After the update to this version everyone signs in once more.
+
+- **Forgot password**: the reset link is sent at most 3 times to the same address in 15 minutes, and 10 requests are accepted from the same computer. Before, anyone who knew an address could fill its mailbox with reset messages.
+
 - **Audit and privileges**: deleting a backup from the *Backups* tab of a guest and *Schedule Now* on a replication are now written to the audit log, with their outcome. Deleting storage content, which the AI Server tools do, also checks the privilege on Proxmox VE before it runs.
 
 - **AI Server, permissions (review your tokens)**: five tools returned more than the token is allowed to see. The list of the clusters now shows only the clusters the token can work on; tasks, replication jobs and backup jobs are shown only for the guests and the nodes the token can see, and a backup job lists only the guests the token can see. A token with limited cluster permissions sees less than before.
