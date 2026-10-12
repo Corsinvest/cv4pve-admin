@@ -22,14 +22,15 @@ internal class CurrentUserService(IHttpContextAccessor httpContextAccessor,
 
     public ClaimsPrincipal? ClaimsPrincipal => httpContextAccessor.HttpContext?.User;
 
+    // An app token is authenticated and is not a user: it has no user id, and its name is the name of the token
     public string UserId
         => IsAuthenticated
-            ? ClaimsPrincipal!.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            ? ClaimsPrincipal!.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty
             : string.Empty;
 
     public string UserName
         => IsAuthenticated
-            ? ClaimsPrincipal!.FindFirst(ClaimTypes.Name)!.Value
+            ? ClaimsPrincipal!.FindFirst(ClaimTypes.Name)?.Value ?? "anonymous"
             : "anonymous";
 
     public bool IsAuthenticated => httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated is true;

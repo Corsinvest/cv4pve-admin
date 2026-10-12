@@ -8,6 +8,7 @@ public interface IAiServerService
 {
     string SerializeTable<T>(IEnumerable<T> items);
     Task<bool> CanExecuteToolAsync(string clusterName, Permission permission);
+    Task<bool> CanSeeClusterAsync(string clusterName);
     (ClusterClient? Client, string? ErrorJson) GetClusterClient(string clusterName);
     Task<IEnumerable<ClusterResource>> HasAsync(string clusterName, IEnumerable<ClusterResource> items);
 }

@@ -140,9 +140,11 @@ internal static class NodeTools
 
         nodes = [.. await aiServerService.HasAsync(cluster_name, nodes)];
 
+        var vmIds = await VisibleVmIdsAsync(aiServerService, clusterClient, cluster_name);
         var allReplications = await Task.WhenAll(nodes.Select(node => clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false).AsTask()));
 
         return aiServerService.SerializeTable(allReplications.SelectMany(a => a)
+                                                             .Where(a => vmIds.Contains(a.Guest + string.Empty))
                                                              .Select(a => new
                                                              {
                                                                  id = a.Id,
@@ -271,12 +273,15 @@ internal static class NodeTools
 
         nodes = [.. await aiServerService.HasAsync(cluster_name, nodes)];
 
+        var vmIds = await VisibleVmIdsAsync(aiServerService, clusterClient, cluster_name);
         var allTasks = new List<(DateTime StartTime, object Row)>();
 
         foreach (var node in nodes)
         {
             var tasks = await client.Nodes[node.Node].Tasks.GetAsync(limit: limit, typefilter: type);
             allTasks.AddRange(tasks
+                // A task about a guest is shown with the guest. The others, as updates or services, are of the node.
+                .Where(t => !long.TryParse(t.VmId, out _) || vmIds.Contains(t.VmId))
                 .Where(t => string.IsNullOrEmpty(status) || t.Status.Equals(status, StringComparison.OrdinalIgnoreCase))
                 .Select(t => (t.StartTimeDate, (object)new
                 {
@@ -293,5 +298,11 @@ internal static class NodeTools
         }
 
         return aiServerService.SerializeTable(allTasks.OrderByDescending(t => t.StartTime).Take(limit).Select(t => t.Row));
+    }
+
+    private static async Task<HashSet<string>> VisibleVmIdsAsync(IAiServerService aiServerService, ClusterClient clusterClient, string clusterName)
+    {
+        var vms = (await clusterClient.CachedData.GetResourcesAsync(false)).Where(a => a.ResourceType == ClusterResourceType.Vm);
+        return [.. (await aiServerService.HasAsync(clusterName, vms)).Select(a => a.VmId.ToString())];
     }
 }
