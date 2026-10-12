@@ -151,12 +151,8 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     private async Task<(bool Allowed, IReadOnlyList<string> ClusterNames)> GetWidgetClustersAsync(ModuleWidget widget,
                                                                                                  IEnumerable<string> selected)
     {
-        async Task<bool> HasAsync(string clusterName)
-            => await HasPermissionAsync(clusterName, widget.Permission)
-               || (widget.Module.Link?.Permission is { } link && await HasPermissionAsync(clusterName, link));
-
         // No cluster to select, as on a new installation: only what is held on every cluster counts
-        if (!ClustersSettings.Any()) { return (await HasAsync(ApplicationHelper.AllClusterName), []); }
+        if (!ClustersSettings.Any()) { return (await HasWidgetAsync(widget, ApplicationHelper.AllClusterName), []); }
 
         var names = ClustersSettings.Select(a => a.Name);
         if (selected.Any()) { names = names.Intersect(selected); }
@@ -164,11 +160,15 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         var ret = new List<string>();
         foreach (var name in names)
         {
-            if (await HasAsync(name)) { ret.Add(name); }
+            if (await HasWidgetAsync(widget, name)) { ret.Add(name); }
         }
 
         return (ret.Count > 0, ret);
     }
+
+    private async Task<bool> HasWidgetAsync(ModuleWidget widget, string clusterName)
+        => await HasPermissionAsync(clusterName, widget.Permission)
+           || (widget.Module.Link?.Permission is { } link && await HasPermissionAsync(clusterName, link));
 
     #region Timer
     private void StartTimer()
