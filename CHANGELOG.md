@@ -277,6 +277,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Portal**: *Is Admin* on a tenant user and *Enabled* on a tenant had no effect and are no longer shown; the permissions on each guest can always be set. Adding to a tenant a user whose address belongs to an existing account now asks for a confirmation that shows the roles of that account, and the display name typed is applied to an existing account too.
 
+- **App Tokens**: a role marked as default could not be given to a token. It can now be picked like any other role.
+
+- **Workflow, Wait For Task**: the *Success* output was true whenever the task ended in time, also when the task had failed. It is now true only when the task ended well, and the new *ExitStatus* output carries the outcome. Review the workflows that read *Success* to know only that a task had ended.
+
+- **VM Performance**: the rates per second are now those between the last two readings; before, they were averages since the page was opened, and the totals stayed at the first reading. Two readings less than a second apart no longer end in an error, and a guest that is no longer running leaves the list.
+
 - **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run as the built-in *system* user, and a command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity and the backup activity now check permissions and write the audit log like the others; the backup runs on the node where the guest is, whatever the *Node* field says.
 
 - **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
