@@ -45,7 +45,7 @@ Enter the **Old Password**, the **New Password** and repeat it in **Confirm Pass
 
 The new password must satisfy the password policy of the installation. By default: at least 6 characters, with at least one digit, one lowercase letter, one uppercase letter and one special character. An administrator can change the policy in [appsettings.extra.json](../appsettings-extra/#security-settings).
 
-**Forgotten password:** If you cannot log in, use **Forgot password?** on the login page to receive a reset link by email. This requires the SMTP server to be configured in [General Settings](../admin-area/general-settings/#smtp-configuration). As an alternative, ask an administrator to reset the password with the [CLI](../../cli/).
+**Forgotten password:** If you cannot log in, use **Forgot password?** on the login page to receive a reset link by email. This requires the SMTP server to be configured in [General Settings](../admin-area/general-settings/#smtp-configuration). At most 3 links are sent to the same address in 15 minutes, and 10 requests are accepted from the same computer: beyond that the page shows the same confirmation and no message is sent. As an alternative, ask an administrator to reset the password with the [CLI](../../cli/).
 
 ## Two-factor authentication (2FA)<Tag kind="ee" />
 

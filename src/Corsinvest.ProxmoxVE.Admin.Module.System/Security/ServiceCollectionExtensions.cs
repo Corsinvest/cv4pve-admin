@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAccountEmailSender, EmailSenderService>();
         services.AddScoped<IEmailSender<ApplicationUser>>(a => a.GetRequiredService<IAccountEmailSender>());
         services.AddScoped<IAppTokenService, AppTokenService>();
+        services.AddSingleton<RequestLimiter>();
 
         services.AddCascadingAuthenticationState();
         services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
