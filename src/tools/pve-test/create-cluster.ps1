@@ -5,10 +5,11 @@
 # The containers have no volumes: after "docker compose down" the cluster is gone and this is run again.
 
 $ErrorActionPreference = 'Stop'
+$InformationPreference = 'Continue'
 $password = 'proxmox123'
 
 function Wait-Node([string] $name) {
-    Write-Host "Waiting for $name..."
+    Write-Information "Waiting for $name..."
     for ($i = 0; $i -lt 60; $i++) {
         docker exec $name sh -c 'systemctl is-active --quiet pveproxy pvedaemon pve-cluster' 2>$null
         if ($LASTEXITCODE -eq 0) { return }
@@ -21,7 +22,7 @@ function Wait-Node([string] $name) {
 
 docker exec pve-1 sh -c 'test -f /etc/pve/corosync.conf'
 if ($LASTEXITCODE -eq 0) {
-    Write-Host 'The cluster already exists.'
+    Write-Information 'The cluster already exists.'
 }
 else {
     docker exec pve-1 pvecm create cvtest --link0 10.0.99.1
@@ -34,7 +35,7 @@ $fingerprint = docker exec pve-1 sh -c 'openssl x509 -in /etc/pve/local/pve-ssl.
 foreach ($node in @(@{ Name = 'pve-2'; Address = '10.0.99.2' }, @{ Name = 'pve-3'; Address = '10.0.99.3' })) {
     docker exec $node.Name sh -c 'test -f /etc/pve/corosync.conf'
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "$($node.Name) is already in the cluster."
+        Write-Information "$($node.Name) is already in the cluster."
         continue
     }
 
