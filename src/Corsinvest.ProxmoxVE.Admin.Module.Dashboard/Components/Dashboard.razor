@@ -101,7 +101,15 @@
                         <div style="@capture.Widget.BodyCss height: 100%;">
                             <ErrorBoundary>
                                 <ChildContent>
-                                    @if (capture.Template != null)
+                                    @if (!capture.Allowed)
+                                    {
+                                        <RadzenAlert AlertStyle="AlertStyle.Warning"
+                                                     Text="@L["You do not have permission to see this widget."]"
+                                                     Shade="Shade.Lighter"
+                                                     Size="AlertSize.ExtraSmall"
+                                                     AllowClose="false" />
+                                    }
+                                    else if (capture.Template != null)
                                     {
                                         @capture.Template
                                     }
@@ -143,10 +151,10 @@
 
     private void ShowAddWidgetMenu(MouseEventArgs args) => contextMenuService.Open(args, ds =>
     @<RadzenMenu>
-        @foreach (var item in moduleService.Modules.Where(a => a.Widgets.Any()).OrderBy(a=> a.Name))
+        @foreach (var item in moduleService.Modules.Where(a => a.Widgets.Any(AllowedWidgets.Contains)).OrderBy(a=> a.Name))
         {
             <RadzenMenuItem Text="@item.Name" Icon="@item.Icon">
-                @foreach (var widget in item.Widgets.OrderBy(a=> a.Name))
+                @foreach (var widget in item.Widgets.Where(AllowedWidgets.Contains).OrderBy(a=> a.Name))
                 {
                     <RadzenMenuItem Text="@widget.Name"
                                     title="@widget.Description"

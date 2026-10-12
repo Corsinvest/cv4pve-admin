@@ -5,6 +5,8 @@
 using System.Net.Mime;
 using System.Text.Json;
 using Corsinvest.ProxmoxVE.Admin.Core.Configuration;
+using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
@@ -34,6 +36,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     private Models.Dashboard CurrentDashboard { get; set; } = new();
     private IEnumerable<ClusterSettings> ClustersSettings { get; set; } = [];
     private List<DashboardWidgetItem> WidgetItems { get; } = [];
+    private HashSet<ModuleWidget> AllowedWidgets { get; } = [];
     private string FileUploadId { get; } = Guid.NewGuid().ToString();
 
     private IDisposable? _navigationHandler;
@@ -47,7 +50,18 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     protected override async Task OnInitializedAsync()
     {
         _navigationHandler = navigationManager.RegisterLocationChangingHandler(OnLocationChanging);
-        ClustersSettings = [.. settingsService.GetEnabledClustersSettings()];
+        var clusters = new List<ClusterSettings>();
+        foreach (var item in settingsService.GetEnabledClustersSettings())
+        {
+            if (await HasPermissionAsync(item.Name, ClusterPermissions.Cluster.SelectCluster)) { clusters.Add(item); }
+        }
+        ClustersSettings = clusters;
+
+        foreach (var widget in moduleService.Modules.SelectMany(a => a.Widgets))
+        {
+            if ((await GetWidgetClustersAsync(widget, [])).Allowed) { AllowedWidgets.Add(widget); }
+        }
+
         await RefreshDataAsync();
     }
 
@@ -103,26 +117,58 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
             StartTimer();
         }
 
-        LoadWidgetItems();
+        await LoadWidgetItemsAsync();
         _widgetId = 0;
 
         await InvokeAsync(StateHasChanged);
     }
 
     // Convert widgets to tile items
-    private void LoadWidgetItems()
+    private async Task LoadWidgetItemsAsync()
     {
-        WidgetItems.Clear();
+        var items = new List<DashboardWidgetItem>();
         foreach (var widget in CurrentDashboard.Widgets)
         {
-            WidgetItems.Add(CreateWidgetItem(widget));
+            items.Add(await CreateWidgetItemAsync(widget));
         }
+
+        WidgetItems.Clear();
+        WidgetItems.AddRange(items);
     }
 
     private Task SetClusterNames() => RefreshDataAsync();
 
-    private DashboardWidgetItem CreateWidgetItem(Widget widget)
-        => DashboardWidgetItem.Create(widget, serviceScopeFactory, SelectedClusterNames, InEditing, this);
+    private async Task<DashboardWidgetItem> CreateWidgetItemAsync(Widget widget)
+    {
+        var moduleWidget = widget.GetModuleWidget(moduleService);
+        if (moduleWidget == null) { return DashboardWidgetItem.Create(widget, serviceScopeFactory, [], InEditing, this); }
+
+        var (allowed, clusterNames) = await GetWidgetClustersAsync(moduleWidget, SelectedClusterNames);
+        return DashboardWidgetItem.Create(widget, serviceScopeFactory, clusterNames, InEditing, this, allowed);
+    }
+
+    // A widget is shown for the clusters where the user holds its permission or can open its module
+    private async Task<(bool Allowed, IReadOnlyList<string> ClusterNames)> GetWidgetClustersAsync(ModuleWidget widget,
+                                                                                                 IEnumerable<string> selected)
+    {
+        // No cluster to select, as on a new installation: only what is held on every cluster counts
+        if (!ClustersSettings.Any()) { return (await HasWidgetAsync(widget, ApplicationHelper.AllClusterName), []); }
+
+        var names = ClustersSettings.Select(a => a.Name);
+        if (selected.Any()) { names = names.Intersect(selected); }
+
+        var ret = new List<string>();
+        foreach (var name in names)
+        {
+            if (await HasWidgetAsync(widget, name)) { ret.Add(name); }
+        }
+
+        return (ret.Count > 0, ret);
+    }
+
+    private async Task<bool> HasWidgetAsync(ModuleWidget widget, string clusterName)
+        => await HasPermissionAsync(clusterName, widget.Permission)
+           || (widget.Module.Link?.Permission is { } link && await HasPermissionAsync(clusterName, link));
 
     #region Timer
     private void StartTimer()
@@ -248,7 +294,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
 
         // The clone exists only in memory: StartEditAsync would reload the original from the database
         EnterEditMode();
-        LoadWidgetItems();
+        await LoadWidgetItemsAsync();
         await InvokeAsync(StateHasChanged);
     }
     #endregion
@@ -330,7 +376,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         };
 
         CurrentDashboard.Widgets.Add(newWidget);
-        WidgetItems.Add(CreateWidgetItem(newWidget));
+        WidgetItems.Add(await CreateWidgetItemAsync(newWidget));
 
         await InvokeAsync(StateHasChanged);
     }
@@ -340,7 +386,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
         if (await item.ConfigureAsync(dialogService))
         {
             var index = WidgetItems.IndexOf(item);
-            if (index >= 0) { WidgetItems[index] = CreateWidgetItem(item.Widget); }
+            if (index >= 0) { WidgetItems[index] = await CreateWidgetItemAsync(item.Widget); }
 
         }
         await InvokeAsync(StateHasChanged);
@@ -360,7 +406,7 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
             newWidget.Width = item.Widget.Width;
             newWidget.SettingsJson = item.Widget.SettingsJson;
 
-            WidgetItems[^1] = CreateWidgetItem(newWidget);
+            WidgetItems[^1] = await CreateWidgetItemAsync(newWidget);
             await InvokeAsync(StateHasChanged);
         }
     }

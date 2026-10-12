@@ -13,6 +13,7 @@ internal class DashboardWidgetItem
     public Widget Widget { get; }
     public IRefreshableData? Instance { get; private set; }
     public RenderFragment? Template { get; private set; }
+    public bool Allowed { get; private set; } = true;
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ModuleWidget? _moduleWidget;
@@ -39,12 +40,17 @@ internal class DashboardWidgetItem
                                              IServiceScopeFactory serviceScopeFactory,
                                              IEnumerable<string> clusterNames,
                                              bool inEditing,
-                                             object receiver)
+                                             object receiver,
+                                             bool allowed = true)
     {
         var item = new DashboardWidgetItem(widget, serviceScopeFactory)
         {
             Id = widget.Id,
+            Allowed = allowed
         };
+
+        // No component at all: a widget given no cluster would read them all
+        if (!allowed) { return item; }
 
         var parameters = new Dictionary<string, object>();
 

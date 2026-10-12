@@ -70,7 +70,7 @@ Open the menu (three dots) and choose **Edit** to enter edit mode. The toolbar t
 | **Save** / **Cancel** | **Save** stores all changes in the database. **Cancel** discards unsaved changes |
 | **Refresh interval (sec.)** | Automatic refresh of all widgets, in seconds. `0` = off |
 | **Allow clusters select** | Shows the **Clusters** picker on the dashboard, to filter widget data by one or more clusters |
-| **Add widget** | Menu of the widgets, grouped by module |
+| **Add widget** | Menu of the widgets the user can see, grouped by module |
 | Grid button | Shows or hides the layout grid |
 
 In edit mode you can:
@@ -121,7 +121,14 @@ The **Status** default includes the **Git Size** widget of Node Protect, availab
 |------------|-----|--------|
 | **Dashboard** | `Dashboard.Link` | Access to the Dashboard page |
 
-The built-in role **Admin for module Dashboard** includes it. A permission is also registered for each widget (`Dashboard.Widget.Web Content`, `Dashboard.Widget.Memo`, and `<module>.Widget.<widget>` for the widgets of the other modules). The Dashboard does not currently check these permissions when it lists or renders widgets.
+The built-in role **Admin for module Dashboard** includes it. A permission is also registered for each widget (`Dashboard.Widget.Web Content`, `Dashboard.Widget.Memo`, and `<module>.Widget.<widget>` for the widgets of the other modules).
+
+A widget is shown for a cluster when the user holds the permission of the widget on that cluster, or can open the module the widget belongs to. Who can open **Backup Analytics** sees its widgets; the permission of a widget gives the widget alone to who cannot open the module.
+
+- The **Add widget** menu lists only the widgets the user can see on at least one cluster.
+- A widget reads only the clusters it is allowed on, also when no cluster is picked.
+- A widget the user cannot see on any cluster stays in its place and shows **You do not have permission to see this widget.** It can be removed in edit mode. This is what a user finds in a default dashboard for the modules the user cannot open.
+- The **Clusters** picker lists only the clusters the user can select.
 
 Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
 
