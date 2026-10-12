@@ -269,6 +269,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Audit Logs, deletion (review your roles)**: deleting rows of the audit log was allowed by the permission to delete users. It now has a permission of its own, *Delete audit logs*, which administrators hold. A custom role that could delete audit rows only because it could delete users needs the new permission to keep doing it.
 
+- **AI Server, ISO tools**: the permissions to download and to delete an ISO image could not be given to a token, because they are in no role and the permission editor did not list them. They are now listed with the other tools in the permissions of a token. They stay out of every role: no token has them until they are given.
+
 - **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run as the built-in *system* user, and a command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity and the backup activity now check permissions and write the audit log like the others; the backup runs on the node where the guest is, whatever the *Node* field says.
 
 - **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
