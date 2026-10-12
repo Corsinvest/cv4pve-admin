@@ -158,8 +158,8 @@ These profiles are **not verified**: `auto` never chooses them, they work only w
 
 | Profile | State |
 |---|---|
-| **Socomec** | Values taken from the Network UPS Tools driver for Net Vision cards, not from a Socomec MIB. Only the mains state is known: on battery the status is **Unknown** |
-| **Huawei** | Values taken from the Network UPS Tools driver, not from a Huawei MIB |
+| **Socomec** | For Net Vision cards. Not checked against a Socomec MIB. Only the mains state is known: on battery the status is **Unknown** |
+| **Huawei** | Not checked against a Huawei MIB |
 | **Chloride**, **GE / General Electric**, **Phoenix Contact** | No definition found to check them against |
 
 A brand that is not in the lists is read with **Generic RFC 1628**, which most network cards publish. A device saved with a profile that is no longer in the lists is read as `auto`.
