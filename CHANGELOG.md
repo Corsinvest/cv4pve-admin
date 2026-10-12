@@ -253,7 +253,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Users**: the *system* account, used by the scheduled jobs, can no longer be edited from the user list. *Effective Permissions* is shown only to who can read the users. The same button of the app tokens needs the read permission on tokens.
 
-- **Portal**: removing a guest from a tenant no longer removes it from the other tenants.
+- **Portal**: removing a guest from a tenant no longer removes it from the other tenants. It also removes the permissions the tenant users were given on that guest: before, they kept their access and the Portal no longer showed it. A user who is also in another tenant that has the same guest keeps them. Adding a guest that is already in another tenant now asks for a confirmation that names that tenant.
 
 - **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
 
