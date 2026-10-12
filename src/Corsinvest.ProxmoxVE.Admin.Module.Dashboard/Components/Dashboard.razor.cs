@@ -220,6 +220,10 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
                                .ExecuteUpdateAsync(a => a.SetProperty(b => b.Name, newName));
 
             item.UserId = currentUserService.UserId;
+
+            // Only what the user can see: the rest would be tiles with a notice
+            item.Widgets = [.. item.Widgets.Where(a => a.GetModuleWidget(moduleService) is not { } widget
+                                                       || AllowedWidgets.Contains(widget))];
             await db.Dashboards.AddAsync(item);
             if (SelectedItem == null) { SelectedItem = new(item.Name, item.Id); }
         }
