@@ -82,7 +82,7 @@ Use **cv4pve-mcp-bridge** to proxy stdio ↔ HTTP. Download, options and the Cla
 
 ## Available Tools
 
-AI Server exposes 29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries. Every tool except `ListClusters` takes the name of the cluster to work on as `cluster_name`. `ListClusters` returns the names of the enabled clusters.
+AI Server exposes 29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries. Every tool except `ListClusters` takes the name of the cluster to work on as `cluster_name`. `ListClusters` returns the names of the enabled clusters the token can work on.
 
 The full list, with what each tool does and its parameters, is in [Tools](../ai-server-tools/).
 
@@ -172,14 +172,16 @@ Write tools (`ChangeVmState`, `CreateVmSnapshot`, `DeleteVmSnapshot`, `RollbackV
 
 ## Application permissions
 
-Each tool has its own permission, with the key `AIServer.Tools.<tool name>` (for example `AIServer.Tools.ListVms`). A tool runs only if the token that calls it holds that permission on the cluster named in the call. `ListClusters` has no permission and is always available.
+Each tool has its own permission, with the key `AIServer.Tools.<tool name>` (for example `AIServer.Tools.ListVms`). A tool runs only if the token that calls it holds that permission on the cluster named in the call. `ListClusters` has no permission of its own: it lists the clusters on which the token holds at least one tool permission.
 
 On top of the tool permission, the cluster permissions of the token filter the result. The nodes, guests and storages the token cannot see are left out of the lists, and an action on one of them is refused.
 
-Some tools do not follow this rule:
+The same filter applies to the lists that are about guests without being lists of guests:
 
-- `ListBackupJobs` and the [Query](../ai-server-query/) tools do not apply this filter: they return what the cluster holds.
-- `ListTasks` and `ListReplications` are filtered by node only: they also return the tasks and the replication jobs of guests the token cannot see.
+- `ListTasks` returns the tasks of the nodes the token can see. A task about a guest is returned only when the token can see that guest.
+- `ListReplications` returns the replication jobs of the guests the token can see.
+- `ListBackupJobs` returns a job when it covers at least one guest the token can see, and lists only those guests. A job with no list of guests, such as one for every guest, is returned to a token that can see its node.
+- The [Query](../ai-server-query/) tools build every table from the nodes, guests and storages the token can see.
 
 | Role | Content |
 |------|---------|

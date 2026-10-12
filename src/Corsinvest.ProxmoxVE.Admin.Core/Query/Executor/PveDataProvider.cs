@@ -13,8 +13,28 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Query.Executor;
 /// <summary>
 /// Provides queryable data from Proxmox VE with caching
 /// </summary>
-public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
+/// <param name="clusterClient">The cluster to read from</param>
+/// <param name="filter">Keeps the nodes, guests and storages the caller may see. Null: all of them</param>
+public class PveDataProvider(ClusterClient clusterClient,
+                             Func<IEnumerable<ClusterResource>, Task<IEnumerable<ClusterResource>>>? filter = null) : IDataProvider
 {
+    private IReadOnlyList<ClusterResource>? _resources;
+
+    // Every table is built from these: what is not here is in no table
+    private async Task<IReadOnlyList<ClusterResource>> GetResourcesAsync()
+    {
+        if (_resources == null)
+        {
+            var resources = await clusterClient.CachedData.GetResourcesAsync(false);
+            _resources = [.. filter == null ? resources : await filter(resources)];
+        }
+
+        return _resources;
+    }
+
+    private async Task<HashSet<string>> GetVmIdsAsync()
+        => [.. (await GetResourcesAsync()).Where(a => a.ResourceType == ClusterResourceType.Vm).Select(a => a.VmId.ToString())];
+
     public async Task<IQueryable> GetAsync(string tableName)
         => tableName switch
         {
@@ -33,43 +53,50 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
     private static string GetTableName<T>() => typeof(T).GetCustomAttribute<TableAttribute>()!.Name;
 
     private async Task<IQueryable<NodeInfo>> GetNodesAsync()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
+        => (await GetResourcesAsync())
             .Where(r => r.ResourceType == ClusterResourceType.Node)
             .Select(NodeInfo.Map)
             .AsQueryable();
 
     private async Task<IQueryable<GuestInfo>> GetGuestsAsync()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
+        => (await GetResourcesAsync())
             .Where(r => r.ResourceType == ClusterResourceType.Vm)
             .Select(GuestInfo.Map)
             .AsQueryable();
 
     private async Task<IQueryable<StorageInfo>> GetStoragesAsync()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
+        => (await GetResourcesAsync())
             .Where(r => r.ResourceType == ClusterResourceType.Storage)
             .Select(StorageInfo.Map)
             .AsQueryable();
 
     private async Task<IQueryable<ClusterReplicationInfo>> GetReplicationsAsync()
-        => (await clusterClient.CachedData.GetClusterReplicationsAsync(false))
-            .Select(ClusterReplicationInfo.Map)
-            .AsQueryable();
+    {
+        var vmIds = await GetVmIdsAsync();
+        return (await clusterClient.CachedData.GetClusterReplicationsAsync(false))
+                .Where(a => vmIds.Contains(a.Guest + string.Empty))
+                .Select(ClusterReplicationInfo.Map)
+                .AsQueryable();
+    }
 
     private async Task<IQueryable<GuestReplicationInfo>> GetGuestReplicationInfo()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
-            .Where(a => a.ResourceType == ClusterResourceType.Node)
-            .Select(node => AsyncHelper.RunSync(() => clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false).AsTask()))
-            .SelectMany(replications => replications.Select(GuestReplicationInfo.Map))
-            .AsQueryable();
+    {
+        var vmIds = await GetVmIdsAsync();
+        return (await GetResourcesAsync())
+                .Where(a => a.ResourceType == ClusterResourceType.Node)
+                .Select(node => AsyncHelper.RunSync(() => clusterClient.CachedData.GetReplicationsAsync(node.Node, null, false).AsTask()))
+                .SelectMany(replications => replications.Where(a => vmIds.Contains(a.Guest + string.Empty)).Select(GuestReplicationInfo.Map))
+                .AsQueryable();
+    }
 
     private async Task<IQueryable<QemuConfigInfo>> GetQemuConfigsAsync()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
+        => (await GetResourcesAsync())
             .Where(r => r.ResourceType == ClusterResourceType.Vm && r.VmType == VmType.Qemu)
             .Select(vm => new QemuConfigInfo(vm.VmId, vm.Node, clusterClient.CachedData))
             .AsQueryable();
 
     private async Task<IQueryable<LxcConfigInfo>> GetLxcConfigsAsync()
-        => (await clusterClient.CachedData.GetResourcesAsync(false))
+        => (await GetResourcesAsync())
             .Where(r => r.ResourceType == ClusterResourceType.Vm && r.VmType == VmType.Lxc)
             .Select(vm => new LxcConfigInfo(vm.VmId, vm.Node, clusterClient.CachedData))
             .AsQueryable();
@@ -78,7 +105,7 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
     {
         var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
 
-        return (await clusterClient.CachedData.GetResourcesAsync(false))
+        return (await GetResourcesAsync())
                 .Where(r => r.ResourceType == ClusterResourceType.Vm)
                 .SelectMany(vm => AsyncHelper.RunSync(() =>
                     clusterClient.CachedData.GetSnapshotsAsync(vm.Node, vm.VmType, vm.VmId, false).AsTask())
@@ -88,7 +115,7 @@ public class PveDataProvider(ClusterClient clusterClient) : IDataProvider
 
     private async Task<IQueryable<StorageContentInfo>> GetStorageContentsAsync()
     {
-        var resources = await clusterClient.CachedData.GetResourcesAsync(false);
+        var resources = await GetResourcesAsync();
         var nodes = resources.Where(r => r.ResourceType == ClusterResourceType.Node);
         var storages = resources.Where(r => r.ResourceType == ClusterResourceType.Storage);
 

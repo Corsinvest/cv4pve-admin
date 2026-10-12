@@ -222,20 +222,36 @@ internal static class StorageTools
         var (clusterClient, errorJson) = aiServerService.GetClusterClient(cluster_name);
         if (clusterClient == null) { return errorJson!; }
 
+        var resources = await aiServerService.HasAsync(cluster_name, await clusterClient.CachedData.GetResourcesAsync(false));
+        var visibleVmIds = resources.Where(a => a.ResourceType == ClusterResourceType.Vm).Select(a => (int)a.VmId).ToHashSet();
+        var visibleNodes = resources.Where(a => a.ResourceType == ClusterResourceType.Node).Select(a => a.Node).ToHashSet();
+
         var client = await clusterClient.GetPveClientAsync();
         var results = (await client.Cluster.Backup.GetAsync())
                         .Select(a => new
                         {
-                            id = a.Id,
-                            node = a.Node,
-                            schedule = a.Schedule,
-                            enabled = a.Enabled,
-                            vmids = (a.VmId + string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            job = a,
+                            all = (a.VmId + string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries)
                                         .Select(v => int.TryParse(v.Trim(), out var id) ? (int?)id : null)
-                                        .Where(id => id.HasValue).Select(id => id!.Value).ToList(),
-                            storage = a.Storage,
-                            compress = a.Compress,
-                            mode = a.Mode
+                                        .Where(id => id.HasValue).Select(id => id!.Value).ToList()
+                        })
+                        // A job with its guests is shown for the guests the caller may see, and lists only those.
+                        // A job with no list, as one for every guest, is shown to who may see its node, or every node.
+                        .Where(a => a.all.Count > 0
+                                        ? a.all.Any(visibleVmIds.Contains)
+                                        : string.IsNullOrEmpty(a.job.Node)
+                                            ? visibleNodes.Count > 0
+                                            : visibleNodes.Contains(a.job.Node))
+                        .Select(a => new
+                        {
+                            id = a.job.Id,
+                            node = a.job.Node,
+                            schedule = a.job.Schedule,
+                            enabled = a.job.Enabled,
+                            vmids = a.all.Where(visibleVmIds.Contains).ToList(),
+                            storage = a.job.Storage,
+                            compress = a.job.Compress,
+                            mode = a.job.Mode
                         })
                         .Where(a => vmid == null || a.vmids.Contains(vmid.Value))
                         .ToList();

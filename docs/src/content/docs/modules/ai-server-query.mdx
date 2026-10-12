@@ -129,3 +129,5 @@ When a question cannot be answered, the assistant receives an error instead of a
 ## Permissions
 
 Each of the two tools, `GetQuerySchema` and `ExecuteQuery`, has its own permission, checked on the cluster named in the call. Both permissions are in the **AI Server Tools** role of the Enterprise Edition: see [Application permissions](../ai-server/#application-permissions).
+
+A query sees only the nodes, guests and storages the token can see: every table is built from them, so the snapshots, replications, storage content and configurations of a guest the token cannot see are not in the result.

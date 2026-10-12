@@ -20,6 +20,13 @@ public class Module : ModuleBase
 {
     public const string AppTokenName = "AI Server";
     public const string RoleName = "AI Server Tools";
+
+    // Every permission a tool asks for: those of the role, with what an edition adds to it, and the two the role leaves out
+    public IEnumerable<Permission> ToolPermissions
+        => Roles.SelectMany(a => a.Permissions)
+                .Append(Permissions.Tools.DownloadIso)
+                .Append(Permissions.Tools.DeleteIso)
+                .DistinctBy(a => a.Key);
     private const string HeaderApiKey = "X-API-Key";
 
     public Module()
@@ -172,7 +179,8 @@ public class Module : ModuleBase
 
                var token = validation.Token!;
                httpContext.User = new ClaimsPrincipal(new ClaimsIdentity([
-                   new Claim(ApplicationClaimTypes.AppTokenId, token.Id.ToString())
+                   new Claim(ApplicationClaimTypes.AppTokenId, token.Id.ToString()),
+                   new Claim(ClaimTypes.Name, token.Name)
                ], "AppToken"));
 
                httpContext.Request.EnableBuffering();

@@ -12,16 +12,20 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.AIServer.Tools;
 [McpServerToolType]
 internal static class ClusterTools
 {
-    [McpServerTool, Description("List all configured clusters with their name and description")]
-    public static string ListClusters(IAdminService adminService, IAiServerService aiServerService)
+    [McpServerTool, Description("List the configured clusters you can work on, with their name and description")]
+    public static async Task<string> ListClusters(IAdminService adminService, IAiServerService aiServerService)
     {
-        var clusters = adminService.Where(a => a.Settings.Enabled)
-                                   .OrderBy(c => c.Settings.Name)
-                                   .Select(c => new
-                                   {
-                                       name = c.Settings.Name,
-                                       description = c.Settings.Description
-                                   });
+        var clusters = new List<object>();
+        foreach (var cluster in adminService.Where(a => a.Settings.Enabled).OrderBy(c => c.Settings.Name))
+        {
+            if (!await aiServerService.CanSeeClusterAsync(cluster.Settings.Name)) { continue; }
+
+            clusters.Add(new
+            {
+                name = cluster.Settings.Name,
+                description = cluster.Settings.Description
+            });
+        }
 
         return aiServerService.SerializeTable(clusters);
     }
