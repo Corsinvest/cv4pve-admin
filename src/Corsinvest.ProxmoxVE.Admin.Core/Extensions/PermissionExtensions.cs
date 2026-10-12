@@ -70,6 +70,20 @@ public static class PermissionExtensions
                || await permissionService.PveHasNodeAsync(clusterName, pvePermission, node);
     }
 
+    // The path of a storage on Proxmox VE is /storage/{id}, not the one the application uses for its own permissions
+    public static async Task<bool> HasStorageAsync(this IPermissionService permissionService,
+                                                   string clusterName,
+                                                   Permission permission,
+                                                   string storage)
+    {
+        if (!await permissionService.HasAsync(clusterName, permission.Key, PermissionHelper.GetPathStorage(storage))) { return false; }
+
+        return !ClusterPermissionMap.All.TryGetValue(permission.Key, out var pvePermission)
+               || await permissionService.PveHasAsync(clusterName, pvePermission, $"/storage/{storage}")
+               || await permissionService.PveHasAsync(clusterName, pvePermission, "/storage")
+               || await permissionService.PveHasAsync(clusterName, pvePermission, "/");
+    }
+
     public static async Task<bool> HasVmAsync(this IPermissionService permissionService,
                                               string clusterName,
                                               Permission permission,

@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Commands;
+using Corsinvest.ProxmoxVE.Admin.Core.Commands.Node;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
@@ -10,7 +12,8 @@ using Mapster;
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Nodes;
 
 public partial class Replication(IAdminService adminService,
-                                 DialogService dialogService) : IRefreshableData, INode, IClusterName, IDisposable
+                                 DialogService dialogService,
+                                 IUiCommandExecutor uiExecutor) : IRefreshableData, INode, IClusterName, IDisposable
 {
     [EditorRequired, Parameter] public string ClusterName { get; set; } = default!;
     [Parameter] public string Node { get; set; } = default!;
@@ -97,11 +100,7 @@ public partial class Replication(IAdminService adminService,
     {
         if (!CanScheduleNow) { return; }
 
-        var client = await adminService[ClusterName].GetPveClientAsync();
-        await client.Nodes[SelectedItem.Node]
-                    .Replication[SelectedItem.Id]
-                    .ScheduleNow
-                    .ScheduleNow();
+        await uiExecutor.ExecuteAndNotifyAsync(new ReplicationScheduleNowCommand(ClusterName, SelectedItem.Node, SelectedItem.Id, VmId));
     }
 
     public void Dispose()

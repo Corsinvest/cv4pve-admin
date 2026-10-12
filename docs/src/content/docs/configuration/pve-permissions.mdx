@@ -63,7 +63,7 @@ Before enabling an action on a VM/CT or on a node, cv4pve-admin reads the permis
 | Node: Replication manager, Replication Schedule Now | `VM.Replicate` |
 | Storage: Delete Content | `Datastore.Allocate` |
 
-The same checks apply in every module that offers these actions (Dashboard, Resources, Portal, Command Palette, AI Server, Workflow). In the web interface, migration and deletion of storage content are not available: they are used by AI Server tools and, for migration, by the Workflow activity. The storage privilege is not checked in advance. The Workflow activity that shuts down or reboots a node calls Proxmox VE directly, without these checks.
+The same checks apply in every module that offers these actions (Dashboard, Resources, Portal, Command Palette, AI Server, Workflow). In the web interface, migration and deletion of storage content are not available: they are used by AI Server tools and, for migration, by the Workflow activity. A workflow runs its actions as the built-in `system` user.
 
 ### Privileges by module
 

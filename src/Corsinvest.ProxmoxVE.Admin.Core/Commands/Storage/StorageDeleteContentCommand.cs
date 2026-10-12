@@ -17,7 +17,7 @@ public record StorageDeleteContentCommand(string ClusterName,
     public Permission RequiredPermission => ClusterPermissions.Storage.DeleteContent;
     public string Context => $"Cluster {ClusterName}, Node {Node}, Storage {Storage}, VolId {VolId}";
     public Task<bool> HasPermissionAsync(IPermissionService permissionService)
-        => permissionService.HasAsync(ClusterName, RequiredPermission.Key, PermissionHelper.GetPathStorage(Storage));
+        => permissionService.HasStorageAsync(ClusterName, RequiredPermission, Storage);
 }
 
 public class StorageDeleteContentCommandHandler(IServiceProvider serviceProvider)
