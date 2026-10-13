@@ -6,6 +6,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Components;
 
 public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
                           IBackgroundJobService backgroundJobService,
+                          ISettingsService settingsService,
                           DialogService dialogService,
                           NotificationService notificationService,
                           EventNotificationService eventNotificationService) : IRefreshableData,
@@ -150,7 +151,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
             backgroundJobService.ScheduleOrRemove<Job>(a => a.SnapAsync(item.Id),
                                              item.CronExpression,
-                                             item.Enabled,
+                                             item.Enabled && settingsService.GetForModule<Module, Settings>(item.ClusterName).Enabled,
                                              item.ClusterName,
                                              item.Id.ToString());
 

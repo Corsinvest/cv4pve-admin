@@ -75,7 +75,7 @@ The log of the run says which guests were skipped and why.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| **Enabled** | off | Schedule the job. A disabled job is not run by the scheduler, but can still be run with **Snap** |
+| **Enabled** | off | Schedule the job. A disabled job is not run by the scheduler, but can still be run with **Snap**. The scheduler runs a job only while the module setting **Enabled** is on too |
 | **Include RAM** | off | Save the memory state of the VM in the snapshot |
 | **While VM/CT Running** | off | Take the snapshot only on guests that are running |
 | **Max Parallel** | 1 | Number of guests processed at the same time (1 to 10) |
@@ -121,7 +121,7 @@ The **Check** widget has one widget setting, **Days to analyze** (default 60). I
 
 **Enabled**
 
-Marks the module as in use on the cluster. The **Check** widget covers only the clusters where this setting is on. The setting does not start or stop the jobs: each job has its own **Enabled** switch
+Turns the module on for the cluster. While it is off no job is run by the scheduler, whatever the **Enabled** switch of the job, and the **Check** widget skips the cluster. Everything started by hand stays available: **Snap**, **Purge Snapshots** and the deletion of snapshots. A job is scheduled when both this setting and the **Enabled** switch of the job are on
 
 - **Default:** off
 

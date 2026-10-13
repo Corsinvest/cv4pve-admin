@@ -119,7 +119,27 @@ public class Module : ModuleBase
     protected override async Task RunAsync(IServiceScope scope)
     {
         await scope.MigrateDbAsync<ModuleDbContext>();
+        await EnableWhereInUseAsync(scope);
         InitializeJob(scope);
+    }
+
+    // Once: the switch of the module did not stop the jobs before, so it is turned on where jobs are enabled
+    private async Task EnableWhereInUseAsync(IServiceScope scope)
+    {
+        var settingsService = scope.GetSettingsService();
+        if (settingsService.Get<ModuleSwitchMigration>().Done) { return; }
+
+        using var db = scope.GetDbContext<ModuleDbContext>();
+        foreach (var clusterName in db.Jobs.Where(a => a.Enabled).Select(a => a.ClusterName).Distinct().ToList())
+        {
+            var settings = settingsService.GetForModule<Module, Settings>(clusterName);
+            if (settings.Enabled) { continue; }
+
+            settings.Enabled = true;
+            await settingsService.SetAsync(this, clusterName, settings);
+        }
+
+        await settingsService.SetAsync(new ModuleSwitchMigration { Done = true });
     }
 
     protected override Task RefreshSettingsAsync(IServiceScope scope)
@@ -131,10 +151,14 @@ public class Module : ModuleBase
     private static void InitializeJob(IServiceScope scope)
     {
         var backgroundJobService = scope.GetBackgroundJobService();
+        var settingsService = scope.GetSettingsService();
         using var db = scope.GetDbContext<ModuleDbContext>();
 
-        // The jobs of a cluster that was deleted or disabled stay in the table
-        var clusterNames = scope.GetSettingsService().GetEnabledClustersSettings().Select(a => a.Name).ToHashSet();
+        // The jobs of a cluster that was deleted or disabled stay in the table: only the clusters where the module is on
+        var clusterNames = settingsService.GetEnabledClustersSettings()
+                                          .Select(a => a.Name)
+                                          .Where(a => settingsService.GetForModule<Module, Settings>(a).Enabled)
+                                          .ToHashSet();
 
         foreach (var item in db.Jobs)
         {
