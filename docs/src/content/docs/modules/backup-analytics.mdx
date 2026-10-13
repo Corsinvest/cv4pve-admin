@@ -48,14 +48,12 @@ Why analytics when PVE already shows backup jobs?
 - **Overview**: introduction to the module and its dashboard widgets
 - **Backups**: backup history collected by the scans, one row per guest and backup run. The columns are start, end, duration, size, transfer speed, status, node, storage and error. Failed rows are highlighted. On each row, **Show VM log** opens the log of that guest and **Show Job log** opens the log of the whole backup task. See [Collecting data](#collecting-data) for the scans and the toolbar actions
 - **Scheduled**: configured backup jobs with schedule, target storage and selection
-- **Unprotected Guests**: guests (templates excluded) whose ID is not listed in any enabled backup job
+- **Unprotected Guests**: guests (templates excluded) that no enabled backup job covers
 - **Unprotected Disks**: disks excluded from backup (e.g. `backup=0`)
 - **Backup in line**: backup files currently on the storages, grouped by storage and VM, with size, date, format, verified/encrypted flags
 - **Trends**: line charts of backup **Size**, **Speed** and **Duration** over time, one line per guest. Choose the **Period**, then the **Storages**, then the **VM / CT** to plot. **Period** is a single date range field, limited to the dates for which data exists
 
-:::caution[Unprotected Guests: how coverage is evaluated]
-The page compares only the guest IDs listed explicitly in the enabled backup jobs. It ignores a job that selects guests by pool, so the guests of that job are listed as unprotected. The page is empty when an enabled job is set to back up all guests, and also when no enabled job lists guests by ID.
-:::
+A guest is covered when an enabled backup job of the cluster takes it: a job set to back up all guests, except the ones it excludes; a job that selects a pool the guest belongs to; a job that lists the guest by ID. A job bound to a node covers only the guests on that node. With no enabled job, every guest is listed. The page looks at the jobs, not at the backups: a guest covered by a job that always fails is not listed here, look at **Backups** for that.
 
 ## Collecting data
 
