@@ -63,7 +63,7 @@ By default a device only reads the UPS and sends notifications. Set to **Dry-run
 
 ## Dashboard
 
-At the top, four counters: devices **Online**, **On Battery** (with those on low battery), **Critical** and **Offline** (with those never read or in an unknown state).
+At the top, four counters: devices **Online**, **On Battery** (with those on low battery), **Critical** and **Offline** (with those never read or in an unknown state). A fifth counter, **Bypass**, appears when at least one device is in bypass.
 
 Below, each enabled device has a card. The devices that need attention come first: critical, on battery, low battery, offline, then the others by name. A card shows:
 
@@ -93,7 +93,8 @@ The page also has the buttons **Test shutdown** and **Simulate power failure**. 
 | **Low Battery** | The UPS reports a low battery while not running on battery |
 | **Critical** | The UPS reports a depleted battery. Or it runs on battery and either reports a low battery or has a charge at or below **Battery critical alert (%)** |
 | **Offline** | The device gave no reading for the number of readings in a row set in **Unreachable after**: it did not answer, its name could not be resolved, or it has none of the values of the selected profile. The reading history shows the reason |
-| **Unknown** | The device answered but its state is none of the above, for example bypass or voltage regulation active |
+| **Bypass** | Output supplied by the bypass line: the load is fed by mains and is not protected by the battery |
+| **Unknown** | The device answered but its state is none of the above, for example voltage regulation active |
 
 ## Devices
 
@@ -164,7 +165,7 @@ These profiles are **not verified**: `auto` never chooses them, they work only w
 
 A brand that is not in the lists is read with **Generic RFC 1628**, which most network cards publish. A device saved with a profile that is no longer in the lists is read as `auto`.
 
-A state of the device that is neither mains nor battery (bypass, output off, a state the profile does not know) gives the status **Unknown** and no alert.
+A device in bypass has the status **Bypass** and raises a warning: it does not start a shutdown, because mains power is there. Another state that is neither mains nor battery (output off, a state the profile does not know) gives the status **Unknown** and no alert.
 
 ### SNMP v3
 
@@ -242,6 +243,7 @@ After each reading the module checks the values against the thresholds of the cl
 | Runtime reported by the UPS above 0 and at or below **Runtime critical alert (minutes)** | Error |
 | Status **Critical** | Error |
 | Status **On Battery** | Warning |
+| Status **Bypass** | Warning |
 | No reading from the device for the number of readings in a row set in **Unreachable after** | Error |
 
 The notification reports device, status, battery charge and runtime. Its severity is Error when at least one alert is an error, otherwise Warning.
