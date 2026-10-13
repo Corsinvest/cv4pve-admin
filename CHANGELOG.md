@@ -139,6 +139,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostics, notification**: the result of a scan is now notified also when both report attachments are off; before, nothing was sent. The message carries the number of critical, warning and info issues. Who has a notifier configured and both attachments off starts to receive it: to receive nothing, leave the list of the notifiers empty.
 
+- **Diagnostics, Community Edition**: the notice in the PDF and Excel reports that names the compliance standards of the Enterprise Edition listed 14 of them. It now lists all 18.
+
 - **Clusters**: the scheduled jobs of a cluster that was deleted or disabled kept running, and failed at every run. They are now removed when the cluster is deleted or disabled, and at every start of the application. A cluster that is enabled again gets its scheduled jobs back at once, with the schedule and the options they had. The data collected for the cluster stays in the database.
 
 - **Add cluster**: with no cluster configured, every user was shown *Add cluster* and taken to the page that creates one, also without the permission to open it. Button and redirect are now only for who has it.
