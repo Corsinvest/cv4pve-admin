@@ -135,7 +135,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostics, notification**: the result of a scan is now notified also when both report attachments are off; before, nothing was sent. The message carries the number of critical, warning and info issues. Who has a notifier configured and both attachments off starts to receive it: to receive nothing, leave the list of the notifiers empty.
 
-- **Clusters**: the scheduled jobs of a cluster that was deleted or disabled kept running, and failed at every run. They are now removed when the cluster is deleted or disabled, and at every start of the application. The data collected for the cluster stays in the database.
+- **Clusters**: the scheduled jobs of a cluster that was deleted or disabled kept running, and failed at every run. They are now removed when the cluster is deleted or disabled, and at every start of the application. A cluster that is enabled again gets its scheduled jobs back at once, with the schedule and the options they had. The data collected for the cluster stays in the database.
 
 - **AI Server, permissions (review your tokens)**: five tools returned more than the token is allowed to see. The list of the clusters now shows only the clusters the token can work on; tasks, replication jobs and backup jobs are shown only for the guests and the nodes the token can see, and a backup job lists only the guests the token can see. A token with limited cluster permissions sees less than before.
 
