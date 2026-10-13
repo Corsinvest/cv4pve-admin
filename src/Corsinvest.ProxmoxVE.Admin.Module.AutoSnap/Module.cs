@@ -122,6 +122,12 @@ public class Module : ModuleBase
         InitializeJob(scope);
     }
 
+    protected override Task RefreshSettingsAsync(IServiceScope scope)
+    {
+        InitializeJob(scope);
+        return Task.CompletedTask;
+    }
+
     private static void InitializeJob(IServiceScope scope)
     {
         var backgroundJobService = scope.GetBackgroundJobService();
