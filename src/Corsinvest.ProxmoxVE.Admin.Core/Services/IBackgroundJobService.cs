@@ -42,5 +42,8 @@ public interface IBackgroundJobService
 
     void RemoveIfExists<T>(string clusterName, params object?[] args);
 
+    // Removes the recurring jobs of the clusters that are not in the list: deleted, or disabled
+    int RemoveForMissingClusters(IEnumerable<string> clusterNames);
+
     int DeleteFails();
 }

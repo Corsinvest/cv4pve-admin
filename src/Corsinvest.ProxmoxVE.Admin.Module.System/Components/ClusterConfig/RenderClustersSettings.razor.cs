@@ -8,6 +8,9 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
                                             IAdminService adminService,
                                             DialogService dialogService,
                                             NotificationService notificationService,
+                                            IBackgroundJobService backgroundJobService,
+                                            IModuleService moduleService,
+                                            IServiceScopeFactory scopeFactory,
                                             NavigationManager navigationManager)
 {
     [SupplyParameterFromQuery] public bool? Create { get; set; }
@@ -45,9 +48,19 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
         {
             ClustersSettings.Remove(SelectedItems[0]);
             await settingsService.SetAsync(ClustersSettings);
+            await RefreshJobsAsync();
             await DataGridRef.Reload();
             navigationManager.ForceReload();
         }
+    }
+
+    // The modules schedule the jobs of the enabled clusters again, then the jobs of the others are removed
+    private async Task RefreshJobsAsync()
+    {
+        using var scope = scopeFactory.CreateScope();
+        foreach (var module in moduleService.Modules) { await module.RefreshSettingsEventAsync(scope); }
+
+        backgroundJobService.RemoveForMissingClusters(ClustersSettings.Where(a => a.Enabled).Select(a => a.Name));
     }
 
     private Task AddAsync() => ShowEditorAsync(new(), true);
@@ -69,6 +82,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
                 await DataGridRef.Reload();
             }
             await settingsService.SetAsync(ClustersSettings);
+            await RefreshJobsAsync();
 
             if (item.Enabled) { await adminService[item.Name].CachedData.ClearCacheAsync(); }
 
