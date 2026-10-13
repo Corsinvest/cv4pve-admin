@@ -241,6 +241,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **UPS, NUT connection**: a UPS without a network card, connected by USB or serial cable to another machine, can be read from the NUT server (Network UPS Tools) of that machine. In the device choose the connection *NUT*, the address and port of the server (3493 by default) and the name of the UPS. The connection only reads: it never sends a command to the UPS. Stale data from the server are treated as no reading. No user is needed on the server.
 
+- **UPS, bypass**: a UPS in bypass, where the load is fed by mains without the protection of the battery, now has the status *Bypass* and raises a warning. Before, it was shown as *Unknown* and no alert was sent. The dashboard shows a *Bypass* counter when a device is in it. A bypass does not start a shutdown.
+
 - **Compliance — four new standards**, for a total of 18: ACN (Italian NIS2 measures), NIS2 Implementing Regulation (EU) 2024/2690, ISO 22301 (business continuity) and BSI IT-Grundschutz (Germany). They appear in the Compliance view and in the PDF and Excel reports.
 
 - **AutoSnap — hook test**: a *Test* button in the hook editor sends the request right away, with sample values for the selected phase, and shows the answer.
@@ -278,6 +280,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **NodeProtect — Git credentials**: the username and password changed in the Git settings are now saved; before, the change was lost. The password, like the secrets of AutoSnap hooks, is now stored encrypted; values saved before are kept and encrypted on the next save.
 
 - **AI Server, queries**: the filters of a query are now applied; before, they were ignored and every row was returned. A malformed filter or a misspelled property now returns an error instead of being skipped.
+
+- **AI Server, queries**: the query tool now tells the assistant about three more filters it can use: does not contain, does not start with, does not end with.
 
 - **Workflow, guest actions**: the power action, migrate and snapshot (create, delete, rollback, update) activities now run their action; before, they never reached Proxmox VE.
 
