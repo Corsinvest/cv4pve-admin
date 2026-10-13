@@ -157,9 +157,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Texts**: the help of the AutoSnap *Search Mode* said that *All* lists the snapshots made by hand; it lists only the snapshots made by AutoSnap, on every guest of the cluster. The permission shown as "Snapshot Rallback" is now "Snapshot Rollback".
 
-- **AutoSnap**: a job saved without its additional data, as one inserted outside the application, stopped the start of the application. It is now read as a job with no additional data.
-
-- **AutoSnap**: a job whose additional data cannot be read no longer stops the start of the application. It is skipped, with an error in the log that names it, and the other jobs are scheduled.
+- **AutoSnap, startup**: a job whose additional data is missing or cannot be read stopped the start of the whole application. A job with no additional data is now read as such; one that cannot be read is skipped, with an error in the log that names it, and the other jobs are scheduled.
 
 - **Bots, module switch**: the *Enabled* setting of the module now stops the bot of the cluster; before, it had no effect and the bot followed *Telegram → Enabled* alone. The bot runs when both are on. At the first start with this version the setting is turned on, once, for the clusters where the Telegram bot is on.
 
