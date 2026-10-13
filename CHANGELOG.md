@@ -143,6 +143,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **AutoSnap, module switch**: the *Enabled* setting of the module now stops the scheduled jobs of the cluster; before, the jobs ran whatever its value. A job is scheduled when the module and the job are both on. What is started by hand stays available with the module off. At the first start with this version the setting is turned on, once, for the clusters that have enabled jobs, so that no scheduled snapshot stops with the update.
 
+- **Texts**: the help of the AutoSnap *Search Mode* said that *All* lists the snapshots made by hand; it lists only the snapshots made by AutoSnap, on every guest of the cluster. The permission shown as "Snapshot Rallback" is now "Snapshot Rollback".
+
 - **AutoSnap**: a job saved without its additional data, as one inserted outside the application, stopped the start of the application. It is now read as a job with no additional data.
 
 - **Bots, module switch**: the *Enabled* setting of the module now stops the bot of the cluster; before, it had no effect and the bot followed *Telegram → Enabled* alone. The bot runs when both are on. At the first start with this version the setting is turned on, once, for the clusters where the Telegram bot is on.
@@ -288,6 +290,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Audit Logs, deletion (review your roles)**: deleting rows of the audit log was allowed by the permission to delete users. It now has a permission of its own, *Delete audit logs*, which administrators hold. A custom role that could delete audit rows only because it could delete users needs the new permission to keep doing it.
 
 - **Node Protect, Git**: *Reset* and *Sync from remote* now run as tasks, with their steps in the task list and their outcome in the audit log; before, a failure left no trace. The confirmation of *Sync from remote* warns that the local repository is removed.
+
+- **System Logs**: the log viewer finds the database sink of the logging configuration by its name. Before, it had to be the third of the list, and with another order the viewer could read the wrong table without a notice.
 
 - **AI Server, ISO tools**: the permissions to download and to delete an ISO image could not be given to a token, because they are in no role and the permission editor did not list them. They are now listed with the other tools in the permissions of a token. They stay out of every role: no token has them until they are given.
 
