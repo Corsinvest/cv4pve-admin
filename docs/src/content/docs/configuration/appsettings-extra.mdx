@@ -214,9 +214,7 @@ The default `WriteTo` array contains, in this order: **File** (position 0), **Co
 | `needAutoCreateSchema` | Auto-create schema if not exists |
 | `loggerColumnOptions` | Column mapping configuration |
 
-:::caution[Keep the PostgreSQL sink at position 2]
-The log viewer in [Monitoring → Logs](../admin-area/monitoring/#logs) reads the table and schema name from the third element of `Serilog.WriteTo`: `Serilog:WriteTo:2:Args:tableName` and `schemaName`. When they are missing, it falls back to `Logs` and `logs_serilog`. If you customise the sinks, keep the PostgreSQL sink in that position.
-:::
+The log viewer in [Monitoring → Logs](../admin-area/monitoring/#logs) reads the table and schema name from the `Args` of the sink named `PostgreSQL` in `Serilog.WriteTo`, whatever its position: `tableName` and `schemaName`. When they are missing, it falls back to `Logs` and `logs_serilog`.
 
 ## Container Settings
 
