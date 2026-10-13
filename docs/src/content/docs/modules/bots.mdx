@@ -63,7 +63,7 @@ To connect the Bots module to Telegram, create a bot with **BotFather** and copy
 
 5. Copy the token and paste it into the **Token** field in the Bots module settings.
 
-The bot starts when **Telegram → Enabled** is on. Restrict who can use it with **Chats Id**. Both are described in [Settings](#settings).
+The bot starts when **Enabled** and **Telegram → Enabled** are both on. Restrict who can use it with **Chats Id**. Both are described in [Settings](#settings).
 
 **Unique test usernames:** If you create a bot only for testing, prefix the username with your name to make it unique (e.g. `john_pve_bot`).
 
@@ -103,13 +103,13 @@ The bot talks to Proxmox VE through the connection configured for the cluster in
 
 **Enabled**
 
-On/off switch of the module on the cluster. The bot does not depend on this switch: the bot starts when **Telegram → Enabled** is on
+Turns the module on for the cluster. While it is off the bot does not run, whatever **Telegram → Enabled**
 
 - **Default:** off
 
 **Telegram → Enabled**
 
-Starts the Telegram bot for the cluster. The bot runs whenever this switch is on
+Starts the Telegram bot for the cluster. The bot runs while this switch and the module setting **Enabled** are both on
 
 - **Default:** off
 

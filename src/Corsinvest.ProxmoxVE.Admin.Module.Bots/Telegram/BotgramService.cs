@@ -46,7 +46,7 @@ public class BotgramService(ILogger<BotgramService> logger, IServiceScopeFactory
             var clusterName = item.Settings.Name;
 
             var settings = scope.GetSettingsService().GetForModule<Module, Settings>(clusterName);
-            if (settings.Telegram.Enabled)
+            if (settings.Enabled && settings.Telegram.Enabled)
             {
                 var botData = new BotData
                 {
