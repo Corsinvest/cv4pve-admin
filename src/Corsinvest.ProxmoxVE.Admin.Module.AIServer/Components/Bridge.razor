@@ -72,9 +72,9 @@
                               Click="@DownloadClaudeConfigAsync"
                               Text="@L["Download"]" />
 
-                <RadzenButton Icon="content_copy" ButtonStyle="ButtonStyle.Light"
-                              Click="@CopyClaudeConfigAsync"
-                              Text="@L["Copy to clipboard"]" />
+                <CopyToClipboardButton TextProvider="@BuildClaudeConfigJson"
+                                       Text="@L["Copy to clipboard"]"
+                                       Size="ButtonSize.Medium" />
             </RadzenStack>
 
             @if (Insecure)
