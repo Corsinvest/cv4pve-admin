@@ -141,11 +141,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Clusters**: the scheduled jobs of a cluster that was deleted or disabled kept running, and failed at every run. They are now removed when the cluster is deleted or disabled, and at every start of the application. A cluster that is enabled again gets its scheduled jobs back at once, with the schedule and the options they had. The data collected for the cluster stays in the database.
 
+- **Add cluster**: with no cluster configured, every user was shown *Add cluster* and taken to the page that creates one, also without the permission to open it. Button and redirect are now only for who has it.
+
+- **Installer**: `install.sh` changed, or refused, a database password that contains quotes or a backslash, and reduced two spaces to one. The password is now kept as typed.
+
 - **AutoSnap, module switch**: the *Enabled* setting of the module now stops the scheduled jobs of the cluster; before, the jobs ran whatever its value. A job is scheduled when the module and the job are both on. What is started by hand stays available with the module off. At the first start with this version the setting is turned on, once, for the clusters that have enabled jobs, so that no scheduled snapshot stops with the update.
 
 - **Texts**: the help of the AutoSnap *Search Mode* said that *All* lists the snapshots made by hand; it lists only the snapshots made by AutoSnap, on every guest of the cluster. The permission shown as "Snapshot Rallback" is now "Snapshot Rollback".
 
 - **AutoSnap**: a job saved without its additional data, as one inserted outside the application, stopped the start of the application. It is now read as a job with no additional data.
+
+- **AutoSnap**: a job whose additional data cannot be read no longer stops the start of the application. It is skipped, with an error in the log that names it, and the other jobs are scheduled.
 
 - **Bots, module switch**: the *Enabled* setting of the module now stops the bot of the cluster; before, it had no effect and the bot followed *Telegram → Enabled* alone. The bot runs when both are on. At the first start with this version the setting is turned on, once, for the clusters where the Telegram bot is on.
 
@@ -296,6 +302,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **AI Server, ISO tools**: the permissions to download and to delete an ISO image could not be given to a token, because they are in no role and the permission editor did not list them. They are now listed with the other tools in the permissions of a token. They stay out of every role: no token has them until they are given.
 
 - **Portal**: *Is Admin* on a tenant user and *Enabled* on a tenant had no effect and are no longer shown; the permissions on each guest can always be set. Adding to a tenant a user whose address belongs to an existing account now asks for a confirmation that shows the roles of that account, and the display name typed is applied to an existing account too.
+
+- **Overviews**: the *Overview* pages of Portal and Workflow described functions the modules do not have (policies, schedules, webhooks, calls to external services). They now say what the modules do.
 
 - **App Tokens**: a role marked as default could not be given to a token. It can now be picked like any other role.
 
