@@ -139,6 +139,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **AutoSnap, module switch**: the *Enabled* setting of the module now stops the scheduled jobs of the cluster; before, the jobs ran whatever its value. A job is scheduled when the module and the job are both on. What is started by hand stays available with the module off. At the first start with this version the setting is turned on, once, for the clusters that have enabled jobs, so that no scheduled snapshot stops with the update.
 
+- **Bots, module switch**: the *Enabled* setting of the module now stops the bot of the cluster; before, it had no effect and the bot followed *Telegram → Enabled* alone. The bot runs when both are on. At the first start with this version the setting is turned on, once, for the clusters where the Telegram bot is on.
+
 - **AI Server, permissions (review your tokens)**: five tools returned more than the token is allowed to see. The list of the clusters now shows only the clusters the token can work on; tasks, replication jobs and backup jobs are shown only for the guests and the nodes the token can see, and a backup job lists only the guests the token can see. A token with limited cluster permissions sees less than before.
 
 - **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones with the same text. The check code is shown in the list of the rules. To make a rule wider, clear its fields: gravity and context can be left empty to match any value. Rules created before keep working; some findings hidden by mistake may become visible again.
