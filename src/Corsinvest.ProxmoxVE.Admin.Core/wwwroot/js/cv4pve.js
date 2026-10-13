@@ -74,6 +74,18 @@ cv4pve.SideDialog = (function () {
 })();
 
 /**
+ * Brings the selected result of the command palette into view: the arrows move the selection
+ * from code while the focus stays in the search box, so the list does not scroll by itself.
+ */
+cv4pve.commandPalette = {
+    scrollToSelected: function (containerId) {
+        const container = document.getElementById(containerId);
+        const item = container && container.querySelector('.rz-state-highlight, [aria-selected="true"]');
+        if (item) { item.scrollIntoView({ block: 'nearest' }); }
+    }
+};
+
+/**
  * Clipboard helper with fallback for non-secure contexts (HTTP on LAN IP).
  * `navigator.clipboard` is only exposed on HTTPS / localhost / 127.0.0.1.
  * For everything else (http://192.168.x.x:8080, common LAN deployment)

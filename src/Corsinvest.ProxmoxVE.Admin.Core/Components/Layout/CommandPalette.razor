@@ -40,7 +40,7 @@
             </RadzenStack>
 
             @* Results *@
-            <div style="flex: 1; overflow-y: auto; max-height: 350px;">
+            <div id="@ResultsId" style="flex: 1; overflow-y: auto; max-height: 350px;">
                 @if (!FilteredItems.Any())
                 {
                     <RadzenStack AlignItems="AlignItems.Center"

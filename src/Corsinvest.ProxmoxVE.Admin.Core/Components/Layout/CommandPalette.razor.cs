@@ -6,6 +6,7 @@ using Corsinvest.ProxmoxVE.Admin.Core.Components.Parameters;
 using Corsinvest.ProxmoxVE.Admin.Core.Models.Parameters;
 using Corsinvest.ProxmoxVE.Admin.Core.Search;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
+using Microsoft.JSInterop;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components.Layout;
 
@@ -13,6 +14,7 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
                                     NavigationManager navigationManager,
                                     DialogService dialogService,
                                     IPermissionService permissionService,
+                                    IJSRuntime jsRuntime,
                                     IServiceProvider serviceProvider) : IClusterName
 {
     [Parameter] public string ClusterName { get; set; } = default!;
@@ -22,6 +24,8 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
     private RadzenTextBox? TextBoxRef { get; set; }
     private RadzenListBox<SearchResultItem>? ListBoxRef { get; set; }
     private SearchResultItem? SelectedItem { get; set; }
+    private const string ResultsId = "cv-command-palette-results";
+    private bool _scrollToSelected;
 
     private string _searchText = string.Empty;
     private string SearchText
@@ -255,8 +259,19 @@ public partial class CommandPalette(IEnumerable<ISearchProvider> searchProviders
         }
     }
 
+    // The arrows move the selection from code while the focus stays in the search box: the list is asked to show it
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_scrollToSelected) { return; }
+
+        _scrollToSelected = false;
+        await jsRuntime.InvokeVoidAsync("cv4pve.commandPalette.scrollToSelected", ResultsId);
+    }
+
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
+        _scrollToSelected = e.Key is "ArrowDown" or "ArrowUp";
+
         switch (e.Key)
         {
             case "Escape": Close(); break;
