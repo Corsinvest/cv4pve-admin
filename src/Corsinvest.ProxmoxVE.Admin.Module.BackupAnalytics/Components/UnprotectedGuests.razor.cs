@@ -65,8 +65,8 @@ public partial class UnprotectedGuests(IAdminService adminService) : IClusterNam
                                                  .Where(a => long.TryParse(a, out _))
                                                  .Select(long.Parse)];
 
-    // A job covers every guest but the excluded ones, or the guests of a pool, or the guests it lists;
-    // when it is bound to a node, only the guests on that node
+    // A job covers every guest but the excluded ones, or the guests of a pool, or the guests it lists.
+    // When it is bound to a node, only the guests on that node.
     private bool IsProtected(ClusterResourceItem item)
         => _jobs.Any(a => (string.IsNullOrEmpty(a.Node) || a.Node == item.Node)
                           && (a.All
