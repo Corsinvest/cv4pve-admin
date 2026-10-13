@@ -60,6 +60,24 @@ public class Module : ModuleBase
         => AddSettings<Settings, Components.RenderSettings>(services)
             .AddHostedService<BotgramService>();
 
+    // Once: the switch of the module did not stop the bot before, so it is turned on where the bot is on
+    protected override async Task RunAsync(IServiceScope scope)
+    {
+        var settingsService = scope.GetSettingsService();
+        if (settingsService.Get<ModuleSwitchMigration>().Done) { return; }
+
+        foreach (var clusterName in settingsService.GetClustersSettings().Select(a => a.Name))
+        {
+            var settings = settingsService.GetForModule<Module, Settings>(clusterName);
+            if (settings.Enabled || !settings.Telegram.Enabled) { continue; }
+
+            settings.Enabled = true;
+            await settingsService.SetAsync(this, clusterName, settings);
+        }
+
+        await settingsService.SetAsync(new ModuleSwitchMigration { Done = true });
+    }
+
     protected override Task RefreshSettingsAsync(IServiceScope scope)
         => scope.ServiceProvider.GetServices<IHostedService>()
                                 .OfType<BotgramService>()
