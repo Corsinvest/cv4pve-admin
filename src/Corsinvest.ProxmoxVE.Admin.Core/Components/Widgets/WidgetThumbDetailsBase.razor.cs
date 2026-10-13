@@ -45,6 +45,10 @@ public abstract partial class WidgetThumbDetailsBase<TWidgetSettings>(IAdminServ
 
     protected override Task OnInitializedAsync() => RefreshDataAsync();
 
+    // The clusters the widget is asked for, whatever the switch of the module
+    protected List<string> GetRequestedClusterNames()
+        => [.. ClusterNames.Any() ? ClusterNames : adminService.Select(a => a.Settings.Name)];
+
     protected IEnumerable<string> GetClusterNames<TModule, TSettings>()
         where TModule : ModuleBase
         where TSettings : IEnabled, IClusterName

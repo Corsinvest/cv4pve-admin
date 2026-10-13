@@ -16,8 +16,18 @@ public partial class Check(IDbContextFactory<ModuleDbContext> dbContextFactory,
 {
     protected override async Task RefreshDataAsyncInt()
     {
-        var clusterNames = GetClusterNames<Module, Settings>();
-        if (!clusterNames.Any())
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+
+        // The clusters where the scan is scheduled, and those where a scan was started by hand
+        var requested = GetRequestedClusterNames();
+        var withData = await db.JobResults
+                               .Where(a => requested.Contains(a.ClusterName))
+                               .Select(a => a.ClusterName)
+                               .Distinct()
+                               .ToListAsync();
+
+        var clusterNames = GetClusterNames<Module, Settings>().Union(withData).ToList();
+        if (clusterNames.Count == 0)
         {
             Status = WidgetState.NotConfigured;
             Count = 0;
@@ -25,8 +35,6 @@ public partial class Check(IDbContextFactory<ModuleDbContext> dbContextFactory,
             Message = L["Module not configured!"];
             return;
         }
-
-        await using var db = await dbContextFactory.CreateDbContextAsync();
 
         var allResults = new List<Data>();
         DateTime? latestScan = null;
