@@ -8,7 +8,7 @@ import Tag from '~/components/Tag.astro';
 
 Configure the Proxmox VE clusters that cv4pve-admin will manage.
 
-Open **Admin Area → Proxmox VE Clusters**. The grid lists the configured clusters with the columns **Enabled**, **Name**, **PVE Name**, **Description** and **Nodes** (number of nodes). Use **Add** to create a cluster. Click the **Name** or **PVE Name** of a row to edit the cluster. To remove a cluster, select its row and use **Delete**. Deleting or disabling a cluster removes the scheduled jobs of the modules for that cluster. The data the modules collected for it stays in the database.
+Open **Admin Area → Proxmox VE Clusters**. The grid lists the configured clusters with the columns **Enabled**, **Name**, **PVE Name**, **Description** and **Nodes** (number of nodes). Use **Add** to create a cluster. Click the **Name** or **PVE Name** of a row to edit the cluster. To remove a cluster, select its row and use **Delete**. Deleting or disabling a cluster removes the scheduled jobs of the modules for that cluster. The data the modules collected for it stays in the database. Enabling a cluster again brings its scheduled jobs back at once, with the schedule and the options they had.
 
 On a new installation with no enabled cluster, the **New Cluster Settings** dialog opens automatically after login.
 
