@@ -143,6 +143,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Add cluster**: with no cluster configured, every user was shown *Add cluster* and taken to the page that creates one, also without the permission to open it. Button and redirect are now only for who has it.
 
+- **Command Palette**: moving through the results with the arrow keys, the selected entry went out of view past the last visible result. The list now follows the selection.
+
+- **Grids, keyboard**: the edit key (F2) opened the editor of the selected row only when the last click of the mouse had been on the name column. It now always opens it.
+
+- **Copy buttons**: after a copy the button shows a green check mark for two seconds, in place of a notification.
+
 - **Installer**: `install.sh` changed, or refused, a database password that contains quotes or a backslash, and reduced two spaces to one. The password is now kept as typed.
 
 - **AutoSnap, module switch**: the *Enabled* setting of the module now stops the scheduled jobs of the cluster; before, the jobs ran whatever its value. A job is scheduled when the module and the job are both on. What is started by hand stays available with the module off. At the first start with this version the setting is turned on, once, for the clusters that have enabled jobs, so that no scheduled snapshot stops with the update.
