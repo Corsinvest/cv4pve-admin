@@ -36,6 +36,9 @@ public class JobSchedule : JobScheduleBase, IClusterName, IId, IDescription
     public string ExtendedDataJson
     {
         get => JsonSerializer.Serialize(ExtendedData);
-        set => ExtendedData = JsonSerializer.Deserialize<ExtendedData>(value) ?? [];
+        // The column defaults to an empty text, which is not JSON
+        set => ExtendedData = string.IsNullOrWhiteSpace(value)
+                                ? []
+                                : JsonSerializer.Deserialize<ExtendedData>(value) ?? [];
     }
 }
