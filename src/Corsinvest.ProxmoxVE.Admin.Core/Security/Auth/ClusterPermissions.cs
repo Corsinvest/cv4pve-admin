@@ -90,7 +90,7 @@ public static class ClusterPermissions
         public static PermissionsRead Data { get; } = new(BaseName, nameof(Vm));
 
         public static Permission Snapshot { get; } = new(Data.Prefix, nameof(Snapshot), "Snapshot manager");
-        public static Permission SnapshotRallback { get; } = new(Snapshot.Key, "Rallback", "Snapshot Rallback");
+        public static Permission SnapshotRallback { get; } = new(Snapshot.Key, "Rallback", "Snapshot Rollback");
 
         public static Permission Backup { get; } = new(Data.Prefix, nameof(Backup), "Backup manager");
         public static Permission BackupRestore { get; } = new(Backup.Key, "Restore", "Backup Restore");
