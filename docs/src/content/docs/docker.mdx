@@ -58,7 +58,7 @@ The compose file also mounts `data/postgres/backups` and, for `pgweb`, `data/pgw
 | `WATCHTOWER_HTTP_API_TOKEN` | `mySecretToken123` | Token cv4pve-admin uses to ask Watchtower for an update. |
 
 :::caution[Change the default secrets]
-Before exposing the installation, replace the default `POSTGRES_PASSWORD` and `WATCHTOWER_HTTP_API_TOKEN` with your own values. Use letters and digits only. The `.env` file suggests `openssl rand -base64 32` to generate them, but its output can contain `/`: remove the characters that are not letters or digits. A `/` or `&` in the PostgreSQL password breaks the Linux and macOS installer. A space in a value of `.env` breaks `adminctl`. If you change the database password after the first start, you must also change it inside PostgreSQL.
+Before exposing the installation, replace the default `POSTGRES_PASSWORD` and `WATCHTOWER_HTTP_API_TOKEN` with your own values. Letters and digits are the safe choice. A `$` followed by a letter is read by Docker Compose as the name of a variable and replaced: the containers then receive a password that is not the one you wrote. To keep a `$`, put the whole value between single quotes, as in `POSTGRES_PASSWORD='pa$sword'`. If you change the database password after the first start, you must also change it inside PostgreSQL.
 :::
 
 ## Change version after installation
