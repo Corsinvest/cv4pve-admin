@@ -59,8 +59,8 @@ fi
 echo "  All tags: https://hub.docker.com/r/${DOCKER_REPO}/tags"
 echo ""
 # Ask for version tag
-read -p "Docker image tag (default: latest): " TAG </dev/tty
-TAG=$(echo "$TAG" | xargs)  # Trim whitespace
+# read takes away the spaces around the value; -r keeps a backslash as typed
+read -rp "Docker image tag (default: latest): " TAG </dev/tty
 if [ -z "$TAG" ]; then
     TAG="latest"
 fi
@@ -69,9 +69,8 @@ echo "Using tag: $TAG"
 echo ""
 # Ask for PostgreSQL password
 while true; do
-    read -sp "PostgreSQL password (press ENTER for default): " POSTGRES_PASSWORD </dev/tty
+    read -rsp "PostgreSQL password (press ENTER for default): " POSTGRES_PASSWORD </dev/tty
     echo ""
-    POSTGRES_PASSWORD=$(echo "$POSTGRES_PASSWORD" | xargs)  # Trim whitespace
 
     if [ -z "$POSTGRES_PASSWORD" ]; then
         POSTGRES_PASSWORD="cv4pve-admin"

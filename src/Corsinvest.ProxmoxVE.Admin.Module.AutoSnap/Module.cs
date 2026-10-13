@@ -5,6 +5,7 @@
 using Corsinvest.ProxmoxVE.Admin.Core.Modularity;
 using Corsinvest.ProxmoxVE.Admin.Core.Persistence;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap;
@@ -160,13 +161,40 @@ public class Module : ModuleBase
                                           .Where(a => settingsService.GetForModule<Module, Settings>(a).Enabled)
                                           .ToHashSet();
 
-        foreach (var item in db.Jobs)
+        foreach (var item in ReadJobs(db, scope))
         {
             backgroundJobService.ScheduleOrRemove<Job>(a => a.SnapAsync(item.Id),
                                              item.CronExpression,
                                              item.Enabled && clusterNames.Contains(item.ClusterName),
                                              item.ClusterName,
                                              item.Id);
+        }
+    }
+
+    // A job whose extended data cannot be read must not stop the start: it is skipped and the others are scheduled
+    private static List<JobSchedule> ReadJobs(ModuleDbContext db, IServiceScope scope)
+    {
+        try
+        {
+            return [.. db.Jobs.AsNoTracking()];
+        }
+        catch (JsonException)
+        {
+            var logger = scope.GetLoggerFactory().CreateLogger<Module>();
+            var ret = new List<JobSchedule>();
+            foreach (var id in db.Jobs.Select(a => a.Id).ToList())
+            {
+                try
+                {
+                    ret.Add(db.Jobs.AsNoTracking().First(a => a.Id == id));
+                }
+                catch (JsonException ex)
+                {
+                    logger.LogError(ex, "AutoSnap: job {JobId} has extended data that cannot be read, it is not scheduled", id);
+                }
+            }
+
+            return ret;
         }
     }
 

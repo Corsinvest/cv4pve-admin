@@ -47,6 +47,7 @@ public class Module : ModuleBase
 
         var baseUrl = GetBaseUrl(ApplicationHelper.AllClusterName);
         UrlHelper.NewPveConfigUrl = $"{baseUrl}/{PveClusterLink.Url}?{nameof(Components.ClusterConfig.RenderClustersSettings.Create)}=true";
+        UrlHelper.NewPveConfigPermission = PveClusterLink.Permission;
         UrlHelper.SystemTasksUrl = $"{baseUrl}/{TasksLink.Url}";
         UrlHelper.SystemUrl = baseUrl;
 

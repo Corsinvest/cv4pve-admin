@@ -95,9 +95,13 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
         }
     }
 
-    private void CheckExistCluster()
+    // Only who can open the cluster settings is offered, and taken to, the creation of the first cluster
+    private async Task CheckExistClusterAsync()
     {
-        HasNoClusters = !SettingsService.GetEnabledClustersSettings().Any();
+        HasNoClusters = !SettingsService.GetEnabledClustersSettings().Any()
+                        && UrlHelper.NewPveConfigPermission != null
+                        && await PermissionService.HasAsync(ApplicationHelper.AllClusterName, UrlHelper.NewPveConfigPermission);
+
         if (HasNoClusters) { NavigationManager.NavigateTo(UrlHelper.NewPveConfigUrl); }
     }
 
@@ -120,7 +124,7 @@ public partial class MainLayout : IDisposable, IAsyncDisposable
 
     private async Task RefreshDataAsync()
     {
-        CheckExistCluster();
+        await CheckExistClusterAsync();
         await RefreshLinksAsync();
         await InvokeAsync(StateHasChanged);
     }
