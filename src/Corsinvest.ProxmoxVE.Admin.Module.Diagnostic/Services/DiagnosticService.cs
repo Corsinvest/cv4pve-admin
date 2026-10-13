@@ -264,7 +264,7 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         AddComplianceHeader(section, L["Compliance"], L["Compliance mapping is available in the Enterprise Edition"]);
         SubscriptionGateReportHelper.AddEnterprisePlaceholder(
             section,
-            L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, NIS2, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ENS, C5) is available in the Enterprise Edition."],
+            L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, ISO 22301, NIS2, NIS2 Implementing Regulation, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ACN, ENS, BSI C5, BSI IT-Grundschutz) is available in the Enterprise Edition."],
             L["Get Enterprise"]);
     }
 
@@ -304,7 +304,7 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
                             {
                                 sheet.AddNote(L["Disclaimer"], ComplianceDisclaimerText());
                                 sheet.AddEnterprisePlaceholder(
-                                    L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, NIS2, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ENS, C5) is available in the Enterprise Edition."],
+                                    L["Compliance mapping (ISO 27001, ISO 27017, ISO 27018, ISO 22301, NIS2, NIS2 Implementing Regulation, DORA, GDPR, PCI DSS, NIST CSF, NIST SP 800-53, CIS Controls, SOC 2, AgID, ACN, ENS, BSI C5, BSI IT-Grundschutz) is available in the Enterprise Edition."],
                                     L["Get Enterprise"]);
                             });
 
