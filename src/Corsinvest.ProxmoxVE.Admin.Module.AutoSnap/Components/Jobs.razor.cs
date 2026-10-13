@@ -85,7 +85,12 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task KeyDownAsync(KeyboardEventArgs e)
     {
         if (SelectedItems.Any() && e.IsForDelete()) { await DeleteAsync(); }
-        else if (SelectedItems.Any() && e.IsForEdit()) { await RowSelectAsync(SelectedItems[0]); }
+        else if (SelectedItems.Any() && e.IsForEdit())
+        {
+            // The check on the clicked column is for the mouse: the key opens the editor of the selected row
+            _validColumnClick = true;
+            await RowSelectAsync(SelectedItems[0]);
+        }
         else if (e.IsForNew()) { await AddAsync(); }
     }
 

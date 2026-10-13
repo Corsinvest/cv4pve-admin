@@ -69,7 +69,4 @@ public partial class Bridge(NavigationManager navigationManager,
         => await browserService.DownloadFileAsync("claude_desktop_config.json",
                                                   BuildClaudeConfigJson(),
                                                   MediaTypeNames.Application.Json);
-
-    private Task CopyClaudeConfigAsync()
-        => browserService.CopyToClipboardAsync(BuildClaudeConfigJson());
 }

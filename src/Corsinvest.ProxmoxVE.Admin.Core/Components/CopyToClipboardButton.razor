@@ -3,20 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
 @inherits AdminComponentBase
+@implements IDisposable
 @inject IBrowserService BrowserService
 @inject NotificationService NotificationService
 
-<RadzenButton Icon="content_copy"
+<RadzenButton Icon="@(Copied ? "check" : "content_copy")"
+              IconColor="@(Copied ? Colors.Success : null)"
               Variant="Variant.Text"
-              Size="ButtonSize.Small"
+              Size="@Size"
+              Text="@Text"
+              Disabled="@Disabled"
               Click="CopyAsync"
-              title="@L["Copy to clipboard"]"
-              aria-label="@L["Copy to clipboard"]" />
+              title="@Label"
+              aria-label="@Label" />
 
 @code {
     [Parameter] public Func<string>? TextProvider { get; set; }
     [Parameter] public Func<Task<string>>? TextProviderAsync { get; set; }
-    [Parameter] public bool ShowNotification { get; set; } = true;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public ButtonSize Size { get; set; } = ButtonSize.Small;
+    [Parameter] public string? Text { get; set; }
+
+    private static readonly TimeSpan ShownFor = TimeSpan.FromSeconds(2);
+    private bool Copied { get; set; }
+    private CancellationTokenSource? _reset;
+
+    private string Label => Copied ? L["Copied!"] : L["Copy to clipboard"];
 
     private async Task CopyAsync()
     {
@@ -26,7 +38,34 @@
 
         if (text is null) { return; }
 
-        await BrowserService.CopyToClipboardAsync(text);
-        if (ShowNotification) { NotificationService.Success(L["Copied!"]); }
+        try
+        {
+            await BrowserService.CopyToClipboardAsync(text);
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Error(L["Copy failed"], ex.Message);
+            return;
+        }
+
+        // The check mark stays for a moment, then the icon goes back: a second click starts the time again
+        _reset?.Cancel();
+        _reset?.Dispose();
+        _reset = new();
+        Copied = true;
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(ShownFor, _reset.Token);
+            Copied = false;
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    public void Dispose()
+    {
+        _reset?.Cancel();
+        _reset?.Dispose();
     }
 }
