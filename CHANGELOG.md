@@ -135,6 +135,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Backup Analytics, Unprotected Guests**: the page was empty when no backup job was enabled, which is when every guest is uncovered. It also ignored the jobs that select a pool and the guests excluded by a job for all guests. It now evaluates every kind of job: all guests with exclusions, pool, list of IDs, and the node a job is bound to.
 
+- **Check widgets**: the *Check* widget of Backup Analytics, Replication Analytics and Diagnostics showed "Module not configured!" for a cluster with the schedule off, also when scans had been made by hand. It now shows those results too.
+
 - **Diagnostics, notification**: the result of a scan is now notified also when both report attachments are off; before, nothing was sent. The message carries the number of critical, warning and info issues. Who has a notifier configured and both attachments off starts to receive it: to receive nothing, leave the list of the notifiers empty.
 
 - **Clusters**: the scheduled jobs of a cluster that was deleted or disabled kept running, and failed at every run. They are now removed when the cluster is deleted or disabled, and at every start of the application. A cluster that is enabled again gets its scheduled jobs back at once, with the schedule and the options they had. The data collected for the cluster stays in the database.
