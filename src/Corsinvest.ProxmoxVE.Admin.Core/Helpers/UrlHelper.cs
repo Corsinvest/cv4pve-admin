@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Helpers;
@@ -12,6 +13,7 @@ public static class UrlHelper
     public static string SystemTasksUrl { get; set; } = default!;
     public static string SystemUrl { get; set; } = default!;
     public static string NewPveConfigUrl { get; set; } = default!;
+    public static Permission? NewPveConfigPermission { get; set; }
     public static string ChangePasswordUrl { get; set; } = default!;
 
     public static string GetPveUrl(string baseAddress, string id) => $"{baseAddress}/#v1:0:={id}";
