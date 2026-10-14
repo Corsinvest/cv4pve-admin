@@ -65,7 +65,10 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                      Keep = a.Keep,
                                                      VmStatus = a.VmStatus,
                                                      OnlyRuns = a.OnlyRuns,
-                                                     TimeoutSnapshot = a.TimeoutSnapshot
+                                                     TimeoutSnapshot = a.TimeoutSnapshot,
+                                                     MaxParallel = a.MaxParallel,
+                                                     CronExpression = a.CronExpression,
+                                                     Results = a.Results.OrderByDescending(r => r.Start).Take(1).ToList()
                                                  });
     }
 

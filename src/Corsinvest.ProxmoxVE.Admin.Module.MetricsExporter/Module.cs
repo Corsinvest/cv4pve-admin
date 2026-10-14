@@ -83,6 +83,7 @@ public class Module : ModuleBase
     {
         var registry = Prometheus.Metrics.NewCustomRegistry();
         var engine = new PrometheusMetricsEngine(settings.ApiSettings.Prometheus, registry, engineLogger);
+        var info = new Info { Registry = registry };
 
         registry.AddBeforeCollectCallback(async () =>
         {
@@ -91,11 +92,16 @@ public class Module : ModuleBase
             {
                 var client = await scope.GetAdminService()[clusterName].GetPveClientAsync();
                 await engine.CollectAsync(client);
+                info.LastCollectError = null;
             }
-            catch (Exception ex) { logger.LogError(ex, ex.Message); }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                info.LastCollectError = ex.Message;
+            }
         });
 
-        return new() { Registry = registry };
+        return info;
     }
 
     private static void MapExporterPrometheusMetrics(WebApplication app)
@@ -141,6 +147,12 @@ public class Module : ModuleBase
                 //execute and return data
                 await using var ms = new MemoryStream();
                 await info.Registry.CollectAndExportAsTextAsync(ms);
+
+                // Old values with a 200 would hide from Prometheus that the cluster is not answering
+                if (info.LastCollectError != null)
+                {
+                    return Results.Problem(info.LastCollectError, statusCode: StatusCodes.Status503ServiceUnavailable);
+                }
                 ms.Position = 0;
                 using var sr = new StreamReader(ms);
                 return Results.Text(sr.ReadToEnd(), "text/plain");

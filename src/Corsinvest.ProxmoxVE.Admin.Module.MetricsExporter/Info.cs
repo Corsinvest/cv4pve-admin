@@ -19,6 +19,9 @@ internal class Info
     public long CountRequest => Interlocked.Read(ref _countRequest);
     public CollectorRegistry Registry { get; set; } = default!;
 
+    /// <summary>Error of the last collection, null when it worked.</summary>
+    public string? LastCollectError { get; set; }
+
     public void RegisterRequest()
     {
         Interlocked.Exchange(ref _lastRequestTicks, DateTime.Now.Ticks);
