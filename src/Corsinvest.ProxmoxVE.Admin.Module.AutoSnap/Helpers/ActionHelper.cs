@@ -116,6 +116,25 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 };
                 var app = GetApp(client, scope.GetLoggerFactory(), log);
 
+                // The purge raises the clean and remove phases: the webhooks of the job run here too
+                var hookService = scope.GetService<IAutoSnapHookService>();
+                if (hookService != null)
+                {
+                    app.PhaseEvent += async (e) =>
+                    {
+                        try
+                        {
+                            await hookService.ExecuteAsync(job, e, log);
+                        }
+                        catch (Exception ex)
+                        {
+                            success = false;
+                            logger.LogError(ex, ex.Message);
+                            (e.Out ?? log).WriteLine($"  Error '{ex.Message}'");
+                        }
+                    };
+                }
+
                 await app.CleanAsync(job.VmIds,
                                      job.Label,
                                      0,
