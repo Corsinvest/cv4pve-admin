@@ -50,17 +50,15 @@ public class Info(IDbContextFactory<ModuleDbContext> dbContextFactory,
         IsLoadingDistribution = false;
         await InvokeAsync(StateHasChanged);
 
-        // Build alerts
-        var count = replications.Count;
-        var failed = replications.Count(a => !a.Status);
-        var withErrors = replications.Count(a => !string.IsNullOrEmpty(a.Error));
+        // Alerts look at the last run of each replication job, not at the history
+        var latest = LatestPerJob(replications);
+        var failed = latest.Count(a => !a.Status);
         var now = DateTime.UtcNow;
-        var moreThan7d = replications.Count(a => (now - a.LastSync).TotalDays >= 7);
-        var moreThan24h = replications.Count(a => (now - a.LastSync).TotalHours >= 24 && (now - a.LastSync).TotalDays < 7);
+        var moreThan7d = latest.Count(a => (now - a.LastSync).TotalDays >= 7);
+        var moreThan24h = latest.Count(a => (now - a.LastSync).TotalHours >= 24 && (now - a.LastSync).TotalDays < 7);
 
         var alerts = new List<AlertItem>();
         if (failed > 0) { alerts.Add(new AlertItem("error", "rz-color-danger", L["{0} failed replications", failed])); }
-        if (withErrors > 0) { alerts.Add(new AlertItem("warning", "rz-color-warning", L["{0} replications with errors", withErrors])); }
         if (moreThan7d > 0) { alerts.Add(new AlertItem("event_busy", "rz-color-danger", L["{0} replications not synced for 7+ days", moreThan7d])); }
         if (moreThan24h > 0) { alerts.Add(new AlertItem("schedule", "rz-color-warning", L["{0} replications not synced for 24+ hours", moreThan24h])); }
 
@@ -68,6 +66,9 @@ public class Info(IDbContextFactory<ModuleDbContext> dbContextFactory,
         IsLoadingAlerts = false;
         await InvokeAsync(StateHasChanged);
     }
+
+    private static List<Models.JobResult> LatestPerJob(IEnumerable<Models.JobResult> replications)
+        => [.. replications.GroupBy(a => (a.ClusterName, a.JobId)).Select(g => g.MaxBy(a => a.LastSync)!)];
 
     private void UpdateStatsAndDistribution(List<Models.JobResult> replications)
     {
@@ -118,10 +119,11 @@ public class Info(IDbContextFactory<ModuleDbContext> dbContextFactory,
         ];
 
         var now = DateTime.UtcNow;
-        var lessThan1h = replications.Count(a => (now - a.LastSync).TotalHours < 1);
-        var between1And24h = replications.Count(a => (now - a.LastSync).TotalHours >= 1 && (now - a.LastSync).TotalHours < 24);
-        var between1And7d = replications.Count(a => (now - a.LastSync).TotalDays >= 1 && (now - a.LastSync).TotalDays < 7);
-        var moreThan7d = replications.Count(a => (now - a.LastSync).TotalDays >= 7);
+        var latest = LatestPerJob(replications);
+        var lessThan1h = latest.Count(a => (now - a.LastSync).TotalHours < 1);
+        var between1And24h = latest.Count(a => (now - a.LastSync).TotalHours >= 1 && (now - a.LastSync).TotalHours < 24);
+        var between1And7d = latest.Count(a => (now - a.LastSync).TotalDays >= 1 && (now - a.LastSync).TotalDays < 7);
+        var moreThan7d = latest.Count(a => (now - a.LastSync).TotalDays >= 7);
 
         var maxAge = Math.Max(1, Math.Max(lessThan1h, Math.Max(between1And24h, Math.Max(between1And7d, moreThan7d))));
         AgeDistribution =

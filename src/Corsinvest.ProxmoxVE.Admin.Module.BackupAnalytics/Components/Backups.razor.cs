@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
@@ -13,6 +14,7 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
                              DialogService dialogService,
                              NotificationService notificationService,
                              IAdminService adminService,
+                             IAuditService auditService,
                              EventNotificationService eventNotificationService) : IRefreshableData,
                                                                                   IClusterName,
                                                                                   IDisposable
@@ -147,6 +149,7 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.TaskResults.DeleteAsync(ClusterName);
+            await auditService.LogAsync("BackupAnalytics.DeleteAll", true, $"Cluster: {ClusterName}");
             await eventNotificationService.PublishAsync(new DataChangedNotification());
             //            await DataGridRef.Reload();
             notificationService.Info(L["All data has been removed!"]);

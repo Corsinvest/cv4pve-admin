@@ -65,7 +65,8 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
             args.Grid!.Groups.Add(new()
             {
                 Title = L["Gravity"],
-                Property = nameof(JobDetail.Gravity)
+                Property = nameof(JobDetail.Gravity),
+                SortOrder = SortOrder.Descending
             });
 
             StateHasChanged();
