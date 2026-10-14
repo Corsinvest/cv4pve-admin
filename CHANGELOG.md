@@ -307,6 +307,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **UPS, Test Connection**: the result is shown in a dialog with the profile used and one row for each value: where it is read from and what the device answered, or *Missing*. A warning says which alert thresholds cannot fire because the device gives no charge or no runtime.
 
+- **Workflow engine** updated (Elsa 3.9). In the list of workflows the designer opens from the row menu (*Edit*), no longer by clicking the first cell.
+
 - **Workflow, permissions (review your roles)**: the *Clone*, *Resize*, *Convert to Template* and *Manage HA* activities now check four new permissions (Clone, Resize disk, Convert to template, High Availability), included only in the *Cluster Admin* role, and are recorded in the audit log. Before they acted on Proxmox VE with no check.
 
 #### Fixed
@@ -382,6 +384,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Wrong values in several profiles: battery voltage ten times too high on the standard profile, APC frequency ten times too low, battery voltage, runtime and temperature swapped on CyberPower and NetAgent, and others. Firmware, serial number and output power of the standard profile read the wrong value.
 
 - **Workflow**:
+  - The *History* page listed no runs when it was the first workflow page opened.
   - On Proxmox VE 9 the list of activities in the designer was empty.
   - *Manage HA* on Proxmox VE 9, where HA groups are replaced by HA rules: the group list is empty and a group gives a clear error.
   - An optional field left empty (backup notes, descriptions, target node or storage, HA group, notifiers, filter expression) made the activity fail.
