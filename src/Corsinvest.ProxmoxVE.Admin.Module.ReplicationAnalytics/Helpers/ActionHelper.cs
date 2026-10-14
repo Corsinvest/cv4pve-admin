@@ -39,6 +39,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             taskScope?.LogProgress(nodeIndex, nodes.Count, $"[{nodeIndex}/{nodes.Count}] Scanning node {node.Node}", phase: $"Scanning {node.Node}");
 
             var jobs = await client.Nodes[node.Node].Replication.GetAsync();
+            var nodeUtcOffset = await PveAdminHelper.GetNodeUtcOffsetAsync(client, node.Node);
             taskScope?.Log($"  {node.Node}: {jobs.Count()} replication job(s) found");
 
             // Batch optimization: Load all existing jobs for this node in one query
@@ -87,8 +88,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                         if (!status) { taskScope?.Log($"  {job.Id}: failed, {job.FailCount} time(s) in a row: {job.Error}", LogLevel.Warning); }
 
                         // A run that left no log is still a run: its time is the time of the try
-                        var start = rows.Length > 0 ? DateTime.SpecifyKind(ParseDateTime(rows[0]![..19]), DateTimeKind.Local).ToUniversalTime() : lastSync;
-                        var end = rows.Length > 0 ? DateTime.SpecifyKind(ParseDateTime(rows[^1]![..19]), DateTimeKind.Local).ToUniversalTime() : lastSync;
+                        var start = rows.Length > 0 ? PveAdminHelper.NodeLogTimeToUtc(ParseDateTime(rows[0]![..19]), nodeUtcOffset) : lastSync;
+                        var end = rows.Length > 0 ? PveAdminHelper.NodeLogTimeToUtc(ParseDateTime(rows[^1]![..19]), nodeUtcOffset) : lastSync;
                         await db.JobResults.AddAsync(new()
                         {
                             ClusterName = settings.ClusterName,
