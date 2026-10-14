@@ -257,7 +257,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Internal
 
-- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
+- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache, service discovery, command line). The PDF and image libraries stay on their current versions: the newer ones changed license.
 
 - Updated a .NET cryptography library with two denial of service fixes, and the ASP.NET Core and Entity Framework Core libraries to 10.0.13, the .NET security release.
 
