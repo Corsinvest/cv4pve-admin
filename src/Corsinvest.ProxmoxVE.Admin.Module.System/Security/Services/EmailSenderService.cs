@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using System.Text.Encodings.Web;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -10,7 +11,8 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
 
 internal sealed class EmailSenderService(ISettingsService settingsService,
                                          IEmailSender emailSender,
-                                         IOptions<DataProtectionTokenProviderOptions> tokenOptions) : IAccountEmailSender
+                                         IOptions<DataProtectionTokenProviderOptions> tokenOptions,
+                                         IStringLocalizer<EmailSenderService> L) : IAccountEmailSender
 {
     private const string ColorBrand = "#1a4269";
     private const string ColorLink = "#2a6fae";
@@ -23,62 +25,56 @@ internal sealed class EmailSenderService(ISettingsService settingsService,
         {
             var value = tokenOptions.Value.TokenLifespan;
             return value.TotalHours >= 48
-                    ? $"{(int)value.TotalDays} days"
+                    ? L["{0} days", (int)value.TotalDays]
                     : value.TotalMinutes >= 120
-                        ? $"{(int)value.TotalHours} hours"
-                        : $"{(int)value.TotalMinutes} minutes";
+                        ? L["{0} hours", (int)value.TotalHours]
+                        : L["{0} minutes", (int)value.TotalMinutes];
         }
     }
 
+    private static string Paragraph(string text, string margin = "0 0 16px") => $"""<p style="margin:{margin};">{Encode(text)}</p>""";
+
     public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink)
         => SendEmailAsync(email,
-                          "Confirm your email",
-                          Layout("Confirm your email",
+                          L["Confirm your email"],
+                          Layout(L["Confirm your email"],
                                  user,
-                                 $"""
-                                 <p style="margin:0 0 16px;">An account has been created for you. Click the button below to confirm your email address.</p>
-                                 {Button(confirmationLink, "Confirm email")}
-                                 """,
-                                 $"This link expires in {Lifespan}. If you did not expect this email, you can safely ignore it.",
+                                 Paragraph(L["An account has been created for you. Click the button below to confirm your email address."])
+                                 + Button(confirmationLink, L["Confirm email"]),
+                                 L["This link expires in {0}. If you did not expect this email, you can safely ignore it.", Lifespan],
                                  confirmationLink));
 
     public Task SendPasswordResetLinkAsync(ApplicationUser user, string email, string resetLink)
         => SendEmailAsync(email,
-                          "Reset your password",
-                          Layout("Reset your password",
+                          L["Reset your password"],
+                          Layout(L["Reset your password"],
                                  user,
-                                 $"""
-                                 <p style="margin:0 0 16px;">A password reset was requested for your account. Click the button below to set a new password.</p>
-                                 {Button(resetLink, "Reset password")}
-                                 """,
-                                 $"This link expires in {Lifespan} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.",
+                                 Paragraph(L["A password reset was requested for your account. Click the button below to set a new password."])
+                                 + Button(resetLink, L["Reset password"]),
+                                 L["This link expires in {0} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.", Lifespan],
                                  resetLink));
 
     public Task SendPasswordResetCodeAsync(ApplicationUser user, string email, string resetCode)
         => SendEmailAsync(email,
-                          "Reset your password",
-                          Layout("Reset your password",
+                          L["Reset your password"],
+                          Layout(L["Reset your password"],
                                  user,
-                                 $"""
-                                 <p style="margin:0 0 16px;">A password reset was requested for your account. Use the code below to set a new password.</p>
-                                 <p style="margin:24px 0; padding:14px 16px; background:#f4f7fa; border-radius:6px; font-family:Consolas,monospace; font-size:14px; word-break:break-all;">{Encode(resetCode)}</p>
-                                 """,
-                                 $"This code expires in {Lifespan} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged."));
+                                 Paragraph(L["A password reset was requested for your account. Use the code below to set a new password."])
+                                 + $"""<p style="margin:24px 0; padding:14px 16px; background:#f4f7fa; border-radius:6px; font-family:Consolas,monospace; font-size:14px; word-break:break-all;">{Encode(resetCode)}</p>""",
+                                 L["This code expires in {0} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.", Lifespan]));
 
     public Task SendTwoFactorDisabledAsync(ApplicationUser user, bool byAdministrator)
         => SendEmailAsync(user.Email!,
-                          "Two-factor authentication disabled",
-                          Layout("Two-factor authentication disabled",
+                          L["Two-factor authentication disabled"],
+                          Layout(L["Two-factor authentication disabled"],
                                  user,
-                                 $"""
-                                 <p style="margin:0 0 16px;">{(byAdministrator
-                                                                ? "An administrator turned off two-factor authentication for your account."
-                                                                : "Two-factor authentication has been turned off for your account.")}</p>
-                                 <p style="margin:0 0 24px;">You now sign in with your password only. To protect the account again, set up two-factor authentication from your profile.</p>
-                                 """,
-                                 "If you did not ask for this change, contact your administrator and change your password."));
+                                 Paragraph(byAdministrator
+                                            ? L["An administrator turned off two-factor authentication for your account."]
+                                            : L["Two-factor authentication has been turned off for your account."])
+                                 + Paragraph(L["You now sign in with your password only. To protect the account again, set up two-factor authentication from your profile."], "0 0 24px"),
+                                 L["If you did not ask for this change, contact your administrator and change your password."]));
 
-    private static string Button(string link, string text)
+    private string Button(string link, string text)
         => $"""
            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
                <tr>
@@ -87,7 +83,7 @@ internal sealed class EmailSenderService(ISettingsService settingsService,
                    </td>
                </tr>
            </table>
-           <p style="margin:0 0 8px; font-size:13px; color:#555555;">Or copy and paste this link into your browser:</p>
+           <p style="margin:0 0 8px; font-size:13px; color:#555555;">{Encode(L["Or copy and paste this link into your browser:"])}</p>
            <p style="margin:0 0 24px; font-size:12px; word-break:break-all;"><a href="{Encode(link)}" style="color:{ColorLink};">{Encode(link)}</a></p>
            """;
 
@@ -112,14 +108,14 @@ internal sealed class EmailSenderService(ISettingsService settingsService,
                                 <tr>
                                     <td style="padding:32px; font-size:15px; line-height:1.6; color:#111d24;">
                                         <p style="margin:0 0 16px; font-size:18px; font-weight:600;">{Encode(title)}</p>
-                                        <p style="margin:0 0 16px;">Hello {Encode(user.DisplayName ?? user.UserName)},</p>
+                                        <p style="margin:0 0 16px;">{Encode(L["Hello {0},", user.DisplayName ?? user.UserName ?? string.Empty])}</p>
                                         {body}
                                         <p style="margin:0; font-size:12px; color:#888888; line-height:1.5;">{Encode(note)}</p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="background:#f4f7fa; padding:20px 32px; border-top:1px solid #dfe5eb; font-size:12px; color:#4a545f; line-height:1.5;">
-                                        Sent by {appName}{(site == null ? string.Empty : $""" &middot; <a href="{Encode(site)}" style="color:{ColorLink}; text-decoration:none;">{Encode(site)}</a>""")}
+                                        {Encode(L["Sent by {0}", settingsService.GetAppSettings().AppName])}{(site == null ? string.Empty : $""" &middot; <a href="{Encode(site)}" style="color:{ColorLink}; text-decoration:none;">{Encode(site)}</a>""")}
                                     </td>
                                 </tr>
                             </table>
