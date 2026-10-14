@@ -139,7 +139,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                             .ProjectToType<ClusterResourceUpdateScanInfo>()
                             .ToList();
 
-        await clusterClient.CachedData.GetOrSetAsync(CachedKey, items, 8 * 60 * 60, true);
+        // Kept until the next scan replaces it, whatever the schedule
+        await clusterClient.CachedData.GetOrSetAsync(CachedKey, items, 30 * 24 * 60 * 60, true);
 
         await eventNotificationService.PublishAsync(new DataChangedNotification());
 

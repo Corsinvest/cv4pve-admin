@@ -79,20 +79,24 @@ public partial class Scans(IAdminService adminService,
         };
 
         InDownload = true;
-
-        var start = Items.Min(a => a.UpdateScanTimestamp)!;
-        await using var ms = updaterService.GenerateReport(ClusterName, Items, format);
-
-        var (extension, contentType) = format switch
+        try
         {
-            ReportFormat.Pdf => ("pdf", MediaTypeNames.Application.Pdf),
-            ReportFormat.Excel => ("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-            _ => throw new ArgumentOutOfRangeException(nameof(format)),
-        };
+            var start = Items.Min(a => a.UpdateScanTimestamp)!;
+            await using var ms = updaterService.GenerateReport(ClusterName, Items, format);
 
-        await browserService.DownloadFileAsync($"Update-{ClusterName}-{start:yyyyMMddHHmmss}.{extension}", ms, contentType);
+            var (extension, contentType) = format switch
+            {
+                ReportFormat.Pdf => ("pdf", MediaTypeNames.Application.Pdf),
+                ReportFormat.Excel => ("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+                _ => throw new ArgumentOutOfRangeException(nameof(format)),
+            };
 
-        InDownload = false;
+            await browserService.DownloadFileAsync($"Update-{ClusterName}-{start:yyyyMMddHHmmss}.{extension}", ms, contentType);
+        }
+        finally
+        {
+            InDownload = false;
+        }
     }
 
     private static void RowRender(RowRenderEventArgs<ClusterResourceUpdateScanInfo> args)
