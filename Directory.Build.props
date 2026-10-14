@@ -2,6 +2,8 @@
   <!-- Package Management -->
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Projects cannot bypass the pinned versions in Directory.Packages.props with VersionOverride -->
+    <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
   </PropertyGroup>
 
   <!-- Common Build Settings -->
