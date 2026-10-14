@@ -28,6 +28,7 @@
     <PackageReference Include="Toolbelt.Blazor.HotKeys2" />
     <PackageReference Include="ZiggyCreatures.FusionCache" />
     <PackageReference Include="System.Linq.Dynamic.Core" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" />
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="MailKit" />
     <PackageReference Include="Wangkanai.Detection" />

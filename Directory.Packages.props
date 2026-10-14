@@ -49,6 +49,8 @@
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.4" />
     <PackageVersion Include="MailKit" Version="4.18.1" />
+    <!-- Pinned above the version MimeKit and PDFsharp bring (10.0.0): CVE-2026-84008 and CVE-2026-70162, fixed in 10.0.13 -->
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
     <PackageVersion Include="System.CommandLine" Version="2.0.12" />
   </ItemGroup>
   <!-- Scheduling and Background Jobs -->
