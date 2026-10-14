@@ -6,5 +6,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.BackupAnalytics.Components.Widgets.C
 
 public class CheckSettings
 {
-    public int Day { get; set; } = 60;
+    // The same as the days of data kept by default (MaxDaysLogs): older runs are not there
+    public int Day { get; set; } = 30;
 }
