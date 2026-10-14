@@ -89,6 +89,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Remembered browser at the two-factor login** *(EE)*: it is trusted for the days set in `CookieSettings:ExpireDays` (30 by default), like the sign-in itself. Before it was 14 days, while the profile page said 30.
 
+- **Backup Analytics and Replication Analytics, Check widget**: a new widget starts from 30 days, as many as the data kept by default, instead of 60.
+
 #### Fixed
 
 - **Grids**: a group, once expanded, can be collapsed again.
@@ -219,9 +221,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Scheduled jobs**: the *system* account is put back in place at startup when its name had been changed by the user editor.
 
+- **Account emails translated**: the emails sent to users (email confirmation, password reset, two-factor authentication turned off) now use the language of the interface instead of always English.
+
+- **Backup and Replication Analytics, times (review your data)**: the times read from the Proxmox VE logs were taken in the time zone of the server running cv4pve-admin instead of the one of the node, so with the nodes in another time zone every backup and replication was stored hours off; the start and end of backup tasks were shifted too. Records already stored stay shifted until the data of the cluster is deleted and scanned again.
+
+- **Replication Analytics**:
+  - The *not synced for 7+ days* and *24+ hours* alerts and the age bars counted every stored run instead of the last run of each job: the red alert appeared even when every replication had just synced.
+  - *Failed* and *with errors* were two alerts counting the same runs: one alert remains.
+  - *Trends* reloads the charts when the period or the node changes, not only when the VM changes.
+  - A replication that cannot be imported is written in the scan task, which ends as failed, instead of only in the server log.
+
+- **Delete all data** in Backup Analytics and Replication Analytics is now recorded in the audit log.
+
+- **System Report**: a report that failed stayed *waiting* forever; it now ends as failed, with its error, and the failure is recorded in the audit log.
+
+- **Diagnostic**: the Excel and PDF reports list the findings from the most severe, instead of starting from *Info*.
+
+- **AutoSnap, jobs**: the list showed the default schedule (every 15 minutes) and its next run for every job, and an empty *Last Run*; it now shows the real schedule, parallelism and last run. Editing a job was not affected.
+
+- **Updater**:
+  - The results of a scan disappeared after 8 hours, while the default schedule runs every 12; they now stay until the next scan.
+  - A Windows guest other than Windows 10/11, or a Solaris/Other guest, failed with no message: it now says that its operating system is not supported.
+  - A cancelled scan sent the *Scan completed* email and was recorded as successful; it now sends nothing, and the dashboard no longer counts cancelled guests as in error.
+  - The *Download* button stays usable after a report that failed.
+
+- **Metrics Exporter**:
+  - The token in the *Open metrics* link is encoded: a token with characters such as `+`, `&` or `#` gave an error.
+  - When the cluster cannot be reached the endpoint answers *503* with the reason, instead of *200* with old values, so Prometheus sees the target as down.
+
+- **Notifications with attachments**: when a report (for example Diagnostic) was sent to more than one notifier, the second one received an empty or unreadable attachment and failed with no trace; every notifier now gets the full attachment, and a notifier that fails is written in the log.
+
+- **Dashboard widgets**: the widgets that update during a scan could mix two updates or miss the last one; they now always show the final numbers.
+
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
+
+- Updated a .NET cryptography library with two denial of service fixes.
 
 ### Enterprise Edition
 
@@ -270,6 +306,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UPS, profiles checked against the manufacturers' definitions (review your devices)**: every profile was compared, value by value, with the published definitions of the standard and of each manufacturer, and rewritten where it read the wrong value. Ten profiles are verified and chosen by *auto*: Generic RFC 1628, APC, CyberPower, Eaton / Powerware, NetAgent cards (Mach Power, Ablerex, Tecnoware), Delta, HPE / HP, MGE, Tripp Lite, Riello. Socomec, Huawei, Chloride, GE and Phoenix Contact could not be verified: they work only when picked by hand and the editor says so. Vertiv / Liebert and Gamatronic are removed. A device set to a profile that no longer exists, or renamed (*Eaton / Dell / ABB*, *CyberPower / FSP / PowerWalker*, *Powerware / Exide*), is read with *auto*. Readings and status of existing devices can change: run *Test Connection* on each device.
 
 - **UPS, Test Connection**: the result is shown in a dialog with the profile used and one row for each value: where it is read from and what the device answered, or *Missing*. A warning says which alert thresholds cannot fire because the device gives no charge or no runtime.
+
+- **Workflow, permissions (review your roles)**: the *Clone*, *Resize*, *Convert to Template* and *Manage HA* activities now check four new permissions (Clone, Resize disk, Convert to template, High Availability), included only in the *Cluster Admin* role, and are recorded in the audit log. Before they acted on Proxmox VE with no check.
 
 #### Fixed
 
@@ -342,6 +380,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - A wrong profile is reported as such, instead of a reading with all values at zero.
   - An APC device on battery was shown as *Online* with no alert, and one on mains as *Unknown*: each brand now uses its own meaning of the power states. A periodic self-test of the UPS is no longer taken for a power failure.
   - Wrong values in several profiles: battery voltage ten times too high on the standard profile, APC frequency ten times too low, battery voltage, runtime and temperature swapped on CyberPower and NetAgent, and others. Firmware, serial number and output power of the standard profile read the wrong value.
+
+- **Workflow**:
+  - On Proxmox VE 9 the list of activities in the designer was empty.
+  - *Manage HA* on Proxmox VE 9, where HA groups are replaced by HA rules: the group list is empty and a group gives a clear error.
+  - An optional field left empty (backup notes, descriptions, target node or storage, HA group, notifiers, filter expression) made the activity fail.
+  - *Filter Collection* failed with any expression on a field.
+  - *Get Cluster Replications* was hidden by *Get Node Replications*.
+
+- **AutoSnap, webhooks**:
+  - The *CleanJobStart* and *CleanJobEnd* phases never fired: they now fire on *Purge Snapshots*, and a new webhook starts from *SnapJobStart*.
+  - Closing the webhook editor without saving kept the changes.
+
+- **Apprise**: notifications with an Excel attachment were refused by Apprise; attachments are sent correctly also when another notifier sends the same message. The editor opens at once instead of waiting for the server.
+
+- **VM Performance**: a guest that stops or moves no longer breaks the page, and the rates are no longer negative after a guest restart.
+
+- **Diagnostic, compliance**: the findings are listed from the most severe, and the list of critical findings in the PDF says how many there are instead of calling the first five a top 5.
+
+- **Daily status widgets** (Backup Analytics, AutoSnap, System Report): they show 14 days with a bar for every day, instead of 15 with gaps.
 
 ## [2.3.0] - 2026-09-24
 
