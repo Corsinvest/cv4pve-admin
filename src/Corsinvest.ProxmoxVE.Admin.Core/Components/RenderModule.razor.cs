@@ -14,11 +14,14 @@ public partial class RenderModule(NavigationManager navigationManager,
 
     // Radzen compares the whole URL, query included: a page that adds its own query (the workflow list adds
     // ?page=1&pageSize=10) was no longer shown as selected. Only the path is compared here.
+    private static readonly char[] _queryStart = ['?', '#'];
+
     private bool IsSelected(string? path)
     {
         if (string.IsNullOrEmpty(path)) { return false; }
+        var end = path.IndexOfAny(_queryStart);
         var current = new Uri(navigationManager.Uri).AbsolutePath.Trim('/');
-        return string.Equals(current, path.Split(['?', '#'])[0].Trim('/'), StringComparison.OrdinalIgnoreCase);
+        return string.Equals(current, (end < 0 ? path : path[..end]).Trim('/'), StringComparison.OrdinalIgnoreCase);
     }
 
     public string BodyStyle => "padding-top: 0; padding-bottom: 0; padding-right:0;"
