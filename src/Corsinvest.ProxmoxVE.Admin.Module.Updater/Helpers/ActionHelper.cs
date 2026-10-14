@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Net.Mime;
 using System.Reflection;
@@ -44,28 +43,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
     public static async Task<IEnumerable<ClusterResourceUpdateScanInfo>> GetAsync(ClusterClient clusterClient)
         => (await clusterClient.CachedData.GetOrDefaultAsync(CachedKey, Enumerable.Empty<ClusterResourceUpdateScanInfo>()))!;
 
-    // One scan per cluster: a second one would replace the cached list the first is filling
-    private static readonly ConcurrentDictionary<string, byte> _running = new();
-
     public static async Task ScanAsync(IServiceScope scope, string clusterName)
-    {
-        if (!_running.TryAdd(clusterName, 0))
-        {
-            scope.GetLoggerFactory().CreateLogger<ActionHelper>().LogWarning("Updater scan already running for cluster {ClusterName}: skipped", clusterName);
-            return;
-        }
-
-        try
-        {
-            await ScanCoreAsync(scope, clusterName);
-        }
-        finally
-        {
-            _running.TryRemove(clusterName, out _);
-        }
-    }
-
-    private static async Task ScanCoreAsync(IServiceScope scope, string clusterName)
     {
         var logger = scope.GetLoggerFactory().CreateLogger<ActionHelper>();
         var auditService = scope.GetAuditService();
