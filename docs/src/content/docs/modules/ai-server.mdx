@@ -101,12 +101,12 @@ The table below shows the same request returned in each format, with approximate
 
 | Format | Description | Approx. tokens* |
 |--------|-------------|-----------------|
-| **JsonCompact** | JSON with `headers` + `rows` arrays | ~360 (about 40% fewer than JsonNormal) |
+| **JsonCompact** | JSON with `headers` + `rows` arrays | ~340 (about 43% fewer than JsonNormal) |
 | **JsonNormal** | Standard JSON array of objects | ~600 |
-| **Toon** | Token-Oriented Object Notation (`data[23]{...}`) | ~270 (about 55% fewer than JsonNormal) |
-| **Csv** | Plain CSV with header row | ~250 |
+| **Toon** | Token-Oriented Object Notation (`data[23]{...}`) | ~335 (about 44% fewer than JsonNormal) |
+| **Csv** | Plain CSV with header row | ~320 (about 47% fewer than JsonNormal) |
 
-*Approximate values for the same response payload: actual token count depends on dataset size.
+*Approximate values for the same response payload, in proportion to a measure made on 30 rows of cluster resources: actual token count depends on the data and on the model.
 
 The default is **`JsonCompact`**, which offers a good balance between token efficiency and compatibility with all AI models.
 
