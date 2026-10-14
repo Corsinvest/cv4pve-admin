@@ -81,6 +81,16 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
         {
             taskScope.Item.Status = TaskItemStatus.Failed;
             taskScope.Log(ex.ToString(), LogLevel.Error);
+
+            job.End = DateTime.UtcNow;
+            job.Status = false;
+            job.Logs += $"{DateTime.UtcNow:O} {ex.Message}\n";
+            await db.SaveChangesAsync();
+
+            await auditService.LogAsync("SystemReport.Scan",
+                                        false,
+                                        $"Job ID: {id}, Cluster: {job.ClusterName}, Error: {ex.Message}");
+            await PublishDataChangedAsync(scope);
             throw;
         }
     }

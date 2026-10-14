@@ -85,6 +85,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
                     : [];
 
         SelectedVmIds = [.. SelectedVmIds.Where(a => VmIds.Contains(a))];
+        await LoadDataAsync();
     }
 
     private async Task LoadDataAsync()

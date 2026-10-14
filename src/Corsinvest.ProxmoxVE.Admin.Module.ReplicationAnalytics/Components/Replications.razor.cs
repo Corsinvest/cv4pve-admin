@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Radzen.Blazor;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.Components;
@@ -11,6 +12,7 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
                                   ISettingsService settingsService,
                                   DialogService dialogService,
                                   NotificationService notificationService,
+                                  IAuditService auditService,
                                   EventNotificationService eventNotificationService) : IRefreshableData,
                                                                                        IClusterName,
                                                                                        IDisposable
@@ -106,6 +108,7 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
         {
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.JobResults.DeleteAsync(ClusterName);
+            await auditService.LogAsync("ReplicationAnalytics.DeleteAll", true, $"Cluster: {ClusterName}");
             await eventNotificationService.PublishAsync(new DataChangedNotification());
             notificationService.Info(L["All data has been removed!"]);
         }

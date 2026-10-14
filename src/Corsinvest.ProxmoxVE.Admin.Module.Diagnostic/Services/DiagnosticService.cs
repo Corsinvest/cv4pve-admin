@@ -319,7 +319,7 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
                             ToExcelRows(result.Details.Where(a => a.IsIgnoredIssue)));
 
     private static IEnumerable<object> ToExcelRows(IEnumerable<JobDetail> details)
-        => details.OrderBy(a => a.Gravity)
+        => details.OrderByDescending(a => a.Gravity)
                   .ThenBy(a => a.IdResource)
                   .Select(a => new
                   {
@@ -430,7 +430,7 @@ public class DiagnosticService(IStringLocalizer<DiagnosticService> L, ISettingsS
         headerRow.Cells[4].AddParagraph(L["Gravity"]);
         headerRow.Format.Font.Bold = true;
 
-        foreach (var item in results.OrderBy(a => a.Gravity).ThenBy(a => a.IdResource))
+        foreach (var item in results.OrderByDescending(a => a.Gravity).ThenBy(a => a.IdResource))
         {
             var row = table.AddRow();
             AddBreakableText(row.Cells[0], item.IdResource);
