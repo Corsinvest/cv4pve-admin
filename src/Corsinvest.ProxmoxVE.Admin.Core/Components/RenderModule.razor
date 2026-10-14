@@ -65,6 +65,8 @@
                                  Path="@path"
                                  Target="@target"
                                  Match="NavLinkMatch.All"
+                                 Selected="@IsSelected(path)"
+                                 SelectedChanged="@(_ => { })"
                                  Icon="@item.Icon"
                                  IconColor="@item.IconColor">
                 @RenderMenuItem(item.Child, path)
