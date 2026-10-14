@@ -59,17 +59,30 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
 
     protected override Task OnInitializedAsync() => RefreshDataAsync();
 
+    // A refresh asked while one is running is not dropped: it runs once that one ends,
+    // so the last change of the data is always shown.
+    private int _refreshPending;
+
     public async Task RefreshDataAsync()
     {
-        if (_disposed || !await _refreshLock.WaitAsync(0)) { return; }
+        if (_disposed) { return; }
+        if (!await _refreshLock.WaitAsync(0))
+        {
+            Interlocked.Exchange(ref _refreshPending, 1);
+            return;
+        }
+
         try
         {
+            Interlocked.Exchange(ref _refreshPending, 0);
             await RefreshDataAsyncInt();
         }
         finally
         {
             if (!_disposed) { _refreshLock?.Release(); }
         }
+
+        if (!_disposed && Interlocked.Exchange(ref _refreshPending, 0) == 1) { await RefreshDataAsync(); }
     }
 
     protected abstract Task RefreshDataAsyncInt();

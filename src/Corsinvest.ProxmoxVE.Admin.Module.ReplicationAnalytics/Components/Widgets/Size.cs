@@ -25,7 +25,7 @@ public class Size(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsyncInt();
+        await InvokeAsync(RefreshDataAsync);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -35,11 +35,12 @@ public class Size(IDbContextFactory<ModuleDbContext> dbContextFactory,
         var results = db.JobResults.Where(a => ClusterNames.Contains(a.ClusterName), ClusterNames.Any())
                                    .Where(a => a.Start > DateTime.UtcNow.AddDays(-60 * 3));
 
-        Items = [.. results.Select(a => new { a.Start.Date, a.Size })
-                           .GroupBy(a => a.Date)
-                           .Select(a => new Data(a.Key, a.Sum(b => b.Size)))];
+        Items = await results.Select(a => new { a.Start.Date, a.Size })
+                             .GroupBy(a => a.Date)
+                             .Select(a => new Data(a.Key, a.Sum(b => b.Size)))
+                             .ToListAsync();
 
-        LastExecution = results.OrderByDescending(a => a.Start).FirstOrDefault()?.Start;
+        LastExecution = (await results.OrderByDescending(a => a.Start).FirstOrDefaultAsync())?.Start;
         MakeFooterText($"{L["Last"]}: {(LastExecution.HasValue ? LastExecution.Value.ToLocalTime().ToString("g") : string.Empty)}");
     }
 

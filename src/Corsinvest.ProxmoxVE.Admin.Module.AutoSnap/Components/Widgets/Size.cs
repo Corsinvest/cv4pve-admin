@@ -27,7 +27,7 @@ public class Size(IAdminService adminService,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsyncInt();
+        await InvokeAsync(RefreshDataAsync);
         await InvokeAsync(StateHasChanged);
     }
 
