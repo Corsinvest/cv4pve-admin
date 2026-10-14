@@ -75,6 +75,10 @@ public static class ClusterClientExtensions
                                     script = scriptWindows;
                                     valid = true;
                                 }
+                                else
+                                {
+                                    ret = $"Operating system '{config.OsType}' not supported: only Windows 10, Windows 11 and Linux";
+                                }
                                 break;
 
                             case VmOsType.Linux:
@@ -82,9 +86,9 @@ public static class ClusterClientExtensions
                                 valid = true;
                                 break;
 
-                            case VmOsType.Solaris:
-                            case VmOsType.Other: break;
-                            default: break;
+                            default:
+                                ret = $"Operating system '{config.OsType}' not supported: only Windows 10, Windows 11 and Linux";
+                                break;
                         }
                     }
                     else

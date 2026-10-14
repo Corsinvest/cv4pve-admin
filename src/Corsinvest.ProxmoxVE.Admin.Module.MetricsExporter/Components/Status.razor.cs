@@ -21,7 +21,7 @@ public partial class Status(ISettingsService settingsService,
     private DateTime? LastRequest { get; set; }
     private long CountRequest { get; set; }
 
-    private string Url => Module.GetUrl(ClusterName) + $"?token={PrometheusToken}";
+    private string Url => Module.GetUrl(ClusterName) + $"?token={Uri.EscapeDataString(PrometheusToken ?? string.Empty)}";
 
     protected override void OnInitialized()
     {
@@ -50,6 +50,7 @@ public partial class Status(ISettingsService settingsService,
         StateHasChanged();
     }
 
-    private void SettingsUpdated(object? sender, EventArgs e) => LoadSettings();
+    // Raised on the thread of whoever saved the settings, maybe from another session
+    private void SettingsUpdated(object? sender, EventArgs e) => _ = InvokeAsync(LoadSettings);
     public void Dispose() => moduleService.Get<Module>()!.SettingsUpdated -= SettingsUpdated;
 }
