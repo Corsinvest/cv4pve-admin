@@ -52,16 +52,16 @@ public abstract partial class WidgetDailyStatusBase<TNotification>(EventNotifica
         Loading = true;
         try
         {
-            var cutoff = DateTime.UtcNow.Date.AddDays(-DaysRange);
-            var entries = await LoadEntriesAsync(cutoff);
+            // Today and the days before it, each with its bar even when nothing ran
+            var cutoff = DateTime.UtcNow.Date.AddDays(-(DaysRange - 1));
+            var entries = (await LoadEntriesAsync(cutoff)).ToLookup(e => e.Start.Date);
 
-            Points = [.. entries
-                .GroupBy(e => e.Start.Date)
-                .OrderBy(g => g.Key)
-                .Select(g => new DayPoint(
-                    DayLabel: g.Key.ToString("MM-dd"),
-                    Success: g.Count(e => e.Status),
-                    Failed: g.Count(e => !e.Status)))];
+            Points = [.. Enumerable.Range(0, DaysRange)
+                .Select(i => cutoff.AddDays(i))
+                .Select(day => new DayPoint(
+                    DayLabel: day.ToString("MM-dd"),
+                    Success: entries[day].Count(e => e.Status),
+                    Failed: entries[day].Count(e => !e.Status)))];
             _renderKey++;
         }
         finally

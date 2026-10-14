@@ -44,7 +44,17 @@ internal class NotifierService(IModuleService moduleService,
         {
             try
             {
-                await item.SendAsync(message, serviceProvider);
+                // Every notifier reads the same attachment streams: each one starts from the beginning
+                foreach (var attachment in message.Attachments.Where(a => a.Stream?.CanSeek == true))
+                {
+                    attachment.Stream!.Position = 0;
+                }
+
+                var result = await item.SendAsync(message, serviceProvider);
+                if (result.IsFailed)
+                {
+                    Logger.LogWarning("Notifier {Name} failed: {Errors}", item.Name, string.Join("; ", result.Errors.Select(a => a.Message)));
+                }
             }
             catch (Exception ex)
             {
