@@ -56,9 +56,9 @@ Each value is escaped for the place where it is used:
 | `SnapCreatePre` | before creating a snapshot on a specific VM |
 | `SnapCreatePost` | after a snapshot has been successfully created |
 | `SnapCreateAbort` | when snapshot creation fails or is aborted |
-| `CleanJobStart` | before the cleanup (retention) job begins |
-| `CleanJobEnd` | after the cleanup job completes |
-| `SnapRemovePre` | before removing an expired snapshot |
+| `CleanJobStart` | before the purge of the job's snapshots begins (**Purge Snapshots**, or deleting the job with its snapshots) |
+| `CleanJobEnd` | after that purge completes |
+| `SnapRemovePre` | before removing a snapshot, by the retention of a scheduled run or by a purge |
 | `SnapRemovePost` | after an expired snapshot has been removed |
 | `SnapRemoveAbort` | when snapshot removal fails or is aborted |
 
@@ -85,7 +85,7 @@ You configure the hooks per job, in the **Web API Hook** tab of the job editor. 
 |-------|---------|-------------|
 | **Enabled** | off | Hooks that are not enabled are skipped |
 | **Description** | - | Required. Label that identifies the hook in the list and in the job log |
-| **Phase** | `CleanJobStart` | The snapshot lifecycle phase that triggers this hook |
+| **Phase** | `SnapJobStart` | The snapshot lifecycle phase that triggers this hook |
 | **Order** | 0 | Execution order when multiple hooks share the same phase (lowest first) |
 | **Variables** | - | Helper list of the placeholders: pick one and copy it to the clipboard. The **Docs** link under the field opens [Variable placeholders](#variable-placeholders) |
 | **URL** | - | Required. Target HTTP endpoint (supports placeholders) |
