@@ -45,7 +45,7 @@ public class Status(IAdminService adminService,
             totalToUpdate += vms.Count(a => a.UpdateScanStatus == UpdateInfoStatus.Ok
                                              && (a.UpdateNormalAvailable || a.UpdateSecurityAvailable || a.UpdateRequireReboot));
 
-            totalInError += vms.Count(a => a.UpdateScanStatus != UpdateInfoStatus.Ok && a.UpdateScanStatus != UpdateInfoStatus.InScan);
+            totalInError += vms.Count(a => a.UpdateScanStatus == UpdateInfoStatus.InError);
 
             var vmLastScan = vms.Where(a => a.UpdateScanTimestamp.HasValue)
                                 .OrderByDescending(a => a.UpdateScanTimestamp)

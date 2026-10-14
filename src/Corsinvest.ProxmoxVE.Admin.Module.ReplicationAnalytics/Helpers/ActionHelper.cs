@@ -13,16 +13,17 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.Helpers;
 
 internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNotification>
 {
-    private static async Task<(int JobCount, int SuccessCount, int FailureCount)> ScanAsync(PveClient client,
-                                                                                           Settings settings,
-                                                                                           ModuleDbContext db,
-                                                                                           ILogger logger,
-                                                                                           TaskScope? taskScope = null)
+    private static async Task<(int JobCount, int SuccessCount, int FailureCount, int ImportErrors)> ScanAsync(PveClient client,
+                                                                                                              Settings settings,
+                                                                                                              ModuleDbContext db,
+                                                                                                              ILogger logger,
+                                                                                                              TaskScope? taskScope = null)
     {
         const string KEY_SIZE = ": total estimated size is";
         var jobCount = 0;
         var successCount = 0;
         var failureCount = 0;
+        var importErrors = 0;
 
         static DateTime ParseDateTime(string value) => DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", null);
 
@@ -115,6 +116,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                     catch (Exception ex)
                     {
                         logger.LogError(ex, "Error importing data for {ClusterName} JobId {JobId}", settings.ClusterName, job.Id);
+                        taskScope?.Log($"  {job.Id}: not imported: {ex.Message}", LogLevel.Warning);
+                        importErrors++;
                     }
                 }
             }
@@ -131,7 +134,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                          .ExecuteDeleteAsync();
         if (deleted > 0) { taskScope?.Log($"Deleted {deleted} old job result(s)"); }
 
-        return (jobCount, successCount, failureCount);
+        return (jobCount, successCount, failureCount, importErrors);
     }
 
     public static async Task ScanAsync(IServiceScope scope, string clusterName)
@@ -153,7 +156,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 taskScope.Item.Phase = "Collecting replication data";
                 taskScope.Log($"Collecting replication data for cluster {clusterName}");
 
-                var (jobCount, successCount, failureCount) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
+                var (jobCount, successCount, failureCount, importErrors) = await ScanAsync(await scope.GetClusterClient(clusterName).GetPveClientAsync(),
                                                                               GetModuleSettings(scope, clusterName),
                                                                               db,
                                                                               logger,
@@ -166,9 +169,11 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                                             $"Cluster: {clusterName}, " +
                                             $"Jobs: {jobCount}, " +
                                             $"Success: {successCount}, " +
-                                            $"Failures: {failureCount}");
+                                            $"Failures: {failureCount}, " +
+                                            $"Not imported: {importErrors}");
 
-                taskScope.Log($"Jobs: {jobCount}, Success: {successCount}, Failures: {failureCount}");
+                taskScope.Log($"Jobs: {jobCount}, Success: {successCount}, Failures: {failureCount}, Not imported: {importErrors}");
+                if (importErrors > 0) { taskScope.Item.Status = TaskItemStatus.Failed; }
                 await PublishDataChangedAsync(scope);
             }
         }

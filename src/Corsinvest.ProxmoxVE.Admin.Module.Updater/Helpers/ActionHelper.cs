@@ -62,6 +62,15 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 await ScanAsync(clusterClient, settings, eventNotificationService, taskScope, logger);
 
+                // A cancelled scan is not a result to send or to record as done
+                if (taskScope.CancellationToken.IsCancellationRequested)
+                {
+                    await auditService.LogAsync("Updater.Scan", false, $"Cluster: {clusterName}, cancelled");
+                    taskScope.Log("Scan cancelled: no notification sent", LogLevel.Warning);
+                    await PublishDataChangedAsync(scope);
+                    return;
+                }
+
                 var items = await GetAsync(clusterClient);
 
                 //send notification
