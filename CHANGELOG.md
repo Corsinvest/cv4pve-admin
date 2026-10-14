@@ -251,13 +251,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Notifications with attachments**: when a report (for example Diagnostic) was sent to more than one notifier, the second one received an empty or unreadable attachment and failed with no trace; every notifier now gets the full attachment, and a notifier that fails is written in the log.
 
+- **Module menu**: the current page stays highlighted in the menu of a module also when its address carries extra parameters (for example the workflow list).
+
 - **Dashboard widgets**: the widgets that update during a scan could mix two updates or miss the last one; they now always show the final numbers.
 
 #### Internal
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
 
-- Updated a .NET cryptography library with two denial of service fixes.
+- Updated a .NET cryptography library with two denial of service fixes, and the ASP.NET Core and Entity Framework Core libraries to 10.0.13, the .NET security release.
 
 ### Enterprise Edition
 
@@ -384,6 +386,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Wrong values in several profiles: battery voltage ten times too high on the standard profile, APC frequency ten times too low, battery voltage, runtime and temperature swapped on CyberPower and NetAgent, and others. Firmware, serial number and output power of the standard profile read the wrong value.
 
 - **Workflow**:
+  - Opening *Workflows* or *History* turned the header and the colours of the whole application to a light blue.
   - The *History* page listed no runs when it was the first workflow page opened.
   - On Proxmox VE 9 the list of activities in the designer was empty.
   - *Manage HA* on Proxmox VE 9, where HA groups are replaced by HA rules: the group list is empty and a group gives a clear error.
