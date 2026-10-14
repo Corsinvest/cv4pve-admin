@@ -57,13 +57,17 @@ Before enabling an action on a VM/CT or on a node, cv4pve-admin reads the permis
 | VM: Backup manager | `VM.Backup` |
 | VM: Backup Restore, Backup Restore File | `Datastore.AllocateSpace` |
 | VM: Migrate | `VM.Migrate` |
+| VM: Clone | `VM.Clone` |
+| VM: Resize disk | `VM.Config.Disk` |
+| VM: Convert to template | `VM.Allocate` |
+| VM: High Availability | `Sys.Console` |
 | Node: Audit | `Sys.Audit` |
 | Node: Console | `Sys.Console` |
 | Node: Power Management | `Sys.PowerMgmt` |
 | Node: Replication manager, Replication Schedule Now | `VM.Replicate` |
 | Storage: Delete Content | `Datastore.Allocate` |
 
-The same checks apply in every module that offers these actions (Dashboard, Resources, Portal, Command Palette, AI Server, Workflow). In the web interface, migration and deletion of storage content are not available: they are used by AI Server tools and, for migration, by the Workflow activity. A workflow runs its actions as the built-in `system` user.
+The same checks apply in every module that offers these actions (Dashboard, Resources, Portal, Command Palette, AI Server, Workflow). In the web interface, migration and deletion of storage content are not available: they are used by AI Server tools and, for migration, by the Workflow activity. Clone, Resize disk, Convert to template and High Availability are used only by the Workflow activities, and only the Cluster Admin role includes them. A workflow runs its actions as the built-in `system` user.
 
 ### Privileges by module
 

@@ -193,7 +193,7 @@ Historical used and total space of a storage
 
 Manages the High Availability resource of a VM/CT. `Enable` adds it to HA, `Disable` removes it, `Migrate` and `Relocate` move it to the target node
 
-- **Inputs:** Vm Id, Action (default `Enable`), Group (for `Enable`), State (for `Enable`: `Started`, `Stopped`, `Enabled`, `Disabled`, `Ignored`; default `Started`), Max Relocate and Max Restart (for `Enable`; default 1), Target Node (required for `Migrate` and `Relocate`)
+- **Inputs:** Vm Id, Action (default `Enable`), Group (for `Enable`, Proxmox VE 8 only: Proxmox VE 9 replaces HA groups with HA rules, so there the list is empty and a group makes the activity fail), State (for `Enable`: `Started`, `Stopped`, `Enabled`, `Disabled`, `Ignored`; default `Started`), Max Relocate and Max Restart (for `Enable`; default 1), Target Node (required for `Migrate` and `Relocate`)
 - **Output:** `Success`
 - **Proxmox VE privilege:** <PvePrivileges activity="PVE Manage HA" />
 
