@@ -17,7 +17,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
     private static readonly string[] _sizes = ["KIB", "MIB", "GIB", "TIB"];
 
-    public static List<JobResult> ParseLog(TaskResult job)
+    public static List<JobResult> ParseLog(TaskResult job, TimeSpan nodeUtcOffset)
     {
         const string KEY_STARTING = "INFO: Starting Backup of VM ";
         const string KEY_STARTING_ERROR = "ERROR: Backup of VM ";
@@ -68,12 +68,12 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             {
                 if (row.StartsWith(KEY_STARTED))
                 {
-                    backup.Start = DateTime.SpecifyKind(ParseDateBackup(row[KEY_STARTED.Length..]), DateTimeKind.Local).ToUniversalTime();
+                    backup.Start = PveAdminHelper.NodeLogTimeToUtc(ParseDateBackup(row[KEY_STARTED.Length..]), nodeUtcOffset);
                     start = backup.Start.Value;
                 }
                 else if (row.StartsWith(KEY_FINISHED))
                 {
-                    backup.End = DateTime.SpecifyKind(ParseDateBackup(row[KEY_FINISHED.Length..]), DateTimeKind.Local).ToUniversalTime();
+                    backup.End = PveAdminHelper.NodeLogTimeToUtc(ParseDateBackup(row[KEY_FINISHED.Length..]), nodeUtcOffset);
                 }
                 else if (row.StartsWith(KEY_ENDING))
                 {
@@ -98,7 +98,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 else if (row.StartsWith(KEY_FAILED))
                 {
                     backup.Status = false;
-                    backup.Start = DateTime.SpecifyKind(ParseDateBackup(row[KEY_FAILED.Length..]), DateTimeKind.Local).ToUniversalTime();
+                    backup.Start = PveAdminHelper.NodeLogTimeToUtc(ParseDateBackup(row[KEY_FAILED.Length..]), nodeUtcOffset);
                     backup.End = backup.Start;
                     backups.Add(backup);
                 }
@@ -161,6 +161,8 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
             nodeIndex++;
             taskScope?.LogProgress(nodeIndex, nodes.Count, $"[{nodeIndex}/{nodes.Count}] Scanning node {node.Node}", phase: $"Scanning {node.Node}");
 
+            var nodeUtcOffset = await PveAdminHelper.GetNodeUtcOffsetAsync(client, node.Node);
+
             //list task backup
             var taskItems = (await client.Nodes[node.Node].Tasks.GetAsync(typefilter: "vzdump", since: since, limit: maxTasks)).ToList();
             taskScope?.Log($"  {node.Node}: {taskItems.Count} vzdump task(s) found");
@@ -218,8 +220,9 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
                 task = new()
                 {
                     ClusterName = settings.ClusterName,
-                    Start = DateTime.SpecifyKind(taskItem.StartTimeDate, DateTimeKind.Local).ToUniversalTime(),
-                    End = DateTime.SpecifyKind(taskItem.EndTimeDate, DateTimeKind.Local).ToUniversalTime(),
+                    // Unix times: already UTC
+                    Start = DateTimeOffset.FromUnixTimeSeconds(taskItem.StartTime).UtcDateTime,
+                    End = DateTimeOffset.FromUnixTimeSeconds(taskItem.EndTime).UtcDateTime,
                     TaskId = taskItem.UniqueTaskId,
                     Status = taskItem.Status,
                     Node = node.Node,
@@ -229,7 +232,7 @@ internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNoti
 
                 try
                 {
-                    task.Jobs.AddRange(ParseLog(task));
+                    task.Jobs.AddRange(ParseLog(task, nodeUtcOffset));
 
                     await db.TaskResults.AddAsync(task);
                     taskCount++;

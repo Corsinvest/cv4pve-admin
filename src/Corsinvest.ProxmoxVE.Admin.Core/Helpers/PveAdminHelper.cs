@@ -21,6 +21,34 @@ public static class PveAdminHelper
         return Version.TryParse(raw.Split('-')[0], out var ver) ? ver.Major : -1;
     }
 
+    /// <summary>
+    /// Offset of the node clock from UTC. Task logs carry the local time of the node, not of this server:
+    /// subtract it to get UTC. When the node does not answer, the offset of this server is used.
+    /// </summary>
+    public static async Task<TimeSpan> GetNodeUtcOffsetAsync(PveClient client, string nodeName)
+    {
+        try
+        {
+            var result = await client.Nodes[nodeName].Time.Time();
+            if (result.IsSuccessStatusCode)
+            {
+                long local = result.Response.data.localtime;
+                long utc = result.Response.data.time;
+                return TimeSpan.FromSeconds(local - utc);
+            }
+        }
+        catch (Exception)
+        {
+            // The node did not answer: the offset of this server below
+        }
+
+        return TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
+    }
+
+    /// <summary>A time read from a task log of the node, converted to UTC.</summary>
+    public static DateTime NodeLogTimeToUtc(DateTime nodeLocalTime, TimeSpan nodeUtcOffset)
+        => DateTime.SpecifyKind(nodeLocalTime - nodeUtcOffset, DateTimeKind.Utc);
+
     public static async Task<string> GenerateWhoUsingAsync(ClusterClient clusterClient)
     {
         var items = await clusterClient.CachedData.GetResourcesAsync(false);
