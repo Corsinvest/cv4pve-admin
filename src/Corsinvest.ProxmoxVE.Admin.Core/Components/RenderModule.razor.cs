@@ -18,7 +18,7 @@ public partial class RenderModule(NavigationManager navigationManager,
     {
         if (string.IsNullOrEmpty(path)) { return false; }
         var current = new Uri(navigationManager.Uri).AbsolutePath.Trim('/');
-        return string.Equals(current, path.Split('?', '#')[0].Trim('/'), StringComparison.OrdinalIgnoreCase);
+        return string.Equals(current, path.Split(['?', '#'])[0].Trim('/'), StringComparison.OrdinalIgnoreCase);
     }
 
     public string BodyStyle => "padding-top: 0; padding-bottom: 0; padding-right:0;"
