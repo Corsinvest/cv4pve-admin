@@ -29,7 +29,7 @@ public class Size(ISettingsService settingsService,
 
     private async Task HandleDataChangedNotificationAsync(DataChangedNotification notification)
     {
-        await RefreshDataAsyncInt();
+        await InvokeAsync(RefreshDataAsync);
         await InvokeAsync(StateHasChanged);
     }
 
