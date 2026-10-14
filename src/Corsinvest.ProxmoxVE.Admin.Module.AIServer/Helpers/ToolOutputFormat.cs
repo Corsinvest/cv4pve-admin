@@ -14,7 +14,7 @@ public enum ToolOutputFormat
     [Display(Name = "JSON Compact")] JsonCompact,
     /// <summary>{"key":[{"field":value,...},...]} — standard JSON array</summary>
     [Display(Name = "JSON Normal")] JsonNormal,
-    /// <summary>TOON (Token-Oriented Object Notation) — ~55% fewer tokens than JsonNormal</summary>
+    /// <summary>TOON (Token-Oriented Object Notation): ~45% fewer tokens than JsonNormal</summary>
     Toon,
     /// <summary>CSV with header row — minimal tokens, best for purely tabular data</summary>
     Csv
