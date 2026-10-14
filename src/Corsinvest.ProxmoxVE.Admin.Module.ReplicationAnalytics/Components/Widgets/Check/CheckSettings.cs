@@ -6,5 +6,6 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.Components.Widg
 
 public class CheckSettings
 {
-    public int Day { get; set; } = 60;
+    // The same as the days of data kept by default (MaxDaysLogs): older runs are not there
+    public int Day { get; set; } = 30;
 }
