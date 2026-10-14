@@ -59,7 +59,11 @@ public static class ClusterPermissions
                                                 RoleNodeUser.Permissions
                                                             .CombineWith(RoleStorageUser)
                                                             .CombineWith(RoleVmUser)
-                                                            .CombineWith(Cluster.SelectCluster));
+                                                            .CombineWith(Cluster.SelectCluster)
+                                                            .CombineWith(Vm.Clone)
+                                                            .CombineWith(Vm.Resize)
+                                                            .CombineWith(Vm.Template)
+                                                            .CombineWith(Vm.HighAvailability));
 
     public static class Cluster
     {
@@ -105,5 +109,9 @@ public static class ClusterPermissions
         public static Permission ReplicationScheduleNow { get; } = new(Replication.Key, "ScheduleNow", "Replication Schedule Now");
 
         public static Permission Migrate { get; } = new(Data.Prefix, nameof(Migrate), "Migrate");
+        public static Permission Clone { get; } = new(Data.Prefix, nameof(Clone), "Clone");
+        public static Permission Resize { get; } = new(Data.Prefix, nameof(Resize), "Resize disk");
+        public static Permission Template { get; } = new(Data.Prefix, nameof(Template), "Convert to template");
+        public static Permission HighAvailability { get; } = new(Data.Prefix, nameof(HighAvailability), "High Availability");
     }
 }

@@ -22,6 +22,10 @@ public static class ClusterPermissionMap
         [ClusterPermissions.Vm.BackupRestore.Key] = PveApiPermissions.Datastore.AllocateSpace,
         [ClusterPermissions.Vm.BackupRestoreFile.Key] = PveApiPermissions.Datastore.AllocateSpace,
         [ClusterPermissions.Vm.Migrate.Key] = PveApiPermissions.Vm.Migrate,
+        [ClusterPermissions.Vm.Clone.Key] = PveApiPermissions.Vm.Clone,
+        [ClusterPermissions.Vm.Resize.Key] = PveApiPermissions.Vm.Config.Disk,
+        [ClusterPermissions.Vm.Template.Key] = PveApiPermissions.Vm.Allocate,
+        [ClusterPermissions.Vm.HighAvailability.Key] = PveApiPermissions.Sys.Console,
 
         // Node
         [ClusterPermissions.Node.Audit.Key] = PveApiPermissions.Sys.Audit,
