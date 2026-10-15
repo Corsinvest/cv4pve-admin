@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using System.Globalization;
 using System.Text.Encodings.Web;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -35,44 +36,44 @@ internal sealed class EmailSenderService(ISettingsService settingsService,
     private static string Paragraph(string text, string margin = "0 0 16px") => $"""<p style="margin:{margin};">{Encode(text)}</p>""";
 
     public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink)
-        => SendEmailAsync(email,
-                          L["Confirm your email"],
-                          Layout(L["Confirm your email"],
-                                 user,
-                                 Paragraph(L["An account has been created for you. Click the button below to confirm your email address."])
-                                 + Button(confirmationLink, L["Confirm email"]),
-                                 L["This link expires in {0}. If you did not expect this email, you can safely ignore it.", Lifespan],
-                                 confirmationLink));
+        => InUserCulture(user, () => SendEmailAsync(email,
+                                                    L["Confirm your email"],
+                                                    Layout(L["Confirm your email"],
+                                                           user,
+                                                           Paragraph(L["An account has been created for you. Click the button below to confirm your email address."])
+                                                           + Button(confirmationLink, L["Confirm email"]),
+                                                           L["This link expires in {0}. If you did not expect this email, you can safely ignore it.", Lifespan],
+                                                           confirmationLink)));
 
     public Task SendPasswordResetLinkAsync(ApplicationUser user, string email, string resetLink)
-        => SendEmailAsync(email,
-                          L["Reset your password"],
-                          Layout(L["Reset your password"],
-                                 user,
-                                 Paragraph(L["A password reset was requested for your account. Click the button below to set a new password."])
-                                 + Button(resetLink, L["Reset password"]),
-                                 L["This link expires in {0} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.", Lifespan],
-                                 resetLink));
+        => InUserCulture(user, () => SendEmailAsync(email,
+                                                    L["Reset your password"],
+                                                    Layout(L["Reset your password"],
+                                                           user,
+                                                           Paragraph(L["A password reset was requested for your account. Click the button below to set a new password."])
+                                                           + Button(resetLink, L["Reset password"]),
+                                                           L["This link expires in {0} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.", Lifespan],
+                                                           resetLink)));
 
     public Task SendPasswordResetCodeAsync(ApplicationUser user, string email, string resetCode)
-        => SendEmailAsync(email,
-                          L["Reset your password"],
-                          Layout(L["Reset your password"],
-                                 user,
-                                 Paragraph(L["A password reset was requested for your account. Use the code below to set a new password."])
-                                 + $"""<p style="margin:24px 0; padding:14px 16px; background:#f4f7fa; border-radius:6px; font-family:Consolas,monospace; font-size:14px; word-break:break-all;">{Encode(resetCode)}</p>""",
-                                 L["This code expires in {0} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.", Lifespan]));
+        => InUserCulture(user, () => SendEmailAsync(email,
+                                                    L["Reset your password"],
+                                                    Layout(L["Reset your password"],
+                                                           user,
+                                                           Paragraph(L["A password reset was requested for your account. Use the code below to set a new password."])
+                                                           + $"""<p style="margin:24px 0; padding:14px 16px; background:#f4f7fa; border-radius:6px; font-family:Consolas,monospace; font-size:14px; word-break:break-all;">{Encode(resetCode)}</p>""",
+                                                           L["This code expires in {0} and can be used only once. If you did not request it, you can safely ignore this email: your password stays unchanged.", Lifespan])));
 
     public Task SendTwoFactorDisabledAsync(ApplicationUser user, bool byAdministrator)
-        => SendEmailAsync(user.Email!,
-                          L["Two-factor authentication disabled"],
-                          Layout(L["Two-factor authentication disabled"],
-                                 user,
-                                 Paragraph(byAdministrator
-                                            ? L["An administrator turned off two-factor authentication for your account."]
-                                            : L["Two-factor authentication has been turned off for your account."])
-                                 + Paragraph(L["You now sign in with your password only. To protect the account again, set up two-factor authentication from your profile."], "0 0 24px"),
-                                 L["If you did not ask for this change, contact your administrator and change your password."]));
+        => InUserCulture(user, () => SendEmailAsync(user.Email!,
+                                                    L["Two-factor authentication disabled"],
+                                                    Layout(L["Two-factor authentication disabled"],
+                                                           user,
+                                                           Paragraph(byAdministrator
+                                                                      ? L["An administrator turned off two-factor authentication for your account."]
+                                                                      : L["Two-factor authentication has been turned off for your account."])
+                                                           + Paragraph(L["You now sign in with your password only. To protect the account again, set up two-factor authentication from your profile."], "0 0 24px"),
+                                                           L["If you did not ask for this change, contact your administrator and change your password."])));
 
     private string Button(string link, string text)
         => $"""
@@ -125,6 +126,24 @@ internal sealed class EmailSenderService(ISettingsService settingsService,
                 </body>
                 </html>
                 """;
+    }
+
+    // The texts follow the language of the recipient, not the one of the server
+    private Task InUserCulture(ApplicationUser user, Func<Task> send)
+    {
+        var culture = settingsService.GetForUser<UserSettings>(user.UserName!).Culture;
+        if (!ApplicationHelper.SupportedCultures.Contains(culture)) { culture = ApplicationHelper.DefaultCulture; }
+
+        var previous = CultureInfo.CurrentUICulture;
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+        try
+        {
+            return send();
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = previous;
+        }
     }
 
     private async Task SendEmailAsync(string email, string subject, string htmlMessage)

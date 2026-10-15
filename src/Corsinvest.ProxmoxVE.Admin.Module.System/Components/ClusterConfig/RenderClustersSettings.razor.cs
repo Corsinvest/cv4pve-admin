@@ -11,6 +11,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
                                             IBackgroundJobService backgroundJobService,
                                             IModuleService moduleService,
                                             IServiceScopeFactory scopeFactory,
+                                            IDbContextFactory<ModuleDbContext> dbContextFactory,
                                             NavigationManager navigationManager)
 {
     [SupplyParameterFromQuery] public bool? Create { get; set; }
@@ -44,14 +45,46 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
 
     private async Task DeleteAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
+        var cluster = SelectedItems[0];
+        if (await dialogService.ConfirmAsync(L["Delete the cluster {0}? Its settings in every module and the data the modules collected for it (scans, results, history, UPS devices, tenants) are deleted too.", cluster.Name],
+                                             L["Delete cluster"],
+                                             true))
         {
-            ClustersSettings.Remove(SelectedItems[0]);
+            ClustersSettings.Remove(cluster);
             await settingsService.SetAsync(ClustersSettings);
+            await DeleteClusterDataAsync(cluster.Name);
             await RefreshJobsAsync();
             await DataGridRef.Reload();
             navigationManager.ForceReload();
         }
+    }
+
+    private async Task DeleteClusterDataAsync(string clusterName)
+    {
+        using var scope = scopeFactory.CreateScope();
+        foreach (var module in moduleService.Modules)
+        {
+            var maintenance = module.GetMaintenance(scope);
+            if (maintenance == null) { continue; }
+
+            try
+            {
+                await maintenance.DeleteClusterDataAsync(clusterName);
+            }
+            catch (Exception ex)
+            {
+                notificationService.Error(L["{0}: data of the cluster not deleted: {1}", module.Name, ex.Message]);
+            }
+        }
+
+        // Module settings are saved per cluster as "{settings type}-{cluster}": type names have no dash
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+        var settings = (await db.Settings.Where(a => a.Context == "System").ToListAsync())
+                        .Where(a => a.Key.Contains('-') && a.Key[(a.Key.IndexOf('-') + 1)..] == clusterName)
+                        .ToList();
+        db.Settings.RemoveRange(settings);
+        await db.SaveChangesAsync();
+        await settingsService.ClearCacheAsync();
     }
 
     // The modules schedule the jobs of the enabled clusters again, then the jobs of the others are removed
