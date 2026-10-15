@@ -26,7 +26,7 @@ Periodic backup of selected configuration files of the Proxmox VE nodes (`/etc`,
   items={[
     { icon: 'mdi:folder-multiple', title: "Targeted path list", text: "Choose which files and directories to back up. The defaults cover the essentials (`/etc/.`, `/var/lib/pve-cluster/.`, `/root/.ssh`, …) and you can add your own paths." },
     featureCron,
-    { icon: 'mdi:folder-zip', title: "Local folder destination", text: "Each run is stored as a separate version in a local folder. The Folder setting **Number which should will keep** limits how many runs are kept: older runs are deleted automatically.", href: '#folder-destination' },
+    { icon: 'mdi:folder-zip', title: "Local folder destination", text: "Each run is stored as a separate version in a local folder. The Folder setting **Number to keep** limits how many runs are kept: older runs are deleted automatically.", href: '#folder-destination' },
     { icon: 'mdi:source-branch', title: "Git destination", text: "Push every backup as a Git commit to a remote repository. You get the full configuration history, with diffs, blame, code review and the other Git tools.", href: '#git-destination', ee: true },
     { icon: 'mdi:chart-line', title: "Size widgets on the Dashboard", text: "Add the **Folder Size** widget (CE), or the additional **Git Size** widget (EE), to any Dashboard to track backup growth per node.", href: '#widgets' },
     featureTaskTracker,
@@ -58,7 +58,7 @@ Node Protect connects over SSH to every online node of the cluster and packs the
 
 A backup has two possible destinations: the [Folder destination](#folder-destination) and the [Git destination](#git-destination) (Enterprise Edition). The paths are the same for both destinations: one path per line in **Directory or file to backup**.
 
-Both destinations follow the same schedule. With **Enabled schedulation** on, each destination that is itself enabled runs at the **Cron Schedule**.
+Both destinations follow the same schedule. With **Enable scheduling** on, each destination that is itself enabled runs at the **Cron Schedule**.
 
 ## Folder destination
 
@@ -72,7 +72,7 @@ Each run creates a folder in the application data directory, named after the run
 | **Show log** (per row) | Opens the log of the backup of that node |
 | **Refresh** | Reloads the grid |
 
-**Retention:** the Folder setting **Number which should will keep** says how many runs to keep. After a run in which every node succeeded, only that number of newest runs is kept and the older ones are deleted. If the backup of at least one node fails, retention is not applied for that run. This way a good backup is never deleted to make room for an incomplete one.
+**Retention:** the Folder setting **Number to keep** says how many runs to keep. After a run in which every node succeeded, only that number of newest runs is kept and the older ones are deleted. If the backup of at least one node fails, retention is not applied for that run. This way a good backup is never deleted to make room for an incomplete one.
 
 ## Git destination
 
@@ -112,7 +112,7 @@ Expanding a commit row lists the changed files with their status and path.
 
 **General**
 
-**Enabled schedulation**
+**Enable scheduling**
 
 Turns the scheduled backup on or off. With it off nothing runs by itself on the cluster; **Backup**, started by hand, stays available
 
@@ -135,7 +135,7 @@ Required. One path per line. Default: `/etc/.`, `/var/lib/pve-cluster/.`, `/var/
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | **Enabled** | off | Enable local folder backup destination |
-| **Number which should will keep** | 30 | Maximum number of past backups to retain in the folder (minimum 1) |
+| **Number to keep** | 30 | Maximum number of past backups to retain in the folder (minimum 1) |
 
 **Git** tab <Tag kind="ee" />
 

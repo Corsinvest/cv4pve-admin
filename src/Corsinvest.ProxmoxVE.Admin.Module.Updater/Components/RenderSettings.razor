@@ -6,7 +6,7 @@
 @implements IModelParameter<Settings>
 
 <SwitchField @bind-Value="@Model.Enabled"
-             Label="@L["Enabled schedulation"]"
+             Label="@L["Enable scheduling"]"
              Name="@nameof(Model.Enabled)" />
 
 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />

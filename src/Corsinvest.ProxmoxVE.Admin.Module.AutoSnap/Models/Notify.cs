@@ -8,6 +8,8 @@ public enum Notify
 {
     None = 0,
 
+    // Saved by name in the settings: renaming it would break the existing ones
+    [Display(Name = "Always")]
     Allways = 1,
 
     [Display(Name = "On Failure Only")]
