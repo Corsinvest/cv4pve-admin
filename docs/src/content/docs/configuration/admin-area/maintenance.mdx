@@ -29,7 +29,7 @@ The big red button at the top runs the default safe sequence:
 5. **Clear Memory Cache**: drops the cached cluster data, permissions, settings and translations
 6. **Cleanup Failed Jobs**: purges failed Hangfire jobs
 
-Step 1 starts as soon as the button is clicked. Steps 2 to 6 each ask for their own confirmation. Answer **No** to skip a step: the sequence continues with the next one.
+The button asks for one confirmation that lists the steps. After **Yes** all six steps run in order, without further questions; **No** runs nothing. To run only some of the steps, use their own buttons below.
 
 *Compact*, *Cleanup System Logs* and *Cleanup Task History* are **not** included in Fix All.
 
