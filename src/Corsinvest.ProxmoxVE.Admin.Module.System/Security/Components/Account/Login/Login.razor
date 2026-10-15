@@ -56,6 +56,8 @@ else
                      PasswordText="@L["Password"]"
                      RememberMeText="@L["Remember me"]" />
 
+        <RadzenLink Path="/ResendEmailConfirmation" Text="@L["Resend email confirmation"]" />
+
         @if (ExternalLogins.Any())
         {
             <form action="/PerformExternalLogin" method="post">

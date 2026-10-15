@@ -19,7 +19,7 @@ public static class EndpointRouteBuilderExtensions
     //public const string LinkLoginCallbackAction = "LinkLoginCallback";
     public const string LoginCallbackAction = "LoginCallback";
     private const string MessageLockedOut = "This account has been locked out, please try again later";
-    private const string MessageNotAllowed = "This account is not allowed to sign in, contact your administrator";
+    private const string MessageNotAllowed = "This account is not allowed to sign in: if you have not confirmed your email yet, request a new confirmation link, otherwise contact your administrator";
 
     public static string GetUserProfileUrl(string email) => $"/profile-image/{email}";
 
