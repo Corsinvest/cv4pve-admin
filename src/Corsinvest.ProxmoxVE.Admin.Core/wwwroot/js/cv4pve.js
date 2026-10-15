@@ -20,6 +20,12 @@ cv4pve.SideDialog = (function () {
         dialog.dataset.resizerAttached = 'true';
 
         setTimeout(function () {
+            // Not a public Radzen API: if an upgrade removes it, say so instead of failing silently
+            if (typeof Radzen?.createSideDialogResizer !== 'function') {
+                console.warn('cv4pve: Radzen.createSideDialogResizer not found, side dialog resize disabled');
+                return;
+            }
+
             const bar = document.createElement('div');
             bar.className = 'rz-dialog-resize-bar cv4pve-side-dialog-resizer';
             bar.title = 'Drag to resize';
