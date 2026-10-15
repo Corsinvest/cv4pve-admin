@@ -71,7 +71,7 @@ Pick list with the available roles on the left and the **Selected Roles** on the
 
 ### How a new user gets access
 
-A new user is created with a random password that nobody knows. The user receives an email with a link to **confirm the email address**. After confirming, the user sets a password with **Forgot password?** on the login page, which sends a reset link by email.
+A new user is created with a random password that nobody knows. The user receives an email with a link to **confirm the email address**. After confirming, the user sets a password with **Forgot password?** on the login page, which sends a reset link by email. The confirmation link is valid for one day: when it has expired, **Resend email confirmation** on the login page sends a new one, without an administrator.
 
 Both emails are sent through the SMTP server configured in [General Settings](../general-settings/#smtp-configuration), so configure it before creating users. If email cannot be delivered, an administrator can turn on **Email Confirmed** in the user dialog and set the password with the [CLI](../../../cli/).
 
