@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **adminctl update**: pulls the latest images and recreates the services that changed; `self-update` now suggests it as the next step.
+
 - **Cluster settings, SSH port**: each node of a cluster has its own SSH port (default 22), next to the API port, for nodes where SSH does not listen on the standard port. Existing clusters keep port 22.
 
 - **Check for updates**: a button in the Help menu looks for a new version right away, instead of waiting for the periodic check (up to 12 hours).
@@ -31,6 +33,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Command line, `user disable-2fa`**: turns off two-factor authentication for a user who lost both the authenticator device and the recovery codes. It is the way out when that user is the only administrator.
 
 #### Changed
+
+- **Language of the profile**: the language chosen in the profile is applied to the interface and to the account emails sent to the user; before, both followed the language of the server.
+
+- **Deleting a cluster** also deletes the settings of the modules and the data they collected for it (scans, results, history, UPS devices, Portal tenants, tasks and permissions limited to it). The confirmation says so.
+
+- **Maintenance, Fix All**: one confirmation that lists the steps, instead of one question per step.
 
 - **Settings labels**: "Enabled schedulation" is now "Enable scheduling", "Number which should will keep" is now "Number to keep", and the AutoSnap notify option "Allways" is shown as "Always". Existing settings are kept.
 
@@ -94,6 +102,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Backup Analytics and Replication Analytics, Check widget**: a new widget starts from 30 days, as many as the data kept by default, instead of 60.
 
 #### Fixed
+
+- **Diagnostic, scan detail**: the findings are grouped worst first (Critical, Warning, Info); the order of the groups was ignored.
 
 - **Trends pages** (Backup Analytics, Replication Analytics and, in *(EE)*, UPS Monitor): choosing a new period keeps the storage or node and the VMs already selected; before, the first click of the range dropped them and the charts stayed empty.
 
@@ -261,6 +271,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Internal
 
+- The profile image reads only JPEG, PNG and WebP files, without metadata, so the known vulnerabilities of the image library are out of reach.
+
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache, service discovery, command line). The PDF and image libraries stay on their current versions: the newer ones changed license.
 
 - Updated a .NET cryptography library with two denial of service fixes, and the ASP.NET Core and Entity Framework Core libraries to 10.0.13, the .NET security release.
@@ -320,6 +332,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Workflow, permissions (review your roles)**: the *Clone*, *Resize*, *Convert to Template* and *Manage HA* activities now check four new permissions (Clone, Resize disk, Convert to template, High Availability), included only in the *Cluster Admin* role, and are recorded in the audit log. Before they acted on Proxmox VE with no check.
 
 #### Fixed
+
+- **AI Server, queries across two tables**: two fields with the same name no longer fail (they come back with the table name in front), and the result can be ordered by a selected field. The tool description now explains how to combine tables.
 
 - **Portal**: a tenant created without a description could not be saved; the editor closed and the tenant was not there.
 
