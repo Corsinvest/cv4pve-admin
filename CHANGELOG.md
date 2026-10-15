@@ -32,6 +32,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **Settings labels**: "Enabled schedulation" is now "Enable scheduling", "Number which should will keep" is now "Number to keep", and the AutoSnap notify option "Allways" is shown as "Always". Existing settings are kept.
+
 - **Help menu**: the version, edition and update check share a single line at the top.
 
 - **Date ranges**: the trends of Backup Analytics, Replication Analytics and UPS *(EE)*, and the syslog and firewall log filters of Report, pick the period in a single field instead of two separate dates. In the Backup and Replication trends the last day of the period is now included.
