@@ -69,7 +69,7 @@ public class PostgreSqlModuleMaintenance(DbContext context) : IModuleMaintenance
     }
 
     /// <inheritdoc />
-    public async Task<int> DeleteClusterDataAsync(string clusterName, CancellationToken cancellationToken = default)
+    public async Task<int> DeleteClusterDataAsync(string clusterName, CancellationToken cancellationToken)
     {
         var deleted = 0;
         foreach (var entityType in context.Model.GetEntityTypes().Where(a => a.GetTableName() != null && !a.IsOwned()))

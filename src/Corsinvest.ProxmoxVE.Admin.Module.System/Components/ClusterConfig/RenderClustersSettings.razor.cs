@@ -69,7 +69,7 @@ public partial class RenderClustersSettings(ISettingsService settingsService,
 
             try
             {
-                await maintenance.DeleteClusterDataAsync(clusterName);
+                await maintenance.DeleteClusterDataAsync(clusterName, CancellationToken.None);
             }
             catch (Exception ex)
             {

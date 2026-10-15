@@ -12,5 +12,5 @@ public interface IModuleMaintenance
     Task<long> GetDatabaseSize(CancellationToken cancellationToken = default);
 
     /// <summary>Deletes the rows of the module that belong to a cluster (tables with a ClusterName column).</summary>
-    Task<int> DeleteClusterDataAsync(string clusterName, CancellationToken cancellationToken = default);
+    Task<int> DeleteClusterDataAsync(string clusterName, CancellationToken cancellationToken);
 }
