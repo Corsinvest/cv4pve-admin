@@ -349,7 +349,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Audit Logs, deletion (review your roles)**: deleting rows of the audit log was allowed by the permission to delete users. It now has a permission of its own, *Delete audit logs*, which administrators hold. A custom role that could delete audit rows only because it could delete users needs the new permission to keep doing it.
 
-- **Node Protect, Git**: *Reset* and *Sync from remote* now run as tasks, with their steps in the task list and their outcome in the audit log; before, a failure left no trace. The confirmation of *Sync from remote* warns that the local repository is removed.
+- **Node Protect, Git**: *Reset* and *Sync from remote* now run as tasks, with their steps in the task list and their outcome in the audit log; before, a failure left no trace. The confirmation of *Sync from remote* warns that the local repository is removed. On a Windows host *Reset* could also fail because the repository stayed open while the Git page was shown.
 
 - **System Logs**: the log viewer finds the database sink of the logging configuration by its name. Before, it had to be the third of the list, and with another order the viewer could read the wrong table without a notice.
 
