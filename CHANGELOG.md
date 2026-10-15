@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **Resend email confirmation**: a user whose confirmation link has expired asks for a new one from the login page, without an administrator. The page answers the same way whether the account exists or not, and limits the requests.
+
+- **adminctl update**: pulls the latest images and recreates the services that changed; `self-update` now suggests it as the next step.
+
 - **Cluster settings, SSH port**: each node of a cluster has its own SSH port (default 22), next to the API port, for nodes where SSH does not listen on the standard port. Existing clusters keep port 22.
 
 - **Check for updates**: a button in the Help menu looks for a new version right away, instead of waiting for the periodic check (up to 12 hours).
@@ -28,7 +32,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
 
+- **Command line, `user disable-2fa`**: turns off two-factor authentication for a user who lost both the authenticator device and the recovery codes. It is the way out when that user is the only administrator.
+
 #### Changed
+
+- **Language of the profile**: the language chosen in the profile is applied to the interface and to the account emails sent to the user; before, both followed the language of the server.
+
+- **Deleting a cluster** also deletes the settings of the modules and the data they collected for it (scans, results, history, UPS devices, Portal tenants, tasks and permissions limited to it). The confirmation says so.
+
+- **Maintenance, Fix All**: one confirmation that lists the steps, instead of one question per step.
+
+- **Settings labels**: "Enabled schedulation" is now "Enable scheduling", "Number which should will keep" is now "Number to keep", and the AutoSnap notify option "Allways" is shown as "Always". Existing settings are kept.
 
 - **Help menu**: the version, edition and update check share a single line at the top.
 
@@ -73,7 +87,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - On Linux the backup archives are readable only by the user running the application, since they contain password hashes and keys.
   - When the backup of a node fails, the old backups are kept: retention is applied only after a run where every node was backed up, so good backups are never deleted to make room for an incomplete one. A run that saved no archive leaves no empty folder.
 
+- **Permissions (review your custom roles)**: the actions of these pages now have their own permission, which hides the button and is checked again when the action runs. Before, opening the page was enough to run them.
+  - Backup Analytics and Replication Analytics: *Scan*, *Delete all data* and the export.
+  - Diagnostic: *Scan*, deleting and downloading a scan, creating, editing and deleting the ignore rules.
+  - Node Protect: *Backup*, delete and download; in *(EE)* also the Git *Push*, *Reset*, *Sync from remote* and download.
+  - System Report: new report, delete and download.
+  - Update Manager: *Scan* and download.
+  - Bots: sending a message.
+
+  The built-in roles of each module include the new permissions. Custom roles do not: their users no longer see these buttons until an administrator assigns the permissions.
+
+- **Account emails**: the emails for the password reset and the email confirmation have a new layout, and the expiry they state is the real one.
+
+- **Remembered browser at the two-factor login** *(EE)*: it is trusted for the days set in `CookieSettings:ExpireDays` (30 by default), like the sign-in itself. Before it was 14 days, while the profile page said 30.
+
+- **Backup Analytics and Replication Analytics, Check widget**: a new widget starts from 30 days, as many as the data kept by default, instead of 60.
+
 #### Fixed
+
+- **Diagnostic, scan detail**: the findings are grouped worst first (Critical, Warning, Info); the order of the groups was ignored.
+
+- **Trends pages** (Backup Analytics, Replication Analytics and, in *(EE)*, UPS Monitor): choosing a new period keeps the storage or node and the VMs already selected; before, the first click of the range dropped them and the charts stayed empty.
 
 - **Grids**: a group, once expanded, can be collapsed again.
 
@@ -101,25 +135,300 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Bots (Telegram)**: VM, container and node commands answer with the error of Proxmox VE when the action is refused, instead of answering as if it had worked. The built-in migrate and node shutdown aliases now work.
 
+- **AutoSnap, deleting a job**: with *On remove job remove snapshots in Proxmox VE* enabled, deleting a job now removes its snapshots and shows the operation among the tasks; before, the snapshots were left in place. The job stays in the list until the removal ends.
+
+- **Dashboard**: cloning a dashboard creates a copy instead of overwriting the original; an imported dashboard belongs to the user who imports it, also when the file was exported by someone else; creating the default dashboards no longer renames the Home and Status dashboards of the other users.
+
+- **Backup Analytics**: the scan imports every backup task of the retention period; before, only the last 50 of each node were read, so the first scan and busy nodes missed the older ones.
+
+- **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped. A replication that fails is now stored in the run history, with its error: before, the history kept showing the last successful run and the failure never appeared. A job that keeps failing gives one record for each try a scan finds.
+
+- **Sign-in sessions**: a sign-in now survives a restart or an update of the application: before, every restart signed everyone out, also with *Remember me*. When a password is changed or reset, the other browsers signed in with that account are signed out at once instead of within 30 minutes. After the update to this version everyone signs in once more.
+
+- **Forgot password**: the reset link is sent at most 3 times to the same address in 15 minutes, and 10 requests are accepted from the same computer. Before, anyone who knew an address could fill its mailbox with reset messages.
+
+- **Audit and privileges**: deleting a backup from the *Backups* tab of a guest and *Schedule Now* on a replication are now written to the audit log, with their outcome. Deleting storage content, which the AI Server tools do, also checks the privilege on Proxmox VE before it runs.
+
+- **Backups of a guest**: *New* in the *Backups* tab of a guest now starts a backup, with storage, mode, compression, protection and notes; before, it only showed "Not available". Changing the notes or the protection of a backup is now written to the audit log. *Restore*, which did nothing, is no longer shown.
+
+- **Backup Analytics, Unprotected Guests**: the page was empty when no backup job was enabled, which is when every guest is uncovered. It also ignored the jobs that select a pool and the guests excluded by a job for all guests. It now evaluates every kind of job: all guests with exclusions, pool, list of IDs, and the node a job is bound to.
+
+- **Check widgets**: the *Check* widget of Backup Analytics, Replication Analytics and Diagnostics showed "Module not configured!" for a cluster with the schedule off, also when scans had been made by hand. It now shows those results too.
+
+- **Diagnostics, notification**: the result of a scan is now notified also when both report attachments are off; before, nothing was sent. The message carries the number of critical, warning and info issues. Who has a notifier configured and both attachments off starts to receive it: to receive nothing, leave the list of the notifiers empty.
+
+- **Diagnostics, Community Edition**: the notice in the PDF and Excel reports that names the compliance standards of the Enterprise Edition listed 14 of them. It now lists all 18.
+
+- **Clusters**: the scheduled jobs of a cluster that was deleted or disabled kept running, and failed at every run. They are now removed when the cluster is deleted or disabled, and at every start of the application. A cluster that is enabled again gets its scheduled jobs back at once, with the schedule and the options they had. The data collected for the cluster stays in the database.
+
+- **Add cluster**: with no cluster configured, every user was shown *Add cluster* and taken to the page that creates one, also without the permission to open it. Button and redirect are now only for who has it.
+
+- **Command Palette**: moving through the results with the arrow keys, the selected entry went out of view past the last visible result. The list now follows the selection.
+
+- **Grids, keyboard**: the edit key (F2) opened the editor of the selected row only when the last click of the mouse had been on the name column. It now always opens it.
+
+- **Copy buttons**: after a copy the button shows a green check mark for two seconds, in place of a notification.
+
+- **Installer**: `install.sh` changed, or refused, a database password that contains quotes or a backslash, and reduced two spaces to one. The password is now kept as typed.
+
+- **AutoSnap, module switch**: the *Enabled* setting of the module now stops the scheduled jobs of the cluster; before, the jobs ran whatever its value. A job is scheduled when the module and the job are both on. What is started by hand stays available with the module off. At the first start with this version the setting is turned on, once, for the clusters that have enabled jobs, so that no scheduled snapshot stops with the update.
+
+- **Texts**: the help of the AutoSnap *Search Mode* said that *All* lists the snapshots made by hand; it lists only the snapshots made by AutoSnap, on every guest of the cluster. The permission shown as "Snapshot Rallback" is now "Snapshot Rollback".
+
+- **AutoSnap, startup**: a job whose additional data is missing or cannot be read stopped the start of the whole application. A job with no additional data is now read as such; one that cannot be read is skipped, with an error in the log that names it, and the other jobs are scheduled.
+
+- **Bots, module switch**: the *Enabled* setting of the module now stops the bot of the cluster; before, it had no effect and the bot followed *Telegram → Enabled* alone. The bot runs when both are on. At the first start with this version the setting is turned on, once, for the clusters where the Telegram bot is on.
+
+- **AI Server, permissions (review your tokens)**: five tools returned more than the token is allowed to see. The list of the clusters now shows only the clusters the token can work on; tasks, replication jobs and backup jobs are shown only for the guests and the nodes the token can see, and a backup job lists only the guests the token can see. A token with limited cluster permissions sees less than before.
+
+- **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones with the same text. The check code is shown in the list of the rules. To make a rule wider, clear its fields: gravity and context can be left empty to match any value. Rules created before keep working; some findings hidden by mistake may become visible again.
+
+- **Sign-in**: after the login you are sent back only to a page of this installation; before, a crafted link could send you to another site.
+
+- **Permissions**: the settings of a module can be opened and saved only with the *Edit Settings* permission, also from the *Activate schedulation* button; AutoSnap *Snap* and *Purge*, stopping a task and starting the application update now check their permission when they run, not only when the button is shown. The AutoSnap *Errors* page shows the errors of the current cluster only.
+
+- **Resources, Memory Cleanup and Unlock**: the two entries of the node and guest menu are shown and run only with the *Power Management* permission on that node or guest, and each run is recorded in the audit log. Before, any user who could see the resource could run them. *Schedule Now* of a replication checks its permission also when it runs.
+
+- **Profile, language**: changing the language reloads the page in the new language; before, the page lost the connection.
+
+- **Tasks**: Maintenance *Fix All* and the command line no longer mark as abandoned the tasks that are still running.
+
+- **Widgets**: in the *Status* widget of Diagnostic and of Update Manager the *Critical* and *In error* slices are red again; before, they had no colour of their own. The thin separators of the resource cards, of the *Info* widgets and of the issue list of the health widgets are now drawn.
+
+- **Small fixes**: in the Cluster Usage grid the memory tooltip shows the memory figure (it showed the storage one); the disk usage tooltip of the resource lists ends with `%`; a disabled Metrics Exporter always answers with status 503; the default sender address of a new installation is `noreply@example.com`.
+
+- **Command Palette**: the `vm:` and `ip:` filters list containers too, *create snapshot* offers every guest and not only the running ones, and the guest picker of the commands shows only the guests you are allowed to see.
+
+- **Cluster selector**: the search ignores upper and lower case, and a search without results shows *No results found!* instead of hiding the selector.
+
+- **Add cluster**: the button in the top bar is back when no cluster is configured, also on the pages that do not redirect to the cluster settings.
+
+- **Maintenance**: in the Community Edition *Cleanup System Logs* is shown as an Enterprise feature; before, it ran and reported zero deleted records.
+
+- **System Report**: the keyboard shortcut for a new item opens the new report dialog.
+
+- **Bots, Chats Id**: the field takes one chat ID per line; before, it was a single-line box and only one ID could be entered. A value already saved keeps working.
+
+- **Metrics Exporter**: scrapes arriving at the same time for the same cluster no longer interfere with each other.
+
+- **Installer**: a PostgreSQL password containing `/` or `&` no longer stops the Linux and macOS installer, and one containing `$` is no longer saved altered by the Windows installer.
+
+- **adminctl**: a value with spaces in `.env` is read correctly; after `self-update` the suggested command is the one that applies a changed compose file; the help shows the documentation address.
+
+- **Node Protect**: the paths to back up are read one per line whatever line ending the setting was saved with.
+
+- **AI Server**: the descriptions the assistant reads for eight tools now match what the tools return and accept.
+
+- **AI Server, optional parameters**: the filters and options that the tools describe as optional, such as the status, the type, the detail level and the number of tasks, had to be sent on every call, and a call without them failed. They can now be left out and take the value their description states.
+
+- **Dashboard, permissions (review your roles)**: the Dashboard showed every widget of every module, on every cluster, to whoever could open it. A widget is now shown for the clusters where the user holds the permission of the widget or can open its module, and reads only those clusters. The *Add widget* menu and the *Clusters* picker list only what the user can see. In a dashboard that already exists, a widget the user cannot see stays in its place with a notice and can be removed. The default dashboards are created with only the widgets the user can see.
+
+- **adminctl, database backup**: `backup db create` and `backup all create` report a failure when the database dump fails, instead of saying the backup was created and leaving an empty file.
+
+- **Forgot password**: the reset link opens a page that asks only for the new password. A link that is incomplete, altered, expired or already used shows a page that offers to request a new one, instead of an error. Setting the password from the link also confirms the email address: before, a user with an unconfirmed address could set the password and still not sign in.
+
+- **Two-factor login** *(EE)*: a recovery code can be used at the login; before, the link led to a page that did not exist. A wrong code can be typed again without starting over from the password, and the language of the user is applied.
+
+- **Remember me**: a user who did not come back for more than 14 days was signed out, whatever the number of days in the settings. The session now lasts as long as configured.
+
+- **Password change**: changing the password, or the two-factor setup *(EE)*, no longer signs you out a few minutes later.
+
+- **Email confirmation**: the link shows its result also when you are not signed in; before, it sent you to the login page. An altered link shows a message instead of an error.
+
+- **Scheduled jobs**: the *system* account is put back in place at startup when its name had been changed by the user editor.
+
+- **Account emails translated**: the emails sent to users (email confirmation, password reset, two-factor authentication turned off) now use the language of the interface instead of always English.
+
+- **Backup and Replication Analytics, times (review your data)**: the times read from the Proxmox VE logs were taken in the time zone of the server running cv4pve-admin instead of the one of the node, so with the nodes in another time zone every backup and replication was stored hours off; the start and end of backup tasks were shifted too. Records already stored stay shifted until the data of the cluster is deleted and scanned again.
+
+- **Replication Analytics**:
+  - The *not synced for 7+ days* and *24+ hours* alerts and the age bars counted every stored run instead of the last run of each job: the red alert appeared even when every replication had just synced.
+  - *Failed* and *with errors* were two alerts counting the same runs: one alert remains.
+  - *Trends* reloads the charts when the period or the node changes, not only when the VM changes.
+  - A replication that cannot be imported is written in the scan task, which ends as failed, instead of only in the server log.
+
+- **Delete all data** in Backup Analytics and Replication Analytics is now recorded in the audit log.
+
+- **System Report**: a report that failed stayed *waiting* forever; it now ends as failed, with its error, and the failure is recorded in the audit log.
+
+- **Diagnostic**: the Excel and PDF reports list the findings from the most severe, instead of starting from *Info*.
+
+- **AutoSnap, jobs**: the list showed the default schedule (every 15 minutes) and its next run for every job, and an empty *Last Run*; it now shows the real schedule, parallelism and last run. Editing a job was not affected.
+
+- **Updater**:
+  - The results of a scan disappeared after 8 hours, while the default schedule runs every 12; they now stay until the next scan.
+  - A Windows guest other than Windows 10/11, or a Solaris/Other guest, failed with no message: it now says that its operating system is not supported.
+  - A cancelled scan sent the *Scan completed* email and was recorded as successful; it now sends nothing, and the dashboard no longer counts cancelled guests as in error.
+  - The *Download* button stays usable after a report that failed.
+
+- **Metrics Exporter**:
+  - The token in the *Open metrics* link is encoded: a token with characters such as `+`, `&` or `#` gave an error.
+  - When the cluster cannot be reached the endpoint answers *503* with the reason, instead of *200* with old values, so Prometheus sees the target as down.
+
+- **Notifications with attachments**: when a report (for example Diagnostic) was sent to more than one notifier, the second one received an empty or unreadable attachment and failed with no trace; every notifier now gets the full attachment, and a notifier that fails is written in the log.
+
+- **Module menu**: the current page stays highlighted in the menu of a module also when its address carries extra parameters (for example the workflow list).
+
+- **Dashboard widgets**: the widgets that update during a scan could mix two updates or miss the last one; they now always show the final numbers.
+
 #### Internal
 
-- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache).
+- The profile image reads only JPEG, PNG and WebP files, without metadata, so the known vulnerabilities of the image library are out of reach.
+
+- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache, service discovery, command line). The PDF and image libraries stay on their current versions: the newer ones changed license.
+
+- Updated a .NET cryptography library with two denial of service fixes, and the ASP.NET Core and Entity Framework Core libraries to 10.0.13, the .NET security release.
 
 ### Enterprise Edition
 
 #### Added
 
+- **UPS Monitor, thresholds per device**: the editor of a device can set its own battery low, battery critical and runtime critical alert thresholds; an empty field uses the value of the cluster settings.
+
+- **UPS, automatic shutdown of the nodes**: on a power failure the module can shut the nodes of the cluster down. Each device has a new setting, *On power failure*: *Nothing (alerts only)*, the default; *Dry-run (simulate the shutdown)*; *Shutdown (shut the nodes down)*. With Shutdown, when a shutdown condition is met the nodes the device covers get the shutdown command of Proxmox VE, through the API of the cluster and in the order of the settings: nothing is installed on the nodes. A command that fails is tried three times, a node already off is skipped, and the node that hosts the application is commanded last. Choosing Shutdown asks for a confirmation that names the nodes. The credentials of the cluster need the privilege to shut the nodes down: it is checked once a day and the dashboard warns when it is missing. Guests are not stopped one by one, and high availability and Ceph are not handled: the shutdown test warns when the cluster has them. Tried on test nodes with a simulated UPS, not during a real power failure: start with Dry-run. Existing devices stay on *Nothing*.
+
+- **UPS, shutdown simulation**: with *Dry-run* the module says which nodes it would shut down, in which order and why, without shutting anything down. When a shutdown condition is met the nodes are recorded in Tasks and in the audit log and a notification is sent for the power failure, the condition met, the simulated shutdown and the return of the mains. No command is sent to a node.
+
+- **UPS, shutdown conditions and nodes**: new settings, separate from the alert thresholds. A device on battery meets a condition after a time on battery (600 seconds), below a runtime (10 minutes), below a charge (30%) or when the UPS reports battery low or depleted. For each node of the cluster: the order, and with more than one UPS whether all of them or any one must be in condition. The whole cluster can be treated as one, and the node that hosts the application is kept for last: set *Where this application runs*.
+
+- **UPS, Test shutdown and Simulate power failure**: two buttons in the dashboard. *Test shutdown* shows the nodes that would be shut down now, their order, the estimated time and the warnings, and changes nothing. *Simulate power failure* runs the whole sequence as a test, with its entry in Tasks and a notification marked TEST. During a real power failure the dashboard shows a strip with the nodes already recorded and *Close episode*.
+
+- **UPS, new permissions**: *Change shutdown action*, which also allows arming a device, *Test shutdown*, *Simulate power failure* and *Close episode*. The administrator role of the module has them.
+
+- **UPS, SNMP v3**: a UPS can be read with SNMP v3 instead of v2c: a user of the device, authentication (SHA-256, SHA-384, SHA-512, SHA-1, MD5) and, if wanted, encryption (AES-128, AES-192, AES-256). In the device choose the connection *SNMP v3*. The passwords are stored encrypted. Existing devices stay on SNMP v2c.
+
+- **UPS, NUT connection**: a UPS without a network card, connected by USB or serial cable to another machine, can be read from the NUT server (Network UPS Tools) of that machine. In the device choose the connection *NUT*, the address and port of the server (3493 by default) and the name of the UPS. The connection only reads: it never sends a command to the UPS. Stale data from the server are treated as no reading. No user is needed on the server.
+
+- **UPS, bypass**: a UPS in bypass, where the load is fed by mains without the protection of the battery, now has the status *Bypass* and raises a warning. Before, it was shown as *Unknown* and no alert was sent. The dashboard shows a *Bypass* counter when a device is in it. A bypass does not start a shutdown.
+
 - **Compliance — four new standards**, for a total of 18: ACN (Italian NIS2 measures), NIS2 Implementing Regulation (EU) 2024/2690, ISO 22301 (business continuity) and BSI IT-Grundschutz (Germany). They appear in the Compliance view and in the PDF and Excel reports.
 
 - **AutoSnap — hook test**: a *Test* button in the hook editor sends the request right away, with sample values for the selected phase, and shows the answer.
 
+- **Users, two-factor authentication**: a *2FA* column shows who uses it, and *Disable 2FA* turns it off for a user who lost both the authenticator device and the recovery codes. The user is informed by email. The action has its own permission, included in the built-in role: custom roles need it assigned.
+
+- **Two-factor authentication turned off**: the user receives an email, whoever turned it off.
+
+#### Changed
+
+- **Users, Reset password**: sends the user a link to set a new password and also shows it, so it can be delivered another way. Before, the administrator had to know the current password of the user.
+
+- **UPS, settings (review your settings)**: the settings are in four tabs: *Monitoring*, *Alerts*, *Shutdown* and *Nodes*. The three alert thresholds have new names, because they only send alerts and never shut anything down: *Default Battery Low Threshold* is now *Battery low alert*, *Default Shutdown Battery Threshold* is *Battery critical alert*, *Default Shutdown Time Threshold* is *Runtime critical alert*. Their values are kept.
+
+- **UPS, dashboard on large screens**: three, four or six cards in a row, according to the width of the screen. Each card shows what the device does on a power failure.
+
+- **UPS, continuous reading (review your settings)**: the devices are read continuously instead of on a schedule: every 30 seconds, every 8 seconds while a UPS runs on battery. The *Cron Schedule* setting is gone, replaced by *Reading interval*, *Reading interval on battery* and *Unreachable after (missed readings)*; *Enabled schedulation* is now *Monitoring enabled* and keeps its value. A change of the settings is applied at once. The reading history keeps every reading during a power failure and at every change of status, otherwise one a minute. Run a single instance of the application: two would both send the alerts.
+
+- **UPS, dashboard**: redesigned. Counters of the devices by status, cards ordered by how much attention they need, battery and load with a bar and a small chart of the last three hours, input and output voltage, and a notice saying for how long a device has been on battery or has not answered.
+
+- **UPS, alerts (review your notifications)**: a notification is sent when the alerts of a device change, not at every scan: when the UPS goes on battery, when the charge then drops below a threshold, and so on. Before, the same alert was repeated at every scan, every 5 minutes by default. A *back to normal* notification is sent when no alert is active any more.
+
+- **UPS, device profile**: with *auto* the profile is chosen by asking the device which values it has, not from the text of its description. The profile of the manufacturer is used when the device has its values, otherwise the standard one (RFC 1628). Seven profiles that could not work are removed (Legrand, Salicru, Mitsubishi, Piller, Zigor, NetVision, Borri): a device set to one of them uses the standard profile.
+
+- **UPS, profiles checked against the manufacturers' definitions (review your devices)**: every profile was compared, value by value, with the published definitions of the standard and of each manufacturer, and rewritten where it read the wrong value. Ten profiles are verified and chosen by *auto*: Generic RFC 1628, APC, CyberPower, Eaton / Powerware, NetAgent cards (Mach Power, Ablerex, Tecnoware), Delta, HPE / HP, MGE, Tripp Lite, Riello. Socomec, Huawei, Chloride, GE and Phoenix Contact could not be verified: they work only when picked by hand and the editor says so. Vertiv / Liebert and Gamatronic are removed. A device set to a profile that no longer exists, or renamed (*Eaton / Dell / ABB*, *CyberPower / FSP / PowerWalker*, *Powerware / Exide*), is read with *auto*. Readings and status of existing devices can change: run *Test Connection* on each device.
+
+- **UPS, Test Connection**: the result is shown in a dialog with the profile used and one row for each value: where it is read from and what the device answered, or *Missing*. A warning says which alert thresholds cannot fire because the device gives no charge or no runtime.
+
+- **Workflow engine** updated (Elsa 3.9). In the list of workflows the designer opens from the row menu (*Edit*), no longer by clicking the first cell.
+
+- **Workflow, permissions (review your roles)**: the *Clone*, *Resize*, *Convert to Template* and *Manage HA* activities now check four new permissions (Clone, Resize disk, Convert to template, High Availability), included only in the *Cluster Admin* role, and are recorded in the audit log. Before they acted on Proxmox VE with no check.
+
 #### Fixed
+
+- **AI Server, queries across two tables**: two fields with the same name no longer fail (they come back with the table name in front), and the result can be ordered by a selected field. The tool description now explains how to combine tables.
+
+- **Portal**: a tenant created without a description could not be saved; the editor closed and the tenant was not there.
 
 - **AutoSnap, hooks**: with parallel snapshots, the lines of a hook stay in the log block of their VM/CT instead of mixing with the other guests.
 
 - **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
 
 - **NodeProtect — Git credentials**: the username and password changed in the Git settings are now saved; before, the change was lost. The password, like the secrets of AutoSnap hooks, is now stored encrypted; values saved before are kept and encrypted on the next save.
+
+- **AI Server, queries**: the filters of a query are now applied; before, they were ignored and every row was returned. A malformed filter or a misspelled property now returns an error instead of being skipped.
+
+- **AI Server, queries**: the query tool now tells the assistant about three more filters it can use: does not contain, does not start with, does not end with.
+
+- **Workflow, guest actions**: the power action, migrate and snapshot (create, delete, rollback, update) activities now run their action; before, they never reached Proxmox VE.
+
+- **Users, Roles and App Tokens**: clicking a row selects it and opens the editor again; the *Roles* tab of an app token no longer drops the connection.
+
+- **App Tokens**: editing a token no longer clears its owner. A new token opens with *Is Active* on, and turning it off before saving is now applied.
+
+- **Audit log**: a failed creation or change of a user or a role is recorded as failed; before, it was recorded as successful.
+
+- **Small fixes**: the photo picker of a user shows only images; the *Docs* link of an AutoSnap hook opens the right page; Node Protect Git shows *Sync from remote*.
+
+- **Apprise**: the addresses are read one per line whatever line ending the setting was saved with.
+
+- **Permissions**: resetting a user password, regenerating an app token, UPS *Scan now* and creating a Portal tenant now check their permission when they run, not only when the button is shown.
+
+- **Users**: the *system* account, used by the scheduled jobs, can no longer be edited from the user list. *Effective Permissions* is shown only to who can read the users. The same button of the app tokens needs the read permission on tokens.
+
+- **Portal**: removing a guest from a tenant no longer removes it from the other tenants. It also removes the permissions the tenant users were given on that guest: before, they kept their access and the Portal no longer showed it. A user who is also in another tenant that has the same guest keeps them. Adding a guest that is already in another tenant now asks for a confirmation that names that tenant.
+
+- **AI Server**: in the Enterprise Edition every request to the endpoint failed with an error, also with a valid key. Requests are now served and written to the audit log with the name of the token. The query tools see only the nodes, guests and storages the token can see.
+
+- **Audit Logs, deletion (review your roles)**: deleting rows of the audit log was allowed by the permission to delete users. It now has a permission of its own, *Delete audit logs*, which administrators hold. A custom role that could delete audit rows only because it could delete users needs the new permission to keep doing it.
+
+- **Node Protect, Git**: *Reset* and *Sync from remote* now run as tasks, with their steps in the task list and their outcome in the audit log; before, a failure left no trace. The confirmation of *Sync from remote* warns that the local repository is removed. On a Windows host *Reset* could also fail because the repository stayed open while the Git page was shown.
+
+- **System Logs**: the log viewer finds the database sink of the logging configuration by its name. Before, it had to be the third of the list, and with another order the viewer could read the wrong table without a notice.
+
+- **AI Server, ISO tools**: the permissions to download and to delete an ISO image could not be given to a token, because they are in no role and the permission editor did not list them. They are now listed with the other tools in the permissions of a token. They stay out of every role: no token has them until they are given.
+
+- **Portal**: *Is Admin* on a tenant user and *Enabled* on a tenant had no effect and are no longer shown; the permissions on each guest can always be set. Adding to a tenant a user whose address belongs to an existing account now asks for a confirmation that shows the roles of that account, and the display name typed is applied to an existing account too.
+
+- **Overviews**: the *Overview* pages of Portal and Workflow described functions the modules do not have (policies, schedules, webhooks, calls to external services). They now say what the modules do.
+
+- **App Tokens**: a role marked as default could not be given to a token. It can now be picked like any other role.
+
+- **Workflow, Wait For Task**: the *Success* output was true whenever the task ended in time, also when the task had failed. It is now true only when the task ended well, and the new *ExitStatus* output carries the outcome. Review the workflows that read *Success* to know only that a task had ended.
+
+- **VM Performance**: the rates per second are now those between the last two readings; before, they were averages since the page was opened, and the totals stayed at the first reading. Two readings less than a second apart no longer end in an error, and a guest that is no longer running leaves the list.
+
+- **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run as the built-in *system* user, and a command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity and the backup activity now check permissions and write the audit log like the others; the backup runs on the node where the guest is, whatever the *Node* field says.
+
+- **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
+
+- **Profile, two-factor authentication**:
+  - *Reset Authenticator* turns two-factor authentication off and starts the setup again. Before, it left it on with no way to configure the app again, and the next login could not be completed.
+  - *Disable 2FA* accepts a recovery code, as the page says.
+  - A remembered browser is shown, with the days it is remembered for, and *Forget* works.
+
+- **Audit log**: failed logins are recorded; before, none was. Password changes, password resets and every change to the two-factor setup are recorded too.
+
+- **Users**: a built-in account can no longer be deactivated from the editor.
+
+- **UPS**:
+  - *Test Connection* said "Connection successful!" also when the device did not answer. It now reports the failure and its reason.
+  - A device that does not answer becomes *Offline* and raises an alert after three readings in a row without an answer (the number is in the settings); before, nothing was sent.
+  - With *auto* the standard profile was always chosen, whatever the brand.
+  - A host name can be used in *Host*; before, only an IP address worked.
+  - A wrong profile is reported as such, instead of a reading with all values at zero.
+  - An APC device on battery was shown as *Online* with no alert, and one on mains as *Unknown*: each brand now uses its own meaning of the power states. A periodic self-test of the UPS is no longer taken for a power failure.
+  - Wrong values in several profiles: battery voltage ten times too high on the standard profile, APC frequency ten times too low, battery voltage, runtime and temperature swapped on CyberPower and NetAgent, and others. Firmware, serial number and output power of the standard profile read the wrong value.
+
+- **Workflow**:
+  - Opening *Workflows* or *History* turned the header and the colours of the whole application to a light blue.
+  - The *History* page listed no runs when it was the first workflow page opened.
+  - On Proxmox VE 9 the list of activities in the designer was empty.
+  - *Manage HA* on Proxmox VE 9, where HA groups are replaced by HA rules: the group list is empty and a group gives a clear error.
+  - An optional field left empty (backup notes, descriptions, target node or storage, HA group, notifiers, filter expression) made the activity fail.
+  - *Filter Collection* failed with any expression on a field.
+  - *Get Cluster Replications* was hidden by *Get Node Replications*.
+
+- **AutoSnap, webhooks**:
+  - The *CleanJobStart* and *CleanJobEnd* phases never fired: they now fire on *Purge Snapshots*, and a new webhook starts from *SnapJobStart*.
+  - Closing the webhook editor without saving kept the changes.
+
+- **Apprise**: notifications with an Excel attachment were refused by Apprise; attachments are sent correctly also when another notifier sends the same message. The editor opens at once instead of waiting for the server.
+
+- **VM Performance**: a guest that stops or moves no longer breaks the page, and the rates are no longer negative after a guest restart. Guests that stop now leave the list and guests that start appear in it without reopening the page; on Proxmox VE 9 each disk of a guest has its own row again, with its name.
+
+- **Diagnostic, compliance**: the findings are listed from the most severe, and the list of critical findings in the PDF says how many there are instead of calling the first five a top 5.
+
+- **Daily status widgets** (Backup Analytics, AutoSnap, System Report): they show 14 days with a bar for every day, instead of 15 with gaps.
 
 ## [2.3.0] - 2026-09-24
 
