@@ -400,7 +400,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Apprise**: notifications with an Excel attachment were refused by Apprise; attachments are sent correctly also when another notifier sends the same message. The editor opens at once instead of waiting for the server.
 
-- **VM Performance**: a guest that stops or moves no longer breaks the page, and the rates are no longer negative after a guest restart.
+- **VM Performance**: a guest that stops or moves no longer breaks the page, and the rates are no longer negative after a guest restart. Guests that stop now leave the list and guests that start appear in it without reopening the page; on Proxmox VE 9 each disk of a guest has its own row again, with its name.
 
 - **Diagnostic, compliance**: the findings are listed from the most severe, and the list of critical findings in the PDF says how many there are instead of calling the first five a top 5.
 
