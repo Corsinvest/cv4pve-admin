@@ -98,9 +98,47 @@ public partial class QueryExecutor(IDataProvider dataProvider)
                 item.ForeignKey = FixFieldName(foreignKey, query.From);
                 item.PrimaryKey = FixFieldName(primaryKey, item.Table);
             }
+
+            FixJoinSelectAndOrder(query);
         }
 
         return query;
+    }
+
+    // With a join the result fields take the last part of the path: two fields with the same name
+    // get the table as prefix, and an order on a selected field uses its name in the result
+    private static void FixJoinSelectAndOrder(Models.Query query)
+    {
+        static string OutputName(string field)
+        {
+            var alias = GetAlias(field);
+            return string.IsNullOrEmpty(alias) ? field.Split('.')[^1] : alias;
+        }
+
+        var select = query.Select.ToList();
+        var duplicates = select.Where(a => !IsAggregate(a) && string.IsNullOrEmpty(GetAlias(a)))
+                               .GroupBy(OutputName)
+                               .Where(a => a.Count() > 1)
+                               .Select(a => a.Key)
+                               .ToHashSet();
+
+        var outputNames = new Dictionary<string, string>();
+        for (var i = 0; i < select.Count; i++)
+        {
+            var field = select[i];
+            if (!IsAggregate(field) && string.IsNullOrEmpty(GetAlias(field)) && duplicates.Contains(OutputName(field)))
+            {
+                select[i] = $"{field} as {field.Replace('.', '_')}";
+            }
+            outputNames[AliasRegex().Replace(field, string.Empty)] = OutputName(select[i]);
+        }
+        query.Select = select;
+
+        if (select.Count == 0) { return; }
+        foreach (var item in query.OrderBy)
+        {
+            if (outputNames.TryGetValue(item.Field, out var name)) { item.Field = name; }
+        }
     }
 
     private static void FixConditions(WhereClause where, string tableName)

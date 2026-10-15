@@ -68,6 +68,26 @@ public class PostgreSqlModuleMaintenance(DbContext context) : IModuleMaintenance
         return result is long l ? l : 0L;
     }
 
+    /// <inheritdoc />
+    public async Task<int> DeleteClusterDataAsync(string clusterName, CancellationToken cancellationToken)
+    {
+        var deleted = 0;
+        foreach (var entityType in context.Model.GetEntityTypes().Where(a => a.GetTableName() != null && !a.IsOwned()))
+        {
+            var property = entityType.FindProperty("ClusterName");
+            if (property?.ClrType != typeof(string)) { continue; }
+
+            // Identifiers come from the model and are quoted; the value is a parameter
+            var table = $"{PostgreSqlHelper.QuoteIdentifier(entityType.GetSchema() ?? _schema)}.{PostgreSqlHelper.QuoteIdentifier(entityType.GetTableName()!)}";
+            var column = PostgreSqlHelper.QuoteIdentifier(property.GetColumnName());
+#pragma warning disable EF1002
+            deleted += await context.Database.ExecuteSqlRawAsync($"DELETE FROM {table} WHERE {column} = {{0}}", [clusterName], cancellationToken);
+#pragma warning restore EF1002
+        }
+
+        return deleted;
+    }
+
     private async Task<IReadOnlyList<string>> GetSchemaTableNamesAsync(CancellationToken cancellationToken)
     {
         var conn = context.Database.GetDbConnection();

@@ -11,6 +11,7 @@ public interface ISettingsService
     Task SetAsync<TSetting>(TSetting value, bool forCurrentUser = false);
     TSetting Get<TSetting>(bool forCurrentUser = false);
     TSetting Get<TSetting>(string section, string key, bool forCurrentUser);
+    TSetting GetForUser<TSetting>(string userName);
     //   void Clear(string section, string key, bool forCurrentUser = false);
 
     ValueTask ClearCacheAsync();

@@ -44,6 +44,7 @@ Commands:
   start                    Start all services
   stop                     Stop all services
   restart                  Restart all services
+  update                   Pull the latest images and restart the services that changed
   admin start|stop         Start/stop admin tools (PgWeb)
   status                   Show services status
   logs [SERVICE]           Show logs (optionally for specific service)
@@ -62,6 +63,7 @@ Examples:
   ./adminctl admin start
   ./adminctl admin stop
   ./adminctl self-update
+  ./adminctl update
 
 Note: You can also use 'docker compose' commands directly if you prefer.
       See README.md for more information.
@@ -90,6 +92,19 @@ case "${1:-}" in
         echo "Restarting CV4PVE Admin..."
         docker compose restart
         echo "Services restarted"
+        ;;
+
+    update)
+        # Images only: the PostgreSQL major version stays the one written in the compose file
+        echo "Updating CV4PVE Admin..."
+        echo "Tip: './adminctl backup all create' first keeps a copy to go back to."
+        echo ""
+        docker compose pull
+        docker compose up -d
+        echo ""
+        echo "CV4PVE Admin updated"
+        echo "Access: http://localhost:${CV4PVE_ADMIN_PORT}"
+        echo ""
         ;;
 
     admin)
@@ -352,7 +367,7 @@ case "${1:-}" in
         echo "Self-update complete."
         echo "   Snapshot kept at: ${SNAPSHOT_DIR}/"
         echo ""
-        echo "Next step: review changes, then 'docker compose up -d' to apply them (or 'docker compose pull && docker compose up -d' to pull new images too)."
+        echo "Next step: review the changes, then './adminctl update' to pull the new images and apply them."
         ;;
 
     help|--help|-h|"")

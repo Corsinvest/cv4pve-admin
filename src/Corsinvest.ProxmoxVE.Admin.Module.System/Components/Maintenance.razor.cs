@@ -74,9 +74,20 @@ public partial class Maintenance(IAdminService adminService,
     }
 
     // Fix All
+    // Fix All asks once, then runs every step without its own confirmation
+    private bool _fixAllRunning;
+
+    private async Task<bool> ConfirmStepAsync(string message, string title)
+        => _fixAllRunning || await dialogService.ConfirmAsync(message, title, true);
+
     private async Task FixAllAsync()
     {
+        if (!await dialogService.ConfirmAsync(L["Fix All runs the fixes of every module, then deletes audit logs older than {0} days, reindexes and optimizes the database, clears the memory cache and cleans up the failed jobs. Continue?", AuditLogRetentionDays],
+                                              L["Confirm Fix All"],
+                                              true)) { return; }
+
         IsFixAllBusy = true;
+        _fixAllRunning = true;
 
         try
         {
@@ -113,6 +124,7 @@ public partial class Maintenance(IAdminService adminService,
         }
         finally
         {
+            _fixAllRunning = false;
             IsFixAllBusy = false;
         }
     }
@@ -120,10 +132,9 @@ public partial class Maintenance(IAdminService adminService,
     // Database Maintenance
     private async Task CleanupAuditLogsAsync()
     {
-        if (await dialogService.ConfirmAsync(
+        if (await ConfirmStepAsync(
             L["Are you sure you want to delete audit logs older than {0} days?", AuditLogRetentionDays],
-            L["Confirm Cleanup Audit Logs"],
-            true))
+            L["Confirm Cleanup Audit Logs"]))
         {
             IsCleanupAuditLogsBusy = true;
             try
@@ -213,7 +224,7 @@ public partial class Maintenance(IAdminService adminService,
 
     private async Task DbReindexAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure you want to reindex the database?"], L["Confirm Database Reindex"], true))
+        if (await ConfirmStepAsync(L["Are you sure you want to reindex the database?"], L["Confirm Database Reindex"]))
         {
             using var scope = serviceScopeFactory.CreateScope();
             IsDbReindexBusy = true;
@@ -257,7 +268,7 @@ public partial class Maintenance(IAdminService adminService,
 
     private async Task DbOptimizeAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure you want to optimize the database?"], L["Confirm Database Optimize"], true))
+        if (await ConfirmStepAsync(L["Are you sure you want to optimize the database?"], L["Confirm Database Optimize"]))
         {
             using var scope = serviceScopeFactory.CreateScope();
             IsOptimizeDDatabaseBusy = true;
@@ -373,7 +384,7 @@ public partial class Maintenance(IAdminService adminService,
     // Cache Management
     private async Task ClearMemoryCacheAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure you want to clear the memory cache?"], L["Confirm Clear Memory Cache"], true))
+        if (await ConfirmStepAsync(L["Are you sure you want to clear the memory cache?"], L["Confirm Clear Memory Cache"]))
         {
             IsClearMemoryCacheBusy = true;
             try
@@ -400,7 +411,7 @@ public partial class Maintenance(IAdminService adminService,
     // Job Management
     private async Task CleanupFailedJobsAsync()
     {
-        if (await dialogService.ConfirmAsync(L["Are you sure you want to clean up the failed jobs?"], L["Confirm Cleanup Failed Jobs"], true))
+        if (await ConfirmStepAsync(L["Are you sure you want to clean up the failed jobs?"], L["Confirm Cleanup Failed Jobs"]))
         {
             IsCleanupFailedJobsBusy = true;
             try

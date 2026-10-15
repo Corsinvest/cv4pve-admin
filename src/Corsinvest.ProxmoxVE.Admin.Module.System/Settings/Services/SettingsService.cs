@@ -21,19 +21,26 @@ public class SettingsService(IDbContextFactory<ModuleDbContext> dbContextFactory
 
     private string GetContext(bool forUser)
         => forUser
-            ? $"User:{UserName}"
+            ? UserContext(UserName)
             : "System";
+
+    private static string UserContext(string userName) => $"User:{userName}";
 
     private static string GetCacheKey(string context, string section, string key)
         => $"{CacheKeyPrefix}:{context}:{section}:{key}";
 
     public object Get(Type settingsType, string section, string key, bool forCurrentUser)
+        => Get(settingsType, section, key, GetContext(forCurrentUser));
+
+    public TSetting GetForUser<TSetting>(string userName)
+        => (TSetting)Get(typeof(TSetting), typeof(TSetting).FullName!, typeof(TSetting).FullName!, UserContext(userName));
+
+    private object Get(Type settingsType, string section, string key, string context)
     {
         ArgumentNullException.ThrowIfNull(settingsType);
         ArgumentException.ThrowIfNullOrWhiteSpace(section);
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        var context = GetContext(forCurrentUser);
         var cacheKey = GetCacheKey(context, section, key);
 
         return fusionCache.GetOrSet(cacheKey, _ =>

@@ -108,6 +108,10 @@ public static class ServiceCollectionExtensions
         };
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+        // The language of the profile (culture cookie), otherwise the default one: never the one of the server
+        app.UseRequestLocalization();
+
         app.MapPveEndpoints();
 
         foreach (var item in app.Services.GetRequiredService<IModuleService>().Modules)
