@@ -49,18 +49,20 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
 
     private async Task LoadSourcesAsync()
     {
-        if (End.HasValue)
+        // A range is picked with two clicks: until the end date arrives, keep the choices made so far
+        if (!End.HasValue)
         {
-            await using var db = await dbContextFactory.CreateDbContextAsync();
+            Items = [];
+            return;
+        }
+
+        await using (var db = await dbContextFactory.CreateDbContextAsync())
+        {
             Sources = await db.JobResults.FromClusterName(ClusterName)
                                          .Where(a => a.Start >= StartUtc && a.End <= EndUtc)
                                          .Select(a => a.Source)
                                          .Distinct()
                                          .ToListAsync();
-        }
-        else
-        {
-            Sources = [];
         }
 
         SelectedSource = Sources.Contains(SelectedSource)
