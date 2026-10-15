@@ -95,6 +95,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Fixed
 
+- **Trends pages** (Backup Analytics, Replication Analytics and, in *(EE)*, UPS Monitor): choosing a new period keeps the storage or node and the VMs already selected; before, the first click of the range dropped them and the charts stayed empty.
+
 - **Grids**: a group, once expanded, can be collapsed again.
 
 - **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
