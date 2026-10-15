@@ -321,6 +321,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Fixed
 
+- **Portal**: a tenant created without a description could not be saved; the editor closed and the tenant was not there.
+
 - **AutoSnap, hooks**: with parallel snapshots, the lines of a hook stay in the log block of their VM/CT instead of mixing with the other guests.
 
 - **Workflow — guest configuration**: for containers, the activity that reads a guest's configuration now returns the real memory, OS type, tags and protection flag, instead of empty or zero values.
