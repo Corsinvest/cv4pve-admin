@@ -22,4 +22,9 @@
                  Text="@_message" />
 }
 
+@if (_alertStyle == AlertStyle.Danger)
+{
+    <RadzenLink Path="/ResendEmailConfirmation" Text="@L["Request a new confirmation link"]" />
+}
+
 <RadzenLink Path="/Login" Text="@L["Back to login"]" />

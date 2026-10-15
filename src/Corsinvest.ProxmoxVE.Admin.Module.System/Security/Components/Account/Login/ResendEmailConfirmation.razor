@@ -1,0 +1,53 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@page "/ResendEmailConfirmation"
+
+@inherits AdminComponentBase
+
+<PageTitle>@L["Resend email confirmation"]</PageTitle>
+
+<RadzenText Text="@L["Resend email confirmation"]" TextStyle="TextStyle.H4" />
+<RadzenText Text="@L["Enter your email: if the account is waiting for confirmation, a new link is sent."]" TextStyle="TextStyle.Body1" />
+
+@if (Sent)
+{
+    <RadzenAlert Shade="Shade.Lighter"
+                 Variant="Variant.Flat"
+                 Size="AlertSize.Small"
+                 AlertStyle="AlertStyle.Info"
+                 AllowClose="false"
+                 Text="@L["If the account exists and its email is not confirmed yet, a new confirmation link is on its way. Please check your email."]" />
+
+    <RadzenLink Path="/Login" Text="@L["Back to login"]" />
+}
+else
+{
+    <RadzenTemplateForm TItem="InputModel" Data="@Input" Submit="@OnValidSubmitAsync">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="10px" JustifyContent="JustifyContent.End">
+            <RadzenFormField Text="@L["Email"]" class="rz-w-100">
+                <End>
+                    <RadzenIcon Icon="alternate_email" />
+                </End>
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="Input.Email"
+                                   Name="@nameof(Input.Email)"
+                                   AutoCompleteType="AutoCompleteType.Username" />
+                </ChildContent>
+                <Helper>
+                    <RadzenDataAnnotationValidator Component="@nameof(Input.Email)" />
+                </Helper>
+            </RadzenFormField>
+
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          Text="@L["Send"]"
+                          IsBusy="@IsBusy"
+                          BusyText="@L["Sending ..."]"
+                          Variant="Variant.Flat"
+                          Style="width:fit-content;" />
+
+            <RadzenLink Path="/Login" Text="@L["Back"]" />
+        </RadzenStack>
+    </RadzenTemplateForm>
+}
