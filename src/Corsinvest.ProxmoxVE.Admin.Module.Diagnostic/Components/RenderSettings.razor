@@ -8,11 +8,11 @@
 
 @inherits AdminComponentBase
 
-<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enabled schedulation"]" Name="@nameof(Model.Enabled)" />
+<SwitchField @bind-Value="@Model.Enabled" Label="@L["Enable scheduling"]" Name="@nameof(Model.Enabled)" />
 
 <CronEditor @bind-Expression="@Model.CronExpression" AllowEditor="true" />
 
-<RadzenFormField Text="@L["Number which should will keep"]" AllowFloatingLabel="false" class="rz-w-100">
+<RadzenFormField Text="@L["Number to keep"]" AllowFloatingLabel="false" class="rz-w-100">
     <Start>
         <RadzenIcon Icon="layers" />
     </Start>

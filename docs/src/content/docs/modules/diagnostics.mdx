@@ -70,7 +70,7 @@ The grid lists the stored scans with the number of **Info**, **Warning** and **C
 
 Expanding a scan shows two tabs: **Issues** and **Compliance** <Tag kind="ee" />. The **Issues** tab lists gravity, code, resource id (a link that opens the resource), context, sub-context and description of each issue. The **Ignore Issue** button on an issue row adds it to the ignored issues.
 
-Two things happen at the end of every scan, scheduled or started by hand. The oldest scans beyond the **Number which should will keep** setting are deleted, and the notification is sent (see [Settings](#settings)).
+Two things happen at the end of every scan, scheduled or started by hand. The oldest scans beyond the **Number to keep** setting are deleted, and the notification is sent (see [Settings](#settings)).
 
 ## Ignored issues
 
@@ -93,7 +93,7 @@ The settings of the module (9 groups, from the general options to the thresholds
 | **Status** | Diagnostic status, with the date of the last scan |
 | **Check** | Critical issues of the last scan of each cluster, grouped by resource, with a link to the scan |
 
-**Check** covers the clusters where **Enabled schedulation** is on, and those where a scan was started by hand. It shows "Module not configured!" only when no cluster has the schedule on and no scan was ever made.
+**Check** covers the clusters where **Enable scheduling** is on, and those where a scan was started by hand. It shows "Module not configured!" only when no cluster has the schedule on and no scan was ever made.
 
 ## Permissions
 
