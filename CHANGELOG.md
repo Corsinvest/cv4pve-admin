@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **Resend email confirmation**: a user whose confirmation link has expired asks for a new one from the login page, without an administrator. The page answers the same way whether the account exists or not, and limits the requests.
+
 - **adminctl update**: pulls the latest images and recreates the services that changed; `self-update` now suggests it as the next step.
 
 - **Cluster settings, SSH port**: each node of a cluster has its own SSH port (default 22), next to the API port, for nodes where SSH does not listen on the standard port. Existing clusters keep port 22.
