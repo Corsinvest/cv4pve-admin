@@ -84,6 +84,7 @@ The installer downloads an `adminctl` script into the installation directory. It
 | `./adminctl backup db create` / `list` | Create or list database backups. |
 | `./adminctl backup data create` / `list` | Create or list application data backups. |
 | `./adminctl backup all create` / `list` | Create or list full backups (database and data). |
+| `./adminctl update` | Pull the latest images and recreate the services that changed. Run `./adminctl backup all create` first to keep a copy to go back to. The PostgreSQL major version stays the one written in the compose file. |
 | `./adminctl self-update` | Update `adminctl` and the compose files from GitHub. See [Refresh adminctl and the compose files](#refresh-adminctl-and-the-compose-files). |
 | `./adminctl help` | Show all commands. |
 
@@ -121,7 +122,7 @@ After the command, recreate the containers to apply the changes:
 ```bash
 docker compose up -d
 # or, to pull new container images at the same time:
-docker compose pull && docker compose up -d
+./adminctl update
 ```
 
 `./adminctl restart` only restarts the running containers: it does not apply a changed compose file.
