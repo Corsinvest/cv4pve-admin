@@ -116,6 +116,7 @@ Each UPS device is configured with:
 | **Location** | Physical location label |
 | **Description** | Free-text notes |
 | **Managed Nodes** | Proxmox nodes powered by this UPS (empty = all nodes). They decide which nodes the shutdown, real or simulated, covers |
+| **Thresholds** | **Battery low alert (%)**, **Battery critical alert (%)** and **Runtime critical alert (minutes)** for this device only. Empty uses the value of the cluster settings, shown in the field |
 | **On power failure** | **Nothing (alerts only)** (default), **Dry-run (simulate the shutdown)** or **Shutdown (shut the nodes down)**. Changing it needs the permission **Change shutdown action** and is written in the audit log. Choosing **Shutdown** asks for a confirmation that names the nodes. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown) |
 | **Identification** | Manufacturer, Model, Firmware Version, Serial Number: filled from the device with **Retrieve Info**, or typed by hand |
 
@@ -234,7 +235,7 @@ Pick the **Period**: a single date-range field, limited to the dates that have r
 
 ## Alerts
 
-After each reading the module checks the values against the thresholds of the cluster settings. If at least one notifier is selected in the settings, it sends one notification that lists the alerts found:
+After each reading the module checks the values against the thresholds of the cluster settings, or against those set in the device editor when a device has its own. If at least one notifier is selected in the settings, it sends one notification that lists the alerts found:
 
 | Condition | Severity |
 |-----------|----------|
