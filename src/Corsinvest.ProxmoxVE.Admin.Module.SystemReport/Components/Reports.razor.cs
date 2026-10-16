@@ -112,12 +112,7 @@ public partial class Reports(IBrowserService browserService,
         }
     }
 
-    private async Task KeyDownAsync(KeyboardEventArgs e)
-    {
-        if (SelectedItems.Any() && e.IsForDelete()) { await DeleteAsync(); }
-        else if (SelectedItems.Any() && e.IsForEdit()) { }
-        else if (e.IsForNew()) { await AddAsync(); }
-    }
+    private Task KeyDownAsync(KeyboardEventArgs e) => e.HandleGridKeysAsync(SelectedItems.Any(), DeleteAsync, null, AddAsync);
 
     private async Task DownloadAsync()
     {
