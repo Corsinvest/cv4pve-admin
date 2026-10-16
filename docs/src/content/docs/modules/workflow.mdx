@@ -45,8 +45,10 @@ Why a workflow engine when scripts and cron already work?
 ## Sections
 
 - **Overview**: short description of the module
-- **Workflows**: the list of workflow definitions of the current cluster. Open a definition to edit it in the designer. **Back to List** returns to the list. When you run a workflow from the designer, the page switches to the view of that run. **Back to editor** returns to the designer
-- **History**: the list of workflow runs (instances). Open a run to see its status and the detail of each step. **Back to List** returns to the list. From a run you can open its definition in the designer and come back with **Back to View Instance**
+- **Workflows**: the list of workflow definitions of the current cluster. Open a definition to edit it in the designer. When you run a workflow from the designer, the page switches to the view of that run
+- **History**: the list of workflow runs (instances). Open a run to see its status and the detail of each step. From a run you can open its definition in the designer
+
+The open definition or run is part of the page address: the browser **Back** button returns to the previous view, the page link in the module menu returns to the list, and the address can be bookmarked or shared with users who have the same permissions.
 
 Workflows belong to the cluster selected in the cluster picker. Definitions and runs of one cluster are not listed in another. The activities of a workflow always act on the cluster the workflow was created in.
 
@@ -70,8 +72,21 @@ The module defines these application permissions. All of them are included in th
 | **Workflows**, **History** | Open the page with that name (one permission per page) |
 | **Workflow: Read, Create, Edit, Delete, Export** | Workflow definitions |
 | **Workflow: Execute Workflow** | Run a workflow |
+| **Workflow: Publish and retract** | Publish a workflow, or retract a published one |
 | **History: Read, Export** | Workflow runs |
 | **History: Delete** | Delete workflow runs |
+| **History: Cancel** | Cancel a workflow run that has not finished |
+
+Permissions are given per cluster. The designer shows only the actions the user holds on the cluster, and the workflow engine refuses the others even when they are requested directly. The pickers of the activities list only the nodes, guests and storages the user can read.
+
+### Who a workflow acts as
+
+A workflow acts with the permissions of a user, never with more:
+
+- **Started from the designer**: it acts as the user who started it. A run that waits (for example on a `Delay`) and resumes later still acts as that user.
+- **Started by a trigger** such as `Cron` or `Timer`: it acts as the user who last published the workflow. If that user no longer exists or can no longer sign in, the run stops with an error: publish the workflow again with a valid user.
+
+Each activity checks the permissions of that user on the guest, node or storage it acts on. An activity without permission stops the run with `Permission denied`, and the audit log records the operation under that user.
 
 **Persistence:** Workflow definitions and runtime state are stored in the `workflow_elsa` Postgres schema, separate from the cv4pve-admin schema.
 

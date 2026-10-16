@@ -333,6 +333,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Workflow, permissions (review your roles)**: the *Clone*, *Resize*, *Convert to Template* and *Manage HA* activities now check four new permissions (Clone, Resize disk, Convert to template, High Availability), included only in the *Cluster Admin* role, and are recorded in the audit log. Before they acted on Proxmox VE with no check.
 
+- **Workflow, permissions applied (review your roles)**: the permissions of the module were defined but not applied: whoever could open the *Workflows* page could edit, publish, delete and run every workflow. The designer now shows only the actions the user holds on the cluster, and the workflow engine refuses the others. Two new permissions: *Publish and retract* and, in *History*, *Cancel*; the administrator role of the module has them. The pickers of the activities list only the nodes, guests and storages the user can read.
+
+- **Workflow, page address**: the open workflow or run is part of the page address, so the browser *Back* button and the menu link return to the list and the address can be bookmarked. The *Back* buttons are removed, and the heading of the list, which repeated the name of the page, is no longer shown.
+
 #### Fixed
 
 - **AI Server, queries across two tables**: two fields with the same name no longer fail (they come back with the table name in front), and the result can be ordered by a selected field. The tool description now explains how to combine tables.
@@ -387,7 +391,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **VM Performance**: the rates per second are now those between the last two readings; before, they were averages since the page was opened, and the totals stayed at the first reading. Two readings less than a second apart no longer end in an error, and a guest that is no longer running leaves the list.
 
-- **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run as the built-in *system* user, and a command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity and the backup activity now check permissions and write the audit log like the others; the backup runs on the node where the guest is, whatever the *Node* field says.
+- **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run with the permissions of a user: the one who started the workflow or, for a workflow started by a trigger such as *Cron*, the one who last published it. A command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity and the backup activity now check permissions and write the audit log like the others; the backup runs on the node where the guest is, whatever the *Node* field says.
 
 - **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
 
