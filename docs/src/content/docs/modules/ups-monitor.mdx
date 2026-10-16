@@ -21,7 +21,7 @@ Reads UPS battery levels, power status, load conditions and runtime estimates co
     { icon: 'mdi:pulse', title: "Status Monitoring", text: "Each reading takes battery charge and voltage, input/output voltage, load percentage, temperature and power source." },
     { icon: 'mdi:alert-octagon', title: "Critical Power Alerts", text: "Notifications when the UPS switches to battery, the battery charge falls below the low or critical threshold, or the estimated runtime drops below the configured minutes.", href: '#alerts' },
     { icon: 'mdi:timer-sand', title: "Runtime Estimation", text: "Reads the UPS's own runtime estimate and alerts when it falls below the configured threshold." },
-    { icon: 'mdi:lan-connect', title: "SNMP and NUT", text: "Reads UPS devices via SNMP v2c or v3, or from a NUT server for a UPS on a USB or serial cable, at a configurable interval, shorter while a UPS runs on battery. Profiles for the standard UPS MIB and for the major brands." },
+    { icon: 'mdi:lan-connect', title: "SNMP and NUT", text: "Reads UPS devices via SNMP v1, v2c or v3, or from a NUT server for a UPS on a USB or serial cable, at a configurable interval, shorter while a UPS runs on battery. Profiles for the standard UPS MIB and for the major brands." },
     { icon: 'mdi:power-plug-off', title: "Automatic Shutdown", text: "On a power failure, shuts the nodes down in order when a condition is met, the node that hosts the application last. With Dry-run it only records and notifies what it would do.", href: '#power-failure-and-automatic-shutdown' },
     { icon: 'mdi:bell-ring', title: "Notifier Integration", text: "Send alerts via any configured notification channel (Telegram, Slack, email, and more) using the [Notifier](../../configuration/admin-area/notifier/) configuration." },
   ]}
@@ -43,7 +43,7 @@ Why integrate UPS into cv4pve-admin instead of NUT alone?
 ## Sections
 
 - **Overview**: short description of the module
-- **Dashboard**: one status card for each enabled UPS device
+- **Dashboard**: one status card for each UPS device
 - **Devices**: UPS device configuration, on-demand scan, connection test and reading history
 - **Trends**: charts of the readings over time
 
@@ -56,6 +56,7 @@ By default a device only reads the UPS and sends notifications. Set to **Dry-run
 ## Requirements
 
 - **SNMP v2c** connection: the UPS (or its network card) must answer SNMP v2c queries from the cv4pve-admin server on the configured port (default UDP 161) with the configured community.
+- **SNMP v1** connection: the same as v2c, for old network cards that answer only SNMP v1.
 - **SNMP v3** connection: the same, with a user of the device instead of the community. See [SNMP v3](#snmp-v3).
 - **NUT** connection: a NUT server (Network UPS Tools, `upsd`) must accept connections from the cv4pve-admin server on the configured port (default TCP 3493). See [NUT connection](#nut-connection).
 - **Host** is an IP address or a host name that the cv4pve-admin server can resolve.
@@ -63,9 +64,9 @@ By default a device only reads the UPS and sends notifications. Set to **Dry-run
 
 ## Dashboard
 
-At the top, four counters: devices **Online**, **On Battery** (with those on low battery), **Critical** and **Offline** (with those never read or in an unknown state). A fifth counter, **Bypass**, appears when at least one device is in bypass.
+At the top, four counters: devices **Online**, **On Battery** (with those on low battery), **Critical** and **Offline** (with those never read or in an unknown state). A fifth counter, **Bypass**, appears when at least one device is in bypass, and **Disabled** when at least one device is disabled. The disabled devices are not in the other counters.
 
-Below, each enabled device has a card. The devices that need attention come first: critical, on battery, low battery, offline, then the others by name. A card shows:
+Below, each device has a card. The devices that need attention come first: critical, on battery, low battery, offline, then the others by name; the disabled devices come last. A disabled device is not read: its card is grey, says **Disabled** instead of the status and shows the values of the last reading, with its time. A card shows:
 
 - name and status badge, manufacturer and model, detected brand, location. The left edge of the card has the colour of the status
 - a badge with what the device does on a power failure: **Alerts only**, **Dry-run** or **Shutdown**
@@ -104,14 +105,14 @@ Each UPS device is configured with:
 
 | Field | Description |
 |-------|-------------|
-| **Enabled** | Read the device and show it in the Dashboard (default: on) |
+| **Enabled** | Read the device (default: on). A disabled device stays in the Dashboard with its last values, marked as disabled |
 | **Name** | Friendly name for the UPS device (required) |
-| **Connection** | **SNMP v2c** (default), **SNMP v3** or **NUT (Network UPS Tools)**. Changing it also changes the port, while the port is still the default of the connection left |
+| **Connection** | **SNMP v1**, **SNMP v2c** (default), **SNMP v3** or **NUT (Network UPS Tools)**. Changing it also changes the port, while the port is still the default of the connection left |
 | **Host** | IP address or host name of the UPS SNMP agent, or of the NUT server (required) |
-| **Port** | Default: 161 for SNMP v2c and v3, 3493 for NUT |
-| **Community** | SNMP v2c only: community string (default: `public`) |
+| **Port** | Default: 161 for SNMP, 3493 for NUT |
+| **Community** | SNMP v1 and v2c only: community string (default: `public`) |
 | **User**, **Security level**, **Authentication**, **Privacy** and their passwords | SNMP v3 only: see [SNMP v3](#snmp-v3) |
-| **Profile** | SNMP v2c and v3: device profile (`auto` = detect the brand from the device, or pick one explicitly) |
+| **Profile** | SNMP only: device profile (`auto` = detect the brand from the device, or pick one explicitly) |
 | **UPS name** | NUT only: the name of the UPS on the NUT server (default: `ups`) |
 | **Location** | Physical location label |
 | **Description** | Free-text notes |
@@ -177,16 +178,20 @@ SNMP v2c sends the community in clear text and does not authenticate who asks. S
 | **User** | The SNMP v3 user configured on the device |
 | **Security level** | **Authentication and privacy** (default): requests are authenticated and encrypted. **Authentication only**: authenticated, the values travel in clear text |
 | **Authentication** and its password | SHA-256 (default), SHA-384, SHA-512, SHA-1 or MD5. The password has at least 8 characters |
-| **Privacy** and its password | AES-128 (default), AES-192 or AES-256. Shown with **Authentication and privacy**. The password has at least 8 characters |
+| **Privacy** and its password | AES-128 (default), AES-192, AES-256, 3DES or DES. Shown with **Authentication and privacy**. The password has at least 8 characters |
 
 - The algorithms and the passwords must be the ones set for that user on the device.
-- SHA-1 and MD5 are weak: the editor says so. Use them only when the device offers nothing else.
+- SHA-1, MD5, 3DES and DES are weak: the editor says so. Use them only when the device offers nothing else.
 - The passwords are stored encrypted.
 - The community of v2c and the settings of v3 are both kept: changing the connection and coming back loses nothing.
 
 When the reading fails the message says why: user unknown to the device, authentication failed (password or algorithm), security level not accepted by the device or not allowed to that user. A wrong privacy password or algorithm usually gives no answer at all, because the device drops what it cannot decrypt: the message for a missing answer mentions it.
 
-Tried against a Net-SNMP agent: every authentication algorithm with AES-128, SHA-256 with AES-192 and AES-256, and authentication only. Not tried on the network card of a real UPS. AES-192 and AES-256 have more than one variant among manufacturers: if a device refuses them, use AES-128. 3DES and DES are not available.
+Tried against a Net-SNMP agent: every authentication algorithm with AES-128, SHA-256 with AES-192 and AES-256, and authentication only. Not tried on the network card of a real UPS. AES-192 and AES-256 have more than one variant among manufacturers: if a device refuses them, use AES-128. DES is tried against the same agent; 3DES is not tried, because that agent does not offer it.
+
+### Devices that read one value at a time
+
+cv4pve-admin asks a device all the values of a reading in one request. Some network cards refuse a request with more values, and an SNMP v1 agent fails the whole request when one of the values is missing. When the request is refused, or gets no answer while a single value does, the device is asked one value at a time, and it stays so until the application restarts. Nothing to set: the reading takes a little longer. A device that does not answer at all is waited for twice before the error. Tried with SNMP v1 against a Net-SNMP agent with a missing value, and against a simulated card that refuses requests with more values with an error or with no answer; not tried on a real card.
 
 ### NUT connection
 
