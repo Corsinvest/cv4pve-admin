@@ -297,6 +297,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **UPS, SNMP v3**: a UPS can be read with SNMP v3 instead of v2c: a user of the device, authentication (SHA-256, SHA-384, SHA-512, SHA-1, MD5) and, if wanted, encryption (AES-128, AES-192, AES-256). In the device choose the connection *SNMP v3*. The passwords are stored encrypted. Existing devices stay on SNMP v2c.
 
+- **UPS, older network cards**: a new connection *SNMP v1* for cards that answer only v1, and *3DES* and *DES* among the privacy algorithms of SNMP v3, marked as weak in the editor. A device that refuses a request with more values, or an SNMP v1 agent that fails it for one missing value, is read one value at a time, with nothing to set. Tried against simulated agents (SNMP v1 with a missing value, SNMP v3 with DES, a card that refuses requests with more values with an error or with no answer); 3DES and real cards not tried.
+
 - **UPS, NUT connection**: a UPS without a network card, connected by USB or serial cable to another machine, can be read from the NUT server (Network UPS Tools) of that machine. In the device choose the connection *NUT*, the address and port of the server (3493 by default) and the name of the UPS. The connection only reads: it never sends a command to the UPS. Stale data from the server are treated as no reading. No user is needed on the server.
 
 - **UPS, bypass**: a UPS in bypass, where the load is fed by mains without the protection of the battery, now has the status *Bypass* and raises a warning. Before, it was shown as *Unknown* and no alert was sent. The dashboard shows a *Bypass* counter when a device is in it. A bypass does not start a shutdown.
@@ -310,6 +312,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Two-factor authentication turned off**: the user receives an email, whoever turned it off.
 
 #### Changed
+
+- **UPS dashboard, disabled devices**: a disabled device is no longer hidden. Its card is grey, says *Disabled* and shows the values of the last reading with its time; it has its own counter and is not counted as online or offline. Before, a cluster with only disabled devices showed "No UPS devices configured".
 
 - **Users, Reset password**: sends the user a link to set a new password and also shows it, so it can be delivered another way. Before, the administrator had to know the current password of the user.
 
