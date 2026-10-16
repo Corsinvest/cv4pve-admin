@@ -273,9 +273,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Internal
 
-- The profile image reads only JPEG, PNG and WebP files, without metadata, so the known vulnerabilities of the image library are out of reach.
+- The profile image is scaled down by the browser, and the image library is no longer used: its known vulnerabilities and its license conditions are gone. Any image the browser can read is accepted (also GIF, BMP and AVIF), up to 10 MB.
 
-- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache, service discovery, command line). The PDF and image libraries stay on their current versions: the newer ones changed license.
+- Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache, service discovery, command line). The PDF library stays on its current version: the newer one changed license.
 
 - Updated a .NET cryptography library with two denial of service fixes, and the ASP.NET Core and Entity Framework Core libraries to 10.0.13, the .NET security release.
 

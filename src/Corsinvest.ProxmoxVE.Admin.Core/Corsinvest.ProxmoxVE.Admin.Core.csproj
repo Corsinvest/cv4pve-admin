@@ -19,7 +19,6 @@
 
     <PackageReference Include="Radzen.Blazor" />
 
-    <PackageReference Include="SixLabors.ImageSharp" />
     <!--<PackageReference Include="SSH.NET" />-->
 
     <PackageReference Include="CronExpressionDescriptor" />

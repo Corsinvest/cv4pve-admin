@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using PdfSharp.Fonts;
-using SixLabors.ImageSharp;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core;

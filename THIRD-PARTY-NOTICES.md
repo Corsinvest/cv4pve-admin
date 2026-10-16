@@ -34,7 +34,6 @@ This project incorporates components from the following third-party projects. On
 | **Roslynator.Analyzers** | Apache-2.0 | [Roslynator](https://github.com/dotnet/roslynator) |
 | **Semver** | MIT | [Semver](https://github.com/WalkerCodeRanger/semver) |
 | **Serilog Ecosystem** (Core, AspNetCore, Sinks.Console/File, Settings.Configuration) | Apache-2.0 | [Serilog](https://github.com/serilog/serilog) |
-| **SixLabors.ImageSharp** (v3.x) | Six Labors Split License (Apache-2.0 for open source use) | [ImageSharp](https://github.com/SixLabors/ImageSharp) |
 | **SSH.NET** | MIT | [SSH.NET](https://github.com/sshnet/SSH.NET) |
 | **System.CommandLine** | MIT | [System.CommandLine](https://github.com/dotnet/command-line-api) |
 | **System.Linq.Dynamic.Core** | Apache-2.0 | [Dynamic LINQ](https://github.com/zzzprojects/System.Linq.Dynamic.Core) |
