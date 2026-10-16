@@ -15,17 +15,43 @@ cv4pve.SideDialog = (function () {
         bar.style.left = r.left + 'px';
     }
 
+    // The dialog is anchored to the right edge: dragging the bar to the left widens it
+    function createResizer(bar, dialog, minWidth) {
+        let start = null;
+
+        const onMove = e => {
+            if (!start) return;
+            dialog.style.width = Math.round(Math.max(minWidth, start.width - (e.clientX - start.x))) + 'px';
+        };
+
+        const onUp = () => {
+            start = null;
+            document.removeEventListener('pointermove', onMove);
+        };
+
+        const onDown = e => {
+            e.preventDefault();
+            start = { x: e.clientX, width: dialog.clientWidth };
+            document.addEventListener('pointermove', onMove);
+            document.addEventListener('pointerup', onUp, { once: true });
+            document.addEventListener('pointercancel', onUp, { once: true });
+        };
+
+        bar.addEventListener('pointerdown', onDown);
+
+        return {
+            dispose() {
+                bar.removeEventListener('pointerdown', onDown);
+                document.removeEventListener('pointermove', onMove);
+            }
+        };
+    }
+
     function attach(dialog) {
         if (dialog.dataset.resizerAttached) return;
         dialog.dataset.resizerAttached = 'true';
 
         setTimeout(function () {
-            // Not a public Radzen API: if an upgrade removes it, say so instead of failing silently
-            if (typeof Radzen?.createSideDialogResizer !== 'function') {
-                console.warn('cv4pve: Radzen.createSideDialogResizer not found, side dialog resize disabled');
-                return;
-            }
-
             const bar = document.createElement('div');
             bar.className = 'rz-dialog-resize-bar cv4pve-side-dialog-resizer';
             bar.title = 'Drag to resize';
@@ -38,14 +64,15 @@ cv4pve.SideDialog = (function () {
 
             positionBar(bar, dialog);
 
-            const resizer = Radzen.createSideDialogResizer(bar, dialog, { position: 'right', minWidth: 300 });
+            const resizer = createResizer(bar, dialog, 300);
 
             // Keep bar aligned when dialog resizes or window resizes
             const ro = new ResizeObserver(() => positionBar(bar, dialog));
             ro.observe(dialog);
-            window.addEventListener('resize', () => positionBar(bar, dialog));
+            const onResize = () => positionBar(bar, dialog);
+            window.addEventListener('resize', onResize);
 
-            _instances.set(dialog, { resizer, bar, ro });
+            _instances.set(dialog, { resizer, bar, ro, onResize });
         }, 200);
     }
 
@@ -54,6 +81,7 @@ cv4pve.SideDialog = (function () {
         if (inst) {
             inst.resizer?.dispose();
             inst.ro?.disconnect();
+            window.removeEventListener('resize', inst.onResize);
             inst.bar?.remove();
             _instances.delete(dialog);
         }

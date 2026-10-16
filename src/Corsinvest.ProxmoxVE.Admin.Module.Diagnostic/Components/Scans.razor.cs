@@ -113,12 +113,7 @@ public partial class Scans(IBrowserService browserService,
         }
     }
 
-    private async Task KeyDownAsync(KeyboardEventArgs e)
-    {
-        if (SelectedItems.Any() && e.IsForDelete()) { await DeleteAsync(); }
-        else if (SelectedItems.Any() && e.IsForEdit()) { }
-        else if (e.IsForNew()) { }
-    }
+    private Task KeyDownAsync(KeyboardEventArgs e) => e.HandleGridKeysAsync(SelectedItems.Any(), DeleteAsync);
 
     private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {

@@ -65,16 +65,13 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
         }
     }
 
-    private async Task KeyDownAsync(KeyboardEventArgs e)
+    private Task KeyDownAsync(KeyboardEventArgs e) => e.HandleGridKeysAsync(SelectedItems.Any(), DeleteAsync, EditSelectedAsync);
+
+    // The check on the clicked column is for the mouse: the key opens the editor of the selected row
+    private Task EditSelectedAsync()
     {
-        if (SelectedItems.Any() && e.IsForDelete()) { await DeleteAsync(); }
-        else if (SelectedItems.Any() && e.IsForEdit())
-        {
-            // The check on the clicked column is for the mouse: the key opens the editor of the selected row
-            _validColumnClick = true;
-            await RowSelectAsync(SelectedItems[0]);
-        }
-        else if (e.IsForNew()) { }
+        _validColumnClick = true;
+        return RowSelectAsync(SelectedItems[0]);
     }
 
     private async Task DeleteAsync()
