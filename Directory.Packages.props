@@ -45,9 +45,9 @@
     <PackageVersion Include="CronExpressionDescriptor" Version="2.51.0" />
     <PackageVersion Include="cronos" Version="0.13.0" />
     <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.9.0" />
-    <!-- 3.1.12: latest 3.x (Apache-2.0). Known vulnerabilities fixed only in 4.x are in decoders and metadata
-         that ImageProcessorHelper does not use (only JPEG, PNG and WebP, metadata skipped).
-         DO NOT upgrade to v4.x: switched to Six Labors Split License (commercial). -->
+    <!-- 3.1.12: latest 3.x, Six Labors Split License: Apache-2.0 for open source use. Known vulnerabilities fixed
+         only in 4.x are in decoders and metadata that ImageProcessorHelper does not use (only JPEG, PNG and WebP,
+         metadata skipped). DO NOT upgrade to v4.x: it checks for a Six Labors license at runtime. -->
     <PackageVersion Include="SixLabors.ImageSharp" Version="[3.1.12]" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.4" />
