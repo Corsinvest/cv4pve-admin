@@ -60,7 +60,9 @@ public partial class Disks(IAdminService adminService) : IClusterName, IRefresha
                                      .ToDictionary(a => (a.Node, a.Storage));
 
         Items = [.. (await ParallelHelper.RunManyAsync(
-                        resources.Where(a => a.ResourceType == ClusterResourceType.Vm),
+                        await PermissionService.FilterByVmAsync(ClusterName,
+                                                                resources.Where(a => a.ResourceType == ClusterResourceType.Vm),
+                                                                a => a.VmId),
                         async item =>
                         {
                             var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);

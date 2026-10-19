@@ -176,8 +176,8 @@ public partial class Networks(IAdminService adminService,
         var client = await clusterClient.GetPveClientAsync();
 
         var resources = await clusterClient.CachedData.GetResourcesAsync(false);
-        var nodes = resources.Where(a => a.ResourceType == ClusterResourceType.Node).ToList();
-        var vms = resources.Where(a => a.ResourceType == ClusterResourceType.Vm).ToList();
+        var nodes = await PermissionService.FilterByNodeAsync(ClusterName, resources.Where(a => a.ResourceType == ClusterResourceType.Node), a => a.Node);
+        var vms = await PermissionService.FilterByVmAsync(ClusterName, resources.Where(a => a.ResourceType == ClusterResourceType.Vm), a => a.VmId);
 
         // Node networks
         var hostNets = (await ParallelHelper.RunManyAsync(nodes, async item =>
@@ -234,11 +234,14 @@ public partial class Networks(IAdminService adminService,
             }
         })).ToList();
 
+        // The software-defined networks are a setting of the whole cluster
         var storageTask = client.Storage.GetAsync();
-        var sdnRowsTask = FetchSdnRowsAsync(client, nodes);
+        var sdnRowsTask = await PermissionService.HasClusterReadAsync(ClusterName)
+                            ? FetchSdnRowsAsync(client, nodes)
+                            : Task.FromResult(new List<NetworkDiagramBuilder.SdnVnetRow>());
         await Task.WhenAll(storageTask, sdnRowsTask);
 
-        var storages = storageTask.Result.ToList();
+        var storages = await PermissionService.FilterByStorageAsync(ClusterName, storageTask.Result, a => a.Storage);
 
         NetworkDiagramSvg = NetworkDiagramBuilder.BuildSvg(
             hostNets,
@@ -289,7 +292,10 @@ public partial class Networks(IAdminService adminService,
                         .Where(a => a.ResourceType == ClusterResourceType.Node)
                         .ToList();
 
-        var rows = await FetchSdnRowsAsync(client, nodes);
+        // The software-defined networks are a setting of the whole cluster
+        var rows = await PermissionService.HasClusterReadAsync(ClusterName)
+                    ? await FetchSdnRowsAsync(client, nodes)
+                    : [];
         SdnVnets = [.. rows.Select(r => new SdnVnet(r.Vnet,
                                                     r.Zone,
                                                     r.ZoneType,
@@ -321,8 +327,10 @@ public partial class Networks(IAdminService adminService,
         var clusterClient = adminService[ClusterName];
         var client = await adminService[ClusterName].GetPveClientAsync();
 
-        var nodes = (await clusterClient.CachedData.GetResourcesAsync(false))
-                        .Where(a => a.ResourceType == ClusterResourceType.Node);
+        var nodes = await PermissionService.FilterByNodeAsync(ClusterName,
+                                                              (await clusterClient.CachedData.GetResourcesAsync(false))
+                                                                    .Where(a => a.ResourceType == ClusterResourceType.Node),
+                                                              a => a.Node);
 
         NodeNetworks = [.. (await ParallelHelper.RunManyAsync(nodes, async item =>
                         {
@@ -386,8 +394,10 @@ public partial class Networks(IAdminService adminService,
 
         var clusterClient = adminService[ClusterName];
 
-        var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
-                        .Where(a => a.ResourceType == ClusterResourceType.Vm)
+        var vms = (await PermissionService.FilterByVmAsync(ClusterName,
+                                                           (await clusterClient.CachedData.GetResourcesAsync(false))
+                                                                .Where(a => a.ResourceType == ClusterResourceType.Vm),
+                                                           a => a.VmId))
                         .OrderBy(a => a.Node)
                         .ThenBy(a => a.Type)
                         .ThenBy(a => a.VmId);

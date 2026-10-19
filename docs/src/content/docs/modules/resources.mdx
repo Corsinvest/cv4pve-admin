@@ -160,7 +160,7 @@ The module has no settings. Each page has its own permission:
 
 The built-in role **Admin for module Resources** includes all of them, together with one permission per dashboard widget of the module (`Status.Widget.<widget>`).
 
-Inside the pages, the cluster permissions of the user decide which nodes, guests and storages are listed and which actions are offered on them (power management, console, snapshots, backups, replication, audit).
+Inside the pages, the cluster permissions of the user decide which nodes, guests and storages are listed and which actions are offered on them (power management, console, snapshots, backups, replication, audit). This holds also for **Disks**, **Partitions**, **Snapshots** and the **Networks** tabs and diagram, which show only the readable nodes, guests and storages; the **SDN** tab, a setting of the whole cluster, needs **Read** on every VM, node and storage of the cluster.
 
 Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
 

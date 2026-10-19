@@ -111,13 +111,14 @@ public partial class Snapshots(IAdminService adminService) : IClusterName, IRefr
                                               a.Snapshot.Replication,
                                               a.Snapshot.Size,
                                               a.Snapshot.Date));
+            Items = await PermissionService.FilterByVmAsync(ClusterName, Items, a => a.VmId);
         }
         else
         {
-            var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
-                        .Where(a => a.ResourceType == ClusterResourceType.Vm
-                                    && !a.IsTemplate)
-                        .ToList();
+            var vms = await PermissionService.FilterByVmAsync(ClusterName,
+                                                              (await clusterClient.CachedData.GetResourcesAsync(false))
+                                                                    .Where(a => a.ResourceType == ClusterResourceType.Vm && !a.IsTemplate),
+                                                              a => a.VmId);
 
             var items = new List<Data>();
             foreach (var vm in vms)
