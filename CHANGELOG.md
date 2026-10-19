@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **Update Manager, permissions per VM (review your roles)**: the module showed the update status of every guest of the cluster to whoever could open its pages. Now it lists only the guests the user can read; the scan, the report and the widget need Read on every VM, node and storage of the cluster.
+
 - **Diagnostics, permissions per resource (review your roles)**: the module showed the findings of every node, guest and storage to whoever could open its pages. Now the details of a scan, and the compliance view of the Enterprise Edition, list only the findings of the resources the user can read. The counts of the scans, the report, the scan, deleting a scan, ignored issues and the widgets need Read on every VM, node and storage of the cluster.
 
 - **Replication Analytics, permissions per VM (review your roles)**: the module showed the replications of every VM of the cluster to whoever could open its pages. Now the replications, the trends and the scheduled replication jobs list only the VMs the user can read (the trends also only readable nodes). The scan, deleting all data and the widgets of the module need Read on every VM, node and storage of the cluster.

@@ -50,6 +50,7 @@ public class Module : ModuleBase
         [
             new(this,"Status")
             {
+                ClusterWide = true,
                 Description = "Updater Status",
                 RenderInfo = new(typeof(Components.Widgets.Status)),
                 Width = 3,
