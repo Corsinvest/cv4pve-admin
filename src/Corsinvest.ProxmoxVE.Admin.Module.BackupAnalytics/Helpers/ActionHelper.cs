@@ -4,6 +4,7 @@
  */
 using System.Globalization;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Api;
 using Humanizer;
@@ -13,6 +14,17 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.BackupAnalytics.Helpers;
 
 internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNotification>
 {
+    // The VM ids of the backup results of the cluster that the user can read; null when he can read every VM
+    public static async Task<List<string?>?> GetReadableVmIdsAsync(IPermissionService permissionService, ModuleDbContext db, string clusterName)
+        => await permissionService.HasAllVmsReadAsync(clusterName)
+            ? null
+            : await permissionService.FilterByVmAsync(clusterName,
+                                                   await db.JobResults.Where(a => a.TaskResult.ClusterName == clusterName)
+                                                                      .Select(a => a.VmId)
+                                                                      .Distinct()
+                                                                      .ToListAsync(),
+                                                   PermissionExtensions.ParseVmId);
+
     public static DateTime ParseDateBackup(string value) => DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", null);
 
     private static readonly string[] _sizes = ["KIB", "MIB", "GIB", "TIB"];

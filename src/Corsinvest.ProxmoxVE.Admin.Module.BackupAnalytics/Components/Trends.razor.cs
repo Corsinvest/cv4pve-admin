@@ -44,10 +44,13 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
     protected override async Task OnInitializedAsync()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var query = db.TaskResults.FromClusterName(ClusterName);
+        var readable = await Helpers.ActionHelper.GetReadableVmIdsAsync(PermissionService, db, ClusterName);
+        var jobs = db.TaskResults.FromClusterName(ClusterName)
+                                 .SelectMany(a => a.Jobs)
+                                 .Where(a => readable!.Contains(a.VmId), readable != null);
 
-        MinDate = await query.SelectMany(a => a.Jobs).Select(a => a.Start).MinAsync();
-        MaxDate = await query.SelectMany(a => a.Jobs).Select(a => a.End).MaxAsync();
+        MinDate = await jobs.Select(a => a.Start).MinAsync();
+        MaxDate = await jobs.Select(a => a.End).MaxAsync();
     }
 
     private DateTime StartUtc
@@ -78,6 +81,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                            .ToListAsync();
         }
 
+        Storages = await PermissionService.FilterByStorageAsync(ClusterName, Storages, a => a.Storage);
         SelectedStorages = [.. SelectedStorages.Where(a => Storages.Contains(a))];
 
         await LoadVmIdsAsync();
@@ -101,6 +105,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                          .ToListAsync()
                     : [];
 
+        VmIds = await PermissionService.FilterByVmAsync(ClusterName, VmIds, PermissionExtensions.ParseVmId);
         SelectedVmIds = [.. SelectedVmIds.Where(a => VmIds.Contains(a))];
 
         await LoadDataAsync();
@@ -112,6 +117,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
         var nodes = SelectedStorages.Select(a => a.Node).ToList();
         var storages = SelectedStorages.Select(a => a.Storage).ToList();
+        SelectedVmIds = [.. SelectedVmIds.Where(a => VmIds.Contains(a))];
 
         var vms = SelectedVmIds.Any()
                     ? (await adminService[ClusterName].CachedData.GetResourcesAsync(false))

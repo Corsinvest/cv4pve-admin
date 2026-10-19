@@ -23,24 +23,27 @@
     <HeaderTemplate>
         <CrudToolbar OnRefresh="RefreshDataAsync" OnExport="ExportAsync" Permissions="Module.Permissions.Backup.Data">
             <TemplateBefore>
-                <PermissionView PermissionKey="@Module.Permissions.Backup.Scan.Key" Path="*">
-                    <RadzenButton Variant="Variant.Text"
-                                  Size="ButtonSize.Small"
-                                  Text="@L["Scan"]"
-                                  Click="ScanAsync"
-                                  Icon="play_arrow"
-                                  Style="--rz-icon-fill: 1;"
-                                  ButtonStyle="ButtonStyle.Success" />
-                </PermissionView>
+                @if (ClusterRead)
+                {
+                    <PermissionView PermissionKey="@Module.Permissions.Backup.Scan.Key" Path="*">
+                        <RadzenButton Variant="Variant.Text"
+                                      Size="ButtonSize.Small"
+                                      Text="@L["Scan"]"
+                                      Click="ScanAsync"
+                                      Icon="play_arrow"
+                                      Style="--rz-icon-fill: 1;"
+                                      ButtonStyle="ButtonStyle.Success" />
+                    </PermissionView>
 
-                <PermissionView PermissionKey="@Module.Permissions.Backup.DeleteAll.Key" Path="*">
-                    <RadzenButton Variant="Variant.Text"
-                                  Size="ButtonSize.Small"
-                                  Text="@L["Delete all data"]"
-                                  Click="RemoveAllDataAsync"
-                                  Icon="delete"
-                                  ButtonStyle="ButtonStyle.Danger" />
-                </PermissionView>
+                    <PermissionView PermissionKey="@Module.Permissions.Backup.DeleteAll.Key" Path="*">
+                        <RadzenButton Variant="Variant.Text"
+                                      Size="ButtonSize.Small"
+                                      Text="@L["Delete all data"]"
+                                      Click="RemoveAllDataAsync"
+                                      Icon="delete"
+                                      ButtonStyle="ButtonStyle.Danger" />
+                    </PermissionView>
+                }
             </TemplateBefore>
 
             <TemplateAfter>
@@ -50,12 +53,15 @@
     </HeaderTemplate>
 
     <EmptyTemplate>
-        <PermissionView PermissionKey="@Module.Permissions.Backup.Scan.Key" Path="*">
-            <EmptyExecuteAction Text="@L["Execute your first scan"]"
-                                Click="ScanAsync"
-                                Icon="play_arrow"
-                                Style="--rz-icon-fill: 1;" />
-        </PermissionView>
+        @if (ClusterRead)
+        {
+            <PermissionView PermissionKey="@Module.Permissions.Backup.Scan.Key" Path="*">
+                <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                                    Click="ScanAsync"
+                                    Icon="play_arrow"
+                                    Style="--rz-icon-fill: 1;" />
+            </PermissionView>
+        }
     </EmptyTemplate>
 
     <GroupHeaderTemplate>
@@ -115,14 +121,17 @@
                               title="@L["Show VM log"]"
                               aria-label="@L["Show VM log"]" />
 
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Icon="description"
-                              ButtonStyle="ButtonStyle.Success"
-                              Click="@(() => ShowLogAsync(ctx, true))"
-                              @onclick:stopPropagation="true"
-                              title="@L["Show Job log"]"
-                              aria-label="@L["Show Job log"]" />
+                @if (ClusterRead)
+                {
+                    <RadzenButton Variant="Variant.Text"
+                                  Size="ButtonSize.Small"
+                                  Icon="description"
+                                  ButtonStyle="ButtonStyle.Success"
+                                  Click="@(() => ShowLogAsync(ctx, true))"
+                                  @onclick:stopPropagation="true"
+                                  title="@L["Show Job log"]"
+                                  aria-label="@L["Show Job log"]" />
+                }
             </Template>
         </RadzenDataGridColumn>
     </Columns>

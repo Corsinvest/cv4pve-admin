@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **Backup Analytics, permissions per VM (review your roles)**: the module showed the backups of every VM of the cluster to whoever could open its pages. Now the backups, the backups in line, the unprotected disks and the trends list only the VMs (and storages) the user can read, and a scheduled backup job only when all its guests are readable. The scan, deleting all data, the log of a whole task and the widgets of the module need Read on every VM, node and storage of the cluster.
+
 - **AutoSnap, permissions per VM (review your roles)**: the module showed and acted on every VM of the cluster to whoever could open its pages. Now *Status* lists only the snapshots of the VMs the user can read, a job is listed only when all of its VMs are readable, and *Snap*, *Purge Snapshots*, deleting and saving a job, and deleting snapshots from *Status*, need the snapshot permission on every VM involved. A job on @all, a pool, a tag or a node, and the widgets of the module, need Read on every VM, node and storage of the cluster. The picker of the VMs offers only the readable ones.
 
 - **Language of the profile**: the language chosen in the profile is applied to the interface and to the account emails sent to the user; before, both followed the language of the server.

@@ -50,8 +50,12 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         await RefreshDataAsync();
     }
 
+    // Scan, delete all and the log of a whole task are about the whole cluster
+    private bool ClusterRead { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
+        ClusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
         Vms = [.. (await adminService[ClusterName].CachedData.GetResourcesAsync(false))
                     .Where(a => a.ResourceType == ClusterResourceType.Vm)
                     .Select(a => new VmData(a.VmId.ToString(), a.Name, a.Description, a.VmType))];
@@ -98,7 +102,9 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
         if (_loader is null) { return; }
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await _loader.LoadAsync(db.JobResults.Where(a => a.TaskResult.ClusterName == ClusterName),
+        var readable = await Helpers.ActionHelper.GetReadableVmIdsAsync(PermissionService, db, ClusterName);
+        ResultLoadData = await _loader.LoadAsync(db.JobResults.Where(a => a.TaskResult.ClusterName == ClusterName)
+                                                              .Where(a => readable!.Contains(a.VmId), readable != null),
                                                  args,
                                                  a => new Data(Vms)
                                                  {
@@ -118,6 +124,9 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
 
     private async Task ShowLogAsync(Data item, bool forJob)
     {
+        // The log of the whole task has the lines of every VM of the task
+        if (forJob && !await RequireClusterReadAsync()) { return; }
+
         var title = forJob
                 ? L["Full Task"] // L["Full Task {0}", item.TaskId]
                 : L["Job Vm: {0}", item.VmId!];
@@ -144,6 +153,7 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
     private async Task RemoveAllDataAsync()
     {
         if (!await HasPermissionAsync(ClusterName, Module.Permissions.Backup.DeleteAll)) { return; }
+        if (!await RequireClusterReadAsync()) { return; }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete all data"], true))
         {
@@ -159,9 +169,18 @@ public partial class Backups(IDbContextFactory<ModuleDbContext> dbContextFactory
     private async Task ScanAsync()
     {
         if (!await HasPermissionAsync(ClusterName, Module.Permissions.Backup.Scan)) { return; }
+        if (!await RequireClusterReadAsync()) { return; }
 
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
+    }
+
+    private async Task<bool> RequireClusterReadAsync()
+    {
+        if (await PermissionService.HasClusterReadAsync(ClusterName)) { return true; }
+
+        notificationService.Error(L["Not allowed: it concerns the whole cluster and needs Read on every VM, node and storage."]);
+        return false;
     }
 
     public void Dispose()

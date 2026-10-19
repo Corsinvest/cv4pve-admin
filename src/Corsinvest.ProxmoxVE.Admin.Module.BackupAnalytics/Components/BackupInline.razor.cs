@@ -63,6 +63,6 @@ public partial class BackupInline(IAdminService adminService) : IClusterName
 
         IsLoading = false;
 
-        return [.. ret.Distinct()];
+        return await PermissionService.FilterByVmAsync(ClusterName, ret.Distinct(), a => a.VmId);
     }
 }
