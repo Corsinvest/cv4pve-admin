@@ -165,7 +165,11 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 
 The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
 
-These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
+The module also follows the cluster permissions (**Node: Read**, see [Security](../../configuration/admin-area/security/#permissions)):
+
+- **Folder** lists only the backups of the nodes the user can read; **Backup**, which runs on every node, needs **Read** on every VM, node and storage of the cluster.
+- **Git** <Tag kind="ee" /> holds the configuration of every node: the page, **Push**, **Reset**, **Sync** and **Download** need **Read** on the whole cluster.
+- The widgets and the **Overview** count all the nodes of a cluster: they are shown only on the clusters where the user can read every VM, node and storage.
 
 <RequirementsSsh />
 

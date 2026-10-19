@@ -25,7 +25,7 @@
         <HeaderTemplate>
             <CrudToolbar OnRefresh="RefreshDataAsync">
                 <TemplateBefore>
-                    <PermissionView PermissionKey="@Module.Permissions.FolderBackup.Backup.Key" Path="*">
+                    <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.FolderBackup.Backup.Key : string.Empty)" Path="*">
                         <RadzenButton Variant="Variant.Text"
                                       Size="ButtonSize.Small"
                                       Text="@L["Backup"]"
@@ -54,7 +54,7 @@
         </HeaderTemplate>
 
         <EmptyTemplate>
-            <PermissionView PermissionKey="@Module.Permissions.FolderBackup.Backup.Key" Path="*">
+            <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.FolderBackup.Backup.Key : string.Empty)" Path="*">
                 <EmptyExecuteAction Text="@L["Execute your first backup"]"
                                     Click="BackupAsync"
                                     Icon="play_arrow"
