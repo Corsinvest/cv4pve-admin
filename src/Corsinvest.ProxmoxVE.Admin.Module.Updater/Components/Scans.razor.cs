@@ -56,7 +56,9 @@ public partial class Scans(IAdminService adminService,
         try
         {
             Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
-            Items = await ActionHelper.GetAsync(adminService[ClusterName]);
+            ClusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
+            Items = [.. (await PermissionService.FilterAsync(ClusterName, await ActionHelper.GetAsync(adminService[ClusterName])))
+                            .Cast<ClusterResourceUpdateScanInfo>()];
         }
         finally
         {
@@ -66,11 +68,14 @@ public partial class Scans(IAdminService adminService,
         }
     }
 
+    // A scan runs a command in every guest, and the report lists them all: both are about the whole cluster
+    private bool ClusterRead { get; set; }
+
     private static bool ShowWatingUpdate(ClusterResourceUpdateScanInfo item) => item.UpdateScanStatus == UpdateInfoStatus.InScan;
 
     private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Data.Export)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Data.Export) || !ClusterRead) { return; }
 
         var format = item?.Value switch
         {
@@ -113,7 +118,7 @@ public partial class Scans(IAdminService adminService,
 
     private async Task ScanAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Run)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Run) || !ClusterRead) { return; }
 
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);

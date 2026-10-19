@@ -124,7 +124,11 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 
 The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
 
-These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
+The module also follows the cluster permissions (**VM: Read** and **Node: Read**, see [Security](../../configuration/admin-area/security/#permissions)):
+
+- **Scans** lists only the guests and nodes the user can read.
+- **Scan**, which runs a command in every running guest, and the report download, which lists them all, need **Read** on every VM, node and storage of the cluster: without it the buttons are hidden.
+- The widget and the **Overview** count all the guests of a cluster: they are shown only on the clusters where the user can read every VM, node and storage.
 
 <RequirementsSsh />
 

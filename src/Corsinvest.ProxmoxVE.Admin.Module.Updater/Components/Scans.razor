@@ -25,7 +25,7 @@
             <CrudToolbar>
                 @*OnRefresh="RefreshDataAsync"*@
                 <TemplateBefore>
-                    <PermissionView PermissionKey="@Module.Permissions.Scan.Run.Key" Path="*">
+                    <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.Scan.Run.Key : string.Empty)" Path="*">
                         <RadzenButton Variant="Variant.Text"
                                       Size="ButtonSize.Small"
                                       Text="@L["Scan"]"
@@ -35,7 +35,7 @@
                                       ButtonStyle="ButtonStyle.Success" />
                     </PermissionView>
 
-                    <PermissionView PermissionKey="@Module.Permissions.Scan.Data.Export.Key" Path="*">
+                    <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.Scan.Data.Export.Key : string.Empty)" Path="*">
                         <RadzenSplitButton Variant="Variant.Text"
                                            Size="ButtonSize.Small"
                                            Text="@L["Download"]"
@@ -58,7 +58,7 @@
         </HeaderTemplate>
 
         <EmptyTemplate>
-            <PermissionView PermissionKey="@Module.Permissions.Scan.Run.Key" Path="*">
+            <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.Scan.Run.Key : string.Empty)" Path="*">
                 <EmptyExecuteAction Text="@L["Execute your first scan"]"
                                     Click="ScanAsync"
                                     Icon="play_arrow"
