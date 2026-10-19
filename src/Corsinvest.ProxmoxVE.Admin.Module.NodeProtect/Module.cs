@@ -82,7 +82,7 @@ public class Module : ModuleBase
 
         public static class FolderBackup
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(FolderBackup), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(FolderBackup), nameof(Data)) { WithRead = false };
             public static Permission Backup { get; } = new(Data.Prefix, nameof(Backup), "Backup");
             public static Permission Delete { get; } = new(Data.Prefix, nameof(Delete), "Delete");
             public static Permission Download { get; } = new(Data.Prefix, nameof(Download), "Download");
@@ -90,7 +90,7 @@ public class Module : ModuleBase
 
         public static class Git
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(Git), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Git), nameof(Data)) { WithRead = false };
             public static Permission Push { get; } = new(Data.Prefix, nameof(Push), "Push");
             public static Permission Reset { get; } = new(Data.Prefix, nameof(Reset), "Reset repository");
             public static Permission Sync { get; } = new(Data.Prefix, nameof(Sync), "Sync from remote");

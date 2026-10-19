@@ -85,14 +85,14 @@ public class Module : ModuleBase
 
         public static class Scan
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(Scan), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Scan), nameof(Data)) { WithRead = false };
             public static Permission Run { get; } = new(Data.Prefix, nameof(Run), "Scan");
             public static Permission Delete { get; } = new(Data.Prefix, nameof(Delete), "Delete");
         }
 
         public static class IgnoredIssue
         {
-            public static PermissionsCrud Data { get; } = new(BaseName, nameof(IgnoredIssue), nameof(Data));
+            public static PermissionsCrud Data { get; } = new(BaseName, nameof(IgnoredIssue), nameof(Data)) { WithRead = false };
         }
     }
 

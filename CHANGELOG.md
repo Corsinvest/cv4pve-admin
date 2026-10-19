@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **Permission editor, Read of the page data removed**: for the data of a page (the jobs, status and results of AutoSnap, the backups of Backup Analytics, the replications of Replication Analytics, the scans and ignored issues of Diagnostics, the scans of Update Manager, the backups of Node Protect, the reports of System Report, the UPS devices) the editor offered a *Read* permission that was never checked: opening the page is what shows them. It is no longer offered; roles that already have it keep it, without effect.
+
 - **Resources, permissions per resource on every page (review your roles)**: the Disks, Partitions, Snapshots and Networks pages listed every VM and node of the cluster, unlike Guests, Nodes and Storages. Now they list only the readable ones, and the network diagram draws only readable nodes, guests and storages. The SDN tab needs Read on every VM, node and storage of the cluster.
 
 - **Node Protect, permissions per node (review your roles)**: the module showed the backups of every node to whoever could open its pages. Now the folder backups list only the nodes the user can read; the backup of all the nodes, the Git repository of the Enterprise Edition and the widgets need Read on every VM, node and storage of the cluster.

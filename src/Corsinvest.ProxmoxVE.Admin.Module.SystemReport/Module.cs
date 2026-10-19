@@ -60,7 +60,7 @@ public class Module : ModuleBase
 
         public static class Report
         {
-            public static PermissionsCrud Data { get; } = new(BaseName, nameof(Report), nameof(Data));
+            public static PermissionsCrud Data { get; } = new(BaseName, nameof(Report), nameof(Data)) { WithRead = false };
             public static Permission Download { get; } = new(Data.Prefix, nameof(Download), "Download");
         }
     }
