@@ -42,12 +42,17 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
         });
     }
 
+    // A backup runs on every node of the cluster
+    private bool ClusterRead { get; set; }
+
     public async Task RefreshDataAsync()
     {
         Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
 
+        ClusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
+
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        Items = await db.FolderTaskResults
+        Items = await PermissionService.FilterByNodeAsync(ClusterName, await db.FolderTaskResults
                         .FromClusterName(ClusterName)
                         .Select(a => new Data
                         {
@@ -60,7 +65,7 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
                             Size = a.Size,
                             Status = a.Status
                         })
-                        .ToListAsync();
+                        .ToListAsync(), a => a.Node);
     }
 
     private async Task ShowLogAsync(Data item)
@@ -110,7 +115,7 @@ public partial class Render(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task BackupAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.FolderBackup.Backup)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.FolderBackup.Backup) || !ClusterRead) { return; }
 
         backgroundJobService.Enqueue<Job>(a => a.BackupAsync(ClusterName));
         notificationService.Info(L["Backup started!"]);

@@ -49,6 +49,7 @@ public class Module : ModuleBase
         [
             new(this, "Folder Size")
             {
+                ClusterWide = true,
                 Description = "NodeProtect Folder Size",
                 RenderInfo = new(typeof(Folder.Components.Widgets.Size)),
                 Width = 3,
