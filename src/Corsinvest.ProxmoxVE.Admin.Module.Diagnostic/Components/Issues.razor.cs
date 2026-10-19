@@ -28,7 +28,8 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
     {
         if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await _loader.LoadAsync(db.IgnoredIssues.FromClusterName(ClusterName), args, x => x);
+        var clusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
+        ResultLoadData = await _loader.LoadAsync(db.IgnoredIssues.FromClusterName(ClusterName).Where(a => false, !clusterRead), args, x => x);
     }
 
     public Task RefreshDataAsync() => _loader?.RefreshAsync() ?? DataGridRef.Reload();
@@ -47,7 +48,8 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task RowSelectAsync(IgnoredIssue item)
     {
         if (!_validColumnClick) { return; }
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Edit)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Edit)
+            || !await PermissionService.HasClusterReadAsync(ClusterName)) { return; }
 
         await ShowEditorAsync(item);
     }
@@ -57,7 +59,8 @@ public partial class Issues(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task DeleteAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Delete)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Delete)
+            || !await PermissionService.HasClusterReadAsync(ClusterName)) { return; }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {

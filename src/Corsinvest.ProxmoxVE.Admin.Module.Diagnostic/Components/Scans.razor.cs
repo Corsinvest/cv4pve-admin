@@ -92,8 +92,12 @@ public partial class Scans(IBrowserService browserService,
         }
     }
 
+    // The counts, the report, a scan and deleting it are about the whole cluster
+    private bool ClusterRead { get; set; }
+
     public async Task RefreshDataAsync()
     {
+        ClusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
         Settings = settingsService.GetForModule<Module, Settings>(ClusterName);
         if (_loader is not null) { await _loader.RefreshAsync(); }
         else if (DataGridRef != null) { await InvokeAsync(DataGridRef.Reload); }
@@ -101,7 +105,7 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task DeleteAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Delete)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Delete) || !ClusterRead) { return; }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {
@@ -117,7 +121,7 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task DownloadAsync(RadzenSplitButtonItem? item)
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Data.Export)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Data.Export) || !ClusterRead) { return; }
 
         var format = item?.Value switch
         {
@@ -148,7 +152,7 @@ public partial class Scans(IBrowserService browserService,
 
     private async Task ScanAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Run)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Scan.Run) || !ClusterRead) { return; }
 
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);

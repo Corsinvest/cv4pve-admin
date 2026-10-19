@@ -112,6 +112,10 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 
 The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
 
-These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
+The module also follows the cluster permissions (**VM: Read**, **Node: Read** and **Storage: Read**, see [Security](../../configuration/admin-area/security/#permissions)):
+
+- The details of a scan list only the findings of the nodes, guests and storages the user can read. The findings about the cluster itself (users, cluster settings) need **Read** on every VM, node and storage of the cluster. The same holds for the compliance view <Tag kind="ee" />.
+- The counts of the **Scans** grid, the report download, **Scan**, deleting a scan, **Ignore Issue** and the **Ignored Issues** page need **Read** on the whole cluster: an ignored issue hides the finding to every user.
+- The widgets and the **Overview** count all the findings of a cluster: they are shown only on the clusters where the user can read every VM, node and storage.
 
 <PvePrivileges module="diagnostics" />

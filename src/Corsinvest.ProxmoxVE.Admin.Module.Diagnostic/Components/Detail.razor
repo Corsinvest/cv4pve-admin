@@ -71,7 +71,7 @@
                     <RadzenLink Icon="info" Target="_blank" Path="@helpUrl" />
                 }
 
-                <PermissionView PermissionKey="@Module.Permissions.IgnoredIssue.Data.Create.Key" Path="*">
+                <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.IgnoredIssue.Data.Create.Key : string.Empty)" Path="*">
                     <RadzenButton Variant="Variant.Text"
                                   Size="ButtonSize.Small"
                                   Icon="visibility_off"

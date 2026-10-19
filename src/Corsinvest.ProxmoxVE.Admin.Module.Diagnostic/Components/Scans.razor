@@ -27,7 +27,7 @@
                      Permissions="Module.Permissions.Scan.Data"
                      PermissionDelete="Module.Permissions.Scan.Delete">
             <TemplateBefore>
-                <PermissionView PermissionKey="@Module.Permissions.Scan.Run.Key" Path="*">
+                <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.Scan.Run.Key : string.Empty)" Path="*">
                     <RadzenButton Variant="Variant.Text"
                                   Size="ButtonSize.Small"
                                   Text="@L["Scan"]"
@@ -39,7 +39,7 @@
             </TemplateBefore>
 
             <TemplateAfter>
-                <PermissionView PermissionKey="@Module.Permissions.Scan.Data.Export.Key" Path="*">
+                <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.Scan.Data.Export.Key : string.Empty)" Path="*">
                     <RadzenSplitButton Variant="Variant.Text"
                                        Size="ButtonSize.Small"
                                        Text="@L["Download"]"
@@ -60,7 +60,7 @@
     </HeaderTemplate>
 
     <EmptyTemplate>
-        <PermissionView PermissionKey="@Module.Permissions.Scan.Run.Key" Path="*">
+        <PermissionView PermissionKey="@(ClusterRead ? Module.Permissions.Scan.Run.Key : string.Empty)" Path="*">
             <EmptyExecuteAction Text="@L["Execute your first scan"]"
                                 Click="ScanAsync"
                                 Icon="play_arrow"
@@ -73,9 +73,9 @@
     </Template>
 
     <Columns>
-        <RadzenDataGridColumn Property="@nameof(Data.Info)" Title="@L["Info"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.Warning)" Title="@L["Warning"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.Critical)" Title="@L["Critical"]" />
+        <RadzenDataGridColumn Property="@nameof(Data.Info)" Title="@L["Info"]" Visible="@ClusterRead" />
+        <RadzenDataGridColumn Property="@nameof(Data.Warning)" Title="@L["Warning"]" Visible="@ClusterRead" />
+        <RadzenDataGridColumn Property="@nameof(Data.Critical)" Title="@L["Critical"]" Visible="@ClusterRead" />
         <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" />
         <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" />
         <RadzenDataGridColumn Property="@nameof(Data.Duration)" Title="@L["Duration"]" FormatString="{0:hh':'mm':'ss'.'fff}" />

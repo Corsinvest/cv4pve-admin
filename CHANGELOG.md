@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **Diagnostics, permissions per resource (review your roles)**: the module showed the findings of every node, guest and storage to whoever could open its pages. Now the details of a scan, and the compliance view of the Enterprise Edition, list only the findings of the resources the user can read. The counts of the scans, the report, the scan, deleting a scan, ignored issues and the widgets need Read on every VM, node and storage of the cluster.
+
 - **Replication Analytics, permissions per VM (review your roles)**: the module showed the replications of every VM of the cluster to whoever could open its pages. Now the replications, the trends and the scheduled replication jobs list only the VMs the user can read (the trends also only readable nodes). The scan, deleting all data and the widgets of the module need Read on every VM, node and storage of the cluster.
 
 - **Backup Analytics, permissions per VM (review your roles)**: the module showed the backups of every VM of the cluster to whoever could open its pages. Now the backups, the backups in line, the unprotected disks and the trends list only the VMs (and storages) the user can read, and a scheduled backup job only when all its guests are readable. The scan, deleting all data, the log of a whole task and the widgets of the module need Read on every VM, node and storage of the cluster.
