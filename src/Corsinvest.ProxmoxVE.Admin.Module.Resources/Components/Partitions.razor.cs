@@ -51,7 +51,7 @@ public partial class Partitions(IAdminService adminService) : IClusterName, IRef
                         .OrderBy(a => a.Node)
                         .ThenBy(a => a.VmId);
 
-        Items = [.. (await ParallelHelper.RunManyAsync(vms, async item =>
+        Items = [.. (await ParallelHelper.RunManyAsync(await PermissionService.FilterByVmAsync(ClusterName, vms, a => a.VmId), async item =>
                     {
                         var partitions = await clusterClient.CachedData.GetQemuFsInfoAsync(item.Node, item.VmId, false);
                         return partitions.Select(p => new Data(item.Node,

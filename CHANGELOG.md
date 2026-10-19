@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **Resources, permissions per resource on every page (review your roles)**: the Disks, Partitions, Snapshots and Networks pages listed every VM and node of the cluster, unlike Guests, Nodes and Storages. Now they list only the readable ones, and the network diagram draws only readable nodes, guests and storages. The SDN tab needs Read on every VM, node and storage of the cluster.
+
 - **Node Protect, permissions per node (review your roles)**: the module showed the backups of every node to whoever could open its pages. Now the folder backups list only the nodes the user can read; the backup of all the nodes, the Git repository of the Enterprise Edition and the widgets need Read on every VM, node and storage of the cluster.
 
 - **Update Manager, permissions per VM (review your roles)**: the module showed the update status of every guest of the cluster to whoever could open its pages. Now it lists only the guests the user can read; the scan, the report and the widget need Read on every VM, node and storage of the cluster.
