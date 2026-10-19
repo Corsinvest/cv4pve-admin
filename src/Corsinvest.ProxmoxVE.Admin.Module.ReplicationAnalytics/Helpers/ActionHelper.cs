@@ -4,6 +4,7 @@
  */
 using System.Globalization;
 using Corsinvest.ProxmoxVE.Admin.Core.Helpers;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Api;
 using Humanizer;
@@ -13,6 +14,17 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.ReplicationAnalytics.Helpers;
 
 internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNotification>
 {
+    // The VM ids of the replication results of the cluster that the user can read; null when he can read every VM
+    public static async Task<List<string>?> GetReadableVmIdsAsync(IPermissionService permissionService, ModuleDbContext db, string clusterName)
+        => await permissionService.HasAllVmsReadAsync(clusterName)
+            ? null
+            : await permissionService.FilterByVmAsync(clusterName,
+                                                      await db.JobResults.FromClusterName(clusterName)
+                                                                         .Select(a => a.VmId)
+                                                                         .Distinct()
+                                                                         .ToListAsync(),
+                                                      PermissionExtensions.ParseVmId);
+
     private static async Task<(int JobCount, int SuccessCount, int FailureCount, int ImportErrors)> ScanAsync(PveClient client,
                                                                                                               Settings settings,
                                                                                                               ModuleDbContext db,

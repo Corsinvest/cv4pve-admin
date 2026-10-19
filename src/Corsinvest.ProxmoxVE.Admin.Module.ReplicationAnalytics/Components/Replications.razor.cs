@@ -26,8 +26,12 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
 
     private class Data : JobResult;
 
+    // Scan and delete all are about the whole cluster
+    private bool ClusterRead { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        ClusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
         eventNotificationService.Subscribe<DataChangedNotification>(HandleDataChangedNotificationAsync);
         await RefreshDataAsync();
     }
@@ -72,7 +76,9 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
     {
         if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await _loader.LoadAsync(db.JobResults.FromClusterName(ClusterName),
+        var readable = await Helpers.ActionHelper.GetReadableVmIdsAsync(PermissionService, db, ClusterName);
+        ResultLoadData = await _loader.LoadAsync(db.JobResults.FromClusterName(ClusterName)
+                                                              .Where(a => readable!.Contains(a.VmId), readable != null),
                                                  args,
                                                  a => new Data
                                                  {
@@ -102,7 +108,7 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
 
     private async Task RemoveAllDataAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.DeleteAll)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.DeleteAll) || !ClusterRead) { return; }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete all data"], true))
         {
@@ -116,7 +122,7 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
 
     private async Task ScanAsync()
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.Scan)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.Replication.Scan) || !ClusterRead) { return; }
 
         backgroundJobService.Enqueue<Job>(a => a.ScanAsync(ClusterName));
         notificationService.Info(L["Scan started!"]);
