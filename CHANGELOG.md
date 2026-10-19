@@ -323,6 +323,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Changed
 
+- **VM Performance, permissions per VM (review your roles)**: the *Status* page listed every running VM of the cluster to whoever could open it. Now it lists only the VMs the user can read.
+
 - **UPS dashboard, disabled devices**: a disabled device is no longer hidden. Its card is grey, says *Disabled* and shows the values of the last reading with its time; it has its own counter and is not counted as online or offline. Before, a cluster with only disabled devices showed "No UPS devices configured".
 
 - **Users, Reset password**: sends the user a link to set a new password and also shows it, so it can be delivered another way. Before, the administrator had to know the current password of the user.
