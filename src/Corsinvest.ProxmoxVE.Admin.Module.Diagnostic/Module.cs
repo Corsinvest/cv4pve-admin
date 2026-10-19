@@ -52,6 +52,7 @@ public class Module : ModuleBase
         [
             new(this,"Status")
             {
+                ClusterWide = true,
                 Description = "Diagnostic Status",
                 RenderInfo = new(typeof(Components.Widgets.Status)),
                 Width = 3,
@@ -59,6 +60,7 @@ public class Module : ModuleBase
             },
             new(this,"Check")
             {
+                ClusterWide = true,
                 Description = "Diagnostic Issues Check",
                 RenderInfo = new(typeof(Components.Widgets.Check)),
                 Width = 3,

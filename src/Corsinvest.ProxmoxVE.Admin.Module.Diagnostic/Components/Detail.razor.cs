@@ -22,6 +22,9 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private RadzenDataGrid<JobDetail> DataGridRef { get; set; } = default!;
     private IEnumerable<JobDetail> Items { get; set; } = [];
 
+    // An ignored issue hides the finding to every user: only for who can read the whole cluster
+    private bool ClusterRead { get; set; }
+
     private string GetHelpUrl(JobDetail item) => diagnosticService.GetHelpUrl(item);
     private string? GetPveUrl(JobDetail item)
         => diagnosticService.GetPveResourceUrl(item.IdResource, item.Context, ClusterName);
@@ -30,7 +33,12 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
 
-        Items = await db.JobDetails.Where(a => a.JobResult.Id == ResultId && !a.IsIgnoredIssue).ToListAsync();
+        ClusterRead = await PermissionService.HasClusterReadAsync(ClusterName);
+        Items = await Helpers.DiagnosticPermissions.FilterAsync(PermissionService,
+                                                                ClusterName,
+                                                                await db.JobDetails.Where(a => a.JobResult.Id == ResultId && !a.IsIgnoredIssue).ToListAsync(),
+                                                                a => a.IdResource,
+                                                                a => a.Context);
     }
 
     //private static string GetColor(Group group)
@@ -100,7 +108,7 @@ public partial class Detail(IDbContextFactory<ModuleDbContext> dbContextFactory,
 
     private async Task IgnoreIssueAsync(JobDetail item)
     {
-        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Create)) { return; }
+        if (!await HasPermissionAsync(ClusterName, Module.Permissions.IgnoredIssue.Data.Create) || !ClusterRead) { return; }
 
         await using var db = await dbContextFactory.CreateDbContextAsync();
 
