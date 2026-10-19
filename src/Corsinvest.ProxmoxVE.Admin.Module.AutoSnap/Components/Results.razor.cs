@@ -32,9 +32,11 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
     {
         if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
+        var visible = await ActionHelper.GetVisibleJobIdsAsync(PermissionService, db, ClusterName);
         ResultLoadData = await _loader.LoadAsync(db.Results
                                                    .Where(a => a.Job.Id == JobId, JobId != null)
                                                    .Where(a => a.Job.ClusterName == ClusterName, JobId == null)
+                                                   .Where(a => visible!.Contains(a.Job.Id), visible != null)
                                                    .Where(a => !a.Status, ShowOnlyError),
                                                  args,
                                                  a => new Data

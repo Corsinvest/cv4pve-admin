@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
+
 namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 
 /// <summary>
@@ -10,7 +12,7 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Components;
 /// Each module gets its overview by adding a single tag and the three text fragments.
 /// Widgets opt out by setting <see cref="ModuleWidget.ShowInOverview"/> to <c>false</c>.
 /// </summary>
-public partial class ModuleOverview<TModule> where TModule : ModuleBase
+public partial class ModuleOverview<TModule>(IPermissionService permissionService) where TModule : ModuleBase
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string? ClusterName { get; set; }
 
@@ -43,9 +45,12 @@ public partial class ModuleOverview<TModule> where TModule : ModuleBase
 
     protected sealed record Tile(int Col, int Row, int ColSpan, int RowSpan, Type Type, Dictionary<string, object> Parameters);
 
-    protected override void OnInitialized()
+    private bool _clusterRead = true;
+
+    protected override async Task OnParametersSetAsync()
     {
         Module = IModuleService.GetCached<TModule>();
+        _clusterRead = string.IsNullOrEmpty(ClusterName) || await permissionService.HasClusterReadAsync(ClusterName);
         Tiles = BuildTiles();
     }
 
@@ -62,7 +67,7 @@ public partial class ModuleOverview<TModule> where TModule : ModuleBase
         var row = 1;
         var rowHeight = 0;
 
-        foreach (var widget in Module.Widgets.Where(w => w.ShowInOverview))
+        foreach (var widget in Module.Widgets.Where(w => w.ShowInOverview && (_clusterRead || !w.ClusterWide)))
         {
             var colSpan = Math.Clamp(widget.Width, 1, GridCols);
             var rowSpan = Math.Max(1, widget.Height);

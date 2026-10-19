@@ -19,6 +19,12 @@ public partial class ResourceField(DialogService DialogService)
     [Parameter] public bool MultipleSelection { get; set; } = true;
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
+    // @all reaches VMs the user may not see: offered only to who can read the whole cluster
+    private bool CanSelectAll { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+        => CanSelectAll = !string.IsNullOrEmpty(ClusterName) && await PermissionService.HasClusterReadAsync(ClusterName);
+
     private async Task OnChipRemoved(object? chip)
     {
         if (chip is string removed)

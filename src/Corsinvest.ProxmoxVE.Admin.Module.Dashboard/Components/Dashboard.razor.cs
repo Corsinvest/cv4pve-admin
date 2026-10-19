@@ -167,8 +167,9 @@ public partial class Dashboard(IDbContextFactory<ModuleDbContext> dbContextFacto
     }
 
     private async Task<bool> HasWidgetAsync(ModuleWidget widget, string clusterName)
-        => await HasPermissionAsync(clusterName, widget.Permission)
-           || (widget.Module.Link?.Permission is { } link && await HasPermissionAsync(clusterName, link));
+        => (await HasPermissionAsync(clusterName, widget.Permission)
+            || (widget.Module.Link?.Permission is { } link && await HasPermissionAsync(clusterName, link)))
+           && (!widget.ClusterWide || await PermissionService.HasClusterReadAsync(clusterName));
 
     #region Timer
     private void StartTimer()

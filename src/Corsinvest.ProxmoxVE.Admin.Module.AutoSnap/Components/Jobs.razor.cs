@@ -53,7 +53,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     {
         if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        ResultLoadData = await _loader.LoadAsync(db.Jobs.FromClusterName(ClusterName),
+        ResultLoadData = await _loader.LoadAsync(await VisibleJobsAsync(db),
                                                  args,
                                                  a => new Data
                                                  {
@@ -72,9 +72,32 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                  });
     }
 
+    private async Task<IQueryable<JobSchedule>> VisibleJobsAsync(ModuleDbContext db)
+    {
+        var visible = await ActionHelper.GetVisibleJobIdsAsync(PermissionService, db, ClusterName);
+        return db.Jobs.FromClusterName(ClusterName).Where(a => visible!.Contains(a.Id), visible != null);
+    }
+
+    // Snapshots are taken, removed or purged on every VM of the job: the user must see and be allowed on all of them
+    private async Task<bool> CanSnapshotAsync(params string[] vmIds)
+    {
+        var allowed = true;
+        foreach (var item in vmIds)
+        {
+            allowed = allowed
+                      && await PermissionService.CanReadVmSelectionAsync(ClusterName, item)
+                      && await PermissionService.CanActOnVmSelectionAsync(ClusterName, Core.Security.Auth.ClusterPermissions.Vm.Snapshot, item);
+        }
+        if (allowed) { return true; }
+
+        notificationService.Error(L["Not allowed on all the VMs of the job: snapshots need the Snapshot permission on each of them, and @all, pools and tags need Read on the whole cluster."]);
+        return false;
+    }
+
     private async Task DeleteAsync()
     {
         if (!await HasPermissionAsync(ClusterName, Module.Permissions.Job.Data.Delete)) { return; }
+        if (!await CanSnapshotAsync(SelectedItems[0].VmIds)) { return; }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected row"], true))
         {
@@ -118,6 +141,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task PurgeAsync()
     {
         if (!await HasPermissionAsync(ClusterName, Module.Permissions.Job.Purge)) { return; }
+        if (!await CanSnapshotAsync(SelectedItems[0].VmIds)) { return; }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Clean selected row"], false))
         {
@@ -129,6 +153,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task SnapAsync()
     {
         if (!await HasPermissionAsync(ClusterName, Module.Permissions.Job.Snap)) { return; }
+        if (!await CanSnapshotAsync(SelectedItems[0].VmIds)) { return; }
 
         backgroundJobService.Enqueue<Job>(a => a.SnapAsync(SelectedItems[0].Id));
         notificationService.Info(L["Job started!"]);
@@ -143,6 +168,7 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
     private async Task ShowEditorAsync(JobSchedule item)
     {
         var isNew = item.Id == 0;
+        var previousVmIds = item.VmIds;
         if (await dialogService.OpenSideEditAsync<JobDialog>(isNew
                                                                 ? L["New"]
                                                                 : L["Edit {0}", item.Id],
@@ -151,6 +177,9 @@ public partial class Jobs(IDbContextFactory<ModuleDbContext> dbContextFactory,
                                                                 : EditDialogMode.Edit,
                                                              item) != null)
         {
+            // A change must not drop VMs the user is not allowed on, nor add any
+            if (!await CanSnapshotAsync(isNew ? [item.VmIds] : [item.VmIds, previousVmIds])) { return; }
+
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.AddOrUpdateAsync(item);
 

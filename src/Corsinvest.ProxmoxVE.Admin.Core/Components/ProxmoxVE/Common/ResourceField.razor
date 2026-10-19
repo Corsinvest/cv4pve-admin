@@ -19,7 +19,7 @@
         @if (!ReadOnly)
         {
             <RadzenStack Orientation="Orientation.Horizontal" Gap="2px">
-                @if (UseJolly)
+                @if (UseJolly && CanSelectAll)
                 {
                     <RadzenButton Text="@("@all")"
                                   Size="ButtonSize.Small"

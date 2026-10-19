@@ -31,4 +31,8 @@ public class ModuleWidget
     /// or too specialised to be useful in the fixed mini-dashboard.
     /// </summary>
     public bool ShowInOverview { get; set; } = true;
+
+    // Counts or totals of every VM, node or storage of a cluster: shown only on the clusters
+    // where the user can read all of them
+    public bool ClusterWide { get; set; }
 }
