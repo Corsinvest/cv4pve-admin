@@ -36,6 +36,13 @@ public partial class VmJollyPickerDialog(IAdminService adminService, DialogServi
         var client = await adminService[ClusterName].GetPveClientAsync();
         AvailableTokens = [.. await client.GetVmIdsAsync(true, true, true, true, true, true)];
 
+        // @all, pools, tags and nodes reach VMs the user may not see: only the VMs he can read are offered
+        if (!await PermissionService.HasClusterReadAsync(ClusterName))
+        {
+            var ids = AvailableTokens.Select(a => long.TryParse(a, out var id) ? id : (long?)null).OfType<long>();
+            AvailableTokens = [.. (await PermissionService.FilterByVmAsync(ClusterName, ids, a => a)).Select(a => a.ToString())];
+        }
+
         await RefreshPreviewAsync();
     }
 

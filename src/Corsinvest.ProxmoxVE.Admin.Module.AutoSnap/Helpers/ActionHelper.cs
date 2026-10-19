@@ -4,6 +4,7 @@
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Commands.Vm;
 using Corsinvest.ProxmoxVE.Admin.Core.Notifier;
+using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth.Permissions;
 using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking;
 using Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Services;
 using Corsinvest.ProxmoxVE.Api;
@@ -15,6 +16,19 @@ namespace Corsinvest.ProxmoxVE.Admin.Module.AutoSnap.Helpers;
 internal class ActionHelper : BaseActionHelper<Module, Settings, DataChangedNotification>
 {
     public static string AllVms { get; } = "@all";
+
+    // The jobs whose VMs the user can read; null when he can read the whole cluster and sees them all
+    public static async Task<List<int>?> GetVisibleJobIdsAsync(IPermissionService permissionService, ModuleDbContext db, string clusterName)
+    {
+        if (await permissionService.HasClusterReadAsync(clusterName)) { return null; }
+
+        var visible = new List<int>();
+        foreach (var job in await db.Jobs.FromClusterName(clusterName).Select(a => new { a.Id, a.VmIds }).ToListAsync())
+        {
+            if (await permissionService.CanReadVmSelectionAsync(clusterName, job.VmIds)) { visible.Add(job.Id); }
+        }
+        return visible;
+    }
 
     public static AutoSnapEngine GetApp(PveClient client, ILoggerFactory loggerFactory, TextWriter log)
         => new(client, loggerFactory, log, false);

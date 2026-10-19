@@ -22,6 +22,7 @@ public partial class Timeline(IAdminService adminService,
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private bool _disposed;
     private IEnumerable<StorageSnapshotInfo> _disks = [];
+    private List<int>? _visibleJobIds;
 
     private record Data(DateTime Date, bool Status, int Count) : ISnapshotsSize
     {
@@ -66,9 +67,14 @@ public partial class Timeline(IAdminService adminService,
             AllowCalculateSnapshotSize = clusterClient.Settings.AllowCalculateSnapshotSize;
 
             await using var db = await dbContextFactory.CreateDbContextAsync();
+            _visibleJobIds = await ActionHelper.GetVisibleJobIdsAsync(PermissionService, db, ClusterName);
+
+            // The size of a snapshot name is summed over every VM of the cluster: shown only to who can read them all
+            AllowCalculateSnapshotSize = AllowCalculateSnapshotSize && _visibleJobIds == null;
 
             Items = [.. db.Results
                           .Where(a => a.Job.ClusterName == ClusterName)
+                          .Where(a => _visibleJobIds!.Contains(a.Job.Id), _visibleJobIds != null)
                           .GroupBy(a => a.Start.Date)
                           .OrderByDescending(a => a.Key)
                           .Select(a => new Data(a.Key, a.Any(b => b.Status), a.Count()))
@@ -87,6 +93,7 @@ public partial class Timeline(IAdminService adminService,
                 {
                     var names = db.Results
                                   .Where(a => a.Job.ClusterName == ClusterName && a.Start.Date == item.Date)
+                                  .Where(a => _visibleJobIds!.Contains(a.Job.Id), _visibleJobIds != null)
                                   .Select(a => a.SnapName)
                                   .ToList();
 
@@ -126,6 +133,7 @@ public partial class Timeline(IAdminService adminService,
         using var db = dbContextFactory.CreateDbContext();
         var items = db.Jobs
                       .FromClusterName(ClusterName)
+                      .Where(a => _visibleJobIds!.Contains(a.Id), _visibleJobIds != null)
                       .Where(a => a.Results.Any(b => b.Start.Date == start))
                       .Select(a => new DataJob(a.Id,
                                                a.Label,

@@ -189,6 +189,14 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 
 </Collapse>
 
-These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
+The module also follows the cluster permissions on each VM (**VM: Read** and **VM: Snapshot manager**, see [Security](../../configuration/admin-area/security/#permissions)):
+
+- **Status** lists only the snapshots of the VMs the user can read; deleting snapshots needs **VM: Snapshot manager** on each of their VMs.
+- **Jobs**, **Time line** and **Errors** list a job only when the user can read all of its VMs. A job on `@all`, a pool, a tag or a node needs **Read** on every VM, node and storage of the cluster. The snapshot sizes of **Time line** add up every VM of the cluster: they are shown only with that Read.
+- **Snap**, **Purge Snapshots**, deleting a job and saving a job need **Read** and **VM: Snapshot manager** on every VM of the job, also on the VMs a change removes; for `@all`, a pool, a tag or a node, **Read** on the whole cluster. Otherwise the action stops with a message.
+- The picker of the VMs of a job suggests only the VMs the user can read, without `@all`, pools, tags and nodes, and the **@all** button is hidden, unless the user can read the whole cluster.
+- The widgets and the **Overview** count all the VMs of a cluster: they are shown only on the clusters where the user can read every VM, node and storage.
+
+A scheduled job runs without a user: the checks are made when the job is saved and when it is started from the page.
 
 <PvePrivileges module="autosnap" />

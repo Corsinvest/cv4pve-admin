@@ -66,7 +66,7 @@ public partial class Status(IAdminService adminService,
 
             var data = await ActionHelper.GetInfoAsync(await clusterClient.GetPveClientAsync(), settings, loggerFactory, vmIds);
 
-            Items = [.. data];
+            Items = await PermissionService.FilterByVmAsync(ClusterName, data, a => a.VmId);
             SelectedItems.Clear();
 
             if (AllowCalculateSnapshotSize)
@@ -119,6 +119,13 @@ public partial class Status(IAdminService adminService,
     private async Task DeleteAsync()
     {
         if (!await HasPermissionAsync(ClusterName, Module.Permissions.Status.Delete)) { return; }
+        if (!await PermissionService.CanActOnVmSelectionAsync(ClusterName,
+                                                              Core.Security.Auth.ClusterPermissions.Vm.Snapshot,
+                                                              string.Join(",", SelectedItems.Select(a => a.VmId).Distinct())))
+        {
+            notificationService.Error(L["Not allowed: deleting snapshots needs the Snapshot permission on each VM."]);
+            return;
+        }
 
         if (await dialogService.ConfirmAsync(L["Are you sure?"], L["Delete selected rows"], true))
         {
