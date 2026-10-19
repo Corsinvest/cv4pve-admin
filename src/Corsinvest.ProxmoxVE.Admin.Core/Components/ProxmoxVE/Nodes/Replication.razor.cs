@@ -75,6 +75,8 @@ public partial class Replication(IAdminService adminService,
             {
                 Items = await GetData(Node);
             }
+
+            Items = await PermissionService.FilterByVmAsync(ClusterName, Items, a => PermissionExtensions.ParseVmId(a.Guest));
         }
         finally
         {

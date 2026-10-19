@@ -30,7 +30,8 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
     protected override async Task OnInitializedAsync()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var query = db.JobResults.FromClusterName(ClusterName);
+        var readable = await Helpers.ActionHelper.GetReadableVmIdsAsync(PermissionService, db, ClusterName);
+        var query = db.JobResults.FromClusterName(ClusterName).Where(a => readable!.Contains(a.VmId), readable != null);
 
         if (await query.AnyAsync())
         {
@@ -65,6 +66,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
                                          .ToListAsync();
         }
 
+        Sources = await PermissionService.FilterByNodeAsync(ClusterName, Sources, a => a);
         SelectedSource = Sources.Contains(SelectedSource)
                             ? SelectedSource
                             : string.Empty;
@@ -86,6 +88,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
                                          .ToListAsync()
                     : [];
 
+        VmIds = await PermissionService.FilterByVmAsync(ClusterName, VmIds, PermissionExtensions.ParseVmId);
         SelectedVmIds = [.. SelectedVmIds.Where(a => VmIds.Contains(a))];
         await LoadDataAsync();
     }
@@ -93,6 +96,7 @@ public partial class Trends(IDbContextFactory<ModuleDbContext> dbContextFactory)
     private async Task LoadDataAsync()
     {
         await using var db = await dbContextFactory.CreateDbContextAsync();
+        SelectedVmIds = [.. SelectedVmIds.Where(a => VmIds.Contains(a))];
 
         Items = SelectedVmIds.Any()
                     ? await db.JobResults.FromClusterName(ClusterName)
