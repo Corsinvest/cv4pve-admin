@@ -16,6 +16,14 @@ public partial class Backups(IAdminService adminService) : IClusterName
     protected override async Task OnInitializedAsync()
     {
         var client = await adminService[ClusterName].GetPveClientAsync();
-        Items = (await client.Cluster.Backup.GetAsync()).OrderBy(a => a.Id);
+        var items = new List<ClusterBackup>();
+
+        // A job on all the guests, a pool or excluded ids is shown only to who can read the whole cluster
+        foreach (var item in (await client.Cluster.Backup.GetAsync()).OrderBy(a => a.Id))
+        {
+            var selection = item.All || !string.IsNullOrWhiteSpace(item.Pool) ? string.Empty : item.VmId ?? string.Empty;
+            if (await PermissionService.CanReadVmSelectionAsync(ClusterName, selection)) { items.Add(item); }
+        }
+        Items = items;
     }
 }

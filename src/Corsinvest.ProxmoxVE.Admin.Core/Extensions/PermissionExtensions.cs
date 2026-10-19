@@ -73,22 +73,48 @@ public static class PermissionExtensions
            && await permissionService.HasAsync(clusterName, ClusterPermissions.Node.Data.Read.Key, AnyNodePath)
            && await permissionService.HasAsync(clusterName, ClusterPermissions.Storage.Data.Read.Key, AnyStoragePath);
 
-    public static async Task<List<T>> FilterByVmAsync<T>(this IPermissionService permissionService,
-                                                         string clusterName,
-                                                         IEnumerable<T> items,
-                                                         Func<T, long> vmId)
-    {
-        if (await permissionService.HasAsync(clusterName, ClusterPermissions.Vm.Data.Read.Key, AnyVmPath)) { return [.. items]; }
+    public static Task<bool> HasAllVmsReadAsync(this IPermissionService permissionService, string clusterName)
+        => permissionService.HasAsync(clusterName, ClusterPermissions.Vm.Data.Read.Key, AnyVmPath);
 
-        var readable = new Dictionary<long, bool>();
+    public static Task<List<T>> FilterByVmAsync<T>(this IPermissionService permissionService,
+                                                   string clusterName,
+                                                   IEnumerable<T> items,
+                                                   Func<T, long> vmId)
+        => permissionService.FilterByPathAsync(clusterName, items, ClusterPermissions.Vm.Data.Read, AnyVmPath, a => PermissionHelper.GetPathVm(vmId(a)));
+
+    public static Task<List<T>> FilterByNodeAsync<T>(this IPermissionService permissionService,
+                                                     string clusterName,
+                                                     IEnumerable<T> items,
+                                                     Func<T, string> node)
+        => permissionService.FilterByPathAsync(clusterName, items, ClusterPermissions.Node.Data.Read, AnyNodePath, a => PermissionHelper.GetPathNode(node(a)));
+
+    public static Task<List<T>> FilterByStorageAsync<T>(this IPermissionService permissionService,
+                                                        string clusterName,
+                                                        IEnumerable<T> items,
+                                                        Func<T, string> storage)
+        => permissionService.FilterByPathAsync(clusterName, items, ClusterPermissions.Storage.Data.Read, AnyStoragePath, a => PermissionHelper.GetPathStorage(storage(a)));
+
+    // A text that is not a VM id (an old or damaged row) is readable only by who can read every VM
+    public static long ParseVmId(string? vmId) => long.TryParse(vmId, out var id) ? id : 0;
+
+    private static async Task<List<T>> FilterByPathAsync<T>(this IPermissionService permissionService,
+                                                            string clusterName,
+                                                            IEnumerable<T> items,
+                                                            Permission permission,
+                                                            string anyPath,
+                                                            Func<T, string> path)
+    {
+        if (await permissionService.HasAsync(clusterName, permission.Key, anyPath)) { return [.. items]; }
+
+        var readable = new Dictionary<string, bool>();
         var result = new List<T>();
         foreach (var item in items)
         {
-            var id = vmId(item);
-            if (!readable.TryGetValue(id, out var allowed))
+            var itemPath = path(item);
+            if (!readable.TryGetValue(itemPath, out var allowed))
             {
-                allowed = await permissionService.HasAsync(clusterName, ClusterPermissions.Vm.Data.Read.Key, PermissionHelper.GetPathVm(id));
-                readable[id] = allowed;
+                allowed = await permissionService.HasAsync(clusterName, permission.Key, itemPath);
+                readable[itemPath] = allowed;
             }
             if (allowed) { result.Add(item); }
         }

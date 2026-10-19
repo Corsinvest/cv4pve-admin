@@ -71,6 +71,7 @@ public class Module : ModuleBase
         [
             new(this,"Status")
             {
+                ClusterWide = true,
                 Description = "Status",
                 RenderInfo = new(typeof(Components.Widgets.Status)),
                 Width = 3,
@@ -78,6 +79,7 @@ public class Module : ModuleBase
             },
             new(this,"Size")
             {
+                ClusterWide = true,
                 Description = "Size",
                 RenderInfo = new(typeof(Components.Widgets.Size)),
                 Width = 3,
@@ -85,6 +87,7 @@ public class Module : ModuleBase
             },
             new(this,"Check")
             {
+                ClusterWide = true,
                 Description = "Check",
                 RenderInfo = new(typeof(Components.Widgets.Check.Render)),
                 RenderSettingsInfo = new(typeof(Components.Widgets.Check.CheckSettings),
@@ -94,6 +97,7 @@ public class Module : ModuleBase
             },
             new(this,"Info")
             {
+                ClusterWide = true,
                 Description = "Info",
                 RenderInfo = new(typeof(Components.Widgets.Info)),
                 Width = 6,

@@ -33,9 +33,10 @@ public partial class UnprotectedDisks(IAdminService adminService) : IClusterName
 
         var ret = new List<Data>();
         var clusterClient = adminService[ClusterName];
-        var vms = (await clusterClient.CachedData.GetResourcesAsync(false))
-                    .Where(a => a.ResourceType == ClusterResourceType.Vm)
-                    .ToList();
+        var vms = await PermissionService.FilterByVmAsync(ClusterName,
+                                                          (await clusterClient.CachedData.GetResourcesAsync(false))
+                                                                .Where(a => a.ResourceType == ClusterResourceType.Vm),
+                                                          a => a.VmId);
 
         foreach (var item in vms)
         {

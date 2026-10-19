@@ -108,6 +108,11 @@ Assign these to a role under [Security](../../configuration/admin-area/security/
 
 The built-in role of the module includes all of them. A custom role has to be given them explicitly: without the permission the button is hidden.
 
-These permissions apply to the whole cluster: who can open a page of the module sees the data of every node and guest, also of those that the cluster permissions hide in **Resources**.
+The module also follows the cluster permissions (**VM: Read** and **Storage: Read**, see [Security](../../configuration/admin-area/security/#permissions)):
+
+- **Backups**, **Backup in line**, **Unprotected Disks** and **Trends** list only the VMs the user can read; the storage of a backup stays visible next to its VM. The storages offered by **Trends** are only the readable ones.
+- **Scheduled** lists a backup job only when the user can read all of its guests; a job on all the guests or on a pool needs **Read** on every VM, node and storage of the cluster.
+- **Scan**, **Delete all data** and the log of the whole task, which has the lines of every VM of the task, need **Read** on every VM, node and storage of the cluster.
+- The widgets and the **Overview** count all the VMs of a cluster: they are shown only on the clusters where the user can read every VM, node and storage.
 
 <PvePrivileges module="backup-analytics" />
