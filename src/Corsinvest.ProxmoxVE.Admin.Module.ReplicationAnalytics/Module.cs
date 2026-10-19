@@ -142,7 +142,7 @@ public class Module : ModuleBase
 
         public static class Replication
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(Replication), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Replication), nameof(Data)) { WithRead = false };
             public static Permission Scan { get; } = new(Data.Prefix, nameof(Scan), "Scan");
             public static Permission DeleteAll { get; } = new(Data.Prefix, nameof(DeleteAll), "Delete all data");
         }

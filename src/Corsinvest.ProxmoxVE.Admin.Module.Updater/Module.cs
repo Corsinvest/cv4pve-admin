@@ -73,7 +73,7 @@ public class Module : ModuleBase
 
         public static class Scan
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(Scan), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Scan), nameof(Data)) { WithRead = false };
             public static Permission Run { get; } = new(Data.Prefix, nameof(Run), "Scan");
         }
     }

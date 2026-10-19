@@ -208,20 +208,20 @@ public class Module : ModuleBase
 
         public static class Job
         {
-            public static PermissionsCrud Data { get; } = new(BaseName, nameof(Job), nameof(Data));
+            public static PermissionsCrud Data { get; } = new(BaseName, nameof(Job), nameof(Data)) { WithRead = false };
             public static Permission Snap { get; } = new(Data.Prefix, nameof(Snap), "Snap");
             public static Permission Purge { get; } = new(Data.Prefix, nameof(Purge), "Purge Snapshots");
         }
 
         public static class Status
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(Status), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Status), nameof(Data)) { WithRead = false };
             public static Permission Delete { get; } = new(Data.Prefix, nameof(Delete), "Delete");
         }
 
         public static class Results
         {
-            public static PermissionsRead Data { get; } = new(BaseName, nameof(Results), nameof(Data));
+            public static PermissionsRead Data { get; } = new(BaseName, nameof(Results), nameof(Data)) { WithRead = false };
             public static Permission Delete { get; } = new(Data.Prefix, nameof(Delete), "Delete");
         }
     }
