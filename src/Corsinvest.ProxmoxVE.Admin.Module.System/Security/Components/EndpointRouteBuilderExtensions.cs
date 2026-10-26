@@ -5,6 +5,7 @@
 using System.Net.Mime;
 using System.Web;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ public static class EndpointRouteBuilderExtensions
     //public const string LinkLoginCallbackAction = "LinkLoginCallback";
     public const string LoginCallbackAction = "LoginCallback";
     private const string MessageLockedOut = "This account has been locked out, please try again later";
+    private const string MessageExternal = "This account cannot sign in with this provider. Ask your administrator.";
     private const string MessageNotAllowed = "This account is not allowed to sign in: if you have not confirmed your email yet, request a new confirmation link, otherwise contact your administrator";
 
     public static string GetUserProfileUrl(string email) => $"/profile-image/{email}";
@@ -56,6 +58,7 @@ public static class EndpointRouteBuilderExtensions
         [Required] public string UserName { get; set; } = default!;
         [Required] public string Password { get; set; } = default!;
         public bool RememberMe { get; set; } = default!;
+        public string? Domain { get; set; }
     }
 
     private class InputLogin2fa
@@ -78,6 +81,14 @@ public static class EndpointRouteBuilderExtensions
         if (errorMessage != null) { query["error"] = errorMessage; }
         return $"/LoginWith2fa?{query}";
     }
+
+    // A provider can set how long its sessions last
+    private static AuthenticationProperties GetSignInProperties(bool isPersistent, TimeSpan? lifetime)
+        => new()
+        {
+            IsPersistent = isPersistent || lifetime != null,
+            ExpiresUtc = lifetime == null ? null : DateTimeOffset.UtcNow.Add(lifetime.Value)
+        };
 
     private static void AppendCultureCookie(HttpContext httpContext, ISettingsService settingsService)
         => httpContext.Response.AppendCultureCookie(settingsService.Get<UserSettings>(forCurrentUser: true).Culture);
@@ -180,6 +191,7 @@ public static class EndpointRouteBuilderExtensions
 
         accountGroup.MapPost("/Login", async ([FromServices] SignInManager<ApplicationUser> signInManager,
                                                      [FromServices] IAuditService auditService,
+                                                     [FromServices] IExternalAuthenticationService externalAuthenticationService,
                                                      [FromServices] ISettingsService settingsService,
                                                      IFusionCache fusionCache,
                                                      HttpContext httpContext,
@@ -217,11 +229,56 @@ public static class EndpointRouteBuilderExtensions
             }
             else
             {
-                await auditService.LogAsync("Login-Password", false, $"Invalid credentials for user '{model.UserName}'");
-                url = BuildErrorUrl(tmpReturnUrl, "Invalid user or password");
+                // Not a local account with this password: a domain provider may know the user
+                var domain = await externalAuthenticationService.TryDomainSignInAsync(model.UserName, model.Password, model.Domain);
+                if (domain?.Succeeded == true)
+                {
+                    await signInManager.SignInAsync(domain.User!, GetSignInProperties(model.RememberMe, domain.SessionLifetime), "domain");
+                    await auditService.LogAsync("Login-Domain", true, $"User '{domain.User!.UserName}' logged in as '{model.UserName}'");
+
+                    AppendCultureCookie(httpContext, settingsService);
+
+                    url = tmpReturnUrl;
+                }
+                else
+                {
+                    await auditService.LogAsync(domain == null ? "Login-Password" : "Login-Domain",
+                                                false,
+                                                $"Invalid credentials for user '{model.UserName}'");
+                    url = BuildErrorUrl(tmpReturnUrl, domain?.FailureReason ?? "Invalid user or password");
+                }
             }
 
             return TypedResults.Redirect(url);
+        });
+
+        accountGroup.MapGet("/ExternalLogin", async (HttpContext context,
+                                                     [FromServices] SignInManager<ApplicationUser> signInManager,
+                                                     [FromServices] IExternalAuthenticationService externalAuthenticationService,
+                                                     [FromServices] IAuditService auditService,
+                                                     [FromServices] ISettingsService settingsService,
+                                                     [FromQuery(Name = "ReturnUrl")] string? returnUrl) =>
+        {
+            var tmpReturnUrl = SanitizeReturnUrl(returnUrl);
+
+            var info = await signInManager.GetExternalLoginInfoAsync();
+            if (info == null) { return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, MessageExternal)); }
+
+            var result = await externalAuthenticationService.HandleCallbackAsync(info);
+            await context.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            if (!result.Succeeded)
+            {
+                await auditService.LogAsync("Login-External", false, $"Provider '{info.ProviderDisplayName}': {result.FailureReason ?? "refused"}");
+                return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, MessageExternal));
+            }
+
+            await signInManager.SignInAsync(result.User!, GetSignInProperties(false, result.SessionLifetime), info.LoginProvider);
+            await auditService.LogAsync("Login-External", true, $"User '{result.User!.UserName}' logged in with '{info.ProviderDisplayName}'");
+
+            AppendCultureCookie(context, settingsService);
+
+            return TypedResults.Redirect(tmpReturnUrl);
         });
 
         accountGroup.MapGet("/Logout", async (HttpContext context,
@@ -265,11 +322,18 @@ public static class EndpointRouteBuilderExtensions
             return TypedResults.LocalRedirect($"~{SanitizeReturnUrl(returnUrl)}");
         }).RequireAuthorization();
 
-        accountGroup.MapPost("/PerformExternalLogin", (HttpContext context,
+        accountGroup.MapPost("/PerformExternalLogin", async (HttpContext context,
                                                               [FromServices] SignInManager<ApplicationUser> signInManager,
+                                                              [FromServices] IExternalAuthenticationService externalAuthenticationService,
                                                               [FromForm] string provider,
                                                               [FromForm] string returnUrl) =>
         {
+            // Only a provider that is shown on the login page can be used
+            if (!(await externalAuthenticationService.GetLoginButtonsAsync()).Any(a => a.Scheme == provider))
+            {
+                return (IResult)TypedResults.Redirect(BuildErrorUrl(SanitizeReturnUrl(returnUrl), MessageExternal));
+            }
+
             IEnumerable<KeyValuePair<string, StringValues>> query =
             [
                 new("ReturnUrl", returnUrl),
@@ -278,7 +342,7 @@ public static class EndpointRouteBuilderExtensions
 
             var redirectUrl = UriHelper.BuildRelative(context.Request.PathBase, "/ExternalLogin", QueryString.Create(query));
             var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return TypedResults.Challenge(properties, [provider]);
+            return (IResult)TypedResults.Challenge(properties, [provider]);
         });
 
         return accountGroup;

@@ -109,6 +109,11 @@ public class Module : ModuleBase
                         Render = new(typeof(Core.Components.SubscriptionRequired)),
                         Icon = "history"
                     },
+                    new(this,"External Authentication")
+                    {
+                        Render = new(typeof(Core.Components.SubscriptionRequired)),
+                        Icon = "key"
+                    },
                     new(this,"Active Sessions")
                     {
                         Render = new (typeof(Core.Components.ActiveSessions)),

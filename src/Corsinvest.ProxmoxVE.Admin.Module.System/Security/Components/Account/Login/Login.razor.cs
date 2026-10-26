@@ -5,7 +5,7 @@
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;
 
 public partial class Login(NavigationManager navigationManager,
-                           SignInManager<ApplicationUser> signInManager)
+                           IExternalAuthenticationService externalAuthenticationService)
 {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
@@ -25,7 +25,11 @@ public partial class Login(NavigationManager navigationManager,
     }
 
     private InputModel Input { get; set; } = new();
-    private IEnumerable<AuthenticationScheme> ExternalLogins { get; set; } = [];
+    private IReadOnlyList<ExternalLoginButton> ExternalLogins { get; set; } = [];
+    private IReadOnlyList<string> Domains { get; set; } = [];
+
+    // An icon is a name of the icon font, or the address of an image
+    private static bool IsImage(string icon) => icon.StartsWith('/') || icon.StartsWith("http") || icon.StartsWith("data:");
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,7 +51,8 @@ public partial class Login(NavigationManager navigationManager,
             }
         }
 
-        ExternalLogins = await signInManager.GetExternalAuthenticationSchemesAsync();
+        ExternalLogins = await externalAuthenticationService.GetLoginButtonsAsync();
+        Domains = await externalAuthenticationService.GetDomainNamesAsync();
     }
 
     private void ForgotPassword() => navigationManager.NavigateTo("/ForgotPassword");

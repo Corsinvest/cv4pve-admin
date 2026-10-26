@@ -56,23 +56,44 @@ else
                      PasswordText="@L["Password"]"
                      RememberMeText="@L["Remember me"]" />
 
-        <RadzenLink Path="/ResendEmailConfirmation" Text="@L["Resend email confirmation"]" />
-
-        @if (ExternalLogins.Any())
+        @if (Domains.Count > 1)
         {
-            <form action="/PerformExternalLogin" method="post">
-                <div>
-                    <AntiforgeryToken />
-                    <input type="hidden" name="@nameof(ReturnUrl)" value="@ReturnUrl" />
-                    <p>
-                        @foreach (var provider in ExternalLogins)
-                        {
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="@provider.DisplayName" name="provider" value="@provider.Name" />
-                        }
-                    </p>
-                </div>
-            </form>
+            <div class="rz-mb-4">
+                <label for="Domain" class="rz-text-body2">@L["Domain"]</label>
+                <select id="Domain" name="Domain" class="rz-textbox rz-w-100">
+                    <option value="">@L["Local account"]</option>
+                    @foreach (var domain in Domains)
+                    {
+                        <option value="@domain">@domain</option>
+                    }
+                </select>
+            </div>
         }
 
+        <RadzenLink Path="/ResendEmailConfirmation" Text="@L["Resend email confirmation"]" />
     </RadzenTemplateForm>
+
+    @if (ExternalLogins.Count > 0)
+    {
+        <form action="/PerformExternalLogin" method="post" class="rz-mt-4">
+            <AntiforgeryToken />
+            <input type="hidden" name="@nameof(ReturnUrl)" value="@ReturnUrl" />
+            <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="0.5rem" JustifyContent="JustifyContent.Center">
+                @foreach (var provider in ExternalLogins)
+                {
+                    var image = IsImage(provider.Icon);
+                    <RadzenButton ButtonType="ButtonType.Submit"
+                                  ButtonStyle="ButtonStyle.Base"
+                                  Variant="Variant.Outlined"
+                                  Text="@(provider.Display == ExternalLoginDisplay.IconOnly ? null : provider.Name)"
+                                  Icon="@(provider.Display == ExternalLoginDisplay.TitleOnly || image ? null : provider.Icon)"
+                                  Image="@(provider.Display != ExternalLoginDisplay.TitleOnly && image ? provider.Icon : null)"
+                                  title="@(string.IsNullOrWhiteSpace(provider.Description) ? provider.Name : provider.Description)"
+                                  aria-label="@provider.Name"
+                                  name="provider"
+                                  value="@provider.Scheme" />
+                }
+            </RadzenStack>
+        </form>
+    }
 }
