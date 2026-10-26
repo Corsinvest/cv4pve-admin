@@ -38,7 +38,7 @@ Why a portal layer when PVE has its own users and roles?
     { icon: 'mdi:eye', title: "Customers see only their VMs", text: "Tenant users log into cv4pve-admin and are granted permissions only on the VMs assigned to their tenant." },
     { icon: 'mdi:domain', title: "One tenant, one cluster", text: "Each tenant is bound to a single cluster. Its VMs/CTs are picked from that cluster's resources.", href: '#tenants' },
     { icon: 'mdi:account-key', title: "cv4pve-admin permissions, not PVE ACLs", text: "Access is granted through cv4pve-admin's own per-VM permissions: no users or ACLs to create on the Proxmox VE cluster.", href: '#permissions' },
-    { icon: 'mdi:shield-account', title: "The Tenants page is for administrators", text: "The **Tenants** page lists every tenant, whatever the tenant of the signed-in user. Give access to the Portal module only to the people who manage tenants.", href: '#tenants' },
+    { icon: 'mdi:shield-account', title: "A Tenant Admin for each tenant", text: "Each customer can have its own Tenant Admin, who sees only its tenant and manages the users of that tenant without asking you.", href: '#tenant-admin' },
   ]}
 />
 
@@ -68,7 +68,8 @@ Expand a tenant row to manage its content in two tabs: **Vms** and **Users**. Th
 List of the VMs and containers assigned to the tenant, with their live status.
 
 - **New** opens the **Select VM/CT** picker. It lists the guests of the tenant's cluster that are not yet in the tenant. You can select more than one.
-- A guest can be in more than one tenant. When a guest you select is already in another tenant, a confirmation names that tenant before the guest is added.
+- A guest belongs to one tenant only: each tenant has its own admin, and a guest in two tenants would let one change what the other gave. When a guest you select is already in another tenant, nothing is added and a message names that tenant.
+- Guests that were already in more than one tenant before this rule stay where they are. The **Vms** tab lists them in a warning, with the other tenants, to administrators who see all tenants: remove each one from all but one tenant.
 - **Delete** removes the selected guest from the tenant, and removes from the tenant users the permissions they were given on it. The guest itself is not touched on Proxmox VE.
 - Expand a guest row to open its detail panel: summary, configuration, performance, backups, replication, snapshots. What the panel shows depends on the permissions of the signed-in user.
 
@@ -90,22 +91,37 @@ Tenant users are regular cv4pve-admin accounts linked to the tenant. The grid sh
 How accounts are handled:
 
 - If no account with that user name exists, cv4pve-admin creates a new active account with a random password and the same address as email. It sends a confirmation email to that address.
-- If the account already exists, a confirmation shows the roles it has. When you confirm, the account is linked to the tenant and keeps its password, its roles and its permissions: adding an administrator to a tenant does not limit what that administrator can do.
+- If the account already exists, a confirmation shows the roles it has. When you confirm, the account is linked to the tenant and keeps its password, its roles and its permissions: adding an administrator to a tenant does not limit what that administrator can do. Only an administrator who sees all tenants can link an existing account, for example a supplier who works for two customers.
 - The checked permissions are granted to the user only on that VM of the tenant's cluster. Unchecked ones are removed.
 - **Delete** removes the user from the tenant together with the permissions on the tenant's VMs. The account is not deleted.
 - When the tenant has no VMs the dialog shows **No VMs assigned to this tenant.** Assign the VMs first, then set the permissions of the users.
 
 No user or ACL is created on the Proxmox VE cluster.
 
+### Tenant Admin
+
+**Is Tenant Admin** in the user dialog makes the user the admin of that tenant. A Tenant Admin:
+
+- sees in the **Tenants** page only its tenants, and cannot create, edit or delete a tenant or add and remove its VMs;
+- sees the **Users** tab of its tenant and adds, edits and removes the users of that tenant, choosing their permissions on the tenant's VMs among those of the permission table;
+- can make another user of the tenant a Tenant Admin;
+- creates new accounts only: an address that already has an account is refused with **This address cannot be added. Ask your provider.**, and the account is not linked;
+- sets the **Display Name** only when it creates the account;
+- cannot remove its own **Is Tenant Admin** nor remove itself from the tenant: another admin of the tenant, or an administrator, does it.
+
+A tenant user who is not a Tenant Admin sees only its tenants and, inside, the **Vms** tab; the guests show what its permissions allow. The tenant is read from the account of the signed-in user, never from the page.
+
 ### Roles
 
-The module defines three roles. The **Users** tab does not assign them: assign them to users from [Admin Area: Security](../../configuration/admin-area/security/) like any other role.
+The module defines three roles.
 
 | Role | Description |
 |------|-------------|
-| **Admin for module Portal** | All the permissions of the module |
-| **Portal Tenant Admin** | The permissions of the **Cluster VM User** role (read, audit, console, power management, replication, snapshots, backups and migration of VMs) plus read, create, edit, delete and export of tenants |
-| **Portal Tenant User** | Access to the pages of the module (**Overview** and **Tenants**) |
+| **Admin for module Portal** | All the permissions of the module, **All tenants** included |
+| **Portal Tenant Admin** | The pages of the module, read and export of tenants and of their VMs, and all the permissions on tenant users. No permission on the VMs themselves: those are given per user and per VM in the **Users** tab |
+| **Portal Tenant User** | The pages of the module and read of tenants and of their VMs |
+
+The Portal assigns the two tenant roles by itself: a user added to a tenant gets **Portal Tenant User**, a user marked **Is Tenant Admin** gets **Portal Tenant Admin**. It takes them away when the user is no longer in any tenant, or no longer admin of any tenant. A role given by hand from [Admin Area: Security](../../configuration/admin-area/security/) stays.
 
 ### Permissions
 
@@ -113,6 +129,7 @@ The module defines three roles. The **Users** tab does not assign them: assign t
 |------------|-------------|
 | **Portal** | Open the module and its **Overview** page |
 | **Tenants** | Open the page with that name (one permission per page) |
+| **All tenants** | See and manage every tenant. Without it a user sees only the tenants it belongs to, and creating, editing and deleting tenants and adding and removing their VMs are refused |
 | **Tenants: Read, Create, Edit, Delete, Export** | Tenants list and tenant dialog |
 | **Vms: Read, Create, Edit, Delete, Export** | VMs/CTs assigned to a tenant. **Create** and **Delete** enable the **New** and **Delete** buttons of the **Vms** tab |
 | **Users: Read, Create, Edit, Delete, Export** | Tenant users. **Read** shows the **Users** tab |
