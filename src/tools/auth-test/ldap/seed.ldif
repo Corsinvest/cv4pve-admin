@@ -1,0 +1,33 @@
+dn: ou=people,dc=test,dc=local
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=test,dc=local
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=jdoe,ou=people,dc=test,dc=local
+objectClass: inetOrgPerson
+uid: jdoe
+cn: John Doe
+sn: Doe
+mail: ea-ldap@local
+userPassword: Test-1234!
+
+dn: uid=jsmith,ou=people,dc=test,dc=local
+objectClass: inetOrgPerson
+uid: jsmith
+cn: Jane Smith
+sn: Smith
+mail: ea-ldap2@local
+userPassword: Test-1234!
+
+dn: cn=pve-admins,ou=groups,dc=test,dc=local
+objectClass: groupOfNames
+cn: pve-admins
+member: uid=jdoe,ou=people,dc=test,dc=local
+
+dn: cn=pve-helpdesk,ou=groups,dc=test,dc=local
+objectClass: groupOfNames
+cn: pve-helpdesk
+member: uid=jsmith,ou=people,dc=test,dc=local

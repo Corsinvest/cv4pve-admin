@@ -262,7 +262,7 @@ public static class EndpointRouteBuilderExtensions
             var tmpReturnUrl = SanitizeReturnUrl(returnUrl);
 
             var info = await signInManager.GetExternalLoginInfoAsync();
-            if (info == null) { return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, MessageExternal)); }
+            if (info == null) { return (IResult)TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, MessageExternal)); }
 
             var result = await externalAuthenticationService.HandleCallbackAsync(info);
             await context.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -278,7 +278,11 @@ public static class EndpointRouteBuilderExtensions
 
             AppendCultureCookie(context, settingsService);
 
-            return TypedResults.Redirect(tmpReturnUrl);
+            // The return from the provider is a navigation started on its site: the session cookie is strict
+            // and comes back only with a navigation started here
+            var target = global::System.Net.WebUtility.HtmlEncode(tmpReturnUrl);
+            return (IResult)TypedResults.Content($"<!doctype html><html><head><meta http-equiv=\"refresh\" content=\"0;url={target}\"></head><body></body></html>",
+                                                 "text/html");
         });
 
         accountGroup.MapGet("/Logout", async (HttpContext context,
