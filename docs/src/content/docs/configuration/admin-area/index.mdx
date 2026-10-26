@@ -19,6 +19,7 @@ The Admin Area applies to the whole application, not to the cluster selected in 
 <FeatureGrid
   items={[
     { icon: 'mdi:dns', title: "Proxmox VE Clusters", text: "Connect and manage clusters: nodes, Web API credentials, SSH credentials, snapshot size calculation [EE].", href: './clusters/' },
+    { icon: 'mdi:account-key', title: "External Authentication", text: "Sign in with OpenID Connect, Keycloak, Microsoft, Google or an Active Directory / LDAP domain, with roles from their groups.", href: './external-authentication/', ee: true },
     { icon: 'mdi:security', title: "Security & Access Control", text: "Users, roles, permissions, App Tokens and audit logs. The list of active sessions is also available in the Community Edition.", href: './security/', ee: true },
     { icon: 'mdi:monitor-eye', title: "Monitoring", text: "System information, background jobs (Hangfire dashboard), tasks and application logs [EE].", href: './monitoring/' },
     { icon: 'mdi:wrench', title: "Maintenance", text: "Database operations (reindex, optimize, compact), cleanup of old data, cache management, connectivity tests.", href: './maintenance/' },
@@ -39,6 +40,7 @@ Every page of the Admin Area menu, in the order it appears:
 | | **Roles** | <Tag kind="ee" /> | [Roles](security/#roles) |
 | | **App Tokens** | <Tag kind="ee" /> | [App Tokens](security/#app-tokens) |
 | | **Audit Logs** | <Tag kind="ee" /> | [Audit Logs](security/#audit-logs) |
+| | **External Authentication** | <Tag kind="ee" /> | [External Authentication](external-authentication/) |
 | | **Active Sessions** | | [Active Sessions](security/#active-sessions) |
 | **Monitoring** | **System information** | | [System information](monitoring/#system-information) |
 | | **Background Jobs** | | [Background Jobs](monitoring/#background-jobs) |
@@ -51,7 +53,7 @@ Every page of the Admin Area menu, in the order it appears:
 | **Support** | Community and dedicated support | <Tag kind="ce" /> | [Support](#support) |
 | **Enterprise Modules** | The modules of the Enterprise Edition | <Tag kind="ce" /> | [Enterprise Modules](#enterprise-modules) |
 
-In the Community Edition **Users**, **Roles**, **App Tokens**, **Audit Logs** and **Logs** are still listed in the menu and show the Enterprise subscription notice instead of their content. **Appearance** is not in the Community Edition menu.
+In the Community Edition **Users**, **Roles**, **App Tokens**, **Audit Logs**, **External Authentication** and **Logs** are still listed in the menu and show the Enterprise subscription notice instead of their content. **Appearance** is not in the Community Edition menu.
 
 ## Overview
 

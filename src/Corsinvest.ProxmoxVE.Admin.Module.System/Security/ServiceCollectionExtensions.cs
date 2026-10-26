@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security;
 
@@ -100,6 +101,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
+        services.TryAddScoped<IExternalAuthenticationService, NullExternalAuthenticationService>();
         services.AddScoped<IPermissionsSummaryDialogService, PermissionsSummaryDialogService>();
 
         return services;

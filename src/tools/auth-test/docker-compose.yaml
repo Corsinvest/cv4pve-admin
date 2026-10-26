@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: AGPL-3.0-only
+# Repository: https://github.com/Corsinvest/cv4pve-admin
+
+# Identity providers in containers, to try External Authentication without real accounts: see README.md
+name: cv4pve-admin-auth-test
+
+services:
+  # OpenID Connect server: realm "test" imported from keycloak/realm-test.json
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.0
+    container_name: auth-keycloak
+    command: ["start-dev", "--import-realm", "--http-port=8080"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: http://127.0.0.1:18080
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    ports:
+      - "127.0.0.1:18080:8080"
+    restart: "no"
+
+  # LDAP directory: base dc=test,dc=local, users and groups from ldap/seed.ldif
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: auth-ldap
+    command: ["--copy-service"]
+    environment:
+      LDAP_ORGANISATION: Test
+      LDAP_DOMAIN: test.local
+      LDAP_ADMIN_PASSWORD: admin
+      LDAP_TLS: "false"
+    volumes:
+      - ./ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
+    ports:
+      - "127.0.0.1:18389:389"
+    restart: "no"

@@ -1,0 +1,204 @@
+---
+title: "External Authentication"
+description: "Sign in with identity providers (OpenID Connect, Keycloak, Microsoft, Google) and with Active Directory or LDAP domains, with roles taken from their groups."
+---
+
+import Tag from '~/components/Tag.astro';
+
+<Tag kind="ee" /> Users sign in with an account they already have elsewhere: an identity provider such as Keycloak, Microsoft Entra ID or Google, or an Active Directory / LDAP domain. Each provider can create the account at the first sign-in and give roles from the groups of the user.
+
+Providers are added, changed and turned on or off from the UI. The application does not need a restart.
+
+The page is under **Admin Area → Security → External Authentication**. In the Community Edition it shows the Enterprise subscription notice.
+
+## Provider types
+
+| Type | How the user signs in | Groups |
+|------|-----------------------|--------|
+| **OpenID Connect** | Button on the sign-in page, then the page of the provider | From the claim set in **Groups claim** |
+| **Keycloak** | Button on the sign-in page, then the Keycloak page | From the claim set in **Groups claim** |
+| **Microsoft (Entra ID)** | Button on the sign-in page, then the Microsoft page | From the `groups` claim |
+| **Google** | Button on the sign-in page, then the Google page | None |
+| **Active Directory / LDAP** | User name and password in the sign-in form, with the domain chosen in the form | From the directory, nested groups included on Active Directory |
+
+The first four types are *redirect* providers: the user leaves the application, signs in on the provider and comes back. The last one is a *domain*: the password is checked by the application against the directory.
+
+## The providers grid
+
+The grid shows **Enabled**, **Name** (with the icon of the type), **Type**, **Create account**, **Link by email** and the number of **Groups** mapped.
+
+| Action | Description |
+|--------|-------------|
+| **Add** / **Delete** | Create or delete a provider. Deleting a provider removes the logins linked to it, the roles it gave and the sessions of its users. The accounts stay. |
+| **Test connection** | Checks the selected provider. A redirect provider reads its discovery document (`/.well-known/openid-configuration`) and shows the issuer. A domain binds with the service account and checks that the **Base DN** exists. |
+| **Test login** | Redirect providers only. Opens the page of the provider: after the sign-in, the claims received are shown in the providers page. Nobody is signed in, and it works also with the provider turned off, so a provider can be checked before enabling it. The result is visible only to the administrator who started the test. |
+| **Check accounts** | Domains only. Runs the [account check](#account-check) of the selected domain now. |
+
+Click the **Name** of a row to edit the provider.
+
+## Provider settings
+
+**Enabled** turns the provider on or off. A provider that is off is not on the sign-in page and nobody can sign in with it.
+
+| Field | Description |
+|-------|-------------|
+| **Type** | The provider type. It cannot be changed after the provider is created. |
+| **Name** | Shown on the sign-in page: in the tooltip of the button, or in the domain list. |
+| **Description** | Shown in the tooltip of the button, after the name. |
+
+### Connection
+
+Redirect providers show the **Callback address**: register it in the provider as the redirect URI of the application. It is shown after the first save, and it is the address of the application followed by `/signin-ext-{id}`.
+
+The fields depend on the type. Secrets are stored encrypted and are never sent back to the browser: leave the field empty to keep the saved value.
+
+| Type | Fields |
+|------|--------|
+| **OpenID Connect** | **Server (issuer)** (for example `https://login.example.com/realms/company`), **Client ID**, **Client Secret**, **Scopes** (default `openid profile email`), **Groups claim** (default `groups`) |
+| **Keycloak** | **Server** (for example `https://keycloak.example.com`), **Realm**, **Client ID**, **Client Secret**, **Groups claim** (default `groups`). The issuer is built as `{Server}/realms/{Realm}`. |
+| **Microsoft (Entra ID)** | **Tenant ID** (default `common`: any organization), **Client ID**, **Client Secret** |
+| **Google** | **Client ID**, **Client Secret** |
+| **Active Directory / LDAP** | **Server**, **Port**, **Security**, **Validate certificate**, **Service account**, **Service password**, **Base DN**, **User filter**, **Email attribute** |
+
+On Keycloak the groups are in the token only when the client has a **Group Membership** mapper with the same claim name. On Microsoft the `groups` claim must be enabled in the app registration (token configuration); when a user is in more groups than fit in the token, the roles of that user are left as they are.
+
+#### Active Directory / LDAP
+
+| Field | Description |
+|-------|-------------|
+| **Server** | Host name or IP address of the domain controller or LDAP server. |
+| **Port** | `636` for LDAPS (default), `389` for StartTLS or no encryption, `3268` / `3269` for the Global Catalog of Active Directory. |
+| **Security** | **Ldaps** (default), **StartTls** or **None**. |
+| **Validate certificate** | Checks the certificate of the server. Turn it off only for tests. |
+| **Service account** | Account used to search users and groups, for example `DOMAIN\svc-cv4pve` or `cn=svc,ou=services,dc=example,dc=com`. Empty means an anonymous bind. |
+| **Service password** | Password of the service account. |
+| **Base DN** | Where users and groups are searched, for example `DC=example,DC=local`. |
+| **User filter** | Search filter of the user, `{0}` is the user name typed in the sign-in form. Default `(sAMAccountName={0})` for Active Directory; `(uid={0})` on OpenLDAP. |
+| **Email attribute** | Attribute with the email address of the user. Default `mail`. |
+
+:::caution[Encryption]
+With **Security** set to **None** the passwords travel in clear on the network. LDAPS and StartTLS need a certificate on the domain controller: without it the connection is refused (LDAPS) or the server answers `Unavailable` (StartTLS).
+:::
+
+Use a dedicated service account with read rights only, not a domain administrator.
+
+### Setting up the provider
+
+Each redirect provider needs an application (client) registered on its side, with the **Callback address** of cv4pve-admin as redirect URI. Save the provider once in cv4pve-admin to see the address.
+
+**Microsoft Entra ID**, see [Register an application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app):
+
+1. In the Microsoft Entra admin center open **Entra ID → App registrations → New registration**. **Single tenant** limits the sign-in to your organization: write its tenant ID in **Tenant ID**.
+2. Add a **Web** redirect URI with the **Callback address**.
+3. Create a client secret and copy the **Application (client) ID** and the secret into **Client ID** and **Client Secret**.
+4. For the roles from groups, add the groups claim in **Token configuration → Add groups claim**, see [Configure groups optional claims](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims#configure-groups-optional-claims). The claim carries the object IDs of the groups: map those IDs in [Groups](#groups). A token carries at most 200 groups; for larger organizations choose **Groups assigned to the application**.
+
+**Google**, see [Manage OAuth Clients](https://support.google.com/cloud/answer/15549257):
+
+1. In the Google Cloud console open the **Clients** page of Google Auth Platform and create a client of type **Web application**.
+2. Add the **Callback address** to the **Authorized redirect URIs**. Google accepts only HTTPS addresses with a host name, not an IP address (`localhost` is the exception).
+3. Copy the client ID and the client secret into **Client ID** and **Client Secret**.
+
+**Keycloak**, see [Managing OpenID Connect clients](https://www.keycloak.org/docs/latest/server_admin/index.html#_oidc_clients):
+
+1. In the realm create a client of type **OpenID Connect** with **Client authentication** on.
+2. Add the **Callback address** to the **Valid redirect URIs**.
+3. Copy the client ID and, from the **Credentials** tab, the client secret.
+4. For the roles from groups, open the **Client scopes** tab of the client, then its dedicated scope, and add a mapper of type **Group Membership** with **Token Claim Name** equal to **Groups claim** (default `groups`) and **Add to ID token** on. With **Full group path** off the claim carries the group names (`admins`), with it on the paths (`/company/admins`): map the same form in [Groups](#groups).
+
+**OpenID Connect**: register a confidential client with the authorization code flow and the **Callback address** as redirect URI, then write the issuer in **Server (issuer)**. **Test connection** shows whether the discovery document is found.
+
+### Setting up an Active Directory domain
+
+1. Create a user for the application, for example `svc-cv4pve`, with a strong password that does not expire. A normal domain user can read users and groups: no administrator rights are needed.
+2. Fill **Service account** with `DOMAIN\svc-cv4pve` (or the user principal name `svc-cv4pve@example.local`) and **Service password**.
+3. Write the domain as **Base DN**: `example.local` becomes `DC=example,DC=local`. To search only part of the directory, start from an organizational unit, for example `OU=Staff,DC=example,DC=local`.
+4. Leave **User filter** at `(sAMAccountName={0})`: users sign in with their account name, also written as `DOMAIN\name`.
+5. Choose port and security:
+   - **636** with **Ldaps**, or **389** with **StartTls**, when the domain controller has a certificate for LDAP;
+   - **389** with **None** only on a trusted network, because passwords travel in clear.
+6. Click **Test connection**: it binds with the service account and checks the **Base DN**.
+
+A domain controller answers on LDAPS only with a certificate in its store whose enhanced key usage includes **Server Authentication** and whose subject or alternative names contain the fully qualified name of the domain controller. See [Enable LDAP over SSL](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/enable-ldap-over-ssl-3rd-certification-authority). Write that name, not the IP address, in **Server**, so that the certificate matches. With **Validate certificate** on, cv4pve-admin must trust the certification authority that issued it.
+
+### Accounts
+
+| Field | Description |
+|-------|-------------|
+| **Link by email to existing accounts** | Off by default. When on, a user who signs in for the first time is linked to the existing account with the same email address. |
+| **Create the account at the first sign-in** | Off by default. When on, a user without an account gets one, active and with the email confirmed. |
+| **Sign in only with a mapped group** | When on, only users in at least one of the [mapped groups](#groups) can sign in. |
+| **Default roles of created accounts** | Roles given to the accounts this provider creates. |
+| **Maximum session (hours)** | Redirect providers. Length of the session after a sign-in with this provider. Empty: the usual session length. |
+| **Check accounts every (minutes)** | Domains. Interval of the [account check](#account-check), at least 5 minutes. Default 60. |
+
+:::caution[Link by email]
+Whoever controls an email address in the provider signs in as the account with that email. Accounts that are administrators (role **Admin** or a module administrator role), accounts with two-factor authentication and built-in accounts are never linked by email: link them by hand from the [user dialog](#users).
+:::
+
+A user who signs in for the first time needs an email address in the identity. When the provider says the email is not verified, the sign-in is refused.
+
+### Groups
+
+Each row maps a group of the provider to a role of the application. At every sign-in the roles are updated: a role is added when the user is in the group and removed when the user leaves it.
+
+Only the roles given by a provider are removed by it. A role the user already had, or one assigned by hand in the user dialog, stays.
+
+- Redirect providers: the group is the value in the groups claim of the identity, as sent by the provider.
+- Domains: write part of the group name and pick it from the list read from the directory. The DN of the group is saved.
+
+## The sign-in page
+
+- **Domains**: when at least one domain is turned on, the form has a **Domain** list before **User** and **Password**. The first entry, **Local account**, is the account of the application. With a domain chosen, only that domain checks the password: a local account with the same name does not sign in.
+- Without a domain chosen, the local account is tried first. With one domain only, that domain is tried next. The `DOMAIN\user` form chooses the domain by its name.
+- **Redirect providers**: one button for each type, with the icon of the type, under the form. With more providers of the same type, the button opens a list of their names. The tooltip shows the name and the description.
+
+After an error the domain chosen stays selected. With a domain the message is **Invalid user or password** for every failure (wrong password, unknown user, user not allowed): the reason is in the [application log](../monitoring/#logs). With a redirect provider a refused user reads **This account cannot sign in with this provider. Ask your administrator.**, and the reason is in the `Login-External` entry of the audit.
+
+A wrong password with a domain counts as a failed login of the linked account, so the lockout of the account applies.
+
+## Account check
+
+Each domain that is turned on has a background job that checks the accounts linked to it, every **Check accounts every (minutes)**. **Check accounts** in the toolbar runs it at once.
+
+For each linked account:
+
+- **User removed from the directory, or disabled**: the roles given by the domain are removed and the sessions of the user are closed. An account created by the domain and without a password of its own is turned off.
+- **User enabled again**: an account turned off by the check is turned on again.
+- **Otherwise**: the roles are updated from the current groups. With **Sign in only with a mapped group**, a user no longer in any mapped group loses the roles of the domain and the sessions are closed.
+
+When the directory cannot be reached nothing is changed: an outage does not look like every user leaving.
+
+The jobs are listed in [Background Jobs](../monitoring/#background-jobs).
+
+## Users
+
+In **Admin Area → Security → Users**:
+
+- The **External logins** column lists the providers linked to each account.
+- The user dialog has two more tabs:
+  - **External logins**: the providers linked to the account, with **Unlink**. **Link an external login** links the account by hand: choose the provider and write the user name in the domain, or the identifier (`sub`) of the identity for a redirect provider. Unlinking also removes the roles the provider gave.
+  - **External sign-ins**: the last 50 sign-ins of the account through a domain or a provider, with date, type, details and IP address.
+
+An account can be linked to more providers, for example a domain and Keycloak.
+
+## Permissions
+
+| Permission | Allows |
+|------------|--------|
+| **Providers** (Read, Create, Edit, Delete) | Manage the providers. |
+| **Test** | **Test connection**, **Test login** and **Check accounts**. |
+
+## Audit
+
+Entries in [Audit Logs](../security/#audit-logs):
+
+| Action | When |
+|--------|------|
+| `Login-Domain` | Sign-in with a domain, successful or not. |
+| `Login-External` | Sign-in with a redirect provider, successful or not, with the reason of a refusal. |
+| `ExternalAuthentication.Provider.Create` / `.Edit` / `.Delete` / `.Test` | Changes and tests of the providers. |
+| `ExternalAuthentication.Role.Add` / `.Remove` | A role given or taken away by a provider. |
+| `ExternalAuthentication.Link` / `.Unlink` | A login linked or unlinked by hand. |
+| `ExternalAuthentication.Provider.Unlink` | A login removed because its provider was deleted. |
+| `ExternalAuthentication.DomainCheck` / `.DomainCheck.Left` | Account check of a domain, and a user who left the domain. |

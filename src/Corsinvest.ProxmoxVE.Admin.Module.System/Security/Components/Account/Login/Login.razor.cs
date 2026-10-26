@@ -5,11 +5,12 @@
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;
 
 public partial class Login(NavigationManager navigationManager,
-                           SignInManager<ApplicationUser> signInManager)
+                           IExternalAuthenticationService externalAuthenticationService)
 {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
     [SupplyParameterFromQuery] private string? Error { get; set; }
+    [SupplyParameterFromQuery(Name = "domain")] private string? Domain { get; set; }
 
     private sealed class InputModel
     {
@@ -25,7 +26,8 @@ public partial class Login(NavigationManager navigationManager,
     }
 
     private InputModel Input { get; set; } = new();
-    private IEnumerable<AuthenticationScheme> ExternalLogins { get; set; } = [];
+    private IReadOnlyList<ExternalLoginButton> ExternalLogins { get; set; } = [];
+    private IReadOnlyList<string> Domains { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,8 +49,14 @@ public partial class Login(NavigationManager navigationManager,
             }
         }
 
-        ExternalLogins = await signInManager.GetExternalAuthenticationSchemesAsync();
+        var buttons = await externalAuthenticationService.GetLoginButtonsAsync();
+        ExternalLogins = [.. buttons.Where(a => !a.IsDomain)];
+        Domains = [.. buttons.Where(a => a.IsDomain).Select(a => a.Name)];
+        Domain = Domains.FirstOrDefault(a => a.Equals(Domain, StringComparison.OrdinalIgnoreCase));
     }
+
+    private static string Tooltip(ExternalLoginButton item)
+        => string.IsNullOrWhiteSpace(item.Description) ? item.Name : $"{item.Name}: {item.Description}";
 
     private void ForgotPassword() => navigationManager.NavigateTo("/ForgotPassword");
 }

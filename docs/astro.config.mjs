@@ -79,6 +79,7 @@ export default defineConfig({
                 { label: 'Overview', slug: 'configuration/admin-area' },
                 { label: 'Proxmox VE Clusters', slug: 'configuration/admin-area/clusters' },
                 { label: 'Security & Access Control', slug: 'configuration/admin-area/security' },
+                { label: 'External Authentication', slug: 'configuration/admin-area/external-authentication' },
                 { label: 'Monitoring', slug: 'configuration/admin-area/monitoring' },
                 { label: 'Maintenance', slug: 'configuration/admin-area/maintenance' },
                 { label: 'General Settings', slug: 'configuration/admin-area/general-settings' },

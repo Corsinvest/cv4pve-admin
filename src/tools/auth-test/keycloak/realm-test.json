@@ -1,0 +1,84 @@
+{
+  "realm": "test",
+  "enabled": true,
+  "sslRequired": "none",
+  "groups": [
+    { "name": "pve-admins" },
+    { "name": "pve-helpdesk" }
+  ],
+  "clients": [
+    {
+      "clientId": "cv4pve",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "cv4pve-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [ "https://localhost:7251/*" ],
+      "webOrigins": [ "https://localhost:7251" ],
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "config": {
+            "claim.name": "groups",
+            "full.path": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "existing",
+      "email": "pt-usera@local",
+      "emailVerified": true,
+      "firstName": "Existing",
+      "lastName": "User",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Test-1234!", "temporary": false } ]
+    },
+    {
+      "username": "newuser",
+      "email": "ea-new@local",
+      "emailVerified": true,
+      "firstName": "New",
+      "lastName": "User",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Test-1234!", "temporary": false } ]
+    },
+    {
+      "username": "attacker",
+      "email": "admin@local",
+      "emailVerified": true,
+      "firstName": "Same email",
+      "lastName": "As admin",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Test-1234!", "temporary": false } ]
+    },
+    {
+      "username": "groupuser",
+      "email": "ea-group@local",
+      "emailVerified": true,
+      "firstName": "Group",
+      "lastName": "User",
+      "enabled": true,
+      "groups": [ "/pve-admins" ],
+      "credentials": [ { "type": "password", "value": "Test-1234!", "temporary": false } ]
+    },
+    {
+      "username": "nogroup",
+      "email": "ea-nogroup@local",
+      "emailVerified": true,
+      "firstName": "No",
+      "lastName": "Group",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Test-1234!", "temporary": false } ]
+    }
+  ]
+}
