@@ -68,6 +68,15 @@ A user created in **Admin Area → Security → Users** can log in when all of t
 
 The confirmation email and the password email both need a working SMTP server. Check it with **Test SMTP Configuration** in [General Settings](../configuration/admin-area/general-settings/#test-smtp-configuration). See [How a new user gets access](../configuration/admin-area/security/#how-a-new-user-gets-access).
 
+### A user cannot sign in with a domain or an identity provider
+
+The sign-in page does not say why, on purpose. The reason is recorded:
+
+- **Identity provider** (button under the form): the `Login-External` entry of the [Audit Logs](../configuration/admin-area/security/#audit-logs) has it, for example `account ... exists, linking by email is off` or `... is in no mapped group`.
+- **Domain** (the **Domain** list of the form): the reason is in the [application log](../configuration/admin-area/monitoring/#logs). When the directory cannot be reached the domain is skipped and the sign-in fails as a wrong password.
+
+Then check the provider with **Test connection** and, for a redirect provider, **Test login** in **Admin Area → Security → External Authentication**. See [External Authentication](../configuration/admin-area/external-authentication/).
+
 ## Proxmox VE clusters
 
 ### The cluster cannot be saved or does not connect

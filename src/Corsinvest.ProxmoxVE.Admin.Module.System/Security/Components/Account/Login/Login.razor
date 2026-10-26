@@ -41,6 +41,25 @@ else
 
         <AntiforgeryToken />
 
+        @if (Domains.Count > 0)
+        {
+            @* Empty: the local account *@
+            <RadzenFormField Text="@L["Domain"]" AllowFloatingLabel="false" Style="width: 100%;" class="rz-mb-2">
+                <Start>
+                    <i class="mdi mdi-domain" style="font-size: 1.25rem;"></i>
+                </Start>
+                <ChildContent>
+                    <select id="Domain" name="Domain" class="rz-textbox" style="border: none; width: 100%;">
+                        <option value="" selected="@(Domain == null)">@L["Local account"]</option>
+                        @foreach (var domain in Domains)
+                        {
+                            <option value="@domain" selected="@(domain == Domain)">@domain</option>
+                        }
+                    </select>
+                </ChildContent>
+            </RadzenFormField>
+        }
+
         <RadzenLogin AllowRegister="false"
                      AllowResetPassword="true"
                      AllowRememberMe="true"
@@ -56,44 +75,71 @@ else
                      PasswordText="@L["Password"]"
                      RememberMeText="@L["Remember me"]" />
 
-        @if (Domains.Count > 1)
-        {
-            <div class="rz-mb-4">
-                <label for="Domain" class="rz-text-body2">@L["Domain"]</label>
-                <select id="Domain" name="Domain" class="rz-textbox rz-w-100">
-                    <option value="">@L["Local account"]</option>
-                    @foreach (var domain in Domains)
-                    {
-                        <option value="@domain">@domain</option>
-                    }
-                </select>
-            </div>
-        }
-
         <RadzenLink Path="/ResendEmailConfirmation" Text="@L["Resend email confirmation"]" />
     </RadzenTemplateForm>
 
     @if (ExternalLogins.Count > 0)
     {
-        <form action="/PerformExternalLogin" method="post" class="rz-mt-4">
+        <form id="external-login" action="/PerformExternalLogin" method="post">
             <AntiforgeryToken />
             <input type="hidden" name="@nameof(ReturnUrl)" value="@ReturnUrl" />
-            <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="0.5rem" JustifyContent="JustifyContent.Center">
-                @foreach (var provider in ExternalLogins)
-                {
-                    var image = IsImage(provider.Icon);
-                    <RadzenButton ButtonType="ButtonType.Submit"
-                                  ButtonStyle="ButtonStyle.Base"
-                                  Variant="Variant.Outlined"
-                                  Text="@(provider.Display == ExternalLoginDisplay.IconOnly ? null : provider.Name)"
-                                  Icon="@(provider.Display == ExternalLoginDisplay.TitleOnly || image ? null : provider.Icon)"
-                                  Image="@(provider.Display != ExternalLoginDisplay.TitleOnly && image ? provider.Icon : null)"
-                                  title="@(string.IsNullOrWhiteSpace(provider.Description) ? provider.Name : provider.Description)"
-                                  aria-label="@provider.Name"
-                                  name="provider"
-                                  value="@provider.Scheme" />
-                }
-            </RadzenStack>
         </form>
+
+        @* One button for each kind of provider; with more providers of a kind the button opens a menu *@
+        <div class="external-logins rz-mt-4">
+            @foreach (var group in ExternalLogins.GroupBy(a => a.Icon))
+            {
+                var items = group.ToList();
+                if (items.Count == 1)
+                {
+                    @Item(items[0], false)
+                }
+                else
+                {
+                    <details>
+                        <summary class="rz-button rz-button-md rz-variant-outlined rz-base rz-shade-default rz-button-icon-only"
+                                 title="@string.Join(", ", items.Select(a => a.Name))">
+                            <i class="@group.Key"></i>
+                        </summary>
+                        <div class="external-logins-menu">
+                            @foreach (var item in items)
+                            {
+                                @Item(item, true)
+                            }
+                        </div>
+                    </details>
+                }
+            }
+        </div>
+
+        <style>
+            .external-logins { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+            .external-logins i { font-size: 1.25rem; }
+            .external-logins details { position: relative; }
+            .external-logins summary { list-style: none; }
+            .external-logins summary::-webkit-details-marker { display: none; }
+            .external-logins-menu { position: absolute; z-index: 10; top: calc(100% + 0.25rem); left: 50%; transform: translateX(-50%);
+                                    min-width: 14rem; display: flex; flex-direction: column; gap: 0.25rem; padding: 0.25rem;
+                                    background: var(--rz-base-background-color); border: var(--rz-border-base-300);
+                                    border-radius: var(--rz-border-radius); box-shadow: var(--rz-shadow-2); }
+            .external-logins-menu .rz-button { justify-content: flex-start; width: 100%; }
+        </style>
     }
+}
+
+@code
+{
+    private RenderFragment Item(ExternalLoginButton item, bool withName) => __builder =>
+    {
+        <button type="submit"
+                form="external-login"
+                name="provider"
+                value="@item.Scheme"
+                class="rz-button rz-button-md rz-variant-outlined rz-base rz-shade-default @(withName ? null : "rz-button-icon-only")"
+                title="@Tooltip(item)"
+                aria-label="@item.Name">
+            <i class="@item.Icon"></i>
+            @if (withName) { <span class="rz-ms-2">@item.Name</span> }
+        </button>
+    };
 }

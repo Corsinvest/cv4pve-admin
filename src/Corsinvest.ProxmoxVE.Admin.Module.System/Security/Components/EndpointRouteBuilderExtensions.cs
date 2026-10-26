@@ -5,7 +5,6 @@
 using System.Net.Mime;
 using System.Web;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -45,11 +44,12 @@ public static class EndpointRouteBuilderExtensions
         return trimmed;
     }
 
-    private static string BuildErrorUrl(string? returnUrl, string errorMessage)
+    private static string BuildErrorUrl(string? returnUrl, string errorMessage, string? domain = null)
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
         query["returnUrl"] = SanitizeReturnUrl(returnUrl);
         query["error"] = errorMessage;
+        if (!string.IsNullOrEmpty(domain)) { query["domain"] = domain; }
         return $"/Login?{query}";
     }
 
@@ -201,7 +201,10 @@ public static class EndpointRouteBuilderExtensions
             var url = string.Empty;
             var tmpReturnUrl = FixReturnUrl(returnUrl!, httpContext.Request);
 
-            var result = await signInManager.PasswordSignInExAsync(model.UserName, model.Password, model.RememberMe, true);
+            // With a domain chosen only the domain checks the password, never the local account
+            var result = string.IsNullOrEmpty(model.Domain)
+                            ? await signInManager.PasswordSignInExAsync(model.UserName, model.Password, model.RememberMe, true)
+                            : Microsoft.AspNetCore.Identity.SignInResult.Failed;
             if (result.Succeeded)
             {
                 await auditService.LogAsync("Login-Password", true, $"User '{model.UserName}' logged in");
@@ -245,7 +248,7 @@ public static class EndpointRouteBuilderExtensions
                     await auditService.LogAsync(domain == null ? "Login-Password" : "Login-Domain",
                                                 false,
                                                 $"Invalid credentials for user '{model.UserName}'");
-                    url = BuildErrorUrl(tmpReturnUrl, domain?.FailureReason ?? "Invalid user or password");
+                    url = BuildErrorUrl(tmpReturnUrl, domain?.FailureReason ?? "Invalid user or password", model.Domain);
                 }
             }
 
@@ -333,7 +336,7 @@ public static class EndpointRouteBuilderExtensions
                                                               [FromForm] string returnUrl) =>
         {
             // Only a provider that is shown on the login page can be used
-            if (!(await externalAuthenticationService.GetLoginButtonsAsync()).Any(a => a.Scheme == provider))
+            if (!(await externalAuthenticationService.GetLoginButtonsAsync()).Any(a => !a.IsDomain && a.Scheme == provider))
             {
                 return (IResult)TypedResults.Redirect(BuildErrorUrl(SanitizeReturnUrl(returnUrl), MessageExternal));
             }

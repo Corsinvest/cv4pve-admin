@@ -10,6 +10,7 @@ public partial class Login(NavigationManager navigationManager,
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
     [SupplyParameterFromQuery] private string? Error { get; set; }
+    [SupplyParameterFromQuery(Name = "domain")] private string? Domain { get; set; }
 
     private sealed class InputModel
     {
@@ -27,9 +28,6 @@ public partial class Login(NavigationManager navigationManager,
     private InputModel Input { get; set; } = new();
     private IReadOnlyList<ExternalLoginButton> ExternalLogins { get; set; } = [];
     private IReadOnlyList<string> Domains { get; set; } = [];
-
-    // An icon is a name of the icon font, or the address of an image
-    private static bool IsImage(string icon) => icon.StartsWith('/') || icon.StartsWith("http") || icon.StartsWith("data:");
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,9 +49,14 @@ public partial class Login(NavigationManager navigationManager,
             }
         }
 
-        ExternalLogins = await externalAuthenticationService.GetLoginButtonsAsync();
-        Domains = await externalAuthenticationService.GetDomainNamesAsync();
+        var buttons = await externalAuthenticationService.GetLoginButtonsAsync();
+        ExternalLogins = [.. buttons.Where(a => !a.IsDomain)];
+        Domains = [.. buttons.Where(a => a.IsDomain).Select(a => a.Name)];
+        Domain = Domains.FirstOrDefault(a => a.Equals(Domain, StringComparison.OrdinalIgnoreCase));
     }
+
+    private static string Tooltip(ExternalLoginButton item)
+        => string.IsNullOrWhiteSpace(item.Description) ? item.Name : $"{item.Name}: {item.Description}";
 
     private void ForgotPassword() => navigationManager.NavigateTo("/ForgotPassword");
 }
