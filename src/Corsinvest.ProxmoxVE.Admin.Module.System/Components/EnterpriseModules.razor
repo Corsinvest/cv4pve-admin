@@ -1,0 +1,53 @@
+﻿@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@inject IBrowserService BrowserService
+
+<RadzenStack Gap="1rem">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Wrap="FlexWrap.Wrap">
+        <RadzenText TextStyle="TextStyle.Body1" Style="margin: 0;" Text="@L["Modules available only in the Enterprise Edition."]" />
+        <RadzenButton Icon="vpn_key"
+                      Text="@L["Get Enterprise"]"
+                      ButtonStyle="ButtonStyle.Warning"
+                      Size="ButtonSize.Small"
+                      Click="@(() => BrowserService.OpenAsync(ApplicationHelper.ShopSubscriptionUrl, "_blank"))" />
+    </RadzenStack>
+
+    <RadzenRow Gap="1rem">
+        @foreach (var item in Items)
+        {
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+                <RadzenCard Variant="Variant.Outlined" Style="height: 100%;">
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                            <RadzenIcon Icon="@item.Icon" />
+                            <RadzenText TextStyle="TextStyle.H6" Style="margin: 0;" Text="@item.Name" />
+                            <RadzenIcon Icon="diamond" Style="color: var(--rz-danger); margin-left: auto;" title="Enterprise" />
+                        </RadzenStack>
+                        <RadzenText TextStyle="TextStyle.Body2" Style="margin: 0;" Text="@L[item.Description]" />
+                        @if (!string.IsNullOrEmpty(item.HelpUrl))
+                        {
+                            <RadzenLink Text="@L["Documentation"]" Path="@($"/help/{item.HelpUrl}/")" Target="_blank" />
+                        }
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        }
+    </RadzenRow>
+</RadzenStack>
+
+@code {
+    private record Item(string Name, string Icon, string Description, string? HelpUrl);
+
+    private static readonly Item[] Items =
+    [
+        new("AI Assistant", "auto_awesome", "AI-powered assistant for Proxmox VE management and automation", "modules/ai-assistant"),
+        new("Disaster Recovery", "sync_alt", "Multi-site data replication and disaster recovery", null),
+        new("Portal", "dns", "Multi-tenant portal with isolated access", "modules/portal"),
+        new("UPS Monitor", "electric_bolt", "UPS monitoring with power alerts, reading history and shutdown of the nodes on a power failure", "modules/ups-monitor"),
+        new("VM Performance", "display_settings", "VM performance monitoring with IOPS visibility", "modules/vm-performance"),
+        new("Workflow", "account_tree", "Visual workflow designer for automation", "modules/workflow"),
+    ];
+}

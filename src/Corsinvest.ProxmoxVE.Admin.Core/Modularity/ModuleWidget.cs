@@ -35,4 +35,24 @@ public class ModuleWidget
     // Counts or totals of every VM, node or storage of a cluster: shown only on the clusters
     // where the user can read all of them
     public bool ClusterWide { get; set; }
+
+    public bool IsSubscriptionRequired => RenderInfo?.Type == typeof(Components.SubscriptionRequired);
+
+    // A widget added by the Enterprise Edition: in the Community Edition it is listed marked, with no data
+    public static IEnumerable<ModuleWidget> EnterprisePlaceholder(ModuleBase module,
+                                                                  string name,
+                                                                  string description,
+                                                                  int width,
+                                                                  int height,
+                                                                  bool clusterWide = true)
+        => BuildInfo.IsEnterpriseEdition
+            ? []
+            : [new(module, name)
+               {
+                   ClusterWide = clusterWide,
+                   Description = description,
+                   RenderInfo = new(typeof(Components.SubscriptionRequired)),
+                   Width = width,
+                   Height = height
+               }];
 }

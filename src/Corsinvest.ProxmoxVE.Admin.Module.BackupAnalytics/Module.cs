@@ -102,7 +102,8 @@ public class Module : ModuleBase
                 RenderInfo = new(typeof(Components.Widgets.Info)),
                 Width = 6,
                 Height = 8
-            }
+            },
+            .. ModuleWidget.EnterprisePlaceholder(this, "Daily Status", "Success/Failed backups per day (last 14 days)", 6, 5)
         ];
 
         Roles =

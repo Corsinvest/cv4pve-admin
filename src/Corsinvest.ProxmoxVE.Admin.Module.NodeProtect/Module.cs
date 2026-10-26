@@ -54,7 +54,9 @@ public class Module : ModuleBase
                 RenderInfo = new(typeof(Folder.Components.Widgets.Size)),
                 Width = 3,
                 Height = 5
-            }
+            },
+            .. ModuleWidget.EnterprisePlaceholder(this, "Git Size", "NodeProtect Git Repository Size", 3, 5),
+            .. ModuleWidget.EnterprisePlaceholder(this, "Daily Status", "Success/Failed NodeProtect folder tasks per day (last 14 days)", 6, 5)
         ];
 
         Roles =

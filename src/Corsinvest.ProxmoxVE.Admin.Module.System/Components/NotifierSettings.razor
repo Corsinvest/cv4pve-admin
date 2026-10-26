@@ -15,5 +15,12 @@
                 <DynamicComponent Type="@render.Type" Parameters="@render.Parameters" />
             </RadzenTabsItem>
         }
+
+        @if (!IsEnterpriseEdition)
+        {
+            <RadzenTabsItem Icon="notifications" Text="Apprise">
+                <SubscriptionRequired />
+            </RadzenTabsItem>
+        }
     </Tabs>
 </RadzenTabs>

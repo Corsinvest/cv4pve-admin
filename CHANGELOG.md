@@ -32,6 +32,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
 
+- **Enterprise features shown in the Community Edition**: the Enterprise widgets (Daily Status, Git Size) are listed in the **Add widget** menu of the dashboard, marked with a diamond, and appear in the module overviews with the subscription notice; the Notifications page has an Apprise tab with the notice; a new **Enterprise Modules** page in the Admin Area lists the modules of the Enterprise Edition. Before, these features did not appear at all.
+
 - **Command line, `user disable-2fa`**: turns off two-factor authentication for a user who lost both the authenticator device and the recovery codes. It is the way out when that user is the only administrator.
 
 #### Changed
