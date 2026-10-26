@@ -156,9 +156,20 @@
             <RadzenMenuItem Text="@item.Name" Icon="@item.Icon">
                 @foreach (var widget in item.Widgets.Where(AllowedWidgets.Contains).OrderBy(a=> a.Name))
                 {
-                    <RadzenMenuItem Text="@widget.Name"
-                                    title="@widget.Description"
-                                    Click="@(async () => { ds.Close(); await AddWidgetAsync(widget); })" />
+                    @if (widget.IsSubscriptionRequired)
+                    {
+                        <RadzenMenuItem Text="@widget.Name"
+                                        Icon="diamond"
+                                        IconColor="@Colors.Danger"
+                                        title="@($"{L["Requires subscription:"]} Enterprise")"
+                                        Click="@(async () => { ds.Close(); await browserService.OpenAsync(Core.Helpers.ApplicationHelper.ShopSubscriptionUrl, "_blank"); })" />
+                    }
+                    else
+                    {
+                        <RadzenMenuItem Text="@widget.Name"
+                                        title="@widget.Description"
+                                        Click="@(async () => { ds.Close(); await AddWidgetAsync(widget); })" />
+                    }
                 }
             </RadzenMenuItem>
         }

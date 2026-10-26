@@ -43,6 +43,8 @@ public class Module : ModuleBase
             Render = NavBar.ToList()[0].Render
         };
 
+        Widgets = [.. ModuleWidget.EnterprisePlaceholder(this, "Daily Status", "Success/Failed reports per day (last 14 days)", 6, 5, false)];
+
         Roles =
         [
             new(Permissions.Report.Data.Permissions

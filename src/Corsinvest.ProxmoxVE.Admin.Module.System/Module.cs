@@ -175,6 +175,12 @@ public class Module : ModuleBase
                 Render = new (typeof(Components.Support)),
                 Icon = "support_agent"
             },
+
+            new(this,"Enterprise Modules")
+            {
+                Render = new (typeof(Components.EnterpriseModules)),
+                Icon = "diamond"
+            },
         ];
 
     //protected static RenderComponentInfo CreateSettingsAccordion(IEnumerable<Core.Components.Settings.SettingSection<AppSettings>> sections)
