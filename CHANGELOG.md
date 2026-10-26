@@ -301,6 +301,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **Portal, Tenant Admin**: each tenant can have its own admin, who sees only its tenant and manages the users of that tenant: adds new accounts, chooses their permissions on the tenant's VMs, makes another user admin. Linking an account that already exists stays with the administrator. The tenant roles are assigned by the Portal when a user joins a tenant or becomes its admin.
+
 - **UPS Monitor, thresholds per device**: the editor of a device can set its own battery low, battery critical and runtime critical alert thresholds; an empty field uses the value of the cluster settings.
 
 - **UPS, automatic shutdown of the nodes**: on a power failure the module can shut the nodes of the cluster down. Each device has a new setting, *On power failure*: *Nothing (alerts only)*, the default; *Dry-run (simulate the shutdown)*; *Shutdown (shut the nodes down)*. With Shutdown, when a shutdown condition is met the nodes the device covers get the shutdown command of Proxmox VE, through the API of the cluster and in the order of the settings: nothing is installed on the nodes. A command that fails is tried three times, a node already off is skipped, and the node that hosts the application is commanded last. Choosing Shutdown asks for a confirmation that names the nodes. The credentials of the cluster need the privilege to shut the nodes down: it is checked once a day and the dashboard warns when it is missing. Guests are not stopped one by one, and high availability and Ceph are not handled: the shutdown test warns when the cluster has them. Tried on test nodes with a simulated UPS, not during a real power failure: start with Dry-run. Existing devices stay on *Nothing*.
@@ -330,6 +332,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Two-factor authentication turned off**: the user receives an email, whoever turned it off.
 
 #### Changed
+
+- **Portal, tenants kept apart**: the Tenants page shows each user only its tenants; creating, editing and deleting tenants and adding or removing their VMs need the new **All tenants** permission. The **Portal Tenant Admin** role no longer gives permissions on all the VMs of the cluster nor the right to create and delete tenants: review your roles. Who had that role becomes admin of the tenants it was already in. A guest now belongs to one tenant only: guests already in two tenants are listed as a warning in the Vms tab.
 
 - **VM Performance, permissions per VM (review your roles)**: the *Status* page listed every running VM of the cluster to whoever could open it. Now it lists only the VMs the user can read.
 
