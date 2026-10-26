@@ -11,7 +11,8 @@ public record ExternalLoginButton(string Scheme, string Name, string Icon, strin
 
 public record ExternalSignInResult(bool Succeeded, ApplicationUser? User, string? FailureReason, TimeSpan? SessionLifetime = null)
 {
-    public static ExternalSignInResult Fail(string? reason = null) => new(false, null, reason);
+    public static ExternalSignInResult Fail() => Fail(null);
+    public static ExternalSignInResult Fail(string? reason) => new(false, null, reason);
 }
 
 // Sign in with identity providers and domains configured in the application

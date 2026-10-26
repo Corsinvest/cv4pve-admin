@@ -58,7 +58,7 @@ public static class EndpointRouteBuilderExtensions
         [Required] public string UserName { get; set; } = default!;
         [Required] public string Password { get; set; } = default!;
         public bool RememberMe { get; set; } = default!;
-        public string? Domain { get; set; }
+        public string? Domain { get; set; } = default;
     }
 
     private class InputLogin2fa
