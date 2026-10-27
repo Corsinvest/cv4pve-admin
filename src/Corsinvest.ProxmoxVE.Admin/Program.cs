@@ -127,7 +127,6 @@ app.UseStatusCodePagesWithReExecute("/NotFound");
 app.UseHttpsRedirection();
 //app.MapControllers();
 app.MapStaticAssets();
-app.UseAntiforgery();
 
 app.UseAdminCore();
 

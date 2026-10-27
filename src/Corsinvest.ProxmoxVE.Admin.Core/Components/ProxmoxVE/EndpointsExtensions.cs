@@ -94,16 +94,6 @@ internal static class EndpointsExtensions
                                                               info.Volume,
                                                               info.FilePath);
 
-                    var httpClient = client.GetHttpClient();
-                    //var stream = await httpClient.GetStreamAsync(url);
-
-                    var request = client.CreateHttpRequestMessage(HttpMethod.Get, url);
-                    var response = await httpClient.SendAsync(request);
-                    // The stream is read after this handler returns, so both are released with the response
-                    httpContext.Response.RegisterForDispose(request);
-                    httpContext.Response.RegisterForDispose(response);
-                    var stream = await response.Content.ReadAsStreamAsync();
-
                     var fileName = info.FileName;
                     if (info.Type == "d")
                     {
@@ -117,6 +107,14 @@ internal static class EndpointsExtensions
                             fileName += ".zip";
                         }
                     }
+
+                    var httpClient = client.GetHttpClient();
+                    var request = client.CreateHttpRequestMessage(HttpMethod.Get, url);
+                    var response = await httpClient.SendAsync(request);
+                    // The stream is read after this handler returns, so both are released with the response
+                    httpContext.Response.RegisterForDispose(request);
+                    httpContext.Response.RegisterForDispose(response);
+                    var stream = await response.Content.ReadAsStreamAsync();
 
                     return Results.File(stream, "application/octet-stream", fileName);
                 }
@@ -197,6 +195,8 @@ internal static class EndpointsExtensions
         group.MapGet("/xtermjs/{*resource}",
                      async (string clusterName, string resource, IAdminService adminService) =>
         {
+            if (!IsStaticResource(resource)) { return Results.NotFound(); }
+
             return resource switch
             {
                 "main.js" or "util.js" => await FixJsAsync(clusterName, $"/xtermjs/{resource}", adminService),
@@ -207,12 +207,22 @@ internal static class EndpointsExtensions
         group.MapGet("/novnc/{*resource}",
                      async (string clusterName, string resource, IAdminService adminService) =>
         {
+            if (!IsStaticResource(resource)) { return Results.NotFound(); }
+
             return resource switch
             {
                 "app.js" => await FixJsAsync(clusterName, $"/novnc/{resource}", adminService),
                 _ => await GetResourceFromPveAsync(clusterName, $"novnc/{resource}", adminService)
             };
         });
+
+        // The request goes to Proxmox VE with the credentials of the cluster: only a file under the folder
+        static bool IsStaticResource(string resource)
+            => !string.IsNullOrEmpty(resource)
+               && !resource.StartsWith('/')
+               && !resource.Contains("..")
+               && resource.IndexOfAny(['%', '\\', ':', '?', '#']) < 0
+               && !resource.Any(char.IsControl);
 
         static async Task<IResult> FixJsAsync(string clusterName, string resource, IAdminService adminService)
         {

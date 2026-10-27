@@ -106,6 +106,22 @@ public static class ServiceCollectionExtensions
             WriteIndented = false
         };
 
+        // Explicit, after the proxy headers and the exception handler: the antiforgery needs the user
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseAntiforgery();
+
+        // Not inside a frame of another site, no guessing of the content type, no full address to other sites
+        app.Use((context, next) =>
+        {
+            var headers = context.Response.Headers;
+            headers.TryAdd("X-Frame-Options", "SAMEORIGIN");
+            headers.TryAdd("Content-Security-Policy", "frame-ancestors 'self'");
+            headers.TryAdd("X-Content-Type-Options", "nosniff");
+            headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+            return next(context);
+        });
+
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         // The language of the profile (culture cookie), otherwise the default one: never the one of the server

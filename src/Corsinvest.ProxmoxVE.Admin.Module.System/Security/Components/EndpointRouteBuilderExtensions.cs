@@ -41,6 +41,9 @@ public static class EndpointRouteBuilderExtensions
         // Reject scheme-relative like "/\evil.com" or backslash tricks
         if (trimmed.Contains('\\')) { return "/"; }
 
+        // The browser drops tabs and new lines: "/\t/evil.com" would become "//evil.com"
+        if (trimmed.Any(char.IsControl)) { return "/"; }
+
         return trimmed;
     }
 

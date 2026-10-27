@@ -36,12 +36,21 @@ public static class IdentityExtensions
                                                                         string recoveryCode)
         => signInManager.SignInIfActiveAsync(userName, () => signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode));
 
-    public static Task<SignInResult> PasswordSignInExAsync(this SignInManager<ApplicationUser> signInManager,
-                                                           string userName,
-                                                           string password,
-                                                           bool isPersistent,
-                                                           bool lockoutOnFailure)
-        => signInManager.SignInIfActiveAsync(userName, () => signInManager.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure));
+    public static async Task<SignInResult> PasswordSignInExAsync(this SignInManager<ApplicationUser> signInManager,
+                                                                 string userName,
+                                                                 string password,
+                                                                 bool isPersistent,
+                                                                 bool lockoutOnFailure)
+    {
+        // A disabled account is told apart only with the right password: otherwise the answer says that it exists
+        var user = await signInManager.UserManager.FindByNameAsync(userName);
+        if (user is { IsActive: false } && !await signInManager.UserManager.CheckPasswordAsync(user, password))
+        {
+            return SignInResult.Failed;
+        }
+
+        return await signInManager.SignInIfActiveAsync(userName, () => signInManager.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure));
+    }
 
     private static async Task<SignInResult> SignInIfActiveAsync(this SignInManager<ApplicationUser> signInManager,
                                                                 string userName,
