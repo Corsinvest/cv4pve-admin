@@ -34,7 +34,9 @@ Keep the mapping only when the proxy runs outside Docker (see [Nginx](#nginx-man
 `./adminctl self-update` does not overwrite a modified `docker-compose.yaml`.
 :::
 
-**Forwarded headers:** The container image already enables forwarded-header handling: it accepts `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Forwarded-Host` from any proxy. The application therefore handles HTTPS termination at the proxy correctly, with no extra configuration. On the requests that arrive as HTTPS, the application also sends the HSTS header.
+**Forwarded headers:** The application reads `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Forwarded-Host`, by default from any address. It therefore handles HTTPS termination at the proxy correctly, with no extra configuration. On the requests that arrive as HTTPS, the application also sends the HSTS header. To accept these headers only from your proxy, list its address in [`TrustedProxies`](../configuration/appsettings-extra/#public-address-and-proxies): a client that reaches the application without the proxy can no longer change the address and the scheme the application sees.
+
+**Public address:** Set [`PublicUrl`](../configuration/appsettings-extra/#public-address-and-proxies) to the address users open, for example `https://admin.example.com/`. The links in the emails (email confirmation, password reset) are built from it. Without it they take the address from the request, and the log shows a warning at startup.
 
 ---
 

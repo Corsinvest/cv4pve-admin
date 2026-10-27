@@ -19,6 +19,7 @@ using Corsinvest.ProxmoxVE.Admin.Core.ToolBarUtilities;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using PdfSharp.Fonts;
@@ -30,6 +31,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAdminCore(this IServiceCollection services, IConfiguration configuration, IEnumerable<Type> moduleTypes)
     {
+        ApplicationHelper.PublicUrl = ApplicationHelper.ParsePublicUrl(configuration["PublicUrl"]);
+
         services.AddAdminLocalization();
 
         services.AddDataProtection()
@@ -98,8 +101,55 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    // The X-Forwarded-* headers are read only from the proxies in "TrustedProxies" (addresses or networks, besides
+    // loopback). Without the setting, or with "*", from any address: a proxy in front of the container needs nothing
+    public static void UseAdminForwardedHeaders(this WebApplication app)
+    {
+        var options = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+        };
+
+        var proxies = app.Configuration.GetSection("TrustedProxies").Get<string[]>() ?? [];
+        if (proxies.Length == 0 || proxies.Contains("*"))
+        {
+            options.KnownIPNetworks.Clear();
+            options.KnownProxies.Clear();
+        }
+        else
+        {
+            var accepted = new List<string>();
+            foreach (var item in proxies.Select(a => a.Trim()))
+            {
+                if (item.Contains('/') && System.Net.IPNetwork.TryParse(item, out var network)) { options.KnownIPNetworks.Add(network); }
+                else if (!item.Contains('/') && IPAddress.TryParse(item, out var address)) { options.KnownProxies.Add(address); }
+                else
+                {
+                    app.Logger.LogWarning("TrustedProxies: '{Value}' is not an address or a network, ignored", item);
+                    continue;
+                }
+
+                accepted.Add(item);
+            }
+
+            app.Logger.LogInformation("Forwarded headers accepted only from loopback and: {Proxies}", string.Join(", ", accepted));
+        }
+
+        app.UseForwardedHeaders(options);
+    }
+
     public static void UseAdminCore(this WebApplication app)
     {
+        var publicUrl = app.Configuration["PublicUrl"];
+        if (string.IsNullOrWhiteSpace(publicUrl))
+        {
+            app.Logger.LogWarning("PublicUrl is not set: the links in the emails take the address from the request");
+        }
+        else if (ApplicationHelper.PublicUrl == null)
+        {
+            app.Logger.LogWarning("PublicUrl '{PublicUrl}' is not an absolute http or https address: ignored", publicUrl);
+        }
+
         // Compact copy of the application options: same [Encrypt] handling, no indentation in the stored value
         ExtendedData.JsonOptions = new JsonSerializerOptions(app.Services.GetRequiredService<JsonSerializerOptions>())
         {

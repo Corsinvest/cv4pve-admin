@@ -6,6 +6,10 @@ namespace Corsinvest.ProxmoxVE.Admin.Core.Extensions;
 
 public static class NavigationManagerExtensions
 {
+    // Base of the links that leave the application: the request decides only when "PublicUrl" is not set
+    public static string GetPublicBaseUri(this NavigationManager navigationManager)
+        => ApplicationHelper.PublicUrl ?? navigationManager.BaseUri;
+
     public static void ForceReload(this NavigationManager navigationManager)
         => navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
 
