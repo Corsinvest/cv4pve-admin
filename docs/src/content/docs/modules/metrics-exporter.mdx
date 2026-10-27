@@ -59,11 +59,22 @@ GET /module/*/metrics-exporter/prometheus/<clusterName>?token=<TOKEN>
 - **`<clusterName>`**: name of the configured Proxmox VE cluster
 - **`<TOKEN>`**: per-cluster token defined in the module settings
 
+The token can also travel in the `Authorization: Bearer <TOKEN>` header instead of the query string, so it does not end up in the logs of a proxy. In Prometheus:
+
+```yaml
+scrape_configs:
+  - job_name: cv4pve
+    metrics_path: /module/*/metrics-exporter/prometheus/<clusterName>
+    authorization:
+      credentials: <TOKEN>
+    static_configs:
+      - targets: ['cv4pve-admin:8080']
+```
+
 | Response | Meaning |
 |----------|---------|
-| `503` | The module or the Prometheus exporter is disabled |
-| `401` | The token is wrong |
-| `400` | The cluster name is unknown or disabled, or no token is configured |
+| `401` | The token is wrong or missing, no token is configured, or the cluster name is unknown or disabled |
+| `503` | The module or the Prometheus exporter is disabled (only with the right token) |
 
 **Grab the URL from the UI:** The **Open metrics** link in the **Status** page points to the scrape URL of the current cluster, token included. Copy the link address from there instead of building it by hand.
 

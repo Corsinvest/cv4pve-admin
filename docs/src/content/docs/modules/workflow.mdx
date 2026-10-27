@@ -79,6 +79,10 @@ The module defines these application permissions. All of them are included in th
 
 Permissions are given per cluster. The designer shows only the actions the user holds on the cluster, and the workflow engine refuses the others even when they are requested directly. The pickers of the activities list only the nodes, guests and storages the user can read.
 
+:::caution[Editing a workflow is an administrator permission]
+The C# expressions of a workflow run as .NET code inside the cv4pve-admin process, outside the permission checks of the activities. Who can create or edit a workflow can read the configuration and the data of the application, the database connection string and the Proxmox VE credentials of every cluster included. Give **Workflow: Create** and **Workflow: Edit** only to users you would make administrators.
+:::
+
 ### Who a workflow acts as
 
 A workflow acts with the permissions of a user, never with more:

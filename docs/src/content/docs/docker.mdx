@@ -133,5 +133,6 @@ docker compose up -d
 - Use strong, random `WATCHTOWER_HTTP_API_TOKEN`
 - Use reverse proxy (Nginx/Traefik/Caddy) for HTTPS in production: see [HTTPS Setup](../https/)
 - Backup database regularly
+- Protect `${DATA_DIR}/cv4pve-admin/data` as you protect the database: its `data-protection-keys` folder holds, in plain files, the keys that protect the login cookies and encrypt the secrets saved in the settings. Who reads them can forge a session. Back up this folder together with the database: without the keys the saved secrets cannot be read
 - Keep containers updated via web UI or manual pull
 - Limit access to ports 8080/8082 via firewall

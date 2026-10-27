@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
-using Corsinvest.ProxmoxVE.Admin.Module.System.Security.Services;
+using Corsinvest.ProxmoxVE.Admin.Core.Security;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.System.Security.Components.Account.Login;
 

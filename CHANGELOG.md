@@ -10,6 +10,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
+- **Public address**: the new `PublicUrl` setting is the address the users open. The links of the account emails (password reset, email confirmation) and, in *(EE)*, the callback address shown for the identity providers are built from it, not from the address of the request. Without it they follow the request, as before, and a warning at startup says so.
+
+- **Trusted proxies**: the new `TrustedProxies` setting lists the reverse proxies (addresses or networks) whose forwarded headers are accepted: the client address in the audit log and the per-address limits can no longer be written by the client itself. Without it the headers are accepted from any address, as before, so an installation behind a proxy keeps working unchanged.
+
+- **Limit on sign-in attempts**: one address can try to sign in, or to enter the two-factor code, 10 times a minute (`Security:MaxAttemptsPerMinute`, `0` turns it off). It protects also the domain sign-in, which has no local lockout. The AI Server counts its failed authentications the same way: past the limit it answers *Too many requests* and writes nothing in the audit log.
+
+- **Metrics Exporter, token in a header**: Prometheus can send the token in the `Authorization: Bearer` header, so that it does not end up in the logs of a proxy. The token in the address keeps working.
+
 - **Resend email confirmation**: a user whose confirmation link has expired asks for a new one from the login page, without an administrator. The page answers the same way whether the account exists or not, and limits the requests.
 
 - **adminctl update**: pulls the latest images and recreates the services that changed; `self-update` now suggests it as the next step.
@@ -37,6 +45,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Command line, `user disable-2fa`**: turns off two-factor authentication for a user who lost both the authenticator device and the recovery codes. It is the way out when that user is the only administrator.
 
 #### Changed
+
+- **Metrics Exporter (review your alerts)**: an unknown or disabled cluster and a cluster without a token now answer *Unauthorized* (401), like a wrong token, instead of *Bad request* (400): the answer no longer tells which clusters exist. *Disabled* (503) is returned only with the right token.
 
 - **Permission editor, Read of the page data removed**: for the data of a page (the jobs, status and results of AutoSnap, the backups of Backup Analytics, the replications of Replication Analytics, the scans and ignored issues of Diagnostics, the scans of Update Manager, the backups of Node Protect, the reports of System Report, the UPS devices) the editor offered a *Read* permission that was never checked: opening the page is what shows them. It is no longer offered; roles that already have it keep it, without effect.
 
@@ -122,6 +132,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Backup Analytics and Replication Analytics, Check widget**: a new widget starts from 30 days, as many as the data kept by default, instead of 60.
 
 #### Fixed
+
+- **Security of the pages**: the application can no longer be shown inside a frame of another site (clickjacking), the browser no longer guesses the type of a file, and the full address of a page is no longer sent to other sites.
+
+- **Sign-in, return address**: a crafted link could send the user to another site after the sign-in.
+
+- **Web console**: the address of the console files could be bent to reach other Proxmox VE requests with the credentials of the application; only the console files are served now.
+
+- **Closed sessions**: a session closed by the application, for example after a password reset or from the command line, stayed valid for up to two minutes.
+
+- **Behind a reverse proxy**: the redirect to the sign-in page used the internal address of the application instead of the public one.
+
+- **Error details**: the details of an error are no longer sent to the browser in production.
+
+- **Sign-in of a disabled account**: with a wrong password the answer is the same as for an account that does not exist; before, it told that the account exists.
+
+- **Backup, file download**: a folder downloaded as tar arrived as a zip file with a `.tar.zst` name.
 
 - **Diagnostic, scan detail**: the findings are grouped worst first (Critical, Warning, Info); the order of the groups was ignored.
 
@@ -290,6 +316,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Dashboard widgets**: the widgets that update during a scan could mix two updates or miss the last one; they now always show the final numbers.
 
 #### Internal
+
+- The sign-in session no longer carries the permissions of the roles: they are always read from the database. The session stored for an administrator went from about 20 KB to 3 KB.
 
 - The profile image is scaled down by the browser, and the image library is no longer used: its known vulnerabilities and its license conditions are gone. Any image the browser can read is accepted (also GIF, BMP and AVIF), up to 10 MB.
 

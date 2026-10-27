@@ -70,6 +70,7 @@ public static class ServiceCollectionExtensions
 
         services.AddMemoryCache();
         services.AddSingleton<ApplicationStateService>();
+        services.AddSingleton<Security.RequestLimiter>();
 
         // Hook Executor
         services.AddHookExecutor();
