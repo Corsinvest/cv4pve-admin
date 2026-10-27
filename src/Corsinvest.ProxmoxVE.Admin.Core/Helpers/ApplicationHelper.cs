@@ -73,6 +73,15 @@ public static partial class ApplicationHelper
 #else
         AppContext.BaseDirectory;
 #endif
+    // The address the users open, for the links that leave the application (emails): "PublicUrl" of the configuration
+    public static string? PublicUrl { get; internal set; }
+
+    internal static string? ParsePublicUrl(string? value)
+        => Uri.TryCreate(value?.Trim(), UriKind.Absolute, out var uri)
+           && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+            ? uri.GetLeftPart(UriPartial.Path).TrimEnd('/') + "/"
+            : null;
+
     public static string ConfigPath { get; } = Path.Combine(ExecutionPath, "config");
     public static string DataPath { get; } = Path.Combine(ExecutionPath, "data");
     public static string ImagesPath { get; } = Path.Combine(DataPath, "images");

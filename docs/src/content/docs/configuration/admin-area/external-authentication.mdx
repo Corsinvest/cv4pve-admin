@@ -48,7 +48,7 @@ Click the **Name** of a row to edit the provider.
 
 ### Connection
 
-Redirect providers show the **Callback address**: register it in the provider as the redirect URI of the application. It is shown after the first save, and it is the address of the application followed by `/signin-ext-{id}`.
+Redirect providers show the **Callback address**: register it in the provider as the redirect URI of the application. It is shown after the first save, and it is the address of the application followed by `/signin-ext-{id}`. The address is [`PublicUrl`](../../appsettings-extra/#public-address-and-proxies) when it is set, otherwise the one open in the browser.
 
 The fields depend on the type. Secrets are stored encrypted and are never sent back to the browser: leave the field empty to keep the saved value.
 

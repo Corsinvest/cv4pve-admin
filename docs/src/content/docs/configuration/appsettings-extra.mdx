@@ -99,6 +99,35 @@ The rules are checked when a password is set or changed. Existing passwords are 
 
 Failed logins count towards the lockout only for accounts that have lockout enabled. A locked account can be unlocked before the time expires with the `user unlock` command of the [CLI](../../cli/).
 
+## Public Address and Proxies
+
+```json
+{
+  "PublicUrl": "https://admin.example.com/",
+  "TrustedProxies": [ "172.16.0.0/12", "192.168.0.10" ]
+}
+```
+
+**`PublicUrl`**
+
+The address users open in the browser, with the scheme and, if any, the path under which the application is published. The links in the emails sent by the application (email confirmation, password reset) are built from it. <Tag kind="ee" /> The callback address shown in [External Authentication](../admin-area/external-authentication/) uses it too.
+
+Without it the links take the address from the request that sends the email, and the log shows `PublicUrl is not set` at startup. Set it in every installation reachable by more than one address, or from outside your network: the host of a request can be chosen by the client. A value that is not an absolute `http` or `https` address is ignored, with a warning in the log.
+
+- **Default:** (none)
+- **Environment variable:** `PublicUrl=https://admin.example.com/`
+
+**`TrustedProxies`**
+
+Addresses (`192.168.0.10`) or networks (`172.16.0.0/12`) of the reverse proxies whose `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Forwarded-Host` headers are accepted. Loopback is always accepted. The headers of any other address are ignored: the application sees the address and the scheme of the request as they arrive.
+
+Without the setting, or with `"*"`, the headers are accepted from any address. This is the behaviour of the previous versions, and it works with any proxy. List your proxy when the application port can be reached also without it. For a proxy in the same Docker Compose project, or on the Docker host, the network of Docker is usually inside `172.16.0.0/12`. An entry that is neither an address nor a network is ignored, with a warning in the log. At startup the log lists the accepted entries.
+
+- **Default:** (none, headers accepted from any address)
+- **Environment variables:** `TrustedProxies__0=172.16.0.0/12`, `TrustedProxies__1=192.168.0.10`
+
+When the proxy is not in the list, the application sees plain HTTP behind an HTTPS proxy. The sign-in with an external provider then fails, because the provider receives an `http` callback address, and the audit shows the address of the proxy for every user.
+
 ## Serilog Configuration
 
 ```json
@@ -256,16 +285,16 @@ Address of the Apprise API server. It pre-fills the **Endpoint** of a new Appris
 
 ```json
 {
-  "DetailedErrors": true,
+  "DetailedErrors": false,
   "AllowedHosts": "*"
 }
 ```
 
 **`DetailedErrors`**
 
-Show detailed error messages (set to `false` in production for security)
+Send the details of an error of the interface to the browser. Turn it on only to troubleshoot, then off again: the details can contain internal information.
 
-- **Default:** true
+- **Default:** false
 
 **`AllowedHosts`**
 
@@ -322,8 +351,7 @@ Optional. When set, the OpenTelemetry data collected by the application is expor
         }
       }
     ]
-  },
-  "DetailedErrors": false
+  }
 }
 ```
 
@@ -332,4 +360,3 @@ This example:
 - Shortens the login cookie to 7 days.
 - Makes passwords and lockout stricter.
 - Keeps 90 daily log files instead of 30. The File sink is the first element of `WriteTo`, the other sinks are untouched.
-- Hides detailed error messages.
