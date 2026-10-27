@@ -24,7 +24,7 @@ This project incorporates components from the following third-party projects. On
 | **Humanizer** | MIT | [Humanizer](https://github.com/Humanizr/Humanizer) |
 | **MailKit** | MIT | [MailKit](https://github.com/jstedfast/MailKit) |
 | **Mapster** | MIT | [Mapster](https://github.com/MapsterMapper/Mapster) |
-| **Microsoft.Extensions.ServiceDiscovery** | MIT | [Aspire ServiceDiscovery](https://github.com/dotnet/aspire) |
+| **Microsoft.Extensions.ServiceDiscovery** | MIT | [Aspire ServiceDiscovery](https://github.com/microsoft/aspire) |
 | **Model Context Protocol (MCP)** | Apache-2.0 | [MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk) |
 | **Npgsql (EF Core PostgreSQL)** | PostgreSQL | [Npgsql](https://github.com/npgsql/efcore.pg) |
 | **OpenLayers.Blazor** | MIT | [OpenLayers.Blazor](https://github.com/lolochristen/OpenLayers.Blazor) |
