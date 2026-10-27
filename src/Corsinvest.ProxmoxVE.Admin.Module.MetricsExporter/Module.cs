@@ -113,53 +113,57 @@ public class Module : ModuleBase
         {
             using var outerScope = scopeFactory.CreateScope();
             var settingsService = outerScope.GetSettingsService();
-            if (settingsService.GetEnabledClustersSettings().Any(a => a.Name == clusterName))
+
+            // Same answer for an unknown cluster, a missing token and a wrong token: nothing is told before the token
+            var settings = settingsService.GetEnabledClustersSettings().Any(a => a.Name == clusterName)
+                            ? settingsService.GetForModule<Module, Settings>(clusterName)
+                            : null;
+            if (settings == null
+                || string.IsNullOrWhiteSpace(settings.Token)
+                || !CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(GetRequestToken(context.Request)),
+                                                            Encoding.UTF8.GetBytes(settings.Token)))
             {
-                var settings = settingsService.GetForModule<Module, Settings>(clusterName);
-                if (!settings.Enabled || !settings.ApiSettings.Prometheus.Enabled)
-                {
-                    return Results.Problem("Metrics Exporter is disabled", statusCode: StatusCodes.Status503ServiceUnavailable);
-                }
-
-                if (string.IsNullOrWhiteSpace(settings.Token))
-                {
-                    return Results.BadRequest("Token in setting not configured!");
-                }
-
-                var token = context.Request.Query["token"].ToString();
-                var tokenBytes = Encoding.UTF8.GetBytes(token);
-                var expectedBytes = Encoding.UTF8.GetBytes(settings.Token);
-                if (!CryptographicOperations.FixedTimeEquals(tokenBytes, expectedBytes)) { return Results.Unauthorized(); }
-
-                Info? info;
-                lock (_infosLock)
-                {
-                    if (!Infos.TryGetValue(clusterName, out info))
-                    {
-                        info = CreateInfo(clusterName, settings, scopeFactory, logger, engineLogger);
-                        Infos[clusterName] = info;
-                    }
-                }
-
-                //update statistic
-                info.RegisterRequest();
-
-                //execute and return data
-                await using var ms = new MemoryStream();
-                await info.Registry.CollectAndExportAsTextAsync(ms);
-
-                // Old values with a 200 would hide from Prometheus that the cluster is not answering
-                if (info.LastCollectError != null)
-                {
-                    return Results.Problem(info.LastCollectError, statusCode: StatusCodes.Status503ServiceUnavailable);
-                }
-                ms.Position = 0;
-                using var sr = new StreamReader(ms);
-                return Results.Text(sr.ReadToEnd(), "text/plain");
+                return Results.Unauthorized();
             }
-            else
+
+            if (!settings.Enabled || !settings.ApiSettings.Prometheus.Enabled)
             {
-                return Results.BadRequest("Cluster not enabled");
+                return Results.Problem("Metrics Exporter is disabled", statusCode: StatusCodes.Status503ServiceUnavailable);
             }
+
+            Info? info;
+            lock (_infosLock)
+            {
+                if (!Infos.TryGetValue(clusterName, out info))
+                {
+                    info = CreateInfo(clusterName, settings, scopeFactory, logger, engineLogger);
+                    Infos[clusterName] = info;
+                }
+            }
+
+            //update statistic
+            info.RegisterRequest();
+
+            //execute and return data
+            await using var ms = new MemoryStream();
+            await info.Registry.CollectAndExportAsTextAsync(ms);
+
+            // Old values with a 200 would hide from Prometheus that the cluster is not answering
+            if (info.LastCollectError != null)
+            {
+                return Results.Problem(info.LastCollectError, statusCode: StatusCodes.Status503ServiceUnavailable);
+            }
+            ms.Position = 0;
+            using var sr = new StreamReader(ms);
+            return Results.Text(sr.ReadToEnd(), "text/plain");
         });
+
+    // "Authorization: Bearer <token>" keeps the token out of the proxy logs; "?token=" still works
+    private static string GetRequestToken(HttpRequest request)
+    {
+        var header = request.Headers.Authorization.ToString();
+        return header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+                ? header["Bearer ".Length..].Trim()
+                : request.Query["token"].ToString();
+    }
 }

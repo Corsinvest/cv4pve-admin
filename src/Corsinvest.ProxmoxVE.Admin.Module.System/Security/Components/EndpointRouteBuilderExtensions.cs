@@ -4,6 +4,7 @@
  */
 using System.Net.Mime;
 using System.Web;
+using Corsinvest.ProxmoxVE.Admin.Core.Security;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -21,6 +22,7 @@ public static class EndpointRouteBuilderExtensions
     private const string MessageLockedOut = "This account has been locked out, please try again later";
     private const string MessageExternal = "This account cannot sign in with this provider. Ask your administrator.";
     private const string MessageNotAllowed = "This account is not allowed to sign in: if you have not confirmed your email yet, request a new confirmation link, otherwise contact your administrator";
+    private const string MessageTooManyAttempts = "Too many attempts, please try again in a minute";
 
     public static string GetUserProfileUrl(string email) => $"/profile-image/{email}";
 
@@ -148,11 +150,18 @@ public static class EndpointRouteBuilderExtensions
         accountGroup.MapPost("/Login2fa", async ([FromServices] SignInManager<ApplicationUser> signInManager,
                                                         [FromServices] IAuditService auditService,
                                                         [FromServices] ISettingsService settingsService,
+                                                        [FromServices] RequestLimiter requestLimiter,
+                                                        [FromServices] ICurrentUserService currentUserService,
                                                         IFusionCache fusionCache,
                                                         HttpContext httpContext,
                                                         [FromForm] InputLogin2fa model) =>
         {
             var tmpReturnUrl = FixReturnUrl(model.ReturnUrl!, httpContext.Request);
+
+            if (!requestLimiter.TryAcquireAttempt("login-2fa", currentUserService.IpAddress))
+            {
+                return TypedResults.Redirect(BuildTwoFactorUrl(model.Key2FA, tmpReturnUrl, model.RememberMe, errorMessage: MessageTooManyAttempts));
+            }
 
             var key = $"Key2FA:{model.Key2FA}";
             var userName = await fusionCache.TryGetAsync<string>(key);
@@ -196,6 +205,8 @@ public static class EndpointRouteBuilderExtensions
                                                      [FromServices] IAuditService auditService,
                                                      [FromServices] IExternalAuthenticationService externalAuthenticationService,
                                                      [FromServices] ISettingsService settingsService,
+                                                     [FromServices] RequestLimiter requestLimiter,
+                                                     [FromServices] ICurrentUserService currentUserService,
                                                      IFusionCache fusionCache,
                                                      HttpContext httpContext,
                                                      [FromForm] InputLogin model,
@@ -203,6 +214,12 @@ public static class EndpointRouteBuilderExtensions
         {
             var url = string.Empty;
             var tmpReturnUrl = FixReturnUrl(returnUrl!, httpContext.Request);
+
+            // Before any check: the domain login has no local lockout, and a directory would lock its accounts
+            if (!requestLimiter.TryAcquireAttempt("login", currentUserService.IpAddress))
+            {
+                return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, MessageTooManyAttempts, model.Domain));
+            }
 
             // With a domain chosen only the domain checks the password, never the local account
             var result = string.IsNullOrEmpty(model.Domain)

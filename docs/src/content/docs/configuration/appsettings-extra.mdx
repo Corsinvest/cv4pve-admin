@@ -99,6 +99,20 @@ The rules are checked when a password is set or changed. Existing passwords are 
 
 Failed logins count towards the lockout only for accounts that have lockout enabled. A locked account can be unlocked before the time expires with the `user unlock` command of the [CLI](../../cli/).
 
+```json
+{
+  "Security": {
+    "MaxAttemptsPerMinute": 10
+  }
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `MaxAttemptsPerMinute` | 10 | Sign-in attempts accepted from one address in a minute, on the login page and on the two-factor page. Past the limit the page answers "Too many attempts" without checking the password, also a right one. The same number limits the failed authentications of the [MCP Server](../../modules/ai-server/) from one address: past the limit it answers `429` and writes no audit row. `0` turns the limit off. |
+
+The lockout protects one account, this limit protects the server: the domain login (LDAP, Active Directory) has no local lockout, and without a limit the attempts could also lock the accounts of the directory. Behind a reverse proxy the address is the one the proxy forwards: set [`TrustedProxies`](#public-address-and-proxies) so that a client cannot write its own.
+
 ## Public Address and Proxies
 
 ```json

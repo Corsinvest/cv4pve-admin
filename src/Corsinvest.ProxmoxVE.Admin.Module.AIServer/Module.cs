@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Corsinvest.ProxmoxVE.Admin.Core.Security;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Identity;
 using Corsinvest.ProxmoxVE.Admin.Module.AIServer.Services;
 using Microsoft.AspNetCore.Builder;
@@ -167,6 +168,17 @@ public class Module : ModuleBase
                var validation = await appTokenService.ValidateAsync(apiKey!);
                if (!validation.IsValid)
                {
+                   // Only the failures are counted: past the limit no audit row and no notification
+                   var requestLimiter = httpContext.RequestServices.GetRequiredService<RequestLimiter>();
+                   var address = httpContext.Connection.RemoteIpAddress + string.Empty;
+                   if (!requestLimiter.TryAcquireAttempt("mcp", address))
+                   {
+                       httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                       httpContext.Response.Headers.RetryAfter = "60";
+                       await httpContext.Response.WriteAsJsonAsync(new { error = "Too many failed attempts" });
+                       return Results.Empty;
+                   }
+
                    var tokenFingerprint = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(apiKey!)))[..12];
                    await auditService.LogAsync("MCP.Auth",
                                                false,
