@@ -57,8 +57,12 @@ public static class ServiceCollectionExtensions
             options.Cookie.SameSite = SameSiteMode.Strict;
             options.SlidingExpiration = true;
             options.ExpireTimeSpan = cookieLifetime;
-            options.SessionStore = services.BuildServiceProvider().GetRequiredService<ITicketStore>();
         });
+
+        // The store of the application: the one that closes the sessions of a user must be the same.
+        // Read when the options are built, not injected: the store itself reads these options
+        services.AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
+                .Configure<IServiceProvider>((options, sp) => options.SessionStore = sp.GetRequiredService<ITicketStore>());
 
         services.AddAuthorization();
 
