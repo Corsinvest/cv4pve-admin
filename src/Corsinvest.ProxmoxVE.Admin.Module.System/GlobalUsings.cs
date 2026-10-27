@@ -15,7 +15,6 @@ global using Corsinvest.ProxmoxVE.Admin.Core.Services;
 global using Corsinvest.ProxmoxVE.Admin.Module.System.Persistence;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Components;
-global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
