@@ -21,7 +21,7 @@ The pages are under **Admin Area → Security**:
 - **Active Sessions**: list of the connected browser sessions (sending messages and forcing a logout are <Tag kind="ee" />)
 
 :::note[Community Edition]
-In the Community Edition the **Users**, **Roles**, **App Tokens** and **Audit Logs** pages show the Enterprise subscription notice. The application is used with the built-in `admin@local` account. Its password is changed from the [User Profile](../../profile/) or with the [CLI](../../../cli/).
+In the Community Edition the **Users**, **Roles**, **App Tokens**, **Audit Logs** and **External Authentication** pages show the Enterprise subscription notice. The application is used with the built-in `admin@local` account. Its password is changed from the [User Profile](../../profile/) or with the [CLI](../../../cli/).
 :::
 
 ## Built-in accounts
@@ -86,7 +86,7 @@ A role is a named bundle of permissions. The **Roles** grid shows **Name**, **De
 |-------|-------------|
 | **Name** | Required. Cannot be changed after the role is created. |
 | **Description** | Required. |
-| **Default** | A default role is added automatically to a user when the user is created or edited, and cannot be removed from the user's role list. |
+| **Default** | A default role is added automatically to a user when the user is created or edited, and cannot be removed from the user's role list. App tokens do not receive it automatically: it can be picked for a token like any other role. |
 | **Permissions** | The permissions granted by the role. See [Permissions editor](#permissions-editor). |
 
 The application creates the built-in roles: the administrator role, the cluster roles and one or more roles per module. They cannot be deleted and are read-only: name, description, default flag and permissions cannot be changed. To customise access, create a new role.
@@ -123,7 +123,7 @@ The **App Tokens** grid shows **Name**, **Owner**, **Is Active**, **Created At**
 | **Owner** | Optional user the token is linked to. Empty means a system token. |
 | **Expires At** | Optional date and time after which the token is rejected. Empty means it never expires. |
 | **Is Active** | When off, the token is rejected. Default: on. |
-| **Permissions** / **Roles** | Same model as users: grant single permissions, assign roles, or both. |
+| **Permissions** / **Roles** | Grant single permissions, assign roles, or both. Unlike users, a token does not receive the **Default** roles automatically: pick them in the list when the token needs them. |
 
 When you create a token the secret is shown **once** in a dialog: copy it immediately, it will not be shown again.
 
@@ -131,8 +131,8 @@ Toolbar actions:
 
 | Action | Description |
 |--------|-------------|
-| **Regenerate** | Generates a new secret for the selected token and shows it once. The previous secret stops working immediately. |
-| **Effective Permissions** | Shows every permission the token ends up with, directly or through roles. |
+| **Regenerate** | After confirmation, generates a new secret for the selected token and shows it once. The previous secret stops working immediately. Requires the **Edit** permission on app tokens. |
+| **Effective Permissions** | Shows every permission the token ends up with, directly or through roles. Shown only with the **Read** permission on app tokens. |
 | **Export** | Export the grid to Excel. |
 
 ## Active Sessions
@@ -154,7 +154,7 @@ Columns: **Timestamp**, **User Name**, **Success** (`Success` or `Failed`), **Ac
 
 - Every column can be filtered and sorted, and the grid can be grouped by column.
 - **Export** saves the grid to Excel.
-- **Delete** removes the selected entries.
+- **Delete** removes the selected entries. It has a permission of its own, **Delete audit logs**.
 - Old entries are removed with [Maintenance → Cleanup Audit Logs](../maintenance/#cleanup-operations). There is no automatic cleanup.
 - Audit logs are stored in the `system` schema of the cv4pve-admin database, separately from Proxmox VE.
 

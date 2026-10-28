@@ -43,11 +43,17 @@ English is currently the only language available.
 
 Enter the **Old Password**, the **New Password** and repeat it in **Confirm Password**, then click **Update password**. After the confirmation the page reloads and you stay signed in. Every other browser signed in with your account is signed out at once. The same happens when the password is set from a reset link. After a reset from the command line they are signed out within two minutes.
 
+The other browsers are also signed out at once when the [2FA](#two-factor-authentication-2fa) setup is completed or closed, and when 2FA is turned off with **Disable 2FA**.
+
 A sign-in survives a restart or an update of the application: you do not have to sign in again.
 
 The new password must satisfy the password policy of the installation. By default: at least 6 characters, with at least one digit, one lowercase letter, one uppercase letter and one special character. An administrator can change the policy in [appsettings.extra.json](../appsettings-extra/#security-settings).
 
 **Forgotten password:** If you cannot log in, use **Forgot password?** on the login page to receive a reset link by email. This requires the SMTP server to be configured in [General Settings](../admin-area/general-settings/#smtp-configuration). At most 3 links are sent to the same address in 15 minutes, and 10 requests are accepted from the same computer: beyond that the page shows the same confirmation and no message is sent. As an alternative, ask an administrator to reset the password with the [CLI](../../cli/).
+
+### Email confirmation
+
+An account can sign in only after its email address is confirmed with the link received by email. When the link no longer works, the confirmation page shows **Request a new confirmation link**; the login page has **Resend email confirmation**. Both open a page that asks for the email: a new link is sent only when the account exists and its email is not confirmed yet. At most 3 requests are accepted for the same email in 15 minutes, and 10 from the same computer: beyond that no message is sent. The page shows the same confirmation in every case.
 
 ## Two-factor authentication (2FA)<Tag kind="ee" />
 
@@ -68,6 +74,10 @@ Recovery codes are meant for the case where the authenticator device is not avai
 
 After user name and password, the login asks for the authenticator code. A wrong code can be typed again on the same page, until the account is locked for too many failed attempts.
 
+:::caution[Domain and identity provider sign-in]
+Today a sign-in with a domain or with an identity provider of [External Authentication](../admin-area/external-authentication/) does not ask for the authenticator code, also on an account with 2FA active.
+:::
+
 If the authenticator device is not available, click **log in with a recovery code** on the same page and enter one of the saved recovery codes. The code is consumed: it cannot be used a second time.
 
 **Remember Machine** skips the code on that browser for the following logins. The browser is remembered for the number of days set in [`CookieSettings:ExpireDays`](../appsettings-extra/) (default 30), then the login asks for the code again. The 2FA page shows a remembered browser as **This browser is remembered for 30 days**, with the number of days in use. Its **Forget** button makes the login ask for the code again at once.
@@ -81,7 +91,7 @@ If the authenticator device is not available, click **log in with a recovery cod
 | **Disable 2FA** | Turns 2FA off. Requires the 6-digit code from the authenticator app or one of the recovery codes, plus a confirmation. |
 | **Forget** | Removes the "remembered browser" state of the current browser. |
 
-Turning 2FA off sends you an email, so a change you did not make does not go unnoticed.
+**Disable 2FA** sends you an email, so a change you did not make does not go unnoticed. **Reset Authenticator** sends no email: it is recorded in your [Audit Logs](#audit-logs).
 
 **Lost device and recovery codes:** ask an administrator to use **Disable 2FA** in [Security](../admin-area/security/#users), or use the [CLI](../../cli/) on the server. A password reset does not turn 2FA off.
 

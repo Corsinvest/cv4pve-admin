@@ -25,14 +25,14 @@ Automated health checks and infrastructure diagnostics for Proxmox VE, built on 
   items={[
     featureCron,
     { icon: 'mdi:alert-circle', title: "Issue Detection", text: "Detects misconfigurations, hardware problems, end-of-life software, snapshot/backup hygiene and resource pressure across **cluster, nodes, storage, QEMU VMs and LXC containers**." },
-    { icon: 'mdi:tune-variant', title: "Tunable Thresholds", text: "Per-context thresholds (CPU, Memory, Network, Health Score, PSI pressure) editable from the settings UI, with separate values for Node, Qemu, Lxc and Storage. Optional checks for S.M.A.R.T. disk attributes (temperature, SSD wearout), ZFS pool detail and LVM-thin metadata.", href: '#settings' },
+    { icon: 'mdi:tune-variant', title: "Tunable Thresholds", text: "Per-context thresholds (CPU, Memory, Network, Health Score, PSI pressure) editable from the settings UI, with separate values for Node, Qemu and Lxc, and a usage threshold for Storage. Optional checks for S.M.A.R.T. disk attributes (temperature, SSD wearout), ZFS pool detail and LVM-thin metadata.", href: '#settings' },
     { icon: 'mdi:camera-burst', title: "Snapshot & Backup Hygiene", text: "Per-VM checks for snapshot count and age, backup recency (RPO violation) and stale backup files that waste storage. Each check can be turned off, and its thresholds can be changed." },
     { icon: 'mdi:shield-bug', title: "CVE Tracking", text: "Optional NVD lookup for Proxmox VE specific CVEs via CPE filter. Filter by minimum CVSS v3 score (default 7.0 = HIGH + CRITICAL only)." },
     { icon: 'mdi:block-helper', title: "Ignored Issues", text: "Hide known or accepted issues from the active result. They still appear in a dedicated section at the bottom of the report, so they stay traceable.", href: '#ignored-issues' },
     featureParallelScan,
     featureExportPdfExcel,
     { icon: 'mdi:link-variant', title: "Help Links", text: "Each issue can link to the relevant Proxmox documentation page (e.g. QEMU Guest Agent, VirtIO drivers, end-of-life OS tracking)." },
-    { icon: 'mdi:chart-box', title: "Executive Summary", text: "The Enterprise PDF adds an Executive Summary block at the top of the report, right after the cover page. The block shows the issue counts by gravity (Critical / Warning / Info) and the top 5 critical issues. Useful for management or MSP customer reports.", ee: true },
+    { icon: 'mdi:chart-box', title: "Executive Summary", text: "The Enterprise PDF adds an Executive Summary block at the top of the report, right after the cover page. The block shows the issue counts by gravity (Critical / Warning / Info) and the first 5 critical issues, in order of resource id. Useful for management or MSP customer reports.", ee: true },
     { icon: 'mdi:shield-check', title: "Compliance Reports", text: "Each diagnostic check carries its mapping to normative controls across **18 standards** (ISO 27001, ISO 22301, NIS2, DORA, GDPR, PCI DSS, AgID, ACN, ENS, BSI C5, BSI IT-Grundschutz and more). The Enterprise PDF appends one section per standard. Each section is a new page that starts with a summary table (control, title, findings by gravity, status) and continues with the failing checks grouped by control. Excel exports get one extra sheet per standard, with the same data flattened for filtering and pivoting.", href: '#compliance-reports', ee: true },
     featureNotifier,
   ]}
@@ -68,15 +68,15 @@ The grid lists the stored scans with the number of **Info**, **Warning** and **C
 | **Delete** | After confirmation, deletes the selected scan |
 | **Refresh** | Reloads the grid |
 
-Expanding a scan shows two tabs: **Issues** and **Compliance** <Tag kind="ee" />. The **Issues** tab lists gravity, code, resource id (a link that opens the resource), context, sub-context and description of each issue. The **Ignore Issue** button on an issue row adds it to the ignored issues.
+Expanding a scan shows two tabs: **Issues** and **Compliance** <Tag kind="ee" />. The **Issues** tab lists gravity, code, resource id (a link that opens the resource in a new tab), context, sub-context and description of each issue. The **Ignore Issue** button on an issue row adds it to the ignored issues.
 
 Two things happen at the end of every scan, scheduled or started by hand. The oldest scans beyond the **Number to keep** setting are deleted, and the notification is sent (see [Settings](#settings)).
 
 ## Ignored issues
 
-An ignored issue is a rule with **Id Resource**, **Gravity**, **Context**, **Sub Context** and **Description**. It is created with the **Ignore Issue** button of a scan, which copies the values of that issue. On the **Ignored Issues** page click the **Id Resource** of a row to edit the rule, or select rows and use **Delete** to remove them.
+An ignored issue is a rule with **Id Resource**, **Error Code**, **Gravity**, **Context**, **Sub Context** and **Description**. **Gravity** and **Context** are optional: left empty, they show **Any**. A rule needs at least one of **Id Resource**, **Error Code**, **Sub Context** and **Description**: otherwise saving shows a warning and the rule is not saved. It is created with the **Ignore Issue** button of a scan, which copies the values of that issue. On the **Ignored Issues** page click the **Id Resource** of a row to edit the rule, or select rows and use **Delete** to remove them.
 
-The rules are applied when a scan runs: an issue is marked as ignored when its resource id, sub-context and description contain the text of the rule. Changing the list does not change the scans already stored.
+The rules are applied when a scan runs: an issue is marked as ignored when it matches every field of the rule. **Id Resource**, **Error Code** and **Sub Context** must be equal to the value of the issue, **Description** must be contained in the description of the issue, and an empty field matches any value. Changing the list does not change the scans already stored.
 
 ## Compliance reports<Tag kind="ee" />
 

@@ -54,7 +54,7 @@ Start, Stop, Shutdown, Reset, Suspend, Resume or Reboot a VM/CT
 
 Runs a vzdump backup of a VM/CT
 
-- **Inputs:** Vm Id, Node (the node where the VM/CT is located), Storage (backup storages only), Mode (`Snapshot`, `Suspend`, `Stop`; default `Snapshot`), Compress (`None`, `Lzo`, `Gzip`, `Zstd`; default `Zstd`), Notes
+- **Inputs:** Vm Id, Node (not used: the backup runs on the node where the VM/CT is when the activity runs), Storage (backup storages only), Mode (`Snapshot`, `Suspend`, `Stop`; default `Snapshot`), Compress (`None`, `Lzo`, `Gzip`, `Zstd`; default `Zstd`), Notes
 - **Output:** `TaskUpid`
 - **Proxmox VE privilege:** <PvePrivileges activity="PVE Backup" />
 

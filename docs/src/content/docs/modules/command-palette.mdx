@@ -38,9 +38,9 @@ Why a palette when you already have a sidebar?
 <FeatureGrid
   items={[
     { icon: 'mdi:keyboard', title: "Zero clicks, zero scrolling", text: "Open the palette from anywhere with a keystroke: no menus to navigate, no long resource grids to scroll." },
-    { icon: 'mdi:identifier', title: "Stops working with VM IDs in your head", text: "Type `vm:web` to list the matching VMs of the selected cluster. You do not need to remember which node or storage hosts what.", href: '#search-behaviour' },
+    { icon: 'mdi:identifier', title: "Stops working with VM IDs in your head", text: "Type `vm:web` to list the matching VMs and containers of the selected cluster. You do not need to remember which node or storage hosts what.", href: '#search-behaviour' },
     { icon: 'mdi:play-circle', title: "Trigger ops without the resource page", text: "Type `>start` and pick a VM: the VM starts. No need to open Resources, find the row and click its menu." },
-    { icon: 'mdi:magnify', title: "Find by what you remember", text: "Lost a VM but know its IP? `ip:192.168.1` lists every matching VM. The ID, the name and the Proxmox VE tags are searchable too.", href: '#search-behaviour' },
+    { icon: 'mdi:magnify', title: "Find by what you remember", text: "Lost a VM but know its IP? `ip:192.168.1` lists every matching VM and container. The ID, the name and the Proxmox VE tags are searchable too.", href: '#search-behaviour' },
   ]}
 />
 
@@ -51,12 +51,12 @@ Why a palette when you already have a sidebar?
 | Prefix | Filters | Example | Scope |
 |--------|---------|---------|-------|
 | none | Modules, by name or description | `backup` | <Tag kind="all-clusters" /> |
-| `vm:` | QEMU VM by ID, name or Proxmox VE tag | `vm:100`, `vm:web` | <Tag kind="per-cluster" /> |
+| `vm:` | VM or container by ID, name or Proxmox VE tag | `vm:100`, `vm:web` | <Tag kind="per-cluster" /> |
 | `node:` | Node by name | `node:pve1` | <Tag kind="per-cluster" /> |
-| `ip:` | QEMU VM by IPv4 address (also by ID, name or tag) | `ip:192.168` | <Tag kind="per-cluster" /> |
+| `ip:` | VM or container by IPv4 address (also by ID, name or tag) | `ip:192.168` | <Tag kind="per-cluster" /> |
 | `>` | Commands only | `>start` | <Tag kind="all-clusters" /> |
 
-`vm:` and `ip:` currently return QEMU virtual machines only: LXC containers are not listed. The text after a prefix can be separated by a space: `vm: debian` works as `vm:debian`.
+`vm:` and `ip:` return both QEMU virtual machines and LXC containers. For a VM, `ip:` reads the addresses reported by the guest agent; for a container, the addresses assigned now when it is running, otherwise the addresses in its configuration. The text after a prefix can be separated by a space: `vm: debian` works as `vm:debian`.
 
 ### All commands
 
@@ -69,7 +69,7 @@ Commands open a dialog if they require parameters. PVE commands operate on the c
 | `stop` | Stop a running VM / Container (stop, not shutdown) | VM / CT (the picker lists the running guests) | <Tag kind="per-cluster" /> |
 | `restart` | Reboot a running VM / Container | VM / CT (the picker lists the running guests) | <Tag kind="per-cluster" /> |
 | `console` | Open the NoVnc web console | VM / CT (the picker lists the running guests) | <Tag kind="per-cluster" /> |
-| `create snapshot` | Create a VM / CT snapshot | VM / CT (the picker lists the running guests), **Name** (required), **Description**, **Include RAM** | <Tag kind="per-cluster" /> |
+| `create snapshot` | Create a VM / CT snapshot | VM / CT (the picker lists all the guests), **Name** (required), **Description**, **Include RAM** | <Tag kind="per-cluster" /> |
 
 The command runs as soon as the dialog is confirmed, and its outcome is shown as a notification.
 
