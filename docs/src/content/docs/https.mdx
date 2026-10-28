@@ -36,6 +36,8 @@ Keep the mapping only when the proxy runs outside Docker (see [Nginx](#nginx-man
 
 **Forwarded headers:** The application reads `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Forwarded-Host`, by default from any address. It therefore handles HTTPS termination at the proxy correctly, with no extra configuration. On the requests that arrive as HTTPS, the application also sends the HSTS header. To accept these headers only from your proxy, list its address in [`TrustedProxies`](../configuration/appsettings-extra/#public-address-and-proxies): a client that reaches the application without the proxy can no longer change the address and the scheme the application sees.
 
+**Security headers:** The pages and the other answers of the application carry `X-Frame-Options: SAMEORIGIN`, `Content-Security-Policy: frame-ancestors 'self'`, `X-Content-Type-Options: nosniff` and `Referrer-Policy: strict-origin-when-cross-origin`. The pages of cv4pve-admin therefore open inside a frame only on cv4pve-admin itself, not on another site. A proxy that removes or replaces these headers takes this protection away.
+
 **Public address:** Set [`PublicUrl`](../configuration/appsettings-extra/#public-address-and-proxies) to the address users open, for example `https://admin.example.com/`. The links in the emails (email confirmation, password reset) are built from it. Without it they take the address from the request, and the log shows a warning at startup.
 
 ---

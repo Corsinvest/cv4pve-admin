@@ -57,11 +57,11 @@ A scan covers the guests that are running when it starts: stopped guests are not
 | **Scan** | Starts a scan immediately in the background. The grid updates while the guests are scanned |
 | **Download** | Split button: downloads the current result as **PDF** or **Excel**. Disabled until a result exists |
 
-The scan appears in the global Task Tracker and can be cancelled from there. When you cancel, the guests not scanned yet are marked `Cancelled`.
+The scan appears in the global Task Tracker and can be cancelled from there. When you cancel, the guests not scanned yet are marked `Cancelled`. A cancelled scan sends no notification, is recorded in the audit log as not successful, and its task log ends with `Scan cancelled: no notification sent`.
 
 A guest that fails is marked `InError`, with the message in the **Error** column. The scan continues with the other guests.
 
-**No scan history:** Only the result of the last scan is available. It is kept in the application cache for 8 hours and is not stored in the database. To see data again, run a new scan or wait for the scheduled one.
+**No scan history:** Only the result of the last scan is available. It is kept in the application cache until the next scan replaces it (at most 30 days) and is not stored in the database. To see data again, run a new scan or wait for the scheduled one.
 
 ## Widgets
 
@@ -133,7 +133,7 @@ The module also follows the cluster permissions (**VM: Read** and **Node: Read**
 <RequirementsSsh />
 
 :::note[Guest requirements]
-QEMU VMs must have the QEMU Guest Agent enabled and responding. Windows guests are scanned only when their OS type is `win10` or `win11`. LXC containers need no agent.
+QEMU VMs must have the QEMU Guest Agent enabled and responding. Windows guests are scanned only when their OS type is `win10` or `win11`: any other OS type is marked `InError` with `Operating system '<type>' not supported: only Windows 10, Windows 11 and Linux`. LXC containers need no agent.
 :::
 
 <PvePrivileges module="update-manager" />

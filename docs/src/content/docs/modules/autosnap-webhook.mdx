@@ -59,7 +59,7 @@ Each value is escaped for the place where it is used:
 | `CleanJobStart` | before the purge of the job's snapshots begins (**Purge Snapshots**, or deleting the job with its snapshots) |
 | `CleanJobEnd` | after that purge completes |
 | `SnapRemovePre` | before removing a snapshot, by the retention of a scheduled run or by a purge |
-| `SnapRemovePost` | after an expired snapshot has been removed |
+| `SnapRemovePost` | after a snapshot has been removed, in the same cases as `SnapRemovePre` |
 | `SnapRemoveAbort` | when snapshot removal fails or is aborted |
 
 ### Variable placeholders

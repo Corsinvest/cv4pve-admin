@@ -8,9 +8,9 @@ import Tag from '~/components/Tag.astro';
 
 Configure the Proxmox VE clusters that cv4pve-admin will manage.
 
-Open **Admin Area → Proxmox VE Clusters**. The grid lists the configured clusters with the columns **Enabled**, **Name**, **PVE Name**, **Description** and **Nodes** (number of nodes). Use **Add** to create a cluster. Click the **Name** or **PVE Name** of a row to edit the cluster. To remove a cluster, select its row and use **Delete**. The confirmation says that its data goes too: deleting a cluster removes its settings in every module and the data the modules collected for it (scans, results, history, UPS devices, Portal tenants, tasks and permissions limited to that cluster). Disabling a cluster removes only the scheduled jobs of the modules for that cluster and keeps its data. Enabling a cluster again brings its scheduled jobs back at once, with the schedule and the options they had.
+Open **Admin Area → Proxmox VE Clusters**. The grid lists the configured clusters with the columns **Enabled**, **Name**, **PVE Name**, **Description** and **Nodes** (number of nodes). Use **Add** to create a cluster. Click the **Name** or **PVE Name** of a row to edit the cluster. To remove a cluster, select its row and use **Delete**. The confirmation says that its data goes too: deleting a cluster removes its settings in every module and the data the modules collected for it (scans, results, history, UPS devices, Portal tenants, tasks and permissions limited to that cluster). Disabling a cluster removes only the scheduled jobs of the modules for that cluster and keeps its data. Enabling a cluster again brings its scheduled jobs back at once, with the schedule and the options they had. A cluster whose name is the name of another enabled cluster followed by a dash (for example `pve-prod` next to `pve`) keeps its scheduled jobs when it is deleted or disabled.
 
-On a new installation with no enabled cluster, the **New Cluster Settings** dialog opens automatically after login.
+On a new installation with no enabled cluster, the **New Cluster Settings** dialog opens automatically after login, with an **Add cluster** button in the top bar. Both are only for the users who have the permission of the **Proxmox VE Clusters** page.
 
 ## Sections
 
