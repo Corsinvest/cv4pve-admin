@@ -42,9 +42,15 @@ After too many failed logins, cv4pve-admin locks the account for a period of tim
 docker compose run --rm cv4pve-admin user unlock -u admin@local
 ```
 
+### "Too many attempts, please try again in a minute"
+
+The login page and the two-factor page each accept a limited number of attempts from one address in a minute: 10 by default for each page, counted separately, right or wrong. Past the limit the password and the code are not checked, so also a right one is refused. Wait a minute and sign in again. The limit is [`Security:MaxAttemptsPerMinute`](../configuration/appsettings-extra/#security-settings).
+
+Behind a reverse proxy, all users share the address of the proxy and reach the limit together when the application does not read the address of the client. Check that the proxy sends `X-Forwarded-For` and, when [`TrustedProxies`](../configuration/appsettings-extra/#public-address-and-proxies) is set, that it lists the address of the proxy.
+
 ### "This account is not allowed"
 
-The account is not active, or its email address is not confirmed. An administrator can turn on **Is Active** and **Email Confirmed** in **Admin Area → Security → Users** (Enterprise Edition). An inactive account can also be enabled via CLI:
+The account is not active, or its email address is not confirmed. An account that is not active gets this message only with the right password: with a wrong password the message is `Invalid user or password`. An administrator can turn on **Is Active** and **Email Confirmed** in **Admin Area → Security → Users** (Enterprise Edition). An inactive account can also be enabled via CLI:
 
 ```bash
 docker compose run --rm cv4pve-admin user enable -u user@example.com
@@ -63,7 +69,7 @@ The warning appears when the application is opened while the account still uses 
 A user created in **Admin Area → Security → Users** can log in when all of these are true:
 
 - the account is **active**;
-- the user has confirmed the email address with the link received by email (an expired link can be replaced with **Resend email confirmation** on the login page);
+- the user has confirmed the email address with the link received by email (an expired link can be replaced with **Resend email confirmation** on the login page, see [Email confirmation](../configuration/profile/#email-confirmation));
 - the user has then set a password with **Forgot password?** on the login page.
 
 The confirmation email and the password email both need a working SMTP server. Check it with **Test SMTP Configuration** in [General Settings](../configuration/admin-area/general-settings/#test-smtp-configuration). See [How a new user gets access](../configuration/admin-area/security/#how-a-new-user-gets-access).

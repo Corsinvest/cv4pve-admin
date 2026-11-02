@@ -64,7 +64,7 @@ The token can also travel in the `Authorization: Bearer <TOKEN>` header instead 
 ```yaml
 scrape_configs:
   - job_name: cv4pve
-    metrics_path: /module/*/metrics-exporter/prometheus/<clusterName>
+    metrics_path: "/module/*/metrics-exporter/prometheus/<clusterName>"
     authorization:
       credentials: <TOKEN>
     static_configs:
@@ -74,7 +74,7 @@ scrape_configs:
 | Response | Meaning |
 |----------|---------|
 | `401` | The token is wrong or missing, no token is configured, or the cluster name is unknown or disabled |
-| `503` | The module or the Prometheus exporter is disabled (only with the right token) |
+| `503` | Only with the right token: the module or the Prometheus exporter is disabled, or the collection from the cluster failed (the body holds the error) |
 
 **Grab the URL from the UI:** The **Open metrics** link in the **Status** page points to the scrape URL of the current cluster, token included. Copy the link address from there instead of building it by hand.
 

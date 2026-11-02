@@ -14,18 +14,18 @@ Each check in the `cv4pve-diag` library declares which normative controls it cov
 
 ## PDF report
 
-After the standard issues section, the Enterprise PDF report has **one section per standard** that produced at least one mapped finding. Each section starts on a new page and contains:
+After the standard issues section, the Enterprise PDF report has **one section per standard** that produced at least one mapped finding. Ignored issues are left out of these sections. Each section starts on a new page and contains:
 
 - A compact **disclaimer** at the top. It is in every section, so any single page extracted in isolation still carries the audit-scope notice.
 - A **summary table** with one row per control: `Control` · `Title` · `Critical` · `Warning` · `Info` · `Ok` · `Status`. The numeric columns count the findings mapped to that control, by gravity. `Status` summarises the worst gravity present: `Fail` for any Critical, `Warning` if no Critical, `Info` if only Info, `Pass` if only Ok results.
-- A **detail block** for each control, listing the underlying findings with `Code`, `Context`, `Resource`, `Description`, `Status`.
+- A **detail block** for each control, listing the underlying findings with `Code`, `Context`, `Resource`, `Description`, `Status`, the most severe first.
 
 ## Excel report
 
 Excel exports get **one extra sheet per standard** with two tables:
 
 - `Summary`: one row per control, identical to the PDF summary
-- `Details`: one row per finding × control mapping, flattened for filtering and pivoting
+- `Details`: one row per finding × control mapping, flattened for filtering and pivoting, ordered by control and then the most severe first
 
 Each sheet starts with the same disclaimer note.
 

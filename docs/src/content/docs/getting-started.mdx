@@ -53,7 +53,7 @@ The installation is guided: one command asks three questions, then downloads and
 
    - **Edition**: Community Edition (default) or Enterprise Edition.
    - **Docker image tag**: the version to install. The default is `latest`, the stable release. Enter a specific version if you need one (e.g. `2.3.0-rc1`, `2.3.0`).
-   - **PostgreSQL password**: at least 8 characters. The default is `cv4pve-admin`. Change it in `.env` before going to production.
+   - **PostgreSQL password**: at least 8 characters. The default is `cv4pve-admin`. Change it in `.env` before going to production. For a password with a `$`, see [Installation settings](../docker/#installation-settings-env).
 
    The installer then creates the `cv4pve-admin-docker` directory in the current folder. If the directory already exists, the installer stops. It downloads the configuration files into the directory and prepares `docker-compose.yaml` for the chosen edition. It does not start the containers.
 

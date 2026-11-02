@@ -55,6 +55,8 @@ A tenant groups VMs and containers of one cluster with the users who work on the
 
 The grid lists the tenants with **Name** and **Description**. The toolbar has **New**, **Delete**, **Refresh** and **Export** (Excel file with the list). Click the name of a tenant to edit it.
 
+**Delete**, after confirmation, deletes the tenant. Its users are no longer in the tenant and lose the permissions on its VMs, except on a VM that is also in another tenant of the same user. They lose the Portal [roles](#roles) they no longer need. The accounts are not deleted.
+
 | Field | Description |
 |-------|-------------|
 | **Name** | Name of the tenant (required) |
@@ -92,8 +94,8 @@ How accounts are handled:
 
 - If no account with that user name exists, cv4pve-admin creates a new active account with a random password and the same address as email. It sends a confirmation email to that address.
 - If the account already exists, a confirmation shows the roles it has. When you confirm, the account is linked to the tenant and keeps its password, its roles and its permissions: adding an administrator to a tenant does not limit what that administrator can do. Only an administrator who sees all tenants can link an existing account, for example a supplier who works for two customers.
-- The checked permissions are granted to the user only on that VM of the tenant's cluster. Unchecked ones are removed.
-- **Delete** removes the user from the tenant together with the permissions on the tenant's VMs. The account is not deleted.
+- The checked permissions are granted to the user only on that VM of the tenant's cluster. Unchecked ones are removed, except on a VM that is also in another tenant of the same user.
+- **Delete** removes the user from the tenant together with the permissions on the tenant's VMs, except on a VM that is also in another tenant of the same user. The account is not deleted.
 - When the tenant has no VMs the dialog shows **No VMs assigned to this tenant.** Assign the VMs first, then set the permissions of the users.
 
 No user or ACL is created on the Proxmox VE cluster.
@@ -122,6 +124,8 @@ The module defines three roles.
 | **Portal Tenant User** | The pages of the module and read of tenants and of their VMs |
 
 The Portal assigns the two tenant roles by itself: a user added to a tenant gets **Portal Tenant User**, a user marked **Is Tenant Admin** gets **Portal Tenant Admin**. It takes them away when the user is no longer in any tenant, or no longer admin of any tenant. A role given by hand from [Admin Area: Security](../../configuration/admin-area/security/) stays.
+
+**Tenant Admins of earlier versions:** at start, a user who has the **Portal Tenant Admin** role given by hand, not by the Portal, becomes Tenant Admin (**Is Tenant Admin**) of every tenant it belongs to. This is done once for each user: an **Is Tenant Admin** removed later is not given back at the next start.
 
 ### Permissions
 

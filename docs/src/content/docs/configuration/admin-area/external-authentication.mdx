@@ -32,7 +32,7 @@ The grid shows **Enabled**, **Name** (with the icon of the type), **Type**, **Cr
 | **Add** / **Delete** | Create or delete a provider. Deleting a provider removes the logins linked to it, the roles it gave and the sessions of its users. The accounts stay. |
 | **Test connection** | Checks the selected provider. A redirect provider reads its discovery document (`/.well-known/openid-configuration`) and shows the issuer. A domain binds with the service account and checks that the **Base DN** exists. |
 | **Test login** | Redirect providers only. Opens the page of the provider: after the sign-in, the claims received are shown in the providers page. Nobody is signed in, and it works also with the provider turned off, so a provider can be checked before enabling it. The result is visible only to the administrator who started the test. |
-| **Check accounts** | Domains only. Runs the [account check](#account-check) of the selected domain now. |
+| **Check accounts** | Domains only. Runs the [account check](#account-check) of the selected domain now. On a domain that is turned off it answers **Provider not found or turned off**. |
 
 Click the **Name** of a row to edit the provider.
 
@@ -76,9 +76,7 @@ On Keycloak the groups are in the token only when the client has a **Group Membe
 | **User filter** | Search filter of the user, `{0}` is the user name typed in the sign-in form. Default `(sAMAccountName={0})` for Active Directory; `(uid={0})` on OpenLDAP. |
 | **Email attribute** | Attribute with the email address of the user. Default `mail`. |
 
-:::caution[Encryption]
-With **Security** set to **None** the passwords travel in clear on the network. LDAPS and StartTLS need a certificate on the domain controller: without it the connection is refused (LDAPS) or the server answers `Unavailable` (StartTLS).
-:::
+**Encryption:** with **Security** set to **None** the passwords travel in clear on the network. LDAPS and StartTLS need a certificate on the domain controller: without it the connection is refused (LDAPS) or the server answers `Unavailable` (StartTLS).
 
 Use a dedicated service account with read rights only, not a domain administrator.
 
@@ -130,7 +128,7 @@ A domain controller answers on LDAPS only with a certificate in its store whose 
 | **Sign in only with a mapped group** | When on, only users in at least one of the [mapped groups](#groups) can sign in. |
 | **Default roles of created accounts** | Roles given to the accounts this provider creates. |
 | **Maximum session (hours)** | Redirect providers. Length of the session after a sign-in with this provider. Empty: the usual session length. |
-| **Check accounts every (minutes)** | Domains. Interval of the [account check](#account-check), at least 5 minutes. Default 60. |
+| **Check accounts every (minutes)** | Domains. How often the [account check](#account-check) runs, at least 5. Default 60. The value becomes a schedule on the clock: see [Account check](#account-check). |
 
 :::caution[Link by email]
 Whoever controls an email address in the provider signs in as the account with that email. Accounts that are administrators (role **Admin** or a module administrator role), accounts with two-factor authentication and built-in accounts are never linked by email: link them by hand from the [user dialog](#users).
@@ -150,16 +148,25 @@ Only the roles given by a provider are removed by it. A role the user already ha
 ## The sign-in page
 
 - **Domains**: when at least one domain is turned on, the form has a **Domain** list before **User** and **Password**. The first entry, **Local account**, is the account of the application. With a domain chosen, only that domain checks the password: a local account with the same name does not sign in.
-- Without a domain chosen, the local account is tried first. With one domain only, that domain is tried next. The `DOMAIN\user` form chooses the domain by its name.
+- Without a domain chosen, the local account is tried first. With one domain only, that domain is tried next. The `DOMAIN\user` form chooses the domain whose **Name** is `DOMAIN`.
 - **Redirect providers**: one button for each type, with the icon of the type, under the form. With more providers of the same type, the button opens a list of their names. The tooltip shows the name and the description.
 
 After an error the domain chosen stays selected. With a domain the message is **Invalid user or password** for every failure (wrong password, unknown user, user not allowed): the reason is in the [application log](../monitoring/#logs). With a redirect provider a refused user reads **This account cannot sign in with this provider. Ask your administrator.**, and the reason is in the `Login-External` entry of the audit.
 
 A wrong password with a domain counts as a failed login of the linked account, so the lockout of the account applies.
 
+:::caution[Two-factor authentication]
+Today a sign-in with a domain or with a redirect provider does not ask for the two-factor code, also for an account with two-factor authentication turned on.
+:::
+
 ## Account check
 
-Each domain that is turned on has a background job that checks the accounts linked to it, every **Check accounts every (minutes)**. **Check accounts** in the toolbar runs it at once.
+Each domain that is turned on has a background job that checks the accounts linked to it. **Check accounts** in the toolbar runs it at once.
+
+**When the check runs:** **Check accounts every (minutes)** becomes a schedule on the clock, not a delay from the last run.
+
+- Under 60: the check runs at the minutes of each hour that are a multiple of the value, starting from :00. A value that does not divide 60 gives uneven gaps: 45 runs at :00 and :45.
+- 60 or more: the value is turned into whole hours (rounded down, at most 23), and the check runs at the start of the hours of the day that are a multiple of them, starting from midnight. 90 runs every hour, 120 every two hours, 300 at 0:00, 5:00, 10:00, 15:00 and 20:00.
 
 For each linked account:
 
@@ -177,8 +184,8 @@ In **Admin Area → Security → Users**:
 
 - The **External logins** column lists the providers linked to each account.
 - The user dialog has two more tabs:
-  - **External logins**: the providers linked to the account, with **Unlink**. **Link an external login** links the account by hand: choose the provider and write the user name in the domain, or the identifier (`sub`) of the identity for a redirect provider. Unlinking also removes the roles the provider gave.
-  - **External sign-ins**: the last 50 sign-ins of the account through a domain or a provider, with date, type, details and IP address.
+  - **External logins**: the providers linked to the account, with **Unlink**. **Link an external login** links the account by hand: choose the provider and write the user name in the domain, or the identifier (`sub`) of the identity for a redirect provider. Unlinking also removes the roles the provider gave. **Link** and **Unlink** take effect at once, without **Save**.
+  - **External sign-ins**: the last 50 successful sign-ins of the account through a domain or a provider, with date, type, details and IP address. Refused sign-ins are not listed.
 
 An account can be linked to more providers, for example a domain and Keycloak.
 
@@ -195,7 +202,7 @@ Entries in [Audit Logs](../security/#audit-logs):
 
 | Action | When |
 |--------|------|
-| `Login-Domain` | Sign-in with a domain, successful or not. |
+| `Login-Domain` | Sign-in with a domain, successful or not. When the domain does not answer, or no domain is found for the user, the entry is `Login-Password`. |
 | `Login-External` | Sign-in with a redirect provider, successful or not, with the reason of a refusal. |
 | `ExternalAuthentication.Provider.Create` / `.Edit` / `.Delete` / `.Test` | Changes and tests of the providers. |
 | `ExternalAuthentication.Role.Add` / `.Remove` | A role given or taken away by a provider. |

@@ -69,7 +69,7 @@ The MCP endpoint is exposed at:
 https://<your-server>/mcp
 ```
 
-Clients authenticate by sending the AI Server token (from the **API Access** tab) in the `X-API-Key` HTTP header. A missing or invalid key returns `401`; `503` means the AI Server module is disabled.
+Clients authenticate by sending the AI Server token (from the **API Access** tab) in the `X-API-Key` HTTP header. A missing or invalid key returns `401`; `503` means the AI Server module is disabled. After too many invalid keys from one address in a minute, a further invalid key returns `429` with `Retry-After: 60` until the minute is over. The limit is [`Security:MaxAttemptsPerMinute`](../../configuration/appsettings-extra/#security-settings) (default 10). A valid key is never counted and is never refused by the limit.
 
 ### Native HTTP clients
 
@@ -205,7 +205,7 @@ The **AI Server** token is created at the first start. At every start cv4pve-adm
 
 ## Auditing
 
-Every request to the MCP endpoint is written to the audit log with the name of the token, the tool called and its arguments. A request with an invalid key is logged as a failed authentication, with a short fingerprint of the key, and raises the alert on the **API Access** page.
+Every request to the MCP endpoint is written to the audit log with the name of the token, the tool called and its arguments. A request with an invalid key is logged as a failed authentication, with a short fingerprint of the key, and raises the alert on the **API Access** page. The requests refused with `429` are not logged and raise no alert.
 
 ## Settings
 

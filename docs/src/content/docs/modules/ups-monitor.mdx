@@ -66,7 +66,7 @@ By default a device only reads the UPS and sends notifications. Set to **Dry-run
 
 At the top, four counters: devices **Online**, **On Battery** (with those on low battery), **Critical** and **Offline** (with those never read or in an unknown state). A fifth counter, **Bypass**, appears when at least one device is in bypass, and **Disabled** when at least one device is disabled. The disabled devices are not in the other counters.
 
-Below, each device has a card. The devices that need attention come first: critical, on battery, low battery, offline, then the others by name; the disabled devices come last. A disabled device is not read: its card is grey, says **Disabled** instead of the status and shows the values of the last reading, with its time. A card shows:
+Below, each device has a card. The devices that need attention come first: critical, on battery, bypass, low battery, offline, unknown or never read, then online. Devices with the same status are in order of name; the disabled devices come last. A disabled device is not read: its card is grey, says **Disabled** instead of the status and shows the values of the last reading, with its time. A card shows:
 
 - name and status badge, manufacturer and model, detected brand, location. The left edge of the card has the colour of the status
 - a badge with what the device does on a power failure: **Alerts only**, **Dry-run** or **Shutdown**
@@ -83,7 +83,7 @@ The cards show the last reading. An open page is updated every few seconds, at o
 
 On large screens the cards are three, four or six in a row.
 
-The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** or **Shutdown** it shows a warning while **Where this application runs** is not set, and a strip for the power failure in progress. With a device on **Shutdown** it also warns when the time needed to shut everything down is not set, and when the credentials of the cluster may not shut the nodes down. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown).
+The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** or **Shutdown** it shows a warning while **Where this application runs** is not set, and a strip for the power failure in progress. With a device on **Shutdown** it also warns when the time needed to shut everything down is not set, when **Estimated runtime below (minutes)** leaves less time than the shutdown needs, and when the credentials of the cluster may not shut the nodes down. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown).
 
 ### Status values
 
@@ -99,7 +99,7 @@ The page also has the buttons **Test shutdown** and **Simulate power failure**. 
 
 ## Devices
 
-The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **Last Status**, **Last Scan**, **On power failure**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
+The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **On power failure**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
 
 Each UPS device is configured with:
 
@@ -126,7 +126,7 @@ Each UPS device is configured with:
 Per-device actions (select a row first):
 
 - **Scan**: reads the selected device now, also when the monitoring is off. The result appears in the grid and is always stored in the reading history, also a single missed answer
-- **Test Connection**: queries the device. When it answers, a dialog shows what the device declares (the SNMP system description, or the version of the NUT server), the profile or NUT driver detected and one row for each value: where it is read from (an OID or a NUT variable) and the value received, or **Missing** when the device does not have it. The power source and the battery state are shown with their meaning next to the number. A warning says which alert thresholds cannot fire because the device has no charge or no runtime value. When the device does not answer, a message gives the reason: no answer within 3 seconds, or a host name that cannot be resolved. A missing answer usually means a wrong address, port or community, or SNMP v2c turned off on the device
+- **Test Connection**: queries the device. When it answers, a dialog shows what the device declares (the SNMP system description, or the version of the NUT server), the profile or NUT driver detected and one row for each value: where it is read from (an OID or a NUT variable) and the value received, or **Missing** when the device does not have it. The power source and the battery state are shown with their meaning next to the number. A warning says which alert thresholds cannot fire because the device has no charge or no runtime value. When the device does not answer, a message gives the reason: no answer within 3 seconds, or a host name that cannot be resolved. A missing answer usually means a wrong address, port or community, or the SNMP version of the **Connection** turned off on the device. With SNMP v3 and privacy, a wrong privacy password or algorithm also gives no answer
 
 ### Profiles
 
@@ -213,7 +213,9 @@ There are no profiles: the variable names are the same for every brand and drive
 | Runtime | `battery.runtime`, which is in seconds, shown in minutes |
 | Temperature | `ups.temperature`, or `battery.temperature` |
 | Battery, input and output voltage | `battery.voltage`, `input.voltage`, `output.voltage` |
+| Input frequency | `input.frequency` |
 | Load | `ups.load` |
+| Output power | `ups.realpower` |
 | Manufacturer, model, firmware, serial number | `device.mfr` or `ups.mfr`, `device.model` or `ups.model`, `ups.firmware`, `device.serial` or `ups.serial` |
 
 A value the driver does not give is missing, not zero: **Test Connection** shows which ones.
@@ -236,7 +238,7 @@ Readings older than **Max days logs** are deleted once a day.
 
 ## Trends
 
-Pick the **Period**: a single date-range field, limited to the dates that have readings. Then pick one or more **Devices** among those with readings in that period. The page draws four line charts with one line for each device: **Battery (%)**, **Input Voltage (V)**, **Load (%)** and **Temperature (C)**. Charts can be zoomed and panned. Offline readings are left out.
+Pick the **Period**: a single date-range field, limited to the dates that have readings. Then pick one or more **Devices** among those with readings in that period. When the period changes, the devices already picked stay picked if they have readings in the new period. The page draws four line charts with one line for each device: **Battery (%)**, **Input Voltage (V)**, **Load (%)** and **Temperature (C)**. Charts can be zoomed and panned. Offline readings are left out.
 
 ## Alerts
 
@@ -281,7 +283,7 @@ A node fed by more than one device takes the most cautious of their values: with
 ### How the nodes are shut down
 
 - The command is the shutdown of the node of Proxmox VE, sent through the API of the cluster with the credentials of the cluster settings. Nothing is installed on the nodes and SSH is not used. The node stops its own guests, as with the **Shutdown** button of the node.
-- The credentials need the privilege `Sys.PowerMgmt` on the nodes. It is checked once a day for the clusters with a device on **Shutdown**: when it is missing a notification is sent and the Dashboard says so.
+- The credentials need the privilege `Sys.PowerMgmt` on the nodes. It is checked once a day for the clusters with a device on **Shutdown**, except during a power failure in progress (a simulated one does not count): when it is missing a notification is sent and the Dashboard says so.
 - The nodes are commanded in the order of the **Nodes** tab, those with the same order together. A step starts when the commands of the one before were sent, without waiting for those nodes to be off.
 - A command that fails is tried again at the following readings, three times in all. When the node the application was connected to is already off, the application connects to another node of the cluster and sends the command again. After the third failure a notification says so, and the other nodes are commanded all the same.
 - A node that is already off is skipped.
@@ -353,7 +355,7 @@ With at least one notifier selected in the settings, one notification is sent fo
 | Shutdown failed: the nodes whose command failed three times, with the reason | Error |
 | Mains back | Success |
 
-Once a day, for a cluster with a device on **Shutdown**: a notification when the credentials may not shut the nodes down.
+Once a day, for a cluster with a device on **Shutdown** and no power failure in progress: a notification when the credentials may not shut the nodes down.
 
 They are sent in addition to the [alerts](#alerts) of each device, which do not change.
 

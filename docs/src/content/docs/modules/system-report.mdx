@@ -52,9 +52,11 @@ Why automate reports when PVE already shows everything in its UI?
 | Action | What it does |
 |--------|--------------|
 | **New** | Opens the **New Report** panel: choose the format and the content (see [Report options](#report-options)), then save to start the generation in the background |
-| **Download** | Downloads the selected report as a `.zip` file. Disabled until the report is finished |
+| **Download** | Downloads the selected report as a `.zip` file. Disabled until the report has ended |
 | **Delete** | After confirmation, deletes the selected report and its file |
 | **Refresh** | Reloads the grid |
+
+The grid has no status column. A failed report has an end too: **Download** is active, and answers **File not available for this report.** The error is in the log of the task.
 
 Click the **Id** of a row to open, read-only, the options the report was generated with. Progress and log of a running report are in the global Task Tracker.
 
@@ -106,6 +108,8 @@ The **Fast**, **Standard** and **Full** buttons at the top of the panel load a r
 | **Partitions** | on | Partitions of each guest |
 | **QEMU Agent** | on | Data read through the QEMU Guest Agent, with **Agent Timeout sec.** (default 3) |
 | **Guest Detail** | on | Enables **Firewall Log** (on) and **Tasks** (on, same options as the node tasks) |
+
+The **@all** button of **Names** and **IDs** is shown only to a user who can read every VM, node and storage of the cluster. For the other users, the picker of **IDs** suggests only the guests they can read, without `@all`, pools, tags and nodes.
 
 ### Storage
 

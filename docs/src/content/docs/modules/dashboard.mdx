@@ -46,7 +46,7 @@ The **Dashboards** drop-down at the top selects the dashboard to show (type in i
 | **Refresh** | Reloads the data of every widget of the current dashboard |
 | **New** | Starts an empty dashboard, directly in edit mode |
 | **Upload** | Imports a dashboard from a `.json` file |
-| **Clone** | Opens the current dashboard in edit mode |
+| **Clone** | Opens a copy of the current dashboard in edit mode, with an empty name |
 | **Create default dashboard** | Recreates the built-in dashboards (see [Default Dashboard](#default-dashboard)) |
 | **Edit** | Enters [edit mode](#edit-mode) on the current dashboard |
 | **Delete** | Deletes the current dashboard, after confirmation |
@@ -54,11 +54,9 @@ The **Dashboards** drop-down at the top selects the dashboard to show (type in i
 
 **Upload:** if a dashboard with the same name exists, the date and time are appended to the imported name.
 
-**Clone** currently behaves like **Edit**. To duplicate a dashboard, **Export** it and **Upload** the file.
+**Clone:** the copy exists only in the page until it is saved. Give it a name and click **Save**: a new dashboard is created, and the original stays as it was.
 
-:::note[Upload keeps the owner written in the file]
-The exported file records the user who owns the dashboard, and **Upload** keeps that value. A file uploaded by a different user is added to the dashboards of the original owner, not to those of the user who uploads it.
-:::
+**Upload** adds the imported dashboard to the dashboards of the user who uploads it, whatever owner is written in the file.
 
 ## Edit Mode
 
@@ -129,6 +127,7 @@ A widget is shown for a cluster when the user holds the permission of the widget
 - A widget reads only the clusters it is allowed on, also when no cluster is picked.
 - A widget the user cannot see on any cluster stays in its place and shows **You do not have permission to see this widget.** It can be removed in edit mode. It appears in a dashboard made before the permissions changed, or uploaded from a file.
 - The **Clusters** picker lists only the clusters the user can select.
+- The widgets of AutoSnap, Backup Analytics, Replication Analytics, Diagnostic, Node Protect and Update Manager are shown only on the clusters where the user also holds **Read** on every VM, node and storage.
 
 Roles and permissions are assigned in [Admin Area → Security](../../configuration/admin-area/security/) <Tag kind="ee" />.
 

@@ -59,7 +59,7 @@ A guest is covered when an enabled backup job of the cluster takes it: a job set
 
 **Backups**, **Trends** and the dashboard widgets work on data that a scan copies from Proxmox VE into the module database. **Scheduled**, **Unprotected Guests**, **Unprotected Disks** and **Backup in line** read the cluster live and need no scan.
 
-A scan reads the `vzdump` tasks of every online node together with their logs (the first 10000 lines of each). It stores the tasks that are not in the database yet. It then deletes the records older than **Max days logs**.
+A scan reads, on every online node, the `vzdump` tasks started within the last **Max days logs** days, at most 10000 tasks per node, together with their logs (the first 10000 lines of each). When a node reaches 10000 tasks, the older ones are not imported and the scan log shows a warning. It stores the tasks that are not in the database yet. It then deletes the records older than **Max days logs**.
 
 Toolbar of the **Backups** page:
 
@@ -110,7 +110,7 @@ The built-in role of the module includes all of them. A custom role has to be gi
 
 The module also follows the cluster permissions (**VM: Read** and **Storage: Read**, see [Security](../../configuration/admin-area/security/#permissions)):
 
-- **Backups**, **Backup in line**, **Unprotected Disks** and **Trends** list only the VMs the user can read; the storage of a backup stays visible next to its VM. The storages offered by **Trends** are only the readable ones.
+- **Backups**, **Backup in line**, **Unprotected Guests**, **Unprotected Disks** and **Trends** list only the VMs the user can read; the storage of a backup stays visible next to its VM. The storages offered by **Trends** are only the readable ones.
 - **Scheduled** lists a backup job only when the user can read all of its guests; a job on all the guests or on a pool needs **Read** on every VM, node and storage of the cluster.
 - **Scan**, **Delete all data** and the log of the whole task, which has the lines of every VM of the task, need **Read** on every VM, node and storage of the cluster.
 - The widgets and the **Overview** count all the VMs of a cluster: they are shown only on the clusters where the user can read every VM, node and storage.

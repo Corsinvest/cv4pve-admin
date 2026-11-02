@@ -50,7 +50,7 @@ Why a config backup module when you already do disk / VM backups?
 
 - **Overview**: introduction to the module and its dashboard widgets
 - **Folder**: backups stored in the local folder destination, one row per node and run, with start, end, duration, file name, status and size. See [Folder destination](#folder-destination)
-- <Tag kind="ee" /> **Git**: commits of the local Git repository with author, size and changed files. See [Git destination](#git-destination). In the Community Edition the page shows that a subscription is required
+- <Tag kind="ee" /> **Git**: commits of the local Git repository with creation date, version id, version name and author. Expanding a row lists the changed files. See [Git destination](#git-destination). In the Community Edition the page shows that a subscription is required
 
 ## How a backup works
 
@@ -72,7 +72,7 @@ Each run creates a folder in the application data directory, named after the run
 | **Show log** (per row) | Opens the log of the backup of that node |
 | **Refresh** | Reloads the grid |
 
-**Retention:** the Folder setting **Number to keep** says how many runs to keep. After a run in which every node succeeded, only that number of newest runs is kept and the older ones are deleted. If the backup of at least one node fails, retention is not applied for that run. This way a good backup is never deleted to make room for an incomplete one.
+**Retention:** the Folder setting **Number to keep** says how many runs to keep. After a run in which every node succeeded, only that number of newest runs is kept and the older ones are deleted. If the backup of at least one node fails, retention is not applied for that run. This way a good backup is never deleted to make room for an incomplete one. When every node fails and the run wrote no archive, its folder is deleted.
 
 ## Git destination
 
@@ -91,8 +91,8 @@ The **Push** button is a split button, disabled until the Git destination is ena
 | Action | What it does |
 |--------|--------------|
 | **Push** | Runs backup, commit and push immediately in the background |
-| **Reset** | After confirmation, deletes the local repository and starts an empty one. The remote is not touched until the next push |
-| **Sync from remote** | After confirmation, deletes the local repository and clones the remote branch again |
+| **Reset** | After confirmation, deletes the local repository and starts an empty one, in the background. The remote is not touched until the next push |
+| **Sync from remote** | After confirmation, deletes the local repository and clones the remote branch again, in the background |
 | **Open remote repository** | Opens the **Remote Url** in a new browser tab |
 | **Download** (per row) | Downloads the files of that commit as a `.tar.gz` archive |
 

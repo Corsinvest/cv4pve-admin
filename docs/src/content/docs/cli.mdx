@@ -24,7 +24,7 @@ docker compose run --rm cv4pve-admin user reset-password --help
 
 A command first initialises the application: the database must be reachable, and the initialisation applies pending database updates. The command then runs, prints its result and exits without starting the web server. The exit code is `0` on success and `1` on error.
 
-Run a command when no operation is in progress. Otherwise the tasks still running in the web application are marked `Abandoned`.
+A command can run while the web application is running: the tasks in progress in the web application are left as they are.
 
 ## User commands
 
