@@ -95,6 +95,31 @@ public static class EndpointRouteBuilderExtensions
             ExpiresUtc = lifetime == null ? null : DateTimeOffset.UtcNow.Add(lifetime.Value)
         };
 
+    private record PendingSignIn(TimeSpan? Lifetime, string Method);
+
+    // A domain or a provider proves who the user is, not the second factor: an account with two-factor
+    // authentication still gives its code, unless this browser is remembered. Null when no code is needed
+    private static async Task<string?> StartTwoFactorAsync(HttpContext httpContext,
+                                                         SignInManager<ApplicationUser> signInManager,
+                                                         IFusionCache fusionCache,
+                                                         ApplicationUser user,
+                                                         string method,
+                                                         TimeSpan? lifetime)
+    {
+        if (!user.TwoFactorEnabled || await signInManager.IsTwoFactorClientRememberedAsync(user)) { return null; }
+
+        // The same state the password sign-in leaves before the code: the code page works unchanged
+        var identity = new ClaimsIdentity(IdentityConstants.TwoFactorUserIdScheme);
+        identity.AddClaim(new Claim(ClaimTypes.Name, user.Id));
+        identity.AddClaim(new Claim(ClaimTypes.AuthenticationMethod, method));
+        await httpContext.SignInAsync(IdentityConstants.TwoFactorUserIdScheme, new ClaimsPrincipal(identity));
+
+        var key = $"{Guid.NewGuid():N}";
+        await fusionCache.SetAsync($"Key2FA:{key}", user.UserName, TimeSpan.FromMinutes(3));
+        await fusionCache.SetAsync($"Key2FA:{key}:pending", new PendingSignIn(lifetime, method), TimeSpan.FromMinutes(3));
+        return key;
+    }
+
     private static void AppendCultureCookie(HttpContext httpContext, ISettingsService settingsService)
         => httpContext.Response.AppendCultureCookie(settingsService.Get<UserSettings>(forCurrentUser: true).Culture);
 
@@ -180,6 +205,18 @@ public static class EndpointRouteBuilderExtensions
             if (result.Succeeded)
             {
                 await fusionCache.RemoveAsync(key);
+
+                // After a domain or a provider the session keeps the length and the method of that sign-in
+                var pending = await fusionCache.TryGetAsync<PendingSignIn>($"{key}:pending");
+                if (pending.HasValue)
+                {
+                    await fusionCache.RemoveAsync($"{key}:pending");
+                    if (pending.Value.Lifetime != null && await signInManager.UserManager.FindByNameAsync(userName.Value) is { } user)
+                    {
+                        await signInManager.SignInAsync(user, GetSignInProperties(model.RememberMe, pending.Value.Lifetime), pending.Value.Method);
+                    }
+                }
+
                 await auditService.LogAsync(action, true, $"User '{userName.Value}' logged in");
                 AppendCultureCookie(httpContext, settingsService);
                 return TypedResults.Redirect(tmpReturnUrl);
@@ -254,7 +291,13 @@ public static class EndpointRouteBuilderExtensions
             {
                 // Not a local account with this password: a domain provider may know the user
                 var domain = await externalAuthenticationService.TryDomainSignInAsync(model.UserName, model.Password, model.Domain);
-                if (domain?.Succeeded == true)
+                if (domain?.Succeeded == true
+                    && await StartTwoFactorAsync(httpContext, signInManager, fusionCache, domain.User!, "domain", domain.SessionLifetime) is { } key2FA)
+                {
+                    await auditService.LogAsync("Login-Domain", true, $"User '{domain.User!.UserName}' passed the domain as '{model.UserName}', two-factor code asked");
+                    url = BuildTwoFactorUrl(key2FA, tmpReturnUrl, model.RememberMe);
+                }
+                else if (domain?.Succeeded == true)
                 {
                     await signInManager.SignInAsync(domain.User!, GetSignInProperties(model.RememberMe, domain.SessionLifetime), "domain");
                     await auditService.LogAsync("Login-Domain", true, $"User '{domain.User!.UserName}' logged in as '{model.UserName}'");
@@ -277,6 +320,7 @@ public static class EndpointRouteBuilderExtensions
 
         accountGroup.MapGet("/ExternalLogin", async (HttpContext context,
                                                      [FromServices] SignInManager<ApplicationUser> signInManager,
+                                                     IFusionCache fusionCache,
                                                      [FromServices] IExternalAuthenticationService externalAuthenticationService,
                                                      [FromServices] IAuditService auditService,
                                                      [FromServices] ISettingsService settingsService,
@@ -296,14 +340,23 @@ public static class EndpointRouteBuilderExtensions
                 return TypedResults.Redirect(BuildErrorUrl(tmpReturnUrl, MessageExternal));
             }
 
-            await signInManager.SignInAsync(result.User!, GetSignInProperties(false, result.SessionLifetime), info.LoginProvider);
-            await auditService.LogAsync("Login-External", true, $"User '{result.User!.UserName}' logged in with '{info.ProviderDisplayName}'");
-
-            AppendCultureCookie(context, settingsService);
+            string next;
+            if (await StartTwoFactorAsync(context, signInManager, fusionCache, result.User!, info.LoginProvider, result.SessionLifetime) is { } key2FA)
+            {
+                await auditService.LogAsync("Login-External", true, $"User '{result.User!.UserName}' passed '{info.ProviderDisplayName}', two-factor code asked");
+                next = BuildTwoFactorUrl(key2FA, tmpReturnUrl, false);
+            }
+            else
+            {
+                await signInManager.SignInAsync(result.User!, GetSignInProperties(false, result.SessionLifetime), info.LoginProvider);
+                await auditService.LogAsync("Login-External", true, $"User '{result.User!.UserName}' logged in with '{info.ProviderDisplayName}'");
+                AppendCultureCookie(context, settingsService);
+                next = tmpReturnUrl;
+            }
 
             // The return from the provider is a navigation started on its site: the session cookie is strict
             // and comes back only with a navigation started here
-            var target = global::System.Net.WebUtility.HtmlEncode(tmpReturnUrl);
+            var target = global::System.Net.WebUtility.HtmlEncode(next);
             return (IResult)TypedResults.Content($"<!doctype html><html><head><meta http-equiv=\"refresh\" content=\"0;url={target}\"></head><body></body></html>",
                                                  "text/html");
         });
