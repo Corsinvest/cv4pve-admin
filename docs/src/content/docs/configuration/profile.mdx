@@ -74,9 +74,7 @@ Recovery codes are meant for the case where the authenticator device is not avai
 
 After user name and password, the login asks for the authenticator code. A wrong code can be typed again on the same page, until the account is locked for too many failed attempts.
 
-:::caution[Domain and identity provider sign-in]
-Today a sign-in with a domain or with an identity provider of [External Authentication](../admin-area/external-authentication/) does not ask for the authenticator code, also on an account with 2FA active.
-:::
+The code is asked also after a sign-in with a domain or with an identity provider of [External Authentication](../admin-area/external-authentication/).
 
 If the authenticator device is not available, click **log in with a recovery code** on the same page and enter one of the saved recovery codes. The code is consumed: it cannot be used a second time.
 

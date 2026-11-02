@@ -48,7 +48,7 @@ Click the **Name** of a row to edit the provider.
 
 ### Connection
 
-Redirect providers show the **Callback address**: register it in the provider as the redirect URI of the application. It is shown after the first save, and it is the address of the application followed by `/signin-ext-{id}`. The address is [`PublicUrl`](../../appsettings-extra/#public-address-and-proxies) when it is set, otherwise the one open in the browser.
+Redirect providers show the **Callback address**: register it in the provider as the redirect URI of the application. It is shown after the first save, and it is the address of the application followed by `/signin-ext-{id}`. The address is [`PublicUrl`](../../appsettings-extra/#public-address-and-proxies) when it is set, otherwise the one open in the browser. With `PublicUrl` set the sign-in sends that same address to the provider, also when the application is opened from another address.
 
 The fields depend on the type. Secrets are stored encrypted and are never sent back to the browser: leave the field empty to keep the saved value.
 
@@ -155,9 +155,7 @@ After an error the domain chosen stays selected. With a domain the message is **
 
 A wrong password with a domain counts as a failed login of the linked account, so the lockout of the account applies.
 
-:::caution[Two-factor authentication]
-Today a sign-in with a domain or with a redirect provider does not ask for the two-factor code, also for an account with two-factor authentication turned on.
-:::
+An account with two-factor authentication gives its code also after a domain or a redirect provider, as after the password, unless the browser is remembered (**Remember Machine**). After the code the session keeps the **Maximum session (hours)** of the provider.
 
 ## Account check
 
