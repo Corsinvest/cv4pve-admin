@@ -10,7 +10,9 @@
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.11.0" />
     <PackageVersion Include="SSH.NET" Version="2026.0.0" />
     <PackageVersion Include="Toolbelt.Blazor.HotKeys2" Version="6.2.1" />
-    <PackageVersion Include="CsvHelper" Version="33.1.0" />
+    <!-- 33.1.0: last release that writes any type by reflection.
+         DO NOT upgrade to v34+: every record type needs [CsvRecord] and the source generator, the AI Server tools write many types. -->
+    <PackageVersion Include="CsvHelper" Version="[33.1.0]" />
     <PackageVersion Include="ToonEncoder" Version="2.0.0" />
   </ItemGroup>
   <!-- Logging and Monitoring -->
@@ -28,7 +30,7 @@
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="12.1.7" />
+    <PackageVersion Include="Radzen.Blazor" Version="12.1.9" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.6.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
