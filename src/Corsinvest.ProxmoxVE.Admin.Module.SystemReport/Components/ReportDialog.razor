@@ -45,7 +45,7 @@
         </RadzenColumn>
     </RadzenRow>
 
-    <RadzenAccordion>
+    <RadzenAccordion Multiple="true">
         <Items>
             <RadzenAccordionItem Text="@L["Cluster"]" Icon="@PveAdminUIHelper.Icons.Cluster">
                 <SwitchField Style="margin-bottom: 8px;" @bind-Value="@S.Cluster.Include" Label="@L["Include"]" ReadOnly="@ReadOnly" />

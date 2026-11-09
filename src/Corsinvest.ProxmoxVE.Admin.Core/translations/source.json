@@ -1640,5 +1640,9 @@
   "Sources with a level of their own": "",
   "The sources come from Serilog:MinimumLevel:Override of the configuration file; a new source is added there and needs a restart.": "",
   "From the configuration file ({0})": "",
-  "Applied at once, without a restart. Debug and Verbose write much more: use them while looking into a problem.": ""
+  "Applied at once, without a restart. Debug and Verbose write much more: use them while looking into a problem.": "",
+  "External": "",
+  "Could not retrieve info": "",
+  "Job Log \u0027{0}\u0027": "",
+  "Please enter a test email address": ""
 }

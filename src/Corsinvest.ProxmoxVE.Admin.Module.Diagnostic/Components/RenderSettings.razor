@@ -93,7 +93,7 @@
 </RadzenText>
 
 <RadzenPanel Text="@L["Threshold"]" Icon="data_thresholding">
-    <RadzenAccordion>
+    <RadzenAccordion Multiple="true">
         <Items>
             <RadzenAccordionItem Text="@L["Node"]" Icon="@GetIconType(0)">
                 @RenderHostThresholds(Model.ApiSettings.Node, nameof(Model.ApiSettings.Node))
