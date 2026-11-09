@@ -24,13 +24,13 @@
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.1" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.20.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.20.2" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.20.1" />
   </ItemGroup>
   <!-- UI and Frontend -->
   <ItemGroup>
-    <PackageVersion Include="Radzen.Blazor" Version="12.1.9" />
+    <PackageVersion Include="Radzen.Blazor" Version="12.2.0" />
     <PackageVersion Include="OpenLayers.Blazor" Version="2.6.0" />
   </ItemGroup>
   <!-- Utilities and Tools -->
@@ -38,7 +38,7 @@
     <PackageVersion Include="ClosedXML" Version="0.105.1" />
     <PackageVersion Include="ClosedXML.Report" Version="0.2.12" />
     <PackageVersion Include="Humanizer" Version="3.0.10" />
-    <PackageVersion Include="Mapster" Version="10.0.13" />
+    <PackageVersion Include="Mapster" Version="10.0.14" />
     <!-- 6.2.4: latest MIT release.
          DO NOT upgrade to v6.5+: switched to AGPL-3.0 with a runtime license check. -->
     <PackageVersion Include="PDFsharp-MigraDoc" Version="[6.2.4]" />
@@ -76,8 +76,8 @@
   </ItemGroup>
   <!-- MCP Server -->
   <ItemGroup>
-    <PackageVersion Include="ModelContextProtocol" Version="2.3.0" />
-    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.3.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="2.4.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Wangkanai.Detection" Version="8.20.0" />
