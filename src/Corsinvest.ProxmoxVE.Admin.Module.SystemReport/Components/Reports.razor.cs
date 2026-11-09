@@ -93,7 +93,13 @@ public partial class Reports(IBrowserService browserService,
                                                             ? L["New Report"]
                                                             : L["Report {0}", item.Id],
                                                          mode,
-                                                         item);
+                                                         item,
+                                                         null,
+                                                         new()
+                                                         {
+                                                             CloseDialogOnOverlayClick = true,
+                                                             Resizable = true
+                                                         });
 
     private async Task DeleteAsync()
     {
