@@ -9,6 +9,7 @@ using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
+using ApiVmNetwork = Corsinvest.ProxmoxVE.Api.Shared.Models.Vm.VmNetwork;
 
 namespace Corsinvest.ProxmoxVE.Admin.Module.Resources.Components;
 
@@ -95,7 +96,8 @@ public partial class Networks(IAdminService adminService,
                              bool IsLocked,
                              string? Hostname,
                              bool IsInternal,
-                             string NetId,
+                             string? NetId,
+                             string? NetName,
                              string? MacAddress,
                              string? Bridge,
                              int? Tag,
@@ -186,53 +188,7 @@ public partial class Networks(IAdminService adminService,
             return nets.Select(n => new NetworkDiagramBuilder.NodeNetworkRow(item.Node, n));
         })).ToList();
 
-        // VM networks
-        var vmNets = (await ParallelHelper.RunManyAsync(vms, async item =>
-        {
-            var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
-            var networks = config?.Networks ?? [];
-            switch (item.VmType)
-            {
-                case VmType.Qemu:
-                    var qemuNetsTask = clusterClient.CachedData.GetQemuNetworkAsync(item.Node, item.VmId, false).AsTask();
-                    var hostnameTask = clusterClient.CachedData.GetQemuHostnameAsync(item.Node, item.VmId, false).AsTask();
-                    await Task.WhenAll(qemuNetsTask, hostnameTask);
-
-                    var netDict = networks.Where(n => !string.IsNullOrEmpty(n.MacAddress))
-                                          .ToDictionary(n => n.MacAddress!, StringComparer.OrdinalIgnoreCase);
-
-                    return [.. qemuNetsTask.Result.Result
-                                           .Where(a => !string.IsNullOrEmpty(a.HardwareAddress) && a.HardwareAddress != "00:00:00:00:00:00")
-                                           .Select(net =>
-                                           {
-                                                var hasConfig = netDict.TryGetValue(net.HardwareAddress!, out var configNet);
-                                                return new NetworkDiagramBuilder.VmNetworkRow(item.VmId,
-                                                                                              item.Name,
-                                                                                              item.Node,
-                                                                                              item.Type,
-                                                                                              item.Status,
-                                                                                              hostnameTask.Result,
-                                                                                              configNet ?? new(),
-                                                                                              !hasConfig);
-                                           })];
-
-                case VmType.Lxc:
-                    var lxcLive = (item.IsRunning
-                                    ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
-                                    : []).ToDictionaryByMac();
-
-                    return networks.Select(n => new NetworkDiagramBuilder.VmNetworkRow(item.VmId,
-                                                                                       item.Name,
-                                                                                       item.Node,
-                                                                                       item.Type,
-                                                                                       item.Status,
-                                                                                       (config as VmConfigLxc)?.Hostname,
-                                                                                       n.WithLiveAddresses(lxcLive, ", "),
-                                                                                       false));
-
-                default: return [];
-            }
-        })).ToList();
+        var vmNets = (await LoadGuestNetworksAsync(clusterClient, vms, ", ")).ConvertAll(a => a.Row);
 
         // The software-defined networks are a setting of the whole cluster
         var storageTask = client.Storage.GetAsync();
@@ -378,7 +334,8 @@ public partial class Networks(IAdminService adminService,
                                                                         a.Comments,
                                                                         a.Comments6));
                         }))
-                        .OrderBy(a => a.Node)];
+                        .OrderBy(a => a.Node)
+                        .ThenBy(a => a.Interface, NaturalStringComparer.Instance)];
 
         IsLoadingNodes = false;
         _nodesLoaded = true;
@@ -394,103 +351,122 @@ public partial class Networks(IAdminService adminService,
 
         var clusterClient = adminService[ClusterName];
 
-        var vms = (await PermissionService.FilterByVmAsync(ClusterName,
-                                                           (await clusterClient.CachedData.GetResourcesAsync(false))
+        var vms = await PermissionService.FilterByVmAsync(ClusterName,
+                                                          (await clusterClient.CachedData.GetResourcesAsync(false))
                                                                 .Where(a => a.ResourceType == ClusterResourceType.Vm),
-                                                           a => a.VmId))
-                        .OrderBy(a => a.Node)
-                        .ThenBy(a => a.Type)
-                        .ThenBy(a => a.VmId);
+                                                          a => a.VmId);
 
-        VmNetworks = [.. (await ParallelHelper.RunManyAsync(vms, async item =>
-                        {
-                            var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
-                            var networks = config?.Networks ?? [];
-
-                            switch (item.VmType)
-                            {
-                                case VmType.Qemu:
-                                    var vmNetwors = await clusterClient.CachedData.GetQemuNetworkAsync(item.Node, item.VmId, false);
-                                    var hostname = await clusterClient.CachedData.GetQemuHostnameAsync(item.Node, item.VmId, false);
-                                    var netDict = networks.Where(n => !string.IsNullOrEmpty(n.MacAddress))
-                                                          .ToDictionary(n => n.MacAddress, StringComparer.OrdinalIgnoreCase);
-
-                                    return (IEnumerable<VmNetwork>)[.. vmNetwors.Result
-                                        .Where(a => !string.IsNullOrEmpty(a.HardwareAddress) && a.HardwareAddress != "00:00:00:00:00:00")
-                                        .Select(net =>
-                                        {
-                                            netDict.TryGetValue(net.HardwareAddress ?? "", out var configNet);
-                                            return new VmNetwork(item.Node,
-                                                                 item.VmId,
-                                                                 item.Name,
-                                                                 item.Description,
-                                                                 item.Type,
-                                                                 item.Status,
-                                                                 item.IsLocked,
-                                                                 hostname,
-                                                                 configNet == null,
-                                                                 net.Name,
-                                                                 net.HardwareAddress?.ToUpperInvariant(),
-                                                                 configNet?.Bridge,
-                                                                 configNet?.Tag,
-                                                                 configNet?.Trunks,
-                                                                 configNet?.Model,
-                                                                 configNet?.Firewall ?? false,
-
-                                                                 net.IpAddresses.Where(a => a.IpAddressType == "ipv4")
-                                                                                .Select(a => $"{a.IpAddress}/{a.Prefix}")
-                                                                                .JoinAsString(Environment.NewLine),
-
-                                                                 net.IpAddresses.Where(a => a.IpAddressType == "ipv6")
-                                                                                .Select(a => $"{a.IpAddress}/{a.Prefix}")
-                                                                                .JoinAsString(Environment.NewLine),
-
-                                                                 configNet?.Gateway,
-                                                                 configNet?.Gateway6,
-                                                                 configNet?.Mtu,
-                                                                 configNet?.Rate);
-                                        })];
-
-                                case VmType.Lxc:
-                                    var hostName = (config as VmConfigLxc)?.Hostname;
-                                    var live = (item.IsRunning
-                                                ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
-                                                : []).ToDictionaryByMac();
-
-                                    return networks.Select(network => new VmNetwork(item.Node,
-                                                                                    item.VmId,
-                                                                                    item.Name,
-                                                                                    item.Description,
-                                                                                    item.Type,
-                                                                                    item.Status,
-                                                                                    item.IsLocked,
-                                                                                    hostName,
-                                                                                    false,
-                                                                                    network.Id,
-                                                                                    network.MacAddress,
-                                                                                    network.Bridge,
-                                                                                    network.Tag,
-                                                                                    network.Trunks,
-                                                                                    network.Model,
-                                                                                    network.Firewall,
-                                                                                    live.GetValueOrDefault(network.MacAddress ?? "")
-                                                                                        .GetLiveAddress(network.IpAddress, false, Environment.NewLine)!,
-                                                                                    live.GetValueOrDefault(network.MacAddress ?? "")
-                                                                                        .GetLiveAddress(network.IpAddress6, true, Environment.NewLine)!,
-                                                                                    network.Gateway,
-                                                                                    network.Gateway6,
-                                                                                    network.Mtu,
-                                                                                    network.Rate));
-
-                                default: return [];
-                            }
-                        }))
-                        .OrderBy(a => a.Node)
-                        .ThenBy(a => a.Type)
-                        .ThenBy(a => a.VmId)];
+        VmNetworks = [.. (await LoadGuestNetworksAsync(clusterClient, vms, Environment.NewLine))
+                            .OrderBy(a => a.Item.Node)
+                            .ThenBy(a => a.Item.Type)
+                            .ThenBy(a => a.Item.VmId)
+                            .Select(a => new VmNetwork(a.Item.Node,
+                                                       a.Item.VmId,
+                                                       a.Item.Name,
+                                                       a.Item.Description,
+                                                       a.Item.Type,
+                                                       a.Item.Status,
+                                                       a.Item.IsLocked,
+                                                       a.Row.Hostname,
+                                                       a.Row.IsInternal,
+                                                       a.Row.Network.Id,
+                                                       a.Row.Network.Name,
+                                                       a.Row.Network.MacAddress,
+                                                       a.Row.Network.Bridge,
+                                                       a.Row.Network.Tag,
+                                                       a.Row.Network.Trunks,
+                                                       a.Row.Network.Model,
+                                                       a.Row.Network.Firewall,
+                                                       a.Row.Network.IpAddress,
+                                                       a.Row.Network.IpAddress6,
+                                                       a.Row.Network.Gateway,
+                                                       a.Row.Network.Gateway6,
+                                                       a.Row.Network.Mtu,
+                                                       a.Row.Network.Rate))];
 
         IsLoadingGuests = false;
         _guestsLoaded = true;
         await InvokeAsync(StateHasChanged);
     }
+
+    private static async Task<List<(ClusterResource Item, NetworkDiagramBuilder.VmNetworkRow Row)>> LoadGuestNetworksAsync(ClusterClient clusterClient,
+                                                                                                                         IEnumerable<ClusterResource> vms,
+                                                                                                                         string separator)
+        => [.. await ParallelHelper.RunManyAsync(vms, async item =>
+        {
+            var config = await clusterClient.CachedData.GetGuestConfigAsync(item.Node, item.VmType, item.VmId, false);
+            var configNets = config?.Networks ?? [];
+            var networks = new List<ApiVmNetwork>();
+            var internals = new HashSet<ApiVmNetwork>();
+            string? hostname = null;
+
+            if (item.VmType == VmType.Qemu)
+            {
+                if (item.IsRunning && (config as VmConfigQemu)?.AgentEnabled == true)
+                {
+                    var agentNetsTask = clusterClient.CachedData.GetQemuNetworkAsync(item.Node, item.VmId, false).AsTask();
+                    var hostnameTask = clusterClient.CachedData.GetQemuHostnameAsync(item.Node, item.VmId, false).AsTask();
+                    await Task.WhenAll(agentNetsTask, hostnameTask);
+                    hostname = hostnameTask.Result;
+
+                    var netDict = configNets.Where(n => !string.IsNullOrEmpty(n.MacAddress))
+                                            .GroupBy(n => n.MacAddress, StringComparer.OrdinalIgnoreCase)
+                                            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var net in (agentNetsTask.Result.Result ?? [])
+                                            .Where(a => !string.IsNullOrEmpty(a.HardwareAddress)
+                                                        && a.HardwareAddress != "00:00:00:00:00:00"))
+                    {
+                        netDict.TryGetValue(net.HardwareAddress, out var configNet);
+                        var network = new ApiVmNetwork
+                        {
+                            Id = configNet?.Id!,
+                            Name = net.Name,
+                            MacAddress = net.HardwareAddress.ToUpperInvariant(),
+                            Bridge = configNet?.Bridge!,
+                            Tag = configNet?.Tag,
+                            Trunks = configNet?.Trunks!,
+                            Model = configNet?.Model!,
+                            Firewall = configNet?.Firewall ?? false,
+                            Gateway = configNet?.Gateway!,
+                            Gateway6 = configNet?.Gateway6!,
+                            Rate = configNet?.Rate,
+                            Mtu = configNet?.Mtu,
+                            IpAddress = net.IpAddresses.Where(a => a.IpAddressType == "ipv4")
+                                                       .Select(a => $"{a.IpAddress}/{a.Prefix}")
+                                                       .JoinAsString(separator),
+                            IpAddress6 = net.IpAddresses.Where(a => a.IpAddressType == "ipv6")
+                                                        .Select(a => $"{a.IpAddress}/{a.Prefix}")
+                                                        .JoinAsString(separator),
+                        };
+                        networks.Add(network);
+                        if (configNet == null) { internals.Add(network); }
+                    }
+                }
+
+                var reportedMacs = networks.Select(a => a.MacAddress ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+                networks.AddRange(configNets.Where(a => string.IsNullOrEmpty(a.MacAddress) || !reportedMacs.Contains(a.MacAddress)));
+            }
+            else if (item.VmType == VmType.Lxc)
+            {
+                hostname = (config as VmConfigLxc)?.Hostname;
+                var live = (item.IsRunning
+                                ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
+                                : []).ToDictionaryByMac();
+
+                networks.AddRange(configNets.Select(a => a.WithLiveAddresses(live, separator)));
+            }
+
+            return networks.OrderBy(a => string.IsNullOrEmpty(a.Id))
+                           .ThenBy(a => a.Id, NaturalStringComparer.Instance)
+                           .ThenBy(a => a.Name, NaturalStringComparer.Instance)
+                           .Select(a => (item, new NetworkDiagramBuilder.VmNetworkRow(item.VmId,
+                                                                                      item.Name,
+                                                                                      item.Node,
+                                                                                      item.Type,
+                                                                                      item.Status,
+                                                                                      hostname,
+                                                                                      a,
+                                                                                      internals.Contains(a))));
+        })];
 }
