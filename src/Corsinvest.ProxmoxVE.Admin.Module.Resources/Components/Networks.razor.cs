@@ -400,63 +400,61 @@ public partial class Networks(IAdminService adminService,
             var internals = new HashSet<ApiVmNetwork>();
             string? hostname = null;
 
-            switch (item.VmType)
+            if (item.VmType == VmType.Qemu)
             {
-                case VmType.Qemu:
-                    if (item.IsRunning && (config as VmConfigQemu)?.AgentEnabled == true)
+                if (item.IsRunning && (config as VmConfigQemu)?.AgentEnabled == true)
+                {
+                    var agentNetsTask = clusterClient.CachedData.GetQemuNetworkAsync(item.Node, item.VmId, false).AsTask();
+                    var hostnameTask = clusterClient.CachedData.GetQemuHostnameAsync(item.Node, item.VmId, false).AsTask();
+                    await Task.WhenAll(agentNetsTask, hostnameTask);
+                    hostname = hostnameTask.Result;
+
+                    var netDict = configNets.Where(n => !string.IsNullOrEmpty(n.MacAddress))
+                                            .GroupBy(n => n.MacAddress, StringComparer.OrdinalIgnoreCase)
+                                            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var net in (agentNetsTask.Result.Result ?? [])
+                                            .Where(a => !string.IsNullOrEmpty(a.HardwareAddress)
+                                                        && a.HardwareAddress != "00:00:00:00:00:00"))
                     {
-                        var agentNetsTask = clusterClient.CachedData.GetQemuNetworkAsync(item.Node, item.VmId, false).AsTask();
-                        var hostnameTask = clusterClient.CachedData.GetQemuHostnameAsync(item.Node, item.VmId, false).AsTask();
-                        await Task.WhenAll(agentNetsTask, hostnameTask);
-                        hostname = hostnameTask.Result;
-
-                        var netDict = configNets.Where(n => !string.IsNullOrEmpty(n.MacAddress))
-                                                .GroupBy(n => n.MacAddress, StringComparer.OrdinalIgnoreCase)
-                                                .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
-
-                        foreach (var net in (agentNetsTask.Result.Result ?? [])
-                                                .Where(a => !string.IsNullOrEmpty(a.HardwareAddress)
-                                                            && a.HardwareAddress != "00:00:00:00:00:00"))
+                        netDict.TryGetValue(net.HardwareAddress, out var configNet);
+                        var network = new ApiVmNetwork
                         {
-                            netDict.TryGetValue(net.HardwareAddress, out var configNet);
-                            var network = new ApiVmNetwork
-                            {
-                                Id = configNet?.Id!,
-                                Name = net.Name,
-                                MacAddress = net.HardwareAddress.ToUpperInvariant(),
-                                Bridge = configNet?.Bridge!,
-                                Tag = configNet?.Tag,
-                                Trunks = configNet?.Trunks!,
-                                Model = configNet?.Model!,
-                                Firewall = configNet?.Firewall ?? false,
-                                Gateway = configNet?.Gateway!,
-                                Gateway6 = configNet?.Gateway6!,
-                                Rate = configNet?.Rate,
-                                Mtu = configNet?.Mtu,
-                                IpAddress = net.IpAddresses.Where(a => a.IpAddressType == "ipv4")
-                                                           .Select(a => $"{a.IpAddress}/{a.Prefix}")
-                                                           .JoinAsString(separator),
-                                IpAddress6 = net.IpAddresses.Where(a => a.IpAddressType == "ipv6")
-                                                            .Select(a => $"{a.IpAddress}/{a.Prefix}")
-                                                            .JoinAsString(separator),
-                            };
-                            networks.Add(network);
-                            if (configNet == null) { internals.Add(network); }
-                        }
+                            Id = configNet?.Id!,
+                            Name = net.Name,
+                            MacAddress = net.HardwareAddress.ToUpperInvariant(),
+                            Bridge = configNet?.Bridge!,
+                            Tag = configNet?.Tag,
+                            Trunks = configNet?.Trunks!,
+                            Model = configNet?.Model!,
+                            Firewall = configNet?.Firewall ?? false,
+                            Gateway = configNet?.Gateway!,
+                            Gateway6 = configNet?.Gateway6!,
+                            Rate = configNet?.Rate,
+                            Mtu = configNet?.Mtu,
+                            IpAddress = net.IpAddresses.Where(a => a.IpAddressType == "ipv4")
+                                                       .Select(a => $"{a.IpAddress}/{a.Prefix}")
+                                                       .JoinAsString(separator),
+                            IpAddress6 = net.IpAddresses.Where(a => a.IpAddressType == "ipv6")
+                                                        .Select(a => $"{a.IpAddress}/{a.Prefix}")
+                                                        .JoinAsString(separator),
+                        };
+                        networks.Add(network);
+                        if (configNet == null) { internals.Add(network); }
                     }
+                }
 
-                    var reportedMacs = networks.Select(a => a.MacAddress ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
-                    networks.AddRange(configNets.Where(a => string.IsNullOrEmpty(a.MacAddress) || !reportedMacs.Contains(a.MacAddress)));
-                    break;
+                var reportedMacs = networks.Select(a => a.MacAddress ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+                networks.AddRange(configNets.Where(a => string.IsNullOrEmpty(a.MacAddress) || !reportedMacs.Contains(a.MacAddress)));
+            }
+            else if (item.VmType == VmType.Lxc)
+            {
+                hostname = (config as VmConfigLxc)?.Hostname;
+                var live = (item.IsRunning
+                                ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
+                                : []).ToDictionaryByMac();
 
-                case VmType.Lxc:
-                    hostname = (config as VmConfigLxc)?.Hostname;
-                    var live = (item.IsRunning
-                                    ? await clusterClient.CachedData.GetLxcInterfacesAsync(item.Node, item.VmId, false)
-                                    : []).ToDictionaryByMac();
-
-                    networks.AddRange(configNets.Select(a => a.WithLiveAddresses(live, separator)));
-                    break;
+                networks.AddRange(configNets.Select(a => a.WithLiveAddresses(live, separator)));
             }
 
             return networks.OrderBy(a => string.IsNullOrEmpty(a.Id))
