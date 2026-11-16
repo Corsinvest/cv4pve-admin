@@ -12,12 +12,14 @@ public record DailyChartFilter<TCategory>(DateTime From, DateTime To, bool HasCa
 public static class DailyChartLayout
 {
     /// <summary>Height taken by the chart with its range bar: a full-height grid below it subtracts it.</summary>
-    public const int Height = 315;
+    public static int Height { get; } = 315;
 }
 
 public partial class DailyChart<TCategory> where TCategory : notnull
 {
     private record TotalPoint(DateTime Day, int Count);
+
+    private const double Epsilon = 1e-9;
 
     [Parameter, EditorRequired] public string Title { get; set; } = default!;
     [Parameter] public List<DailyChartPoint<TCategory>> Data { get; set; } = [];
@@ -93,14 +95,14 @@ public partial class DailyChart<TCategory> where TCategory : notnull
 
     private async Task OnStartChangedAsync(double value)
     {
-        if (value == _start) { return; }
+        if (Math.Abs(value - _start) < Epsilon) { return; }
         _start = value;
         await RangeChangedAsync();
     }
 
     private async Task OnEndChangedAsync(double value)
     {
-        if (value == _end) { return; }
+        if (Math.Abs(value - _end) < Epsilon) { return; }
         _end = value;
         await RangeChangedAsync();
     }
