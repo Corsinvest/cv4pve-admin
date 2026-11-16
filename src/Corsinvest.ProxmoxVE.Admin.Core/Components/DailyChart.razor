@@ -1,0 +1,91 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+@typeparam TCategory where TCategory : notnull
+
+<RadzenCard class="rz-mb-2">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-mb-1">
+        <RadzenText TextStyle="TextStyle.Subtitle2" Text="@Title" Style="margin: 0;" />
+
+        @if (Selected != null)
+        {
+            <RadzenButton Text="@($"{Selected.Day.ToShortDateString()} · {GetText(Selected.Category)}")"
+                          Icon="close"
+                          IconPosition="IconPosition.End"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Variant="Variant.Flat"
+                          Shade="Shade.Lighter"
+                          Size="ButtonSize.ExtraSmall"
+                          title="@L["Remove filter"]"
+                          Click="ClearSelectionAsync" />
+        }
+        else if (Interactive && Data.Count > 0)
+        {
+            <RadzenText TextStyle="TextStyle.Caption" class="rz-text-secondary-color" Style="margin: 0;" Text="@L["Click a bar to filter the list"]" />
+        }
+    </RadzenStack>
+
+    @if (Loading)
+    {
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height:6px" />
+    }
+    else if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" Text="@ErrorMessage" />
+    }
+    else if (Data.Count == 0)
+    {
+        <RadzenText TextStyle="TextStyle.Body2" class="rz-p-2" Text="@(EmptyText ?? L["No data for the current filters in the last 30 days."])" />
+    }
+    else
+    {
+        <RadzenChart Style="@($"height:180px;{(Interactive ? " cursor:pointer;" : "")}")" SeriesClick="OnSeriesClickAsync">
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenColumnOptions Radius="2" />
+            @foreach (var category in OrderedCategories)
+            {
+                var data = FilteredData.Where(p => EqualityComparer<TCategory>.Default.Equals(p.Category, category)).OrderBy(p => p.Day);
+                if (data.Any())
+                {
+                    <RadzenStackedColumnSeries Data="@data"
+                                               CategoryProperty="@nameof(DailyChartPoint<TCategory>.Day)"
+                                               ValueProperty="@nameof(DailyChartPoint<TCategory>.Count)"
+                                               Title="@GetText(category)"
+                                               Fill="@CategoryColor?.Invoke(category)">
+                        <RadzenColumnOptions Width="20" />
+                    </RadzenStackedColumnSeries>
+                }
+            }
+            <RadzenCategoryAxis FormatString="{0:MM-dd}" />
+            <RadzenValueAxis />
+            <RadzenLegend Position="LegendPosition.Top" />
+        </RadzenChart>
+
+        @if (Interactive && TotalsPerDay.Count >= 2)
+        {
+            <ErrorBoundary>
+                <ChildContent>
+                    <RadzenRangeNavigator Start="_start"
+                                          StartChanged="@OnStartChangedAsync"
+                                          End="_end"
+                                          EndChanged="@OnEndChangedAsync"
+                                          Min="@_min"
+                                          Max="@_max"
+                                          ShowAxis="true"
+                                          AxisFormatString="{0:MM-dd}"
+                                          Style="height:80px; min-width:200px;">
+                        <RadzenRangeNavigatorLineSeries Smooth="true"
+                                                        Data="@TotalsPerDay"
+                                                        CategoryProperty="@nameof(TotalPoint.Day)"
+                                                        ValueProperty="@nameof(TotalPoint.Count)" />
+                    </RadzenRangeNavigator>
+                </ChildContent>
+                <ErrorContent>
+                    <div style="height:80px;"></div>
+                </ErrorContent>
+            </ErrorBoundary>
+        }
+    }
+</RadzenCard>

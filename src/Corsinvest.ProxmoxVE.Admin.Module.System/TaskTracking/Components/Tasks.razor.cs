@@ -21,12 +21,22 @@ public partial class Tasks(ITaskTrackerService taskTracker,
     private IReadOnlyList<string> _allowedModules = [];
     private IEnumerable<FilterDescriptor> _searchFilters = [];
 
-    private List<TasksChart.ChartPoint> ChartData { get; set; } = [];
+    private static readonly TaskItemStatus[] _statuses =
+    [
+        TaskItemStatus.Running,
+        TaskItemStatus.Completed,
+        TaskItemStatus.Failed,
+        TaskItemStatus.Cancelled,
+        TaskItemStatus.Abandoned,
+    ];
+
+    private List<DailyChartPoint<TaskItemStatus>> ChartData { get; set; } = [];
     private bool ChartVisible { get; set; }
     private bool ChartLoading { get; set; }
     private string? ChartError { get; set; }
 
     private GridLoader<TaskItem, TaskItemInfo>? _loader;
+    private DailyChartFilter<TaskItemStatus>? _filter;
 
     protected override void OnInitialized()
     {
@@ -83,7 +93,9 @@ public partial class Tasks(ITaskTrackerService taskTracker,
         await using var db = await dbContextFactory.CreateDbContextAsync();
         var query = db.TaskItems
                       .Where(a => a.ModuleName == null || _allowedModules.Contains(a.ModuleName))
-                      .Where(a => a.ClusterName == ClusterName, ClusterName is not null);
+                      .Where(a => a.ClusterName == ClusterName, ClusterName is not null)
+                      .Where(a => a.StartedAt >= _filter!.From && a.StartedAt <= _filter.To, ChartVisible && _filter != null)
+                      .Where(a => a.Status == _filter!.Category, ChartVisible && _filter?.HasCategory == true);
         ResultLoadData = await _loader.LoadAsync(query,
                                                  args,
                                                  a => new TaskItemInfo
@@ -117,7 +129,7 @@ public partial class Tasks(ITaskTrackerService taskTracker,
                                     .Where(a => a.StartedAt >= cutoff);
 
             ChartData = await query.GroupBy(a => new { a.StartedAt.Date, a.Status })
-                                   .Select(g => new TasksChart.ChartPoint(g.Key.Date, g.Key.Status, g.Count()))
+                                   .Select(g => new DailyChartPoint<TaskItemStatus>(g.Key.Date, g.Key.Status, g.Count()))
                                    .ToListAsync();
         }
         catch (Exception ex)
@@ -127,10 +139,24 @@ public partial class Tasks(ITaskTrackerService taskTracker,
         }
     }
 
+    private async Task OnChartFilterChangedAsync(DailyChartFilter<TaskItemStatus>? filter)
+    {
+        _filter = filter;
+        await RefreshAsync();
+    }
+
     private async Task ToggleChart()
     {
         ChartVisible = !ChartVisible;
-        if (!ChartVisible) { return; }
+        if (!ChartVisible)
+        {
+            if (_filter != null)
+            {
+                _filter = null;
+                await RefreshAsync();
+            }
+            return;
+        }
 
         ChartLoading = true;
         StateHasChanged();
@@ -161,6 +187,16 @@ public partial class Tasks(ITaskTrackerService taskTracker,
         taskTracker.Changed -= OnTrackerChanged;
         _loader?.Dispose();
     }
+
+    private static string StatusColor(TaskItemStatus status) => status switch
+    {
+        TaskItemStatus.Running => "var(--cv4pve-severity-running)",
+        TaskItemStatus.Completed => "var(--rz-success)",
+        TaskItemStatus.Failed => "var(--rz-danger)",
+        TaskItemStatus.Cancelled => "var(--cv4pve-severity-muted)",
+        TaskItemStatus.Abandoned => "var(--rz-warning)",
+        _ => "var(--cv4pve-severity-disabled)"
+    };
 
     private static string GetStatusIcon(TaskItemStatus status) => status switch
     {

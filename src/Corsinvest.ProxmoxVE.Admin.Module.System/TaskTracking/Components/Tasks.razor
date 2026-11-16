@@ -8,7 +8,14 @@
 
 @if (ChartVisible)
 {
-    <TasksChart Data="@ChartData" ErrorMessage="@ChartError" Loading="@ChartLoading" />
+    <DailyChart TCategory="TaskItemStatus"
+                Title="@L["Last 30 days by status"]"
+                Data="@ChartData"
+                Categories="@_statuses"
+                CategoryColor="StatusColor"
+                ErrorMessage="@ChartError"
+                Loading="@ChartLoading"
+                OnFilterChanged="OnChartFilterChangedAsync" />
 }
 
 <RadzenDataGrid @ref="@DataGridRef"
@@ -23,7 +30,7 @@
                 AllowSorting="true"
                 AllowVirtualization="true"
                 AllowColumnPicking="true"
-                Style="@($"height: calc(100vh - {(ChartVisible ? 405 : 140)}px);")"
+                Style="@($"height: calc(100vh - {140 + (ChartVisible ? DailyChartLayout.Height : 0)}px);")"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
     <HeaderTemplate>

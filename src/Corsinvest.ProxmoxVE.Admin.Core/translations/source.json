@@ -1651,5 +1651,10 @@
   "{0} failed": "",
   "Job": "",
   "Today": "",
-  "Yesterday": ""
+  "Yesterday": "",
+  "Errors of the last 30 days by job": "",
+  "Done": "",
+  "Last 30 days by result": "",
+  "Click a bar to filter the list": "",
+  "Remove filter": ""
 }
