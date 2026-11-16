@@ -4,6 +4,19 @@
 *@
 @inherits AdminComponentBase
 
+@if (ChartVisible)
+{
+    <DailyChart TCategory="bool"
+                Title="@L["Last 30 days by status"]"
+                Data="@ChartData"
+                Categories="@([true, false])"
+                CategoryColor="@(a => a ? "var(--rz-success)" : "var(--rz-danger)")"
+                CategoryText="@(a => a ? L["Done"] : L["Failed"])"
+                ErrorMessage="@ChartError"
+                Loading="@ChartLoading"
+                OnFilterChanged="OnChartFilterChangedAsync" />
+}
+
 <RadzenDataGrid @ref="DataGridRef"
                 TItem="Data"
                 LoadData="LoadDataAsync"
@@ -14,7 +27,7 @@
                 AllowAlternatingRows="false"
                 AllowSorting="true"
                 AllowVirtualization="true"
-                Style="height: calc(100vh - 140px);"
+                Style="@($"height: calc(100vh - {140 + (ChartVisible ? DailyChartLayout.Height : 0)}px);")"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 AllowGrouping="true"
@@ -47,6 +60,12 @@
             </TemplateBefore>
 
             <TemplateAfter>
+                <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
+                              Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
+                              ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small"
+                              Click="@ToggleChartAsync" />
+
                 <InfoScheduler TModule="Module" JobSchedule="@Settings" />
             </TemplateAfter>
         </CrudToolbar>

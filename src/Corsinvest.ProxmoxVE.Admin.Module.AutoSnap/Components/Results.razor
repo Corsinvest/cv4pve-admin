@@ -4,6 +4,16 @@
 *@
 @inherits AdminComponentBase
 
+@if (ChartVisible)
+{
+    <DailyChart TCategory="string"
+                Title="@L["Errors of the last 30 days by job"]"
+                Data="@ChartData"
+                ErrorMessage="@ChartError"
+                Loading="@ChartLoading"
+                OnFilterChanged="OnChartFilterChangedAsync" />
+}
+
 <RadzenDataGrid @ref="DataGridRef"
                 TItem="Data"
                 Data="@ResultLoadData.Data"
@@ -13,7 +23,7 @@
                 AllowAlternatingRows="false"
                 AllowSorting="true"
                 AllowVirtualization="true"
-                Style="@Style"
+                Style="@GridStyle"
                 FilterPopupRenderMode="PopupRenderMode.OnDemand"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 CellClick="CellClick"
@@ -24,15 +34,30 @@
     <HeaderTemplate>
         <CrudToolbar OnDelete="DeleteAsync"
                      DeleteDisabled="!SelectedItems.Any()"
-                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync($"autosnap-histories-{ClusterName}", L["Histories"]))"
+                     OnExport="@(() => ShowOnlyError
+                                         ? DataGridRef.ExportToExcelAllAsync($"autosnap-errors-{ClusterName}", L["Errors"])
+                                         : DataGridRef.ExportToExcelAllAsync($"autosnap-histories-{ClusterName}", L["Histories"]))"
                      Permissions="Module.Permissions.Results.Data"
-                     PermissionDelete="Module.Permissions.Results.Delete" />
+                     PermissionDelete="Module.Permissions.Results.Delete">
+            <TemplateAfter>
+                @if (ShowOnlyError)
+                {
+                    <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
+                                  Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Size="ButtonSize.Small"
+                                  Click="@ToggleChartAsync" />
+                }
+            </TemplateAfter>
+        </CrudToolbar>
     </HeaderTemplate>
 
     <Columns>
+        <RadzenDataGridColumn Property="Job.Label" Sortable="true" Title="@L["Job"]" Visible="@(JobId == null)" />
+
         <RadzenDataGridColumn Property="@nameof(Data.SnapName)" Sortable="true" Title="@L["Name"]">
             <Template>
-                <span class="rz-link link" style="text-decoration: underline;">@context.Start</span>
+                <span class="rz-link link" style="text-decoration: underline;">@context.SnapName</span>
             </Template>
         </RadzenDataGridColumn>
 
@@ -45,6 +70,6 @@
                               Width="100px"
                               Filterable="false" />
 
-        <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" />
+        <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" Visible="@(!ShowOnlyError)" />
     </Columns>
 </RadzenDataGrid>

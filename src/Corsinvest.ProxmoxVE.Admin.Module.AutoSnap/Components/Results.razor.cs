@@ -18,6 +18,16 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
     private GridLoader<JobResult, Data>? _loader;
 
+    private List<DailyChartPoint<string>> ChartData { get; set; } = [];
+    private bool ChartVisible { get; set; }
+    private bool ChartLoading { get; set; }
+    private string? ChartError { get; set; }
+    private DailyChartFilter<string>? _filter;
+
+    private string GridStyle => ChartVisible
+                                    ? $"height: calc(100vh - {140 + DailyChartLayout.Height}px);"
+                                    : Style;
+
     private class Data : JobResult;
 
     protected override void OnAfterRender(bool firstRender)
@@ -32,21 +42,73 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
     {
         if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var visible = await ActionHelper.GetVisibleJobIdsAsync(PermissionService, db, ClusterName);
-        ResultLoadData = await _loader.LoadAsync(db.Results
-                                                   .Where(a => a.Job.Id == JobId, JobId != null)
-                                                   .Where(a => a.Job.ClusterName == ClusterName, JobId == null)
-                                                   .Where(a => visible!.Contains(a.Job.Id), visible != null)
-                                                   .Where(a => !a.Status, ShowOnlyError),
+        ResultLoadData = await _loader.LoadAsync((await GetQueryAsync(db)).Where(a => a.Start >= _filter!.From && a.Start <= _filter.To,
+                                                                                 ChartVisible && _filter != null)
+                                                                         .Where(a => a.Job.Label == _filter!.Category, ChartVisible && _filter?.HasCategory == true),
                                                  args,
                                                  a => new Data
                                                  {
                                                      Id = a.Id,
+                                                     Job = a.Job,
                                                      SnapName = a.SnapName,
                                                      Status = a.Status,
                                                      Start = a.Start,
                                                      End = a.End
                                                  });
+    }
+
+    private async Task<IQueryable<JobResult>> GetQueryAsync(ModuleDbContext db)
+    {
+        var visible = await ActionHelper.GetVisibleJobIdsAsync(PermissionService, db, ClusterName);
+        return db.Results
+                 .Where(a => a.Job.Id == JobId, JobId != null)
+                 .Where(a => a.Job.ClusterName == ClusterName, JobId == null)
+                 .Where(a => visible!.Contains(a.Job.Id), visible != null)
+                 .Where(a => !a.Status, ShowOnlyError);
+    }
+
+    private async Task ToggleChartAsync()
+    {
+        ChartVisible = !ChartVisible;
+        if (!ChartVisible)
+        {
+            if (_filter != null)
+            {
+                _filter = null;
+                await (_loader?.RefreshAsync() ?? DataGridRef.Reload());
+            }
+            return;
+        }
+
+        ChartLoading = true;
+        ChartError = null;
+        StateHasChanged();
+        await Task.Yield();
+
+        try
+        {
+            await using var db = await dbContextFactory.CreateDbContextAsync();
+            var cutoff = DateTime.UtcNow.AddDays(-30);
+            ChartData = await (await GetQueryAsync(db)).Where(a => a.Start >= cutoff)
+                                                       .GroupBy(a => new { a.Start.Date, a.Job.Label })
+                                                       .Select(g => new DailyChartPoint<string>(g.Key.Date, g.Key.Label, g.Count()))
+                                                       .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            ChartData = [];
+            ChartError = ex.Message;
+        }
+        finally
+        {
+            ChartLoading = false;
+        }
+    }
+
+    private async Task OnChartFilterChangedAsync(DailyChartFilter<string>? filter)
+    {
+        _filter = filter;
+        await (_loader?.RefreshAsync() ?? DataGridRef.Reload());
     }
 
     public void Dispose() => _loader?.Dispose();
@@ -85,7 +147,7 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
             await using var db = await dbContextFactory.CreateDbContextAsync();
             await db.Results.DeleteAsync([.. SelectedItems.Select(a => a.Id)]);
             SelectedItems.Clear();
-            await DataGridRef.Reload();
+            await (_loader?.RefreshAsync() ?? DataGridRef.Reload());
         }
     }
 }

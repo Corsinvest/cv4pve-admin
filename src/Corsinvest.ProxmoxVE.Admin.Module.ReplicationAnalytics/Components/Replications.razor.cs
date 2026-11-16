@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+using Corsinvest.ProxmoxVE.Admin.Core.Components;
 using Corsinvest.ProxmoxVE.Admin.Core.Security.Auth;
 using Radzen.Blazor;
 
@@ -23,6 +24,12 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
     private ResultLoadData<Data> ResultLoadData { get; set; } = new(null!, -1, null);
     private Settings Settings { get; set; } = new();
     private GridLoader<JobResult, Data>? _loader;
+
+    private List<DailyChartPoint<bool>> ChartData { get; set; } = [];
+    private bool ChartVisible { get; set; }
+    private bool ChartLoading { get; set; }
+    private string? ChartError { get; set; }
+    private DailyChartFilter<bool>? _filter;
 
     private class Data : JobResult;
 
@@ -76,9 +83,9 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
     {
         if (_loader is null) { return; }
         await using var db = await dbContextFactory.CreateDbContextAsync();
-        var readable = await Helpers.ActionHelper.GetReadableVmIdsAsync(PermissionService, db, ClusterName);
-        ResultLoadData = await _loader.LoadAsync(db.JobResults.FromClusterName(ClusterName)
-                                                              .Where(a => readable!.Contains(a.VmId), readable != null),
+        ResultLoadData = await _loader.LoadAsync((await GetQueryAsync(db)).Where(a => a.Start >= _filter!.From && a.Start <= _filter.To,
+                                                                                 ChartVisible && _filter != null)
+                                                                         .Where(a => a.Status == _filter!.Category, ChartVisible && _filter?.HasCategory == true),
                                                  args,
                                                  a => new Data
                                                  {
@@ -93,6 +100,57 @@ public partial class Replications(IDbContextFactory<ModuleDbContext> dbContextFa
                                                      Error = a.Error,
                                                      LastSync = a.LastSync
                                                  });
+    }
+
+    private async Task<IQueryable<JobResult>> GetQueryAsync(ModuleDbContext db)
+    {
+        var readable = await Helpers.ActionHelper.GetReadableVmIdsAsync(PermissionService, db, ClusterName);
+        return db.JobResults.FromClusterName(ClusterName)
+                            .Where(a => readable!.Contains(a.VmId), readable != null);
+    }
+
+    private async Task ToggleChartAsync()
+    {
+        ChartVisible = !ChartVisible;
+        if (!ChartVisible)
+        {
+            if (_filter != null)
+            {
+                _filter = null;
+                await RefreshDataAsync();
+            }
+            return;
+        }
+
+        ChartLoading = true;
+        ChartError = null;
+        StateHasChanged();
+        await Task.Yield();
+
+        try
+        {
+            await using var db = await dbContextFactory.CreateDbContextAsync();
+            var cutoff = DateTime.UtcNow.AddDays(-30);
+            ChartData = await (await GetQueryAsync(db)).Where(a => a.Start >= cutoff)
+                                                       .GroupBy(a => new { a.Start.Date, a.Status })
+                                                       .Select(g => new DailyChartPoint<bool>(g.Key.Date, g.Key.Status, g.Count()))
+                                                       .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            ChartData = [];
+            ChartError = ex.Message;
+        }
+        finally
+        {
+            ChartLoading = false;
+        }
+    }
+
+    private async Task OnChartFilterChangedAsync(DailyChartFilter<bool>? filter)
+    {
+        _filter = filter;
+        await RefreshDataAsync();
     }
 
     private async Task ShowLogAsync(Data item)
