@@ -6,17 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-16
+
+This release focuses on **security and permissions**: a safer sign-in, and every module shows only what the user is allowed to see (review your custom roles). In the Enterprise Edition users can also sign in with Microsoft, Google, Keycloak or their company domain. It also adds the Excel export of the lists, capacity planning in the report, quick Diagnostic profiles and, in the Enterprise Edition, the automatic shutdown of the nodes from the UPS. Underlying components have been updated.
+
 ### Community Edition
 
 #### Added
 
 - **Public address**: the new `PublicUrl` setting is the address the users open. The links of the account emails (password reset, email confirmation) and, in *(EE)*, the callback address shown for the identity providers are built from it, not from the address of the request. Without it they follow the request, as before, and a warning at startup says so.
 
-- **Trusted proxies**: the new `TrustedProxies` setting lists the reverse proxies (addresses or networks) whose forwarded headers are accepted: the client address in the audit log and the per-address limits can no longer be written by the client itself. Without it the headers are accepted from any address, as before, so an installation behind a proxy keeps working unchanged.
+- **Trusted proxies**: the new `TrustedProxies` setting lists the reverse proxies the application trusts. Only through them can the user's address be passed on, so the audit log and the sign-in limits see the real address and a client cannot fake it. Without the setting nothing changes.
 
-- **Limit on sign-in attempts**: one address can try to sign in, or to enter the two-factor code, 10 times a minute (`Security:MaxAttemptsPerMinute`, `0` turns it off). It protects also the domain sign-in, which has no local lockout. The AI Server counts its failed authentications the same way: past the limit it answers *Too many requests* and writes nothing in the audit log.
+- **Limit on sign-in attempts**: from one address, at most 10 attempts a minute to sign in or to enter the two-factor code (setting `Security:MaxAttemptsPerMinute`, `0` turns it off). The domain sign-in is protected too. The AI Server applies the same limit to failed keys.
 
-- **Metrics Exporter, token in a header**: Prometheus can send the token in the `Authorization: Bearer` header, so that it does not end up in the logs of a proxy. The token in the address keeps working.
+- **Metrics Exporter, token in a header**: Prometheus can send the token in the `Authorization: Bearer` header instead of the address, so it does not appear in proxy logs. The token in the address keeps working.
 
 - **Resend email confirmation**: a user whose confirmation link has expired asks for a new one from the login page, without an administrator. The page answers the same way whether the account exists or not, and limits the requests.
 
@@ -36,19 +40,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Excel export of the lists**: an export button in the toolbar of the lists (resources, networks, disks, snapshots, cluster and node views, tasks, AutoSnap, backups, replications and, in *(EE)*, users, roles, tokens, audit log, system logs, UPS readings and VM performance) saves them as an Excel file. Every row matching the current filter and sort is exported, not only the ones on screen, and dates are written in local time.
 
-- **Report, Capacity Planning**: a new section with one row per guest, node and storage: what is allocated, what is used on average and at the peak, how fast each storage fills up and the days left before it is full. Nodes also show the vCPUs and memory assigned to the running guests and their ratio to the node. It is built on the RRD data, so each table needs the RRD data of its section. Off by default, on with the *Full* preset.
+- **Report, Capacity Planning**: a new section with one row per guest, node and storage: what is allocated, the average and peak use, how fast each storage fills up and the days left before it is full. Nodes also show the CPUs and memory given to their running guests. It uses the performance history, so turn on the history of the sections you want in it. Off by default, on with the *Full* preset.
 
 - **WebHook — custom headers**: HTTP headers can be added to a webhook notification (and to AutoSnap hooks *(EE)*), with placeholders in their values. The `%severity%` placeholder is now listed in the editor.
 
-- **Enterprise features shown in the Community Edition**: the Enterprise widgets (Daily Status, Git Size) are listed in the **Add widget** menu of the dashboard, marked with a diamond, and appear in the module overviews with the subscription notice; the Notifications page has an Apprise tab with the notice; a new **Enterprise Modules** page in the Admin Area lists the modules of the Enterprise Edition. Before, these features did not appear at all.
+- **Enterprise features shown in the Community Edition**: the Enterprise widgets (Daily Status, Git Size) are listed in the **Add widget** menu of the dashboard, marked with a diamond (choosing one opens the shop instead of adding it), and appear in the module overviews with the subscription notice; the Notifications page has an Apprise tab with the notice; a new **Enterprise Modules** page in the Admin Area lists the modules of the Enterprise Edition. Before, these features did not appear at all.
 
 - **Command line, `user disable-2fa`**: turns off two-factor authentication for a user who lost both the authenticator device and the recovery codes. It is the way out when that user is the only administrator.
 
 #### Changed
 
-- **Metrics Exporter (review your alerts)**: an unknown or disabled cluster and a cluster without a token now answer *Unauthorized* (401), like a wrong token, instead of *Bad request* (400): the answer no longer tells which clusters exist. *Disabled* (503) is returned only with the right token.
+- **Metrics Exporter (review your alerts)**: an unknown or disabled cluster, or a cluster without a token, now answers *Unauthorized*, like a wrong token, instead of *Bad request*: the answer no longer tells which clusters exist. *Disabled* is returned only with the right token.
 
-- **Permission editor, Read of the page data removed**: for the data of a page (the jobs, status and results of AutoSnap, the backups of Backup Analytics, the replications of Replication Analytics, the scans and ignored issues of Diagnostics, the scans of Update Manager, the backups of Node Protect, the reports of System Report, the UPS devices) the editor offered a *Read* permission that was never checked: opening the page is what shows them. It is no longer offered; roles that already have it keep it, without effect.
+- **Permission editor, Read of the page data removed**: for the data of a page (the jobs, status and results of AutoSnap, the backups of Backup Analytics, the replications of Replication Analytics, the scans and ignored issues of Diagnostics, the scans of Update Manager, the backups of Node Protect, the reports of System Report, the UPS devices *(EE)*) the editor offered a *Read* permission that was never checked: opening the page is what shows them. It is no longer offered; roles that already have it keep it, without effect.
 
 - **Resources, permissions per resource on every page (review your roles)**: the Disks, Partitions, Snapshots and Networks pages listed every VM and node of the cluster, unlike Guests, Nodes and Storages. Now they list only the readable ones, and the network diagram draws only readable nodes, guests and storages. The SDN tab needs Read on every VM, node and storage of the cluster.
 
@@ -70,7 +74,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Maintenance, Fix All**: one confirmation that lists the steps, instead of one question per step.
 
-- **Settings labels**: "Enabled schedulation" is now "Enable scheduling", "Number which should will keep" is now "Number to keep", and the AutoSnap notify option "Allways" is shown as "Always". Existing settings are kept.
+- **Settings labels**: "Enabled schedulation" is now "Enable scheduling" (and the *Activate schedulation* button is now *Activate scheduling*), "Number which should will keep" is now "Number to keep", and the AutoSnap notify option "Allways" is shown as "Always". Existing settings are kept.
 
 - **Help menu**: the version, edition and update check share a single line at the top.
 
@@ -80,7 +84,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Diagnostic**: resource links in the results (and in the Compliance view *(EE)*) open in a new tab, so the report stays open.
 
-- **Container IP addresses**: running containers show the address they have right now, also when it comes from DHCP (`10.0.0.5/24 (dhcp)` instead of just `dhcp`), in the Resources network list, in the network diagram and in the IP search. Stopped containers and older Proxmox VE releases keep showing the configured value.
+- **Container IP addresses**: running containers show the address they have right now, also when it comes from DHCP, in the Resources network list, the network diagram and the IP search.
 
 - **Resources network list**: new *Trunks* column for guest NICs.
 
@@ -89,11 +93,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - VM trunk ports appear in the network sheet and in the diagram; Cluster Access reports the disabled two-factor entries.
   - Rows always come in the same order, with numbers sorted as numbers (`105` before `1000`), so two reports of an unchanged cluster differ only in live values.
 
-- **WebHook — placeholders**: values are escaped for where they are placed: URL-encoded in the address, JSON- or XML-escaped in the body, line breaks removed in headers. A message with quotes or line breaks no longer breaks an XML payload, and a placeholder in the address is no longer JSON-escaped. A value that itself contains a placeholder name is no longer replaced a second time.
+- **WebHook, placeholders**: a value with quotes or line breaks no longer breaks the message or the address of a webhook, and is no longer replaced twice.
 
-- **WebHook — errors**: when the receiver refuses the call, the error shows its answer (the first 500 characters) along with the HTTP status. The log shows only the receiver's host, since Slack, Discord and Teams put the secret in the address.
+- **WebHook, errors**: when the receiver refuses a notification, the error shows its answer. The log no longer shows the full address of the receiver, which for Slack, Discord and Teams contains the secret.
 
-- **WebHook — GET requests**: the body fields are hidden, since a GET request is sent without a body.
+- **WebHook, GET requests**: the body fields are hidden, since a GET request sends no body.
 
 - **AutoSnap (review your jobs)**:
   - A job that selects no VM/CT, or whose guests are on an offline node, now ends as failed and the guests are listed in the log. Before, it ended OK without taking any snapshot. With *On Failure Only* a notification is sent.
@@ -133,11 +137,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Fixed
 
-- **Security of the pages**: the application can no longer be shown inside a frame of another site (clickjacking), the browser no longer guesses the type of a file, and the full address of a page is no longer sent to other sites.
+- **Security of the pages**: the application can no longer be shown inside a frame of another site (clickjacking), the browser no longer guesses the type of a file, and the full address of a page is no longer sent to other sites. On HTTPS the remembered language is protected like the sign-in.
 
-- **Sign-in, return address**: a crafted link could send the user to another site after the sign-in.
-
-- **Web console**: the address of the console files could be bent to reach other Proxmox VE requests with the credentials of the application; only the console files are served now.
+- **Web console**: the console address could be misused to send other requests to Proxmox VE with the credentials of the application. Now it serves only the console.
 
 - **Closed sessions**: a session closed by the application, for example after a password reset or from the command line, stayed valid for up to two minutes.
 
@@ -155,7 +157,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Grids**: a group, once expanded, can be collapsed again.
 
-- **Help menu**: the red dot on the Help icon is back when a new version is available, and the separators between menu sections are drawn as lines again. The Help and notification buttons in the header are as narrow as the other icon buttons, with the counter moved to the corner so it no longer covers the bell.
+- **Help menu**: the red dot on the Help icon is back when a new version is available, and the menu separators are lines again. The task counter no longer covers the bell.
 
 - **Diagnostic — settings**: the node RRD time frame and PSI pressure thresholds changed from the settings page are now applied; before, the scan kept using the defaults. The Storage section no longer shows RRD and PSI fields, which the storage check never used.
 
@@ -187,7 +189,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Replication Analytics**: the scan no longer fails on a cluster without replication jobs, and the old results expire after the retention period also when the replications have stopped. A replication that fails is now stored in the run history, with its error: before, the history kept showing the last successful run and the failure never appeared. A job that keeps failing gives one record for each try a scan finds.
 
-- **Sign-in sessions**: a sign-in now survives a restart or an update of the application: before, every restart signed everyone out, also with *Remember me*. When a password is changed or reset, the other browsers signed in with that account are signed out at once instead of within 30 minutes. After the update to this version everyone signs in once more.
+- **Sign-in sessions**: a sign-in now survives a restart or an update of the application: before, every restart signed everyone out, also with *Remember me*. When a password is changed or reset, or two-factor authentication is changed, the other browsers signed in with that account are signed out at once. After the update to this version everyone signs in once more.
 
 - **Forgot password**: the reset link is sent at most 3 times to the same address in 15 minutes, and 10 requests are accepted from the same computer. Before, anyone who knew an address could fill its mailbox with reset messages.
 
@@ -225,11 +227,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **AI Server, permissions (review your tokens)**: five tools returned more than the token is allowed to see. The list of the clusters now shows only the clusters the token can work on; tasks, replication jobs and backup jobs are shown only for the guests and the nodes the token can see, and a backup job lists only the guests the token can see. A token with limited cluster permissions sees less than before.
 
-- **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones with the same text. The check code is shown in the list of the rules. To make a rule wider, clear its fields: gravity and context can be left empty to match any value. Rules created before keep working; some findings hidden by mistake may become visible again.
+- **Diagnostic, ignored issues**: an ignore rule hides only the finding it was made for: same resource, same check, same severity. Before, a rule for VM 10 also hid VM 100, and a rule made from an Info finding also hid the Warning and Critical ones. To make a rule wider, leave its fields empty. Existing rules keep working; some findings hidden by mistake may show again.
 
 - **Sign-in**: after the login you are sent back only to a page of this installation; before, a crafted link could send you to another site.
 
-- **Permissions**: the settings of a module can be opened and saved only with the *Edit Settings* permission, also from the *Activate schedulation* button; AutoSnap *Snap* and *Purge*, stopping a task and starting the application update now check their permission when they run, not only when the button is shown. The AutoSnap *Errors* page shows the errors of the current cluster only.
+- **Permissions**: module settings open and save only with the *Edit Settings* permission, also from *Activate scheduling*. AutoSnap *Snap* and *Purge*, stopping a task and starting the update check the permission also when they run, not only when the button is shown. The *Delete* button of AutoSnap *Status* and *Results* is shown only to who may delete. The AutoSnap *Errors* page shows only the current cluster.
+
+- **Buttons on pages that refresh by themselves**: buttons that need a permission could disappear when the page refreshed by itself, for example *Scan* and *Test Connection* on the UPS devices page *(EE)*, or be shown to someone without the permission. They now follow the user's permissions.
 
 - **Resources, Memory Cleanup and Unlock**: the two entries of the node and guest menu are shown and run only with the *Power Management* permission on that node or guest, and each run is recorded in the audit log. Before, any user who could see the resource could run them. *Schedule Now* of a replication checks its permission also when it runs.
 
@@ -239,7 +243,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Widgets**: in the *Status* widget of Diagnostic and of Update Manager the *Critical* and *In error* slices are red again; before, they had no colour of their own. The thin separators of the resource cards, of the *Info* widgets and of the issue list of the health widgets are now drawn.
 
-- **Small fixes**: in the Cluster Usage grid the memory tooltip shows the memory figure (it showed the storage one); the disk usage tooltip of the resource lists ends with `%`; a disabled Metrics Exporter always answers with status 503; the default sender address of a new installation is `noreply@example.com`.
+- **Small fixes**: in the Cluster Usage grid the memory tooltip shows the memory (it showed the storage); the disk usage tooltip of the resource lists ends with `%`; the default sender address of a new installation is `noreply@example.com`; the AI Server settings said the Toon format saves about 55% of the tokens, it is about 45%.
 
 - **Command Palette**: the `vm:` and `ip:` filters list containers too, *create snapshot* offers every guest and not only the running ones, and the guest picker of the commands shows only the guests you are allowed to see.
 
@@ -253,7 +257,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Bots, Chats Id**: the field takes one chat ID per line; before, it was a single-line box and only one ID could be entered. A value already saved keeps working.
 
-- **Metrics Exporter**: scrapes arriving at the same time for the same cluster no longer interfere with each other.
+- **Metrics Exporter**: two Prometheus reads of the same cluster at the same time no longer mix their values.
 
 - **Installer**: a PostgreSQL password containing `/` or `&` no longer stops the Linux and macOS installer, and one containing `$` is no longer saved altered by the Windows installer.
 
@@ -315,23 +319,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Dashboard widgets**: the widgets that update during a scan could mix two updates or miss the last one; they now always show the final numbers.
 
+- **Resources, Networks page**: VMs that were stopped, or without the guest agent, were missing from the list. Now every VM is listed, with the same data as the System Report, and a new *Net Name* column shows the name of the network card inside the guest.
+
+- **Diagnostic settings**: more than one section can be open at the same time.
+
+- **System Report, report dialog**: it closes with a click outside, can be resized, and more than one section can be open at the same time.
+
 #### Internal
 
-- The sign-in session no longer carries the permissions of the roles: they are always read from the database. The session stored for an administrator went from about 20 KB to 3 KB.
+- The sign-in session no longer carries the permissions: they are always read from the database, and the session is much smaller.
 
-- The profile image is scaled down by the browser, and the image library is no longer used: its known vulnerabilities and its license conditions are gone. Any image the browser can read is accepted (also GIF, BMP and AVIF), up to 10 MB.
+- The profile image *(EE)* is scaled down by the browser, and the image library is no longer used: its known vulnerabilities and its license conditions are gone. Any image the browser can read is accepted (also GIF, BMP and AVIF), up to 10 MB.
 
 - Underlying components updated (Proxmox VE API library, Report and Diagnostic libraries, UI components, cache, service discovery, command line). The PDF library stays on its current version: the newer one changed license.
 
-- Updated a .NET cryptography library with two denial of service fixes, and the ASP.NET Core and Entity Framework Core libraries to 10.0.13, the .NET security release.
+- Updated a .NET cryptography library with two denial of service fixes, and the .NET web and database libraries to 10.0.14.
 
 ### Enterprise Edition
 
 #### Added
 
-- **External Authentication**: users sign in with an identity provider (OpenID Connect, Keycloak, Microsoft Entra ID, Google) or with an Active Directory / LDAP domain. Providers are managed in *Admin Area → Security → External Authentication*, stored with encrypted secrets and turned on without a restart; *Test connection* and *Test login* check them before enabling. Each provider can link existing accounts by email (never administrators, accounts with two-factor authentication or built-in accounts), create the account at the first sign-in with default roles, and map its groups to roles, which follow the user when the groups change; the groups of a domain are picked from the directory. The sign-in page shows one icon per provider type, with a list when there are more of the same type, and a *Domain* list before user name and password; an account with two-factor authentication gives its code also after a domain or a provider. A periodic check of each domain removes the roles and closes the sessions of the users who left it or were disabled. In the users list a column shows the linked providers, and the user dialog has two new tabs: the linked logins, which can be linked and unlinked by hand, and the last external sign-ins. Tried with Keycloak, OpenLDAP and an Active Directory without encryption; Microsoft and Google not yet with real accounts.
+- **External Authentication**: users can sign in with an identity provider (OpenID Connect, Keycloak, Microsoft Entra ID, Google) or with an Active Directory / LDAP domain. Providers are set in *Admin Area → Security → External Authentication* and take effect without a restart. *Test connection* and *Test login* check them before you enable them. A provider can link existing accounts by email (never administrators, accounts with two-factor authentication or built-in accounts). It can also create the account at the first sign-in and give roles from the user's groups; the roles follow when the groups change. The sign-in page shows the providers and a *Domain* list. Two-factor authentication is still asked after an external sign-in. Each domain is checked at the interval set on the provider, or at once with *Check accounts*. Users who left the domain or were disabled lose their roles and are signed out. An account created by the domain is turned off, and turned on again if the user comes back. Deleting a provider unlinks its users and removes the roles it gave; the accounts are kept. In the users list you see the linked providers. In the user dialog you can link or unlink logins by hand and see the last external sign-ins. Tried with Keycloak, OpenLDAP and an Active Directory without encryption; Microsoft and Google not yet with real accounts.
 
 - **Portal, Tenant Admin**: each tenant can have its own admin, who sees only its tenant and manages the users of that tenant: adds new accounts, chooses their permissions on the tenant's VMs, makes another user admin. Linking an account that already exists stays with the administrator. The tenant roles are assigned by the Portal when a user joins a tenant or becomes its admin.
+
+- **Apprise, URL Builder**: a *URL Builder* button next to the configuration opens the online tool that writes the address of a service. In the list of services the documentation, website, secure connection and attachment support are shown as labels with a tooltip. A new Apprise notifier is filled in with the address of the Apprise service of the installation.
 
 - **UPS Monitor, thresholds per device**: the editor of a device can set its own battery low, battery critical and runtime critical alert thresholds; an empty field uses the value of the cluster settings.
 
@@ -347,7 +359,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **UPS, SNMP v3**: a UPS can be read with SNMP v3 instead of v2c: a user of the device, authentication (SHA-256, SHA-384, SHA-512, SHA-1, MD5) and, if wanted, encryption (AES-128, AES-192, AES-256). In the device choose the connection *SNMP v3*. The passwords are stored encrypted. Existing devices stay on SNMP v2c.
 
-- **UPS, older network cards**: a new connection *SNMP v1* for cards that answer only v1, and *3DES* and *DES* among the privacy algorithms of SNMP v3, marked as weak in the editor. A device that refuses a request with more values, or an SNMP v1 agent that fails it for one missing value, is read one value at a time, with nothing to set. Tried against simulated agents (SNMP v1 with a missing value, SNMP v3 with DES, a card that refuses requests with more values with an error or with no answer); 3DES and real cards not tried.
+- **UPS, older network cards**: a new *SNMP v1* connection for cards that only support it, and the older *DES* and *3DES* encryption for SNMP v3, marked as weak in the editor. A card that cannot answer many values at once is read one value at a time, with nothing to set. Tried on simulated devices only, not on real cards.
 
 - **UPS, NUT connection**: a UPS without a network card, connected by USB or serial cable to another machine, can be read from the NUT server (Network UPS Tools) of that machine. In the device choose the connection *NUT*, the address and port of the server (3493 by default) and the name of the UPS. The connection only reads: it never sends a command to the UPS. Stale data from the server are treated as no reading. No user is needed on the server.
 
@@ -364,6 +376,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 #### Changed
 
 - **Portal, tenants kept apart**: the Tenants page shows each user only its tenants; creating, editing and deleting tenants and adding or removing their VMs need the new **All tenants** permission. The **Portal Tenant Admin** role no longer gives permissions on all the VMs of the cluster nor the right to create and delete tenants: review your roles. Who had that role becomes admin of the tenants it was already in. A guest now belongs to one tenant only: guests already in two tenants are listed as a warning in the Vms tab.
+
+- **Home page**: it opens with the motto "By sysadmins, for sysadmins.", has a shorter text, and its link opens the documentation instead of the product page.
 
 - **VM Performance, permissions per VM (review your roles)**: the *Status* page listed every running VM of the cluster to whoever could open it. Now it lists only the VMs the user can read.
 
@@ -397,9 +411,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Fixed
 
-- **AI Server, queries across two tables**: two fields with the same name no longer fail (they come back with the table name in front), and the result can be ordered by a selected field. The tool description now explains how to combine tables.
+- **AI Server, queries across two tables**: queries that combine two tables no longer fail when both have a field with the same name, and the results can be sorted by any chosen field. The assistant is also told how to combine tables.
 
 - **Portal**: a tenant created without a description could not be saved; the editor closed and the tenant was not there.
+
+- **Portal, deleting a tenant**: its users lose their access to the guests of the tenant and the tenant roles. Before, they kept them. Access given by another tenant on the same guest stays.
 
 - **AutoSnap, hooks**: with parallel snapshots, the lines of a hook stay in the log block of their VM/CT instead of mixing with the other guests.
 
@@ -419,7 +435,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Audit log**: a failed creation or change of a user or a role is recorded as failed; before, it was recorded as successful.
 
-- **Small fixes**: the photo picker of a user shows only images; the *Docs* link of an AutoSnap hook opens the right page; Node Protect Git shows *Sync from remote*.
+- **Small fixes**: the photo picker of a user shows only images; the *Docs* link of an AutoSnap hook opens the right page; Node Protect Git shows *Sync from remote*; the separator line on the two-factor page of the profile is drawn.
 
 - **Apprise**: the addresses are read one per line whatever line ending the setting was saved with.
 
@@ -435,7 +451,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Node Protect, Git**: *Reset* and *Sync from remote* now run as tasks, with their steps in the task list and their outcome in the audit log; before, a failure left no trace. The confirmation of *Sync from remote* warns that the local repository is removed. On a Windows host *Reset* could also fail because the repository stayed open while the Git page was shown.
 
-- **System Logs**: the log viewer finds the database sink of the logging configuration by its name. Before, it had to be the third of the list, and with another order the viewer could read the wrong table without a notice.
+- **System Logs**: when the logging settings had been changed by hand, the page could show the wrong logs without a warning. It now always shows the logs of the application.
 
 - **AI Server, ISO tools**: the permissions to download and to delete an ISO image could not be given to a token, because they are in no role and the permission editor did not list them. They are now listed with the other tools in the permissions of a token. They stay out of every role: no token has them until they are given.
 
@@ -451,7 +467,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **Workflow, commands (review your workflows)**: guest power actions, migrations and snapshot activities were refused in silence, because a workflow had no user, and the workflow went on as if they had succeeded. They now run with the permissions of a user: the one who started the workflow or, for a workflow started by a trigger such as *Cron*, the one who last published it. A command that is refused or fails stops the workflow with the reason in its history. The node shutdown and reboot activity and the backup activity now check permissions and write the audit log like the others; the backup runs on the node where the guest is, whatever the *Node* field says.
 
-- **Active sessions**: the channel used to send messages and to force a logout accepts only the connections opened by the application.
+- **Active sessions**: sending a message to the signed-in users and forcing a logout can no longer be used from outside the application.
 
 - **Profile, two-factor authentication**:
   - *Reset Authenticator* turns two-factor authentication off and starts the setup again. Before, it left it on with no way to configure the app again, and the next login could not be completed.
@@ -470,6 +486,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - A wrong profile is reported as such, instead of a reading with all values at zero.
   - An APC device on battery was shown as *Online* with no alert, and one on mains as *Unknown*: each brand now uses its own meaning of the power states. A periodic self-test of the UPS is no longer taken for a power failure.
   - Wrong values in several profiles: battery voltage ten times too high on the standard profile, APC frequency ten times too low, battery voltage, runtime and temperature swapped on CyberPower and NetAgent, and others. Firmware, serial number and output power of the standard profile read the wrong value.
+  - In the device list, a row opened to show its readings stayed stuck after a scan and could no longer be closed. It now stays open and its readings update when the scan ends.
 
 - **Workflow**:
   - Opening *Workflows* or *History* turned the header and the colours of the whole application to a light blue.
@@ -481,16 +498,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - *Get Cluster Replications* was hidden by *Get Node Replications*.
 
 - **AutoSnap, webhooks**:
-  - The *CleanJobStart* and *CleanJobEnd* phases never fired: they now fire on *Purge Snapshots*, and a new webhook starts from *SnapJobStart*.
+  - The *CleanJobStart* and *CleanJobEnd* phases never fired: they now fire on *Purge Snapshots* and when a job is deleted together with its snapshots, and a new webhook starts from *SnapJobStart*.
   - Closing the webhook editor without saving kept the changes.
 
 - **Apprise**: notifications with an Excel attachment were refused by Apprise; attachments are sent correctly also when another notifier sends the same message. The editor opens at once instead of waiting for the server.
+
+- **AI Assistant**: the *Copy* and *Download* buttons under an answer did nothing. *Copy* now puts the text of the answer in the clipboard and *Download* saves it as a Markdown file. Both wait until the answer is complete.
 
 - **VM Performance**: a guest that stops or moves no longer breaks the page, and the rates are no longer negative after a guest restart. Guests that stop now leave the list and guests that start appear in it without reopening the page; on Proxmox VE 9 each disk of a guest has its own row again, with its name.
 
 - **Diagnostic, compliance**: the findings are listed from the most severe, and the list of critical findings in the PDF says how many there are instead of calling the first five a top 5.
 
 - **Daily status widgets** (Backup Analytics, AutoSnap, System Report): they show 14 days with a bar for every day, instead of 15 with gaps.
+
+- **Edit dialogs** (users, roles, tokens, External Authentication providers, tenants and tenant users): they close with a click outside, have the same width and can be resized.
 
 ## [2.3.0] - 2026-09-24
 
