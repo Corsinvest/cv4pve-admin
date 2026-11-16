@@ -1645,5 +1645,11 @@
   "External": "",
   "Could not retrieve info": "",
   "Job Log \u0027{0}\u0027": "",
-  "Please enter a test email address": ""
+  "Please enter a test email address": "",
+  "Show more": "",
+  "{0} snapshots": "",
+  "{0} failed": "",
+  "Job": "",
+  "Today": "",
+  "Yesterday": ""
 }

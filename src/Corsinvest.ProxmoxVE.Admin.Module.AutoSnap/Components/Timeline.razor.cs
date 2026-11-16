@@ -14,27 +14,35 @@ public partial class Timeline(IAdminService adminService,
 {
     [CascadingParameter(Name = nameof(ClusterName))] public string ClusterName { get; set; } = default!;
 
-    private IEnumerable<Data> Items { get; set; } = default!;
+    private const int DaysPage = 10;
+
+    private IEnumerable<Data> Items { get; set; } = [];
     private bool AllowCalculateSnapshotSize { get; set; }
     private bool InRefresh { get; set; }
     private bool IsCalculateSnapshotSize { get; set; }
+    private bool HasMore { get; set; }
 
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private readonly HashSet<DateTime> _expanded = [];
     private bool _disposed;
-    private IEnumerable<StorageSnapshotInfo> _disks = [];
+    private int _days = DaysPage;
     private List<int>? _visibleJobIds;
 
-    private record Data(DateTime Date, bool Status, int Count) : ISnapshotsSize
+    private record Slot(int Ok, int Failed);
+
+    private record Data(DateTime Date, List<DataSnapshot> Snapshots)
     {
-        public double SnapshotsSize { get; set; }
+        public int Count => Snapshots.Count;
+        public int Failed => Snapshots.Count(a => !a.Status);
+        public double SnapshotsSize => Snapshots.Sum(a => a.SnapshotsSize);
+
+        public Slot[] Hours { get; } = [.. Enumerable.Range(0, 24)
+                                                     .Select(hour => Snapshots.Where(a => a.Start.ToLocalTime().Hour == hour).ToList())
+                                                     .Select(a => new Slot(a.Count(b => b.Status), a.Count(b => !b.Status)))];
     }
 
-    private record DataJob(int Id, string Label, bool Status, int Count) : ISnapshotsSize
-    {
-        public double SnapshotsSize { get; set; }
-    }
-
-    private record DataSnapshot(string SnapName,
+    private record DataSnapshot(string Job,
+                                string SnapName,
                                 DateTime Start,
                                 DateTime? End,
                                 bool Status) : ISnapshotsSize
@@ -72,34 +80,43 @@ public partial class Timeline(IAdminService adminService,
             // The size of a snapshot name is summed over every VM of the cluster: shown only to who can read them all
             AllowCalculateSnapshotSize = AllowCalculateSnapshotSize && _visibleJobIds == null;
 
-            Items = [.. db.Results
-                          .Where(a => a.Job.ClusterName == ClusterName)
-                          .Where(a => _visibleJobIds!.Contains(a.Job.Id), _visibleJobIds != null)
-                          .GroupBy(a => a.Start.Date)
-                          .OrderByDescending(a => a.Key)
-                          .Select(a => new Data(a.Key, a.Any(b => b.Status), a.Count()))
-                          .Take(10)];
+            var results = db.Results
+                            .Where(a => a.Job.ClusterName == ClusterName)
+                            .Where(a => _visibleJobIds!.Contains(a.Job.Id), _visibleJobIds != null);
+
+            // Days are counted in UTC by the database, then regrouped in local time: one more day covers the offset
+            var utcDays = results.Select(a => a.Start.Date)
+                                 .Distinct()
+                                 .OrderByDescending(a => a)
+                                 .Take(_days + 2)
+                                 .ToList();
+
+            var days = new List<Data>();
+            if (utcDays.Count > 0)
+            {
+                var from = DateTime.SpecifyKind(utcDays.Min().AddDays(-1), DateTimeKind.Utc);
+                days = [.. results.Where(a => a.Start >= from)
+                                  .Select(a => new DataSnapshot(a.Job.Label, a.SnapName, a.Start, a.End, a.Status))
+                                  .ToList()
+                                  .GroupBy(a => a.Start.ToLocalTime().Date)
+                                  .OrderByDescending(a => a.Key)
+                                  .Select(a => new Data(a.Key, [.. a]))];
+            }
+
+            HasMore = days.Count > _days;
+            Items = [.. days.Take(_days)];
 
             await InvokeAsync(StateHasChanged);
 
             if (AllowCalculateSnapshotSize)
             {
                 IsCalculateSnapshotSize = true;
+                await InvokeAsync(StateHasChanged);
 
-                //snapshot size
-                _disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
-
-                foreach (var item in Items)
+                var disks = await clusterClient.CachedData.GetStorageSnapshotInfosAsync(false);
+                foreach (var snapshot in Items.SelectMany(a => a.Snapshots))
                 {
-                    var names = db.Results
-                                  .Where(a => a.Job.ClusterName == ClusterName && a.Start.Date == item.Date)
-                                  .Where(a => _visibleJobIds!.Contains(a.Job.Id), _visibleJobIds != null)
-                                  .Select(a => a.SnapName)
-                                  .ToList();
-
-                    item.SnapshotsSize = names.Select(a => StorageSnapshotHelper.CalculateSnapshots(0, a, _disks))
-                                              .DefaultIfEmpty(0)
-                                              .Sum();
+                    snapshot.SnapshotsSize = StorageSnapshotHelper.CalculateSnapshots(0, snapshot.SnapName, disks);
                 }
 
                 IsCalculateSnapshotSize = false;
@@ -114,61 +131,46 @@ public partial class Timeline(IAdminService adminService,
         }
     }
 
-    private string GetTitle(Data item)
+    private static PointStyle GetPointStyle(Data item)
+        => item.Failed == 0
+            ? PointStyle.Success
+            : item.Failed == item.Count
+                ? PointStyle.Danger
+                : PointStyle.Warning;
+
+    private static string GetSlotColor(Slot slot)
+        => (slot.Ok, slot.Failed) switch
+        {
+            (0, 0) => "var(--rz-base-200)",
+            (_, 0) => "var(--rz-success)",
+            (0, _) => "var(--rz-danger)",
+            _ => "var(--rz-warning)"
+        };
+
+    private string GetSlotTitle(int hour, Slot slot)
     {
-        var ret = item.Date.ToShortDateString();
-        if (AllowCalculateSnapshotSize) { ret += $" - {FormatHelper.FromBytes(item.SnapshotsSize)}"; }
+        var ret = $"{hour:00}:00";
+        if (slot.Ok > 0) { ret += $" · {L["{0} snapshots", slot.Ok]}"; }
+        if (slot.Failed > 0) { ret += $" · {L["{0} failed", slot.Failed]}"; }
         return ret;
     }
 
-    private string GetTitle(DataJob job)
+    private string? GetRelativeDay(DateTime date)
+        => date == DateTime.Today
+            ? L["Today"].Value
+            : date == DateTime.Today.AddDays(-1)
+                ? L["Yesterday"].Value
+                : null;
+
+    private void Toggle(DateTime date)
     {
-        var ret = job.Label;
-        if (AllowCalculateSnapshotSize) { ret += $" - {FormatHelper.FromBytes(job.SnapshotsSize)}"; }
-        return ret;
+        if (!_expanded.Remove(date)) { _expanded.Add(date); }
     }
 
-    private List<DataJob> GetJobs(DateTime start)
+    private async Task ShowMoreAsync()
     {
-        using var db = dbContextFactory.CreateDbContext();
-        var items = db.Jobs
-                      .FromClusterName(ClusterName)
-                      .Where(a => _visibleJobIds!.Contains(a.Id), _visibleJobIds != null)
-                      .Where(a => a.Results.Any(b => b.Start.Date == start))
-                      .Select(a => new DataJob(a.Id,
-                                               a.Label,
-                                               a.Results.Any(b => b.Start.Date == start && b.Status),
-                                               a.Results.Count(b => b.Start.Date == start)))
-                      .ToList();
-
-        foreach (var item in items)
-        {
-            var names = db.Results
-                          .Where(a => a.Job.Id == item.Id && a.Start.Date == start)
-                          .Select(a => a.SnapName)
-                          .ToList();
-
-            item.SnapshotsSize = names.Select(a => StorageSnapshotHelper.CalculateSnapshots(0, a, _disks))
-                                      .DefaultIfEmpty(0)
-                                      .Sum();
-        }
-
-        return items;
-    }
-
-    private List<DataSnapshot> Get(Data data, DataJob job)
-    {
-        using var db = dbContextFactory.CreateDbContext();
-        var items = db.Results.Where(a => a.Job.Id == job.Id && a.Start.Date == data.Date)
-                              .Select(a => new DataSnapshot(a.SnapName, a.Start, a.End, a.Status))
-                              .ToList();
-
-        foreach (var item in items)
-        {
-            item.SnapshotsSize = StorageSnapshotHelper.CalculateSnapshots(0, item.SnapName, _disks);
-        }
-
-        return items;
+        _days += DaysPage;
+        await RefreshDataAsync();
     }
 
     public void Dispose()
