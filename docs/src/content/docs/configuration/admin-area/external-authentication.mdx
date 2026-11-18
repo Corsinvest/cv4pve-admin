@@ -31,7 +31,7 @@ The grid shows **Enabled**, **Name** (with the icon of the type), **Type**, **Cr
 
 | Action | Description |
 |--------|-------------|
-| **Add** / **Delete** | Create or delete a provider. Deleting a provider removes the logins linked to it, the roles it gave and the sessions of its users. The accounts stay. |
+| **New** / **Delete** | Create or delete a provider. Deleting a provider removes the logins linked to it, the roles it gave and the sessions of its users. The accounts stay. |
 | **Test connection** | Checks the selected provider. A redirect provider reads its discovery document (`/.well-known/openid-configuration`) and shows the issuer. A domain binds with the service account and checks that the **Base DN** exists. |
 | **Test login** | Redirect providers only. Opens the page of the provider: after the sign-in, the claims received are shown in the providers page. Nobody is signed in, and it works also with the provider turned off, so a provider can be checked before enabling it. The result is visible only to the administrator who started the test. |
 | **Check accounts** | Domains only. Runs the [account check](#account-check) of the selected domain now. On a domain that is turned off it answers **Provider not found or turned off**. |

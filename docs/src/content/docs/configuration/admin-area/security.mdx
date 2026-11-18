@@ -43,7 +43,7 @@ Toolbar actions:
 
 | Action | Description |
 |--------|-------------|
-| **Add** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
+| **New** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
 | **Export** | Export the grid to Excel. |
 | **Reset password** | Send the selected user a link to set a new password, after confirmation. The link is sent by email and is also shown, so it can be copied and delivered another way. It opens the same page as **Forgot password?** on the sign-in page and expires after one day. Not available for your own account (use the [User Profile](../../profile/)) or for the `system` account. |
 | **Disable 2FA** | Turn off two-factor authentication for the selected user, after confirmation. Use it when a user has lost both the authenticator device and the recovery codes. The user signs in with the password only and is informed by email; the authenticator key and the recovery codes are discarded, so the next setup starts from a new QR code. Not available on your own account: use your [profile](../../profile/#two-factor-authentication-2fa). Requires the **Disable 2FA** permission. |
@@ -111,7 +111,7 @@ The editor has three tabs that show the same entries in different ways:
 
 | Tab | Use it to |
 |-----|-----------|
-| **List** | Flat grid with **Add**, **Delete** and in-row editing of cluster, permission, path and propagation. |
+| **List** | Flat grid with **New**, **Delete** and in-row editing of cluster, permission, path and propagation. |
 | **By Permission** | Tree of all permissions with one column per cluster. Tick a checkbox to grant a permission on a cluster, or tick a group to grant all the permissions below it. **Only set** hides the branches with no granted permission. |
 | **By Path** | One row per path and one column per cluster. Each granted permission is a badge: click it to remove it, use the **+** button to add one. |
 
@@ -139,7 +139,7 @@ Toolbar actions:
 
 | Action | Description |
 |--------|-------------|
-| **Add** | Opens the dialog of a new token. Requires the **Create** permission on app tokens. |
+| **New** | Opens the dialog of a new token. Requires the **Create** permission on app tokens. |
 | **Delete** | After confirmation, deletes the selected token. Requires the **Delete** permission on app tokens. |
 | **Regenerate** | After confirmation, generates a new secret for the selected token and shows it once. The previous secret stops working immediately. Requires the **Edit** permission on app tokens. |
 | **Effective Permissions** | Shows every permission the token ends up with, directly or through roles. Shown only with the **Read** permission on app tokens. |
