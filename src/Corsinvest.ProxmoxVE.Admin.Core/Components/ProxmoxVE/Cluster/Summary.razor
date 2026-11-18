@@ -4,93 +4,73 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
-    <RadzenRow>
-        <RadzenColumn Size="6">
-            <RadzenCard Style="height:150px;">
-                <RadzenRow>
-                    <RadzenColumn>
-                        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
-                            <RadzenText TextStyle="TextStyle.H6" Text="@L["Status"]" />
-                            <RadzenIcon Icon="@StatusInfo.Icon" IconColor="@StatusInfo.Color" Style="font-size: 48px;" />
-                            <RadzenText TextStyle="TextStyle.Body2" Text="@StatusInfo.Status" />
-                        </RadzenStack>
-                    </RadzenColumn>
+<RadzenStack Orientation="Orientation.Vertical" Gap="10px" class="rz-w-100">
+    <div class="cv4pve-summary-kpis">
+        <div class="cv4pve-card">
+            <div class="cv4pve-kpi cv4pve-widget-state @ClusterState" style="justify-content: center;">
+                <span class="cv4pve-kpi-section-title" style="margin: 0;">@L["Cluster"]</span>
+                <div class="cv4pve-kpi-row" style="gap: 0.75rem;">
+                    <span class="cv4pve-kpi-badge @ClusterState"><RadzenIcon Icon="@(StatusInfo.Icon ?? "hourglass_empty")" /></span>
+                    <div style="display: flex; flex-direction: column; min-width: 0;">
+                        <span class="cv4pve-kpi-value" style="font-size: 1.4rem;">@ClusterTitle</span>
+                        <span class="cv4pve-kpi-caption">@ClusterCaption</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    @if (CephInstalled)
-                    {
-                        <RadzenColumn>
-                            <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
-                                <RadzenText TextStyle="TextStyle.H6" Text="@L["Ceph"]" />
-                                <RadzenIcon Icon="@CephStatus.Icon" IconColor="@CephStatus.Color" Style="font-size: 48px;" />
-                                <RadzenText TextStyle="TextStyle.Body2" Text="@CephStatus.Status" />
-                            </RadzenStack>
-                        </RadzenColumn>
-                    }
-                </RadzenRow>
-            </RadzenCard>
-        </RadzenColumn>
+        @if (CephInstalled)
+        {
+            <div class="cv4pve-card">
+                <div class="cv4pve-kpi cv4pve-widget-state @CephState" style="justify-content: center;">
+                    <span class="cv4pve-kpi-section-title" style="margin: 0;">@L["Ceph"]</span>
+                    <div class="cv4pve-kpi-row" style="gap: 0.75rem;">
+                        <span class="cv4pve-kpi-badge @CephState"><RadzenIcon Icon="@CephStatus.Icon" /></span>
+                        <span class="cv4pve-kpi-value" style="font-size: 1.1rem;">@CephStatus.Status</span>
+                    </div>
+                </div>
+            </div>
+        }
 
-        <RadzenColumn Size="6">
-            <RadzenCard Style="height:150px;">
-                <RadzenRow>
-                    <RadzenColumn>
-                        <RadzenText TextStyle="TextStyle.H6" Text="@L["Nodes"]" Style="text-align: center;" />
-                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Node"
-                                                                                                        ClusterName="@ClusterName"
-                                                                                                        ShowHeader="true" />
-                    </RadzenColumn>
+        <div class="cv4pve-card">
+            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Node"
+                                                                                            ClusterName="@ClusterName"
+                                                                                            ShowHeader="true" />
+        </div>
 
-                    <RadzenColumn>
-                        <RadzenText TextStyle="TextStyle.H6" Text="@L["Storages"]" Style="text-align: center;" />
-                        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Storage"
-                                                                                                        ClusterName="@ClusterName"
-                                                                                                        ShowHeader="true" />
-                    </RadzenColumn>
+        @foreach (var type in Enum.GetValues<VmType>())
+        {
+            <div class="cv4pve-card">
+                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Vm"
+                                                                                                VmType="type"
+                                                                                                ClusterName="@ClusterName"
+                                                                                                ShowHeader="true" />
+            </div>
+        }
 
-                </RadzenRow>
-            </RadzenCard>
-        </RadzenColumn>
+        <div class="cv4pve-card">
+            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Storage"
+                                                                                            ClusterName="@ClusterName"
+                                                                                            ShowHeader="true" />
+        </div>
+    </div>
 
-        <RadzenColumn Size="6">
-            <RadzenCard Style="height:150px; overflow:hidden;">
-                <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.ResourceUsageGauge Data="@DataUsages" class="rz-h-100 rz-w-100" />
-            </RadzenCard>
-        </RadzenColumn>
+    <div class="cv4pve-card" style="height: auto;">
+        <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.ResourceUsageRings Data="@DataUsages" />
+    </div>
 
-        <RadzenColumn Size="6">
-            <RadzenCard Style="height:150px;">
-                <RadzenRow>
-                    @foreach (var type in Enum.GetValues<VmType>())
-                    {
-                        <RadzenColumn>
-                            <RadzenText TextStyle="TextStyle.H6" Text="@L[type == VmType.Qemu ? "Virtual Machines" : "LXC Container"]" Style="text-align: center;" />
-                            <Corsinvest.ProxmoxVE.Admin.Core.Components.ProxmoxVE.Common.GridResourceStatus ResourceType="ClusterResourceType.Vm"
-                                                                                                            VmType="type"
-                                                                                                            ClusterName="@ClusterName"
-                                                                                                            ShowHeader="true" />
-                        </RadzenColumn>
-                    }
-                </RadzenRow>
-            </RadzenCard>
-        </RadzenColumn>
-    </RadzenRow>
-
-    <RadzenCard class="rz-w-100">
-        <RadzenText TextStyle="TextStyle.H6" Text="@L["Nodes"]" />
-
+    <div class="cv4pve-card" style="height: auto; padding: 0;">
         <RadzenDataGrid TItem="ClusterStatus"
                         Data="@Nodes"
                         AllowFiltering="false"
                         AllowColumnResize="true"
                         AllowAlternatingRows="false"
                         AllowSorting="false"
-                        AllowVirtualization="true"
                         Density="Density.Compact"
                         FilterPopupRenderMode="PopupRenderMode.OnDemand"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
             <Columns>
-                <RadzenDataGridColumn Property="@nameof(ClusterStatus.Name)" Title="@L["Name"]" />
+                <RadzenDataGridColumn Property="@nameof(ClusterStatus.Name)" Title="@L["Node"]" />
                 <RadzenDataGridColumn Property="@nameof(ClusterStatus.Id)" Title="@L["Id"]" />
                 <RadzenDataGridColumn Property="@nameof(ClusterStatus.Support)" Title="@L["Support"]" />
                 <BoolIconColumn Property="@nameof(ClusterStatus.IsOnLine)" Title="@L["Is OnLine"]" IconFalse="" />
@@ -105,5 +85,25 @@
                 </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
-    </RadzenCard>
+    </div>
 </RadzenStack>
+
+@code
+{
+    private string ClusterState
+        => StatusInfo.Icon switch
+        {
+            null => "neutral",
+            "check_circle" => "ok",
+            _ => "ko"
+        };
+
+    private string CephState
+        => CephStatus?.Status switch
+        {
+            "HEALTH_OK" => "ok",
+            "HEALTH_WARN" => "warn",
+            null => "neutral",
+            _ => "ko"
+        };
+}

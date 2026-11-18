@@ -1,0 +1,22 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits AdminComponentBase
+
+<div class="cv4pve-overview-feature">
+    <span class="cv4pve-overview-feature-icon">
+        <RadzenIcon Icon="@Icon" />
+    </span>
+    <div class="cv4pve-overview-feature-text">
+        <span class="cv4pve-overview-feature-title">@L[Title]</span>
+        <span class="cv4pve-kpi-caption">@ChildContent</span>
+    </div>
+</div>
+
+@code
+{
+    [Parameter, EditorRequired] public string Icon { get; set; } = default!;
+    [Parameter, EditorRequired] public string Title { get; set; } = default!;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

@@ -4,7 +4,7 @@
 *@
 @inherits AdminComponentBase
 
-<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100">
+<RadzenStack Orientation="Orientation.Vertical" class="rz-w-100" Style="height: 100%;">
     <RadzenStack Orientation="Orientation.Horizontal" Style="align-items: baseline !important; margin-right: 0.5em;" class="rz-panel">
         @if (InEditing)
         {
@@ -77,7 +77,7 @@
         }
     </RadzenStack>
 
-    <div style="overflow: auto; width: 100%; height: calc(100vh - 225px);">
+    <div style="overflow: auto; width: 100%; flex: 1; min-height: 0;">
         <RadzenTileLayout Columns="GridCols"
                           Rows="GridRows"
                           RowHeight="40"

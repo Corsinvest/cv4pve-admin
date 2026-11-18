@@ -4,21 +4,22 @@
 *@
 @inherits AdminComponentBase
 
-<Overview3Cols>
-    <Block1>
-        <strong>MCP Server</strong> provides a Model Context Protocol endpoint that enables AI assistants to interact with Proxmox VE environments.<br />
-        Users can connect their AI tools (Claude, ChatGPT, etc.) to query cluster status, manage VMs, and automate infrastructure tasks.<br />
-        The server exposes Proxmox operations through a standardized protocol that AI assistants can understand and utilize.
-    </Block1>
-    <Block2>
-        <strong>AI-Powered Management</strong>: Users can manage Proxmox infrastructure through natural language commands via AI assistants.<br />
-        <strong>Real-time Data Access</strong>: AI tools can query VM status, cluster health, resource usage, and configuration details.<br />
-        <strong>Automated Operations</strong>: Enable AI assistants to perform routine tasks like VM management, snapshot creation, and monitoring.<br />
-        <strong>Standardized Protocol</strong>: Uses Model Context Protocol for consistent AI integration across different platforms.<br />
-    </Block2>
-    <Block3>
-        <strong>Easy Integration</strong>: Simple setup allows users to connect their preferred AI assistants to Proxmox environments.<br />
-        <strong>Secure Access</strong>: Controlled API exposure ensures safe interaction between AI tools and critical infrastructure.<br />
-        <strong>Enhanced Productivity</strong>: Transform complex Proxmox operations into simple conversational interactions with AI.<br />
-    </Block3>
-</Overview3Cols>
+<ModuleOverview TModule="Module">
+    <Features>
+        <OverviewFeature Icon="hub" Title="MCP endpoint">
+            A Model Context Protocol endpoint that AI assistants such as Claude or ChatGPT can connect to.
+        </OverviewFeature>
+        <OverviewFeature Icon="chat" Title="Natural language">
+            Ask an AI assistant about cluster status, VMs and resources in plain words.
+        </OverviewFeature>
+        <OverviewFeature Icon="monitoring" Title="Real-time data">
+            AI tools can query VM status, cluster health, resource usage and configuration details.
+        </OverviewFeature>
+        <OverviewFeature Icon="smart_toy" Title="Automated operations">
+            AI assistants can run routine tasks such as VM management, snapshot creation and monitoring.
+        </OverviewFeature>
+        <OverviewFeature Icon="lock" Title="Controlled access">
+            Only the operations exposed by the server are available to the AI tools.
+        </OverviewFeature>
+    </Features>
+</ModuleOverview>

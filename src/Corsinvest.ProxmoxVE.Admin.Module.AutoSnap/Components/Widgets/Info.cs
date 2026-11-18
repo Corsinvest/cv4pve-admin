@@ -82,6 +82,8 @@ public class Info(IAdminService adminService,
                                       .Where(a => !a.Status && a.Start > DateTime.UtcNow.AddDays(-7))
                                       .CountAsync();
 
+        Stats = [.. Stats.Take(3), new(L["FAILED"], failedLast7Days.ToString(), L["last 7 days"], Colors.Danger)];
+
         if (failedLast7Days > 0) { alerts.Add(new AlertItem("error", "rz-color-danger", L["{0} failed snapshots in last 7 days", failedLast7Days])); }
         if (stoppedVmsWithSnapshots > 0) { alerts.Add(new AlertItem("power_settings_new", "rz-color-warning", L["{0} stopped VMs with snapshots", stoppedVmsWithSnapshots])); }
         if (moreThan90d > 0) { alerts.Add(new AlertItem("event_busy", "rz-color-base-500", L["{0} snapshots older than 90 days", moreThan90d])); }

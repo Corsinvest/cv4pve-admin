@@ -2,15 +2,12 @@
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: AGPL-3.0-only
 *@
+@inherits AdminComponentBase
 @typeparam TModule where TModule : ModuleBase
-
-<Overview3Cols Icon1="@Icon1" Title1="@Title1" Block1="@Block1" Content1="@Content1"
-               Icon2="@Icon2" Title2="@Title2" Block2="@Block2" Content2="@Content2"
-               Icon3="@Icon3" Title3="@Title3" Block3="@Block3" Content3="@Content3" />
 
 @if (Tiles.Count > 0)
 {
-    <div class="rz-mt-4">
+    <div>
         <RadzenTileLayout Columns="@GridCols"
                           RowHeight="@RowHeightPx"
                           Gap="10">
@@ -20,9 +17,25 @@
                                       Row="@tile.Row"
                                       ColSpan="@tile.ColSpan"
                                       RowSpan="@tile.RowSpan">
-                    <DynamicComponent Type="@tile.Type" Parameters="@tile.Parameters" />
+                    <HeaderTemplate>
+                        <span title="@tile.Description"
+                              style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600;">@L[tile.Title]</span>
+                    </HeaderTemplate>
+                    <ChildContent>
+                        <div style="height: 100%;">
+                            <DynamicComponent Type="@tile.Type" Parameters="@tile.Parameters" />
+                        </div>
+                    </ChildContent>
                 </RadzenTileLayoutItem>
             }
         </RadzenTileLayout>
+    </div>
+}
+
+@if (Features != null)
+{
+    <div class="cv4pve-overview-section-title @(Tiles.Count > 0 ? "rz-mt-6" : null)">@L["Features"]</div>
+    <div class="cv4pve-overview-features">
+        @Features
     </div>
 }

@@ -4,22 +4,22 @@
 *@
 @inherits AdminComponentBase
 
-<Overview3Cols>
-    <Block1>
-        <strong>Metric Exporter</strong> is a tool that exports key Proxmox VE metrics to Prometheus.<br />
-        It provides real-time insights into cluster performance, resource utilization, and system health.<br />
-        By integrating with Prometheus, administrators can efficiently monitor and analyze Proxmox VE environments.<br />
-    </Block1>
-
-    <Block2>
-        <strong>Enhanced Observability</strong>: Enables in-depth monitoring of VM, container, and node performance.<br />
-        <strong>Proactive Alerting</strong>: Works with Prometheus Alertmanager to detect and respond to issues in real-time.<br />
-        <strong>Optimized Performance</strong>: Helps identify resource bottlenecks and optimize cluster workloads.<br />
-    </Block2>
-
-    <Block3>
-        <strong>Seamless Integration</strong>: Natively supports Prometheus, making deployment straightforward.<br />
-        <strong>Custom Metrics</strong>: Allows administrators to define and export specific Proxmox VE metrics.<br />
-        <strong>Scalability</strong>: Suitable for both small clusters and large-scale Proxmox deployments.<br />
-    </Block3>
-</Overview3Cols>
+<ModuleOverview TModule="Module">
+    <Features>
+        <OverviewFeature Icon="query_stats" Title="Prometheus export">
+            Exports the key Proxmox VE metrics to Prometheus.
+        </OverviewFeature>
+        <OverviewFeature Icon="visibility" Title="Observability">
+            Monitoring of VM, container and node performance.
+        </OverviewFeature>
+        <OverviewFeature Icon="notifications_active" Title="Alerting">
+            Works with Prometheus Alertmanager to detect and respond to issues.
+        </OverviewFeature>
+        <OverviewFeature Icon="tune" Title="Custom metrics">
+            Choose which Proxmox VE metrics to export.
+        </OverviewFeature>
+        <OverviewFeature Icon="trending_up" Title="Bottlenecks">
+            Helps find resource bottlenecks and optimize cluster workloads.
+        </OverviewFeature>
+    </Features>
+</ModuleOverview>

@@ -5,87 +5,77 @@
 @inherits AdminComponentBase
 @typeparam TSettings
 
-<RadzenStack Gap="1rem">
-    <RadzenRow>
+<div class="cv4pve-kpi" style="gap: 1rem; overflow: auto;">
+    <div class="cv4pve-kpi-stats">
         @foreach (var stat in Stats)
         {
-            <RadzenColumn Size="12" SizeSM="3">
-                <RadzenCard Variant="Variant.Outlined" Class="rz-text-align-center rz-p-4">
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.25rem">
-                        <RadzenText TextStyle="TextStyle.Caption" Class="rz-text-uppercase rz-m-0" Text="@stat.Title" />
-                        @if (IsLoadingStats)
-                        {
-                            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
-                        }
-                    </RadzenStack>
-                    <RadzenText TextStyle="TextStyle.H4" Class="@($"{stat.Color} rz-my-2")" Text="@stat.Value" />
-                    <RadzenText TextStyle="TextStyle.Body2" Text="@stat.Subtitle" />
-                </RadzenCard>
-            </RadzenColumn>
+            <div class="cv4pve-kpi-stat" style="@($"--cv4pve-kpi-stat-color: {stat.Color};")">
+                <span class="cv4pve-kpi-section-title" style="margin: 0;">@stat.Title</span>
+                <span class="cv4pve-kpi-value">
+                    @if (IsLoadingStats && stat.Value == "...")
+                    {
+                        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
+                    }
+                    else
+                    {
+                        @stat.Value
+                    }
+                </span>
+                <span class="cv4pve-kpi-caption">@stat.Subtitle</span>
+            </div>
         }
-    </RadzenRow>
+    </div>
 
-    <RadzenRow>
+    <RadzenRow Gap="1.5rem" RowGap="1rem">
         <RadzenColumn Size="12" SizeSM="6">
-            <RadzenCard Style="height: 100%">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: var(--rz-border-normal)">
-                    <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["ALERTS / WARNINGS"]" />
-                    @if (IsLoadingAlerts)
-                    {
-                        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
-                    }
-                </RadzenStack>
+            <div class="cv4pve-kpi-section-title">
+                @L["Alerts / warnings"]
+                @if (IsLoadingAlerts)
+                {
+                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
+                }
+            </div>
 
-                <RadzenStack Gap="0.75rem">
-                    @foreach (var alert in Alerts)
-                    {
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                            <RadzenIcon Icon="@alert.Icon" Class="@alert.Color" />
-                            <RadzenText TextStyle="TextStyle.Body2" Class="rz-m-0" Text="@alert.Text" />
-                        </RadzenStack>
-                    }
-                    @if (!IsLoadingAlerts && !Alerts.Any())
-                    {
-                        <RadzenText TextStyle="TextStyle.Body2" Class="rz-m-0 rz-color-success">
-                            @L["No issues found"]
-                        </RadzenText>
-                    }
-                </RadzenStack>
-            </RadzenCard>
+            <div class="cv4pve-kpi-list">
+                @foreach (var alert in Alerts)
+                {
+                    <div class="cv4pve-kpi-row">
+                        <RadzenIcon Icon="@alert.Icon" class="@alert.Color" Style="font-size: 18px;" />
+                        <span>@alert.Text</span>
+                    </div>
+                }
+                @if (!IsLoadingAlerts && !Alerts.Any())
+                {
+                    <div class="cv4pve-kpi-row">
+                        <RadzenIcon Icon="check_circle" class="rz-color-success" Style="font-size: 18px;" />
+                        <span>@L["No issues found"]</span>
+                    </div>
+                }
+            </div>
         </RadzenColumn>
 
         <RadzenColumn Size="12" SizeSM="6">
-            <RadzenCard Style="height: 100%">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Class="rz-mb-4" Style="border-bottom: var(--rz-border-normal)">
-                    <RadzenText TextStyle="TextStyle.Subtitle1" Text="@L["AGE DISTRIBUTION"]" />
-                    @if (IsLoadingDistribution)
-                    {
-                        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
-                    }
-                </RadzenStack>
+            <div class="cv4pve-kpi-section-title">
+                @L["Age distribution"]
+                @if (IsLoadingDistribution)
+                {
+                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.ExtraSmall" />
+                }
+            </div>
 
-                <RadzenStack Gap="1rem">
-                    @foreach (var item in AgeDistribution)
-                    {
-                        <RadzenRow AlignItems="AlignItems.Center" Gap="0">
-                            <RadzenColumn Size="3">
-                                <RadzenText TextStyle="TextStyle.Caption" Class="rz-m-0">@item.Label</RadzenText>
-                            </RadzenColumn>
-
-                            <RadzenColumn Size="7">
-                                <RadzenProgressBar Value="@item.Percent"
-                                                   ShowValue="false"
-                                                   ProgressBarStyle="@item.Style"
-                                                   Style="height: 10px;" />
-                            </RadzenColumn>
-
-                            <RadzenColumn Size="2" Class="rz-text-align-right">
-                                <RadzenText TextStyle="TextStyle.Body2" Class="rz-m-0">@item.Value</RadzenText>
-                            </RadzenColumn>
-                        </RadzenRow>
-                    }
-                </RadzenStack>
-            </RadzenCard>
+            <div class="cv4pve-kpi-list" style="gap: 0.4rem;">
+                @foreach (var item in AgeDistribution)
+                {
+                    <div class="cv4pve-kpi-row">
+                        <span style="width: 3.5rem; flex-shrink: 0;" class="cv4pve-kpi-caption">@item.Label</span>
+                        <RadzenProgressBar Value="@item.Percent"
+                                           ShowValue="false"
+                                           ProgressBarStyle="@item.Style"
+                                           Style="height: 8px; flex: 1;" />
+                        <span class="cv4pve-kpi-row-count" style="min-width: 2.5rem; text-align: right;">@item.Value</span>
+                    </div>
+                }
+            </div>
         </RadzenColumn>
     </RadzenRow>
-</RadzenStack>
+</div>

@@ -11,34 +11,45 @@
                                ShowValue="false"
                                Mode="ProgressBarMode.Indeterminate" />
 }
-else if (Points.Count == 0)
+else if (Points.Sum(a => a.Success + a.Failed) == 0)
 {
-    <RadzenAlert AlertStyle="AlertStyle.Info"
-                 AllowClose="false"
-                 Text="@L["No data in the last {0} days.", DaysRange]"
-                 Size="AlertSize.ExtraSmall" />
+    <div class="cv4pve-kpi cv4pve-widget-state neutral" style="justify-content: center; align-items: center;">
+        <span class="cv4pve-kpi-caption">@L["No runs in the last {0} days.", DaysRange]</span>
+    </div>
 }
 else
 {
-    <RadzenChart Style="width: 100%; height: 100%;">
-        <RadzenChartTooltipOptions Shared="true" />
-        <RadzenColumnOptions Radius="2" />
+    <div class="cv4pve-kpi cv4pve-widget-state @(Points.Sum(a => a.Failed) > 0 ? "ko" : "ok")" style="gap: 0.25rem;">
+        <div class="cv4pve-kpi-head">
+            <span class="cv4pve-kpi-dot" style="background: var(--rz-success);"></span>
+            <span class="cv4pve-kpi-row-count">@Points.Sum(a => a.Success)</span>
+            <span class="cv4pve-kpi-caption">@L["Success"]</span>
+            <span class="cv4pve-kpi-dot" style="background: var(--rz-danger); margin-left: 0.75rem;"></span>
+            <span class="cv4pve-kpi-row-count">@Points.Sum(a => a.Failed)</span>
+            <span class="cv4pve-kpi-caption">@L["Failed"]</span>
+            <span class="cv4pve-kpi-caption" style="margin-left: auto;">@L["Last {0} days", DaysRange]</span>
+        </div>
 
-        <RadzenStackedColumnSeries Data="@Points"
-                                   CategoryProperty="@nameof(DayPoint.DayLabel)"
-                                   ValueProperty="@nameof(DayPoint.Success)"
-                                   Title="@L["Success"]"
-                                   Fill="var(--rz-success)" />
-        <RadzenStackedColumnSeries Data="@Points"
-                                   CategoryProperty="@nameof(DayPoint.DayLabel)"
-                                   ValueProperty="@nameof(DayPoint.Failed)"
-                                   Title="@L["Failed"]"
-                                   Fill="var(--rz-danger)" />
+        <RadzenChart Style="width: 100%; flex: 1; min-height: 0;">
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenColumnOptions Radius="2" />
 
-        <RadzenCategoryAxis FormatString="{0}" />
-        <RadzenValueAxis>
-            <RadzenGridLines Visible="true" />
-        </RadzenValueAxis>
-        <RadzenLegend Position="LegendPosition.Top" />
-    </RadzenChart>
+            <RadzenStackedColumnSeries Data="@Points"
+                                       CategoryProperty="@nameof(DayPoint.DayLabel)"
+                                       ValueProperty="@nameof(DayPoint.Success)"
+                                       Title="@L["Success"]"
+                                       Fill="var(--rz-success)" />
+            <RadzenStackedColumnSeries Data="@Points"
+                                       CategoryProperty="@nameof(DayPoint.DayLabel)"
+                                       ValueProperty="@nameof(DayPoint.Failed)"
+                                       Title="@L["Failed"]"
+                                       Fill="var(--rz-danger)" />
+
+            <RadzenCategoryAxis FormatString="{0}" />
+            <RadzenValueAxis>
+                <RadzenGridLines Visible="true" />
+            </RadzenValueAxis>
+            <RadzenLegend Visible="false" />
+        </RadzenChart>
+    </div>
 }

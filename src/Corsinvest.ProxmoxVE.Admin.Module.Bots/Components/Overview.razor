@@ -4,22 +4,22 @@
 *@
 @inherits AdminComponentBase
 
-<Overview3Cols>
-    <Block1>
-        <strong>Bots</strong> enable remote Proxmox VE cluster management through Telegram chatbot integration.<br />
-        Administrators can execute commands, monitor system status, and manage node operations directly from Telegram.<br />
-        With support for command aliases and automated workflows, the chatbot enhances control and reduces manual intervention.<br />
-    </Block1>
-
-    <Block2>
-        <strong>Remote Control</strong>: Execute commands and manage nodes through secure Telegram bot.<br />
-        <strong>Real-time Alerts</strong>: Receive instant notifications for cluster events and status changes.<br />
-        <strong>Secure Access</strong>: Token-based authentication ensures controlled bot access.<br />
-    </Block2>
-
-    <Block3>
-        <strong>Mobile-First</strong>: Full cluster management from any device with Telegram app.<br />
-        <strong>Instant Response</strong>: Get immediate feedback on commands and system status.<br />
-        <strong>Simple Commands</strong>: Chat-based interface makes complex operations accessible.<br />
-    </Block3>
-</Overview3Cols>
+<ModuleOverview TModule="Module">
+    <Features>
+        <OverviewFeature Icon="send" Title="Remote control">
+            Execute commands and manage nodes through a Telegram bot.
+        </OverviewFeature>
+        <OverviewFeature Icon="notifications_active" Title="Real-time alerts">
+            Instant notifications for cluster events and status changes.
+        </OverviewFeature>
+        <OverviewFeature Icon="key" Title="Secure access">
+            Token-based authentication controls who can use the bot.
+        </OverviewFeature>
+        <OverviewFeature Icon="smartphone" Title="From any device">
+            Manage the cluster from any device with the Telegram app.
+        </OverviewFeature>
+        <OverviewFeature Icon="terminal" Title="Simple commands">
+            A chat-based interface with command aliases.
+        </OverviewFeature>
+    </Features>
+</ModuleOverview>

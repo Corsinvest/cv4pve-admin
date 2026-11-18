@@ -6,80 +6,82 @@
 @using Corsinvest.ProxmoxVE.Admin.Core.TaskTracking
 @using Corsinvest.ProxmoxVE.Admin.Core.Components.TaskTracking
 
-@if (ChartVisible)
-{
-    <DailyChart TCategory="TaskItemStatus"
-                Title="@L["Last 30 days by status"]"
-                Data="@ChartData"
-                Categories="@_statuses"
-                CategoryColor="StatusColor"
-                ErrorMessage="@ChartError"
-                Loading="@ChartLoading"
-                OnFilterChanged="OnChartFilterChangedAsync" />
-}
+<div class="cv4pve-fill-page">
+    @if (ChartVisible)
+    {
+        <DailyChart TCategory="TaskItemStatus"
+                    Title="@L["Last 30 days by status"]"
+                    Data="@ChartData"
+                    Categories="@_statuses"
+                    CategoryColor="StatusColor"
+                    ErrorMessage="@ChartError"
+                    Loading="@ChartLoading"
+                    OnFilterChanged="OnChartFilterChangedAsync" />
+    }
 
-<RadzenDataGrid @ref="@DataGridRef"
-                TItem="TaskItemInfo"
-                KeyProperty="@nameof(TaskItemInfo.Id)"
-                Data="@ResultLoadData.Data"
-                Count="@ResultLoadData.TotalCount"
-                LoadData="@LoadDataAsync"
-                AllowFiltering="true"
-                AllowColumnResize="true"
-                AllowAlternatingRows="true"
-                AllowSorting="true"
-                AllowVirtualization="true"
-                AllowColumnPicking="true"
-                Style="@($"height: calc(100vh - {140 + (ChartVisible ? DailyChartLayout.Height : 0)}px);")"
-                FilterPopupRenderMode="PopupRenderMode.OnDemand"
-                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
-    <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshAsync"
-                     OnExport="@(() => DataGridRef.ExportToExcelAllAsync("tasks", L["Tasks"]))">
-            <TemplateAfter>
-                <SearchTextBox @ref="SearchTextBox"
-                               TItem="TaskItemInfo"
-                               Properties="@([x => x.Title, x => x.ClusterName, x => x.ModuleName, x => x.Phase, x => x.CreatedBy, x => x.LastLog])"
-                               FiltersChanged="OnSearchFiltersChanged"
-                               Style="width:260px;" />
+    <RadzenDataGrid @ref="@DataGridRef"
+                    TItem="TaskItemInfo"
+                    KeyProperty="@nameof(TaskItemInfo.Id)"
+                    Data="@ResultLoadData.Data"
+                    Count="@ResultLoadData.TotalCount"
+                    LoadData="@LoadDataAsync"
+                    AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    AllowSorting="true"
+                    AllowVirtualization="true"
+                    AllowColumnPicking="true"
+                    Style="flex: 1 1 0; min-height: 0;"
+                    FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+        <HeaderTemplate>
+            <CrudToolbar OnRefresh="RefreshAsync"
+                         OnExport="@(() => DataGridRef.ExportToExcelAllAsync("tasks", L["Tasks"]))">
+                <TemplateAfter>
+                    <SearchTextBox @ref="SearchTextBox"
+                                   TItem="TaskItemInfo"
+                                   Properties="@([x => x.Title, x => x.ClusterName, x => x.ModuleName, x => x.Phase, x => x.CreatedBy, x => x.LastLog])"
+                                   FiltersChanged="OnSearchFiltersChanged"
+                                   Style="width:260px;" />
 
-                <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
-                              Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
-                              ButtonStyle="ButtonStyle.Light"
-                              Size="ButtonSize.Small"
-                              Click="@ToggleChart" />
-            </TemplateAfter>
-        </CrudToolbar>
-    </HeaderTemplate>
+                    <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
+                                  Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Size="ButtonSize.Small"
+                                  Click="@ToggleChart" />
+                </TemplateAfter>
+            </CrudToolbar>
+        </HeaderTemplate>
 
-    <Columns>
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Title)" Title="@L["Task"]">
-            <Template>
-                <TaskItemRow Item="context" OnAfterAction="RefreshAsync" />
-            </Template>
-        </RadzenDataGridColumn>
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Title)" Title="@L["Task"]">
+                <Template>
+                    <TaskItemRow Item="context" OnAfterAction="RefreshAsync" />
+                </Template>
+            </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ClusterName)" Title="@L["Cluster"]"  Width="140px" FilterMode="FilterMode.CheckBoxList" />
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ModuleName)"  Title="@L["Module"]"   Width="140px" FilterMode="FilterMode.CheckBoxList" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ClusterName)" Title="@L["Cluster"]"  Width="140px" FilterMode="FilterMode.CheckBoxList" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.ModuleName)"  Title="@L["Module"]"   Width="140px" FilterMode="FilterMode.CheckBoxList" />
 
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Status)"      Title="@L["Status"]"   Width="130px" FilterMode="FilterMode.CheckBoxList">
-            <Template Context="item">
-                <RadzenBadge BadgeStyle="@GetStatusBadgeStyle(item.Status)"
-                             IsPill="true"
-                             Shade="Shade.Lighter">
-                    <RadzenIcon Icon="@GetStatusIcon(item.Status)" Style="font-size:14px;vertical-align:middle;margin-right:4px;" />
-                    @item.Status
-                </RadzenBadge>
-            </Template>
-        </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Status)"      Title="@L["Status"]"   Width="130px" FilterMode="FilterMode.CheckBoxList">
+                <Template Context="item">
+                    <RadzenBadge BadgeStyle="@GetStatusBadgeStyle(item.Status)"
+                                 IsPill="true"
+                                 Shade="Shade.Lighter">
+                        <RadzenIcon Icon="@GetStatusIcon(item.Status)" Style="font-size:14px;vertical-align:middle;margin-right:4px;" />
+                        @item.Status
+                    </RadzenBadge>
+                </Template>
+            </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.StartedAt)"   Title="@L["Started"]"  Width="150px" FormatString="{0:g}" SortOrder="SortOrder.Descending"/>
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Duration)"    Title="@L["Duration"]" Width="100px" FormatString="{0:hh':'mm':'ss}" Filterable="false" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.StartedAt)"   Title="@L["Started"]"  Width="150px" FormatString="{0:g}" SortOrder="SortOrder.Descending"/>
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Duration)"    Title="@L["Duration"]" Width="100px" FormatString="{0:hh':'mm':'ss}" Filterable="false" />
 
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.CreatedBy)" Title="@L["Created By"]" Width="130px" Visible="false" FilterMode="FilterMode.CheckBoxList" />
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Phase)"    Title="@L["Phase"]"    Width="120px" Visible="false" />
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Progress)" Title="@L["Progress"]" Width="90px"  Visible="false" />
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.EndedAt)"  Title="@L["Ended"]"   Width="150px" FormatString="{0:g}" Visible="false" />
-        <RadzenDataGridColumn Property="@nameof(TaskItemInfo.LastLog)"  Title="@L["Last Log"]" Visible="false" />
-    </Columns>
-</RadzenDataGrid>
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.CreatedBy)" Title="@L["Created By"]" Width="130px" Visible="false" FilterMode="FilterMode.CheckBoxList" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Phase)"    Title="@L["Phase"]"    Width="120px" Visible="false" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.Progress)" Title="@L["Progress"]" Width="90px"  Visible="false" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.EndedAt)"  Title="@L["Ended"]"   Width="150px" FormatString="{0:g}" Visible="false" />
+            <RadzenDataGridColumn Property="@nameof(TaskItemInfo.LastLog)"  Title="@L["Last Log"]" Visible="false" />
+        </Columns>
+    </RadzenDataGrid>
+</div>

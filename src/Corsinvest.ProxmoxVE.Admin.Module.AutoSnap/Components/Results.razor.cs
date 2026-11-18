@@ -25,7 +25,7 @@ public partial class Results(IDbContextFactory<ModuleDbContext> dbContextFactory
     private DailyChartFilter<string>? _filter;
 
     private string GridStyle => ChartVisible
-                                    ? $"height: calc(100vh - {140 + DailyChartLayout.Height}px);"
+                                    ? "flex: 1 1 0; min-height: 0;"
                                     : Style;
 
     private class Data : JobResult;
