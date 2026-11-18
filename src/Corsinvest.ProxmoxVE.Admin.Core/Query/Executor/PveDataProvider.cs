@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using Corsinvest.ProxmoxVE.Admin.Core.Query.Schema;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Node;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 
 namespace Corsinvest.ProxmoxVE.Admin.Core.Query.Executor;
@@ -119,9 +120,19 @@ public class PveDataProvider(ClusterClient clusterClient,
         var nodes = resources.Where(r => r.ResourceType == ClusterResourceType.Node);
         var storages = resources.Where(r => r.ResourceType == ClusterResourceType.Storage);
 
+        // The same rule as the storage content tool: a backup belongs to its guest; ISO, templates and
+        // images with no guest are kept. Without a filter everything stays, also the backups of deleted guests.
+        var vmIds = filter == null ? null : (await GetVmIdsAsync()).Select(long.Parse).ToHashSet();
+        bool Visible(NodeStorageContent content)
+            => vmIds == null
+               || (content.Content == "backup"
+                    ? vmIds.Contains(content.VmId)
+                    : content.VmId == 0 || vmIds.Contains(content.VmId));
+
         return nodes.SelectMany(node =>
                 storages.Where(s => s.Node == node.Node)
                         .SelectMany(storage => AsyncHelper.RunSync(() => clusterClient.CachedData.GetStorageContentsAsync(node.Node, storage.Storage, false).AsTask())
+                        .Where(Visible)
                         .Select(content => StorageContentInfo.Map(content, node.Node, storage.Storage))))
                     .AsQueryable();
     }

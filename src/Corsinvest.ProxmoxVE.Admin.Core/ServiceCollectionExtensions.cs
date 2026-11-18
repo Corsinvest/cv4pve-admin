@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         ApplicationHelper.PublicUrl = ApplicationHelper.ParsePublicUrl(configuration["PublicUrl"]);
 
         services.AddAdminLocalization();
+        services.AddAdminForwardedHeaders(configuration);
 
         services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(ApplicationHelper.DataPath, "data-protection-keys")))
@@ -111,32 +112,57 @@ public static class ServiceCollectionExtensions
             ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
         };
 
-        var proxies = app.Configuration.GetSection("TrustedProxies").Get<string[]>() ?? [];
-        if (proxies.Length == 0 || proxies.Contains("*"))
+        var accepted = new List<string>();
+        var ignored = new List<string>();
+        if (RestrictToTrustedProxies(options, app.Configuration, accepted, ignored))
+        {
+            foreach (var item in ignored) { app.Logger.LogWarning("TrustedProxies: '{Value}' is not an address or a network, ignored", item); }
+            app.Logger.LogInformation("Forwarded headers accepted only from loopback and: {Proxies}", string.Join(", ", accepted));
+        }
+        else
         {
             options.KnownIPNetworks.Clear();
             options.KnownProxies.Clear();
         }
-        else
-        {
-            var accepted = new List<string>();
-            foreach (var item in proxies.Select(a => a.Trim()))
-            {
-                if (item.Contains('/') && System.Net.IPNetwork.TryParse(item, out var network)) { options.KnownIPNetworks.Add(network); }
-                else if (!item.Contains('/') && IPAddress.TryParse(item, out var address)) { options.KnownProxies.Add(address); }
-                else
-                {
-                    app.Logger.LogWarning("TrustedProxies: '{Value}' is not an address or a network, ignored", item);
-                    continue;
-                }
-
-                accepted.Add(item);
-            }
-
-            app.Logger.LogInformation("Forwarded headers accepted only from loopback and: {Proxies}", string.Join(", ", accepted));
-        }
 
         app.UseForwardedHeaders(options);
+    }
+
+    // With ASPNETCORE_FORWARDEDHEADERS_ENABLED (set in the Docker image) the framework adds its own forwarded
+    // headers middleware at the start of the pipeline, built on these global options with no known proxy, so it
+    // would take X-Forwarded-For and X-Forwarded-Proto from any sender. With "TrustedProxies" set, the global
+    // options get the same restriction as UseAdminForwardedHeaders.
+    private static void AddAdminForwardedHeaders(this IServiceCollection services, IConfiguration configuration)
+        => services.PostConfigure<ForwardedHeadersOptions>(options => RestrictToTrustedProxies(options, configuration, [], []));
+
+    // False, and the options untouched, when "TrustedProxies" is missing, empty or "*".
+    private static bool RestrictToTrustedProxies(ForwardedHeadersOptions options,
+                                                 IConfiguration configuration,
+                                                 List<string> accepted,
+                                                 List<string> ignored)
+    {
+        var proxies = configuration.GetSection("TrustedProxies").Get<string[]>() ?? [];
+        if (proxies.Length == 0 || proxies.Contains("*")) { return false; }
+
+        options.KnownIPNetworks.Clear();
+        options.KnownProxies.Clear();
+        options.KnownIPNetworks.Add(System.Net.IPNetwork.Parse("127.0.0.0/8"));
+        options.KnownProxies.Add(IPAddress.IPv6Loopback);
+
+        foreach (var item in proxies.Select(a => a.Trim()))
+        {
+            if (item.Contains('/') && System.Net.IPNetwork.TryParse(item, out var network)) { options.KnownIPNetworks.Add(network); }
+            else if (!item.Contains('/') && IPAddress.TryParse(item, out var address)) { options.KnownProxies.Add(address); }
+            else
+            {
+                ignored.Add(item);
+                continue;
+            }
+
+            accepted.Add(item);
+        }
+
+        return true;
     }
 
     public static void UseAdminCore(this WebApplication app)
