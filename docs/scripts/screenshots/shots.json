@@ -758,8 +758,8 @@
         { "waitFor": "text=Quorate: Yes" },
         { "press": "Control+k" },
         { "waitFor": ".rz-card:has(input[type=search])" },
-        { "fill": ".rz-card input[type=search]", "value": "ip:web" },
-        { "waitFor": ".rz-card:has(input[type=search]) :text('web-02')" },
+        { "fill": ".rz-card input[type=search]", "value": "ip:192.168.10" },
+        { "waitFor": ".rz-card:has(input[type=search]) :text('192.168.10.31')" },
         { "wait": 1000 }
       ],
       "clip": [".rz-card:has(input[type=search])"],
