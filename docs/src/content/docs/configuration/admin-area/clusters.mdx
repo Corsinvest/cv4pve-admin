@@ -47,7 +47,9 @@ The addresses are used for both the Proxmox VE API and SSH. For the API, nodes a
 
 ### Discover Nodes
 
-You do not need to type every node. Enter one reachable node and the **WEB API Access** credentials, then click **Discover Nodes**. cv4pve-admin connects to the cluster, reads the cluster name and type (cluster or single node) and adds the nodes that are missing from the list. If **Name** is empty, cv4pve-admin fills it with the Proxmox VE cluster name.
+You do not need to type every node. Enter one reachable node and the **WEB API Access** credentials, then click **Discover Nodes** (1). cv4pve-admin connects to the cluster, reads the cluster name and type (cluster or single node) and adds the nodes that are missing from the list. If **Name** is empty, cv4pve-admin fills it with the Proxmox VE cluster name (highlighted).
+
+![Nodes and name filled by Discover Nodes](../../../../assets/images/screenshots/configuration/clusters-discover-nodes.png)
 
 The button is available once at least one node is in the list. The same discovery runs automatically when an enabled cluster is saved.
 
