@@ -318,14 +318,17 @@
     color: var(--rz-success);
     background: color-mix(in srgb, var(--rz-success) 14%, transparent);
 }
+
 .cv4pve-kpi-badge.ko {
     color: var(--rz-danger);
     background: color-mix(in srgb, var(--rz-danger) 14%, transparent);
 }
+
 .cv4pve-kpi-badge.warn {
     color: var(--rz-warning);
     background: color-mix(in srgb, var(--rz-warning) 14%, transparent);
 }
+
 .cv4pve-kpi-badge.neutral {
     color: var(--cv4pve-severity-muted);
     background: color-mix(in srgb, var(--cv4pve-severity-muted) 14%, transparent);
