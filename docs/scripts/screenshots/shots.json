@@ -1,0 +1,89 @@
+{
+  "viewport": { "width": 1440, "height": 900 },
+  "shots": [
+    {
+      "id": "login",
+      "file": "getting-started/login.png",
+      "auth": false,
+      "url": "/Login",
+      "actions": [
+        { "fill": "input[name=Username]", "value": "admin@local" },
+        { "fill": "input[name=Password]", "value": "Password123!" }
+      ],
+      "clip": [".rz-card .rz-col-sm-6:has(input[name=Username])"],
+      "padding": 0,
+      "badges": [
+        { "n": 1, "selector": "input[name=Username]" },
+        { "n": 2, "selector": "input[name=Password]" },
+        { "n": 3, "selector": "button[type=submit]" }
+      ]
+    },
+    {
+      "id": "password-warning",
+      "file": "getting-started/password-warning.png",
+      "url": "/",
+      "actions": [
+        { "waitFor": ".rz-dialog input[name=Name]" },
+        { "press": "Escape" },
+        { "wait": 800 }
+      ],
+      "clip": [".rz-notification-item:has-text('Security Warning')"],
+      "isolate": true,
+      "padding": 24,
+      "boxes": ["a:has-text('Change password now')"]
+    },
+    {
+      "id": "first-cluster",
+      "file": "getting-started/first-cluster.png",
+      "url": "/",
+      "actions": [
+        { "waitFor": ".rz-dialog input[name=Name]" },
+        { "click": ".rz-dialog button:has-text('Add node')" },
+        { "waitFor": "input[name='Node0.IPAddress']" },
+        { "fill": "input[name=Name]", "value": "cvtest" },
+        { "fill": "input[name=Description]", "value": "Test cluster" },
+        { "fill": "input[name='Node0.IPAddress']", "value": "10.0.99.1" },
+        { "fill": "input[name='Node0.ApiPort']", "value": "8006" },
+        { "fill": "input[name=ApiUsername]", "value": "root@pam" },
+        { "fill": ".rz-dialog input[name=Password]", "value": "proxmox123" }
+      ],
+      "badges": [
+        { "n": 1, "selector": "input[name=Name]" },
+        { "n": 2, "selector": "input[name=Description]" },
+        { "n": 3, "selector": "input[name='Node0.IPAddress']", "side": "inside-right" },
+        { "n": 4, "selector": ".rz-dialog input[name=ApiUsername]" },
+        { "n": 5, "selector": ".rz-dialog input[name=Password]", "side": "right" },
+        { "n": 6, "selector": ".rz-dialog button:has-text('Discover Nodes')", "side": "right" },
+        { "n": 7, "selector": ".rz-dialog button[type=submit]" }
+      ]
+    },
+    {
+      "id": "discover-nodes",
+      "file": "configuration/clusters-discover-nodes.png",
+      "url": "/",
+      "actions": [
+        { "waitFor": ".rz-dialog input[name=Name]" },
+        { "click": ".rz-dialog button:has-text('Add node')" },
+        { "waitFor": "input[name='Node0.IPAddress']" },
+        { "fill": "input[name='Node0.IPAddress']", "value": "10.0.99.1" },
+        { "fill": "input[name='Node0.ApiPort']", "value": "8006" },
+        { "fill": "input[name=ApiUsername]", "value": "root@pam" },
+        { "fill": ".rz-dialog input[name=Password]", "value": "proxmox123" },
+        { "click": ".rz-dialog button:has-text('Discover Nodes')" },
+        { "waitFor": "input[name='Node1.IPAddress']" },
+        { "wait": 1500 }
+      ],
+      "expect": [
+        { "selector": "input[name=Name]", "value": "cvtest" },
+        { "selector": "input[name='Node2.IPAddress']", "notEmpty": true },
+        { "selector": "input[name='Node3.IPAddress']", "absent": true }
+      ],
+      "clip": [".rz-dialog"],
+      "padding": 0,
+      "boxes": ["input[name=Name]"],
+      "badges": [
+        { "n": 1, "selector": ".rz-dialog button:has-text('Discover Nodes')", "side": "right" }
+      ]
+    }
+  ]
+}

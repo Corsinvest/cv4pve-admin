@@ -5,6 +5,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import corsinvestTheme from '@corsinvest/cv4pve-docs-theme';
+import starlightImageZoom from 'starlight-image-zoom';
 
 // The same site is built twice: for GitHub Pages (default base) and for the copy embedded in the
 // application, served on /help/ (DOCS_BASE=help). Pages link to each other with relative URLs,
@@ -22,6 +23,8 @@ export default defineConfig({
       // Brand, product icon, GitHub link, the Corsinvest sidebar group and
       // external links in a new tab come from the shared cv4pve theme.
       plugins: [
+        // A click on a screenshot opens it full screen over the page; another click or Esc closes it.
+        starlightImageZoom(),
         corsinvestTheme({
           repo: 'cv4pve-admin',
           // End of the <title> of the pages, in place of the site name: what people search for.

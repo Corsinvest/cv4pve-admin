@@ -2,3 +2,6 @@ node_modules/
 dist/
 dist-help/
 .astro/
+
+# Generated videos for the documentation, uploaded by hand
+.media-out/
