@@ -61,7 +61,13 @@ The **Size** column and the size totals in **Status** and **Time line** are show
 
 ## Jobs
 
-A job defines which guests to snapshot, when, and how many snapshots to keep. Click the **Label** of a row to edit the job.
+A job defines which guests to snapshot, when, and how many snapshots to keep. Expand a job to see its **Histories** and **Status** tabs.
+
+![Jobs grid with its toolbar and a job expanded on the Histories tab](../../../assets/images/screenshots/modules/autosnap-jobs.png)
+
+Click the **Label** of a row to edit the job: pick the guests in **Vm Ids** with the search button (1), then select **Save** (2).
+
+![Editor of a job on the General tab, with the guests selected by a Proxmox VE tag](../../../assets/images/screenshots/modules/autosnap-job-editor.png)
 
 A run skips three kinds of guests:
 
@@ -108,6 +114,8 @@ In **Histories**, click the **Name** of a run to open its log (**Job Log**) in a
 ## Time line
 
 One card for each day, newest first. A card shows the day, the number of snapshots and, when some failed, the number of failures; with snapshot size calculation, the size of the snapshots of the day.
+
+![Time line card of a day, opened on the grid of its snapshots](../../../assets/images/screenshots/modules/autosnap-timeline.png)
 
 - A strip of 24 hours colours each hour: green when all its snapshots succeeded, red when all failed, yellow when both, grey with no run
 - The point beside the card is green when no snapshot failed, red when all failed, yellow otherwise

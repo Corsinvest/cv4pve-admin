@@ -66,6 +66,8 @@ By default a device only reads the UPS and sends notifications. Set to **Dry-run
 
 At the top, the counters of the devices, in this order: **Online**, **On Battery** (with those on low battery), **Critical**, **Bypass**, **Offline** (with those never read or in an unknown state) and **Disabled**. **Bypass** appears only when at least one device is in bypass, and **Disabled** only when at least one device is disabled. The disabled devices are not in the other counters.
 
+![Dashboard with the counters and the cards of two UPS devices online](../../../assets/images/screenshots/modules/ups-dashboard.png)
+
 Below, each device has a card. The devices that need attention come first: critical, on battery, bypass, low battery, offline, unknown or never read, then online. Devices with the same status are in order of name; the disabled devices come last. A disabled device is not read: its card is grey, says **Disabled** instead of the status and shows the values of the last reading, with its time. A card shows:
 
 - name and status badge, manufacturer and model, detected brand, location. The left edge of the card has the colour of the status
@@ -101,6 +103,8 @@ The page also has the buttons **Test shutdown** and **Simulate power failure**. 
 ## Devices
 
 The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **On power failure**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
+
+![Editor of an SNMP v2c device with its thresholds](../../../assets/images/screenshots/modules/ups-device.png)
 
 Each UPS device is configured with:
 

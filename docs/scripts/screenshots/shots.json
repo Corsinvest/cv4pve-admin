@@ -368,6 +368,250 @@
         { "n": 1, "selector": ".rz-panel:has(button:has-text('Verify & Enable 2FA')) >> nth=1 >> input >> visible=true >> nth=0" },
         { "n": 2, "selector": "button:has-text('Verify & Enable 2FA')" }
       ]
+    },
+    {
+      "id": "autosnap-jobs",
+      "file": "modules/autosnap-jobs.png",
+      "url": "/module/cvtest/autosnap/jobs",
+      "actions": [
+        { "click": ".rz-data-row:has-text('hourly') .rz-row-toggler" },
+        { "waitFor": ".rz-expanded-row-content .rz-data-row" },
+        { "wait": 1000 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('New') >> nth=0", ".rz-expanded-row-content .rz-data-row >> nth=-1"]
+    },
+    {
+      "id": "autosnap-job-editor",
+      "file": "modules/autosnap-job-editor.png",
+      "url": "/module/cvtest/autosnap/jobs",
+      "actions": [
+        { "click": ".rz-data-row :text-is('hourly')" },
+        { "waitFor": ".rz-dialog-side input[name=Label]" },
+        { "wait": 1000 }
+      ],
+      "expect": [{ "selector": ".rz-dialog-side input[name=Label]", "value": "hourly" }],
+      "clip": [".rz-dialog-side"],
+      "padding": 0,
+      "badges": [
+        { "n": 1, "selector": ".rz-dialog-side .rz-form-field:has-text('Vm Ids') button[title=Select]", "side": "right" },
+        { "n": 2, "selector": ".rz-dialog-side button:has-text('Save')" }
+      ]
+    },
+    {
+      "id": "autosnap-timeline",
+      "file": "modules/autosnap-timeline.png",
+      "url": "/module/cvtest/autosnap/time+line",
+      "actions": [
+        { "waitFor": "text=Today" },
+        { "click": "text=Today" },
+        { "waitFor": ".rz-data-row" },
+        { "wait": 1000 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('Refresh')", ".rz-timeline-item >> nth=0"]
+    },
+    {
+      "id": "backup-analytics-chart",
+      "file": "modules/backup-analytics-chart.png",
+      "url": "/module/cvtest/backup-analytics/backups",
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "click": "button:has-text('Show chart')" },
+        { "waitFor": "button:has-text('Hide chart')" },
+        { "wait": 2000 }
+      ],
+      "clip": ["text=Last 30 days by status", "button:has-text('Hide chart')", ".rz-data-row >> nth=5"]
+    },
+    {
+      "id": "diagnostic-scan",
+      "file": "modules/diagnostic-scan.png",
+      "url": "/module/cvtest/diagnostic/scans",
+      "actions": [
+        { "click": ".rz-data-row .rz-row-toggler >> nth=0" },
+        { "waitFor": ".cv4pve-diag-group.critical" },
+        { "click": ".cv4pve-diag-group.critical .rz-row-toggler" },
+        { "wait": 1500 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('Scan') >> nth=0", ".cv4pve-diag-group.warning"]
+    },
+    {
+      "id": "node-protect-folder",
+      "file": "modules/node-protect-folder.png",
+      "url": "/module/cvtest/node-protect/folder",
+      "actions": [
+        { "waitFor": ".rz-group-row" },
+        { "click": ".rz-group-row >> nth=-1 >> .rz-row-toggler" },
+        { "wait": 1000 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('Backup')", ".rz-data-row >> visible=true >> nth=-1"]
+    },
+    {
+      "id": "system-report-new",
+      "file": "modules/system-report-new.png",
+      "url": "/module/cvtest/system-report/reports",
+      "actions": [
+        { "click": "button:has-text('New')" },
+        { "waitFor": ".rz-dialog-side button:has-text('Standard')" },
+        { "click": ".rz-dialog-side button:has-text('Standard')" },
+        { "click": ".rz-dialog-side :text-is('Cluster')" },
+        { "wait": 1000 }
+      ],
+      "clip": [".rz-dialog-side :text-is('New Report')", ".rz-dialog-side .rz-form-field:has-text('API timeout')", ".rz-dialog-side :text-is('Capacity Planning')"],
+      "boxes": [".rz-dialog-side button:has-text('Fast') >> xpath=.."]
+    },
+    {
+      "id": "resources-cluster",
+      "file": "modules/resources-cluster.png",
+      "url": "/module/cvtest/resources/cluster",
+      "actions": [{ "waitFor": "text=Quorate: Yes" }, { "wait": 1500 }],
+      "padding": 8,
+      "clip": [".cv4pve-summary-kpis", ".rz-data-row:has-text('pve-3')", ".rz-tabview-nav"]
+    },
+    {
+      "id": "resources-guest",
+      "file": "modules/resources-guest.png",
+      "url": "/module/cvtest/resources/guests",
+      "actions": [
+        { "click": ".rz-data-row:has-text('web-01') .rz-row-toggler" },
+        { "waitFor": ".rz-expanded-row-content .rz-tabview-nav" },
+        { "wait": 3000 }
+      ],
+      "padding": 8,
+      "clip": [".rz-data-row:has-text('web-01')", ".rz-expanded-row-content"]
+    },
+    {
+      "id": "dashboard-menu",
+      "file": "modules/dashboard-menu.png",
+      "url": "/module/*/dashboard",
+      "actions": [
+        { "waitFor": ".rz-tile-layout-item" },
+        { "wait": 2000 }
+      ],
+      "clip": [".rz-form-field:has-text('Dashboards')", ".rz-form-field:has-text('Clusters')"],
+      "badges": [
+        { "n": 1, "selector": ".rz-form-field:has-text('Dashboards')", "side": "inside-right" },
+        { "n": 2, "selector": "button:has(.rzi:text-is('more_vert')) >> nth=0" }
+      ]
+    },
+    {
+      "id": "dashboard-edit",
+      "file": "modules/dashboard-edit.png",
+      "url": "/module/*/dashboard",
+      "actions": [
+        { "waitFor": ".rz-tile-layout-item" },
+        { "wait": 2000 },
+        { "click": "button:has(.rzi:text-is('more_vert')) >> nth=0" },
+        { "click": ".rz-tooltip.rz-open li:has-text('Edit')" },
+        { "waitFor": "button:has-text('Add widget')" },
+        { "wait": 2500 }
+      ],
+      "clip": ["label:text-is('Name')", "button:has(.rzi:text-is('grid_off'))", ".rz-tile-layout-item:has-text('Nodes Status')"]
+    },
+    {
+      "id": "ai-server-api-access",
+      "file": "modules/ai-server-api-access.png",
+      "url": "/module/*/ai-server/api+access",
+      "actions": [{ "waitFor": ".rz-data-row:has-text('AI Server')" }, { "wait": 800 }],
+      "padding": 8,
+      "clip": ["button:has-text('Effective Permissions')", ".rz-data-row >> nth=-1"],
+      "boxes": [".rz-data-row:has-text('AI Server')", "button:has-text('Regenerate')"]
+    },
+    {
+      "id": "autosnap-webhook",
+      "edition": "ee",
+      "file": "modules/autosnap-webhook.png",
+      "url": "/module/cvtest/autosnap/jobs",
+      "actions": [
+        { "click": "button:has-text('New')" },
+        { "waitFor": ".rz-dialog-side input[name=Label]" },
+        { "click": ".rz-dialog-side .rz-tabview-nav li:has-text('Web API Hook')" },
+        { "wait": 1500 }
+      ],
+      "clip": [".rz-dialog-side .rz-tabview-nav", ".rz-dialog-side .rz-data-grid"],
+      "badges": [
+        { "n": 1, "selector": ".rz-dialog-side .rz-tabview-nav li:has-text('Web API Hook')", "side": "right" },
+        { "n": 2, "selector": ".rz-dialog-side button:has-text('Add your first webhook')", "side": "right" }
+      ]
+    },
+    {
+      "id": "diagnostic-compliance",
+      "edition": "ee",
+      "file": "modules/diagnostic-compliance.png",
+      "url": "/module/cvtest/diagnostic/scans",
+      "actions": [
+        { "click": ".rz-data-row .rz-row-toggler >> nth=0" },
+        { "waitFor": ".rz-expanded-row-content li:has-text('Compliance')" },
+        { "click": ".rz-expanded-row-content li:has-text('Compliance')" },
+        { "wait": 2500 }
+      ],
+      "padding": 8,
+      "clip": [".rz-expanded-row-content .rz-tabview-nav", ".rz-expanded-row-content .rz-group-row >> nth=5"]
+    },
+    {
+      "id": "portal-users",
+      "edition": "ee",
+      "file": "modules/portal-users.png",
+      "url": "/module/*/portal/tenants",
+      "actions": [
+        { "click": ".rz-data-row:has-text('Example Corp') .rz-row-toggler" },
+        { "waitFor": ".rz-expanded-row-content li:has-text('Users')" },
+        { "click": ".rz-expanded-row-content li:has-text('Users')" },
+        { "waitFor": ".rz-expanded-row-content .rz-data-row:has-text('john.smith@example.com')" },
+        { "wait": 1000 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('New') >> nth=0", ".rz-expanded-row-content .rz-data-row:has-text('john.smith@example.com')"]
+    },
+    {
+      "id": "portal-user",
+      "edition": "ee",
+      "file": "modules/portal-user.png",
+      "url": "/module/*/portal/tenants",
+      "actions": [
+        { "click": ".rz-data-row:has-text('Example Corp') .rz-row-toggler" },
+        { "waitFor": ".rz-expanded-row-content li:has-text('Users')" },
+        { "click": ".rz-expanded-row-content li:has-text('Users')" },
+        { "click": ".rz-expanded-row-content :text-is('john.smith@example.com')" },
+        { "waitFor": ".rz-dialog-side input[name=UserName]" },
+        { "wait": 1500 }
+      ],
+      "expect": [{ "selector": ".rz-dialog-side input[name=UserName]", "value": "john.smith@example.com" }],
+      "clip": [".rz-dialog-side input[name=UserName]", ".rz-dialog-side table"]
+    },
+    {
+      "id": "ups-dashboard",
+      "edition": "ee",
+      "file": "modules/ups-dashboard.png",
+      "url": "/module/cvtest/ups-monitor/dashboard",
+      "actions": [{ "waitFor": "text=UPS Rack B" }, { "wait": 2000 }],
+      "padding": 8,
+      "clip": [":text-is('UPS Rack A') >> xpath=ancestor::div[contains(@class,'rz-card')][1]", "button:has-text('Test shutdown')", ":text-is('UPS Rack B') >> xpath=ancestor::div[contains(@class,'rz-card')][1]"]
+    },
+    {
+      "id": "ups-device",
+      "edition": "ee",
+      "file": "modules/ups-device.png",
+      "url": "/module/cvtest/ups-monitor/devices",
+      "actions": [
+        { "click": ".rz-data-row :text-is('UPS Rack A')" },
+        { "waitFor": ".rz-dialog-side input[name=Host]" },
+        { "wait": 1500 }
+      ],
+      "expect": [{ "selector": ".rz-dialog-side input[name=Name]", "value": "UPS Rack A" }],
+      "clip": [".rz-dialog-side"],
+      "padding": 0
+    },
+    {
+      "id": "vm-performance-status",
+      "edition": "ee",
+      "file": "modules/vm-performance-status.png",
+      "url": "/module/cvtest/vm-performance/status",
+      "actions": [{ "waitFor": ".rz-data-row" }, { "wait": 1500 }],
+      "padding": 8,
+      "clip": ["button:has-text('Refresh')", ".rz-data-row >> nth=-1"]
     }
   ]
 }

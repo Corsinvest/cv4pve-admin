@@ -61,6 +61,8 @@ Why scan automatically when you can check things by hand?
 
 The grid lists the stored scans with the number of **Info**, **Warning** and **Critical** issues, start, end and duration. Ignored issues are not counted.
 
+![Scans grid with a scan expanded on the Issues tab and its critical issues](../../../assets/images/screenshots/modules/diagnostic-scan.png)
+
 | Action | What it does |
 |--------|--------------|
 | **Scan** | Starts a scan immediately in the background. Progress and log are in the global Task Tracker |
@@ -81,6 +83,10 @@ An ignored issue is a rule with **Id Resource**, **Error Code**, **Gravity**, **
 The rules are applied when a scan runs: an issue is marked as ignored when it matches every field of the rule. **Id Resource**, **Error Code** and **Sub Context** must be equal to the value of the issue, **Description** must be contained in the description of the issue, and an empty field matches any value. Changing the list does not change the scans already stored.
 
 ## Compliance reports<Tag kind="ee" />
+
+The **Compliance** tab of a scan groups its findings by standard and control.
+
+![Compliance tab of a scan, with the findings grouped by standard](../../../assets/images/screenshots/modules/diagnostic-compliance.png)
 
 Each check in the `cv4pve-diag` library declares which normative controls it covers, and the Enterprise PDF and Excel reports add one section per standard. The standards covered, the layout of those sections and the limits of the mapping are in [Compliance Reports](../diagnostics-compliance/).
 
