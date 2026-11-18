@@ -424,6 +424,30 @@
       "clip": ["text=Last 30 days by status", "button:has-text('Hide chart')", ".rz-data-row >> nth=5"]
     },
     {
+      "id": "replication-analytics-replications",
+      "file": "modules/replication-analytics-replications.png",
+      "url": "/module/cvtest/replication-analytics/replications",
+      "viewport": { "width": 1700, "height": 900 },
+      "actions": [
+        { "waitFor": ".rz-data-row" },
+        { "wait": 1000 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('Scan')", "button:has-text('Show chart')", ".rz-data-row >> nth=9"]
+    },
+    {
+      "id": "replication-analytics-chart",
+      "file": "modules/replication-analytics-chart.png",
+      "url": "/module/cvtest/replication-analytics/replications",
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "click": "button:has-text('Show chart')" },
+        { "waitFor": "button:has-text('Hide chart')" },
+        { "wait": 2000 }
+      ],
+      "clip": ["text=Last 30 days by status", "button:has-text('Hide chart')", ".rz-data-row >> nth=5"]
+    },
+    {
       "id": "diagnostic-scan",
       "file": "modules/diagnostic-scan.png",
       "url": "/module/cvtest/diagnostic/scans",
