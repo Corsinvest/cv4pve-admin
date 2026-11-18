@@ -483,6 +483,41 @@
       "clip": [".rz-data-row:has-text('web-01')", ".rz-expanded-row-content"]
     },
     {
+      "id": "resources-node",
+      "file": "modules/resources-node.png",
+      "url": "/module/cvtest/resources/nodes",
+      "actions": [
+        { "click": ".rz-data-row:has-text('pve-1') .rz-row-toggler" },
+        { "waitFor": ".rz-expanded-row-content .rz-tabview-nav" },
+        { "waitFor": ".rz-expanded-row-content :text('Kernel Version')" },
+        { "wait": 3000 }
+      ],
+      "padding": 8,
+      "clip": [".rz-data-row:has-text('pve-1')", ".rz-expanded-row-content"]
+    },
+    {
+      "id": "resources-network-diagram",
+      "file": "modules/resources-network-diagram.png",
+      "url": "/module/cvtest/resources/networks",
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "click": ".rz-tabview-nav li:has-text('Diagram')" },
+        { "waitFor": ".rz-tabview-panel svg" },
+        { "wait": 1500 }
+      ],
+      "padding": 8,
+      "clip": ["button:has-text('Download')", ".rz-tabview-panel svg >> nth=-1"]
+    },
+    {
+      "id": "dashboard-full",
+      "file": "modules/dashboard.png",
+      "url": "/module/*/dashboard",
+      "actions": [
+        { "waitFor": ".rz-tile-layout-item" },
+        { "wait": 4000 }
+      ]
+    },
+    {
       "id": "dashboard-menu",
       "file": "modules/dashboard-menu.png",
       "url": "/module/*/dashboard",
@@ -535,6 +570,71 @@
         { "n": 1, "selector": ".rz-dialog-side .rz-tabview-nav li:has-text('Web API Hook')", "side": "right" },
         { "n": 2, "selector": ".rz-dialog-side button:has-text('Add your first webhook')", "side": "right" }
       ]
+    },
+    {
+      "id": "autosnap-webhook-edit",
+      "edition": "ee",
+      "file": "modules/autosnap-webhook-edit.png",
+      "url": "/module/cvtest/autosnap/jobs",
+      "actions": [
+        { "click": "button:has-text('New')" },
+        { "waitFor": ".rz-dialog-side input[name=Label]" },
+        { "click": ".rz-dialog-side .rz-tabview-nav li:has-text('Web API Hook')" },
+        { "click": ".rz-dialog-side button:has-text('Add your first webhook')" },
+        { "waitFor": "input[name$='.Url']" },
+        { "fill": "input[name=Description] >> nth=-1", "value": "Notify the ticketing system" },
+        { "fill": "input[name$='.Url']", "value": "https://hooks.example.com/autosnap?vm=%CV4PVE_AUTOSNAP_VMID%&phase=%CV4PVE_AUTOSNAP_PHASE%" },
+        { "fill": "textarea[name$='.Body']", "value": "{\n  \"vmid\": \"%CV4PVE_AUTOSNAP_VMID%\",\n  \"vmname\": \"%CV4PVE_AUTOSNAP_VMNAME%\",\n  \"state\": \"%CV4PVE_AUTOSNAP_STATE%\"\n}" },
+        { "wait": 1500 },
+        { "scrollTo": ".rz-dialog-side >> nth=-1 >> button:has-text('Test')" },
+        { "wait": 800 }
+      ],
+      "clip": [".rz-dialog-side >> nth=-1"],
+      "padding": 0,
+      "badges": [
+        { "n": 1, "selector": "input[name$='.Url']", "side": "inside-right" },
+        { "n": 2, "selector": "textarea[name$='.Body']", "side": "inside-right" },
+        { "n": 3, "selector": ".rz-dialog-side >> nth=-1 >> button:has-text('Test')" },
+        { "n": 4, "selector": ".rz-dialog-side >> nth=-1 >> button[type=submit]" }
+      ]
+    },
+    {
+      "id": "workflow-designer",
+      "edition": "ee",
+      "file": "modules/workflow-designer.png",
+      "url": "/module/cvtest/workflow/workflows?definitionId=nightly-web-snapshot",
+      "viewport": { "width": 1920, "height": 1080 },
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "waitFor": "#elsa-workflow-container :text('For each web server')" },
+        { "wait": 3000 },
+        { "click": "#elsa-workflow-container button[aria-label='Zoom to fit']" },
+        { "wait": 1500 },
+        { "click": "#elsa-workflow-container :text('Production web servers')" },
+        { "wait": 2000 }
+      ],
+      "clip": ["#elsa-workflow-container"],
+      "padding": 0
+    },
+    {
+      "id": "workflow-run",
+      "edition": "ee",
+      "file": "modules/workflow-run.png",
+      "url": "/module/cvtest/workflow/history",
+      "viewport": { "width": 1920, "height": 1080 },
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "waitFor": "tr:has-text('Nightly snapshot of web servers')" },
+        { "click": "tr:has-text('Nightly snapshot of web servers') >> nth=0 >> td >> nth=1" },
+        { "waitFor": "text=For each web server" },
+        { "wait": 3000 },
+        { "click": "button[aria-label='Zoom to fit']" },
+        { "wait": 1500 },
+        { "click": "text=For each web server >> nth=-1" },
+        { "wait": 2000 }
+      ],
+      "clip": ["div[style*='calc(100vh - 150px)']"],
+      "padding": 0
     },
     {
       "id": "diagnostic-compliance",

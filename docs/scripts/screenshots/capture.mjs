@@ -2,11 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 // Takes the screenshots of the documentation from a running cv4pve-admin, as described in shots.json:
-// the page, the actions before the shot (fill, click, wait), the part to keep and the numbered badges or
+// the page, the actions before the shot (fill, click, press, waitFor, wait, scrollTo), the part to keep and the numbered badges or
 // boxes that point at the controls named in the steps of the page. The images land in
 // src/assets/images/screenshots. Run it again after a change of the interface: the images are rebuilt.
 //
 //   node scripts/screenshots/capture.mjs [id ...]
+//
+// "scrollTo" brings an element into view, for a control below the fold of a dialog whose content scrolls.
+// "viewport": { "width", "height" } on a shot replaces the window size of shots.json, for a page that
+// needs a wider window (a designer).
 //
 // A shot with "edition": "ee" runs on the Enterprise instance, for the pages that the Community Edition
 // shows as a subscription notice.
@@ -36,7 +40,8 @@ const only = process.argv.slice(2);
 const shots = config.shots.filter(a => only.length === 0 || only.includes(a.id));
 
 const browser = await chromium.launch({ channel: BROWSER });
-const newContext = () => browser.newContext({ viewport: config.viewport, deviceScaleFactor: 2, colorScheme: 'light' });
+const viewportOf = shot => shot.viewport ?? config.viewport;
+const newContext = shot => browser.newContext({ viewport: viewportOf(shot), deviceScaleFactor: 2, colorScheme: 'light' });
 
 async function login(page, base) {
     await page.goto(`${base}/Login`, { waitUntil: 'load' });
@@ -52,6 +57,7 @@ async function run(page, action) {
     else if (action.press) { await page.keyboard.press(action.press); }
     else if (action.waitFor) { await page.waitForSelector(action.waitFor, { state: 'visible', timeout: 30000 }); }
     else if (action.wait) { await page.waitForTimeout(action.wait); }
+    else if (action.scrollTo) { await page.locator(action.scrollTo).first().scrollIntoViewIfNeeded({ timeout: 30000 }); }
     else { throw new Error(`Unknown action ${JSON.stringify(action)}`); }
 }
 
@@ -96,7 +102,7 @@ async function annotate(page, shot) {
     const badges = marks.filter(a => a.kind === 'badge');
     for (const badge of badges) {
         const r = badge.rect;
-        if (r.left < 0 || r.top < 0 || r.right > config.viewport.width || r.bottom > config.viewport.height) {
+        if (r.left < 0 || r.top < 0 || r.right > viewportOf(shot).width || r.bottom > viewportOf(shot).height) {
             throw new Error(`${shot.id}: badge ${badge.n} falls outside the page, try another side`);
         }
         for (const other of badges.filter(a => a !== badge)) {
@@ -201,14 +207,14 @@ async function clipOf(page, shot, marks) {
     const y = Math.max(0, Math.min(...rects.map(a => a.y)) - pad);
     return {
         x, y,
-        width: Math.min(config.viewport.width, Math.max(...rects.map(a => a.r)) + pad) - x,
-        height: Math.min(config.viewport.height, Math.max(...rects.map(a => a.b)) + pad) - y
+        width: Math.min(viewportOf(shot).width, Math.max(...rects.map(a => a.r)) + pad) - x,
+        height: Math.min(viewportOf(shot).height, Math.max(...rects.map(a => a.b)) + pad) - y
     };
 }
 
 let failed = 0;
 for (const shot of shots) {
-    const context = await newContext();
+    const context = await newContext(shot);
     const page = await context.newPage();
     try {
         const base = shot.edition === 'ee' ? BASE_EE : BASE;

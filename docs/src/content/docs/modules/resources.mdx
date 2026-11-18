@@ -74,17 +74,22 @@ The tabs:
 
 Expanding a row (or a card) on Nodes, Guests and Storages opens the detail of that resource, organised in tabs. Tabs and buttons that need a permission the user does not have are hidden.
 
-![Detail of a running VM opened on its Summary tab](../../../assets/images/screenshots/modules/resources-guest.png)
-
 | Resource | Tabs |
 |----------|------|
 | **Node** | **Summary** · **Performance** · **Replication** · **Disks** · **Task History** |
 | **Guest** | **Summary** · **Config** · **Guest Info** (QEMU only) · **Performance** · **Task History** · **Backups** · **Replication** · **Snapshots** |
 | **Storage** | **Summary** · **Performance** |
 
+The **Summary** tab shows the current state of the resource. **CPU**, **Memory Usage**, **Load Average** and **IO delay** have a sparkline of the values read while the detail is open.
+
+- Guest: **Uptime**, **CPU**, **SWAP** (containers only), **Bootdisk** size, **Status** badge with the **Health Score** gauge, **Memory Usage**
+- Node: **Uptime**, **Load Average**, **CPU**, **KSM sharing**, **SWAP**, **Status** badge with the **Health Score** gauge, **IO delay**, **Memory Usage**, **/ HD Space**, then **CPU(s)** (processor model and sockets), **Kernel Version** and **Manager Version**
+
 The buttons at the top of the **Summary** tab run the actions on the resource:
 
 **Guest**
+
+![Detail of the running VM web-01 on its Summary tab: uptime, CPU, boot disk, status, health score and memory usage](../../../assets/images/screenshots/modules/resources-guest.png)
 
 - **Play**, when the guest is stopped
 - **Resume**, when the guest is paused
@@ -93,6 +98,8 @@ The buttons at the top of the **Summary** tab run the actions on the resource:
 - **Unlock**, in the menu (three dots), only when the guest is locked
 
 **Node**
+
+![Detail of the node pve-1 on its Summary tab: uptime, load average, CPU, KSM sharing, SWAP, status, health score, IO delay, memory, root disk space and versions](../../../assets/images/screenshots/modules/resources-node.png)
 
 - **Shutdown**, when the node is online. Its drop-down has **Reboot**
 - **Console**
@@ -124,6 +131,8 @@ The **Backups** tab of a guest lists its backups on the storage chosen in the dr
 ### Network diagram
 
 In **Networks → Diagram**, **Download** saves the diagram as `network-diagram-<cluster>.svg`.
+
+![Network diagram of the cvtest cluster: legend, summary counters and the node pve-1 with its bridges vmbr1 and vmbr2 and the guests connected to vmbr1](../../../assets/images/screenshots/modules/resources-network-diagram.png)
 
 ## Enterprise Additions<Tag kind="ee" />
 

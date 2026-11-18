@@ -48,6 +48,14 @@ Why a workflow engine when scripts and cron already work?
 - **Workflows**: the list of workflow definitions of the current cluster. Open a definition to edit it in the designer. When you run a workflow from the designer, the page switches to the view of that run
 - **History**: the list of workflow runs (instances). Open a run to see its status and the detail of each step. From a run you can open its definition in the designer
 
+The designer has the activities toolbox on the left, the canvas in the middle with the inputs of the selected activity under it, and the properties of the workflow on the right.
+
+![Designer with the workflow Nightly snapshot of web servers: Get guests, a filter on the production web servers, a For Each loop that creates a snapshot of each one, and a notification](../../../assets/images/screenshots/modules/workflow-designer.png)
+
+The view of a run lists each step in the **Journal** with its start time and duration, shows on the canvas how many times each activity ran, and gives the status of the run in **Details**.
+
+![Finished run of the workflow Nightly snapshot of web servers: journal of the steps, canvas with the count of each activity and details of the run](../../../assets/images/screenshots/modules/workflow-run.png)
+
 The open definition or run is part of the page address: the browser **Back** button returns to the previous view, the page link in the module menu returns to the list, and the address can be bookmarked or shared with users who have the same permissions.
 
 Workflows belong to the cluster selected in the cluster picker. Definitions and runs of one cluster are not listed in another. The activities of a workflow always act on the cluster the workflow was created in.
