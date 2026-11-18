@@ -5,22 +5,21 @@
 @inherits AdminComponentBase
 
 <ModuleOverview TModule="Module">
-    <Block1>
-        <strong>Diagnostic</strong> is a comprehensive tool that performs automated health checks and analysis of Proxmox VE environments.<br />
-        It scans clusters, nodes, and virtual machines to identify configuration issues, performance problems, and potential system failures.<br />
-        The module schedules regular diagnostic scans to proactively detect issues before they impact system operations.<br />
-    </Block1>
-
-    <Block2>
-        <strong>Scheduled Health Checks</strong>: Automates regular diagnostic scans using configurable cron schedules.<br />
-        <strong>Proactive Issue Detection</strong>: Identifies misconfigurations, hardware problems, and performance bottlenecks early.<br />
-        <strong>Comprehensive Analysis</strong>: Examines system logs, configurations, and resource utilization patterns.<br />
-        <strong>Issue Tracking</strong>: Maintains history of discovered problems and allows ignoring known non-critical issues.<br />
-    </Block2>
-
-    <Block3>
-        <strong>Seamless Integration</strong>: Works natively with Proxmox VE API to collect comprehensive system information.<br />
-        <strong>Actionable Results</strong>: Provides clear descriptions of issues with recommendations for resolution.<br />
-        <strong>Maintenance Efficiency</strong>: Reduces manual system monitoring and enables predictive maintenance strategies.<br />
-    </Block3>
+    <Features>
+        <OverviewFeature Icon="schedule" Title="Scheduled health checks">
+            Regular diagnostic scans with configurable cron schedules.
+        </OverviewFeature>
+        <OverviewFeature Icon="search" Title="Issue detection">
+            Finds misconfigurations, hardware problems and performance bottlenecks early.
+        </OverviewFeature>
+        <OverviewFeature Icon="analytics" Title="Analysis">
+            Examines system logs, configurations and resource utilization.
+        </OverviewFeature>
+        <OverviewFeature Icon="playlist_remove" Title="Issue tracking">
+            History of the problems found, with the option to ignore known non-critical ones.
+        </OverviewFeature>
+        <OverviewFeature Icon="task_alt" Title="Actionable results">
+            Clear descriptions of the issues, with recommendations for resolution.
+        </OverviewFeature>
+    </Features>
 </ModuleOverview>

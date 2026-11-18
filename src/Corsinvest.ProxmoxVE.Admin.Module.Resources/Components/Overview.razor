@@ -4,24 +4,25 @@
 *@
 @inherits AdminComponentBase
 
-<ModuleOverview TModule="Module"
-                Icon1="dashboard" Title1="Live Status"
-                Icon2="monitoring" Title2="Health Check"
-                Icon3="trending_up" Title3="Performance">
-    <Block1>
-        <strong>Real-time cluster overview</strong> with instant visibility into VM states, node health, and resource utilization.<br />
-        Monitor running services, storage capacity, and network connectivity across your entire Proxmox infrastructure.<br />
-        Get immediate alerts for critical issues requiring attention.
-    </Block1>
-    <Block2>
-        <strong>System Health</strong>: CPU, memory, and storage usage across all cluster nodes.<br />
-        <strong>VM Status</strong>: Running, stopped, and error states with quick action buttons.<br />
-        <strong>Storage Monitoring</strong>: Capacity, performance, and backup status indicators.<br />
-        <strong>Network Health</strong>: Connectivity and bandwidth utilization metrics.
-    </Block2>
-    <Block3>
-        <strong>Quick Actions</strong>: Start, stop, restart VMs directly from status view.<br />
-        <strong>Performance Metrics</strong>: Real-time CPU, memory, and I/O statistics.<br />
-        <strong>Alert Center</strong>: Prioritized notifications for issues requiring immediate attention.<br />
-    </Block3>
+<ModuleOverview TModule="Module">
+    <Features>
+        <OverviewFeature Icon="monitor_heart" Title="System health">
+            CPU, memory and storage usage across all cluster nodes.
+        </OverviewFeature>
+        <OverviewFeature Icon="computer" Title="VM status">
+            Running, stopped and error states of VMs and containers.
+        </OverviewFeature>
+        <OverviewFeature Icon="storage" Title="Storage monitoring">
+            Capacity, performance and backup status indicators.
+        </OverviewFeature>
+        <OverviewFeature Icon="lan" Title="Network health">
+            Connectivity and bandwidth utilization metrics.
+        </OverviewFeature>
+        <OverviewFeature Icon="play_circle" Title="Quick actions">
+            Start, stop and restart VMs directly from the status view.
+        </OverviewFeature>
+        <OverviewFeature Icon="speed" Title="Performance metrics">
+            Real-time CPU, memory and I/O statistics.
+        </OverviewFeature>
+    </Features>
 </ModuleOverview>

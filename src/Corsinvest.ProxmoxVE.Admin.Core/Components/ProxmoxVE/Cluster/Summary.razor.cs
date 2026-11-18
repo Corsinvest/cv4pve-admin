@@ -16,6 +16,8 @@ public partial class Summary(IAdminService adminService) : IClusterName
     private IEnumerable<ResourceUsageItem> DataUsages { get; set; } = [];
     //private List<ItemStatus> NodeHealts { get; set; } = [];
     private ItemStatus StatusInfo { get; set; } = new();
+    private string? ClusterTitle { get; set; }
+    private string? ClusterCaption { get; set; }
     private IEnumerable<ClusterStatus> Nodes { get; set; } = [];
     private ItemStatus<object> CephStatus { get; set; } = default!;
 
@@ -63,6 +65,8 @@ public partial class Summary(IAdminService adminService) : IClusterName
         if (cluster == null)
         {
             StatusInfo.Status = L["Standalone node - no cluster defined"];
+            ClusterTitle = L["Standalone"];
+            ClusterCaption = L["No cluster defined"];
             StatusInfo.Icon = "check_circle";
             StatusInfo.Color = PveAdminUIHelper.GetResourcesColorStatus(PveConstants.StatusOnline, false);
         }
@@ -71,6 +75,8 @@ public partial class Summary(IAdminService adminService) : IClusterName
             StatusInfo.Status = L["Cluster: {0}, Quorate: {1}",
                                   cluster.Name,
                                   cluster.Quorate == 1 ? L["Yes"] : L["No"]];
+            ClusterTitle = cluster.Name;
+            ClusterCaption = L["Quorate: {0}", cluster.Quorate == 1 ? L["Yes"] : L["No"]];
 
             if (status.Count(a => a.Type != PveConstants.KeyApiCluster) == cluster.Nodes)
             {

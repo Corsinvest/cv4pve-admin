@@ -4,136 +4,138 @@
 *@
 @inherits AdminComponentBase
 
-@if (ChartVisible)
-{
-    <DailyChart TCategory="bool"
-                Title="@L["Last 30 days by status"]"
-                Data="@ChartData"
-                Categories="@([true, false])"
-                CategoryColor="@(a => a ? "var(--rz-success)" : "var(--rz-danger)")"
-                CategoryText="@(a => a ? L["Done"] : L["Failed"])"
-                ErrorMessage="@ChartError"
-                Loading="@ChartLoading"
-                OnFilterChanged="OnChartFilterChangedAsync" />
-}
+<div class="cv4pve-fill-page">
+    @if (ChartVisible)
+    {
+        <DailyChart TCategory="bool"
+                    Title="@L["Last 30 days by status"]"
+                    Data="@ChartData"
+                    Categories="@([true, false])"
+                    CategoryColor="@(a => a ? "var(--rz-success)" : "var(--rz-danger)")"
+                    CategoryText="@(a => a ? L["Done"] : L["Failed"])"
+                    ErrorMessage="@ChartError"
+                    Loading="@ChartLoading"
+                    OnFilterChanged="OnChartFilterChangedAsync" />
+    }
 
-<RadzenDataGrid @ref="DataGridRef"
-                TItem="Data"
-                LoadData="LoadDataAsync"
-                Data="@ResultLoadData.Data"
-                Count="@ResultLoadData.TotalCount"
-                AllowFiltering="true"
-                AllowColumnResize="true"
-                AllowAlternatingRows="false"
-                AllowSorting="true"
-                AllowVirtualization="true"
-                Style="@($"height: calc(100vh - {140 + (ChartVisible ? DailyChartLayout.Height : 0)}px);")"
-                FilterPopupRenderMode="PopupRenderMode.OnDemand"
-                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                AllowGrouping="true"
-                AllowColumnPicking="true">
-    <HeaderTemplate>
-        <CrudToolbar OnRefresh="RefreshDataAsync" OnExport="ExportAsync" Permissions="Module.Permissions.Replication.Data">
-            <TemplateBefore>
-                @if (ClusterRead)
-                {
-                    <PermissionView PermissionKey="@Module.Permissions.Replication.Scan.Key" Path="*">
-                        <RadzenButton Variant="Variant.Text"
-                                      Size="ButtonSize.Small"
-                                      Text="@L["Scan"]"
-                                      Click="ScanAsync"
-                                      Icon="play_arrow"
-                                      Style="--rz-icon-fill: 1;"
-                                      ButtonStyle="ButtonStyle.Success" />
-                    </PermissionView>
+    <RadzenDataGrid @ref="DataGridRef"
+                    TItem="Data"
+                    LoadData="LoadDataAsync"
+                    Data="@ResultLoadData.Data"
+                    Count="@ResultLoadData.TotalCount"
+                    AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="false"
+                    AllowSorting="true"
+                    AllowVirtualization="true"
+                    Style="flex: 1 1 0; min-height: 0;"
+                    FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowGrouping="true"
+                    AllowColumnPicking="true">
+        <HeaderTemplate>
+            <CrudToolbar OnRefresh="RefreshDataAsync" OnExport="ExportAsync" Permissions="Module.Permissions.Replication.Data">
+                <TemplateBefore>
+                    @if (ClusterRead)
+                    {
+                        <PermissionView PermissionKey="@Module.Permissions.Replication.Scan.Key" Path="*">
+                            <RadzenButton Variant="Variant.Text"
+                                          Size="ButtonSize.Small"
+                                          Text="@L["Scan"]"
+                                          Click="ScanAsync"
+                                          Icon="play_arrow"
+                                          Style="--rz-icon-fill: 1;"
+                                          ButtonStyle="ButtonStyle.Success" />
+                        </PermissionView>
 
-                    <PermissionView PermissionKey="@Module.Permissions.Replication.DeleteAll.Key" Path="*">
-                        <RadzenButton Variant="Variant.Text"
-                                      Size="ButtonSize.Small"
-                                      Text="@L["Delete all data"]"
-                                      Click="RemoveAllDataAsync"
-                                      Icon="delete"
-                                      ButtonStyle="ButtonStyle.Danger" />
-                    </PermissionView>
-                }
-            </TemplateBefore>
+                        <PermissionView PermissionKey="@Module.Permissions.Replication.DeleteAll.Key" Path="*">
+                            <RadzenButton Variant="Variant.Text"
+                                          Size="ButtonSize.Small"
+                                          Text="@L["Delete all data"]"
+                                          Click="RemoveAllDataAsync"
+                                          Icon="delete"
+                                          ButtonStyle="ButtonStyle.Danger" />
+                        </PermissionView>
+                    }
+                </TemplateBefore>
 
-            <TemplateAfter>
-                <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
-                              Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
-                              ButtonStyle="ButtonStyle.Light"
-                              Size="ButtonSize.Small"
-                              Click="@ToggleChartAsync" />
+                <TemplateAfter>
+                    <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
+                                  Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Size="ButtonSize.Small"
+                                  Click="@ToggleChartAsync" />
 
-                <InfoScheduler TModule="Module" JobSchedule="@Settings" />
-            </TemplateAfter>
-        </CrudToolbar>
-    </HeaderTemplate>
+                    <InfoScheduler TModule="Module" JobSchedule="@Settings" />
+                </TemplateAfter>
+            </CrudToolbar>
+        </HeaderTemplate>
 
-    <EmptyTemplate>
-        @if (ClusterRead)
-        {
-            <PermissionView PermissionKey="@Module.Permissions.Replication.Scan.Key" Path="*">
-                <EmptyExecuteAction Text="@L["Execute your first scan"]"
-                                    Click="ScanAsync"
-                                    Icon="play_arrow"
-                                    Style="--rz-icon-fill: 1;" />
-            </PermissionView>
-        }
-    </EmptyTemplate>
+        <EmptyTemplate>
+            @if (ClusterRead)
+            {
+                <PermissionView PermissionKey="@Module.Permissions.Replication.Scan.Key" Path="*">
+                    <EmptyExecuteAction Text="@L["Execute your first scan"]"
+                                        Click="ScanAsync"
+                                        Icon="play_arrow"
+                                        Style="--rz-icon-fill: 1;" />
+                </PermissionView>
+            }
+        </EmptyTemplate>
 
-    <GroupHeaderTemplate>
-        <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>: @FormatHelper.FromBytes(context.Data.FlattenItems<Data>().Sum(a => a.Size))
-    </GroupHeaderTemplate>
+        <GroupHeaderTemplate>
+            <strong>@context.GroupDescriptor!.GetTitle()</strong>: @context.Data.Key (@context.Data.Count) - <strong>@L["Size"]</strong>: @FormatHelper.FromBytes(context.Data.FlattenItems<Data>().Sum(a => a.Size))
+        </GroupHeaderTemplate>
 
-    <Columns>
-        <RadzenDataGridColumn Property="@nameof(Data.VmId)" Title="@L["VM Id"]" Width="120px" />
-        <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" Width="160px" />
-        <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" Width="160px" />
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(Data.VmId)" Title="@L["VM Id"]" Width="120px" />
+            <DateTimeLocalColumn Property="@nameof(Data.Start)" Title="@L["Start"]" SortOrder="SortOrder.Descending" Width="160px" />
+            <DateTimeLocalColumn Property="@nameof(Data.End)" Title="@L["End"]" Width="160px" />
 
-        <RadzenDataGridColumn Property="@nameof(Data.Duration)"
-                              Title="@L["Duration"]"
-                              FormatString="{0:hh':'mm':'ss}"
-                              Width="100px"
-                              Filterable="false" />
+            <RadzenDataGridColumn Property="@nameof(Data.Duration)"
+                                  Title="@L["Duration"]"
+                                  FormatString="{0:hh':'mm':'ss}"
+                                  Width="100px"
+                                  Filterable="false" />
 
-        <RadzenDataGridColumn Property="@nameof(Data.Size)"
-                              Title="@L["Size"]"
-                              TextAlign="TextAlign.Right"
-                              FormatString="@(FormatHelper.DataFormatBytes)"
-                              FormatProvider="FormatterHelper.FormatProvider"
-                              Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(Data.Size)"
+                                  Title="@L["Size"]"
+                                  TextAlign="TextAlign.Right"
+                                  FormatString="@(FormatHelper.DataFormatBytes)"
+                                  FormatProvider="FormatterHelper.FormatProvider"
+                                  Width="120px" />
 
-        <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" Width="120px" />
+            <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" Width="120px" />
 
-        <RadzenDataGridColumn Property="@nameof(Data.Source)" Title="@L["Source"]" />
-        <RadzenDataGridColumn Property="@nameof(Data.Target)" Title="@L["Target"]" />
+            <RadzenDataGridColumn Property="@nameof(Data.Source)" Title="@L["Source"]" />
+            <RadzenDataGridColumn Property="@nameof(Data.Target)" Title="@L["Target"]" />
 
-        <RadzenDataGridColumn Property="@nameof(Data.JobId)" Title="@L["Task Id"]" Visible="false" />
-        <RadzenDataGridColumn Property="@nameof(Data.Error)" Title="@L["Error"]" />
+            <RadzenDataGridColumn Property="@nameof(Data.JobId)" Title="@L["Task Id"]" Visible="false" />
+            <RadzenDataGridColumn Property="@nameof(Data.Error)" Title="@L["Error"]" />
 
-        <RadzenDataGridColumn Filterable="false"
-                              Sortable="false"
-                              TextAlign="TextAlign.Right"
-                              Frozen="true"
-                              FrozenPosition="FrozenColumnPosition.Right"
-                              Reorderable="false"
-                              Pickable="false"
-                              Resizable="false"
-                              Groupable="false"
-                              Width="50px">
-            <Template Context="ctx">
-                <RadzenButton Variant="Variant.Text"
-                              Size="ButtonSize.Small"
-                              Icon="description"
-                              ButtonStyle="ButtonStyle.Primary"
-                              Click="@(() => ShowLogAsync(ctx))"
-                              @onclick:stopPropagation="true"
-                              title="@L["Show log"]"
-                              aria-label="@L["Show log"]" />
-            </Template>
-        </RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false"
+                                  Sortable="false"
+                                  TextAlign="TextAlign.Right"
+                                  Frozen="true"
+                                  FrozenPosition="FrozenColumnPosition.Right"
+                                  Reorderable="false"
+                                  Pickable="false"
+                                  Resizable="false"
+                                  Groupable="false"
+                                  Width="50px">
+                <Template Context="ctx">
+                    <RadzenButton Variant="Variant.Text"
+                                  Size="ButtonSize.Small"
+                                  Icon="description"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  Click="@(() => ShowLogAsync(ctx))"
+                                  @onclick:stopPropagation="true"
+                                  title="@L["Show log"]"
+                                  aria-label="@L["Show log"]" />
+                </Template>
+            </RadzenDataGridColumn>
 
-        <DateTimeLocalColumn Property="@nameof(Data.LastSync)" Title="@L["Last Run"]" Width="160px" Visible="false" />
-    </Columns>
-</RadzenDataGrid>
+            <DateTimeLocalColumn Property="@nameof(Data.LastSync)" Title="@L["Last Run"]" Width="160px" Visible="false" />
+        </Columns>
+    </RadzenDataGrid>
+</div>

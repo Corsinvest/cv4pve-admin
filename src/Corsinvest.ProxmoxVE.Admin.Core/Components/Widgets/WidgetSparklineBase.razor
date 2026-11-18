@@ -6,21 +6,33 @@
 @typeparam TItem
 @typeparam TSettings
 
-<RadzenStack class="rz-w-100 rz-h-100">
-    <RadzenSparkline Style="flex: 1">
-        <RadzenAreaSeries Data="@Items"
-                          Smooth="true"
-                          Title="@SerieTitle"
-                          CategoryProperty="@CategoryProperty"
-                          ValueProperty="@ValueProperty">
-            <RadzenMarkers Visible="true" MarkerType="MarkerType.Circle" />
-        </RadzenAreaSeries>
+<div class="cv4pve-kpi">
+    <div class="cv4pve-kpi-head">
+        <span class="cv4pve-kpi-value">@(CurrentValue ?? "-")</span>
+        <span class="cv4pve-kpi-caption">@SerieTitle</span>
+    </div>
 
-        <RadzenValueAxis Formatter="@ValueFormatter" Visible="false" />
-    </RadzenSparkline>
+    @if (Items.Any())
+    {
+        <RadzenSparkline Style="flex: 1; min-height: 2rem;">
+            <RadzenAreaSeries Data="@Items"
+                              Smooth="true"
+                              Title="@SerieTitle"
+                              CategoryProperty="@CategoryProperty"
+                              ValueProperty="@ValueProperty">
+                <RadzenMarkers Visible="false" />
+            </RadzenAreaSeries>
+
+            <RadzenValueAxis Formatter="@ValueFormatter" Visible="false" />
+        </RadzenSparkline>
+    }
+    else
+    {
+        <span class="cv4pve-kpi-caption">@L["No data"]</span>
+    }
 
     @if (Footer != null)
     {
-        @Footer
+        <div class="cv4pve-kpi-footer">@Footer</div>
     }
-</RadzenStack>
+</div>

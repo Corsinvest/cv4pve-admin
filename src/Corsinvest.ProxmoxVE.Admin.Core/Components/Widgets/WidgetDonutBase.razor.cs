@@ -17,12 +17,21 @@ public abstract partial class WidgetDonutBase<TSettings> : IModuleWidget<TSettin
 
     protected DateTime? LastExecution { get; set; }
 
+    private int Total => Items.Sum(a => a.Count);
+
+    private string StateClass
+        => Items.Any(a => a.Count > 0 && a.Color == Colors.Danger)
+            ? "ko"
+            : Items.Any(a => a.Count > 0 && a.Color == Colors.Warning)
+                ? "warn"
+                : Total > 0 ? "ok" : "neutral";
+
     protected void MakeFooterText(string text)
         => Footer = builder =>
         {
             builder.OpenComponent<RadzenText>(0);
             builder.AddAttribute(1, "TextStyle", TextStyle.Caption);
-            builder.AddAttribute(2, "class", "rz-text-align-center rz-m-0");
+            builder.AddAttribute(2, "class", "rz-m-0");
             builder.AddAttribute(3, "Text", text);
             builder.CloseComponent();
         };

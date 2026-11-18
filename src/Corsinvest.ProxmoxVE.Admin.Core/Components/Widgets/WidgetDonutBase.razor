@@ -5,32 +5,37 @@
 @inherits AdminComponentBase
 @typeparam TSettings
 
-<RadzenStack class="rz-w-100 rz-h-100">
-    <RadzenChart Style="flex: 1">
-        <RadzenDonutSeries Data="@Items"
-                           Fills="@Items.Select(a => a.Color)"
-                           Title="@SerieTitle"
-                           CategoryProperty="@nameof(Item.Category)"
-                           ValueProperty="@nameof(Item.Count)">
-            <ChildContent>
-                <RadzenSeriesDataLabels Visible="false" />
-            </ChildContent>
+<div class="cv4pve-kpi cv4pve-widget-state @StateClass">
+    <div class="cv4pve-kpi-head">
+        <span class="cv4pve-kpi-value">@Total</span>
+        <span class="cv4pve-kpi-caption">@SerieTitle</span>
+    </div>
 
-            <TitleTemplate>
-                <div class="rz-donut-content">
-                    @if (Title != null)
-                    {
-                        @Title
-                    }
-                </div>
-            </TitleTemplate>
-        </RadzenDonutSeries>
+    <div class="cv4pve-kpi-bar">
+        @foreach (var item in Items.Where(a => a.Count > 0))
+        {
+            <span style="@($"flex: {item.Count}; background: {item.Color};")" title="@($"{L[item.Category]}: {item.Count}")"></span>
+        }
+    </div>
 
-        <RadzenLegend Visible="true" Position="LegendPosition.Left" />
-    </RadzenChart>
+    <div class="cv4pve-kpi-list">
+        @foreach (var item in Items)
+        {
+            <div class="cv4pve-kpi-row" style="@(item.Count == 0 ? "opacity: 0.55;" : null)">
+                <span class="cv4pve-kpi-dot" style="@($"background: {item.Color};")"></span>
+                <span>@L[item.Category]</span>
+                <span class="cv4pve-kpi-row-count">@item.Count</span>
+            </div>
+        }
+    </div>
+
+    @if (Title != null)
+    {
+        @Title
+    }
 
     @if (Footer != null)
     {
-        @Footer
+        <div class="cv4pve-kpi-footer">@Footer</div>
     }
-</RadzenStack>
+</div>

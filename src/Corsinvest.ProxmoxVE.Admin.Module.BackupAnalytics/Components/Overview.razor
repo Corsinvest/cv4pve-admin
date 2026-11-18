@@ -4,23 +4,25 @@
 *@
 @inherits AdminComponentBase
 
-<ModuleOverview TModule="Module"
-                Icon1="bar_chart" Title1="Analytics"
-                Icon2="monitoring" Title2="Monitoring"
-                Icon3="insights" Title3="Insights">
-    <Block1>
-        <strong>Backup Analytics</strong> tracks and analyzes backup operations across your Proxmox VE cluster.<br />
-        Monitor success rates, duration patterns, and storage consumption in real-time.<br />
-        Identify trends and bottlenecks to optimize backup performance and reliability.<br />
-    </Block1>
-    <Block2>
-        <strong>Real-time Status</strong>: Live backup job monitoring with instant failure detection.<br />
-        <strong>Performance Tracking</strong>: Duration analysis, throughput metrics, and resource usage.<br />
-        <strong>Proactive Alerts</strong>: Automated notifications for failed, slow, or inefficient backups.<br />
-    </Block2>
-    <Block3>
-        <strong>Historical Analysis</strong>: Long-term trends for capacity planning and optimization.<br />
-        <strong>Failure Diagnosis</strong>: Detailed logs and patterns to quickly resolve backup issues.<br />
-        <strong>Storage Insights</strong>: Growth projections and space utilization analytics.<br />
-    </Block3>
+<ModuleOverview TModule="Module">
+    <Features>
+        <OverviewFeature Icon="monitor_heart" Title="Real-time status">
+            Live backup job monitoring with instant failure detection.
+        </OverviewFeature>
+        <OverviewFeature Icon="speed" Title="Performance tracking">
+            Duration analysis, throughput metrics and resource usage.
+        </OverviewFeature>
+        <OverviewFeature Icon="notifications_active" Title="Proactive alerts">
+            Notifications for failed, slow or inefficient backups.
+        </OverviewFeature>
+        <OverviewFeature Icon="history" Title="Historical analysis">
+            Long-term trends for capacity planning and optimization.
+        </OverviewFeature>
+        <OverviewFeature Icon="bug_report" Title="Failure diagnosis">
+            Detailed logs and patterns to quickly resolve backup issues.
+        </OverviewFeature>
+        <OverviewFeature Icon="storage" Title="Storage insights">
+            Growth projections and space utilization analytics.
+        </OverviewFeature>
+    </Features>
 </ModuleOverview>

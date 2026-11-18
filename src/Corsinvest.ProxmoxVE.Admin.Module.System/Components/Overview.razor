@@ -4,20 +4,25 @@
 *@
 @inherits AdminComponentBase
 
-<Overview3Cols Icon1="dns" Title1="Infrastructure" Icon2="shield_person" Title2="Access Control" Icon3="tune" Title3="Operations">
-    <Block1>
-        <strong>Centralized Management</strong> of your Proxmox VE infrastructure.<br />
-        Connect and orchestrate multiple clusters from a unified dashboard.<br />
-        Streamline configuration, monitoring, and administration across your entire virtualization environment.<br />
-    </Block1>
-    <Block2>
-        <strong>Granular Permission System</strong>: Define roles and control who can access what.<br />
-        <strong>User Management</strong>: Create accounts, manage authentication, and track sessions.<br />
-        <strong>Security First</strong>: Two-factor authentication, audit logs, and compliance-ready controls.<br />
-    </Block2>
-    <Block3>
-        <strong>Release Management</strong>: Stay current with automatic update notifications and changelogs.<br />
-        <strong>Notification Hub</strong>: Configure alerts and integrate with external notification systems.<br />
-        <strong>System Monitoring</strong>: Health checks, performance metrics, and proactive maintenance tools.<br />
-    </Block3>
-</Overview3Cols>
+<ModuleOverview TModule="Module">
+    <Features>
+        <OverviewFeature Icon="dns" Title="Multiple clusters">
+            Connect and manage several Proxmox VE clusters from one place.
+        </OverviewFeature>
+        <OverviewFeature Icon="admin_panel_settings" Title="Permissions">
+            Roles that define who can access what.
+        </OverviewFeature>
+        <OverviewFeature Icon="group" Title="Users">
+            Accounts, authentication and sessions.
+        </OverviewFeature>
+        <OverviewFeature Icon="security" Title="Security">
+            Two-factor authentication and audit logs.
+        </OverviewFeature>
+        <OverviewFeature Icon="new_releases" Title="Release management">
+            Update notifications and changelogs.
+        </OverviewFeature>
+        <OverviewFeature Icon="notifications" Title="Notifications">
+            Alerts sent through external notification systems.
+        </OverviewFeature>
+    </Features>
+</ModuleOverview>

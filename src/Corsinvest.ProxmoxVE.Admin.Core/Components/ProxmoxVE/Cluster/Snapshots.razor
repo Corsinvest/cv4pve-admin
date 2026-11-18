@@ -5,20 +5,14 @@
 @inherits AdminComponentBase
 
 <SubscriptionGate>
-    <RadzenCard>
-        <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Start">
-            <RadzenText TextStyle="TextStyle.H6" Text="@L["Snapshots Usage"]" />
-
-            <RadzenRow>
-                <RadzenColumn Size="6">
-                    @RenderTable(false)
-                </RadzenColumn>
-                <RadzenColumn Size="6">
-                    @RenderTable(true)
-                </RadzenColumn>
-            </RadzenRow>
-        </RadzenStack>
-    </RadzenCard>
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeLG="6">
+            @RenderTable(false)
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeLG="6">
+            @RenderTable(true)
+        </RadzenColumn>
+    </RadzenRow>
 </SubscriptionGate>
 
 @code

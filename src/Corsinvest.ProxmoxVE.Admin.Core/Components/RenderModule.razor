@@ -9,9 +9,18 @@
 @if (CurrentModule != null)
 {
     <RadzenLayout Style="height: calc(100vh - 90px);">
-        <RadzenHeader Style="background-color: transparent;">
+        <RadzenHeader Style="background-color: var(--rz-panel-background-color); border-radius: var(--rz-border-radius); box-shadow: var(--rz-shadow-1); margin-bottom: 0.25rem; padding: 0 1rem;">
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                <RadzenText TextStyle="TextStyle.H4">@CurrentModule.Description</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.75rem" Style="min-width: 0; padding: 0.25rem 0;">
+                    @if (!string.IsNullOrEmpty(CurrentModule.Link?.Icon))
+                    {
+                        <RadzenIcon Icon="@CurrentModule.Link.Icon" class="rz-color-primary" Style="font-size: 36px; flex-shrink: 0;" />
+                    }
+                    <RadzenStack Gap="0" Style="min-width: 0;">
+                        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1" class="rz-m-0" Text="@CurrentModule.Name" />
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-m-0" Style="color: var(--rz-text-secondary-color);" Text="@CurrentModule.Description" />
+                    </RadzenStack>
+                </RadzenStack>
 
                 @if (ShowButtonSettings)
                 {

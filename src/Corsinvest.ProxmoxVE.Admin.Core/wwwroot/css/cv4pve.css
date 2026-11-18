@@ -141,74 +141,8 @@
 }
 
 /* ========================================
-   Thumb-details widget — health icon + severity dots
-   Used by WidgetThumbDetailsBase. The icon scales with
-   the widget size via container queries; severity dots
-   appear only when there are issues to highlight.
+   Thumb-details widget popup (WidgetThumbDetailsBase)
    ======================================== */
-
-.cv4pve-thumb-widget {
-    container-type: size;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 0.5rem;
-    gap: 0.5rem;
-}
-
-.cv4pve-thumb-widget-icon {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-}
-
-.cv4pve-thumb-widget-icon .rzi {
-    font-size: clamp(2.5rem, 35cqmin, 12rem);
-
-    --rz-icon-fill: 1;
-}
-
-.cv4pve-thumb-widget-icon.ok      .rzi { color: var(--rz-success); }
-.cv4pve-thumb-widget-icon.ko      .rzi { color: var(--rz-danger); }
-.cv4pve-thumb-widget-icon.neutral .rzi { color: var(--cv4pve-severity-muted); }
-
-.cv4pve-thumb-widget-row {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(0.5rem, 4cqmin, 2rem);
-    min-height: 0;
-}
-
-.cv4pve-thumb-widget-row .cv4pve-thumb-widget-icon {
-    flex: 0 1 auto;
-}
-
-.cv4pve-thumb-widget-dot {
-    border-radius: 50%;
-    color: white;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width:  clamp(2rem, 10cqmin, 4rem);
-    height: clamp(2rem, 10cqmin, 4rem);
-    font-size: clamp(0.85rem, 4cqmin, 1.5rem);
-}
-
-.cv4pve-thumb-widget-dot.critical { background: var(--rz-danger); }
-
-.cv4pve-thumb-widget-message {
-    font-size: 0.8rem;
-    color: var(--rz-text-tertiary-color);
-    text-align: center;
-}
 
 .cv4pve-thumb-widget-popup {
     padding: 0;
@@ -252,4 +186,320 @@
 
 .cv4pve-thumb-widget-tooltip-link:hover {
     text-decoration: underline;
+}
+
+/* ========================================
+   Widget frame (Dashboard and module Overview)
+   Light header and a top accent line whose color follows
+   the state of the widget inside the tile.
+   ======================================== */
+
+.rz-tile-layout .rz-tile-layout-item {
+    border-top: 3px solid var(--cv4pve-widget-accent, var(--rz-primary)) !important;
+}
+
+.rz-tile-layout .rz-tile-layout-item:has(.cv4pve-widget-state.ok)      { --cv4pve-widget-accent: var(--rz-success); }
+.rz-tile-layout .rz-tile-layout-item:has(.cv4pve-widget-state.warn)    { --cv4pve-widget-accent: var(--rz-warning); }
+.rz-tile-layout .rz-tile-layout-item:has(.cv4pve-widget-state.ko)      { --cv4pve-widget-accent: var(--rz-danger); }
+.rz-tile-layout .rz-tile-layout-item:has(.cv4pve-widget-state.neutral) { --cv4pve-widget-accent: var(--cv4pve-severity-muted); }
+
+.rz-tile-layout .rz-tile-layout-item-header {
+    --rz-tile-layout-item-header-background-color: transparent;
+    --rz-tile-layout-item-border: none;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--rz-text-secondary-color);
+}
+
+/* ========================================
+   KPI widget body
+   Big value first, then a short caption and the details.
+   Used by the donut, sparkline, thumb and info widget bases.
+   ======================================== */
+
+.cv4pve-kpi {
+    container-type: size;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    min-height: 0;
+}
+
+.cv4pve-kpi-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cv4pve-kpi-value {
+    font-size: clamp(1.5rem, 16cqmin, 2.75rem);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--rz-text-title-color);
+    font-variant-numeric: tabular-nums;
+}
+
+.cv4pve-kpi-caption {
+    font-size: 0.8rem;
+    color: var(--rz-text-secondary-color);
+}
+
+.cv4pve-kpi-footer {
+    margin-top: auto;
+    font-size: 0.75rem;
+    color: var(--rz-text-secondary-color);
+}
+
+.cv4pve-kpi-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--rz-base-200);
+}
+
+.cv4pve-kpi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+}
+
+.cv4pve-kpi-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1.4;
+}
+
+.cv4pve-kpi-row .rzi {
+    line-height: 1;
+}
+
+.cv4pve-kpi-row-count {
+    margin-left: auto;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.cv4pve-kpi-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cv4pve-kpi-chart {
+    flex: 1;
+    min-height: 2rem;
+}
+
+.cv4pve-kpi-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(2.25rem, 22cqmin, 3.5rem);
+    height: clamp(2.25rem, 22cqmin, 3.5rem);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cv4pve-kpi-badge .rzi {
+    font-size: clamp(1.25rem, 13cqmin, 2rem);
+    --rz-icon-fill: 1;
+}
+
+.cv4pve-kpi-badge.ok      { color: var(--rz-success); background: color-mix(in srgb, var(--rz-success) 14%, transparent); }
+.cv4pve-kpi-badge.ko      { color: var(--rz-danger);  background: color-mix(in srgb, var(--rz-danger) 14%, transparent); }
+.cv4pve-kpi-badge.warn    { color: var(--rz-warning); background: color-mix(in srgb, var(--rz-warning) 14%, transparent); }
+.cv4pve-kpi-badge.neutral { color: var(--cv4pve-severity-muted); background: color-mix(in srgb, var(--cv4pve-severity-muted) 14%, transparent); }
+
+.cv4pve-kpi-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+    gap: 0.5rem 1rem;
+}
+
+.cv4pve-kpi-stat {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.6rem;
+    border-left: 3px solid var(--cv4pve-kpi-stat-color, var(--rz-primary));
+}
+
+.cv4pve-kpi-stat .cv4pve-kpi-value {
+    font-size: 1.6rem;
+}
+
+.cv4pve-kpi-section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--rz-text-secondary-color);
+    margin-bottom: 0.35rem;
+}
+
+/* ========================================
+   Module Overview features (ModuleOverview, OverviewFeature)
+   ======================================== */
+
+.cv4pve-overview-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--rz-text-title-color);
+    margin-bottom: 0.5rem;
+}
+
+.cv4pve-overview-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 10px;
+}
+
+.cv4pve-overview-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--rz-panel-background-color);
+    border: var(--rz-card-border);
+    border-radius: var(--rz-card-border-radius);
+    box-shadow: var(--rz-card-shadow);
+    min-width: 0;
+}
+
+.cv4pve-overview-feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    color: var(--rz-primary);
+    background: color-mix(in srgb, var(--rz-primary) 12%, transparent);
+}
+
+.cv4pve-overview-feature-icon .rzi {
+    font-size: 1.25rem;
+}
+
+.cv4pve-overview-feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.cv4pve-overview-feature-title {
+    font-weight: 600;
+    color: var(--rz-text-title-color);
+}
+
+/* ========================================
+   Card with the widget look, outside the tile layout
+   (cluster summary). Same accent line rules as the tiles.
+   ======================================== */
+
+.cv4pve-card {
+    background: var(--rz-panel-background-color);
+    border: var(--rz-card-border);
+    border-top: 3px solid var(--cv4pve-widget-accent, var(--rz-primary));
+    border-radius: var(--rz-card-border-radius);
+    box-shadow: var(--rz-card-shadow);
+    padding: 0.75rem 1rem;
+    height: 9rem;
+    min-width: 0;
+}
+
+.cv4pve-card:has(.cv4pve-widget-state.ok)      { --cv4pve-widget-accent: var(--rz-success); }
+.cv4pve-card:has(.cv4pve-widget-state.warn)    { --cv4pve-widget-accent: var(--rz-warning); }
+.cv4pve-card:has(.cv4pve-widget-state.ko)      { --cv4pve-widget-accent: var(--rz-danger); }
+.cv4pve-card:has(.cv4pve-widget-state.neutral) { --cv4pve-widget-accent: var(--cv4pve-severity-muted); }
+
+.cv4pve-summary-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 10px;
+}
+
+.cv4pve-usage-rings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.75rem 1.5rem;
+}
+
+.cv4pve-usage-ring-item {
+    min-width: 0;
+}
+
+.cv4pve-ring {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--cv4pve-ring-color, var(--rz-primary)) calc(var(--cv4pve-ring-value, 0) * 1%), var(--rz-base-200) 0);
+}
+
+.cv4pve-ring::before {
+    content: "";
+    grid-area: 1 / 1;
+    width: 74%;
+    height: 74%;
+    border-radius: 50%;
+    background: var(--rz-panel-background-color);
+}
+
+.cv4pve-ring-value {
+    grid-area: 1 / 1;
+    position: relative;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--rz-text-title-color);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ========================================
+   Page whose last block fills the height left (cluster page)
+   ======================================== */
+
+.cv4pve-fill-page {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+}
+
+.cv4pve-fill-page > .cv4pve-fill-tabs {
+    flex: 1 1 0;
+    min-height: 24rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.cv4pve-fill-tabs .rz-tabview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.cv4pve-fill-tabs .rz-tabview-panels {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.cv4pve-fill-tabs .rz-tabview-panel {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
 }

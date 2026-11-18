@@ -19,12 +19,26 @@ public abstract partial class WidgetSparklineBase<TItem, TSettings> : IModuleWid
 
     protected DateTime? LastExecution { get; set; }
 
+    private string? CurrentValue
+    {
+        get
+        {
+            var last = Items.LastOrDefault();
+            if (last == null || string.IsNullOrEmpty(ValueProperty)) { return null; }
+
+            var value = typeof(TItem).GetProperty(ValueProperty)?.GetValue(last);
+            if (value == null) { return null; }
+
+            return ValueFormatter != null ? ValueFormatter(value) : value.ToString();
+        }
+    }
+
     protected void MakeFooterText(string text)
         => Footer = builder =>
         {
             builder.OpenComponent<RadzenText>(0);
             builder.AddAttribute(1, "TextStyle", TextStyle.Caption);
-            builder.AddAttribute(2, "class", "rz-text-align-center rz-m-0");
+            builder.AddAttribute(2, "class", "rz-m-0");
             builder.AddAttribute(3, "Text", text);
             builder.CloseComponent();
         };

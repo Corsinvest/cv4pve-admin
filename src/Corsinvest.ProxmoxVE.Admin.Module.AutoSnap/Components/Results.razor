@@ -4,72 +4,74 @@
 *@
 @inherits AdminComponentBase
 
-@if (ChartVisible)
-{
-    <DailyChart TCategory="string"
-                Title="@L["Errors of the last 30 days by job"]"
-                Data="@ChartData"
-                ErrorMessage="@ChartError"
-                Loading="@ChartLoading"
-                OnFilterChanged="OnChartFilterChangedAsync" />
-}
+<div class="cv4pve-fill-page">
+    @if (ChartVisible)
+    {
+        <DailyChart TCategory="string"
+                    Title="@L["Errors of the last 30 days by job"]"
+                    Data="@ChartData"
+                    ErrorMessage="@ChartError"
+                    Loading="@ChartLoading"
+                    OnFilterChanged="OnChartFilterChangedAsync" />
+    }
 
-<RadzenDataGrid @ref="DataGridRef"
-                TItem="Data"
-                Data="@ResultLoadData.Data"
-                Count="@ResultLoadData.TotalCount"
-                AllowFiltering="true"
-                AllowColumnResize="true"
-                AllowAlternatingRows="false"
-                AllowSorting="true"
-                AllowVirtualization="true"
-                Style="@GridStyle"
-                FilterPopupRenderMode="PopupRenderMode.OnDemand"
-                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                CellClick="CellClick"
-                RowSelect="RowSelectAsync"
-                KeyDown="KeyDownAsync"
-                LoadData="LoadDataAsync"
-                @bind-Value="@SelectedItems">
-    <HeaderTemplate>
-        <CrudToolbar OnDelete="DeleteAsync"
-                     DeleteDisabled="!SelectedItems.Any()"
-                     OnExport="@(() => ShowOnlyError
-                                         ? DataGridRef.ExportToExcelAllAsync($"autosnap-errors-{ClusterName}", L["Errors"])
-                                         : DataGridRef.ExportToExcelAllAsync($"autosnap-histories-{ClusterName}", L["Histories"]))"
-                     Permissions="Module.Permissions.Results.Data"
-                     PermissionDelete="Module.Permissions.Results.Delete">
-            <TemplateAfter>
-                @if (ShowOnlyError)
-                {
-                    <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
-                                  Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
-                                  ButtonStyle="ButtonStyle.Light"
-                                  Size="ButtonSize.Small"
-                                  Click="@ToggleChartAsync" />
-                }
-            </TemplateAfter>
-        </CrudToolbar>
-    </HeaderTemplate>
+    <RadzenDataGrid @ref="DataGridRef"
+                    TItem="Data"
+                    Data="@ResultLoadData.Data"
+                    Count="@ResultLoadData.TotalCount"
+                    AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="false"
+                    AllowSorting="true"
+                    AllowVirtualization="true"
+                    Style="@GridStyle"
+                    FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    CellClick="CellClick"
+                    RowSelect="RowSelectAsync"
+                    KeyDown="KeyDownAsync"
+                    LoadData="LoadDataAsync"
+                    @bind-Value="@SelectedItems">
+        <HeaderTemplate>
+            <CrudToolbar OnDelete="DeleteAsync"
+                         DeleteDisabled="!SelectedItems.Any()"
+                         OnExport="@(() => ShowOnlyError
+                                             ? DataGridRef.ExportToExcelAllAsync($"autosnap-errors-{ClusterName}", L["Errors"])
+                                             : DataGridRef.ExportToExcelAllAsync($"autosnap-histories-{ClusterName}", L["Histories"]))"
+                         Permissions="Module.Permissions.Results.Data"
+                         PermissionDelete="Module.Permissions.Results.Delete">
+                <TemplateAfter>
+                    @if (ShowOnlyError)
+                    {
+                        <RadzenButton Icon="@(ChartVisible ? "visibility_off" : "insert_chart")"
+                                      Text="@(ChartVisible ? L["Hide chart"] : L["Show chart"])"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Size="ButtonSize.Small"
+                                      Click="@ToggleChartAsync" />
+                    }
+                </TemplateAfter>
+            </CrudToolbar>
+        </HeaderTemplate>
 
-    <Columns>
-        <RadzenDataGridColumn Property="Job.Label" Sortable="true" Title="@L["Job"]" Visible="@(JobId == null)" />
+        <Columns>
+            <RadzenDataGridColumn Property="Job.Label" Sortable="true" Title="@L["Job"]" Visible="@(JobId == null)" />
 
-        <RadzenDataGridColumn Property="@nameof(Data.SnapName)" Sortable="true" Title="@L["Name"]">
-            <Template>
-                <span class="rz-link link" style="text-decoration: underline;">@context.SnapName</span>
-            </Template>
-        </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(Data.SnapName)" Sortable="true" Title="@L["Name"]">
+                <Template>
+                    <span class="rz-link link" style="text-decoration: underline;">@context.SnapName</span>
+                </Template>
+            </RadzenDataGridColumn>
 
-        <DateTimeLocalColumn Property="@nameof(Data.Start)" Sortable="true" Title="@L["Start"]" SortOrder="SortOrder.Descending" />
-        <DateTimeLocalColumn Property="@nameof(Data.End)" Sortable="true" Title="@L["End"]" />
+            <DateTimeLocalColumn Property="@nameof(Data.Start)" Sortable="true" Title="@L["Start"]" SortOrder="SortOrder.Descending" />
+            <DateTimeLocalColumn Property="@nameof(Data.End)" Sortable="true" Title="@L["End"]" />
 
-        <RadzenDataGridColumn Property="@nameof(Data.Duration)"
-                              Title="@L["Duration"]"
-                              FormatString="{0:hh':'mm':'ss}"
-                              Width="100px"
-                              Filterable="false" />
+            <RadzenDataGridColumn Property="@nameof(Data.Duration)"
+                                  Title="@L["Duration"]"
+                                  FormatString="{0:hh':'mm':'ss}"
+                                  Width="100px"
+                                  Filterable="false" />
 
-        <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" Visible="@(!ShowOnlyError)" />
-    </Columns>
-</RadzenDataGrid>
+            <BoolIconColumn Property="@nameof(Data.Status)" Title="@L["Status"]" IconFalse="" Visible="@(!ShowOnlyError)" />
+        </Columns>
+    </RadzenDataGrid>
+</div>

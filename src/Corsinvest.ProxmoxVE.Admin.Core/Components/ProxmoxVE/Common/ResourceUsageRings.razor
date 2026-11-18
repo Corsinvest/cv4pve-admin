@@ -1,0 +1,44 @@
+@*
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: AGPL-3.0-only
+*@
+@inherits ComponentBase
+
+<div class="cv4pve-usage-rings">
+    @foreach (var item in Data)
+    {
+        <div class="cv4pve-usage-ring-item">
+            @if (item.Group == "Snapshot")
+            {
+                <SubscriptionGate Size="SubscriptionGateSize.Compact">
+                    @RenderRing(item)
+                </SubscriptionGate>
+            }
+            else
+            {
+                @RenderRing(item)
+            }
+        </div>
+    }
+</div>
+
+@code
+{
+    [Parameter] public IEnumerable<ResourceUsageItem> Data { get; set; } = [];
+
+    private static string Percent(double value)
+        => Math.Clamp(value, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    private RenderFragment RenderRing(ResourceUsageItem item) => __builder =>
+    {
+        <div class="cv4pve-kpi-row" style="gap: 0.75rem;">
+            <div class="cv4pve-ring" style="@($"--cv4pve-ring-value: {Percent(item.Usage)}; --cv4pve-ring-color: {item.Color};")">
+                <span class="cv4pve-ring-value">@item.Usage%</span>
+            </div>
+            <div style="display: flex; flex-direction: column; min-width: 0;">
+                <span class="cv4pve-kpi-section-title" style="margin: 0;">@item.Name</span>
+                <span class="cv4pve-kpi-caption">@item.Info</span>
+            </div>
+        </div>
+    };
+}

@@ -7,41 +7,38 @@
 
 @typeparam TWidgetSettings
 
-<div class="cv4pve-thumb-widget">
-    @switch (Status)
-    {
-        case WidgetState.NotConfigured:
-            <div class="cv4pve-thumb-widget-icon neutral">
-                <RadzenIcon Icon="settings" />
-            </div>
-            break;
+<div class="cv4pve-kpi cv4pve-widget-state @StateClass" style="justify-content: center;">
+    <div class="cv4pve-kpi-row" style="gap: 0.75rem;">
+        <span class="cv4pve-kpi-badge @StateClass">
+            <RadzenIcon Icon="@StateIcon" />
+        </span>
 
-        case WidgetState.Ok:
-            <div class="cv4pve-thumb-widget-icon ok">
-                <RadzenIcon Icon="thumb_up" />
-            </div>
-            break;
+        <div style="display: flex; flex-direction: column; min-width: 0;">
+            @switch (Status)
+            {
+                case WidgetState.NotConfigured:
+                    <span class="cv4pve-kpi-caption">@L["Not configured"]</span>
+                    break;
 
-        case WidgetState.Issues:
-            <div class="cv4pve-thumb-widget-row">
-                <div class="cv4pve-thumb-widget-icon ko">
-                    <RadzenIcon Icon="thumb_down" />
-                </div>
-                <div @ref="_badgeRef"
-                     class="cv4pve-thumb-widget-dot critical"
-                     style="@(Items.Any() ? "cursor: pointer;" : "")"
-                     @onmouseenter="OpenDetails"
-                     @onclick="ToggleDetails">
-                    @Count
-                </div>
-            </div>
-            break;
-    }
+                case WidgetState.Ok:
+                    <span class="cv4pve-kpi-value" style="color: var(--rz-success);">@L["OK"]</span>
+                    break;
 
-    @if (!string.IsNullOrEmpty(Message))
-    {
-        <div class="cv4pve-thumb-widget-message">@Message</div>
-    }
+                case WidgetState.Issues:
+                    <span @ref="_badgeRef"
+                          class="cv4pve-kpi-value"
+                          style="@($"color: var(--rz-danger);{(Items.Any() ? " cursor: pointer; text-decoration: underline dotted;" : null)}")"
+                          @onmouseenter="OpenDetails"
+                          @onclick="ToggleDetails">@Count</span>
+                    break;
+            }
+
+            @if (!string.IsNullOrEmpty(Message))
+            {
+                <span class="cv4pve-kpi-caption">@Message</span>
+            }
+        </div>
+    </div>
 </div>
 
 @if (Items.Any())
@@ -85,6 +82,20 @@
     private bool _popupOpen;
 
     private IEnumerable<Data> OrderedItems => Items.OrderByDescending(a => a.Count);
+
+    private string StateClass => Status switch
+    {
+        WidgetState.Ok => "ok",
+        WidgetState.Issues => "ko",
+        _ => "neutral"
+    };
+
+    private string StateIcon => Status switch
+    {
+        WidgetState.Ok => "check_circle",
+        WidgetState.Issues => "error",
+        _ => "settings"
+    };
 
     private async Task OpenDetails()
     {

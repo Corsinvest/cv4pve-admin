@@ -9,12 +9,6 @@ public record DailyChartPoint<TCategory>(DateTime Day, TCategory Category, int C
 /// <summary>Days chosen in the chart and, after a click on a bar, the category of that bar.</summary>
 public record DailyChartFilter<TCategory>(DateTime From, DateTime To, bool HasCategory, TCategory Category);
 
-public static class DailyChartLayout
-{
-    /// <summary>Height taken by the chart with its range bar: a full-height grid below it subtracts it.</summary>
-    public static int Height { get; } = 315;
-}
-
 public partial class DailyChart<TCategory> where TCategory : notnull
 {
     private record TotalPoint(DateTime Day, int Count);
