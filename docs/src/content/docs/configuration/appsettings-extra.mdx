@@ -140,10 +140,6 @@ Without the setting, or with `"*"`, the headers are accepted from any address. T
 - **Default:** (none, headers accepted from any address)
 - **Environment variables:** `TrustedProxies__0=172.16.0.0/12`, `TrustedProxies__1=192.168.0.10`
 
-:::caution[Docker image]
-In the Docker image the client address and the scheme can currently still be taken from the `X-Forwarded-For` and `X-Forwarded-Proto` headers of any sender, also with `TrustedProxies` set, until this is fixed.
-:::
-
 When the proxy is not in the list, the application sees plain HTTP behind an HTTPS proxy. The sign-in with an external provider then fails, because the provider receives an `http` callback address, and the audit shows the address of the proxy for every user.
 
 ## Serilog Configuration

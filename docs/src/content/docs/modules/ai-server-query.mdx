@@ -134,6 +134,3 @@ Each of the two tools, `GetQuerySchema` and `ExecuteQuery`, has its own permissi
 
 A query sees only the nodes, guests and storages the token can see: every table is built from them, so the snapshots, replications, storage content and configurations of a guest the token cannot see are not in the result.
 
-:::caution[Storage content of hidden guests]
-Today the storage content table lists everything on the storages the token can see, including the backups and disks of guests the token cannot see. Until this is fixed, do not rely on the token to hide those files.
-:::
