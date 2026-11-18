@@ -56,7 +56,9 @@ Why automate reports when PVE already shows everything in its UI?
 | **Delete** | After confirmation, deletes the selected report and its file |
 | **Refresh** | Reloads the grid |
 
-The grid has no status column. A failed report has an end too: **Download** is active, and answers **File not available for this report.** The error is in the log of the task.
+While the grid is empty, **Execute your first report** opens the **New Report** panel.
+
+The grid has no status column. A failed report has an end too: **Download** is active, and answers **File not available for this report.** The error is not shown in the grid: it is in the log of the task and in the audit log.
 
 Click the **Id** of a row to open, read-only, the options the report was generated with. Progress and log of a running report are in the global Task Tracker.
 
@@ -65,6 +67,8 @@ Reports are generated on demand only: the module has no schedule and no retentio
 ## Report options
 
 The **Fast**, **Standard** and **Full** buttons at the top of the panel load a ready-made set of values. The tables below show the **Standard** values. A new report starts with **Fast**.
+
+![New Report panel with the Fast, Standard and Full buttons and the Cluster group open](../../../assets/images/screenshots/modules/system-report-new.png)
 
 ### General
 

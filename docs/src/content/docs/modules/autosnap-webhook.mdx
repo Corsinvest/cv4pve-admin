@@ -39,6 +39,14 @@ Why webhooks when AutoSnap already runs on schedule?
 
 ## Reference
 
+Hooks are added in the editor of a job: open the **Web API Hook** tab (1) and select **Add your first webhook** (2), or **New** when the job already has hooks.
+
+![Web API Hook tab of the job editor, with no hook yet](../../../assets/images/screenshots/modules/autosnap-webhook.png)
+
+The hook opens in its own editor: enter the **URL** (1) and the **Body** (2), with the placeholders where you need the values of the run, try the request with [**Test**](#all-hook-fields) (3), then select **Create** (4).
+
+![Hook editor with a URL and a JSON body that use the AutoSnap placeholders, the Test button and the Create button](../../../assets/images/screenshots/modules/autosnap-webhook-edit.png)
+
 A hook fires at one phase of the snapshot lifecycle. It receives the context of the run through `%CV4PVE_AUTOSNAP_*%` placeholders, which you can use in the URL, the body and the header values.
 
 Each value is escaped for the place where it is used:

@@ -61,6 +61,8 @@ Why scan automatically when you can check things by hand?
 
 The grid lists the stored scans with the number of **Info**, **Warning** and **Critical** issues, start, end and duration. Ignored issues are not counted.
 
+![Scans grid with a scan expanded on the Issues tab and its critical issues](../../../assets/images/screenshots/modules/diagnostic-scan.png)
+
 | Action | What it does |
 |--------|--------------|
 | **Scan** | Starts a scan immediately in the background. Progress and log are in the global Task Tracker |
@@ -68,17 +70,23 @@ The grid lists the stored scans with the number of **Info**, **Warning** and **C
 | **Delete** | After confirmation, deletes the selected scan |
 | **Refresh** | Reloads the grid |
 
-Expanding a scan shows two tabs: **Issues** and **Compliance** <Tag kind="ee" />. The **Issues** tab lists gravity, code, resource id (a link that opens the resource in a new tab), context, sub-context and description of each issue. The **Ignore Issue** button on an issue row adds it to the ignored issues.
+At the right of the toolbar, with **Enable scheduling** on, an info icon shows the **Next Execution** and the schedule in a tooltip. With it off, a user who can change the settings sees **Activate scheduling**, which opens them. While the grid is empty, **Execute your first scan** starts a scan.
 
-Two things happen at the end of every scan, scheduled or started by hand. The oldest scans beyond the **Number to keep** setting are deleted, and the notification is sent (see [Settings](#settings)).
+Expanding a scan shows two tabs: **Issues** and **Compliance** <Tag kind="ee" />. The **Issues** tab lists gravity, code, resource id (a link that opens the resource in a new tab), context, sub-context and description of each issue, without the ignored issues. When the check has a help page, an info icon on the row opens it in a new tab. The **Ignore Issue** button on an issue row adds it to the ignored issues.
+
+Two things happen at the end of every scan, scheduled or started by hand. The oldest scans beyond the **Number to keep** setting are deleted, and the notification is sent when at least one notifier is selected in the settings (see [Settings](#settings)).
 
 ## Ignored issues
 
-An ignored issue is a rule with **Id Resource**, **Error Code**, **Gravity**, **Context**, **Sub Context** and **Description**. **Gravity** and **Context** are optional: left empty, they show **Any**. A rule needs at least one of **Id Resource**, **Error Code**, **Sub Context** and **Description**: otherwise saving shows a warning and the rule is not saved. It is created with the **Ignore Issue** button of a scan, which copies the values of that issue. On the **Ignored Issues** page click the **Id Resource** of a row to edit the rule, or select rows and use **Delete** to remove them.
+An ignored issue is a rule with **Id Resource**, **Error Code**, **Gravity**, **Context**, **Sub Context** and **Description**. **Gravity** and **Context** are optional: left empty, they show **Any**. A rule needs at least one of **Id Resource**, **Error Code**, **Sub Context** and **Description**: otherwise saving shows a warning and the rule is not saved. It is created with the **Ignore Issue** button of a scan, which copies the values of that issue. On the **Ignored Issues** page click the **Id Resource** of a row to edit the rule, or select a row and use **Delete**, which asks for a confirmation, to remove it.
 
 The rules are applied when a scan runs: an issue is marked as ignored when it matches every field of the rule. **Id Resource**, **Error Code** and **Sub Context** must be equal to the value of the issue, **Description** must be contained in the description of the issue, and an empty field matches any value. Changing the list does not change the scans already stored.
 
 ## Compliance reports<Tag kind="ee" />
+
+The **Compliance** tab of a scan groups its findings by standard and control.
+
+![Compliance tab of a scan, with the findings grouped by standard](../../../assets/images/screenshots/modules/diagnostic-compliance.png)
 
 Each check in the `cv4pve-diag` library declares which normative controls it covers, and the Enterprise PDF and Excel reports add one section per standard. The standards covered, the layout of those sections and the limits of the mapping are in [Compliance Reports](../diagnostics-compliance/).
 
@@ -90,7 +98,7 @@ The settings of the module (9 groups, from the general options to the thresholds
 
 | Widget | Content |
 |--------|---------|
-| **Status** | Diagnostic status, with the date of the last scan |
+| **Status** | The **Info**, **Warning** and **Critical** issues of the last scan of each cluster, with their total and the date of the last scan |
 | **Check** | Critical issues of the last scan of each cluster, grouped by resource, with a link to the scan |
 
 **Check** covers the clusters where **Enable scheduling** is on, and those where a scan was started by hand. It shows "Module not configured!" only when no cluster has the schedule on and no scan was ever made.

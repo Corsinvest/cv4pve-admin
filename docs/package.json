@@ -14,7 +14,9 @@
     "@corsinvest/cv4pve-docs-theme": "github:Corsinvest/cv4pve-docs-theme#semver:^2.0.0",
     "@iconify-json/material-symbols": "^1.2.94",
     "@iconify-json/mdi": "^1.2.3",
-    "astro": "^7.4.12"
+    "astro": "^7.4.12",
+    "playwright-core": "^1.48.2",
+    "starlight-image-zoom": "^0.16.3"
   },
   "overrides": {
     "postcss-selector-parser": "^7.1.6"

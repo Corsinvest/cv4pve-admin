@@ -7,6 +7,8 @@
 
 Centralized dashboard for all your Proxmox VE clusters. Multi-cluster visibility, proactive monitoring, backup analytics, automated snapshots, diagnostics, and more — running completely outside Proxmox VE via REST API.
 
+![cv4pve-admin dashboard](https://raw.githubusercontent.com/Corsinvest/cv4pve-admin/main/docs/src/assets/images/screenshots/home/dashboard.png)
+
 ## Quick Start
 
 **Linux/macOS:**

@@ -92,7 +92,7 @@ The installer downloads an `adminctl` script into the installation directory. It
 
 **Stop:** `stop` removes the containers (`docker compose down`). The data stays.
 
-**Backup:** the `backup` commands need the containers running. They write under `backups/db`, `backups/data` and `backups/all`. There is no restore command. `backup db` and `backup data` print the command to restore the backup. `backup all` only says to restore the database and the data separately.
+**Backup:** the `backup` commands need the containers running. They write under `backups/db`, `backups/data` and `backups/all`. `backup data` and `backup all` archive only the application data (`data/cv4pve-admin/data`): copy `data/cv4pve-admin/config` with `appsettings.extra.json` by hand. There is no restore command. `backup db` and `backup data` print the command to restore the backup. `backup all` only says to restore the database and the data separately.
 
 ## Updating
 

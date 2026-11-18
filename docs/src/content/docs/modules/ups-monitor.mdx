@@ -64,7 +64,9 @@ By default a device only reads the UPS and sends notifications. Set to **Dry-run
 
 ## Dashboard
 
-At the top, four counters: devices **Online**, **On Battery** (with those on low battery), **Critical** and **Offline** (with those never read or in an unknown state). A fifth counter, **Bypass**, appears when at least one device is in bypass, and **Disabled** when at least one device is disabled. The disabled devices are not in the other counters.
+At the top, the counters of the devices, in this order: **Online**, **On Battery** (with those on low battery), **Critical**, **Bypass**, **Offline** (with those never read or in an unknown state) and **Disabled**. **Bypass** appears only when at least one device is in bypass, and **Disabled** only when at least one device is disabled. The disabled devices are not in the other counters.
+
+![Dashboard with the counters and the cards of two UPS devices online](../../../assets/images/screenshots/modules/ups-dashboard.png)
 
 Below, each device has a card. The devices that need attention come first: critical, on battery, bypass, low battery, offline, unknown or never read, then online. Devices with the same status are in order of name; the disabled devices come last. A disabled device is not read: its card is grey, says **Disabled** instead of the status and shows the values of the last reading, with its time. A card shows:
 
@@ -74,16 +76,17 @@ Below, each device has a card. The devices that need attention come first: criti
 - for a device on **Dry-run** or **Shutdown** that runs on battery, the time at which its shutdown condition is expected (**Shutdown condition at**) or the condition met (**Shutdown condition met**)
 - **Battery** with its value, a bar and a small chart of the last three hours: red up to 20%, yellow up to 50%, green above
 - **Load** with its value, a bar and a small chart of the last three hours: green below 50%, yellow from 50%, red from 80%
+- in the two small charts, one point every five minutes: the average of the readings stored in those minutes
 - **Input** and **Output** voltage, **Runtime** and **Temperature**
 - the time of the last reading
 
 A value the device does not give is shown as `-`. An offline device keeps its last values, dimmed.
 
-The cards show the last reading. An open page is updated every few seconds, at once when the status of a device changes.
+The cards show the last reading. An open page is updated at most every 15 seconds, at once when the status of a device changes.
 
 On large screens the cards are three, four or six in a row.
 
-The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** or **Shutdown** it shows a warning while **Where this application runs** is not set, and a strip for the power failure in progress. With a device on **Shutdown** it also warns when the time needed to shut everything down is not set, when **Estimated runtime below (minutes)** leaves less time than the shutdown needs, and when the credentials of the cluster may not shut the nodes down. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown).
+The page also has the buttons **Test shutdown** and **Simulate power failure**. When at least one device is on **Dry-run** or **Shutdown** it shows a warning while **Where this application runs** is not set, or when it is **In a guest of this cluster** and that guest is not found in the cluster (no node is then kept for last), and a strip for the power failure in progress. With a device on **Shutdown** it also warns when the time needed to shut everything down is not set, when **Estimated runtime below (minutes)** leaves less time than the shutdown needs, and when the credentials of the cluster may not shut the nodes down. See [Power failure and automatic shutdown](#power-failure-and-automatic-shutdown).
 
 ### Status values
 
@@ -100,6 +103,8 @@ The page also has the buttons **Test shutdown** and **Simulate power failure**. 
 ## Devices
 
 The grid lists the devices of the cluster with **Enabled**, **Name**, **Host**, **Port**, **Connection**, **Detected Brand**, **On power failure**, **Last Status**, **Last Scan**, **Location** and **Managed Nodes** (**All** or the number of nodes). Click the name of a device to edit it.
+
+![Editor of an SNMP v2c device with its thresholds](../../../assets/images/screenshots/modules/ups-device.png)
 
 Each UPS device is configured with:
 
@@ -330,7 +335,7 @@ The **Nodes** tab of the settings lists the nodes of the cluster, each with the 
 
 ### During a power failure
 
-When a device on **Dry-run** or **Shutdown** goes on battery, a power failure starts for the cluster and the Dashboard shows a strip with its start time and the nodes already recorded.
+When a device on **Dry-run** or **Shutdown** goes on battery, a power failure starts for the cluster and the Dashboard shows a strip with its start time. The strip says whether the commands are sent (at least one device is on **Shutdown**) or it is a simulation only. Below, one badge for each node: `<order>. <node>: <state>`, first the nodes already recorded with their outcome, then those the plan would add now, marked **waiting**. Before any condition is met it shows **No shutdown condition met yet.**
 
 1. A device meets a shutdown condition.
 2. The nodes of the plan are commanded, or only recorded for **Dry-run**, each with its order, the outcome and the reason, in **Tasks** and in the audit log. A node recorded is not recorded again in the same power failure, except to try a failed command again.
@@ -396,6 +401,12 @@ The settings are in four tabs: **Monitoring**, **Alerts**, **Shutdown** and **No
 
 </Collapse>
 
+## Widgets
+
+| Widget | Content |
+|--------|---------|
+| **Status** | The enabled devices by status: **Online**, **On Battery** (also low battery and bypass), **Critical** and **Offline** (also unknown or never read), with the time of the last reading |
+
 ## Permissions
 
 | Permission | Description |
@@ -410,7 +421,8 @@ The settings are in four tabs: **Monitoring**, **Alerts**, **Shutdown** and **No
 | **Shutdown: Test shutdown** | Shows the **Test shutdown** button |
 | **Shutdown: Simulate power failure** | Shows the **Simulate power failure** button |
 | **Shutdown: Close episode** | Shows the **Close episode** button |
+| **Status** | Use the dashboard widget with that name |
 
-The administrator role of the module includes the new permissions.
+The built-in role **Admin for module UPS Monitor** includes all of them.
 
 <PvePrivileges module="ups-monitor" />

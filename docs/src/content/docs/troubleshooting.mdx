@@ -15,7 +15,7 @@ head:
 | Log files | One file per day in `data/cv4pve-admin/data/logs/` (`log-YYYYMMDD.txt`). The last 30 files are kept. |
 | Log viewer (Enterprise Edition) | **Admin Area → Monitoring → Logs**. See [Monitoring](../configuration/admin-area/monitoring/). |
 | Tasks | **Admin Area → Monitoring → Tasks** shows the log of every operation started by a module. |
-| Health endpoint | `http://<server-ip>:8080/health` answers `Healthy` when the application is up. It does not test the database. |
+| Health endpoint | `http://<server-ip>:8080/health` answers with JSON when the application is up: `status` (`Healthy`), `checks` and `totalDuration`. It does not test the database. |
 | Connectivity tests | **Admin Area → Maintenance** has **Test Cluster Connections** and **Test Internet Connectivity**. See [Maintenance](../configuration/admin-area/maintenance/#connectivity-tests). |
 
 To get more detail in the logs, raise the log level in [appsettings.extra.json](../configuration/appsettings-extra/#serilog-configuration) and restart the container.
@@ -153,7 +153,7 @@ A task that was still running when cv4pve-admin was restarted is marked `Abandon
 
 ## HTTPS / Reverse Proxy
 
-To expose cv4pve-admin over HTTPS, use a reverse proxy (Caddy, Nginx Proxy Manager, Traefik, or Nginx).
+To expose cv4pve-admin over HTTPS, use a reverse proxy. The guide has examples for Caddy, Traefik and Nginx.
 
 **[HTTPS Setup Guide](../https/)**
 

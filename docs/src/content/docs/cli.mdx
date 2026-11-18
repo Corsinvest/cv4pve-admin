@@ -43,7 +43,7 @@ The new password must satisfy the password rules of the application. Otherwise `
 | `user unlock -u <user>` | Unlock a locked out user account and reset its count of failed sign-in attempts |
 | `user disable-2fa -u <user>` | Turn off two-factor authentication for the user, who then signs in with the password only |
 
-A user name that does not exist is reported as `Error: User '<name>' not found`. The built-in system users cannot be modified from the command line.
+A user name that does not exist is reported as `Error: User '<name>' not found`. The built-in `system` user cannot be modified from the command line: `reset-password`, `enable`, `disable` and `unlock` stop with an error. `disable-2fa` reports that the user has no two-factor authentication enabled.
 
 ## Troubleshooting
 

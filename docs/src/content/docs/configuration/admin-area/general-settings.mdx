@@ -30,7 +30,7 @@ SMTP server used for the emails the application sends about accounts: email conf
 | **SSL/TLS Options** | How the connection is secured (default: `StartTls`). See the table below. |
 | **Username** / **Password** | Credentials. Leave **Username** empty if the server accepts unauthenticated mail from the cv4pve-admin host. The password is stored encrypted. |
 | **From Address** | Required. Sender email address. |
-| **From Display Name** | Sender name shown next to the address. |
+| **From Display Name** | Sender name shown next to the address (default: `cv4pve-Admin`). |
 
 | SSL/TLS Options | Meaning |
 |-----------------|---------|
@@ -44,7 +44,9 @@ A new installation is pre-filled with placeholder values (`smtp.example.com`, `n
 
 ### Test SMTP Configuration
 
-The **Test SMTP Configuration** card under the form verifies the settings end to end. Enter a **Test Email Address** and click **Send**. The test uses the values currently in the form, even before you save them. If the message cannot be sent, the test reports the error returned by the server.
+The **Test SMTP Configuration** card under the form verifies the settings end to end. Enter a **Test Email Address** (1) and click **Send** (2). The test uses the values currently in the form, even before you save them. If the message cannot be sent, the test reports the error returned by the server.
+
+![SMTP Configuration form with the Test SMTP Configuration card](../../../../assets/images/screenshots/configuration/general-settings-smtp.png)
 
 **Not shared with the notification channels:** These settings are used only for account emails. Each SMTP channel of the [Notification Hub](../notifier/) has its own server settings.
 
@@ -76,5 +78,7 @@ Customise the sign in page shown to your users.
 |-------|-------------|
 | **Sign in page: Title** | Required. Heading shown on the login page (default: `Welcome`). |
 | **Sign in page: Description (Markdown)** | Text below the heading, written in Markdown (default: `Take control of your Proxmox VE`). |
+
+![Appearance settings with the title and the description of the sign in page](../../../../assets/images/screenshots/configuration/general-settings-appearance.png)
 
 Useful for MSPs and enterprises that want to brand the admin interface for their own customers.

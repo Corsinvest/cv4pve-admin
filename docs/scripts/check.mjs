@@ -29,6 +29,8 @@ const MAX_ASIDES = 2;
 // En dash and em dash, by code point so this file holds neither.
 const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
 let pages = 0;
+// Screenshots used by the pages, with the numbers "(1)" written in the text of their step.
+const shotsUsed = [];
 for (const file of walk(PAGES, (n) => n.endsWith('.mdx') || n.endsWith('.md'))) {
   const rel = slash(path.relative(PAGES, file));
   const source = fs.readFileSync(file, 'utf8').split('\r\n').join('\n');
@@ -70,6 +72,43 @@ for (const file of walk(PAGES, (n) => n.endsWith('.mdx') || n.endsWith('.md'))) 
   const meta = prose.match(/^<p class="cv-page-meta">(.*)<\/p>$/m);
   if (meta && !/<Tag\b/.test(meta[1])) problem('line under the title only with a badge', rel);
   if (/<(FeatureCard|EditionBox)\b|class="cv-cards?"/.test(prose)) problem('cards are FeatureGrid', rel);
+
+  // The text of a step is what comes after the previous image, heading or numbered step.
+  const offset = source.length - body.length;
+  let from = 0;
+  for (const m of body.matchAll(/!\[[^\]]*\]\(([^)]*\/screenshots\/([^)\s]+))\)|^#{2,6} |^\s*\d+\. /gm)) {
+    if (!m[2]) { from = m.index; continue; }
+    const numbers = [...new Set([...body.slice(from, m.index).matchAll(/\((\d+)\)/g)].map((a) => Number(a[1])))].sort((a, b) => a - b);
+    const line = source.slice(0, offset + m.index).split('\n').length;
+    shotsUsed.push({ at: `${rel}:${line}`, file: m[2], numbers });
+    from = m.index + m[0].length;
+  }
+}
+
+// ---------- Screenshots
+
+// Every image in src/assets/images/screenshots comes from scripts/screenshots/shots.json, is used by a
+// page, and the numbers written in the text of its step are the numbers of its badges.
+const SHOTS_DIR = path.join(ROOT, 'src', 'assets', 'images', 'screenshots');
+const shotsConfig = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'screenshots', 'shots.json'), 'utf8'));
+const shotByFile = new Map(shotsConfig.shots.map((a) => [a.file, a]));
+const shotFiles = fs.existsSync(SHOTS_DIR)
+  ? walk(SHOTS_DIR, (n) => /\.(png|jpe?g|webp)$/.test(n)).map((a) => slash(path.relative(SHOTS_DIR, a)))
+  : [];
+
+for (const file of shotFiles) {
+  if (!shotByFile.has(file)) problem('screenshots come from shots.json', `screenshots/${file}`);
+}
+for (const shot of shotsConfig.shots) {
+  if (!shotsUsed.some((a) => a.file === shot.file)) problem('every screenshot is used by a page', `shots.json: ${shot.id}`, shot.file);
+}
+for (const used of shotsUsed) {
+  const shot = shotByFile.get(used.file);
+  if (!shot) { problem('screenshots come from shots.json', used.at, used.file); continue; }
+  const badges = (shot.badges ?? []).map((a) => a.n).sort((a, b) => a - b);
+  if (badges.join(',') !== used.numbers.join(',')) {
+    problem('numbers in the step match the badges', used.at, `text (${used.numbers.join(', ')}), badges of ${shot.id} (${badges.join(', ')})`);
+  }
 }
 
 // ---------- Built site

@@ -1,0 +1,71 @@
+{
+  "resolution": { "width": 1920, "height": 1080 },
+  "fps": 30,
+  "crossfade": 0.5,
+  "output": "demo.mp4",
+  "title": {
+    "id": "title",
+    "title": "cv4pve-admin",
+    "subtitle": "Manage your Proxmox VE clusters from one place",
+    "duration": 4
+  },
+  "closing": {
+    "id": "closing",
+    "title": "cv4pve-admin",
+    "subtitle": "Community and Enterprise Edition",
+    "footer": "corsinvest.github.io/cv4pve-admin",
+    "duration": 4
+  },
+  "scenes": [
+    {
+      "id": "dashboard",
+      "url": "/module/*/dashboard",
+      "caption": "One dashboard for every cluster",
+      "duration": 6,
+      "steps": [
+        { "wait": 600 },
+        { "moveTo": ".rz-tile-layout-item", "nth": 0, "ms": 900 },
+        { "wait": 1200 },
+        { "moveTo": ".rz-tile-layout-item", "nth": 4, "ms": 1000 },
+        { "wait": 1200 }
+      ]
+    },
+    {
+      "id": "resources",
+      "url": "/module/cvtest/resources/cluster",
+      "caption": "Live status of nodes, guests and storage",
+      "duration": 7,
+      "steps": [
+        { "wait": 600 },
+        { "moveTo": ".cv4pve-summary-kpis .cv4pve-kpi", "nth": 0, "ms": 900 },
+        { "wait": 700 },
+        { "moveTo": ".cv4pve-summary-kpis .cv4pve-kpi", "nth": 2, "ms": 700 },
+        { "wait": 700 },
+        { "moveTo": ".cv4pve-usage-ring-item", "nth": 0, "ms": 900 },
+        { "wait": 700 },
+        { "moveTo": ".cv4pve-usage-ring-item", "nth": 2, "ms": 800 },
+        { "wait": 800 }
+      ]
+    },
+    {
+      "id": "backups",
+      "url": "/module/cvtest/backup-analytics/backups",
+      "caption": "Spot failed backups at a glance",
+      "duration": 7,
+      "setup": [
+        { "click": "button:has-text('Show chart')" },
+        { "waitFor": ".rz-column-series.rz-series-1 path" },
+        { "wait": 1200 }
+      ],
+      "steps": [
+        { "wait": 600 },
+        { "moveTo": ".rz-column-series.rz-series-1 path", "nth": 1, "ms": 1200 },
+        { "wait": 600 },
+        { "click": ".rz-column-series.rz-series-1 path", "nth": 1 },
+        { "wait": 1200 },
+        { "moveTo": ".rz-data-grid .rz-data-row", "nth": 0, "ms": 900 },
+        { "wait": 1500 }
+      ]
+    }
+  ]
+}

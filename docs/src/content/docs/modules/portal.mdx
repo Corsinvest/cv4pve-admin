@@ -84,11 +84,15 @@ The permissions are of the user and of the guest, not of the tenant:
 
 Tenant users are regular cv4pve-admin accounts linked to the tenant. The grid shows **User Name**, **Is Active**, **Lockout End** and **VMs** (for each VM of the tenant, the permissions granted to the user). The toolbar has **New**, **Delete**, **Refresh** and **Export**. Click the user name to edit.
 
+![Users tab of a tenant with a user and the permissions on each VM](../../../assets/images/screenshots/modules/portal-users.png)
+
 | Field | Description |
 |-------|-------------|
 | **User Name** | Email address of the user (required). It cannot be changed after the user is added |
 | **Display Name** | Name shown in the application. When empty, a new account takes the user name and an existing account keeps the name it has |
 | Permission table | One row for each VM/CT of the tenant and one checkbox for each permission: Read, Audit, Console, Power Management, Replication manager, Replication Schedule Now, Snapshot manager, Snapshot Rollback, Backup manager, Backup Restore, Backup Restore File |
+
+![Dialog of a tenant user with the permission table of the VMs of the tenant](../../../assets/images/screenshots/modules/portal-user.png)
 
 How accounts are handled:
 

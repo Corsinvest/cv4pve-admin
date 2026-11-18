@@ -11,7 +11,7 @@ import Tag from '~/components/Tag.astro';
 
 Part of [AI Server](../ai-server/).
 
-AI Server exposes 29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries. Every tool except `ListClusters` takes the name of the cluster to work on as `cluster_name`. `ListClusters` returns the names of the enabled clusters.
+AI Server exposes 29 tools grouped by area, plus 2 additional Enterprise tools for SQL-like queries. Every tool except `ListClusters` takes the name of the cluster to work on as `cluster_name`. `ListClusters` returns the names of the enabled clusters on which the token holds at least one tool permission.
 
 A tool that cannot run answers with a JSON object carrying an `error` field, for example `Permission denied`, `Cluster '<name>' not found` or `VM <id> not found`.
 
@@ -19,7 +19,7 @@ A tool that cannot run answers with a JSON object carrying an `error` field, for
 
 ### ListClusters
 
-List the enabled clusters with name and description
+List the enabled clusters on which the token holds at least one tool permission, with name and description
 
 - **Parameters:** none
 
@@ -39,7 +39,7 @@ Cluster options: migration type and network, console type, keyboard layout, MAC 
 
 ### ListVms
 
-List VMs and containers with status and resource usage. Supports filters by status and type, and the Minimal or Full detail level
+List VMs and containers. Supports filters by status and type. The Minimal detail level returns VM ID, name, node, status, type and tags; the Full detail level adds description, template flag, uptime, lock, CPU, memory, disk and network usage
 
 - **Parameters:** `cluster_name`, `status` (optional: running, stopped, paused), `type` (optional: qemu, lxc), `detail_level` (Minimal, default, or Full)
 
@@ -99,7 +99,7 @@ Create a VM/LXC backup via vzdump with optional storage, mode, compression, prot
 
 ### ListVmRrdData
 
-Historical metrics (CPU, Memory, Disk, Network, Pressure PSI) for one or more VMs. An ID that is not found gets an `error` entry in the result
+Historical metrics (CPU, Memory, Disk, Network, Pressure PSI) for one or more VMs. Pressure needs Proxmox VE 9.0 or later. An ID that is not found gets an `error` entry in the result
 
 - **Parameters:** `cluster_name`, `vmids` (array of VM IDs), `time_frame` (Hour, Day, Week, Month, Year), `consolidation` (Average or Maximum), `metrics` (Cpu, Memory, Disk, Network, Pressure, or All)
 
@@ -125,7 +125,7 @@ List cluster replications with schedule, sync status and error info
 
 ### ListNodeRrdData
 
-Historical metrics (CPU, Load avg, Memory, Swap, Disk, Network, Pressure PSI) for nodes
+Historical metrics for nodes: Cpu (usage, load average and IO wait), Memory (with swap), Disk (root file system only), Network, Pressure PSI. Pressure needs Proxmox VE 9.0 or later
 
 - **Parameters:** `cluster_name`, `nodes` (optional array, all nodes if empty), `time_frame`, `consolidation`, `metrics` (same values as `ListVmRrdData`)
 
@@ -176,7 +176,7 @@ List CT templates available on a node storage
 
 ### ListBackupJobs
 
-List cluster backup jobs with schedule, storage, compression and VM list
+List cluster backup jobs with schedule, storage, compression and VM list. With `vmid`, a job for all guests (no VM list) is not returned
 
 - **Parameters:** `cluster_name`, `vmid` (optional)
 

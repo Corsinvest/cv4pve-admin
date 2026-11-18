@@ -43,13 +43,15 @@ Toolbar actions:
 
 | Action | Description |
 |--------|-------------|
-| **Add** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
+| **New** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
 | **Export** | Export the grid to Excel. |
-| **Reset password** | Send the selected user a link to set a new password, after confirmation. The link is sent by email and is also shown, so it can be copied and delivered another way. It opens the same page as **Forgot password?** on the sign-in page and expires after one day. Not available for your own account: use the [User Profile](../../profile/). |
+| **Reset password** | Send the selected user a link to set a new password, after confirmation. The link is sent by email and is also shown, so it can be copied and delivered another way. It opens the same page as **Forgot password?** on the sign-in page and expires after one day. Not available for your own account (use the [User Profile](../../profile/)) or for the `system` account. |
 | **Disable 2FA** | Turn off two-factor authentication for the selected user, after confirmation. Use it when a user has lost both the authenticator device and the recovery codes. The user signs in with the password only and is informed by email; the authenticator key and the recovery codes are discarded, so the next setup starts from a new QR code. Not available on your own account: use your [profile](../../profile/#two-factor-authentication-2fa). Requires the **Disable 2FA** permission. |
 | **Effective Permissions** | Show every permission the selected user ends up with, and where each one comes from (granted directly or through a role). The dialog has a **Flat** and a **Tree** view. Shown only with the **Read** permission on users. |
 
 Click the **User Name** of a row to edit the user. A built-in account cannot be deactivated. The dialog has three tabs, five for an existing user: **External logins** and **External sign-ins** are described in [External Authentication](../external-authentication/#users). The **system** account, used by the scheduled jobs, cannot be edited.
+
+![General tab of the dialog of an existing user](../../../../assets/images/screenshots/configuration/security-user.png)
 
 ### General
 
@@ -68,7 +70,9 @@ Permissions granted directly to the user, in addition to the ones inherited from
 
 ### Roles of the user
 
-Pick list with the available roles on the left and the **Selected Roles** on the right. Roles flagged as **Default** are always assigned and cannot be removed here.
+The **Roles** tab is a pick list with the available roles on the left and the **Selected Roles** on the right. Roles flagged as **Default** are always assigned and cannot be removed here.
+
+![Roles tab of a user, with a custom role among the selected roles](../../../../assets/images/screenshots/configuration/security-user-roles.png)
 
 ### How a new user gets access
 
@@ -107,15 +111,19 @@ The editor has three tabs that show the same entries in different ways:
 
 | Tab | Use it to |
 |-----|-----------|
-| **List** | Flat grid with **Add**, **Delete** and in-row editing of cluster, permission, path and propagation. |
+| **List** | Flat grid with **New**, **Delete** and in-row editing of cluster, permission, path and propagation. |
 | **By Permission** | Tree of all permissions with one column per cluster. Tick a checkbox to grant a permission on a cluster, or tick a group to grant all the permissions below it. **Only set** hides the branches with no granted permission. |
 | **By Path** | One row per path and one column per cluster. Each granted permission is a badge: click it to remove it, use the **+** button to add one. |
+
+![By Permission tab of a role with Only set on, showing the permissions granted on a cluster](../../../../assets/images/screenshots/configuration/security-permissions-editor.png)
 
 ## App Tokens<Tag kind="ee" />
 
 App tokens are credentials for programmatic access, used instead of a user name and password. The [AI Server (MCP)](../../../modules/ai-server/) authenticates its clients with an app token.
 
 The **App Tokens** grid shows **Name**, **Owner**, **Is Active**, **Created At** and **Expires At**. Inactive and expired tokens are highlighted.
+
+![App Tokens grid with its toolbar](../../../../assets/images/screenshots/configuration/security-app-tokens.png)
 
 | Field | Description |
 |-------|-------------|
@@ -131,6 +139,8 @@ Toolbar actions:
 
 | Action | Description |
 |--------|-------------|
+| **New** | Opens the dialog of a new token. Requires the **Create** permission on app tokens. |
+| **Delete** | After confirmation, deletes the selected token. Requires the **Delete** permission on app tokens. |
 | **Regenerate** | After confirmation, generates a new secret for the selected token and shows it once. The previous secret stops working immediately. Requires the **Edit** permission on app tokens. |
 | **Effective Permissions** | Shows every permission the token ends up with, directly or through roles. Shown only with the **Read** permission on app tokens. |
 | **Export** | Export the grid to Excel. |
@@ -139,10 +149,14 @@ Toolbar actions:
 
 The **Active Sessions** page lists the browser sessions currently connected to the application. Columns: **UserName**, **Login**, **Ip Address**, **Device**, **Platform**, **Browser**, **Current Page** and **Last Activity**. **Platform Version**, **Browser Version** and **User Agent** are hidden by default and can be added from the column picker.
 
+![Active Sessions grid in the Community Edition, with Send Message and Force logout marked as Enterprise](../../../../assets/images/screenshots/configuration/security-active-sessions.png)
+
 | Action | Description |
 |--------|-------------|
-| <Tag kind="ee" /> **Send Message** | Sends a notification to the selected sessions. Fields: **Title**, **Message** (required) and **Severity** (`Info`, `Success`, `Warning`, `Error`). |
-| <Tag kind="ee" /> **Force logout** | After confirmation, terminates the selected sessions. The user sees the message "Your session has been terminated by an administrator". |
+| <Tag kind="ee" /> **Send Message** | Sends a notification to the selected session. Fields: **Title**, **Message** (required) and **Severity** (`Info`, `Success`, `Warning`, `Error`; default `Info`). |
+| <Tag kind="ee" /> **Force logout** | After confirmation, terminates the selected session. The user sees the message "Your session has been terminated by an administrator". |
+
+One session is selected at a time.
 
 Each user sees their own sessions in the [User Profile](../../profile/#active-sessions).
 
@@ -150,11 +164,14 @@ Each user sees their own sessions in the [User Profile](../../profile/#active-se
 
 The **Audit Logs** grid records logins (successful and failed) and administrative actions such as user, role and maintenance operations. Sign-ins through a domain or an identity provider are recorded as `Login-Domain` and `Login-External`, see [External Authentication](../external-authentication/#audit).
 
+![Audit Logs with the daily chart above the grid](../../../../assets/images/screenshots/configuration/security-audit-logs.png)
+
 Columns: **Timestamp**, **User Name**, **Success** (`Success` or `Failed`), **Action**, **IP Address** and **User Agent**. Expand a row to read the **Details** of the entry, with a button to copy them.
 
 - Every column can be filtered and sorted, and the grid can be grouped by column.
 - **Export** saves the grid to Excel.
-- **Delete** removes the selected entries. It has a permission of its own, **Delete audit logs**.
+- **Show chart** / **Hide chart** shows a stacked chart of the entries of the last 30 days by result (`Success`, `Failed`). Drag the range selector under the chart (shown with at least two days of data) to restrict the grid to a period, or click a bar to show only the entries of that day and result. **Hide chart** removes the filter of the chart.
+- **Delete** removes the selected entry, after confirmation. One entry is selected at a time. It has a permission of its own, **Delete audit logs**.
 - Old entries are removed with [Maintenance → Cleanup Audit Logs](../maintenance/#cleanup-operations). There is no automatic cleanup.
 - Audit logs are stored in the `system` schema of the cv4pve-admin database, separately from Proxmox VE.
 

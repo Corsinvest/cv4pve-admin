@@ -45,8 +45,10 @@ Why a dedicated view when PVE has its Replication tab?
 
 ## Sections
 
+![Replications page with the toolbar and the list of the collected replication runs, one of them failed](../../../assets/images/screenshots/modules/replication-analytics-replications.png)
+
 - **Overview**: introduction to the module and its dashboard widgets
-- **Replications**: history of the replication runs collected by the scans. The columns are start, end, duration, size, status, source and target node, and error. On each row, **Show log** opens the log of the run. See [Collecting data](#collecting-data) for the scans and the toolbar actions
+- **Replications**: history of the replication runs collected by the scans. The columns are VM ID, start, end, duration, size, status, source and target node, and error; **Task Id** and **Last Run** are hidden and can be added from the column picker. When the list is grouped, the header of each group shows how many rows it has and their total size. On each row, **Show log** opens the log of the run. See [Collecting data](#collecting-data) for the scans and the toolbar actions
 - **Scheduled**: configured replication jobs with schedule, rate limit, last sync and next sync
 - **Trends**: line charts of replication **Size** and **Duration** over time, one line per guest. Choose the **Period**, then the **Node**, then the **VM / CT** to plot. **Period** is a single date range field, limited to the dates for which data exists
 
@@ -68,8 +70,21 @@ Toolbar of the **Replications** page:
 | **Delete all data** | After confirmation, deletes every collected record of the cluster from the module database. Replication jobs and replicated data in Proxmox VE are not touched |
 | **Refresh** | Reloads the grid |
 | **Export** | Downloads the grid as an Excel file |
+| **Show chart** / **Hide chart** | Shows or hides the chart above the list. See [Daily chart](#daily-chart) |
 
-The toolbar also shows the state of the schedule configured in the settings.
+The toolbar also shows the state of the schedule configured in the settings: with **Enable scheduling** on, an info icon with **Next Execution** (the date of the next scan) and the schedule in words; with it off, the **Activate scheduling** button, which opens the settings, for the users who can change them. When the list is empty, the grid offers **Execute your first scan** to the users who can use **Scan**.
+
+### Daily chart
+
+**Last 30 days by status** has one column per day, split into **Done** and **Failed** runs. It is hidden when the page opens.
+
+![Replications page with the daily chart of done and failed runs above the list](../../../assets/images/screenshots/modules/replication-analytics-chart.png)
+
+- Drag the range bar under the chart to filter the list on those days. The bar appears when the chart has at least 2 days
+- Click a column to filter the list on that day and status. The button with the day and the status, beside the title, removes the filter
+- **Hide chart** removes the filter too
+
+The days of the chart are counted in UTC, while **Start** is in local time: near midnight a run can fall on another day in the chart.
 
 ## Widgets
 

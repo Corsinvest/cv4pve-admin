@@ -46,7 +46,7 @@ Why analytics when PVE already shows backup jobs?
 ## Sections
 
 - **Overview**: introduction to the module and its dashboard widgets
-- **Backups**: backup history collected by the scans, one row per guest and backup run. The columns are start, end, duration, size, transfer speed, status, node, storage and error. Failed rows are highlighted. On each row, **Show VM log** opens the log of that guest and **Show Job log** opens the log of the whole backup task. See [Collecting data](#collecting-data) for the scans and the toolbar actions
+- **Backups**: backup history collected by the scans, one row per guest and backup run. The columns are VM ID, start, end, duration, size, transfer speed, status, node, storage and error; **VM Name**, **VM Description** and **Task Id** are hidden and can be added from the column picker. Failed rows, and rows with a text in the error column, are highlighted. When the list is grouped, the header of each group shows how many rows it has and their total size. On each row, **Show VM log** opens the log of that guest and **Show Job log** opens the log of the whole backup task. See [Collecting data](#collecting-data) for the scans and the toolbar actions
 - **Scheduled**: configured backup jobs with schedule, target storage and selection
 - **Unprotected Guests**: guests (templates excluded) that no enabled backup job covers
 - **Unprotected Disks**: disks excluded from backup (e.g. `backup=0`)
@@ -69,8 +69,21 @@ Toolbar of the **Backups** page:
 | **Delete all data** | After confirmation, deletes every collected record of the cluster from the module database. Backups on the Proxmox VE storages are not touched |
 | **Refresh** | Reloads the grid |
 | **Export** | Downloads the grid as an Excel file |
+| **Show chart** / **Hide chart** | Shows or hides the chart above the list. See [Daily chart](#daily-chart) |
 
-The toolbar also shows the state of the schedule configured in the settings.
+The toolbar also shows the state of the schedule configured in the settings: with **Enable scheduling** on, an info icon with **Next Execution** (the date of the next scan) and the schedule in words; with it off, the **Activate scheduling** button, which opens the settings, for the users who can change them. When the list is empty, the grid offers **Execute your first scan** to the users who can use **Scan**.
+
+### Daily chart
+
+**Last 30 days by status** has one column per day, split into **Done** and **Failed** backups. It is hidden when the page opens.
+
+![Backups page with the daily chart of done and failed backups above the list](../../../assets/images/screenshots/modules/backup-analytics-chart.png)
+
+- Drag the range bar under the chart to filter the list on those days. The bar appears when the chart has at least 2 days
+- Click a column to filter the list on that day and status. The button with the day and the status, beside the title, removes the filter
+- **Hide chart** removes the filter too
+
+The days of the chart are counted in UTC, while **Start** is in local time: near midnight a backup can fall on another day in the chart.
 
 ## Widgets
 
