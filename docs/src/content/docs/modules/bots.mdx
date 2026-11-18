@@ -97,7 +97,7 @@ The bot talks to Proxmox VE through the connection configured for the cluster in
 - Every message received is written to the log of the **Telegram** page with its chat ID, user name and text. To find the chat ID to allow, write to the bot and read it from the log.
 - A message from a chat that is not allowed is answered with a refusal and logged as a security line.
 - The log and the list of connected chats are kept in memory: they start empty when the application or the bot restarts.
-- Saving the settings restarts the bot.
+- Saving the settings of a cluster restarts the bots of every cluster: the log and the chats of all of them start empty again.
 
 ## Settings
 

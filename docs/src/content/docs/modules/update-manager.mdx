@@ -46,7 +46,7 @@ Why centralise update checks when `apt list --upgradable` already exists?
 ## Sections
 
 - **Overview**: introduction to the module and its dashboard widget
-- **Scans**: live grid of every running VM/CT, with its current scan status (InScan / Ok / InError / Cancelled), its available updates (Normal / Security) and its reboot required flag. From this page you start a new scan and download the report as PDF or Excel. See [Scanning](#scanning)
+- **Scans**: grid of the guests of the last scan (those running when it started), with their scan status (InScan / Ok / InError / Cancelled), the available updates (Normal / Security) and the reboot required flag. From this page you start a new scan and download the report as PDF or Excel. See [Scanning](#scanning)
 
 ## Scanning
 
@@ -57,9 +57,11 @@ A scan covers the guests that are running when it starts: stopped guests are not
 | **Scan** | Starts a scan immediately in the background. The grid updates while the guests are scanned |
 | **Download** | Split button: downloads the current result as **PDF** or **Excel**. Disabled until a result exists |
 
+At the right of the toolbar, with **Enable scheduling** on, an info icon shows the **Next Execution** and the schedule in a tooltip. With it off, a user who can change the settings sees **Activate scheduling**, which opens them. While the grid is empty, **Execute your first scan** starts a scan.
+
 The scan appears in the global Task Tracker and can be cancelled from there. When you cancel, the guests not scanned yet are marked `Cancelled`. A cancelled scan sends no notification, is recorded in the audit log as not successful, and its task log ends with `Scan cancelled: no notification sent`.
 
-A guest that fails is marked `InError`, with the message in the **Error** column. The scan continues with the other guests.
+A guest that fails is marked `InError`: an icon in the **Error** column shows the message in a tooltip. A guest whose script answers that it could not check the updates is also `InError`, with no message. A cancelled guest has its own icon, **Cancelled by task**. The scan continues with the other guests.
 
 **No scan history:** Only the result of the last scan is available. It is kept in the application cache until the next scan replaces it (at most 30 days) and is not stored in the database. To see data again, run a new scan or wait for the scheduled one.
 
@@ -85,6 +87,10 @@ When the scheduled scan runs (default: every 12 hours)
 
 - **Default:** `0 */12 * * *` [<Mdi name="open-in-new" />](https://crontab.guru/#0_*/12_*_*_*)
 
+**Notifier**
+
+[Notifier](../../configuration/admin-area/notifier/) configurations that receive the PDF report at the end of a scan. The notification is sent only when at least one guest has pending updates or needs a reboot
+
 **Max parallel requests**
 
 Maximum number of VM/CT scanned at the same time (1 = sequential, range 1-50). Lower it if the nodes get overloaded during a scan
@@ -102,10 +108,6 @@ Script run inside Windows guests to detect updates. The refresh button restores 
 Script run inside Linux guests / LXC to detect updates. The refresh button restores the default script
 
 - **Default:** bundled bash
-
-**Notifier**
-
-[Notifier](../../configuration/admin-area/notifier/) configurations that receive the PDF report at the end of a scan. The notification is sent only when at least one guest has pending updates or needs a reboot
 
 </Collapse>
 

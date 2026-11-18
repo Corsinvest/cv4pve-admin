@@ -58,16 +58,16 @@ A failed job is not retried automatically. From [Maintenance → Cleanup Failed 
 
 The **Tasks** page lists the operations started by the modules, by a user or by a schedule, with their status and log. A running task updates live.
 
-You see the tasks of the modules you administer.
+You see the tasks of the modules you administer, and the tasks that belong to no module.
 
 | Column | Description |
 |--------|-------------|
-| **Task** | Title, progress (while running), elapsed time and the current phase or last log line. |
+| **Task** | Title, progress (while running), the time since the task started (also for a finished task) and the current phase or last log line. |
 | **Cluster** | Cluster the task ran on. |
 | **Module** | Module that started the task. |
 | **Status** | `Running`, `Completed`, `Failed`, `Cancelled` or `Abandoned`. |
 | **Started** | Start time. |
-| **Duration** | Elapsed time. |
+| **Duration** | Time from start to end. It shows `00:00:00` while the task is running. |
 
 **Created By**, **Phase**, **Progress**, **Ended** and **Last Log** are hidden by default and can be added from the column picker.
 
@@ -79,7 +79,7 @@ Actions:
 | **Open** (link icon on the row) | Opens the page the task belongs to, when the task has one. |
 | **Cancel task** (stop icon on the row) | Stops a running task. Shown only for tasks that can be cancelled and to users with the **Cancel running tasks** permission. |
 | **Search** | Searches title, cluster, module, phase, creator and last log. |
-| **Show chart** / **Hide chart** | Shows a stacked chart of the tasks of the last 30 days by status. The chart follows the filters of the grid. |
+| **Show chart** / **Hide chart** | Shows a stacked chart of the tasks of the last 30 days by status. The chart follows the filters of the grid. Drag the range selector under the chart (shown with at least two days of data) to restrict the grid to a period, or click a bar to show only the tasks of that day and status. **Hide chart** removes the filter of the chart. |
 | **Export** | Export the grid to Excel. |
 
 **Abandoned tasks:** A task that is still marked as running when cv4pve-admin starts was interrupted by a restart. At startup cv4pve-admin marks it `Abandoned`.
@@ -88,7 +88,7 @@ Task history is deleted automatically according to [General Settings → Task Cl
 
 ## Logs<Tag kind="ee" />
 
-The **Logs** page shows the application log stored in the database.
+The **Logs** page shows the application log stored in the database. The grid lists the entries of the last 7 days, also while the chart is hidden.
 
 | Column | Description |
 |--------|-------------|
@@ -103,7 +103,7 @@ Actions:
 | Action | Description |
 |--------|-------------|
 | **Search** | Free-text search in message, exception and message template. |
-| **Show chart** / **Hide chart** | Shows a stacked chart of the entries of the last 30 days by level. Drag the range selector under the chart to restrict the grid to a period. |
+| **Show chart** / **Hide chart** | Shows a stacked chart of the entries of the last 30 days by level. The range selector under the chart (shown with at least two days of data) starts on the last 7 days: drag it to show another period in the grid. Click a bar to show only the entries of that day and level. |
 | **Cleanup retention** | After confirmation, deletes the entries older than the retention configured in [General Settings → Log Cleanup](../general-settings/#log-cleanup). |
 | **Export** | Export the grid to Excel. |
 

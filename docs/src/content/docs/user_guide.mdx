@@ -16,6 +16,7 @@ From left to right the header contains:
 | Menu button | Collapses and expands the navigation menu |
 | Application title | Shows the product name and the edition. It is a link that opens the application address in a new tab |
 | **Search...** box | Opens the [Command Palette](#command-palette). Same as pressing `Ctrl+K` |
+| **Add cluster** | Shown when no cluster is enabled, to users who can add one. Opens the form of a new cluster in [Proxmox VE Clusters](../configuration/admin-area/clusters/) |
 | Cluster picker | Selects the cluster to work on (see [Cluster picker](#cluster-picker)) |
 | **Active Tasks** (bell) | Lists the running tasks (see [Active tasks](#active-tasks)) |
 | **Help** (question mark) | Opens the [help menu](#help-menu) |
@@ -23,11 +24,11 @@ From left to right the header contains:
 
 ### Cluster picker
 
-The picker shows the cluster currently selected, or **Select Cluster...** when none is. Open it to choose among the enabled clusters. Each entry carries a badge with its type. The **Type to search...** box filters the list by name.
+The picker shows the cluster currently selected, or **Select Cluster...** when none is. Open it to choose among the enabled clusters. Each entry carries a badge with its type. The **Type to search...** box filters the list by name, Proxmox VE name and description.
 
 Choosing a cluster reloads the current module on that cluster and updates the navigation menu. Some modules work on one cluster at a time: the menu lists them only when a cluster is selected. This documentation marks them <Tag kind="per-cluster" /> (see [Concepts](../concepts/#cluster-scope)).
 
-The picker is shown only to users who have the **Select cluster** permission.
+The picker is shown only to users who have the **Select cluster** permission, and only when at least one cluster is enabled.
 
 ### Active tasks
 
@@ -88,7 +89,7 @@ The menu on the left lists, in this order:
 
 A module is listed only if you have the permission to open it. See [Modules](../modules/) for what each one does.
 
-Inside a module, a second menu lists its pages. The **Settings** button (gear icon) at the top right opens the settings of the module. The button is shown only for modules that have settings, to users with the **Edit Settings** permission of that module.
+Inside a module, a header shows the icon, the name and the description of the module, and a second menu on the left lists its pages. The **Settings** button (gear icon) on the right of the module header opens the settings of the module. The button is shown only for modules that have settings, to users with the **Edit Settings** permission of that module.
 
 ## Command Palette
 

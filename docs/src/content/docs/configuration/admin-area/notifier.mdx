@@ -32,7 +32,7 @@ Open **Admin Area → Notifications**. The page has one tab per channel type: **
 
 A configuration receives nothing on its own. Each module chooses which configurations to notify, with the **Notifier** field of its settings. A configuration with **Enabled** off is skipped when notifications are sent.
 
-Passwords, tokens and the Apprise service URLs are stored encrypted. The **URL** of a WebHook is stored as plain text, also when it carries a secret.
+Passwords, tokens and the Apprise service URLs are stored encrypted. The **URL** and the additional **Headers** of a WebHook are stored as plain text, also when they carry a secret.
 
 ### Testing a channel
 
@@ -74,7 +74,7 @@ Send an HTTP request to any URL when a notification is triggered.
 | **URL** | Required. Endpoint to call |
 | **Method** | HTTP method: `Get`, `Post` (default), `Put`, `Patch`, `Delete` |
 | **Body Type** | Format: `Json` (default), `Xml`, `Text`, or `None`. Not shown with `Get` |
-| **Body** | Request body, with `%subject%`, `%body%` and `%severity%` as placeholders. Leave empty for the default JSON payload. Not shown with `Get`, not sent with **Body Type** `None` |
+| **Body** | Request body, with `%subject%`, `%body%` and `%severity%` as placeholders. Leave empty for the default payload, sent as the chosen **Body Type**. Not shown with `Get`, not sent with **Body Type** `None` |
 | **Auth: Type** | `None` (default), `Basic` (**Username** and **Password**), `Bearer` (**Token**, sent in the `Authorization` header) or `API Key` (**Header Name** and **Header Value**, sent as a custom header) |
 | **Headers** | Additional request headers, as name and value pairs added with **Add header**. Rows without a name are ignored; if a name is repeated, the last row wins |
 | **Timeout (seconds)** | Request timeout in seconds, 1 to 300 (default: 30) |
@@ -92,7 +92,7 @@ Send an HTTP request to any URL when a notification is triggered.
 | `%body%` | Notification message content |
 | `%severity%` | Notification severity: `Success`, `Info`, `Warning`, `Error` |
 
-**Default payload**: if **Body** is left empty, cv4pve-admin sends the following JSON automatically:
+**Default payload**: if **Body** is left empty, cv4pve-admin uses the following body. It is sent with the content type and the escaping of the chosen **Body Type**, so it is JSON only with `Json`:
 
 ```json
 {"subject": "%subject%", "body": "%body%"}

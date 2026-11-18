@@ -92,6 +92,10 @@ A workflow acts with the permissions of a user, never with more:
 
 Each activity checks the permissions of that user on the guest, node or storage it acts on. An activity without permission stops the run with `Permission denied`, and the audit log records the operation under that user.
 
+:::caution[Read activities see the whole cluster]
+Today the activities that only read data (guests, nodes, storages, configurations, metrics, snapshots, storage content, replications) are not filtered by the user: a workflow reads every guest, node and storage of the cluster, also those the user cannot see elsewhere. Until this is fixed, keep it in mind before giving **Workflow: Execute Workflow**.
+:::
+
 **Persistence:** Workflow definitions and runtime state are stored in the `workflow_elsa` Postgres schema, separate from the cv4pve-admin schema.
 
 <PvePrivileges module="workflow" />

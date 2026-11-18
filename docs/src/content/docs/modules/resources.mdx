@@ -23,7 +23,7 @@ Real-time inventory and operations, for the selected cluster, on every kind of P
     { icon: 'mdi:console', title: "Console Access", text: "Open a NoVnc console for nodes, VMs and containers, or an Xterm.js console for nodes and containers, from the resource view.", href: '#console-limitations' },
     { icon: 'mdi:link-variant', title: "Cross-references", text: "Click a node name, VM ID, storage or snapshot to jump to its detail page. The cluster context is kept." },
     { icon: 'mdi:graph', title: "Network diagram", text: "The Networks → Diagram tab draws an interactive SVG topology of nodes, bridges, VNets and guests, built with [`cv4pve-api-dotnet`](https://github.com/Corsinvest/cv4pve-api-dotnet). You can save it for your documentation.", href: '#network-diagram' },
-    { icon: 'mdi:file-excel', title: "Excel export", text: "The **Export** button in the toolbar of the lists (nodes, guests, storages, networks, disks, partitions, snapshots, cluster logs) saves the list as an Excel file." },
+    { icon: 'mdi:file-excel', title: "Excel export", text: "The **Export** button in the toolbar of the lists (nodes, guests, storages, networks, disks, partitions, snapshots, cluster tasks and logs) saves the list as an Excel file." },
   ]}
 />
 
@@ -43,7 +43,7 @@ Why this view when PVE already shows resources per cluster?
 ## Sections
 
 - **Overview**: introduction to the module
-- **Cluster**: cluster summary (status, Ceph when present, node and storage counters, usage gauges, node list), plus the **Tasks** and **Logs** tabs of the cluster
+- **Cluster**: cluster summary (status cards, usage rings, node table), plus the **Tasks**, **Logs** and **Snapshots Usage** tabs of the cluster. See [Cluster](#cluster)
 - **Nodes**: all cluster nodes with status, CPU / memory / disk usage, health score and uptime; refreshed every 10 seconds
 - **Guests**: VMs and containers of the cluster, with running/stopped state, type, owner node, CPU / memory / disk usage, share of host CPU and memory, health score and uptime; refreshed every 10 seconds. The **Show OS Info** toggle adds hostname and OS family/version (read via QEMU Guest Agent)
 - **Storages**, tabbed view: **Configuration** (storage definitions of the cluster) · **Storages** (storages per node with type, status, usage) · **Usage** (space used on each storage, **By Storage** or **By VMs**)
@@ -53,6 +53,20 @@ Why this view when PVE already shows resources per cluster?
 - **Snapshots**: all snapshots in the cluster with host, VM ID, name and date. With snapshot size calculation <Tag kind="ee" /> the page adds storage, disk, **size on disk**, replication flag and a **Trends** tab
 
 More columns than the default ones are available from the column picker of each list (tags, pool, lock, disk and network I/O, assigned CPU and memory, a link to the same resource in Proxmox VE, and others).
+
+## Cluster
+
+The **Cluster** page has three parts, then the tabs.
+
+- **Cards**: **Cluster** shows the name of the cluster and **Quorate: Yes** or **Quorate: No**; on a single node without a cluster it shows **Standalone** and **No cluster defined**. **Ceph** shows the Ceph health, only when Ceph is installed. **Node**, **Virtual Machines**, **LXC Container** and **Storage** count the resources by status
+- **Usage rings**: **CPU** and **Memory** of the online nodes, **Storage** of the available storages (a shared storage counted once), and **Snapshot** <Tag kind="ee" />, the space taken by the snapshots over the size of those storages
+- **Node table**: **Node**, **Id**, **Support**, **Is OnLine**, **Ip Address**, **Cpu %**, **Memory %** and **Uptime** of each node
+
+The tabs:
+
+- **Tasks**: the tasks of the cluster, with **Refresh** and **Export**
+- **Logs**: the cluster log, with **Export**
+- **Snapshots Usage** <Tag kind="ee" />: two grids, **For Snapshots** and **For Replication**, with one row per storage type, host and storage: **Snapshots** (how many), **Size** and **VMs** (how many guests have disks there). In Community Edition the tab shows the subscription notice
 
 ## Resource detail
 
@@ -111,7 +125,7 @@ In **Networks → Diagram**, **Download** saves the diagram as `network-diagram-
 
 Enterprise enables snapshot size data on Resources:
 
-- **Snapshot size**: size on disk in the Snapshots grid and in a guest's Snapshots tab, the **Snapshots Usage** card on Cluster and the snapshot gauge in the cluster summary
+- **Snapshot size**: size on disk in the Snapshots grid and in a guest's Snapshots tab, the **Snapshots Usage** tab on Cluster and the **Snapshot** ring in the cluster summary
 - **Snapshots Size** and **Snapshots Repl. Size** columns on the Nodes, Guests and Storages lists
 - **Trends** tab on Snapshots: pick hosts, storages and VM IDs to chart how much space their snapshots take
 - **Orphan snapshots**: see below

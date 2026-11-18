@@ -48,7 +48,7 @@ cv4pve-mcp-bridge [options]
 Options:
   -u, --url <url>        MCP server endpoint URL. Env: MCP_URL
   -k, --api-key <key>    API key for authentication. Env: MCP_API_KEY
-  -i, --insecure         Disable SSL certificate validation. Env: MCP_INSECURE
+  -i, --insecure         Disable SSL certificate validation. DANGEROUS: use only in development. Env: MCP_INSECURE
 ```
 
 Set the options with command-line arguments or with environment variables. Arguments take priority over environment variables.
@@ -57,7 +57,7 @@ Set the options with command-line arguments or with environment variables. Argum
 |----------|-------------|
 | `MCP_URL` | MCP server endpoint URL |
 | `MCP_API_KEY` | API key for authentication |
-| `MCP_INSECURE` | Set to `1` or `true` to disable SSL validation (dev only) |
+| `MCP_INSECURE` | Set to `1` or `true` (lowercase: `True` is ignored) to disable SSL validation (dev only) |
 
 The URL is the [MCP endpoint](../ai-server/#mcp-endpoint-url) of your installation. The API key is the one generated in the **API Access** tab: see [First-time setup](../ai-server/#first-time-setup). Without a URL or an API key the bridge writes an error and exits.
 

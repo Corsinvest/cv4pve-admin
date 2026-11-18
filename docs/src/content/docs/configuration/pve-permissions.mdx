@@ -44,7 +44,7 @@ This page describes Proxmox VE 9. Earlier releases use other privileges for some
 
 ### How cv4pve-admin checks the privileges
 
-Before enabling an action on a VM/CT or on a node, cv4pve-admin reads the permissions of the Proxmox VE user or API token configured for the cluster. It then checks that the user or token holds the matching privilege. The privilege is accepted when it is granted on the object itself (`/vms/<vmid>` or `/nodes/<node>`), on `/vms` or `/nodes`, or on `/`. When it is missing, the button or tab is not available, even if the cv4pve-admin user has the application permission.
+Before enabling an action on a VM/CT or on a node, cv4pve-admin reads the permissions of the Proxmox VE user or API token configured for the cluster. It then checks that the user or token holds the matching privilege. The privilege is accepted when it is granted on the object itself (`/vms/<vmid>` or `/nodes/<node>`), on `/vms` or `/nodes`, or on `/`. For **Storage: Delete Content** the paths are `/storage/<id>`, `/storage` and `/`. When it is missing, the button or tab is not available, even if the cv4pve-admin user has the application permission.
 
 | cv4pve-admin permission | Proxmox VE privilege |
 |-------------------------|----------------------|

@@ -45,7 +45,7 @@ Toolbar actions:
 |--------|-------------|
 | **Add** / **Delete** | Create or delete a user. Built-in accounts and your own account cannot be deleted. |
 | **Export** | Export the grid to Excel. |
-| **Reset password** | Send the selected user a link to set a new password, after confirmation. The link is sent by email and is also shown, so it can be copied and delivered another way. It opens the same page as **Forgot password?** on the sign-in page and expires after one day. Not available for your own account: use the [User Profile](../../profile/). |
+| **Reset password** | Send the selected user a link to set a new password, after confirmation. The link is sent by email and is also shown, so it can be copied and delivered another way. It opens the same page as **Forgot password?** on the sign-in page and expires after one day. Not available for your own account (use the [User Profile](../../profile/)) or for the `system` account. |
 | **Disable 2FA** | Turn off two-factor authentication for the selected user, after confirmation. Use it when a user has lost both the authenticator device and the recovery codes. The user signs in with the password only and is informed by email; the authenticator key and the recovery codes are discarded, so the next setup starts from a new QR code. Not available on your own account: use your [profile](../../profile/#two-factor-authentication-2fa). Requires the **Disable 2FA** permission. |
 | **Effective Permissions** | Show every permission the selected user ends up with, and where each one comes from (granted directly or through a role). The dialog has a **Flat** and a **Tree** view. Shown only with the **Read** permission on users. |
 
@@ -68,7 +68,7 @@ Permissions granted directly to the user, in addition to the ones inherited from
 
 ### Roles of the user
 
-Pick list with the available roles on the left and the **Selected Roles** on the right. Roles flagged as **Default** are always assigned and cannot be removed here.
+The **Roles** tab is a pick list with the available roles on the left and the **Selected Roles** on the right. Roles flagged as **Default** are always assigned and cannot be removed here.
 
 ### How a new user gets access
 
@@ -131,6 +131,8 @@ Toolbar actions:
 
 | Action | Description |
 |--------|-------------|
+| **Add** | Opens the dialog of a new token. Requires the **Create** permission on app tokens. |
+| **Delete** | After confirmation, deletes the selected token. Requires the **Delete** permission on app tokens. |
 | **Regenerate** | After confirmation, generates a new secret for the selected token and shows it once. The previous secret stops working immediately. Requires the **Edit** permission on app tokens. |
 | **Effective Permissions** | Shows every permission the token ends up with, directly or through roles. Shown only with the **Read** permission on app tokens. |
 | **Export** | Export the grid to Excel. |
@@ -141,8 +143,10 @@ The **Active Sessions** page lists the browser sessions currently connected to t
 
 | Action | Description |
 |--------|-------------|
-| <Tag kind="ee" /> **Send Message** | Sends a notification to the selected sessions. Fields: **Title**, **Message** (required) and **Severity** (`Info`, `Success`, `Warning`, `Error`). |
-| <Tag kind="ee" /> **Force logout** | After confirmation, terminates the selected sessions. The user sees the message "Your session has been terminated by an administrator". |
+| <Tag kind="ee" /> **Send Message** | Sends a notification to the selected session. Fields: **Title**, **Message** (required) and **Severity** (`Info`, `Success`, `Warning`, `Error`; default `Info`). |
+| <Tag kind="ee" /> **Force logout** | After confirmation, terminates the selected session. The user sees the message "Your session has been terminated by an administrator". |
+
+One session is selected at a time.
 
 Each user sees their own sessions in the [User Profile](../../profile/#active-sessions).
 
@@ -154,7 +158,8 @@ Columns: **Timestamp**, **User Name**, **Success** (`Success` or `Failed`), **Ac
 
 - Every column can be filtered and sorted, and the grid can be grouped by column.
 - **Export** saves the grid to Excel.
-- **Delete** removes the selected entries. It has a permission of its own, **Delete audit logs**.
+- **Show chart** / **Hide chart** shows a stacked chart of the entries of the last 30 days by result (`Success`, `Failed`). Drag the range selector under the chart (shown with at least two days of data) to restrict the grid to a period, or click a bar to show only the entries of that day and result. **Hide chart** removes the filter of the chart.
+- **Delete** removes the selected entry, after confirmation. One entry is selected at a time. It has a permission of its own, **Delete audit logs**.
 - Old entries are removed with [Maintenance → Cleanup Audit Logs](../maintenance/#cleanup-operations). There is no automatic cleanup.
 - Audit logs are stored in the `system` schema of the cv4pve-admin database, separately from Proxmox VE.
 
