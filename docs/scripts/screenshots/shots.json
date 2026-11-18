@@ -3,14 +3,14 @@
   "shots": [
     {
       "id": "login",
-      "file": "getting-started/login.png",
+      "file": "getting-started/login.jpg",
       "auth": false,
       "url": "/Login",
       "actions": [
         { "fill": "input[name=Username]", "value": "admin@local" },
         { "fill": "input[name=Password]", "value": "Password123!" }
       ],
-      "clip": [".rz-card .rz-col-sm-6:has(input[name=Username])"],
+      "clip": [".rz-card:has(input[name=Username])"],
       "padding": 0,
       "badges": [
         { "n": 1, "selector": "input[name=Username]" },

@@ -242,7 +242,9 @@ for (const shot of shots) {
 
         const file = path.join(OUT, shot.file);
         fs.mkdirSync(path.dirname(file), { recursive: true });
-        await page.screenshot({ path: file, clip: await clipOf(page, shot, marks) });
+        // A .jpg file for a shot with a photo in it: as PNG it would weigh megabytes.
+        const jpeg = /\.jpe?g$/i.test(file);
+        await page.screenshot({ path: file, clip: await clipOf(page, shot, marks), ...(jpeg ? { type: 'jpeg', quality: 85 } : {}) });
         console.log(`ok   ${shot.id} -> ${path.relative(process.cwd(), file)}`);
     } catch (error) {
         failed++;
