@@ -736,6 +736,96 @@
       "actions": [{ "waitFor": ".rz-data-row" }, { "wait": 1500 }],
       "padding": 8,
       "clip": ["button:has-text('Refresh')", ".rz-data-row >> nth=-1"]
+    },
+    {
+      "id": "command-palette",
+      "file": "modules/command-palette.png",
+      "url": "/module/cvtest/resources/cluster",
+      "actions": [
+        { "waitFor": "text=Quorate: Yes" },
+        { "press": "Control+k" },
+        { "waitFor": ".rz-card:has(input[type=search])" },
+        { "wait": 1500 }
+      ],
+      "clip": [".rz-card:has(input[type=search])"],
+      "padding": 0
+    },
+    {
+      "id": "command-palette-search-ip",
+      "file": "modules/command-palette-search-ip.png",
+      "url": "/module/cvtest/resources/cluster",
+      "actions": [
+        { "waitFor": "text=Quorate: Yes" },
+        { "press": "Control+k" },
+        { "waitFor": ".rz-card:has(input[type=search])" },
+        { "fill": ".rz-card input[type=search]", "value": "ip:web" },
+        { "waitFor": ".rz-card:has(input[type=search]) :text('web-02')" },
+        { "wait": 1000 }
+      ],
+      "clip": [".rz-card:has(input[type=search])"],
+      "padding": 0
+    },
+    {
+      "id": "command-palette-command-start",
+      "file": "modules/command-palette-command-start.png",
+      "url": "/module/cvtest/resources/cluster",
+      "actions": [
+        { "waitFor": "text=Quorate: Yes" },
+        { "press": "Control+k" },
+        { "waitFor": ".rz-card:has(input[type=search])" },
+        { "fill": ".rz-card input[type=search]", "value": ">start" },
+        { "wait": 1500 },
+        { "press": "ArrowDown" },
+        { "press": "Enter" },
+        { "waitFor": ".rz-dialog .rz-dropdown" },
+        { "click": ".rz-dialog .rz-dropdown" },
+        { "waitFor": ".rz-dropdown-panel .rz-data-row" },
+        { "wait": 1000 }
+      ],
+      "clip": [".rz-dialog", ".rz-dropdown-panel"],
+      "padding": 0
+    },
+    {
+      "id": "home-dashboard",
+      "file": "home/dashboard.png",
+      "url": "/module/*/dashboard",
+      "viewport": { "width": 1920, "height": 1080 },
+      "actions": [
+        { "waitFor": ".rz-tile-layout-item" },
+        { "wait": 8000 }
+      ]
+    },
+    {
+      "id": "home-backup-analytics",
+      "file": "home/backup-analytics.png",
+      "url": "/module/cvtest/backup-analytics/backups",
+      "viewport": { "width": 1920, "height": 1080 },
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "click": "button:has-text('Show chart')" },
+        { "waitFor": "button:has-text('Hide chart')" },
+        { "wait": 2500 }
+      ]
+    },
+    {
+      "id": "home-resources-guests",
+      "file": "home/resources-guests.png",
+      "url": "/module/cvtest/resources/guests",
+      "viewport": { "width": 1920, "height": 1080 },
+      "actions": [
+        { "waitFor": ".rz-data-row:has-text('web-01')" },
+        { "wait": 3000 }
+      ]
+    },
+    {
+      "id": "home-resources-cluster",
+      "file": "home/resources-cluster.png",
+      "url": "/module/cvtest/resources/cluster",
+      "viewport": { "width": 1920, "height": 1080 },
+      "actions": [
+        { "waitFor": "text=Quorate: Yes" },
+        { "wait": 3000 }
+      ]
     }
   ]
 }

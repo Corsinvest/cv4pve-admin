@@ -19,7 +19,7 @@ Admin for Proxmox VE (Made in Italy)
 >
 > **[Documentation](https://corsinvest.github.io/cv4pve-admin/)**
 
-![cv4pve-admin dashboard](docs/src/assets/images/home-computerscreen.png)
+![cv4pve-admin dashboard](docs/src/assets/images/screenshots/home/dashboard.png)
 
 ---
 
