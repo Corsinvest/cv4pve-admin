@@ -27,6 +27,8 @@ The first four types are *redirect* providers: the user leaves the application, 
 
 The grid shows **Enabled**, **Name** (with the icon of the type), **Type**, **Create account**, **Link by email** and the number of **Groups** mapped.
 
+![Providers grid with its toolbar and a Keycloak provider](../../../../assets/images/screenshots/configuration/external-authentication-providers.png)
+
 | Action | Description |
 |--------|-------------|
 | **Add** / **Delete** | Create or delete a provider. Deleting a provider removes the logins linked to it, the roles it gave and the sessions of its users. The accounts stay. |
@@ -49,6 +51,8 @@ Click the **Name** of a row to edit the provider.
 ### Connection
 
 Redirect providers show the **Callback address**: register it in the provider as the redirect URI of the application. It is shown after the first save, and it is the address of the application followed by `/signin-ext-{id}`. The address is [`PublicUrl`](../../appsettings-extra/#public-address-and-proxies) when it is set, otherwise the one open in the browser. With `PublicUrl` set the sign-in sends that same address to the provider, also when the application is opened from another address.
+
+![Dialog of a saved Keycloak provider, with the Callback address highlighted](../../../../assets/images/screenshots/configuration/external-authentication-keycloak.png)
 
 The fields depend on the type. Secrets are stored encrypted and are never sent back to the browser: leave the field empty to keep the saved value.
 

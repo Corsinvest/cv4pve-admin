@@ -38,6 +38,8 @@ Passwords, tokens and the Apprise service URLs are stored encrypted. The **URL**
 
 Select a configuration and click **Test**. The test is sent also when the configuration is not enabled, so you can try a channel before turning it on. cv4pve-admin sends a message with subject `<App Name> - Test notification`, severity `Success` and a small text attachment named `Test.txt`. This way the test also tells you whether attachments get through. The result is shown as a notification: **Test done successfully!** or the error returned by the channel.
 
+![SMTP tab with a configuration selected and the Test button highlighted](../../../../assets/images/screenshots/configuration/notifier-test.png)
+
 ---
 
 ## SMTP
@@ -66,6 +68,8 @@ These settings belong to the configuration and are independent from the SMTP ser
 ## WebHook
 
 Send an HTTP request to any URL when a notification is triggered.
+
+![Dialog of a new WebHook configuration](../../../../assets/images/screenshots/configuration/notifier-webhook.png)
 
 <Collapse title="Show WebHook configuration fields" kind="settings">
 

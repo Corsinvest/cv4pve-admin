@@ -8,7 +8,11 @@
 //
 //   node scripts/screenshots/capture.mjs [id ...]
 //
-// Environment: CV4PVE_DOCS_URL (default http://127.0.0.1:7260), CV4PVE_DOCS_USER and
+// A shot with "edition": "ee" runs on the Enterprise instance, for the pages that the Community Edition
+// shows as a subscription notice.
+//
+// Environment: CV4PVE_DOCS_URL (default http://127.0.0.1:7260), CV4PVE_DOCS_URL_EE (default
+// http://127.0.0.1:7271), CV4PVE_DOCS_USER and
 // CV4PVE_DOCS_PASSWORD (default admin@local / Password123!), CV4PVE_DOCS_BROWSER (default msedge).
 // The instance must hold test data only: what is on the screen ends up in the public documentation.
 import fs from 'node:fs';
@@ -22,6 +26,7 @@ const { chromium } = require('playwright-core');
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.resolve(HERE, '..', '..', 'src', 'assets', 'images', 'screenshots');
 const BASE = process.env.CV4PVE_DOCS_URL ?? 'http://127.0.0.1:7260';
+const BASE_EE = process.env.CV4PVE_DOCS_URL_EE ?? 'http://127.0.0.1:7271';
 const USER = process.env.CV4PVE_DOCS_USER ?? 'admin@local';
 const PASSWORD = process.env.CV4PVE_DOCS_PASSWORD ?? 'Password123!';
 const BROWSER = process.env.CV4PVE_DOCS_BROWSER ?? 'msedge';
@@ -33,8 +38,8 @@ const shots = config.shots.filter(a => only.length === 0 || only.includes(a.id))
 const browser = await chromium.launch({ channel: BROWSER });
 const newContext = () => browser.newContext({ viewport: config.viewport, deviceScaleFactor: 2, colorScheme: 'light' });
 
-async function login(page) {
-    await page.goto(`${BASE}/Login`, { waitUntil: 'load' });
+async function login(page, base) {
+    await page.goto(`${base}/Login`, { waitUntil: 'load' });
     await page.fill('input[name=Username]', USER);
     await page.fill('input[name=Password]', PASSWORD);
     await page.click('button[type=submit]');
@@ -206,9 +211,10 @@ for (const shot of shots) {
     const context = await newContext();
     const page = await context.newPage();
     try {
-        if (shot.auth !== false) { await login(page); }
+        const base = shot.edition === 'ee' ? BASE_EE : BASE;
+        if (shot.auth !== false) { await login(page, base); }
 
-        await page.goto(`${BASE}${shot.url}`, { waitUntil: 'load' });
+        await page.goto(`${base}${shot.url}`, { waitUntil: 'load' });
         await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => { });
         await page.waitForTimeout(shot.settle ?? 1500);
         for (const action of shot.actions ?? []) { await run(page, action); }

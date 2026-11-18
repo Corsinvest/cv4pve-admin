@@ -35,6 +35,8 @@ A read-only table of properties and values that describe the running cv4pve-admi
 
 The values are read when the page is opened: reload the page to refresh them.
 
+![System information table with the App Info, Environment Variables, Container Info and Memory Info groups](../../../../assets/images/screenshots/configuration/monitoring-system-information.png)
+
 **Filing a bug report:** **Report a Bug** in the help menu (the **?** icon in the top bar) opens a new GitHub issue. Edition and version are already filled in, together with an environment block: name and Proxmox VE version of every enabled cluster, deployment type (`Docker` or `Native`), browser and platform. Add the relevant rows of this page by hand when they help.
 
 ## Background Jobs
@@ -59,6 +61,8 @@ A failed job is not retried automatically. From [Maintenance → Cleanup Failed 
 The **Tasks** page lists the operations started by the modules, by a user or by a schedule, with their status and log. A running task updates live.
 
 You see the tasks of the modules you administer, and the tasks that belong to no module.
+
+![Tasks grid with its toolbar and two completed scans](../../../../assets/images/screenshots/configuration/monitoring-tasks.png)
 
 | Column | Description |
 |--------|-------------|
@@ -89,6 +93,8 @@ Task history is deleted automatically according to [General Settings → Task Cl
 ## Logs<Tag kind="ee" />
 
 The **Logs** page shows the application log stored in the database. The grid lists the entries of the last 7 days, also while the chart is hidden.
+
+![Logs grid with its toolbar and the first entries](../../../../assets/images/screenshots/configuration/monitoring-logs.png)
 
 | Column | Description |
 |--------|-------------|

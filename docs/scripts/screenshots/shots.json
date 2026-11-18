@@ -84,6 +84,290 @@
       "badges": [
         { "n": 1, "selector": ".rz-dialog button:has-text('Discover Nodes')", "side": "right" }
       ]
+    },
+    {
+      "id": "admin-area-menu",
+      "file": "configuration/admin-area-menu.png",
+      "url": "/module/*/system/maintenance",
+      "actions": [
+        { "click": ".rz-profile-menu:has(.rz-gravatar)" },
+        { "waitFor": ".rz-profile-menu:has(.rz-gravatar) a[href='/module/*/system']" }
+      ],
+      "clip": [".rz-profile-menu:has(.rz-gravatar) > li > .rz-navigation-item-wrapper", ".rz-profile-menu:has(.rz-gravatar) ul.rz-navigation-menu"],
+      "badges": [
+        { "n": 1, "selector": ".rz-profile-menu:has(.rz-gravatar) > li > .rz-navigation-item-wrapper" },
+        { "n": 2, "selector": ".rz-profile-menu:has(.rz-gravatar) a[href='/module/*/system']" }
+      ]
+    },
+    {
+      "id": "profile-menu",
+      "file": "configuration/profile-menu.png",
+      "url": "/module/*/system/maintenance",
+      "actions": [
+        { "click": ".rz-profile-menu:has(.rz-gravatar)" },
+        { "waitFor": ".rz-profile-menu:has(.rz-gravatar) a[href='/module/*/profile']" }
+      ],
+      "clip": [".rz-profile-menu:has(.rz-gravatar) > li > .rz-navigation-item-wrapper", ".rz-profile-menu:has(.rz-gravatar) ul.rz-navigation-menu"],
+      "boxes": [".rz-profile-menu:has(.rz-gravatar) a[href='/module/*/profile']"],
+      "badges": [
+        { "n": 1, "selector": ".rz-profile-menu:has(.rz-gravatar) > li > .rz-navigation-item-wrapper" }
+      ]
+    },
+    {
+      "id": "maintenance",
+      "file": "configuration/maintenance.png",
+      "url": "/module/*/system/maintenance",
+      "actions": [{ "waitFor": "button:has-text('Fix All')" }],
+      "clip": ["fieldset:has-text('Database Maintenance')", "fieldset:has-text('content_copy')", "button:has-text('Fix All')"]
+    },
+    {
+      "id": "maintenance-connectivity",
+      "file": "configuration/maintenance-connectivity.png",
+      "url": "/module/*/system/maintenance",
+      "actions": [
+        { "click": "button:has-text('Test Cluster Connections')" },
+        { "waitFor": "fieldset:has-text('content_copy') :text('cvtest')" },
+        { "wait": 1500 }
+      ],
+      "clip": ["fieldset:has-text('Connectivity Tests')", "fieldset:has-text('content_copy')"],
+      "badges": [
+        { "n": 1, "selector": "button:has-text('Test Cluster Connections')" }
+      ]
+    },
+    {
+      "id": "general-smtp",
+      "file": "configuration/general-settings-smtp.png",
+      "url": "/module/*/system/general",
+      "actions": [
+        { "click": "button:has-text('SMTP Configuration') .rzi >> nth=0" },
+        { "waitFor": "input[name$='.Host']" },
+        { "wait": 1000 },
+        { "fill": "input[placeholder='user@example.com']", "value": "jane.doe@example.com" }
+      ],
+      "expect": [{ "selector": "input[name$='.Host']", "notEmpty": true }],
+      "clip": [".rz-form-field:has(input[name$='.Host'])", ".rz-card:has-text('Test SMTP Configuration')", "button:has-text('Save changes') >> nth=0"],
+      "badges": [
+        { "n": 1, "selector": "input[placeholder='user@example.com']", "side": "inside-right" },
+        { "n": 2, "selector": "button:has-text('Send')", "side": "right" }
+      ]
+    },
+    {
+      "id": "system-information",
+      "file": "configuration/monitoring-system-information.png",
+      "url": "/module/*/system/system+information",
+      "padding": 0,
+      "clip": [".rz-data-grid"]
+    },
+    {
+      "id": "tasks",
+      "file": "configuration/monitoring-tasks.png",
+      "url": "/module/*/system/tasks",
+      "actions": [{ "waitFor": ".rz-data-row :text('Backup Analytics scan')" }],
+      "padding": 8,
+      "clip": ["button:has-text('Refresh')", ".rz-data-row >> nth=-1"]
+    },
+    {
+      "id": "active-sessions",
+      "file": "configuration/security-active-sessions.png",
+      "url": "/module/*/system/active+sessions",
+      "actions": [{ "waitFor": ".rz-data-row" }],
+      "padding": 8,
+      "clip": ["button:has-text('Refresh')", ".rz-data-row >> nth=-1"]
+    },
+    {
+      "id": "notifier-test",
+      "file": "configuration/notifier-test.png",
+      "url": "/module/*/system/notifications",
+      "actions": [
+        { "click": ".rz-data-row:has-text('Operations team') td >> nth=1" },
+        { "wait": 800 }
+      ],
+      "padding": 8,
+      "clip": [".rz-tabview-nav", ".rz-data-row:has-text('Operations team')"],
+      "boxes": [".rz-data-row:has-text('Operations team')", "button:has-text('Test') >> visible=true"]
+    },
+    {
+      "id": "notifier-webhook",
+      "file": "configuration/notifier-webhook.png",
+      "url": "/module/*/system/notifications",
+      "actions": [
+        { "click": ".rz-tabview-nav li:has-text('WebHook')" },
+        { "wait": 1000 },
+        { "click": "button:has-text('New') >> visible=true" },
+        { "waitFor": ".rz-dialog-side input[name$='.Url']" },
+        { "fill": ".rz-dialog-side input[name=Name]", "value": "Operations alerts" },
+        { "fill": ".rz-dialog-side input[name$='.Url']", "value": "https://hooks.example.com/cv4pve-admin" }
+      ],
+      "clip": [".rz-dialog-side"],
+      "padding": 0
+    },
+    {
+      "id": "profile-preferences",
+      "file": "configuration/profile-preferences.png",
+      "url": "/module/*/profile/preferences",
+      "actions": [
+        { "click": "button:has-text('Language') .rzi >> nth=0" },
+        { "waitFor": "button:has-text('Save changes')" }
+      ],
+      "clip": [".rz-accordion"],
+      "badges": [
+        { "n": 1, "selector": ".rz-accordion .rz-dropdown" },
+        { "n": 2, "selector": "button:has-text('Save changes')" }
+      ]
+    },
+    {
+      "id": "profile-password",
+      "file": "configuration/profile-password.png",
+      "url": "/module/*/profile/password",
+      "actions": [{ "waitFor": "button:has-text('Update password')" }],
+      "clip": [".rz-form-field:has(input[type=password]) >> nth=0", "button:has-text('Update password')"],
+      "badges": [
+        { "n": 1, "selector": "input[type=password] >> nth=0" },
+        { "n": 2, "selector": "input[type=password] >> nth=1" },
+        { "n": 3, "selector": "input[type=password] >> nth=2" },
+        { "n": 4, "selector": "button:has-text('Update password')" }
+      ]
+    },
+    {
+      "id": "users-dialog",
+      "edition": "ee",
+      "file": "configuration/security-user.png",
+      "url": "/module/*/system/security/users",
+      "actions": [
+        { "click": ".rz-data-row :text-is('jane.doe@example.com')" },
+        { "waitFor": ".rz-dialog-side input[name=Email]" },
+        { "wait": 800 }
+      ],
+      "expect": [{ "selector": ".rz-dialog-side input[name=Email]", "value": "jane.doe@example.com" }],
+      "clip": [".rz-dialog-side .rz-tabview-nav", ".rz-dialog-side .rz-form-field:has(input[name=DisplayName])", ".rz-dialog-side .rz-switch >> nth=-1"]
+    },
+    {
+      "id": "users-roles",
+      "edition": "ee",
+      "file": "configuration/security-user-roles.png",
+      "url": "/module/*/system/security/users",
+      "actions": [
+        { "click": ".rz-data-row :text-is('jane.doe@example.com')" },
+        { "waitFor": ".rz-dialog-side input[name=Email]" },
+        { "click": ".rz-dialog-side .rz-tabview-nav li:has-text('Roles')" },
+        { "waitFor": ".rz-dialog-side .rz-picklist" },
+        { "wait": 800 }
+      ],
+      "clip": [".rz-dialog-side"],
+      "padding": 0,
+      "boxes": [".rz-dialog-side li.rz-multiselect-item:has-text(': Operators')"]
+    },
+    {
+      "id": "permissions-editor",
+      "edition": "ee",
+      "file": "configuration/security-permissions-editor.png",
+      "url": "/module/*/system/roles",
+      "actions": [
+        { "click": ".rz-data-row :text-is('Operators')" },
+        { "waitFor": ".rz-dialog-side input[name=Name]" },
+        { "click": ".rz-dialog-side .rz-tabview-nav li:has-text('Permissions')" },
+        { "wait": 1000 },
+        { "click": ".rz-dialog-side li:has-text('By Permission')" },
+        { "wait": 1500 },
+        { "click": ".rz-dialog-side .rz-switch >> visible=true" },
+        { "wait": 1500 }
+      ],
+      "clip": [".rz-dialog-side"],
+      "padding": 0
+    },
+    {
+      "id": "app-tokens",
+      "edition": "ee",
+      "file": "configuration/security-app-tokens.png",
+      "url": "/module/*/system/app+tokens",
+      "actions": [{ "waitFor": ".rz-data-row :text('monitoring')" }],
+      "padding": 8,
+      "clip": ["button:has-text('New')", ".rz-data-row >> nth=-1"]
+    },
+    {
+      "id": "audit-logs",
+      "edition": "ee",
+      "file": "configuration/security-audit-logs.png",
+      "url": "/module/*/system/audit+logs",
+      "actions": [
+        { "click": ".rz-notification-item:has-text('Security Warning') .rz-notification-close" },
+        { "click": "button:has-text('Show chart')" },
+        { "waitFor": "button:has-text('Hide chart')" },
+        { "wait": 1500 }
+      ],
+      "clip": ["text=Last 30 days by result", "button:has-text('Hide chart')", ".rz-data-row >> nth=5"]
+    },
+    {
+      "id": "external-auth-providers",
+      "edition": "ee",
+      "file": "configuration/external-authentication-providers.png",
+      "url": "/module/*/system/external+authentication",
+      "actions": [{ "waitFor": ".rz-data-row :text('Company SSO')" }],
+      "padding": 8,
+      "clip": ["button:has-text('New')", ".rz-data-row >> nth=-1"]
+    },
+    {
+      "id": "external-auth-keycloak",
+      "edition": "ee",
+      "file": "configuration/external-authentication-keycloak.png",
+      "url": "/module/*/system/external+authentication",
+      "actions": [
+        { "click": ".rz-data-row :text-is('Company SSO')" },
+        { "waitFor": ".rz-dialog-side input[name=ServerUrl]" },
+        { "wait": 800 }
+      ],
+      "expect": [{ "selector": ".rz-dialog-side input[name=CallbackUrl]", "notEmpty": true }],
+      "clip": [".rz-dialog-side"],
+      "padding": 0,
+      "boxes": [".rz-dialog-side input[name=CallbackUrl]"]
+    },
+    {
+      "id": "system-logs",
+      "edition": "ee",
+      "file": "configuration/monitoring-logs.png",
+      "url": "/module/*/system/logs",
+      "actions": [{ "waitFor": ".rz-data-row" }],
+      "padding": 8,
+      "clip": ["button:has-text('Refresh')", ".rz-data-row >> nth=7"]
+    },
+    {
+      "id": "appearance",
+      "edition": "ee",
+      "file": "configuration/general-settings-appearance.png",
+      "url": "/module/*/system/appearance",
+      "actions": [
+        { "click": ".rz-accordion button:has-text('Appearance') .rzi >> nth=0" },
+        { "waitFor": "button:has-text('Save changes')" },
+        { "wait": 1000 }
+      ],
+      "clip": ["text=Sign in page", ".rz-form-field:has(input[name=LoginTitle])", "button:has-text('Save changes')", ".rz-tabview:has(textarea)"]
+    },
+    {
+      "id": "profile-2fa-enable",
+      "edition": "ee",
+      "file": "configuration/profile-2fa-enable.png",
+      "url": "/module/*/profile/2fa",
+      "actions": [{ "waitFor": "button:has-text('Enable 2FA')" }],
+      "clip": [".rz-alert", "button:has-text('Enable 2FA')"],
+      "badges": [
+        { "n": 1, "selector": "button:has-text('Enable 2FA')", "side": "right" }
+      ]
+    },
+    {
+      "id": "profile-2fa-setup",
+      "edition": "ee",
+      "file": "configuration/profile-2fa-setup.png",
+      "url": "/module/*/profile/2fa",
+      "actions": [
+        { "click": "button:has-text('Enable 2FA')" },
+        { "waitFor": "button:has-text('Verify & Enable 2FA')" },
+        { "wait": 800 }
+      ],
+      "clip": [".rz-panel:has(button:has-text('Verify & Enable 2FA')) >> nth=1"],
+      "badges": [
+        { "n": 1, "selector": ".rz-panel:has(button:has-text('Verify & Enable 2FA')) >> nth=1 >> input >> visible=true >> nth=0" },
+        { "n": 2, "selector": "button:has-text('Verify & Enable 2FA')" }
+      ]
     }
   ]
 }

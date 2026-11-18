@@ -9,6 +9,8 @@ Housekeeping operations for the cv4pve-admin database, cache and background jobs
 
 Open **Admin Area → Maintenance**. Every operation runs on demand when you click its button: nothing on this page is scheduled.
 
+![Maintenance page with Fix All, Database Maintenance, Cache Management, Job Management, Connectivity Tests and Log](../../../../assets/images/screenshots/configuration/maintenance.png)
+
 ## Sections
 
 - **Fix All**: one-click safe maintenance sequence
@@ -69,8 +71,10 @@ The **Keep last days** values on this page are used only for the manual run and 
 
 Two diagnostic buttons that do not modify anything: they only confirm that the application can reach its dependencies.
 
-- **Test Cluster Connections**: opens a Proxmox VE API connection to every enabled cluster, in parallel. It reports the elapsed time or the error of each one.
+- **Test Cluster Connections** (1): opens a Proxmox VE API connection to every enabled cluster, in parallel. It reports the elapsed time or the error of each one.
 - **Test Internet Connectivity**: sends an HTTP `GET` to `https://www.google.com`, `https://www.cloudflare.com` and `https://www.github.com` from the cv4pve-admin process, with a 10 second timeout. It reports the elapsed time or the error of each one.
+
+![Test Cluster Connections and its result in the Log panel](../../../../assets/images/screenshots/configuration/maintenance-connectivity.png)
 
 ## Log
 
