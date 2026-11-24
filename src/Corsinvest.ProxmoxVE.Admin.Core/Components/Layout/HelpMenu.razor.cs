@@ -172,8 +172,8 @@ public partial class HelpMenu(ISettingsService settingsService,
             }
             else
             {
-                await dialogService.Alert(L["Automatic updates are not supported in this environment. Please download the latest version manually from {0}.", NewRelease?.Url ?? ""],
-                                          L["Update Not Supported"],
+                await dialogService.Alert(L["The update could not be started: the update service did not accept the request. Check the application log, or download the latest version manually from {0}.", NewRelease?.Url ?? ""],
+                                          L["Update Failed"],
                                           new AlertOptions
                                           {
                                               OkButtonText = L["OK"]

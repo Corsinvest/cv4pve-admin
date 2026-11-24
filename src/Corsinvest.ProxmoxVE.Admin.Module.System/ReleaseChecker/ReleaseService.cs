@@ -156,6 +156,13 @@ public class ReleaseService(IHttpClientFactory httpClientFactory,
             logger.LogWarning("Failed to trigger update via Watchtower. Status: {StatusCode}", response.StatusCode);
             return false;
         }
+        catch (Exception ex) when ((ex is TaskCanceledException && !cancellationToken.IsCancellationRequested)
+                                   || ex is HttpRequestException { HttpRequestError: HttpRequestError.ResponseEnded })
+        {
+            // Watchtower answers only once the image is pulled and the containers are recreated
+            logger.LogInformation("Update triggered via Watchtower, still in progress");
+            return true;
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error triggering update via Watchtower");
