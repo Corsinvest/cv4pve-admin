@@ -6,6 +6,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-11-24
+
+This release brings a **new look** for the module overviews, the widgets, the Dashboard and the cluster page, a daily chart above the main lists and a new AutoSnap timeline. It also closes two security gaps (AI Server queries and forwarded headers in the Docker image) and, in the Enterprise Edition, makes the Workflow module work in the Docker installation.
+
+### Community Edition
+
+#### Added
+
+- **Daily chart above the lists**: *Tasks*, AutoSnap *Errors*, Backup Analytics *Backups* and Replication Analytics *Replications* show a chart per day (hidden at first, opened with *Show chart*). Moving the range bar filters the list on those days; a click on a bar filters it on that day and category, and a button next to the title removes the filter. AutoSnap *Errors* now shows the snapshot name in the *Name* column and has a new *Job* column.
+
+#### Changed
+
+- **Module pages**: every module page shows its icon, name and description at the top. The *Overview* of a module shows its widgets first, then its features as cards; the widgets have the same size as on the Dashboard and show their title.
+- **Widgets**: lighter header with a coloured line on top that follows the state of the widget (green, yellow, red, grey); the widgets are redrawn as key figures with donuts, small trend lines and status bars.
+- **Cluster page**: key figures, usage rings, node table, and *Tasks*, *Logs* and *Snapshots Usage* tabs that fill the rest of the page.
+- **Page height**: lists and grids fill the space left on the page. The Dashboard no longer shows two scrollbars.
+- **AutoSnap, Timeline**: one card per day with the date, the number of snapshots and failures, the size and a strip of 24 hours coloured by the outcome of each hour. A click on the card opens the snapshots of the day in one list; *Show more* loads 10 more days. Days and hours follow the local time, like the *Start* column (before the days were cut in UTC).
+
+#### Fixed
+
+- **AI Server, Query (security)**: the storage contents table returned the backups and disks of guests the token cannot see. Now a backup or disk is listed only when its guest is visible; ISO images and templates are listed as before.
+- **Trusted proxies in the Docker image (security)**: with `TrustedProxies` set, a client could still pass a fake address in the forwarded headers, because the image enables the forwarded headers of the web framework, which accepted them from any sender. They are now accepted only from the listed proxies. Without `TrustedProxies` nothing changes.
+- **AutoSnap, Info widget**: the *Failed* count stayed on "..." for ever.
+- **AutoSnap, Timeline**: the point of a day is green, yellow or red when all, some or none of its snapshots succeeded (before it turned yellow only when every snapshot failed).
+
+### Enterprise Edition
+
+#### Added
+
+- **UPS Monitor, Status widget**: devices online, on battery, critical and offline, in the module overview and on the Dashboard.
+- **System Logs and Audit Logs**: daily chart above the list, like the other lists. System Logs shows the last 7 days at first; Audit Logs shows done and failed operations per day.
+
+#### Changed
+
+- **Overviews** of Portal, UPS Monitor, VM Performance and Workflow in the new format.
+
+#### Fixed
+
+- **Workflow in Docker**: the module did not work in the Docker installation. Opening *Workflows* failed with "Invalid URI: The hostname could not be parsed", and the workflow engine could not create its tables, so the page then failed with an error about `WorkflowDefinitions`. No change to the compose file is needed.
+- **Workflow, read activities (security)**: the activities that read replications, usage history and storage contents returned also the nodes, guests and storages the user of the workflow cannot see. Storage reads now also need the node to be visible.
+- **Portal, tenant guests**: the *Vms* tab of a tenant opened empty until the next refresh, and in the expanded row the list showed no columns.
+
 ## [2.4.0] - 2026-11-16
 
 This release focuses on **security and permissions**: a safer sign-in, and every module shows only what the user is allowed to see (review your custom roles). In the Enterprise Edition users can also sign in with Microsoft, Google, Keycloak or their company domain. It also adds the Excel export of the lists, capacity planning in the report, quick Diagnostic profiles and, in the Enterprise Edition, the automatic shutdown of the nodes from the UPS. Underlying components have been updated.
